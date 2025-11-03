@@ -28,6 +28,10 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
+                                <atom:SelectMaxCountIndicator
+                                    MaxCount="{Binding MaxCount, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                    SelectedCount="{Binding SelectedCount, RelativeSource={RelativeSource AncestorType=atom:Select}}"
+                                    IsVisible="{Binding IsShowMaxCountIndicator, RelativeSource={RelativeSource AncestorType=atom:Select}}" />
                                 <ContentPresenter
                                     Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Select}}"
                                     ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:Select}}"
@@ -96,6 +100,7 @@
                                 IsGroupEnabled="{TemplateBinding IsGroupEnabled}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsShowEmptyIndicator="True"
+                                MaxCount="{TemplateBinding MaxCount}"
                                 AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedOptions}"
                                 ItemTemplate="{TemplateBinding OptionTemplate}"
                                 ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"

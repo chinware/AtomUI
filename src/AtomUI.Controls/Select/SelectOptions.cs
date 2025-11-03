@@ -8,6 +8,15 @@ namespace AtomUI.Controls;
 
 internal class SelectOptions : List
 {
+    public static readonly StyledProperty<int> MaxCountProperty =
+        Select.MaxCountProperty.AddOwner<SelectOptions>();
+    
+    public int MaxCount
+    {
+        get => GetValue(MaxCountProperty);
+        set => SetValue(MaxCountProperty, value);
+    }
+    
     public Select? Select { get; set; }
     
     internal override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -99,6 +108,46 @@ internal class SelectOptions : List
             }
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, groupItem, SelectGroupHeader.IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, groupItem, SelectGroupHeader.SizeTypeProperty));
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == MaxCountProperty || change.Property == SelectedItemsProperty)
+        {
+            ConfigureOptionsForMaxCount();
+        }
+    }
+
+    private void ConfigureOptionsForMaxCount()
+    {
+        if (ListDefaultView != null)
+        {
+            if (SelectedItems?.Count >= MaxCount)
+            {
+                for (var i = 0; i < ItemCount; i++)
+                {
+                    var item      = ListDefaultView.Items[i];
+                    var container = ListDefaultView.ContainerFromIndex(i);
+                    if (!SelectedItems.Contains(item))
+                    {
+                        container?.SetCurrentValue(IsEnabledProperty, false);
+                    }
+                    else
+                    {
+                        container?.SetCurrentValue(IsEnabledProperty, true);
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i < ItemCount; i++)
+                {
+                    var container = ListDefaultView.ContainerFromIndex(i);
+                    container?.SetCurrentValue(IsEnabledProperty, true);
+                }
+            }
         }
     }
 }

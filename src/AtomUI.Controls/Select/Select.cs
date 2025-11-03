@@ -84,10 +84,13 @@ public class Select : TemplatedControl,
         AvaloniaProperty.Register<Select, bool>(nameof(IsLoading));
     
     public static readonly StyledProperty<int> MaxCountProperty =
-        AvaloniaProperty.Register<Select, int>(nameof(MaxCount));
+        AvaloniaProperty.Register<Select, int>(nameof(MaxCount), int.MaxValue);
+    
+    public static readonly StyledProperty<bool> IsShowMaxCountIndicatorProperty =
+        AvaloniaProperty.Register<Select, bool>(nameof(IsShowMaxCountIndicator));
         
     public static readonly StyledProperty<int> MaxTagCountProperty =
-        AvaloniaProperty.Register<Select, int>(nameof(MaxTagCount));
+        AvaloniaProperty.Register<Select, int>(nameof(MaxTagCount), int.MaxValue);
     
     public static readonly StyledProperty<string?> MaxTagPlaceholderProperty =
         AvaloniaProperty.Register<Select, string?>(nameof(MaxTagPlaceholder));
@@ -253,6 +256,12 @@ public class Select : TemplatedControl,
     {
         get => GetValue(MaxCountProperty);
         set => SetValue(MaxCountProperty, value);
+    }
+    
+    public bool IsShowMaxCountIndicator
+    {
+        get => GetValue(IsShowMaxCountIndicatorProperty);
+        set => SetValue(IsShowMaxCountIndicatorProperty, value);
     }
     
     public int MaxTagCount
@@ -434,6 +443,11 @@ public class Select : TemplatedControl,
             o => o.SelectedOption,
             (o, v) => o.SelectedOption = v);
     
+    internal static readonly DirectProperty<Select, int> SelectedCountProperty =
+        AvaloniaProperty.RegisterDirect<Select, int>(nameof(SelectedCount),
+            o => o.SelectedCount,
+            (o, v) => o.SelectedCount = v);
+    
     internal double ItemHeight
     {
         get => GetValue(ItemHeightProperty);
@@ -490,6 +504,14 @@ public class Select : TemplatedControl,
     {
         get => _selectedOption;
         set => SetAndRaise(SelectedOptionProperty, ref _selectedOption, value);
+    }
+    
+    private int _selectedCount;
+
+    internal int SelectedCount
+    {
+        get => _selectedCount;
+        set => SetAndRaise(SelectedCountProperty, ref _selectedCount, value);
     }
     
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -745,6 +767,7 @@ public class Select : TemplatedControl,
             ConfigureSelectionIsEmpty();
             ConfigurePlaceholderVisible();
             ConfigureSelectedFilterDescription();
+            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count);
         }
         else if (change.Property == OptionFilterPropProperty)
         {
