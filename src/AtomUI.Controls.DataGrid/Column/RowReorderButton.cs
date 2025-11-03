@@ -4,6 +4,8 @@ namespace AtomUI.Controls;
 
 internal class RowReorderButton : IconButton
 {
+    protected override Type StyleKeyOverride { get; } = typeof(IconButton);
+    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);

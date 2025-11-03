@@ -14,7 +14,7 @@ internal class ListDefaultFilter
         if (CollectionViewRef.TryGetTarget(out var collectionView))
         {
             var filterDescriptions = collectionView.FilterDescriptions;
-            if (filterDescriptions == null || filterDescriptions.Count == 0)
+            if (filterDescriptions.Count == 0)
             {
                 return true;
             }

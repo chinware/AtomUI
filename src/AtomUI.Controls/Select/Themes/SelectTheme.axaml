@@ -50,9 +50,9 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 TextTrimming="CharacterEllipsis"
-                                Opacity="0.3"
                                 Text="{TemplateBinding PlaceholderText}" 
-                                IsVisible="{TemplateBinding IsPlaceholderTextVisible}"/>
+                                IsVisible="{TemplateBinding IsPlaceholderTextVisible}"
+                                Foreground="{TemplateBinding PlaceholderForeground}"/>
                             <ContentPresenter Name="SingleSelectResultPresenter"
                                               Content="{TemplateBinding SelectedOption}"
                                               IsVisible="False">
@@ -93,9 +93,11 @@
                             <atom:SelectOptions
                                 Name="{x:Static atom:SelectThemeConstants.OptionsBoxPart}"
                                 IsBorderless="True"
+                                IsGroupEnabled="{TemplateBinding IsGroupEnabled}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsShowEmptyIndicator="True"
                                 AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedOptions}"
+                                ItemTemplate="{TemplateBinding OptionTemplate}"
                                 ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}"
                             />
                         </Border>
@@ -111,7 +113,8 @@
                 Value="{DynamicResource {x:Static atom:SelectTokenKey.PopupContentPadding}}" />
         <Setter Property="OptionFontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
-
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
+        
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
         </Style>

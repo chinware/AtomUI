@@ -3,19 +3,21 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Themes;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -36,6 +38,9 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<IEnumerable<SelectOption>?> OptionsSourceProperty =
         AvaloniaProperty.Register<Select, IEnumerable<SelectOption>?>(nameof(OptionsSource));
     
+    public static readonly StyledProperty<IDataTemplate?> OptionTemplateProperty =
+        AvaloniaProperty.Register<Select, IDataTemplate?>(nameof(OptionTemplate));
+    
     public static readonly StyledProperty<bool> IsAllowClearProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsAllowClear));
     
@@ -51,6 +56,12 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsDropDownOpen));
     
+    public static readonly StyledProperty<bool> IsGroupEnabledProperty =
+        List.IsGroupEnabledProperty.AddOwner<Select>();
+    
+    public static readonly StyledProperty<string> GroupPropertyPathProperty =
+        List.GroupPropertyPathProperty.AddOwner<Select>();
+    
     public static readonly StyledProperty<string?> PlaceholderTextProperty =
         AvaloniaProperty.Register<Select, string?>(nameof(PlaceholderText));
     
@@ -60,11 +71,11 @@ public class Select : TemplatedControl,
     public static readonly StyledProperty<bool> IsPopupMatchSelectWidthProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsPopupMatchSelectWidth), true);
     
-    public static readonly StyledProperty<bool> IsFilterOptionProperty =
-        AvaloniaProperty.Register<Select, bool>(nameof(IsFilterOption));
-    
     public static readonly StyledProperty<bool> IsSearchEnabledProperty =
         AvaloniaProperty.Register<Select, bool>(nameof(IsSearchEnabled));
+    
+    public static readonly StyledProperty<bool> IsHideSelectedOptionsProperty =
+        AvaloniaProperty.Register<Select, bool>(nameof(IsHideSelectedOptions));
     
     public static readonly StyledProperty<int> DisplayPageSizeProperty = 
         AvaloniaProperty.Register<Select, int>(nameof (DisplayPageSize), 10);
@@ -147,6 +158,13 @@ public class Select : TemplatedControl,
         set => SetValue(OptionsSourceProperty, value);
     }
     
+    [InheritDataTypeFromItems(nameof(OptionsSource))]
+    public IDataTemplate? OptionTemplate
+    {
+        get => GetValue(OptionTemplateProperty);
+        set => SetValue(OptionTemplateProperty, value);
+    }
+    
     public bool IsAllowClear
     {
         get => GetValue(IsAllowClearProperty);
@@ -177,6 +195,18 @@ public class Select : TemplatedControl,
         set => SetValue(IsDropDownOpenProperty, value);
     }
     
+    public bool IsGroupEnabled
+    {
+        get => GetValue(IsGroupEnabledProperty);
+        set => SetValue(IsGroupEnabledProperty, value);
+    }
+    
+    public string GroupPropertyPath
+    {
+        get => GetValue(GroupPropertyPathProperty);
+        set => SetValue(GroupPropertyPathProperty, value);
+    }
+    
     public string? PlaceholderText
     {
         get => GetValue(PlaceholderTextProperty);
@@ -195,16 +225,16 @@ public class Select : TemplatedControl,
         set => SetValue(IsPopupMatchSelectWidthProperty, value);
     }
     
-    public bool IsFilterOption
-    {
-        get => GetValue(IsFilterOptionProperty);
-        set => SetValue(IsFilterOptionProperty, value);
-    }
-    
     public bool IsSearchEnabled
     {
         get => GetValue(IsSearchEnabledProperty);
         set => SetValue(IsSearchEnabledProperty, value);
+    }
+    
+    public bool IsHideSelectedOptions
+    {
+        get => GetValue(IsHideSelectedOptionsProperty);
+        set => SetValue(IsHideSelectedOptionsProperty, value);
     }
     
     public int DisplayPageSize
@@ -476,6 +506,9 @@ public class Select : TemplatedControl,
     private SelectSearchTextBox? _singleSearchInput;
     private readonly CompositeDisposable _subscriptionsOnOpen = new ();
     private ListFilterDescription? _filterDescription;
+    private ListFilterDescription? _filterSelectedDescription;
+    private bool _clickInTagCloseButton;
+    
     private string? _filterValue;
 
     static Select()
@@ -548,20 +581,34 @@ public class Select : TemplatedControl,
         base.OnPointerPressed(e);
         if(!e.Handled && e.Source is Visual source)
         {
-          
             if (_popup?.IsInsidePopup(source) == true)
             {
                 e.Handled = true;
                 return;
             }
         }
-
+        
         if (IsDropDownOpen)
         {
             // When a drop-down is open with OverlayDismissEventPassThrough enabled and the control
             // is pressed, close the drop-down
-            SetCurrentValue(IsDropDownOpenProperty, false);
-            e.Handled = true;
+            if (!IsHideSelectedOptions)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false); 
+                e.Handled = true;
+            }
+            else
+            {
+                if (e.Source is Icon icon)
+                {
+                    var parent = icon.FindAncestorOfType<IconButton>();
+                    var tag = parent?.FindAncestorOfType<SelectTag>();
+                    if (tag != null)
+                    {
+                        _clickInTagCloseButton = true;
+                    }
+                }
+            }
         }
         else
         {
@@ -606,15 +653,32 @@ public class Select : TemplatedControl,
             _optionsBox.Select = this;
         }
         
-        _popup        =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
-        _popup.Opened += PopupOpened;
-        _popup.Closed += PopupClosed;
+        _popup                    =  e.NameScope.Get<Popup>(SelectThemeConstants.PopupPart);
+        _popup.ClickHidePredicate =  PopupClosePredicate;
+        _popup.Opened             += PopupOpened;
+        _popup.Closed             += PopupClosed;
         ConfigureMaxDropdownHeight();
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleSearchTextBox();
         ConfigureDefaultValues();
+    }
+    
+    private bool PopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
+    {
+        var popupRoots = new HashSet<PopupRoot>();
+        if (_popup?.Host is PopupRoot popupRoot)
+        {
+            popupRoots.Add(popupRoot);
+        }
+
+        if (_clickInTagCloseButton)
+        {
+            _clickInTagCloseButton = false;
+            return false;
+        }
+        return !popupRoots.Contains(args.Root);
     }
 
     internal void NotifyLogicalSelectOption(SelectOption selectOption)
@@ -680,6 +744,7 @@ public class Select : TemplatedControl,
             ConfigureSingleSelectedOption();
             ConfigureSelectionIsEmpty();
             ConfigurePlaceholderVisible();
+            ConfigureSelectedFilterDescription();
         }
         else if (change.Property == OptionFilterPropProperty)
         {
@@ -688,6 +753,13 @@ public class Select : TemplatedControl,
         else if (change.Property == ModeProperty)
         {
             ConfigureSingleSelectedOption();
+        }
+        else if (change.Property == IsHideSelectedOptionsProperty)
+        {
+            if (!IsHideSelectedOptions)
+            {
+                _filterSelectedDescription = null;
+            }
         }
     }
     
@@ -962,7 +1034,6 @@ public class Select : TemplatedControl,
                 }
             }
         }
-      
     }
 
     private void ConfigureSingleSelectedOption()
@@ -982,5 +1053,51 @@ public class Select : TemplatedControl,
         {
             SetCurrentValue(SelectedOptionProperty, null);
         }
+    }
+
+    private void ConfigureSelectedFilterDescription()
+    {
+        if (_optionsBox?.FilterDescriptions != null)
+        {
+            if (IsHideSelectedOptions)
+            {
+                var selectedOptions = new HashSet<object>();
+                if (SelectedOptions?.Count > 0)
+                {
+                    foreach (var selectedOption in SelectedOptions)
+                    {
+                        selectedOptions.Add(selectedOption);
+                    }
+                }
+                var oldFilter = _filterSelectedDescription;
+                _filterSelectedDescription = new ListFilterDescription()
+                {
+                    Filter           = SelectFilterFn,
+                    FilterConditions = [selectedOptions],
+                };
+                if (oldFilter != null)
+                {
+                    _optionsBox.FilterDescriptions.Remove(oldFilter);
+                }
+                _optionsBox.FilterDescriptions.Add(_filterSelectedDescription);
+            }
+            else
+            {
+                if (_filterSelectedDescription != null)
+                {
+                    _optionsBox.FilterDescriptions.Remove(_filterSelectedDescription);
+                }
+                _filterSelectedDescription = null;
+            }
+        }
+    }
+
+    private static bool SelectFilterFn(object value, object filterValue)
+    {
+        if (filterValue is HashSet<object> set)
+        {
+            return !set.Contains(value);
+        }
+        return true;
     }
 }

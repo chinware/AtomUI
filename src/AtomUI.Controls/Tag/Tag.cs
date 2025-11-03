@@ -175,7 +175,7 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     private static readonly Dictionary<PresetColorType, TagCalcColor> PresetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> StatusColorMap;
     private IDisposable? _borderThicknessDisposable;
-    private IconButton? _closeButton;
+    protected IconButton? CloseButton;
     
     static Tag()
     {
@@ -233,10 +233,10 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _closeButton = e.NameScope.Find<IconButton>(TagThemeConstants.CloseButtonPart);
-        if (_closeButton != null)
+        CloseButton = e.NameScope.Find<IconButton>(TagThemeConstants.CloseButtonPart);
+        if (CloseButton != null)
         {
-            _closeButton.Click += HandleCloseRequest;
+            CloseButton.Click += HandleCloseRequest;
         }
         SetupDefaultCloseIcon();
         SetupPresetColorMap();

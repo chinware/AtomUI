@@ -67,6 +67,9 @@ public class List : TemplatedControl,
     public static readonly StyledProperty<bool> IsGroupEnabledProperty =
         AvaloniaProperty.Register<List, bool>(nameof(IsGroupEnabled), false);
     
+    public static readonly StyledProperty<string> GroupPropertyPathProperty =
+        AvaloniaProperty.Register<List, string>(nameof(GroupPropertyPath), "Group");
+    
     public static readonly DirectProperty<List, IList?> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<List, IList?>(nameof(SelectedItems), 
             o => o.SelectedItems, 
@@ -163,6 +166,12 @@ public class List : TemplatedControl,
     {
         get => GetValue(IsGroupEnabledProperty);
         set => SetValue(IsGroupEnabledProperty, value);
+    }
+    
+    public string GroupPropertyPath
+    {
+        get => GetValue(GroupPropertyPathProperty);
+        set => SetValue(GroupPropertyPathProperty, value);
     }
     
     private IList? _selectedItems;
@@ -456,6 +465,10 @@ public class List : TemplatedControl,
         {
             ConfigureEmptyIndicator();
         }
+        else if (change.Property == GroupPropertyPathProperty)
+        {
+            ReConfigureGroupInfo();
+        }
     }
 
     private void ConfigureEffectiveBorderThickness()
@@ -678,13 +691,25 @@ public class List : TemplatedControl,
         {
             if (IsGroupEnabled)
             {
-                collectionView.GroupDescriptions.Add(new ListPathGroupDescription("Group"));
+                collectionView.GroupDescriptions.Add(new ListPathGroupDescription(GroupPropertyPath));
             }
             else
             {
                 collectionView.GroupDescriptions.Clear();
             }
-        }    
+        }
+    }
+
+    private void ReConfigureGroupInfo()
+    {
+        if (_listCollectionView is ListCollectionView collectionView)
+        {
+            collectionView.GroupDescriptions.Clear();
+            if (IsGroupEnabled)
+            {
+                collectionView.GroupDescriptions.Add(new ListPathGroupDescription(GroupPropertyPath));
+            }
+        }
     }
 
     internal virtual Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)

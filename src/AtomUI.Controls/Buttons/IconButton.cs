@@ -9,6 +9,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -134,10 +135,18 @@ public class IconButton : AvaloniaButton,
         set => SetValue(DisabledIconBrushProperty, value);
     }
     
-    
     #endregion
     
     #region 内部属性定义
+    
+    internal static readonly StyledProperty<bool> IsPassthroughMouseEventProperty = 
+        AvaloniaProperty.Register<IconButton, bool>(nameof(IsPassthroughMouseEvent));
+    
+    public bool IsPassthroughMouseEvent
+    {
+        get => GetValue(IsPassthroughMouseEventProperty);
+        set => SetValue(IsPassthroughMouseEventProperty, value);
+    }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -151,8 +160,6 @@ public class IconButton : AvaloniaButton,
         typeof(AvaloniaButton).GetFieldInfoOrThrow("_isFlyoutOpen",
             BindingFlags.Instance | BindingFlags.NonPublic));
     #endregion
-    
-    protected override Type StyleKeyOverride { get; } = typeof(IconButton);
 
     static IconButton()
     {
@@ -216,5 +223,23 @@ public class IconButton : AvaloniaButton,
     protected bool IsFlyoutOpen()
     {
         return IsFlyoutOpenFieldInfo.Value.GetValue(this) as bool? ?? false;
+    }
+    
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        e.Handled = !IsPassthroughMouseEvent;
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        e.Handled = !IsPassthroughMouseEvent;
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        e.Handled = !IsPassthroughMouseEvent;
     }
 }

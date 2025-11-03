@@ -113,6 +113,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         }
 
         ConfigureSearchTextControl();
+        HandleSelectedOptionsChanged();
     }
 
     private void HandleSelectedOptionsChanged()
