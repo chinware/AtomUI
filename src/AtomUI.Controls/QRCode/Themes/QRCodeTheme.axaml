@@ -2,21 +2,26 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
-    xmlns:atom="https://atomui.net">
+    xmlns:atom="https://atomui.net"
+    xmlns:qrcodelang="using:AtomUI.Controls.QRCodeLang">
     <ControlTheme x:Key="{x:Type atom:QRCode}" TargetType="atom:QRCode">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_Border"
+                <Border Name="Frame"
                         Width="{TemplateBinding Size}"
                         Height="{TemplateBinding Size}"
-                        Background="{TemplateBinding BgColor}"
-                        Padding="{DynamicResource {x:Static atom:SharedTokenKey.PaddingSM}}"
-                        CornerRadius="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel>
                         <Panel>
                             <Image Source="{TemplateBinding Bitmap}" />
-                            <Border Width="{TemplateBinding IconSize}"
+                            <Border Name="ImageFrame"
+                                    Width="{TemplateBinding IconSize}"
                                     Height="{TemplateBinding IconSize}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
                                     Background="{TemplateBinding IconBgColor}"
                                     IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
                                 <Image
@@ -25,61 +30,114 @@
                                     VerticalAlignment="Center" />
                             </Border>
                         </Panel>
-                        <Border Name="PART_Mask"
-                                Background="{DynamicResource {x:Static atom:QRCodeTokenKey.QRCodeMaskBackgroundColor}}"
-                                IsVisible="False" />
-                        <ContentPresenter Name="PART_Status"
-                                          HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalAlignment}" />
+                        <Border Name="Mask" IsVisible="False" />
+
+                        <Panel Name="LoadingLayout" IsVisible="False">
+                            <atom:Spin IsSpinning="True"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding LoadingContent}"
+                                              ContentTemplate="{TemplateBinding LoadingContentTemplate}"
+                                              IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </Panel>
+
+                        <Panel Name="ExpiredLayout" IsVisible="False">
+                            <StackPanel Orientation="Vertical"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{TemplateBinding ExpiredContent, Converter={x:Static ObjectConverters.IsNull}}">
+                                <atom:TextBlock HorizontalAlignment="Center"
+                                                Text="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Expired}}" />
+                                <atom:Button Name="{x:Static atom:QRCodeThemeConstants.RefreshPart}"
+                                             HorizontalAlignment="Center"
+                                             Icon="{atom:IconProvider Kind=ReloadOutlined}"
+                                             ButtonType="Link"
+                                             Content="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Refresh}}" />
+                            </StackPanel>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding ExpiredContent}"
+                                              ContentTemplate="{TemplateBinding ExpiredContentTemplate}"
+                                              IsVisible="{TemplateBinding ExpiredContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </Panel>
+
+                        <Panel Name="ScannedLayout" IsVisible="False">
+                            <atom:TextBlock HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            IsVisible="{TemplateBinding ScannedContent, Converter={x:Static ObjectConverters.IsNull}}"
+                                            Text="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Scanned}}" />
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding ScannedContent}"
+                                              ContentTemplate="{TemplateBinding ScannedContentTemplate}"
+                                              IsVisible="{TemplateBinding ScannedContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </Panel>
                     </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^[Bordered=True]">
-            <Style Selector="^ /template/ Border#PART_Border">
-                <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:QRCodeTokenKey.Border}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Color" Value="Black" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:QRCodeTokenKey.QRCodeTextColor}}" />
+        <Setter Property="Background" Value="Transparent" />
+        
+        <Setter Property="IconBgColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
+        <Setter Property="BorderThickness"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+
+        <Style Selector="^[IsBordered=True]">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Padding"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingSM}}" />
             </Style>
         </Style>
+
+        <Style Selector="^ /template/ Border#Mask">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:QRCodeTokenKey.QRCodeMaskBackgroundColor}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#ImageFrame">
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXXS}}" />
+        </Style>
+
         <Style Selector="^[Status=Active]">
-            <Style Selector="^ /template/ Border#PART_Mask">
+            <Style Selector="^ /template/ Border#Mask">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
-            <Style Selector="^ /template/ ContentPresenter#PART_Status">
+            <Style Selector="^ /template/ ContentPresenter#Status">
                 <Setter Property="IsVisible" Value="False" />
-                <Setter Property="Content" Value="{x:Null}" />
-                <Setter Property="ContentTemplate" Value="{x:Null}" />
             </Style>
         </Style>
-        <Style Selector="^[Status=Loading]">
-            <Style Selector="^ /template/ Border#PART_Mask">
+
+        <Style Selector="^:not(^[Status=Active])">
+            <Style Selector="^ /template/ Border#Mask">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
-            <Style Selector="^ /template/ ContentPresenter#PART_Status">
+        </Style>
+
+        <Style Selector="^[Status=Loading]">
+            <Style Selector="^ /template/ Panel#LoadingLayout">
                 <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Content" Value="{TemplateBinding LoadingContent}" />
-                <Setter Property="ContentTemplate" Value="{TemplateBinding LoadingContentTemplate}" />
             </Style>
         </Style>
         <Style Selector="^[Status=Expired]">
-            <Style Selector="^ /template/ Border#PART_Mask">
+            <Style Selector="^ /template/ Panel#ExpiredLayout">
                 <Setter Property="IsVisible" Value="True" />
-            </Style>
-            <Style Selector="^ /template/ ContentPresenter#PART_Status">
-                <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Content" Value="{TemplateBinding ExpiredContent}" />
-                <Setter Property="ContentTemplate" Value="{TemplateBinding ExpiredContentTemplate}" />
             </Style>
         </Style>
         <Style Selector="^[Status=Scanned]">
-            <Style Selector="^ /template/ Border#PART_Mask">
+            <Style Selector="^ /template/ Panel#ScannedLayout">
                 <Setter Property="IsVisible" Value="True" />
-            </Style>
-            <Style Selector="^ /template/ ContentPresenter#PART_Status">
-                <Setter Property="IsVisible" Value="True" />
-                <Setter Property="Content" Value="{TemplateBinding ScannedContent}" />
-                <Setter Property="ContentTemplate" Value="{TemplateBinding ScannedContentTemplate}" />
             </Style>
         </Style>
     </ControlTheme>

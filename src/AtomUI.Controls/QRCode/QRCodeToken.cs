@@ -8,12 +8,17 @@ namespace AtomUI.Controls;
 internal class QRCodeToken : AbstractControlDesignToken
 {
     public const string ID = "QRCode";
+    
+    /// <summary>
+    /// QRCode 文字颜色
+    /// Text color of QRCode
+    /// </summary>
+    public Color QRCodeTextColor { get; set; }
 
     /// <summary>
-    /// 按钮内间距
+    /// QRCode 遮罩背景颜色
+    /// Mask background color of QRCode
     /// </summary>
-    public Thickness Border { get; set; }
-
     public Color QRCodeMaskBackgroundColor { get; set; }
 
     public QRCodeToken()
@@ -24,8 +29,8 @@ internal class QRCodeToken : AbstractControlDesignToken
     public override void CalculateTokenValues()
     {
         base.CalculateTokenValues();
-        Border = new Thickness(SharedToken.LineWidth);
         var colorBgContainer = SharedToken.ColorBgContainer;
+        QRCodeTextColor           = SharedToken.ColorText;
         QRCodeMaskBackgroundColor = Color.FromArgb(244, colorBgContainer.R, colorBgContainer.G, colorBgContainer.B);
     }
 }

@@ -19,6 +19,8 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new AtomUI.Controls.PaginationLang.zh_CN());
             languageProviders.Add(new AtomUI.Controls.PopupConfirmLang.en_US());
             languageProviders.Add(new AtomUI.Controls.PopupConfirmLang.zh_CN());
+            languageProviders.Add(new AtomUI.Controls.QRCodeLang.en_US());
+            languageProviders.Add(new AtomUI.Controls.QRCodeLang.zh_CN());
             languageProviders.Add(new AtomUI.Controls.TimePickerLang.en_US());
             languageProviders.Add(new AtomUI.Controls.TimePickerLang.zh_CN());
             return languageProviders;

@@ -661,8 +661,8 @@ namespace AtomUI.Controls.DesignTokens
 
     public static class QRCodeTokenKey
     {
-        public static readonly TokenResourceKey Border = new TokenResourceKey("QRCode.Border");
         public static readonly TokenResourceKey QRCodeMaskBackgroundColor = new TokenResourceKey("QRCode.QRCodeMaskBackgroundColor");
+        public static readonly TokenResourceKey QRCodeTextColor = new TokenResourceKey("QRCode.QRCodeTextColor");
     }
 
     public static class RadioButtonTokenKey

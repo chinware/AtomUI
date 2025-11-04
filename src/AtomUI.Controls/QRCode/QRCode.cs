@@ -1,16 +1,14 @@
-﻿using System.Reactive.Disposables;
+﻿using AtomUI.Controls.Themes;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
+using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Media.Immutable;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 using SkiaSharp;
 using SkiaSharp.QrCode;
 using static System.Enum;
@@ -39,22 +37,18 @@ public enum QRCodeStatus
     Scanned,
 }
 
-public class QRCode : TemplatedControl,
-                      IControlSharedTokenResourcesHost
+public class QRCode : TemplatedControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
     public static readonly StyledProperty<string> ValueProperty =
         AvaloniaProperty.Register<QRCode, string>(nameof(Value));
 
-    public static readonly StyledProperty<bool> BorderedProperty =
-        AvaloniaProperty.Register<QRCode, bool>(nameof(Bordered), true);
+    public static readonly StyledProperty<bool> IsBorderedProperty =
+        AvaloniaProperty.Register<QRCode, bool>(nameof(IsBordered), true);
 
-    public static readonly StyledProperty<IBrush> ColorProperty =
-        AvaloniaProperty.Register<QRCode, IBrush>(nameof(Color), new ImmutableSolidColorBrush(Colors.Black));
-
-    public static readonly StyledProperty<IBrush> BgColorProperty =
-        AvaloniaProperty.Register<QRCode, IBrush>(nameof(BgColor), new ImmutableSolidColorBrush(Colors.Transparent));
+    public static readonly StyledProperty<IBrush?> ColorProperty =
+        AvaloniaProperty.Register<QRCode, IBrush?>(nameof(Color));
 
     public static readonly StyledProperty<QRCodeEccLevel> EccLevelProperty =
         AvaloniaProperty.Register<QRCode, QRCodeEccLevel>(nameof(EccLevel), QRCodeEccLevel.M);
@@ -98,22 +92,16 @@ public class QRCode : TemplatedControl,
         set => SetValue(ValueProperty, value);
     }
 
-    public bool Bordered
+    public bool IsBordered
     {
-        get => GetValue(BorderedProperty);
-        set => SetValue(BorderedProperty, value);
+        get => GetValue(IsBorderedProperty);
+        set => SetValue(IsBorderedProperty, value);
     }
 
-    public IBrush Color
+    public IBrush? Color
     {
         get => GetValue(ColorProperty);
         set => SetValue(ColorProperty, value);
-    }
-
-    public IBrush BgColor
-    {
-        get => GetValue(BgColorProperty);
-        set => SetValue(BgColorProperty, value);
     }
 
     public int Size
@@ -153,6 +141,7 @@ public class QRCode : TemplatedControl,
         set => SetValue(StatusProperty, value);
     }
 
+    [DependsOn(nameof(LoadingContentTemplate))]
     public object? LoadingContent
     {
         get => GetValue(LoadingContentProperty);
@@ -165,6 +154,7 @@ public class QRCode : TemplatedControl,
         set => SetValue(LoadingContentTemplateProperty, value);
     }
 
+    [DependsOn(nameof(ExpiredContentTemplate))]
     public object? ExpiredContent
     {
         get => GetValue(ExpiredContentProperty);
@@ -192,6 +182,12 @@ public class QRCode : TemplatedControl,
 
     #endregion
 
+    #region 公共事件定义
+
+    public event EventHandler? RefreshRequested;
+
+    #endregion
+
     #region 内部属性定义
 
     internal static readonly StyledProperty<Bitmap> BitmapProperty =
@@ -209,28 +205,28 @@ public class QRCode : TemplatedControl,
     string IControlSharedTokenResourcesHost.TokenId => OptionButtonToken.ID;
 
     private Button? _refreshButton;
-    private CompositeDisposable? _disposables;
 
     static QRCode()
     {
         AffectsMeasure<QRCode>(BitmapProperty);
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
+    public QRCode()
     {
-        base.OnLoaded(e);
+        this.RegisterResources();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _disposables?.Dispose();
-
-        _disposables = new CompositeDisposable(2);
-        _disposables?.Add(TokenResourceBinder.CreateTokenBinding(this, ColorProperty, SharedTokenKey.ColorText));
-        if (IconBgColor == null)
-            _disposables?.Add(TokenResourceBinder.CreateTokenBinding(this, IconBgColorProperty, SharedTokenKey.ColorBgContainer));
-
+        _refreshButton = e.NameScope.Find<Button>(QRCodeThemeConstants.RefreshPart);
+        if (_refreshButton != null)
+        {
+            _refreshButton.Click += (sender, args) =>
+            {
+                RefreshRequested?.Invoke(this, EventArgs.Empty);
+            };
+        }
         SetupQRCode();
     }
 
@@ -242,8 +238,8 @@ public class QRCode : TemplatedControl,
         var       info      = new SKImageInfo(Size, Size);
         using var surface   = SKSurface.Create(info);
         var       canvas    = surface.Canvas;
-        var       color     = ((ISolidColorBrush)Color).Color;
-        var       bgColor   = ((ISolidColorBrush)BgColor).Color;
+        var       color     = ((ISolidColorBrush?)Color)?.Color ?? Colors.Black;
+        var       bgColor   = ((ISolidColorBrush?)Background)?.Color ?? Colors.Transparent;
 
         canvas.Render(
             qrcode,
@@ -262,19 +258,16 @@ public class QRCode : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == ValueProperty || 
-            e.Property == ColorProperty || 
-            e.Property == BgColorProperty || 
-            e.Property == EccLevelProperty || 
-            e.Property == SizeProperty)
+        if (this.IsAttachedToVisualTree())
         {
-            SetupQRCode();
+            if (e.Property == ValueProperty || 
+                e.Property == ColorProperty || 
+                e.Property == BackgroundProperty || 
+                e.Property == EccLevelProperty || 
+                e.Property == SizeProperty)
+            {
+                SetupQRCode();
+            }
         }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _disposables?.Dispose();
     }
 }

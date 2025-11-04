@@ -69,6 +69,16 @@ namespace AtomUI.Controls.PopupConfirmLang
     }
 }
 
+namespace AtomUI.Controls.QRCodeLang
+{
+    internal static class QRCodeLangResourceKey
+    {
+        public static readonly LanguageResourceKey Expired = new LanguageResourceKey("QRCode.Expired", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Refresh = new LanguageResourceKey("QRCode.Refresh", "AtomUI.Lang");
+        public static readonly LanguageResourceKey Scanned = new LanguageResourceKey("QRCode.Scanned", "AtomUI.Lang");
+    }
+}
+
 namespace AtomUI.Controls.TimePickerLang
 {
     internal static class TimePickerLangResourceKey
