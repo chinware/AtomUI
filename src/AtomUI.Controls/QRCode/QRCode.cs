@@ -10,6 +10,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Media.Immutable;
+using Avalonia.Metadata;
 using SkiaSharp;
 using SkiaSharp.QrCode;
 using static System.Enum;
@@ -176,6 +177,7 @@ public class QRCode : TemplatedControl,
         set => SetValue(ExpiredContentTemplateProperty, value);
     }
 
+    [DependsOn(nameof(ScannedContentTemplate))]
     public object? ScannedContent
     {
         get => GetValue(ScannedContentProperty);
@@ -194,8 +196,7 @@ public class QRCode : TemplatedControl,
 
     internal static readonly StyledProperty<Bitmap> BitmapProperty =
         AvaloniaProperty.Register<QRCode, Bitmap>(nameof(Bitmap));
-
-
+    
     internal Bitmap Bitmap
     {
         get => GetValue(BitmapProperty);
@@ -209,6 +210,11 @@ public class QRCode : TemplatedControl,
 
     private Button? _refreshButton;
     private CompositeDisposable? _disposables;
+
+    static QRCode()
+    {
+        AffectsMeasure<QRCode>(BitmapProperty);
+    }
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
@@ -230,7 +236,6 @@ public class QRCode : TemplatedControl,
 
     private void SetupQRCode()
     {
-        if (Value == null) return;
         TryParse(EccLevel.ToString(), out ECCLevel eccLevel);
         using var generator = new QRCodeGenerator();
         var       qrcode    = generator.CreateQrCode(Value, eccLevel, quietZoneSize: 0);
@@ -249,7 +254,6 @@ public class QRCode : TemplatedControl,
             new SKColor(bgColor.R, bgColor.G, bgColor.B, bgColor.A)
         );
 
-
         using var image = surface.Snapshot();
         using var data  = image.Encode(SKEncodedImageFormat.Png, 100);
         Bitmap = new Bitmap(data.AsStream());
@@ -258,7 +262,11 @@ public class QRCode : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.Property == ValueProperty || e.Property == ColorProperty || e.Property == BgColorProperty || e.Property == EccLevelProperty || e.Property == SizeProperty)
+        if (e.Property == ValueProperty || 
+            e.Property == ColorProperty || 
+            e.Property == BgColorProperty || 
+            e.Property == EccLevelProperty || 
+            e.Property == SizeProperty)
         {
             SetupQRCode();
         }
