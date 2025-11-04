@@ -9,14 +9,14 @@
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="AtomUI.Controls.DataGrid" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
-        <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)"/>
+        <PackageVersion Include="ReactiveUI.Avalonia" Version="$(AvaloniaVersion)"/>
 
         <!-- TODO 版本是否跟随 AvaloniaVersion？-->
         <PackageVersion Include="Avalonia.Svg" Version="11.3.0"/>
         <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1"/>
         <PackageVersion Include="SkiaSharp.QrCode" Version="0.7.0" />
 
-        <PackageVersion Include="System.Reactive" Version="6.0.1"/>
+        <PackageVersion Include="System.Reactive" Version="6.1.0"/>
         <!-- 测试相关依赖 -->
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0-release-24177-07"/>
         <PackageVersion Include="NSubstitute" Version="5.1.0"/>

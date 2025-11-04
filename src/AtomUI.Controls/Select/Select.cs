@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;

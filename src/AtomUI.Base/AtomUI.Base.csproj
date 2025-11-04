@@ -7,7 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
-        <PackageReference Include="Avalonia.ReactiveUI"/>
+        <PackageReference Include="ReactiveUI.Avalonia"/>
         <PackageReference Include="System.Reactive"/>
         <PackageReference Include="AtomUI.Native"/>
     </ItemGroup>

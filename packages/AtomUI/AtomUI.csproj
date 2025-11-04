@@ -12,9 +12,8 @@
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="Avalonia.Svg"/>
-        <PackageReference Include="System.Reactive"/>
         <PackageReference Include="Avalonia.Desktop"/>
-        <PackageReference Include="Avalonia.ReactiveUI"/>
+        <PackageReference Include="ReactiveUI.Avalonia"/>
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

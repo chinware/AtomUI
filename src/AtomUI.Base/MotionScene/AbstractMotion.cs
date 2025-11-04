@@ -5,8 +5,8 @@ using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
-using Avalonia.ReactiveUI;
 using Avalonia.Threading;
+using ReactiveUI.Avalonia;
 
 namespace AtomUI.MotionScene;
 
