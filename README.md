@@ -2,10 +2,10 @@
 <br/>
 <div align="center">
 
+[![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview)
 [![][github-contributors-shield]][github-contributors-link]
-[![][github-forks-shield]][github-forks-link]
 [![][github-stars-shield]][github-stars-link]
-[![][github-issues-shield]][github-issues-link]
+[![Nuget Download](https://img.shields.io/nuget/dt/AtomUI?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI)
 [![][github-license-shield]][github-license-link]
 
 [Changelog](./CHANGELOG.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
