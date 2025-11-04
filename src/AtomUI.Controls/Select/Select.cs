@@ -813,7 +813,7 @@ public class Select : TemplatedControl,
             ConfigureSelectionIsEmpty();
             ConfigurePlaceholderVisible();
             ConfigureSelectedFilterDescription();
-            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count);
+            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
         }
         else if (change.Property == OptionFilterPropProperty)
         {
