@@ -1,6 +1,7 @@
 using AtomUI.Animations;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
@@ -8,10 +9,12 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -20,7 +23,8 @@ public enum AddOnDecoratedVariant
 {
     Outline,
     Filled,
-    Borderless
+    Borderless,
+    Underlined
 }
 
 public enum AddOnDecoratedStatus
@@ -151,6 +155,10 @@ internal class AddOnDecoratedBox : ContentControl,
     #endregion
     
     #region 内部属性定义
+    internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> InnerBoxBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(InnerBoxBorderThickness),
+            o => o.InnerBoxBorderThickness,
+            (o, v) => o.InnerBoxBorderThickness = v);
 
     internal static readonly DirectProperty<AddOnDecoratedBox, CornerRadius> InnerBoxCornerRadiusProperty =
         AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, CornerRadius>(nameof(InnerBoxCornerRadius),
@@ -186,6 +194,14 @@ internal class AddOnDecoratedBox : ContentControl,
         AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, bool>(nameof(IsInnerBoxPressed),
             o => o.IsInnerBoxPressed,
             (o, v) => o.IsInnerBoxPressed = v);
+    
+    private Thickness _innerBoxBorderThickness;
+
+    internal Thickness InnerBoxBorderThickness
+    {
+        get => _innerBoxBorderThickness;
+        set => SetAndRaise(InnerBoxBorderThicknessProperty, ref _innerBoxBorderThickness, value);
+    }
 
     private CornerRadius _innerBoxCornerRadius;
 
@@ -272,6 +288,7 @@ internal class AddOnDecoratedBox : ContentControl,
     public AddOnDecoratedBox()
     {
         this.RegisterResources();
+        ConfigureInstanceStyles();
     }
     
     protected virtual void UpdatePseudoClasses()
@@ -323,6 +340,7 @@ internal class AddOnDecoratedBox : ContentControl,
         if (change.Property == StyleVariantProperty)
         {
             UpdatePseudoClasses();
+            ConfigureInnerBoxBorderThickness();
         }
 
         if (this.IsAttachedToVisualTree())
@@ -334,7 +352,15 @@ internal class AddOnDecoratedBox : ContentControl,
                 ConfigureInnerBoxCornerRadius();
             }
         }
-        if (change.Property == CornerRadiusProperty || change.Property == BorderThicknessProperty)
+
+        if (change.Property == BorderThicknessProperty)
+        {
+            ConfigureInnerBoxBorderThickness();
+        }
+        
+        if (change.Property == CornerRadiusProperty || 
+            change.Property == BorderThicknessProperty ||
+            change.Property == StyleVariantProperty)
         {
             ConfigureAddOnBorderInfo();
         }
@@ -353,12 +379,7 @@ internal class AddOnDecoratedBox : ContentControl,
         var topRightRadius    = CornerRadius.TopRight;
         var bottomLeftRadius  = CornerRadius.BottomLeft;
         var bottomRightRadius = CornerRadius.BottomRight;
-
-        var topThickness    = BorderThickness.Top;
-        var rightThickness  = BorderThickness.Right;
-        var bottomThickness = BorderThickness.Bottom;
-        var leftThickness   = BorderThickness.Left;
-
+            
         LeftAddOnCornerRadius = new CornerRadius(topLeftRadius,
             0,
             bottomLeft: bottomLeftRadius,
@@ -367,12 +388,25 @@ internal class AddOnDecoratedBox : ContentControl,
             topRightRadius,
             bottomLeft: 0,
             bottomRight: bottomRightRadius);
-
-        LeftAddOnBorderThickness =
-            new Thickness(top: topThickness, right: 0, bottom: bottomThickness, left: leftThickness);
-        RightAddOnBorderThickness =
-            new Thickness(top: topThickness, right: rightThickness, bottom: bottomThickness, left: 0);
-
+        
+        if (StyleVariant == AddOnDecoratedVariant.Outline ||
+            StyleVariant == AddOnDecoratedVariant.Filled)
+        {
+            var topThickness    = BorderThickness.Top;
+            var rightThickness  = BorderThickness.Right;
+            var bottomThickness = BorderThickness.Bottom;
+            var leftThickness   = BorderThickness.Left;
+            
+            LeftAddOnBorderThickness =
+                new Thickness(top: topThickness, right: 0, bottom: bottomThickness, left: leftThickness);
+            RightAddOnBorderThickness =
+                new Thickness(top: topThickness, right: rightThickness, bottom: bottomThickness, left: 0);
+        }
+        else if (StyleVariant == AddOnDecoratedVariant.Underlined)
+        {
+            LeftAddOnBorderThickness  = new Thickness(0);
+            RightAddOnBorderThickness = new Thickness(0);
+        }
         NotifyAddOnBorderInfoCalculated();
     }
 
@@ -404,6 +438,7 @@ internal class AddOnDecoratedBox : ContentControl,
 
         ConfigureInnerBoxCornerRadius();
         ConfigureAddOnBorderInfo();
+        ConfigureInnerBoxBorderThickness();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -427,26 +462,82 @@ internal class AddOnDecoratedBox : ContentControl,
     
     private void ConfigureInnerBoxCornerRadius()
     {
-        var topLeftRadius     = CornerRadius.TopLeft;
-        var topRightRadius    = CornerRadius.TopRight;
-        var bottomLeftRadius  = CornerRadius.BottomLeft;
-        var bottomRightRadius = CornerRadius.BottomRight;
-
-        if (_leftAddOn is not null && _leftAddOn.IsVisible)
+        if (StyleVariant != AddOnDecoratedVariant.Underlined)
         {
-            topLeftRadius    = 0;
-            bottomLeftRadius = 0;
-        }
+            var topLeftRadius     = CornerRadius.TopLeft;
+            var topRightRadius    = CornerRadius.TopRight;
+            var bottomLeftRadius  = CornerRadius.BottomLeft;
+            var bottomRightRadius = CornerRadius.BottomRight;
 
-        if (_rightAddOn is not null && _rightAddOn.IsVisible)
+            if (_leftAddOn is not null && _leftAddOn.IsVisible)
+            {
+                topLeftRadius    = 0;
+                bottomLeftRadius = 0;
+            }
+
+            if (_rightAddOn is not null && _rightAddOn.IsVisible)
+            {
+                topRightRadius    = 0;
+                bottomRightRadius = 0;
+            }
+            
+            SetCurrentValue(InnerBoxCornerRadiusProperty, new CornerRadius(topLeftRadius,
+                topRightRadius,
+                bottomLeft: bottomLeftRadius,
+                bottomRight: bottomRightRadius));
+        }
+        else
         {
-            topRightRadius    = 0;
-            bottomRightRadius = 0;
+            SetCurrentValue(InnerBoxCornerRadiusProperty, new CornerRadius(0));
         }
+       
+    }
 
-        InnerBoxCornerRadius = new CornerRadius(topLeftRadius,
-            topRightRadius,
-            bottomLeft: bottomLeftRadius,
-            bottomRight: bottomRightRadius);
+    private void ConfigureInnerBoxBorderThickness()
+    {
+        if (StyleVariant == AddOnDecoratedVariant.Borderless)
+        {
+            SetCurrentValue(InnerBoxBorderThicknessProperty, new Thickness(0));
+        }
+        else if (StyleVariant == AddOnDecoratedVariant.Underlined)
+        {
+            SetCurrentValue(InnerBoxBorderThicknessProperty, new Thickness(0, 0, 0, BorderThickness.Bottom));
+        }
+        else
+        {
+            SetCurrentValue(InnerBoxBorderThicknessProperty, BorderThickness);
+        }
+    }
+    
+    private void ConfigureInstanceStyles()
+    {
+        {
+            var warningStyle = new Style(x =>
+                x.PropertyEquals(StatusProperty, AddOnDecoratedStatus.Warning));
+            
+            var iconStyle = new Style(x => Selectors.Or(
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<Icon>()));
+            
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+            warningStyle.Add(iconStyle);
+            Styles.Add(warningStyle);
+        }
+        {
+            var errorStyle = new Style(x =>
+                x.PropertyEquals(StatusProperty, AddOnDecoratedStatus.Error));
+            
+            var iconStyle = new Style(x => Selectors.Or(
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<Icon>()));
+            
+            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+            errorStyle.Add(iconStyle);
+            Styles.Add(errorStyle);
+        }
     }
 }

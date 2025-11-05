@@ -11,8 +11,7 @@
                                           CornerRadius="{TemplateBinding CornerRadius}"
                                           WaveType="{TemplateBinding WaveSpiritType}" />
                 <Border Name="ShadowsFrame"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding Background}" />
+                        CornerRadius="{TemplateBinding CornerRadius}"/>
                 <Border Name="Frame"
                         Padding="{TemplateBinding Padding}"
                         BorderThickness="{TemplateBinding EffectiveBorderThickness}"

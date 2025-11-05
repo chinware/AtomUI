@@ -1,0 +1,78 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Controls.Themes"
+              x:Class="AtomUI.Controls.Themes.SearchButtonTheme"
+              TargetType="{x:Type atom:SearchButton}"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:TextButtonTheme TargetType="{x:Type atom:SearchButton}" />
+    </ControlTheme.BasedOn>
+
+    <Style Selector="^:is(atom|SearchButton)[ButtonType=Text]">
+        <Style Selector="^[StyleVariant=Filled]">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
+        </Style>
+
+        <Style Selector="^[Status=Error]">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
+            <Style Selector="^:pointerover">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
+            </Style>
+            <Style Selector="^:pressed">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgActive}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Warning]">
+            <Setter Property="Background"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
+            <Style Selector="^:pointerover">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningHover}}" />
+            </Style>
+            <Style Selector="^:pressed">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningActive}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="NormalFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="ActiveFilledBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
+            <Setter Property="SelectedFilledBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
+            <Setter Property="DisabledFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="NormalFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="ActiveFilledBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
+            <Setter Property="SelectedFilledBrush"
+                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
+            <Setter Property="DisabledFilledBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+
+    </Style>
+
+</ControlTheme>

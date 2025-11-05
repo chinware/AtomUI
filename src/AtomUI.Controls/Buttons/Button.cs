@@ -7,7 +7,6 @@ using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.TokenSystem;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -17,7 +16,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -26,7 +24,6 @@ using Avalonia.VisualTree;
 namespace AtomUI.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
-using ButtonSizeType = SizeType;
 
 public enum ButtonType
 {
@@ -74,7 +71,7 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
 
-    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Button>();
 
     public static readonly StyledProperty<Icon?> IconProperty =
@@ -116,7 +113,7 @@ public class Button : AvaloniaButton,
         set => SetValue(IsLoadingProperty, value);
     }
 
-    public ButtonSizeType SizeType
+    public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -327,34 +324,11 @@ public class Button : AvaloniaButton,
         WaveSpiritType = waveType;
     }
 
-    protected virtual void ConfigureControlThemeBindings(bool force)
+    private void ConfigureControlThemeBindings(bool force)
     {
         if (!ThemeConfigured || force)
         {
-            string? resourceKey = null;
-            if (ButtonType == ButtonType.Default)
-            {
-                resourceKey = DefaultButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Primary)
-            {
-                resourceKey = PrimaryButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Dashed)
-            {
-                resourceKey = DashedButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Text)
-            {
-                resourceKey = TextButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Link)
-            {
-                resourceKey = LinkButtonTheme.ID;
-            }
-
-            resourceKey ??= DefaultButtonTheme.ID;
-
+            var resourceKey = GetThemeResourceKey();
             if (Application.Current != null)
             {
                 if (Application.Current.TryFindResource(resourceKey, out var resource))
@@ -368,6 +342,34 @@ public class Button : AvaloniaButton,
          
             ThemeConfigured = true;
         }
+    }
+
+    protected virtual string GetThemeResourceKey()
+    {
+        string? resourceKey = null;
+        if (ButtonType == ButtonType.Default)
+        {
+            resourceKey = DefaultButtonTheme.ID;
+        }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            resourceKey = PrimaryButtonTheme.ID;
+        }
+        else if (ButtonType == ButtonType.Dashed)
+        {
+            resourceKey = DashedButtonTheme.ID;
+        }
+        else if (ButtonType == ButtonType.Text)
+        {
+            resourceKey = TextButtonTheme.ID;
+        }
+        else if (ButtonType == ButtonType.Link)
+        {
+            resourceKey = LinkButtonTheme.ID;
+        }
+
+        resourceKey ??= DefaultButtonTheme.ID;
+        return resourceKey;
     }
 
     private void ConfigureTransitions(bool force)

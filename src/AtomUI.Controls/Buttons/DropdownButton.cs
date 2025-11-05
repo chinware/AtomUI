@@ -9,7 +9,6 @@ using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -148,42 +147,29 @@ public class DropdownButton : Button
         };
         _flyoutStateHelper.ClickHideFlyoutPredicate = ClickHideFlyoutPredicate;
     }
-    
-    protected override void ConfigureControlThemeBindings(bool force)
+
+    protected override string GetThemeResourceKey()
     {
-        if (!ThemeConfigured || force)
+        string? resourceKey = null;
+        if (ButtonType == ButtonType.Default)
         {
-            string? resourceKey = null;
-            if (ButtonType == ButtonType.Default)
-            {
-                resourceKey = DefaultDropdownButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Primary)
-            {
-                resourceKey = PrimaryDropdownButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Text)
-            {
-                resourceKey = TextDropdownButtonTheme.ID;
-            }
-            else if (ButtonType == ButtonType.Link)
-            {
-                resourceKey = LinkDropdownButtonTheme.ID;
-            }
-
-            resourceKey ??= DefaultDropdownButtonTheme.ID;
-
-            if (Application.Current != null)
-            {
-                if (Application.Current.TryFindResource(resourceKey, out var resource))
-                {
-                    if (resource is ControlTheme theme)
-                    {
-                        Theme = theme;
-                    }
-                }
-            }
+            resourceKey = DefaultDropdownButtonTheme.ID;
         }
+        else if (ButtonType == ButtonType.Primary)
+        {
+            resourceKey = PrimaryDropdownButtonTheme.ID;
+        }
+        else if (ButtonType == ButtonType.Text)
+        {
+            resourceKey = TextDropdownButtonTheme.ID;
+        }
+        else if (ButtonType == ButtonType.Link)
+        {
+            resourceKey = LinkDropdownButtonTheme.ID;
+        }
+
+        resourceKey ??= DefaultDropdownButtonTheme.ID;
+        return resourceKey;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

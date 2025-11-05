@@ -13,6 +13,7 @@
                     VerticalContentAlignment="Center"
                     Focusable="False"
                     DockPanel.Dock="Left"
+                    BackgroundSizing="OuterBorderEdge"
                     Content="{TemplateBinding LeftAddOn}"
                     ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                     BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
@@ -24,6 +25,7 @@
                     VerticalContentAlignment="Center"
                     DockPanel.Dock="Right"
                     Focusable="False"
+                    BackgroundSizing="OuterBorderEdge"
                     Content="{TemplateBinding RightAddOn}"
                     ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                     BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
@@ -31,10 +33,11 @@
                     IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
                 <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
                         CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="{TemplateBinding Background}">
+                        Background="{TemplateBinding Background}"
+                        BackgroundSizing="OuterBorderEdge">
                     <DockPanel Name="ContentLayout" LastChildFill="True">
                         <ContentPresenter
                             Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
@@ -45,7 +48,7 @@
                             Focusable="False"
                             Content="{TemplateBinding ContentLeftAddOn}"
                             ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
-                            IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
                         <ContentPresenter
                             DockPanel.Dock="Right"
@@ -55,8 +58,8 @@
                             HorizontalAlignment="Right"
                             Focusable="False"
                             Content="{TemplateBinding ContentRightAddOn}"
-                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}" 
-                            IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
+                            IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
                         <ContentPresenter
                             Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}"
@@ -83,7 +86,7 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.AddonBg}}" />
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
-        
+
         <Style
             Selector="^ /template/ DockPanel#ContentLayout">
             <Setter Property="HorizontalSpacing"
@@ -114,6 +117,7 @@
             </Style>
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
         </Style>
+
         <Style Selector="^[SizeType=Small]">
             <Style
                 Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
@@ -162,11 +166,224 @@
             </Style>
         </Style>
 
+        <!-- status 不同的时候左右附加区域的主体色设置 -->
+        <Style Selector="^[Status=Error]">
+            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Warning]">
+            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
+            </Style>
+        </Style>
+
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Background" Value="Transparent"  />
+        <Setter Property="Background" Value="Transparent" />
+
         <Style Selector="^[StyleVariant=Outline]">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
-            
+
+            <Style Selector="^[IsInnerBoxHover=True]">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.HoverBorderColor}}" />
+            </Style>
+
+            <Style Selector="^:focus-within">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+            </Style>
+
+            <Style Selector="^[Status=Error]">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+
+                <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
+                <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
+
+                <Style Selector="^[IsInnerBoxHover=True]">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
+                </Style>
+
+                <Style Selector="^:focus-within">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[Status=Warning]">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                </Style>
+                <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                </Style>
+                <Style Selector="^[IsInnerBoxHover=True]">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBorderHover}}" />
+                </Style>
+
+                <Style Selector="^:focus-within">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                </Style>
+            </Style>
+
+        </Style>
+
+        <Style Selector="^[StyleVariant=Filled]">
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+
+            <Style Selector="^[IsInnerBoxHover=True]">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
+            </Style>
+
+            <Style Selector="^:focus-within">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+            </Style>
+
+            <Style Selector="^[Status=Error]">
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
+
+                <Style Selector="^[IsInnerBoxHover=True]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
+                </Style>
+
+                <Style Selector="^:focus-within">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
+                </Style>
+
+            </Style>
+
+            <Style Selector="^[Status=Warning]">
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Background"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
+
+                <Style Selector="^[IsInnerBoxHover=True]">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBgHover}}" />
+                </Style>
+
+                <Style Selector="^:focus-within">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
+                </Style>
+
+            </Style>
+        </Style>
+
+        <Style Selector="^[StyleVariant=Borderless]">
+            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+
             <Style Selector="^[IsInnerBoxHover=True]">
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.HoverBorderColor}}" />
@@ -221,90 +438,74 @@
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
                 </Style>
             </Style>
-        </Style>
 
-        <Style Selector="^[StyleVariant=Filled]">
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Background"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}" />
-
-            <Style Selector="^[IsInnerBoxHover=True]">
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
-            </Style>
-
-            <Style Selector="^:focus-within">
-                <Setter Property="BorderBrush"
-                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
+            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
                 <Setter Property="Background" Value="Transparent" />
             </Style>
 
-            <Style Selector="^:pressed">
-                <Setter Property="BorderBrush"
-                        Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBorderColor}}" />
-            </Style>
-
-            <Style Selector="^[Status=Error]">
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBg}}" />
-
-                <Style Selector="^[IsInnerBoxHover=True]">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBgHover}}" />
-                </Style>
-
-                <Style Selector="^:focus-within">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[Status=Warning]">
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="Background"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBg}}" />
-
-                <Style Selector="^[IsInnerBoxHover=True]">
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningBgHover}}" />
-                </Style>
-
-                <Style Selector="^:focus-within">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
-                    <Setter Property="Background"
-                            Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.ActiveBg}}" />
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Setter Property="BorderBrush"
-                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
-                </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Background" Value="Transparent" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
+            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+            
             <Style Selector="^[StyleVariant=Outline]">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                
+                <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                </Style>
             </Style>
-            
+
             <Style Selector="^[StyleVariant=Filled]">
                 <Setter Property="Background"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
                 <Setter Property="BorderBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                
+                <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                    <Setter Property="Background"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainerDisabled}}" />
+                    <Setter Property="BorderBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+                </Style>
             </Style>
             
+            <Style Selector="^[StyleVariant=Underlined]">
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+            </Style>
+
             <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>

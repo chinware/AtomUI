@@ -21,7 +21,8 @@
                 Status="{TemplateBinding Status}"
                 Focusable="True">
                 <atom:AddOnDecoratedBox.ContentRightAddOn>
-                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
                         <atom:IconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
                             Icon="{atom:IconProvider CloseCircleFilled}"
@@ -50,10 +51,10 @@
                             HorizontalAlignment="Right"
                             Focusable="False"
                             Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
-                            IsVisible="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            IsVisible="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     </StackPanel>
                 </atom:AddOnDecoratedBox.ContentRightAddOn>
-                
+
                 <ScrollViewer
                     Name="ScrollViewer"
                     Cursor="Ibeam"
@@ -67,6 +68,7 @@
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             Text="{TemplateBinding Watermark}"
+                            Foreground="{TemplateBinding WatermarkForeground}"
                             LineHeight="{TemplateBinding LineHeight}"
                             TextAlignment="{TemplateBinding TextAlignment}"
                             TextWrapping="{TemplateBinding TextWrapping}"
@@ -96,7 +98,7 @@
 
     <Style Selector="^:is(atom|LineEdit)">
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-        
+
         <Style Selector="^[StyleVariant=Borderless]">
             <Style Selector="^:error">
                 <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
@@ -124,6 +126,13 @@
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+            
         </Style>
     </Style>
 

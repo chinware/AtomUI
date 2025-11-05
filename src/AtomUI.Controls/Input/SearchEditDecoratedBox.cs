@@ -40,8 +40,7 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
     }
 
     #endregion
-
-    private Rect? _originRect;
+    
     private Button? _searchButton;
     internal SearchEdit? OwningSearchEdit { get; set; }
     private CompositeDisposable? _bindingDisposables;
@@ -54,14 +53,11 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (_originRect is null)
-        {
-            _originRect = _rightAddOn?.Bounds;
-        }
+        var originRect = _rightAddOn?.Bounds;
 
-        if (_rightAddOn is not null && _originRect.HasValue)
+        if (_rightAddOn is not null && originRect.HasValue)
         {
-            _rightAddOn.Arrange(_originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
+            _rightAddOn.Arrange(originRect.Value.Inflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
         }
 
         return size;
