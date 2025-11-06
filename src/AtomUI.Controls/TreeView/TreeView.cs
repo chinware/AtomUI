@@ -813,19 +813,28 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
                 unCheckedParents.Add(parentTreeItem);
             }
             
-            if (isAllChecked)
+            var originMotionEnabled = parentTreeItem.IsMotionEnabled;
+            try
             {
-                parentTreeItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+                parentTreeItem.SetCurrentValue(TreeViewItem.IsMotionEnabledProperty, false);
+                if (isAllChecked)
+                {
+                    parentTreeItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+                }
+                else if (isAnyChecked)
+                {
+                    parentTreeItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, null);
+                }
+                else
+                {
+                    parentTreeItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, false);
+                }
             }
-            else if (isAnyChecked)
+            finally
             {
-                parentTreeItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, null);
+                parentTreeItem.SetCurrentValue(TreeViewItem.IsMotionEnabledProperty, originMotionEnabled);
             }
-            else
-            {
-                parentTreeItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, false);
-            }
-
+       
             if (parentTreeItem.IsChecked == true)
             {
                 checkedParents.Add(parentTreeItem);
@@ -850,8 +859,17 @@ public partial class TreeView : AvaloniaTreeView, IMotionAwareControl, IControlS
                         var items = ExpandTreeViewPaths(pathNodes, true);
                         if (items.Count > 0)
                         {
-                            var target = items.Last();
-                            target.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+                            var target              = items.Last();
+                            var originMotionEnabled = target.IsMotionEnabled;
+                            try
+                            {
+                                target.SetCurrentValue(TreeViewItem.IsMotionEnabledProperty, false);
+                                target.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+                            }
+                            finally
+                            {
+                                target.SetCurrentValue(TreeViewItem.IsMotionEnabledProperty, originMotionEnabled);
+                            }
                         }
                     }
                     finally
