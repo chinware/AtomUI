@@ -37,7 +37,7 @@
         <ResourceInclude Source="NavMenu/Themes/NavMenuThemes.axaml" />
         <ResourceInclude Source="Notifications/Themes/NotificationsThemes.axaml" />
         <ResourceInclude Source="NumericUpDown/Themes/NumericUpDownTheme.axaml" />
-        <ResourceInclude Source="OptionButtonBox/Themes/OptionButtonBoxThemes.axaml" />
+        <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />

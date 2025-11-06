@@ -49,11 +49,6 @@ public class OptionButtonGroup : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<OptionButtonGroup>();
 
-    public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
-        RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(
-            nameof(OptionCheckedChanged),
-            RoutingStrategies.Bubble);
-
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -77,13 +72,20 @@ public class OptionButtonGroup : SelectingItemsControl,
         get => GetValue(IsWaveSpiritEnabledProperty);
         set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
+    
+    #endregion
 
+    #region 公共事件定义
+    public static readonly RoutedEvent<OptionCheckedChangedEventArgs> OptionCheckedChangedEvent =
+        RoutedEvent.Register<OptionButtonGroup, OptionCheckedChangedEventArgs>(
+            nameof(OptionCheckedChanged),
+            RoutingStrategies.Bubble);
+    
     public event EventHandler<OptionCheckedChangedEventArgs>? OptionCheckedChanged
     {
         add => AddHandler(OptionCheckedChangedEvent, value);
         remove => RemoveHandler(OptionCheckedChangedEvent, value);
     }
-
     #endregion
 
     #region 内部属性定义
@@ -127,8 +129,7 @@ public class OptionButtonGroup : SelectingItemsControl,
 
     static OptionButtonGroup()
     {
-        SelectionModeProperty.OverrideDefaultValue<OptionButtonGroup>(SelectionMode.Single |
-                                                                      SelectionMode.AlwaysSelected);
+        SelectionModeProperty.OverrideDefaultValue<OptionButtonGroup>(SelectionMode.Single | SelectionMode.AlwaysSelected);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<OptionButtonGroup>(false);
         ItemsPanelProperty.OverrideDefaultValue<OptionButtonGroup>(DefaultPanel);
         AffectsRender<OptionButtonGroup>(SelectionModeProperty);
