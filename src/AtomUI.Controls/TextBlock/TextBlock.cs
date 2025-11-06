@@ -16,7 +16,6 @@ public class TextBlock : AvaloniaTextBlock
     public TextBlock()
     {
         var styles = new Style();
-        styles.Add(LineHeightProperty, SharedTokenKey.FontHeight);
         styles.Add(ClipToBoundsProperty, false);
         Styles.Add(styles);
     }

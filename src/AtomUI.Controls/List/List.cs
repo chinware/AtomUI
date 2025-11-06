@@ -727,14 +727,18 @@ public class List : TemplatedControl,
         {
             if (item != null && item is not Visual)
             {
-                if (ItemTemplate != null)
+                if (!listItem.IsSet(ListItem.ContentProperty))
                 {
-                    listItem.SetCurrentValue(ListItem.ContentProperty, item);
+                    if (ItemTemplate != null)
+                    {
+                        listItem.SetCurrentValue(ListItem.ContentProperty, item);
+                    }
+                    else if (item is IListItemData listItemData)
+                    {
+                        listItem.SetCurrentValue(ListItem.ContentProperty, listItemData.Content);
+                    }
                 }
-                else if (item is ListItemData listItemData)
-                {
-                    listItem.SetCurrentValue(ListItem.ContentProperty, listItemData.Content);
-                }
+    
                 if (item is IListItemData listBoxItemData)
                 {
                     if (!listItem.IsSet(ListItem.IsSelectedProperty))

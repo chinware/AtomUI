@@ -2,5 +2,5 @@
 
 public interface IHeadered
 {
-    object? Header { get; set; }
+    object? Header { get; }
 }

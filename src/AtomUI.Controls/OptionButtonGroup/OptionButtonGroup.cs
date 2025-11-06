@@ -194,9 +194,37 @@ public class OptionButtonGroup : SelectingItemsControl,
             
             if (item != null && item is not Visual)
             {
-                if (!optionButton.IsSet(OptionButton.ContentProperty))
                 {
-                    optionButton.SetCurrentValue(OptionButton.ContentProperty, item);
+                    if (!optionButton.IsSet(OptionButton.ContentProperty))
+                    {
+                        if (ItemTemplate != null)
+                        {
+                            optionButton.SetCurrentValue(OptionButton.ContentProperty, item);
+                            
+                        }
+                        else
+                        {
+                            if (item is IOptionButtonData optionButtonData)
+                            {
+                                optionButton.SetCurrentValue(OptionButton.ContentProperty, optionButtonData.Header);
+                            }
+                        }
+                    }
+                }
+
+                {
+                    if (item is IOptionButtonData optionButtonData)
+                    {
+                        if (!optionButton.IsSet(OptionButton.IsEnabledProperty))
+                        {
+                            optionButton.SetCurrentValue(OptionButton.IsEnabledProperty, optionButtonData.IsEnabled);
+                        }
+                        
+                        if (!optionButton.IsSet(OptionButton.IconProperty))
+                        {
+                            optionButton.SetCurrentValue(OptionButton.IconProperty, optionButtonData.Icon);
+                        }
+                    }
                 }
             }
             
@@ -344,7 +372,7 @@ public class OptionButtonGroup : SelectingItemsControl,
 
             if (ButtonStyle == OptionButtonStyle.Outline)
             {
-                if (optionButton.IsEnabled && optionButton == SelectedItem)
+                if (IsEnabled && optionButton.IsEnabled && optionButton == SelectedItem)
                 {
                     // 绘制选中边框
                     var offsetX = optionButton.Bounds.X;

@@ -3,6 +3,7 @@ using AtomUI.Animations;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
+using AtomUI.IconPkg;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -45,6 +46,14 @@ public class OptionButtonPointerEventArgs : EventArgs
 
 public class OptionButton : AvaloniaRadioButton
 {
+    public static readonly StyledProperty<Icon?> IconProperty = AvaloniaProperty.Register<OptionButton, Icon?>(nameof (Icon));
+    
+    public Icon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+    
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =

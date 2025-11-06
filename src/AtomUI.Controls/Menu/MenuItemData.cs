@@ -10,10 +10,10 @@ public interface IMenuItemData : ITreeNode<IMenuItemData>
 
 public class MenuItemData : IMenuItemData
 {
-    public TreeNodeKey? ItemKey { get; set; }
-    public object? Header { get; set; }
-    public Icon? Icon { get; set; }
-    public bool IsEnabled { get; set; } = true;
-    public KeyGesture? InputGesture { get; set; }
-    public IList<IMenuItemData> Children { get; set; } = [];
+    public TreeNodeKey? ItemKey { get; init; }
+    public object? Header { get; init; }
+    public Icon? Icon { get; init; }
+    public bool IsEnabled { get; init; } = true;
+    public KeyGesture? InputGesture { get; init; }
+    public IList<IMenuItemData> Children { get; init; } = [];
 }
