@@ -11,7 +11,6 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Input;
-using AtomUI.Reactive;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Utils;
@@ -31,10 +30,11 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class Dialog : TemplatedControl, 
-                      IDialogHostProvider, 
-                      IControlSharedTokenResourcesHost,
-                      IMotionAwareControl
+public partial class Dialog : TemplatedControl, 
+                              IDialogHostProvider, 
+                              IControlSharedTokenResourcesHost,
+                              IMotionAwareControl,
+                              IDialog
 {
     #region 公共属性定义
     public static readonly StyledProperty<string?> TitleProperty =
@@ -336,7 +336,7 @@ public class Dialog : TemplatedControl,
 
     public event EventHandler? Closed;
     public event EventHandler? Opened;
-    internal event EventHandler<CancelEventArgs>? Closing;
+    public event EventHandler<CancelEventArgs>? Closing;
     public event EventHandler? Accepted;
     public event EventHandler? Rejected;
     public event EventHandler<DialogFinishedEventArgs>? Finished;
@@ -549,6 +549,9 @@ public class Dialog : TemplatedControl,
                 relayBindingDisposables.Dispose();
                 _startupLocationCalculated = false;
                 _closing                   = false;
+                _frameCancellationTokenSource?.Cancel();
+                _frameCancellationTokenSource = null;
+                Closed?.Invoke(this, EventArgs.Empty);
             });
             if (DialogHostType == DialogHostType.Window)
             {
@@ -624,7 +627,7 @@ public class Dialog : TemplatedControl,
             ]);
 
             _modalSubscription = disposables;
-            ResultTask             = tcs.Task;
+            ResultTask         = tcs.Task;
         }
         
         using (BeginIgnoringIsOpen())
@@ -749,8 +752,6 @@ public class Dialog : TemplatedControl,
             return;
         }
         
-        _frameCancellationTokenSource?.Cancel();
-        _frameCancellationTokenSource = null;
         _openState.Dispose();
         _openState = null;
         
@@ -761,8 +762,6 @@ public class Dialog : TemplatedControl,
         {
             SetCurrentValue(IsOpenProperty, false);
         }
-
-        Closed?.Invoke(this, EventArgs.Empty);
     }
     
     protected override Size MeasureCore(Size availableSize)
@@ -827,6 +826,18 @@ public class Dialog : TemplatedControl,
             if (!IsModal)
             {
                 SetCurrentValue(EffectiveMinimizableProperty, IsMinimizable);
+            }
+        }
+        else if (change.Property == DataContextProperty)
+        {
+            if (change.OldValue is IDialogAwareDataContext oldDataContext)
+            {
+                oldDataContext.NotifyDetachedFromDialog();
+            }
+
+            if (change.NewValue is IDialogAwareDataContext newDataContext)
+            {
+                newDataContext.NotifyAttachedToDialog(this);
             }
         }
     }
