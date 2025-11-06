@@ -176,6 +176,8 @@ internal class OverlayDialogHost : ContentControl,
     
     #endregion
     
+    internal event EventHandler? HeaderPressed;
+    
     #region 内部属性定义
     
     internal static readonly DirectProperty<OverlayDialogHost, bool> IsDraggingProperty =
@@ -577,6 +579,10 @@ internal class OverlayDialogHost : ContentControl,
         if (_header != null)
         {
             _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
+            _header.Pressed += (sender, args) =>
+            {
+                HeaderPressed?.Invoke(this, EventArgs.Empty);
+            };
         }
         if (_buttonBox != null)
         {
@@ -894,5 +900,11 @@ internal class OverlayDialogHost : ContentControl,
         {
             Transitions = null;
         }
+    }
+    
+    internal void NotifyChangeZIndex(int zindex)
+    {
+        _dialogMask.SetCurrentValue(OverlayDialogMask.ZIndexProperty, zindex - 1);
+        SetCurrentValue(ZIndexProperty, zindex);
     }
 }

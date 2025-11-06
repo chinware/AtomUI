@@ -1,5 +1,8 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls.DesignTokens;
+using AtomUI.Controls.Themes;
+using AtomUI.IconPkg;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -128,6 +131,7 @@ public class SpinIndicator : TemplatedControl,
     public SpinIndicator()
     {
         this.RegisterResources();
+        ConfigureInstanceStyles();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -253,6 +257,43 @@ public class SpinIndicator : TemplatedControl,
             using var opacityState = context.PushOpacity(topItemOpacity);
             var       itemRect     = new Rect(topItemOffset, new Size(DotSize, DotSize));
             context.DrawEllipse(DotBgBrush, null, itemRect);
+        }
+    }
+
+    private void ConfigureInstanceStyles()
+    {
+        {
+            var middleStyle = new Style(x =>
+                x.PropertyEquals(SizeTypeProperty, SizeType.Middle));
+            var iconStyle = new Style(x => 
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
+                 .OfType<Icon>());
+            iconStyle.Add(Icon.WidthProperty, SpinTokenKey.IndicatorSize);
+            iconStyle.Add(Icon.HeightProperty, SpinTokenKey.IndicatorSize);
+            middleStyle.Add(iconStyle);
+            Styles.Add(middleStyle);
+        }
+        {
+            var smallStyle = new Style(x =>
+                x.PropertyEquals(SizeTypeProperty, SizeType.Small));
+            var iconStyle = new Style(x => 
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
+                 .OfType<Icon>());
+            iconStyle.Add(Icon.WidthProperty, SpinTokenKey.IndicatorSizeSM);
+            iconStyle.Add(Icon.HeightProperty, SpinTokenKey.IndicatorSizeSM);
+            smallStyle.Add(iconStyle);
+            Styles.Add(smallStyle);
+        }
+        {
+            var largeStyle = new Style(x =>
+                x.PropertyEquals(SizeTypeProperty, SizeType.Large));
+            var iconStyle = new Style(x => 
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
+                 .OfType<Icon>());
+            iconStyle.Add(Icon.WidthProperty, SpinTokenKey.IndicatorSizeLG);
+            iconStyle.Add(Icon.HeightProperty, SpinTokenKey.IndicatorSizeLG);
+            largeStyle.Add(iconStyle);
+            Styles.Add(largeStyle);
         }
     }
 }

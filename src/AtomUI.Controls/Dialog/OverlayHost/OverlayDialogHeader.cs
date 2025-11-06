@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
@@ -134,6 +135,7 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
     internal event EventHandler? CloseRequest;
     internal event EventHandler? MaximizeRequest;
     internal event EventHandler? NormalizeRequest;
+    internal event EventHandler? Pressed;
     
     #endregion
     
@@ -154,11 +156,6 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
                     PseudoClasses.Set(StdPseudoClass.Normal, x == OverlayDialogState.Normal);
                     PseudoClasses.Set(StdPseudoClass.Maximized, x == OverlayDialogState.Maximized);
                 }),
-                // window.GetObservable(WindowBase.IsActiveProperty).Subscribe(isActivated =>
-                // {
-                //     PseudoClasses.Set(StdPseudoClass.Active, isActivated);
-                //     IsActivated = isActivated;
-                // })
             };
         }
     }
@@ -194,7 +191,13 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
             }
         }
     }
-    
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        Pressed?.Invoke(this, EventArgs.Empty);
+    }
+
     private void HandleCloseButtonClicked(object? sender, RoutedEventArgs e)
     {
         CloseRequest?.Invoke(this, EventArgs.Empty);

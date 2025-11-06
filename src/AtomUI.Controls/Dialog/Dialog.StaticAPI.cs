@@ -21,7 +21,7 @@ public partial class Dialog
     public static object? ShowDialog(Control content, object? dataContext = null, DialogOptions? options = null, TopLevel? topLevel = null)
     {
         var dialogManager = FindDialogManager(topLevel);
-        var dialog = CreateDialog(content, dataContext, options);
+        var dialog        = CreateDialog(content, dataContext, options);
         dialogManager.Children.Add(dialog);
         var result = dialog.Open();
         dialogManager.Children.Remove(dialog);
@@ -71,6 +71,12 @@ public partial class Dialog
             VerticalStartupLocation   = options?.VerticalStartupLocation ?? DialogVerticalAnchor.Custom,
             Content                   = content,
             DataContext               = dataContext,
+            Width                     = options?.Width ?? Double.NaN,
+            Height                    = options?.Height ?? Double.NaN,
+            MinWidth                  = options?.MinWidth ?? 0d,
+            MinHeight                 = options?.MinHeight ?? 0d,
+            MaxWidth                  = options?.MaxWidth ?? Double.PositiveInfinity,
+            MaxHeight                 = options?.MaxHeight ?? Double.PositiveInfinity
         };
         return dialog;
     }

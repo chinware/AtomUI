@@ -12,6 +12,13 @@ public record DialogOptions
     public bool IsResizable { get; init; } = false;
     public bool IsClosable { get; init; } = true;
     public bool IsMaximizable { get; init; } = false;
+    
+    public double MaxHeight { get; init; } = double.PositiveInfinity;
+    public double MaxWidth { get; init; } = double.PositiveInfinity;
+    public double MinHeight { get; init; } = 0d;
+    public double MinWidth { get; init; } = 0d;
+    public double Width { get; init; } = double.NaN;
+    public double Height { get; init; } = double.NaN;
 
     /// <summary>
     /// 仅仅对 Window Host 类型的弹窗有效

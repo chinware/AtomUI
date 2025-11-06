@@ -1,10 +1,11 @@
+using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Primitives;
 
-public class DialogLayer : Canvas
+internal class DialogLayer : Canvas
 {
     protected override bool BypassFlowDirectionPolicies => true;
     
@@ -13,6 +14,58 @@ public class DialogLayer : Canvas
     static DialogLayer()
     {
         ClipToBoundsProperty.OverrideDefaultValue<DialogLayer>(true);
+    }
+
+    public DialogLayer()
+    {
+        Children.CollectionChanged += HandleDialogChanged;
+    }
+
+    private void HandleDialogChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Control child in e.NewItems)
+                {
+                    if (child is OverlayDialogHost overlayDialogHost)
+                    {
+                        overlayDialogHost.HeaderPressed += HandleOverlayDialogClicked;
+                    }
+                }
+            }
+        }
+        else if (e.Action == NotifyCollectionChangedAction.Remove)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (Control child in e.OldItems)
+                {
+                    if (child is OverlayDialogHost overlayDialogHost)
+                    {
+                        overlayDialogHost.HeaderPressed -= HandleOverlayDialogClicked;
+                    }
+                }
+            }
+        }
+    }
+
+    private void HandleOverlayDialogClicked(object? sender, EventArgs e)
+    {
+        var maxZIndex = 0;
+        foreach (Control child in Children)
+        {
+            if (child is OverlayDialogHost overlayDialogHost)
+            {
+                maxZIndex = Math.Max(maxZIndex, overlayDialogHost.ZIndex);
+            }
+        }
+        
+        if (sender is OverlayDialogHost clickedOverlayDialogHost)
+        {
+            clickedOverlayDialogHost.NotifyChangeZIndex(maxZIndex + 2);
+        }
     }
     
     public static DialogLayer? GetDialogLayer(Visual visual)

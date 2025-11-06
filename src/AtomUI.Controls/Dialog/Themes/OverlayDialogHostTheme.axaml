@@ -66,6 +66,7 @@
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DialogTokenKey.HeaderMarginBottom}}" />
         </Style>
 
+        
         <Style Selector="^ /template/ Border#ShadowFrame">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentBg}}" />
         </Style>

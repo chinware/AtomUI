@@ -19,7 +19,7 @@ public class VisualLayerManager : AvaloniaVisualLayerManager
         return null;
     }
     
-    public DialogLayer DialogLayer
+    internal DialogLayer DialogLayer
     {
         get
         {
