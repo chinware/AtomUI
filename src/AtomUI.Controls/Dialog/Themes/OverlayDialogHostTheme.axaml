@@ -70,12 +70,20 @@
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentBg}}" />
         </Style>
         
-        <Style Selector="^[IsHostAnimating=False]">
+        <Style Selector="^[IsModal=True]">
+            <Style Selector="^[IsHostAnimating=False]">
+                <Style Selector="^ /template/ Border#ShadowFrame">
+                    <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsModal=False]">
             <Style Selector="^ /template/ Border#ShadowFrame">
                 <Setter Property="BoxShadow" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadows}}" />
             </Style>
         </Style>
-
+        
         <Style Selector="^ /template/ Border#ContentFrame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DialogTokenKey.ContentPadding}}" />
         </Style>

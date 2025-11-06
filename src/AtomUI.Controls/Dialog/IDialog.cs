@@ -1,18 +1,22 @@
+using System.ComponentModel;
+
 namespace AtomUI.Controls;
 
 public interface IDialog
 {
-    object? ViewModel { get; set; }
     string? Title { get; set; }
-    int Result { get; set; }
-    bool IsModalMode { get; set; }
-    bool IsCloseButtonEnabled { get; set; }
-    bool IsDragMoveable { get; set; }
+    object? Result { get; set; }
 
-    event EventHandler? Accepted;
-    event EventHandler? Rejected;
+    public event EventHandler? Closed;
+    public event EventHandler? Opened;
+    public event EventHandler<CancelEventArgs>? Closing;
+    public event EventHandler? Accepted;
+    public event EventHandler? Rejected;
+    public event EventHandler<DialogFinishedEventArgs>? Finished;
+    public event EventHandler<DialogButtonClickedEventArgs>? ButtonClicked;
 
     void Accept();
     void Reject();
-    void Done(int result);
+    void Done(object? result);
+    void Done();
 }
