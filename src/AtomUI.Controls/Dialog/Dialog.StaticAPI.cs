@@ -12,6 +12,10 @@ public partial class Dialog
     {
         var dialogManager = FindDialogManager(topLevel);
         var dialog        = CreateDialog(new TView(), dataContext, options);
+        if (options?.DialogHostType == DialogHostType.Window)
+        {
+            dialog.PlacementTarget = dialogManager;
+        }
         dialogManager.Children.Add(dialog);
         var result = dialog.Open();
         dialogManager.Children.Remove(dialog);
@@ -22,6 +26,10 @@ public partial class Dialog
     {
         var dialogManager = FindDialogManager(topLevel);
         var dialog        = CreateDialog(content, dataContext, options);
+        if (options?.DialogHostType == DialogHostType.Window)
+        {
+            dialog.PlacementTarget = dialogManager;
+        }
         dialogManager.Children.Add(dialog);
         var result = dialog.Open();
         dialogManager.Children.Remove(dialog);
@@ -33,15 +41,23 @@ public partial class Dialog
     {
         var dialogManager = FindDialogManager(topLevel);
         var dialog        = CreateDialog(new TView(), dataContext, options);
+        if (options?.DialogHostType == DialogHostType.Window)
+        {
+            dialog.PlacementTarget = dialogManager;
+        }
         dialog.Closed += (_, _) => dialogManager.Children.Remove(dialog);
         dialogManager.Children.Add(dialog);
         return dialog.OpenAsync();
     }
 
-    public static Task<object?>? ShowDialogSync(Control content, object? dataContext = null, DialogOptions? options = null, TopLevel? topLevel = null)
+    public static Task<object?>? ShowDialogAsync(Control content, object? dataContext = null, DialogOptions? options = null, TopLevel? topLevel = null)
     {
         var dialogManager = FindDialogManager(topLevel);
         var dialog        = CreateDialog(content, dataContext, options);
+        if (options?.DialogHostType == DialogHostType.Window)
+        {
+            dialog.PlacementTarget = dialogManager;
+        }
         dialog.Closed += (_, _) => dialogManager.Children.Remove(dialog);
         dialogManager.Children.Add(dialog);
         return dialog.OpenAsync();

@@ -551,6 +551,10 @@ public partial class Dialog : TemplatedControl,
                 _closing                   = false;
                 _frameCancellationTokenSource?.Cancel();
                 _frameCancellationTokenSource = null;
+                if (DataContext is IDialogAwareDataContext dialogAwareDataContext)
+                {
+                    dialogAwareDataContext.NotifyClosed();
+                }
                 Closed?.Invoke(this, EventArgs.Empty);
             });
             if (DialogHostType == DialogHostType.Window)
