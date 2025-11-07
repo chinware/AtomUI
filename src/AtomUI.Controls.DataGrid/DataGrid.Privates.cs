@@ -57,6 +57,13 @@ public partial class DataGrid
             nameof(IsEmptyDataSource),
             o => o.IsEmptyDataSource,
             (o, v) => o.IsEmptyDataSource = v);
+    
+    internal static readonly DirectProperty<DataGrid, DataGridPaginationVisibility> EffectivePaginationVisibilityProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, DataGridPaginationVisibility>(
+            nameof(EffectivePaginationVisibility),
+            o => o.EffectivePaginationVisibility,
+            (o, v) => o.EffectivePaginationVisibility = v);
+    
 
     internal bool IsGroupHeaderMode
     {
@@ -81,6 +88,14 @@ public partial class DataGrid
     }
 
     private CornerRadius _headerCornerRadius;
+    
+    internal DataGridPaginationVisibility EffectivePaginationVisibility
+    {
+        get => _effectivePaginationVisibility;
+        set => SetAndRaise(EffectivePaginationVisibilityProperty, ref _effectivePaginationVisibility, value);
+    }
+
+    private DataGridPaginationVisibility _effectivePaginationVisibility;
 
     internal bool IsEmptyDataSource
     {
@@ -4725,6 +4740,18 @@ public partial class DataGrid
         {
             throw DataGridError.DataGrid.ValueMustBeLessThanOrEqualTo("LeftFrozenColumnCount + RightFrozenColumnCount",
                 "Columns.Count", Columns.Count);
+        }
+    }
+
+    private void ConfigurePaginationVisibility()
+    {
+        if (PageSize == 0)
+        {
+            SetCurrentValue(EffectivePaginationVisibilityProperty, DataGridPaginationVisibility.None);
+        }
+        else
+        {
+            SetCurrentValue(EffectivePaginationVisibilityProperty, PaginationVisibility);
         }
     }
 }

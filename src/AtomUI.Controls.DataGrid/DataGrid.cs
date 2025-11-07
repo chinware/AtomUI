@@ -33,8 +33,6 @@ public partial class DataGrid : TemplatedControl,
                                 IMotionAwareControl,
                                 IControlSharedTokenResourcesHost
 {
-    public const int DEFAULT_PAGE_SIZE = 10;
-    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -222,7 +220,7 @@ public partial class DataGrid : TemplatedControl,
         AvaloniaProperty.Register<DataGrid, PaginationAlign>(nameof(BottomPaginationAlign), PaginationAlign.End);
     
     public static readonly StyledProperty<int> PageSizeProperty =
-        AvaloniaProperty.Register<DataGrid, int>(nameof(PageSize), DEFAULT_PAGE_SIZE);
+        AvaloniaProperty.Register<DataGrid, int>(nameof(PageSize));
     
     public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
         AbstractPagination.IsHideOnSinglePageProperty.AddOwner<DataGrid>();
@@ -1605,6 +1603,7 @@ public partial class DataGrid : TemplatedControl,
         }
 
         ConfigureHeaderCornerRadius();
+        ConfigurePaginationVisibility();
         SetValue(EmptyIndicatorProperty, new Empty()
         {
             SizeType    = SizeType.Middle,
@@ -1748,6 +1747,12 @@ public partial class DataGrid : TemplatedControl,
             change.Property == HeadersVisibilityProperty)
         {
             ConfigureHeaderCornerRadius();
+        }
+
+        if (change.Property == PageSizeProperty ||
+            change.Property == PaginationVisibilityProperty)
+        {
+            ConfigurePaginationVisibility();
         }
 
         if (_templatedApplied)

@@ -30,7 +30,7 @@
                                              IsEnabled="{TemplateBinding IsEnabled}"
                                              SizeType="{TemplateBinding SizeType}"
                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                             IsVisible="{TemplateBinding PaginationVisibility, Converter={StaticResource TopPaginationVisibilityConvertor}}" />
+                                             IsVisible="{TemplateBinding EffectivePaginationVisibility, Converter={StaticResource TopPaginationVisibilityConvertor}}" />
                             <ContentPresenter Name="Title"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}"
@@ -44,7 +44,7 @@
                                              IsEnabled="{TemplateBinding IsEnabled}"
                                              SizeType="{TemplateBinding SizeType}"
                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                             IsVisible="{TemplateBinding PaginationVisibility, Converter={StaticResource BottomPaginationVisibilityConvertor}}" />
+                                             IsVisible="{TemplateBinding EffectivePaginationVisibility, Converter={StaticResource BottomPaginationVisibilityConvertor}}" />
                             <ContentPresenter Name="Footer"
                                               Content="{TemplateBinding Footer}"
                                               ContentTemplate="{TemplateBinding FooterTemplate}"
