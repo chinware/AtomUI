@@ -69,6 +69,25 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
   render a consistent UI experience.
 - Based on Avalonia's powerful style system, Ant Design's theme customization capabilities are fully implemented.
 
+#### Community
+
+<div align="center">
+    <table>
+      <tr>
+        <th>Telegram</th>
+        <th>WhatsApp</th>
+        <th>Wechat Group</th>
+        <th>QQ Group</th>
+      </tr>
+      <tr>
+        <td><img src="resources/images/readme/atomui-telegram.png" width="240"/> </td>
+        <td><img src="resources/images/readme/atomui-whatsapp.png" width="240"/> </td>
+        <td><img src="resources/images/readme/atomui-wechat.png" width="240"/></td>
+        <td><img src="resources/images/readme/atomui-qq.png" width="240"/></td>
+      </tr>
+    </table>
+</div>
+
 #### Get Started
 
 ##### Add nuget package:
