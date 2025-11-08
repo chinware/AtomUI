@@ -20,3 +20,9 @@ internal static class PopupBuddyLayerThemeConstants
     public const string ArrowIndicatorLayoutPart = "PART_ArrowIndicatorLayout";
     public const string GhostContentPresenterPart = "PART_GhostContentPresenter";
 }
+
+internal static class OverlayPopupContentThemeConstants
+{
+    public const string MaskShadowsPart = "PART_MaskShadows";
+    public const string ContentPresenterPart = "PART_ContentPresenter";
+}

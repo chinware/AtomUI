@@ -530,7 +530,8 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
             WindowManagerAddShadowHint = false,
             IsLightDismissEnabled      = false,
             //Note: This is required to prevent Button.Flyout from opening the flyout again after dismiss.
-            OverlayDismissEventPassThrough = false
+            OverlayDismissEventPassThrough = false,
+            ShouldUseOverlayLayer = true
         };
 
         popup.Opened += NotifyPopupOpened;

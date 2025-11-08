@@ -59,9 +59,12 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     #endregion
 
     #region 内部属性定义
-
-    internal static readonly StyledProperty<CornerRadius> MaskShadowsContentCornerRadiusProperty = 
-        AvaloniaProperty.Register<PopupBuddyLayer, CornerRadius>(nameof (MaskShadowsContentCornerRadius));
+    
+    internal static readonly DirectProperty<PopupBuddyLayer, CornerRadius> MaskShadowsContentCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<PopupBuddyLayer, CornerRadius>(
+            nameof(MaskShadowsContentCornerRadius),
+            o => o.MaskShadowsContentCornerRadius,
+            (o, v) => o.MaskShadowsContentCornerRadius = v);
     
     internal static readonly StyledProperty<bool> IsShowArrowProperty =
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<PopupBuddyLayer>();
@@ -81,13 +84,18 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
             o => o.ArrowIndicatorLayoutBounds,
             (o, v) => o.ArrowIndicatorLayoutBounds = v);
     
-    public static readonly StyledProperty<Thickness> MotionPaddingProperty = 
-        AvaloniaProperty.Register<PopupBuddyLayer, Thickness>(nameof (MotionPadding));
+    internal static readonly DirectProperty<PopupBuddyLayer, Thickness> MotionPaddingProperty =
+        AvaloniaProperty.RegisterDirect<PopupBuddyLayer, Thickness>(
+            nameof(MotionPadding),
+            o => o.MotionPadding,
+            (o, v) => o.MotionPadding = v);
     
+    private CornerRadius _maskShadowsContentCornerRadius;
+
     internal CornerRadius MaskShadowsContentCornerRadius
     {
-        get => GetValue(MaskShadowsContentCornerRadiusProperty);
-        set => SetValue(MaskShadowsContentCornerRadiusProperty, value);
+        get => _maskShadowsContentCornerRadius;
+        set => SetAndRaise(MaskShadowsContentCornerRadiusProperty, ref _maskShadowsContentCornerRadius, value);
     }
     
     internal bool IsShowArrow
@@ -122,10 +130,12 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         set => SetAndRaise(ArrowIndicatorLayoutBoundsProperty, ref _arrowIndicatorLayoutBounds, value);
     }
     
+    private Thickness _motionPadding;
+
     internal Thickness MotionPadding
     {
-        get => GetValue(MotionPaddingProperty);
-        set => SetValue(MotionPaddingProperty, value);
+        get => _motionPadding;
+        set => SetAndRaise(MotionPaddingProperty, ref _motionPadding, value);
     }
     
     #endregion
