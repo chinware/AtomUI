@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+        <Compile Remove="Popup\PopupContentPresenter.cs" />
     </ItemGroup>
 
     <ItemGroup>

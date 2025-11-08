@@ -132,7 +132,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     
     private Popup _buddyPopup;
     private IPopupHost? _popupHost;
-    private PixelPoint? _lastBuddyPopupPosition;
+    private Point? _lastBuddyPopupPosition;
     private Size? _lastBuddyPopupSize;
     private Panel? _shadowRendererPanel;
     private LayoutTransformControl? _arrowIndicatorLayout;
@@ -247,29 +247,28 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
         // 这个是否大小和位置信息都有了
         var popupOffset          = popupRoot.PlatformImpl.Position;
-        var popupOffsetSize      = popupRoot.ClientSize;
+        var popupSize      = popupRoot.ClientSize;
+        ConfigureSizeAndPosition(new Point(popupOffset.X, popupOffset.Y), popupSize);
+    }
+
+    private void ConfigureSizeAndPosition(Point position, Size size)
+    {
         var maskShadowsThickness = MaskShadows.Thickness();
         
-        if (popupOffsetSize == _lastBuddyPopupSize && 
-            popupOffset == _lastBuddyPopupPosition && 
+        if (size == _lastBuddyPopupSize && 
+            position == _lastBuddyPopupPosition && 
             maskShadowsThickness == default)
         {
             return;
         }
         
-        _lastBuddyPopupSize     = popupOffsetSize;
-        _lastBuddyPopupPosition = popupOffset;
+        _lastBuddyPopupSize     = size;
+        _lastBuddyPopupPosition = position;
         
-        var topLevel = GetTopLevel(popupRoot);
-        var scaling  = 1.0;
-        if (topLevel is WindowBase windowBase)
-        {
-            scaling = windowBase.DesktopScaling;
-        }
-        var offset         = new Point(popupOffset.X, popupOffset.Y);
+        var offset         = new Point(position.X, position.Y);
         
-        var layerOffset = new Point(offset.X - maskShadowsThickness.Left * scaling,
-            offset.Y - maskShadowsThickness.Top * scaling);
+        var layerOffset = new Point(offset.X - maskShadowsThickness.Left * DesktopScaling,
+            offset.Y - maskShadowsThickness.Top * DesktopScaling);
         if (OperatingSystem.IsMacOS())
         {
             var topOffsetMark = 0d;
@@ -291,7 +290,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
                 RenderTransform = null;
             }
         }
-        MoveAndResize(layerOffset, popupOffsetSize.Inflate(MaskShadows.Thickness()));
+        MoveAndResize(layerOffset, size.Inflate(MaskShadows.Thickness()));
     }
 
     public void Attach()
@@ -621,4 +620,5 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     void IShadowAwareLayer.NotifyCloseMotionCompleted()
     {
     }
+    
 }
