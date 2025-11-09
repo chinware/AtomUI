@@ -148,7 +148,7 @@ public class PopupConfirm : FlyoutHost,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        Flyout                      ??= new PopupConfirmFlyout(this);
+        Flyout ??= new PopupConfirmFlyout(this);
     }
 }
 

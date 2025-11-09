@@ -32,7 +32,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         AvaloniaProperty.Register<Popup, BoxShadows>(nameof(MaskShadows));
 
     public static readonly StyledProperty<double> MarginToAnchorProperty =
-        AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 20);
+        AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor), 4);
 
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
@@ -157,6 +157,10 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     private bool _openAnimating;
     private bool _closeAnimating;
     private bool _motionAwareOpened;
+    
+    // 用于保证动画状态最终一致性
+    private IDisposable? _overlayPopupHostOpenMotionDisposable;
+    private IDisposable? _overlayPopupHostCloseMotionDisposable;
 
     // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
     internal bool RequestCloseWhereAnimationCompleted { get; set; }
@@ -348,7 +352,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
     }
     
-    private void CreateBuddyLayer()
+    private void CreatePopupRootBuddyLayer()
     {
         Debug.Assert(_buddyLayer == null);
         var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
@@ -601,13 +605,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     public void MotionAwareOpen(Action? opened = null)
     {
-        // AbstractPopup is currently open
         if (!IsMotionEnabled)
         {
             Open();
             if (!ShouldUseOverlayLayer)
             {
-                CreateBuddyLayer();
+                CreatePopupRootBuddyLayer();
                 _buddyLayer?.Attach();
                 _buddyLayer?.Show();
             }
@@ -626,37 +629,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             return;
         }
   
-        if (ShouldUseOverlayLayer)
-        {
-            OpenOverlayPopup(opened);
-        }
-        else
-        {
-            OpenWindowPopup(opened);
-        }
-    }
-
-    private void OpenWindowPopup(Action? opened = null)
-    {
         Open();
-        ShowBuddyWithMotion(opened);
-    }
-
-    private void OpenOverlayPopup(Action? opened = null)
-    {
-        Open();
-        opened?.Invoke();
-    }
-
-    public async Task MotionAwareOpenAsync()
-    {
-        var tcs = new TaskCompletionSource<bool>();
-        MotionAwareOpen(() => tcs.SetResult(true));
-        await tcs.Task;
-    }
-
-    private void ShowBuddyWithMotion(Action? opened = null)
-    {
         if (MotionActor == null)
         {
             opened?.Invoke();
@@ -667,8 +640,20 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
             SetCurrentValue(IsMotionAwareOpenProperty, true);
         }
+        
+        if (!ShouldUseOverlayLayer)
+        {
+            OpenPopupRootHost(opened);
+        }
+        else
+        {
+            OpenOverlayPopupHost(opened);
+        }
+    }
 
-        CreateBuddyLayer();
+    private void OpenPopupRootHost(Action? opened = null)
+    {
+        CreatePopupRootBuddyLayer();
         _buddyLayer?.Attach();
         _buddyLayer?.Show();
         var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
@@ -687,9 +672,66 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         });
     }
 
+    private void OpenOverlayPopupHost(Action? opened = null)
+    {
+        if (MotionActor == null)
+        {
+            opened?.Invoke();
+            _openAnimating     = false;
+            _motionAwareOpened = true;
+            _overlayPopupHostOpenMotionDisposable?.Dispose();
+            return;
+        }
+        var motion       = OpenMotion ?? new ZoomBigInMotion();
+        if (MotionDuration != TimeSpan.Zero)
+        {
+            motion.Duration = MotionDuration;
+        }
+        
+        var completedFuncCalled = false;
+        
+        _overlayPopupHostOpenMotionDisposable?.Dispose();
+        _overlayPopupHostOpenMotionDisposable = DispatcherTimer.RunOnce(() =>
+        {
+            if (!completedFuncCalled)
+            {
+                opened?.Invoke();
+                _openAnimating      = false;
+                _motionAwareOpened  = true;
+                completedFuncCalled = true;
+            }
+      
+        }, motion.Duration * 1.2);
+        
+        motion.Run(MotionActor, null, () =>
+        {
+            _overlayPopupHostOpenMotionDisposable.Dispose();
+            _overlayPopupHostOpenMotionDisposable = null;
+            if (!completedFuncCalled)
+            {
+                opened?.Invoke();
+                _openAnimating     = false;
+                _motionAwareOpened = true;
+
+                if (RequestCloseWhereAnimationCompleted)
+                {
+                    RequestCloseWhereAnimationCompleted = false;
+                    Dispatcher.UIThread.Post(() => MotionAwareClose());
+                }
+                completedFuncCalled = true;
+            }
+        });
+    }
+
+    public async Task MotionAwareOpenAsync()
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        MotionAwareOpen(() => tcs.SetResult(true));
+        await tcs.Task;
+    }
+
     public void MotionAwareClose(Action? closed = null)
     {
-        var popupRoot = Host as PopupRoot;
         if ((!_motionAwareOpened && !_openAnimating) || _closeAnimating)
         {
             closed?.Invoke();
@@ -709,7 +751,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             return;
         }
         
-        if (!IsMotionEnabled || popupRoot == null)
+        if (!IsMotionEnabled || Host == null)
         {
             _isNeedDetectFlip = true;
             Close();
@@ -732,21 +774,21 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
             SetCurrentValue(IsMotionAwareOpenProperty, false);
         }
+        
+        _closeAnimating    = true;
 
         if (!ShouldUseOverlayLayer)
         {
-            CloseWindowPopup(closed);
+            ClosePopupRootHost(closed);
         }
         else
         {
-            CloseOverlayPopup(closed);
+            CloseOverlayPopupHost(closed);
         }
     }
 
-    private void CloseWindowPopup(Action? closed = null)
+    private void ClosePopupRootHost(Action? closed = null)
     {
-        _closeAnimating    = true;
-        
         var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
         Debug.Assert(shadowAwareLayer != null);
         shadowAwareLayer.RunCloseMotion(null, () =>
@@ -761,9 +803,52 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         });
     }
 
-    private void CloseOverlayPopup(Action? closed = null)
+    private void CloseOverlayPopupHost(Action? closed = null)
     {
+        if (MotionActor == null)
+        {
+            Close();
+            closed?.Invoke();
+            _closeAnimating    = false;
+            _motionAwareOpened = false;
+            _isNeedDetectFlip  = true;
+            return;
+        }
+        var motion       = CloseMotion ?? new ZoomBigOutMotion();
+        if (MotionDuration != TimeSpan.Zero)
+        {
+            motion.Duration = MotionDuration;
+        }
         
+        var completedFuncCalled = false;
+        
+        _overlayPopupHostCloseMotionDisposable?.Dispose();
+        _overlayPopupHostCloseMotionDisposable = DispatcherTimer.RunOnce(() =>
+        {
+            if (!completedFuncCalled)
+            {
+                Close();
+                closed?.Invoke();
+                _closeAnimating     = false;
+                _motionAwareOpened  = false;
+                _isNeedDetectFlip   = true;
+                completedFuncCalled = true;
+            }
+        }, motion.Duration * 1.2);
+        motion.Run(MotionActor, null, () =>
+        {
+            _overlayPopupHostCloseMotionDisposable.Dispose();
+            _overlayPopupHostCloseMotionDisposable = null;
+            if (!completedFuncCalled)
+            {
+                Close();
+                closed?.Invoke();
+                _closeAnimating     = false;
+                _motionAwareOpened  = false;
+                _isNeedDetectFlip   = true;
+                completedFuncCalled = true;
+            }
+        });
     }
 
     public async Task MotionAwareCloseAsync()

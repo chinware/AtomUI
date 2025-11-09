@@ -7,5 +7,7 @@
     <ControlTheme x:Key="{x:Type atom:PopupConfirm}" TargetType="atom:PopupConfirm">
         <Setter Property="OkText" Value="{DynamicResource {x:Static popupConfirmLang:PopupConfirmLangResourceKey.Ok}}"/>
         <Setter Property="CancelText" Value="{DynamicResource {x:Static popupConfirmLang:PopupConfirmLangResourceKey.Cancel}}"/>
+        <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}"/>
+        <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}"/>
     </ControlTheme>
 </ResourceDictionary>
