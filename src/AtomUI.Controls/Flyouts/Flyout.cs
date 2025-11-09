@@ -75,17 +75,40 @@ public class Flyout : PopupFlyoutBase
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<Flyout, bool> IsShowArrowEffectiveProperty =
+        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsShowArrowEffective),
+            o => o.IsShowArrowEffective,
+            (o, v) => o.IsShowArrowEffective = v);
+    
+    internal static readonly DirectProperty<Flyout, bool> IsPopupFlippedProperty =
+        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsPopupFlipped),
+            o => o.IsPopupFlipped,
+            (o, v) => o.IsPopupFlipped = v);
+    
+    internal static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
+        ArrowDecoratedBox.ArrowPositionProperty.AddOwner<Flyout>();
+    
+    private bool _isShowArrowEffective;
 
-    internal static readonly StyledProperty<bool> IsShowArrowEffectiveProperty =
-        AvaloniaProperty.Register<Flyout, bool>(nameof(IsShowArrowEffective));
-
-    /// <summary>
-    /// 是否实际显示箭头
-    /// </summary>
     internal bool IsShowArrowEffective
     {
-        get => GetValue(IsShowArrowEffectiveProperty);
-        set => SetValue(IsShowArrowEffectiveProperty, value);
+        get => _isShowArrowEffective;
+        private set => SetAndRaise(IsShowArrowEffectiveProperty, ref _isShowArrowEffective, value);
+    }
+    
+    private bool _isPopupFlipped;
+
+    internal bool IsPopupFlipped
+    {
+        get => _isPopupFlipped;
+        private set => SetAndRaise(IsPopupFlippedProperty, ref _isPopupFlipped, value);
+    }
+    
+    internal ArrowPosition ArrowPosition
+    {
+        get => GetValue(ArrowPositionProperty);
+        set => SetValue(ArrowPositionProperty, value);
     }
 
     #endregion
@@ -103,37 +126,6 @@ public class Flyout : PopupFlyoutBase
         IsShowArrowProperty.OverrideDefaultValue<Flyout>(false);
     }
 
-    private void HandlePopupPropertyChanged(AvaloniaPropertyChangedEventArgs args)
-    {
-        SetupArrowPosition(Popup);
-    }
-
-    protected void SetupArrowPosition(Popup popup, FlyoutPresenter? flyoutPresenter = null)
-    {
-        if (flyoutPresenter is null)
-        {
-            var child = popup.Child;
-            if (child is FlyoutPresenter childPresenter)
-            {
-                flyoutPresenter = childPresenter;
-            }
-        }
-
-        var placement = popup.Placement;
-        var anchor    = popup.PlacementAnchor;
-        var gravity   = popup.PlacementGravity;
-
-        // TODO 可以改进成绑定，可以参考 Tooltip 的做法
-        if (flyoutPresenter is not null)
-        {
-            var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-            if (arrowPosition.HasValue)
-            {
-                flyoutPresenter.ArrowPosition = arrowPosition.Value;
-            }
-        }
-    }
-
     protected override Control CreatePresenter()
     {
         _presenterBindingDisposables?.Dispose();
@@ -142,8 +134,9 @@ public class Flyout : PopupFlyoutBase
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ContentProperty, presenter, FlyoutPresenter.ContentProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, FlyoutPresenter.IsMotionEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, FlyoutPresenter.IsShowArrowProperty));
-        CalculateShowArrowEffective();
-        SetupArrowPosition(Popup, presenter);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ArrowPositionProperty, presenter, FlyoutPresenter.ArrowPositionProperty));
+        ConfigureShowArrowEffective();
+        ConfigureArrowPosition();
         return presenter;
     }
 
@@ -157,7 +150,7 @@ public class Flyout : PopupFlyoutBase
         _popupBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, popup, Popup.PlacementGravityProperty));
         _popupBindingDisposables.Add(BindUtils.RelayBind(this, MaskShadowsProperty, popup, Popup.MaskShadowsProperty));
         _popupBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, popup, Popup.IsMotionEnabledProperty));
-        SetupArrowPosition(popup);
+        _popupBindingDisposables.Add(BindUtils.RelayBind(popup, Popup.IsFlippedProperty, this, IsPopupFlippedProperty));
     }
 
     protected override void OnOpening(CancelEventArgs args)
@@ -177,10 +170,6 @@ public class Flyout : PopupFlyoutBase
         }
 
         base.OnOpening(args);
-        if (!args.Cancel)
-        {
-            CompositeDisposable.Add(PopupControl.IsFlippedProperty.Changed.Subscribe(HandlePopupPropertyChanged));
-        }
 
         CompositeDisposable.Add(TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty,
             SharedTokenKey.MotionDurationMid));
@@ -250,24 +239,89 @@ public class Flyout : PopupFlyoutBase
             e.Property == PlacementAnchorProperty ||
             e.Property == PlacementGravityProperty)
         {
-            CalculateShowArrowEffective();
+            ConfigureShowArrowEffective();
         }
 
-        if (e.Property == PlacementProperty)
+        if (e.Property == PlacementProperty ||
+            e.Property == IsPopupFlippedProperty)
         {
-            SetupArrowPosition(Popup);
+            ConfigureArrowPosition();
         }
     }
 
-    protected void CalculateShowArrowEffective()
+    protected void ConfigureShowArrowEffective()
     {
-        if (IsShowArrow == false)
+        if (!IsShowArrow)
         {
-            IsShowArrowEffective = false;
+            SetCurrentValue(IsShowArrowProperty, false);
         }
         else
         {
-            IsShowArrowEffective = PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
+            SetCurrentValue(IsShowArrowEffectiveProperty, PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity));
+        }
+    }
+
+    protected void ConfigureArrowPosition()
+    {
+        var placement = Placement;
+        var anchor    = PlacementAnchor;
+        var gravity   = PlacementGravity;
+        
+        var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
+        if (arrowPosition.HasValue)
+        {
+            if (IsPopupFlipped)
+            {
+                if (arrowPosition == ArrowPosition.Top)
+                {
+                    arrowPosition = ArrowPosition.Bottom;
+                }
+                else if (arrowPosition == ArrowPosition.Bottom)
+                {
+                    arrowPosition = ArrowPosition.Top;
+                }
+                else if (arrowPosition == ArrowPosition.Left)
+                {
+                    arrowPosition = ArrowPosition.Right;
+                }
+                else if (arrowPosition == ArrowPosition.Right)
+                {
+                    arrowPosition = ArrowPosition.Left;
+                }
+                else if (arrowPosition == ArrowPosition.TopEdgeAlignedLeft)
+                {
+                    arrowPosition = ArrowPosition.BottomEdgeAlignedLeft;
+                }
+                else if (arrowPosition == ArrowPosition.TopEdgeAlignedRight)
+                {
+                    arrowPosition = ArrowPosition.BottomEdgeAlignedRight;
+                }
+                else if (arrowPosition == ArrowPosition.BottomEdgeAlignedLeft)
+                {
+                    arrowPosition = ArrowPosition.TopEdgeAlignedLeft;
+                }
+                else if (arrowPosition == ArrowPosition.BottomEdgeAlignedRight)
+                {
+                    arrowPosition = ArrowPosition.TopEdgeAlignedRight;
+                }
+                else if (arrowPosition == ArrowPosition.LeftEdgeAlignedTop)
+                {
+                    arrowPosition = ArrowPosition.RightEdgeAlignedTop;
+                }
+                else if (arrowPosition == ArrowPosition.LeftEdgeAlignedBottom)
+                {
+                    arrowPosition = ArrowPosition.RightEdgeAlignedBottom;
+                }
+                else if (arrowPosition == ArrowPosition.RightEdgeAlignedTop)
+                {
+                    arrowPosition = ArrowPosition.LeftEdgeAlignedTop;
+                }
+                else if (arrowPosition == ArrowPosition.RightEdgeAlignedBottom)
+                {
+                    arrowPosition = ArrowPosition.RightEdgeAlignedBottom;
+                }
+            }
+            SetCurrentValue(ArrowPositionProperty, arrowPosition);
         }
     }
 

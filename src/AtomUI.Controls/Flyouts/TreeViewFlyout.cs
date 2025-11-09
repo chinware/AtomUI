@@ -74,7 +74,7 @@ public class TreeViewFlyout : Flyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, TreeViewFlyoutPresenter.IsShowArrowProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty));
         SetupArrowPosition(Popup, presenter);
-        CalculateShowArrowEffective();
+        ConfigureShowArrowEffective();
 
         return presenter;
     }

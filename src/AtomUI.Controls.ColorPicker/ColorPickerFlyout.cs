@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Data;
 using Avalonia;
@@ -22,9 +23,11 @@ internal class ColorPickerFlyout : AbstractColorPickerFlyout
     
     protected override Control CreatePresenter()
     {
+        var flyoutPresenter = base.CreatePresenter() as FlyoutPresenter;
+        Debug.Assert(flyoutPresenter != null);
         _presenterBindingDisposables?.Dispose();
         Presenter                    = new ColorPickerView();
-        _presenterBindingDisposables = new  CompositeDisposable(6);
+        _presenterBindingDisposables = new  CompositeDisposable(8);
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, ColorPickerView.IsMotionEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ValueProperty, Presenter, ColorPickerView.ValueProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, FormatProperty, Presenter, ColorPickerView.FormatProperty));
@@ -33,15 +36,7 @@ internal class ColorPickerFlyout : AbstractColorPickerFlyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsFormatEnabledProperty, Presenter, ColorPickerView.IsFormatEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsPaletteGroupEnabledProperty, Presenter, ColorPickerView.IsPaletteGroupEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, Presenter, ColorPickerView.PaletteGroupProperty));
-        
-        var flyoutPresenter = new FlyoutPresenter
-        {
-            Content = Presenter
-        };
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty));
-        
-        CalculateShowArrowEffective();
-        SetupArrowPosition(Popup, flyoutPresenter);
+        flyoutPresenter.Content = Presenter;
         return flyoutPresenter;
     }
 }

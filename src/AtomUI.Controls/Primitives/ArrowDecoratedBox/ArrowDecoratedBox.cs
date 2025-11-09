@@ -87,6 +87,7 @@ public class ArrowDecoratedBox : ContentControl,
                                  IControlSharedTokenResourcesHost
 {
     public const string ArrowDecoratorPart = "PART_ArrowDecorator";
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsShowArrowProperty =
@@ -199,7 +200,6 @@ public class ArrowDecoratedBox : ContentControl,
     static ArrowDecoratedBox()
     {
         AffectsMeasure<ArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
-        AffectsArrange<ArrowDecoratedBox>(ArrowPositionProperty);
         AffectsRender<ArrowDecoratedBox>(BackgroundProperty, ArrowOpacityProperty);
     }
 

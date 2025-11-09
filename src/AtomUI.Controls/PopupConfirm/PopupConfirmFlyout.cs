@@ -46,8 +46,8 @@ internal class PopupConfirmFlyout : Flyout
 
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty));
 
-        CalculateShowArrowEffective();
-        SetupArrowPosition(Popup, presenter);
+        ConfigureShowArrowEffective();
+        // SetupArrowPosition(presenter);
         return presenter;
     }
 }

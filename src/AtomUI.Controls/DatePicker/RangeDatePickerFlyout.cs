@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,24 +18,20 @@ internal class RangeDatePickerFlyout : DatePickerFlyout
     }
     
     internal FlyoutPresenter? _flyoutPresenter;
-    private CompositeDisposable? _flyoutPresenterBindingDisposables;
     private CompositeDisposable? _presenterBindingDisposables;
+    
     protected override Control CreatePresenter()
     {
-        _flyoutPresenter = new FlyoutPresenter();
-        _flyoutPresenterBindingDisposables?.Dispose();
-        _flyoutPresenterBindingDisposables = new CompositeDisposable(1);
+        _flyoutPresenter = base.CreatePresenter() as FlyoutPresenter;
+        Debug.Assert(_flyoutPresenter != null);
         ConfigureDatePickerPresenter(_flyoutPresenter);
-        _flyoutPresenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, _flyoutPresenter, IsShowArrowProperty));
-        CalculateShowArrowEffective();
-        SetupArrowPosition(Popup, _flyoutPresenter);
         return _flyoutPresenter;
     }
     
     private void ConfigureDatePickerPresenter(FlyoutPresenter flyoutPresenter)
     {
         _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(7);
+        _presenterBindingDisposables = new CompositeDisposable(8);
         DatePickerPresenter? presenter;
         if (IsShowTime)
         {

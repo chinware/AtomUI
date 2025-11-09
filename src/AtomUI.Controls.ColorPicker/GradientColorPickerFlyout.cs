@@ -40,8 +40,8 @@ internal class GradientColorPickerFlyout : AbstractColorPickerFlyout
         };
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty));
         
-        CalculateShowArrowEffective();
-        SetupArrowPosition(Popup, flyoutPresenter);
+        ConfigureShowArrowEffective();
+        // SetupArrowPosition(flyoutPresenter);
         return flyoutPresenter;
     }
 }

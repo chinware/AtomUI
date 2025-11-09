@@ -83,8 +83,8 @@ internal class TimePickerFlyout : Flyout
         };
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty));
         
-        CalculateShowArrowEffective();
-        SetupArrowPosition(Popup, flyoutPresenter);
+        ConfigureShowArrowEffective();
+        // SetupArrowPosition(flyoutPresenter);
         return flyoutPresenter;
     }
 }

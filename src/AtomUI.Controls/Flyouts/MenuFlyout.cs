@@ -72,35 +72,9 @@ public class MenuFlyout : Flyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, Presenter, MenuFlyoutPresenter.IsShowArrowProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
-        SetupArrowPosition(Popup, Presenter);
-        CalculateShowArrowEffective();
+        ConfigureShowArrowEffective();
 
         return Presenter;
-    }
-
-    protected void SetupArrowPosition(Popup popup, MenuFlyoutPresenter? flyoutPresenter = null)
-    {
-        if (flyoutPresenter is null)
-        {
-            var child = popup.Child;
-            if (child is MenuFlyoutPresenter childPresenter)
-            {
-                flyoutPresenter = childPresenter;
-            }
-        }
-
-        var placement = popup.Placement;
-        var anchor    = popup.PlacementAnchor;
-        var gravity   = popup.PlacementGravity;
-
-        if (flyoutPresenter is not null)
-        {
-            var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-            if (arrowPosition.HasValue)
-            {
-                flyoutPresenter.ArrowPosition = arrowPosition.Value;
-            }
-        }
     }
 
     protected override void OnOpening(CancelEventArgs args)

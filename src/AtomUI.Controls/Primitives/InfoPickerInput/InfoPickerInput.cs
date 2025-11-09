@@ -64,7 +64,8 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
         AvaloniaProperty.Register<InfoPickerInput, PlacementMode>(nameof(PickerPlacement),
-            PlacementMode.BottomEdgeAlignedLeft);
+            PlacementMode.BottomEdgeAlignedLeft,
+            coerce:CoercePickerPlacement);
 
     public static readonly StyledProperty<bool> IsShowArrowProperty =
         ArrowDecoratedBox.IsShowArrowProperty.AddOwner<InfoPickerInput>();
@@ -563,5 +564,18 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected virtual bool ShowClearButtonPredicate()
     {
         return false;
+    }
+    
+    private static PlacementMode CoercePickerPlacement(object o, PlacementMode value)
+    {
+        if (value == PlacementMode.Pointer ||
+            value == PlacementMode.Custom ||
+            value == PlacementMode.AnchorAndGravity ||
+            value == PlacementMode.Center) 
+        {
+            return PlacementMode.BottomEdgeAlignedLeft;
+        }
+
+        return value;
     }
 }
