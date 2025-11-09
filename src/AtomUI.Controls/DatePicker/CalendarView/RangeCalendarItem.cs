@@ -10,6 +10,7 @@ internal class RangeCalendarItem : CalendarItem
         childButton.IsSelected = false;
         if (Owner is RangeCalendar owner)
         {
+           
             DateTime? rangeStart = default;
             DateTime? rangeEnd   = default;
             owner.SortHoverIndexes(out rangeStart, out rangeEnd);

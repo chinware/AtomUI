@@ -200,4 +200,17 @@ internal class RangeCalendar : Calendar
         base.NotifyHoverDateChanged(hoverDate);
         HoverDateTime = hoverDate;
     }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SecondarySelectedDateProperty)
+        {
+            if (SecondarySelectedDate == null)
+            {
+                Console.WriteLine(SecondarySelectedDate);
+            }
+         
+        }
+    }
 }

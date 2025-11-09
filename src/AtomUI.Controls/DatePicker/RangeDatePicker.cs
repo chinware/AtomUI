@@ -197,9 +197,11 @@ public class RangeDatePicker : RangeInfoPickerInput,
             _pickerPresenter.HoverDateTimeChanged  -= HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
             _pickerPresenter.RangePartConfirmed    -= HandleRangePartConfirmed;
-
-            _pickerPresenter.SelectedDateTime          = null;
-            _pickerPresenter.SecondarySelectedDateTime = null;
+            if (_pickerPresenter.SelectedDateTime == null || _pickerPresenter.SecondarySelectedDateTime == null)
+            {
+                _pickerPresenter.SelectedDateTime          = null;
+                _pickerPresenter.SecondarySelectedDateTime = null;
+            }
         }
     }
 

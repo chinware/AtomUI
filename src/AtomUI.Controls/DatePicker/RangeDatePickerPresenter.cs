@@ -69,7 +69,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     {
         if (CalendarView is RangeCalendar rangeCalendar)
         {
-            DateTime? hoverDateTime = default;
+            DateTime? hoverDateTime = null;
             if (rangeCalendar.IsSelectRangeStart)
             {
                 hoverDateTime = CollectDateTime(SelectedDateTime, TempSelectedTime ?? TimeView?.SelectedTime);
