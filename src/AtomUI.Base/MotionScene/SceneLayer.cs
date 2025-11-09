@@ -12,7 +12,6 @@ namespace AtomUI.MotionScene;
 
 internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
 {
-    public const string MotionActorPart = "PART_MotionActor";
     protected BaseMotionActor? MotionActor;
     protected readonly IManagedPopupPositionerPopup? ManagedPopupPositionerPopup;
 
@@ -146,6 +145,6 @@ internal class SceneLayer : WindowBase, IHostedVisualTreeRoot, IDisposable
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        MotionActor         = e.NameScope.Find<BaseMotionActor>(MotionActorPart);
+        MotionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
     }
 }

@@ -161,8 +161,8 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     static PopupBuddyLayer()
     {
         AffectsRender<PopupBuddyLayer>(MaskShadowsContentCornerRadiusProperty, ArrowFillColorProperty);
-        AffectsMeasure<PopupBuddyLayer>(ArrowIndicatorLayoutBoundsProperty, IsShowArrowProperty);
-        AffectsArrange<PopupBuddyLayer>(ArrowSizeProperty, ArrowDirectionProperty);
+        AffectsMeasure<PopupBuddyLayer>(ArrowIndicatorLayoutBoundsProperty, ArrowSizeProperty, IsShowArrowProperty);
+        AffectsArrange<PopupBuddyLayer>(ArrowDirectionProperty);
     }
     
     public PopupBuddyLayer(Popup buddyPopup, TopLevel parent)

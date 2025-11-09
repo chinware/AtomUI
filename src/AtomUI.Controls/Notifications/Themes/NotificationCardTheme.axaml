@@ -9,7 +9,7 @@
     <ControlTheme x:Key="{x:Type atom:NotificationCard}" TargetType="atom:NotificationCard">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:LayoutAwareMotionActor Name="{x:Static atom:NotificationCardThemeConstants.MotionActorPart}"
+                <atom:LayoutAwareMotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
                                              ClipToBounds="False">
                     <Border Name="Frame">
                         <Grid ColumnDefinitions="Auto, *"

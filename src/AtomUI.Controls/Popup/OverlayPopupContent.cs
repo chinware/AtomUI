@@ -1,13 +1,10 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -53,6 +50,11 @@ internal class OverlayPopupContent : ContentControl
     
     internal static readonly StyledProperty<double> ArrowSizeProperty =
         ArrowDecoratedBox.ArrowSizeProperty.AddOwner<OverlayPopupContent>();
+    
+    internal static readonly DirectProperty<OverlayPopupContent, bool> IsFlippedProperty =
+        AvaloniaProperty.RegisterDirect<OverlayPopupContent, bool>(nameof(IsFlipped),
+            o => o.IsFlipped,
+            (o, v) => o.IsFlipped = v);
 
     private Thickness _effectiveContentMargin;
 
@@ -69,7 +71,7 @@ internal class OverlayPopupContent : ContentControl
         get => _maskShadowsContentCornerRadius;
         set => SetAndRaise(MaskShadowsContentCornerRadiusProperty, ref _maskShadowsContentCornerRadius, value);
     }
-          
+    
     private Rect _arrowIndicatorLayoutBounds;
 
     internal Rect ArrowIndicatorLayoutBounds
@@ -95,81 +97,51 @@ internal class OverlayPopupContent : ContentControl
         get => GetValue(ArrowSizeProperty);
         set => SetValue(ArrowSizeProperty, value);
     }
+    
+    private bool _isFlipped;
+
+    public bool IsFlipped
+    {
+        get => _isFlipped;
+        private set => SetAndRaise(IsFlippedProperty, ref _isFlipped, value);
+    }
+    
     #endregion
     
-    private IArrowAwareShadowMaskInfoProvider? _popupArrowDecoratedBox;
     private Border? _maskRenderer;
     private CompositeDisposable? _bindingDisposables;
 
     static OverlayPopupContent()
     {
-        AffectsRender<PopupBuddyLayer>(MaskShadowsContentCornerRadiusProperty);
-        AffectsMeasure<PopupBuddyLayer>(ArrowIndicatorLayoutBoundsProperty, IsShowArrowProperty);
-        AffectsArrange<PopupBuddyLayer>(ArrowSizeProperty, ArrowDirectionProperty);
+        AffectsRender<OverlayPopupContent>(MaskShadowsContentCornerRadiusProperty);
+        AffectsMeasure<OverlayPopupContent>(IsShowArrowProperty, ArrowSizeProperty);
+        AffectsArrange<OverlayPopupContent>(ArrowDirectionProperty, IsFlippedProperty);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _maskRenderer = e.NameScope.Find<Border>(OverlayPopupContentThemeConstants.MaskShadowsPart);
-        ConfigureMarginForShadows();
         ConfigureShadowInfo();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == BoxShadowProperty ||
+            change.Property == ContentProperty)
         {
-            if (change.Property == BoxShadowProperty ||
-                change.Property == ContentProperty)
-            {
-                ConfigureMarginForShadows();
-                ConfigureShadowInfo();
-            }
+            ConfigureShadowInfo();
         }
-    }
-    
-    private void ConfigureMarginForShadows()
-    {
-        var thickness = BoxShadow.Thickness();
-        if (Content is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
-        {
-            if (arrowAwareShadowMaskInfoProvider.IsShowArrow())
-            {
-                var arrowPosition = arrowAwareShadowMaskInfoProvider.GetArrowPosition();
-                var direction     = ArrowDecoratedBox.GetDirection(arrowPosition);
-                var delta         = arrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds().Height + 0.5;
-                if (direction == Direction.Bottom)
-                {
-                    thickness = new Thickness(thickness.Left, thickness.Top, thickness.Right, thickness.Bottom + delta);
-                }
-                else if (direction == Direction.Top)
-                {
-                    thickness = new Thickness(thickness.Left, thickness.Top + delta, thickness.Right, thickness.Bottom);
-                }
-                else if (direction == Direction.Left)
-                {
-                    thickness = new Thickness(thickness.Left + delta, thickness.Top, thickness.Right, thickness.Bottom);
-                }
-                else
-                {
-                    thickness = new Thickness(thickness.Left, thickness.Top, thickness.Right + delta, thickness.Bottom);
-                }
-            }
-        }
-
-        SetCurrentValue(EffectiveContentMarginProperty, thickness);
     }
     
     private void ConfigureShadowInfo()
     {
         if (Content is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
         {
+            var arrowDecoratedBox = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox();
             _bindingDisposables?.Dispose();
             _bindingDisposables = new CompositeDisposable();
-            var arrowDecoratedBox = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox();
-            _popupArrowDecoratedBox = arrowDecoratedBox;
             _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.CornerRadiusProperty, this, MaskShadowsContentCornerRadiusProperty));
             _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty, this, ArrowIndicatorLayoutBoundsProperty));
             _bindingDisposables?.Add(BindUtils.RelayBind(arrowDecoratedBox, ArrowDecoratedBox.ArrowSizeProperty, this, ArrowSizeProperty));
@@ -186,10 +158,37 @@ internal class OverlayPopupContent : ContentControl
         }
     }
 
-    internal Point DeltaOffset()
+    protected override Size ArrangeOverride(Size finalSize)
     {
-        var shadowThickness = BoxShadow.Thickness();
-        return new Point(shadowThickness.Left, shadowThickness.Top);
+        var size         = base.ArrangeOverride(finalSize);
+        var targetBounds = _maskRenderer?.Bounds ?? default;
+        var offsetX      = 0;
+        var offsetY      = 0;
+        var width        = finalSize.Width;
+        var height       = finalSize.Height;
+        var arrowBounds  = ArrowIndicatorLayoutBounds;
+        if (IsShowArrow)
+        {
+            var effectiveDirection = ArrowDirection;
+            if (effectiveDirection == Direction.Top)
+            {
+                targetBounds = new Rect(offsetX, offsetY + arrowBounds.Height, width, height - arrowBounds.Height);
+            }
+            else if (effectiveDirection == Direction.Bottom)
+            {
+                targetBounds = targetBounds.WithHeight(height - arrowBounds.Height);
+            }
+            else if (effectiveDirection == Direction.Left)
+            {
+                targetBounds = targetBounds.WithX(arrowBounds.Width).WithWidth(width - arrowBounds.Width);
+            }
+            else if (effectiveDirection == Direction.Right)
+            {
+                targetBounds = targetBounds.WithWidth(width - arrowBounds.Width);
+            }
+        }
+        _maskRenderer?.Arrange(targetBounds);
+        
+        return size;
     }
-
 }

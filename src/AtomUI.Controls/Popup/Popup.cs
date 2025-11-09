@@ -1,8 +1,7 @@
 ﻿using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Primitives;
+using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -202,6 +201,13 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         if (popupHost is PopupRoot popupRoot)
         {
             MotionActor = popupRoot.FindDescendantOfType<MotionActor>();
+        }
+        else if (popupHost is OverlayPopupHost overlayPopupHost)
+        {
+            MotionActor = overlayPopupHost.FindDescendantOfType<MotionActor>();
+            var popupContent = overlayPopupHost.FindDescendantOfType<OverlayPopupContent>();
+            Debug.Assert(popupContent != null);
+            BindUtils.RelayBind(this, IsFlippedProperty, popupContent, OverlayPopupContent.IsFlippedProperty);
         }
     }
     
@@ -545,17 +551,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 }
                 IsFlipped = false;
             }
-
-            if (Host is OverlayPopupHost overlayPopupHost)
-            {
-                var popupContent = overlayPopupHost.FindDescendantOfType<OverlayPopupContent>();
-                if (popupContent is not null)
-                {
-                    var deltaOffset = popupContent.DeltaOffset();
-                    effectiveOffsetX -=  deltaOffset.X * scaling;
-                    effectiveOffsetY -=  deltaOffset.Y * scaling;
-                }
-            }
+            
             var effectivePosition = new Point(effectiveOffsetX, effectiveOffsetY);
             positionerPopup.MoveAndResize(effectivePosition, popupSize);
             PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));

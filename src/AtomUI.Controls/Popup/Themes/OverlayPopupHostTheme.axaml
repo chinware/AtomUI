@@ -6,8 +6,8 @@
     <ControlTheme x:Key="{x:Type OverlayPopupHost}" TargetType="OverlayPopupHost">
         <Setter Property="Template">
             <ControlTemplate>
-                <LayoutTransformControl LayoutTransform="{TemplateBinding Transform}">
-                    <atom:VisualLayerManager IsPopup="True">
+                <atom:MotionActor ClipToBounds="False">
+                    <atom:VisualLayerManager IsPopup="True" ClipToBounds="False">
                         <atom:OverlayPopupContent
                             Name="{x:Static atom:OverlayPopupHostThemeConstants.ContentPresenterPart}"
                             Background="{TemplateBinding Background}"
@@ -15,7 +15,7 @@
                             Content="{TemplateBinding Content}"
                             Padding="{TemplateBinding Padding}"/>
                     </atom:VisualLayerManager>
-                </LayoutTransformControl>
+                </atom:MotionActor>
             </ControlTemplate>
         </Setter>
         
@@ -24,6 +24,7 @@
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontStyle" Value="Normal" />
+        <Setter Property="ClipToBounds" Value="False" />
         
     </ControlTheme>
 </ResourceDictionary>

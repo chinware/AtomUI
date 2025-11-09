@@ -185,7 +185,7 @@ public class NotificationCard : ContentControl,
         base.OnApplyTemplate(e);
 
         _closeButton = e.NameScope.Find<IconButton>(NotificationCardThemeConstants.CloseButtonPart);
-        _motionActor = e.NameScope.Find<BaseMotionActor>(NotificationCardThemeConstants.MotionActorPart);
+        _motionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
 
         if (_closeButton is not null)
         {

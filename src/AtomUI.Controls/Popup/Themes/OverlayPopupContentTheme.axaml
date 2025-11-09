@@ -6,17 +6,15 @@
     <ControlTheme x:Key="{x:Type atom:OverlayPopupContent}" TargetType="atom:OverlayPopupContent">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame" ClipToBounds="False">
-                    <Panel Margin="{TemplateBinding EffectiveContentMargin}" ClipToBounds="False">
-                        <Border Name="{x:Static atom:OverlayPopupContentThemeConstants.MaskShadowsPart}"
-                                BoxShadow="{TemplateBinding BoxShadow}"
-                                ClipToBounds="False"
-                                CornerRadius="{TemplateBinding MaskShadowsContentCornerRadius}"/>
-                        <ContentPresenter Name="{x:Static atom:OverlayPopupContentThemeConstants.ContentPresenterPart}"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
-                    </Panel>
-                </Border>
+                <Panel ClipToBounds="False">
+                    <Border Name="{x:Static atom:OverlayPopupContentThemeConstants.MaskShadowsPart}"
+                            BoxShadow="{TemplateBinding BoxShadow}"
+                            ClipToBounds="False"
+                            CornerRadius="{TemplateBinding MaskShadowsContentCornerRadius}"/>
+                    <ContentPresenter Name="{x:Static atom:OverlayPopupContentThemeConstants.ContentPresenterPart}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                </Panel>
             </ControlTemplate>
         </Setter>
         

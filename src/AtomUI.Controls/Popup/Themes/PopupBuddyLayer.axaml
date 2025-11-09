@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:MotionActor Name="{x:Static atom:PopupBuddyLayerThemeConstants.MotionActorPart}">
+                    <atom:MotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}">
                         <Panel>
                             <Decorator Padding="{TemplateBinding Padding}">
                                 <Panel>

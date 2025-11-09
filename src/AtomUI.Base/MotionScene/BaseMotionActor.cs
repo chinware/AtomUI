@@ -11,6 +11,8 @@ namespace AtomUI.MotionScene;
 
 public abstract class BaseMotionActor : ContentControl, IMotionActor
 {
+    public const string MotionActorPart = "PART_MotionActor";
+    
     #region 公共属性定义
 
     public static readonly StyledProperty<ITransform?> MotionTransformProperty =
