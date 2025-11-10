@@ -253,7 +253,7 @@ public class Flyout : PopupFlyoutBase
     {
         if (!IsShowArrow)
         {
-            SetCurrentValue(IsShowArrowProperty, false);
+            SetCurrentValue(IsShowArrowEffectiveProperty, false);
         }
         else
         {
