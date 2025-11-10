@@ -81,7 +81,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXS}}" />
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:SharedTokenKey.PaddingXXS}}" />
         <Style Selector="^ /template/ atom|GradientColorSlider#PART_GradientColorSlider">
             <Setter Property="IsVisible" Value="False"/>
         </Style>
