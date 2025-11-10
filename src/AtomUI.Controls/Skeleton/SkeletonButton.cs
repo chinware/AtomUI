@@ -62,7 +62,10 @@ public class SkeletonButton : SkeletonElement,
         else if (Shape == SkeletonButtonShape.Circle)
         {
             SetValue(WidthProperty, Height, BindingPriority.Template);
-            SetValue(MinWidthProperty, Height, BindingPriority.Template);
+            if (!double.IsNaN(Height))
+            {
+                SetValue(MinWidthProperty, Height, BindingPriority.Template);
+            }
             SetValue(CornerRadiusProperty, new CornerRadius(Height), BindingPriority.Template);
         }
     }
@@ -74,7 +77,10 @@ public class SkeletonButton : SkeletonElement,
             if (Shape != SkeletonButtonShape.Circle)
             {
                 SetValue(WidthProperty, Height * 2, BindingPriority.Template);
-                SetValue(MinWidthProperty, Height * 2, BindingPriority.Template);
+                if (!double.IsNaN(Height))
+                {
+                    SetValue(MinWidthProperty, Height * 2, BindingPriority.Template);
+                }
             }
         }
     }
