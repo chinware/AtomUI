@@ -17,14 +17,12 @@
                                      SizeType="Small"
                                      Margin="0"
                                      Content="{TemplateBinding CancelText}"
-                                     IsVisible="{TemplateBinding IsShowCancelButton}"
-                                     IsWaveSpiritEnabled="False"/>
+                                     IsVisible="{TemplateBinding IsShowCancelButton}"/>
                         <atom:Button Name="{x:Static atom:PopupConfirmContainerThemeConstants.OkButtonPart}"
                                      SizeType="Small"
                                      Margin="0"
                                      Content="{TemplateBinding OkText}"
-                                     ButtonType="{TemplateBinding OkButtonType}" 
-                                     IsWaveSpiritEnabled="False"/>
+                                     ButtonType="{TemplateBinding OkButtonType}"/>
                     </StackPanel>
                     <DockPanel LastChildFill="True">
                         <atom:IconPresenter

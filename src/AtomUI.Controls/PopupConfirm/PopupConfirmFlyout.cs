@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using Avalonia.Controls;
 
@@ -17,7 +18,8 @@ internal class PopupConfirmFlyout : Flyout
 
     protected override Control CreatePresenter()
     {
-        var presenter = new FlyoutPresenter();
+        var presenter = base.CreatePresenter() as FlyoutPresenter;
+        Debug.Assert(presenter != null);
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(10);
         if (PopupConfirmRef.TryGetTarget(out var popupConfirm))
@@ -43,11 +45,6 @@ internal class PopupConfirmFlyout : Flyout
                 PopupConfirmContainer.ConfirmContentTemplateProperty));
             presenter.Content = popupConfirmContainer;
         }
-
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, IsShowArrowProperty));
-
-        ConfigureShowArrowEffective();
-        // SetupArrowPosition(presenter);
         return presenter;
     }
 }
