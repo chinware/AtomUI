@@ -11,11 +11,21 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Padding="{TemplateBinding Padding}">
-                    <Grid RowDefinitions="Auto"
-                          ColumnDefinitions="Auto, *, Auto, Auto">
-                        <StackPanel Grid.Row="0"
-                                    Grid.Column="1"
-                                    Orientation="Vertical"
+                    <DockPanel Name="RootLayout" LastChildFill="True">
+                        <atom:Icon
+                            Name="InfoIcon"
+                            IsVisible="{TemplateBinding IsShowIcon}"
+                            DockPanel.Dock="Left" />
+                        <atom:IconButton
+                            Name="{x:Static atom:AlertThemeConstants.CloseBtnPart}"
+                            IsVisible="{TemplateBinding IsClosable}"
+                            Icon="{TemplateBinding CloseIcon}"
+                            DockPanel.Dock="Right" />
+                        <ContentPresenter Name="ExtraActionPresenter"
+                                          DockPanel.Dock="Right" 
+                                          IsVisible="{TemplateBinding ExtraAction, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          Content="{TemplateBinding ExtraAction}" />
+                        <StackPanel Orientation="Vertical"
                                     VerticalAlignment="Center"
                                     ClipToBounds="True">
                             <Label Name="MessageLabel"
@@ -39,25 +49,8 @@
                                    IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                    TextBlock.TextWrapping="Wrap"
                                    Content="{TemplateBinding Description}" />
-
                         </StackPanel>
-                        <atom:IconButton
-                            Name="CloseBtn"
-                            IsVisible="{TemplateBinding IsClosable}"
-                            Icon="{TemplateBinding CloseIcon}"
-                            Grid.Row="0"
-                            Grid.Column="3" />
-                        <atom:Icon
-                            Name="InfoIcon"
-                            IsVisible="{TemplateBinding IsShowIcon}"
-                            Grid.Row="0"
-                            Grid.Column="0" />
-                        <ContentPresenter Name="ExtraActionPresenter"
-                                          Grid.Row="0"
-                                          Grid.Column="2"
-                                          IsVisible="{TemplateBinding ExtraAction, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                          Content="{TemplateBinding ExtraAction}" />
-                    </Grid>
+                    </DockPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -65,6 +58,10 @@
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
         <Style Selector="^:has-extra-action">
             <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        
+        <Style Selector="^ /template/ DockPanel#RootLayout">
+            <Setter Property="HorizontalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}" />
         </Style>
  
         <Style Selector="^[Type=Success]">
@@ -125,17 +122,17 @@
         </Style>
  
         <Style Selector="^:has-description">
-            <Style Selector="^ /template/ atom|IconButton#CloseBtn">
+            <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
                 <Setter Property="VerticalAlignment" Value="Top" />
             </Style>
         </Style>
 
         <Style Selector="^:not(:has-description)">
-            <Style Selector="^ /template/ atom|IconButton#CloseBtn">
+            <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
         </Style>
-        <Style Selector="^ /template/ atom|IconButton#CloseBtn">
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.ExtraElementMargin}}" />

@@ -1,4 +1,5 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls.Themes;
+using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Theme.Data;
@@ -108,6 +109,12 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
 
     #endregion
 
+    #region 公共事件定义
+
+    public event EventHandler? CloseRequest;
+
+    #endregion
+
     #region 内部属性定义
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -116,6 +123,7 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
     #endregion
     
     private IDisposable? _borderThicknessDisposable;
+    private IconButton? _closeButton;
 
     static Alert()
     {
@@ -170,6 +178,14 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _closeButton = e.NameScope.Find<IconButton>(AlertThemeConstants.CloseBtnPart);
+        if (_closeButton != null)
+        {
+            _closeButton.Click += (sender, args) =>
+            {
+                CloseRequest?.Invoke(this, EventArgs.Empty);
+            };
+        }
         UpdatePseudoClasses();
         SetupCloseButton();
     }
