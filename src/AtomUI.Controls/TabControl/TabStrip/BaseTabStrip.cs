@@ -274,6 +274,34 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
                 {
                     tabStripItem.SetCurrentValue(TabStripItem.ContentProperty, item);
                 }
+                
+                if (item is ITabItemData tabItemData)
+                {
+                    if (!tabStripItem.IsSet(TabStripItem.IconProperty))
+                    {
+                        tabStripItem.SetCurrentValue(TabStripItem.IconProperty, tabItemData.Icon);
+                    }
+                    if (!tabStripItem.IsSet(TabStripItem.CloseIconProperty))
+                    {
+                        tabStripItem.SetCurrentValue(TabStripItem.CloseIconProperty, tabItemData.CloseIcon);
+                    }
+                    if (!tabStripItem.IsSet(TabStripItem.ContentProperty))
+                    {
+                        tabStripItem.SetCurrentValue(TabStripItem.ContentProperty, tabItemData.Header);
+                    }
+                    if (!tabStripItem.IsSet(TabStripItem.IsEnabledProperty))
+                    {
+                        tabStripItem.SetCurrentValue(TabStripItem.IsEnabledProperty, tabItemData.IsEnabled);
+                    }
+                    if (!tabStripItem.IsSet(TabStripItem.IsClosableProperty))
+                    {
+                        tabStripItem.SetCurrentValue(TabStripItem.IsClosableProperty, tabItemData.IsClosable);
+                    }
+                    if (!tabStripItem.IsSet(TabStripItem.IsAutoHideCloseButtonProperty))
+                    {
+                        tabStripItem.SetCurrentValue(TabStripItem.IsAutoHideCloseButtonProperty, tabItemData.IsAutoHideCloseButton);
+                    }
+                }
             }
 
             if (ItemTemplate != null)

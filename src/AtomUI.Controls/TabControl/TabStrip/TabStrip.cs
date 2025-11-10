@@ -16,8 +16,6 @@ namespace AtomUI.Controls;
 
 public class TabStrip : BaseTabStrip
 {
-    protected override Type StyleKeyOverride { get; } = typeof(TabStrip);
-    
     #region 内部属性定义
 
     internal static readonly StyledProperty<double> SelectedIndicatorThicknessProperty =

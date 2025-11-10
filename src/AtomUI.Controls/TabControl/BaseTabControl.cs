@@ -457,6 +457,34 @@ public class BaseTabControl : SelectingItemsControl,
                 {
                     tabItem.SetCurrentValue(TabItem.ContentProperty, item);
                 }
+
+                if (item is ITabItemData tabItemData)
+                {
+                    if (!tabItem.IsSet(TabItem.IconProperty))
+                    {
+                        tabItem.SetCurrentValue(TabItem.IconProperty, tabItemData.Icon);
+                    }
+                    if (!tabItem.IsSet(TabItem.CloseIconProperty))
+                    {
+                        tabItem.SetCurrentValue(TabItem.CloseIconProperty, tabItemData.CloseIcon);
+                    }
+                    if (!tabItem.IsSet(TabItem.HeaderProperty))
+                    {
+                        tabItem.SetCurrentValue(TabItem.HeaderProperty, tabItemData.Header);
+                    }
+                    if (!tabItem.IsSet(TabItem.IsEnabledProperty))
+                    {
+                        tabItem.SetCurrentValue(TabItem.IsEnabledProperty, tabItemData.IsEnabled);
+                    }
+                    if (!tabItem.IsSet(TabItem.IsClosableProperty))
+                    {
+                        tabItem.SetCurrentValue(TabItem.IsClosableProperty, tabItemData.IsClosable);
+                    }
+                    if (!tabItem.IsSet(TabItem.IsAutoHideCloseButtonProperty))
+                    {
+                        tabItem.SetCurrentValue(TabItem.IsAutoHideCloseButtonProperty, tabItemData.IsAutoHideCloseButton);
+                    }
+                }
             }
 
             if (ItemTemplate != null)

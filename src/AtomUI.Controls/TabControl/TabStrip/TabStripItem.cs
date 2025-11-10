@@ -27,9 +27,6 @@ public class TabStripItem : AvaloniaTabStripItem
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
-
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<TabStripItem, Icon?>(nameof(Icon));
 
@@ -45,12 +42,6 @@ public class TabStripItem : AvaloniaTabStripItem
     public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
         AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), 
             o => o.TabStripPlacement);
-    
-    public SizeType SizeType
-    {
-        get => GetValue(SizeTypeProperty);
-        set => SetValue(SizeTypeProperty, value);
-    }
 
     public Icon? Icon
     {
@@ -88,6 +79,9 @@ public class TabStripItem : AvaloniaTabStripItem
 
     #region 内部属性定义
 
+    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
+    
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
     
@@ -98,6 +92,12 @@ public class TabStripItem : AvaloniaTabStripItem
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
 
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+    
     public TabSharp Shape
     {
         get => GetValue(ShapeProperty);
