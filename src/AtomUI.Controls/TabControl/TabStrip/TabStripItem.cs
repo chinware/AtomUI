@@ -184,10 +184,7 @@ public class TabStripItem : AvaloniaTabStripItem
     {
         if (Parent is BaseTabStrip tabStrip)
         {
-            if (tabStrip.SelectedItem is TabStripItem selectedItem)
-            {
-                tabStrip.CloseTab(selectedItem);
-            }
+            tabStrip.CloseTab(this);
         }
     }
 
