@@ -58,6 +58,7 @@ public class TreeViewFlyout : Flyout
     {
         var itemCollectionType = typeof(ItemCollection);
         Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
+        
     }
 
     protected override Control CreatePresenter()
@@ -66,44 +67,19 @@ public class TreeViewFlyout : Flyout
         _presenterBindingDisposables = new CompositeDisposable(4);
         var presenter = new TreeViewFlyoutPresenter
         {
-            ItemsSource                                = Items
+            ItemsSource = Items
         };
         presenter.TreeViewFlyout = this;
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, presenter, TreeViewFlyoutPresenter.ItemTemplateProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, presenter, TreeViewFlyoutPresenter.ItemContainerThemeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, TreeViewFlyoutPresenter.IsShowArrowProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty));
-        SetupArrowPosition(Popup, presenter);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ArrowPositionProperty, presenter, TreeViewFlyoutPresenter.ArrowPositionProperty));
         ConfigureShowArrowEffective();
-
+        ConfigureArrowPosition();
         return presenter;
     }
-
-    protected void SetupArrowPosition(Popup popup, TreeViewFlyoutPresenter? flyoutPresenter = null)
-    {
-        if (flyoutPresenter is null)
-        {
-            var child = popup.Child;
-            if (child is TreeViewFlyoutPresenter childPresenter)
-            {
-                flyoutPresenter = childPresenter;
-            }
-        }
-
-        var placement = popup.Placement;
-        var anchor    = popup.PlacementAnchor;
-        var gravity   = popup.PlacementGravity;
-
-        if (flyoutPresenter is not null)
-        {
-            var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
-            if (arrowPosition.HasValue)
-            {
-                flyoutPresenter.ArrowPosition = arrowPosition.Value;
-            }
-        }
-    }
-
+    
     protected override void OnOpening(CancelEventArgs args)
     {
         if (Popup.Child is { } presenter)

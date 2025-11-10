@@ -84,23 +84,17 @@ internal class DataGridFilterIndicator : IconButton
             TriggerType  = FlyoutTriggerType.Click,
             ClickHideFlyoutPredicate = (provider, args) =>
             {
-                if (provider.PopupHost != args.Root)
+                var popupHost = provider.PopupHost;
+                if (popupHost is OverlayPopupHost overlayPopupHost && args.Root is Control root)
                 {
-                    if (args.Root is Control control)
+                    var offset = overlayPopupHost.TranslatePoint(default, root);
+                    if (offset.HasValue)
                     {
-                        if (control.Parent is Visual visualParent)
-                        {
-                            var topLevel = TopLevel.GetTopLevel(visualParent);
-                            if (provider.PopupHost == topLevel)
-                            {
-                                return false;
-                            }
-                        }
+                        var bounds = new Rect(offset.Value, overlayPopupHost.Bounds.Size);
+                        return !bounds.Contains(args.Position);
                     }
-
-                    return true;
                 }
-
+                
                 return false;
             }
         };
@@ -143,7 +137,8 @@ internal class DataGridFilterIndicator : IconButton
             {
                 IsShowArrow               = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
-                IsDetectMouseClickEnabled = false
+                IsDetectMouseClickEnabled = false,
+                IsUseOverlayLayer = true,
             };
             _bindingDisposables.Add(BindUtils.RelayBind(owningGrid, MotionAwareControlProperty.IsMotionEnabledProperty, menuFlyout,
                 MotionAwareControlProperty.IsMotionEnabledProperty));
@@ -152,7 +147,7 @@ internal class DataGridFilterIndicator : IconButton
             {
                 menuFlyout.Items.Add(menuItem);
             }
-
+            
             Flyout                          =  menuFlyout;
             _flyoutStateHelper.Flyout       =  menuFlyout;
             menuFlyout.FilterValuesSelected += HandleFilterValuesSelected;
@@ -165,7 +160,8 @@ internal class DataGridFilterIndicator : IconButton
             {
                 IsShowArrow               = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
-                IsDetectMouseClickEnabled = false
+                IsDetectMouseClickEnabled = false,
+                IsUseOverlayLayer         = true
             };
             _bindingDisposables.Add(BindUtils.RelayBind(this, FilterMultipleProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty, (v) =>
             {

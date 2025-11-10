@@ -23,7 +23,10 @@
                                                       IsTopLevel="{TemplateBinding IsTopLevel}" />
                     <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                                 WindowManagerAddShadowHint="False"
-                                IsLightDismissEnabled="False">
+                                IsLightDismissEnabled="False"
+                                IsDetectMouseClickEnabled="False"
+                                ShouldUseOverlayLayer="{TemplateBinding IsUseOverlayLayer}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <atom:Popup.IsMotionAwareOpen>
                             <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">
                                 <Binding Path="IsSubMenuOpen" RelativeSource="{RelativeSource TemplatedParent}" />

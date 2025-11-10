@@ -30,6 +30,9 @@ public class Menu : AvaloniaMenu,
     
     public static readonly StyledProperty<int> DisplayPageSizeProperty = 
         AvaloniaProperty.Register<Menu, int>(nameof (DisplayPageSize), 10);
+    
+    public static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
+        AvaloniaProperty.Register<Menu, bool>(nameof (IsUseOverlayLayer));
 
     public SizeType SizeType
     {
@@ -47,6 +50,12 @@ public class Menu : AvaloniaMenu,
     {
         get => GetValue(DisplayPageSizeProperty);
         set => SetValue(DisplayPageSizeProperty, value);
+    }
+    
+    public bool IsUseOverlayLayer
+    {
+        get => GetValue(IsUseOverlayLayerProperty);
+        set => SetValue(IsUseOverlayLayerProperty, value);
     }
 
     #endregion
@@ -155,6 +164,7 @@ public class Menu : AvaloniaMenu,
             disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsUseOverlayLayerProperty, menuItem, MenuItem.IsUseOverlayLayerProperty));
             
             PrepareMenuItem(menuItem, item, index, disposables);
             

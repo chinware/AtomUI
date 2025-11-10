@@ -98,7 +98,6 @@ internal class FlyoutStateHelper : AvaloniaObject
     {
         if (Flyout is IPopupHostProvider popupHostProvider)
         {
-
             var host = popupHostProvider.PopupHost;
             if (host is PopupRoot popupRoot)
             {
@@ -122,7 +121,7 @@ internal class FlyoutStateHelper : AvaloniaObject
 
     private void HandleFlyoutClosed(object? sender, EventArgs e)
     {
-        FlyoutClosed?.Invoke(this, EventArgs.Empty);
+        FlyoutClosed?.Invoke(this, EventArgs.Empty); 
         // 处理被动关闭
         _flyoutCloseDetectDisposable?.Dispose();
         _flyoutCloseDetectDisposable = null;

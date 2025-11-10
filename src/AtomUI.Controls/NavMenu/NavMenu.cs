@@ -74,6 +74,9 @@ public class NavMenu : ItemsControl,
             nameof(DefaultOpenPaths),
             o => o.DefaultOpenPaths,
             (o, v) => o.DefaultOpenPaths = v);
+    
+    public static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
+        AvaloniaProperty.Register<NavMenu, bool>(nameof (IsUseOverlayLayer));
 
     public INavMenuItem? _selectedItem;
 
@@ -129,6 +132,12 @@ public class NavMenu : ItemsControl,
     {
         get => GetValue(IsDarkStyleProperty);
         set => SetValue(IsDarkStyleProperty, value);
+    }
+    
+    public bool IsUseOverlayLayer
+    {
+        get => GetValue(IsUseOverlayLayerProperty);
+        set => SetValue(IsUseOverlayLayerProperty, value);
     }
 
     #endregion
@@ -427,6 +436,7 @@ public class NavMenu : ItemsControl,
             disposables.Add(BindUtils.RelayBind(this, ModeProperty, navMenuItem, NavMenuItem.ModeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, NavMenuItem.IsDarkStyleProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, NavMenuItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsUseOverlayLayerProperty, navMenuItem, NavMenuItem.IsUseOverlayLayerProperty));
             
             PrepareNavMenuItem(navMenuItem, item, index, disposables);
             

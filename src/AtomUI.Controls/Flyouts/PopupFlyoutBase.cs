@@ -50,42 +50,28 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     /// </summary>
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         Popup.MarginToAnchorProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <inheritdoc cref="Popup.PlacementProperty" />
+    
     public static readonly StyledProperty<PlacementMode> PlacementProperty =
         Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <inheritdoc cref="Popup.HorizontalOffsetProperty" />
+    
     public static readonly StyledProperty<double> HorizontalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.HorizontalOffsetProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <inheritdoc cref="Popup.VerticalOffsetProperty" />
+    
     public static readonly StyledProperty<double> VerticalOffsetProperty =
         Avalonia.Controls.Primitives.Popup.VerticalOffsetProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    
     public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
         Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <inheritdoc cref="Popup.PlacementAnchorProperty" />
+    
     public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
         Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <summary>
-    /// Defines the <see cref="ShowMode" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<FlyoutShowMode> ShowModeProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, FlyoutShowMode>(nameof(ShowMode));
-
-    /// <summary>
-    /// Defines the <see cref="OverlayInputPassThroughElement" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<IInputElement?> OverlayInputPassThroughElementProperty =
         Avalonia.Controls.Primitives.Popup.OverlayInputPassThroughElementProperty.AddOwner<PopupFlyoutBase>();
-
-    /// <summary>
-    /// Defines the <see cref="PlacementConstraintAdjustment" /> property
-    /// </summary>
+    
     public static readonly StyledProperty<PopupPositionerConstraintAdjustment> PlacementConstraintAdjustmentProperty =
         Avalonia.Controls.Primitives.Popup.PlacementConstraintAdjustmentProperty.AddOwner<PopupFlyoutBase>();
     
@@ -103,6 +89,9 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     
     public static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
         AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof(IsDetectMouseClickEnabled), true);
+    
+    public static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
+        AvaloniaProperty.Register<PopupFlyoutBase, bool>(nameof (IsUseOverlayLayer));
 
     public double MarginToAnchor
     {
@@ -110,35 +99,30 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         set => SetValue(MarginToAnchorProperty, value);
     }
 
-    /// <inheritdoc cref="Popup.Placement" />
     public PlacementMode Placement
     {
         get => GetValue(PlacementProperty);
         set => SetValue(PlacementProperty, value);
     }
 
-    /// <inheritdoc cref="Popup.PlacementGravity" />
     public PopupGravity PlacementGravity
     {
         get => GetValue(PlacementGravityProperty);
         set => SetValue(PlacementGravityProperty, value);
     }
 
-    /// <inheritdoc cref="Popup.PlacementAnchor" />
     public PopupAnchor PlacementAnchor
     {
         get => GetValue(PlacementAnchorProperty);
         set => SetValue(PlacementAnchorProperty, value);
     }
-
-    /// <inheritdoc cref="Popup.HorizontalOffset" />
+    
     public double HorizontalOffset
     {
         get => GetValue(HorizontalOffsetProperty);
         set => SetValue(HorizontalOffsetProperty, value);
     }
-
-    /// <inheritdoc cref="Popup.VerticalOffset" />
+    
     public double VerticalOffset
     {
         get => GetValue(VerticalOffsetProperty);
@@ -164,7 +148,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         set => SetValue(OverlayInputPassThroughElementProperty, value);
     }
 
-    /// <inheritdoc cref="Popup.PlacementConstraintAdjustment" />
     public PopupPositionerConstraintAdjustment PlacementConstraintAdjustment
     {
         get => GetValue(PlacementConstraintAdjustmentProperty);
@@ -199,6 +182,12 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     {
         get => GetValue(IsDetectMouseClickEnabledProperty);
         set => SetValue(IsDetectMouseClickEnabledProperty, value);
+    }
+    
+    public bool IsUseOverlayLayer
+    {
+        get => GetValue(IsUseOverlayLayerProperty);
+        set => SetValue(IsUseOverlayLayerProperty, value);
     }
     
     #endregion
@@ -249,6 +238,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         _popupBindingDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, popup, Popup.MotionDurationProperty));
         _popupBindingDisposables.Add(BindUtils.RelayBind(this, OpenMotionProperty, popup, Popup.OpenMotionProperty));
         _popupBindingDisposables.Add(BindUtils.RelayBind(this, CloseMotionProperty, popup, Popup.CloseMotionProperty));
+        _popupBindingDisposables.Add(BindUtils.RelayBind(this, IsUseOverlayLayerProperty, popup, Popup.ShouldUseOverlayLayerProperty));
         PopupCreated?.Invoke(this, new FlyoutPopupCreatedEventArgs(popup));
     }
 
@@ -337,9 +327,6 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     protected void HandlePopupClosed()
     {
         Popup.SetLogicalParent(null);
-        // TODO 子元素不能直接删除, 会造成不能重复添加的问题
-        // 是否可以在删除前递归清除 visual parent 呢?
-        // Popup.Child = null;
 
         // Ensure this isn't active
         _transientDisposable?.Dispose();

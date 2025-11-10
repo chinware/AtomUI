@@ -176,8 +176,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public Popup()
     {
         this.ConfigureMotionBindingStyle();
-        Closed                         += HandleClosed;
-        Opened                         += HandleOpened;
+        Closed += HandleClosed;
+        Opened += HandleOpened;
         if (this is IPopupHostProvider popupHostProvider)
         {
             if (popupHostProvider.PopupHost != null)
@@ -257,7 +257,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                     {
                         AdjustPopupHostPosition(placementTarget);
                     }
-                    if (Host is OverlayPopupHost overlayPopupHost)
+                    else if (Host is OverlayPopupHost overlayPopupHost)
                     {
                         overlayPopupHost.PropertyChanged += HandleOverlayPopupHostPropertyChanged;
                     }
@@ -277,13 +277,19 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         if (Host is OverlayPopupHost overlayPopupHost)
         {
-            if (e.Property == BoundsProperty)
+            if (e.Property == Canvas.LeftProperty ||
+                e.Property == Canvas.TopProperty)
             {
-                overlayPopupHost.PropertyChanged -= HandleOverlayPopupHostPropertyChanged;
-                var placementTarget = GetEffectivePlacementTarget();
-                if (placementTarget is not null)
+                var left = Canvas.GetLeft(overlayPopupHost);
+                var top = Canvas.GetTop(overlayPopupHost);
+                if (!double.IsNaN(left) && !double.IsNaN(top))
                 {
-                    AdjustPopupHostPosition(placementTarget);
+                    overlayPopupHost.PropertyChanged -= HandleOverlayPopupHostPropertyChanged;
+                    var placementTarget = GetEffectivePlacementTarget();
+                    if (placementTarget is not null)
+                    {
+                        AdjustPopupHostPosition(placementTarget);
+                    }
                 }
             }
         }
@@ -334,15 +340,40 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                         }
                         else
                         {
-                            if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                            if (popupHostProvider.PopupHost is PopupRoot popupRoot)
                             {
-                                if (CloseAction != null)
+                                if (popupRoot != pointerEventArgs.Root)
                                 {
-                                    CloseAction.Invoke(this);
+                                    if (CloseAction != null)
+                                    {
+                                        CloseAction.Invoke(this);
+                                    }
+                                    else
+                                    {
+                                        MotionAwareClose();
+                                    }
                                 }
-                                else
+                            }
+                            else if (popupHostProvider.PopupHost is OverlayPopupHost overlayPopupHost)
+                            {
+                                if (args.Root is Control root)
                                 {
-                                    MotionAwareClose();
+                                    var offset = overlayPopupHost.TranslatePoint(default, root);
+                                    if (offset.HasValue)
+                                    {
+                                        var bounds = new Rect(offset.Value, overlayPopupHost.Bounds.Size);
+                                        if (!bounds.Contains(pointerEventArgs.Position))
+                                        {
+                                            if (CloseAction != null)
+                                            {
+                                                CloseAction.Invoke(this);
+                                            }
+                                            else
+                                            {
+                                                MotionAwareClose();
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -470,7 +501,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
         else if (Host is OverlayPopupHost overlayPopupHost)
         {
-            location  = overlayPopupHost.Bounds.Position;
+            location  = new Point(Canvas.GetLeft(overlayPopupHost), Canvas.GetTop(overlayPopupHost));
             popupSize = overlayPopupHost.Bounds.Size;
         }
         
@@ -839,6 +870,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
             _overlayPopupHostCloseMotionDisposable.Dispose();
             _overlayPopupHostCloseMotionDisposable = null;
+            
             if (!completedFuncCalled)
             {
                 Close();

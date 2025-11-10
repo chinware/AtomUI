@@ -33,17 +33,20 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
                 control.SetVisualParent(null);
             }
         }
-        
+
         Presenter = new DataGridMenuFilterFlyoutPresenter
         {
-            ItemsSource                                = Items,
-            MenuFlyout                                 = this
+            ItemsSource = Items,
+            MenuFlyout  = this
         };
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, MenuFlyoutPresenter.ItemContainerThemeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, Presenter, MenuFlyoutPresenter.IsShowArrowProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, MenuFlyoutPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ArrowPositionProperty, Presenter, MenuFlyoutPresenter.ArrowPositionProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsUseOverlayLayerProperty, Presenter, MenuFlyoutPresenter.IsUseOverlayLayerProperty));
         ConfigureShowArrowEffective();
+        ConfigureArrowPosition();
         return Presenter;
     }
 

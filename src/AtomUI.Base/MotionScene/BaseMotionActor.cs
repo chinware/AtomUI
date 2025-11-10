@@ -209,5 +209,4 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
         _followDisposables = null;
         _followTarget      = this;
     }
-    
 }

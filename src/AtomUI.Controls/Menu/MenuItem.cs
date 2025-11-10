@@ -84,6 +84,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     internal static readonly StyledProperty<Thickness> PopupPaddingProperty =
         AvaloniaProperty.Register<MenuItem, Thickness>(nameof(PopupPadding));
     
+    internal static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
+        AvaloniaProperty.Register<MenuItem, bool>(nameof (IsUseOverlayLayer));
+    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -106,6 +109,12 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     {
         get => GetValue(PopupPaddingProperty);
         set => SetValue(PopupPaddingProperty, value);
+    }
+    
+    internal bool IsUseOverlayLayer
+    {
+        get => GetValue(IsUseOverlayLayerProperty);
+        set => SetValue(IsUseOverlayLayerProperty, value);
     }
     
     #endregion
@@ -258,6 +267,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
             disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, MenuItem.ItemTemplateProperty));
             disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, menuItem, MenuItem.SizeTypeProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuItem, MenuItem.IsMotionEnabledProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsUseOverlayLayerProperty, menuItem, MenuItem.IsUseOverlayLayerProperty));
             PrepareMenuItem(menuItem, item, index, disposables);
             
             if (_itemsBindingDisposables.TryGetValue(menuItem, out var oldDisposables))

@@ -129,7 +129,7 @@ public class Flyout : PopupFlyoutBase
     protected override Control CreatePresenter()
     {
         _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(3);
+        _presenterBindingDisposables = new CompositeDisposable(4);
         var presenter = new FlyoutPresenter();
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ContentProperty, presenter, FlyoutPresenter.ContentProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, FlyoutPresenter.IsMotionEnabledProperty));

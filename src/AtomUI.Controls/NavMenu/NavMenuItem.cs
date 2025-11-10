@@ -243,6 +243,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
+    
+    internal static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
+        AvaloniaProperty.Register<NavMenuItem, bool>(nameof (IsUseOverlayLayer));
 
     private double _effectivePopupMinWidth;
 
@@ -288,6 +291,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+        
+    internal bool IsUseOverlayLayer
+    {
+        get => GetValue(IsUseOverlayLayerProperty);
+        set => SetValue(IsUseOverlayLayerProperty, value);
     }
     
     #endregion
@@ -1075,6 +1084,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
             disposables.Add(BindUtils.RelayBind(this, IsDarkStyleProperty, navMenuItem, IsDarkStyleProperty));
             disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, navMenuItem, IsMotionEnabledProperty));
             disposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, navMenuItem, ItemContainerThemeProperty));
+            disposables.Add(BindUtils.RelayBind(this, IsUseOverlayLayerProperty, navMenuItem, IsUseOverlayLayerProperty));
             PrepareNavMenuItem(navMenuItem, item, index, disposables);
             if (_itemsBindingDisposables.TryGetValue(navMenuItem, out var oldDisposables))
             {

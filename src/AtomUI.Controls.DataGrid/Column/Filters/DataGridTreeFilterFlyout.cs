@@ -48,12 +48,16 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
             }
         }
         _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(3);
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter,
-            DataGridTreeFilterFlyoutPresenter.IsShowArrowProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter,
-            DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables = new CompositeDisposable(4);
+        
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, presenter, DataGridTreeFilterFlyoutPresenter.IsShowArrowProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ArrowPositionProperty, presenter, DataGridTreeFilterFlyoutPresenter.ArrowPositionProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ToggleTypeProperty, presenter, DataGridTreeFilterFlyoutPresenter.ToggleTypeProperty));
+        
+        ConfigureShowArrowEffective();
+        ConfigureArrowPosition();
+        
         return presenter;
     }
 

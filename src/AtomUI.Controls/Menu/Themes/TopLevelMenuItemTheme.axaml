@@ -23,6 +23,7 @@
                                 IsLightDismissEnabled="False"
                                 Placement="BottomEdgeAlignedLeft"
                                 IsDetectMouseClickEnabled="True"
+                                ShouldUseOverlayLayer="{TemplateBinding IsUseOverlayLayer}"
                                 IsMotionAwareOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="PopupFrame"
                                 MaxHeight="{TemplateBinding MaxPopupHeight}"
