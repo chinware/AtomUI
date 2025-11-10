@@ -35,7 +35,6 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightLG}}" />
             <Setter Property="FontSize"
                     Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ContentFontSizeLG}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.PaddingLG}}" />
@@ -48,7 +47,6 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeight}}" />
             <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ContentFontSize}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.Padding}}" />
             <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
@@ -60,7 +58,6 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlHeightSM}}" />
             <Setter Property="FontSize"
                     Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.ContentFontSizeSM}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:OptionButtonTokenKey.PaddingSM}}" />
