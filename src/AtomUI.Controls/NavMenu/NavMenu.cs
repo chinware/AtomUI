@@ -41,10 +41,12 @@ public class NavMenu : ItemsControl,
 {
     #region 公共属性定义
 
-    public static readonly DirectProperty<NavMenu, INavMenuItem?> SelectedItemProperty =
-        AvaloniaProperty.RegisterDirect<NavMenu, INavMenuItem?>(
+    public static readonly DirectProperty<NavMenu, INavMenuItemData?> SelectedItemProperty =
+        AvaloniaProperty.RegisterDirect<NavMenu, INavMenuItemData?>(
             nameof(SelectedItem),
-            o => o.SelectedItem);
+            o => o.SelectedItem,
+            (o, v) => o.SelectedItem = v,
+            defaultBindingMode: BindingMode.TwoWay, enableDataValidation: true);
 
     public static readonly DirectProperty<NavMenu, TreeNodePath?> DefaultSelectedPathProperty =
         AvaloniaProperty.RegisterDirect<NavMenu, TreeNodePath?>(
@@ -78,12 +80,12 @@ public class NavMenu : ItemsControl,
     public static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
         AvaloniaProperty.Register<NavMenu, bool>(nameof (IsUseOverlayLayer));
 
-    public INavMenuItem? _selectedItem;
+    public INavMenuItemData? _selectedItem;
 
-    public INavMenuItem? SelectedItem
+    public INavMenuItemData? SelectedItem
     {
         get => _selectedItem;
-        private set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
+        set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
     }
 
     private IList<TreeNodePath>? _defaultOpenPaths;
@@ -244,8 +246,8 @@ public class NavMenu : ItemsControl,
             i.Close();
         }
 
-        IsOpen        = false;
-        SelectedItem = null;
+        SetCurrentValue(IsOpenProperty, false);
+        SetCurrentValue(SelectedItemProperty, null);
 
         RaiseEvent(new RoutedEventArgs
         {
@@ -261,7 +263,7 @@ public class NavMenu : ItemsControl,
             return;
         }
 
-        IsOpen = true;
+        SetCurrentValue(IsOpenProperty, true);
 
         RaiseEvent(new RoutedEventArgs
         {
@@ -344,6 +346,13 @@ public class NavMenu : ItemsControl,
             if (change.Property == ModeProperty)
             {
                 HandleModeChanged();
+            }
+            else if (change.Property == SelectedItemProperty)
+            {
+                if (SelectedItem != null)
+                {
+                    SelectTargetItem(SelectedItem);
+                }
             }
         }
     }
@@ -586,7 +595,7 @@ public class NavMenu : ItemsControl,
     {
         if (!skipSelf)
         {
-            item.IsSelected = false;
+            item.SetCurrentValue(NavMenuItem.IsSelectedProperty, false);
         }
         
         for (var i = 0; i < item.ItemCount; i++)
@@ -656,6 +665,7 @@ public class NavMenu : ItemsControl,
     internal void RaiseNavMenuItemSelected(INavMenuItem navMenuItem)
     {
         RaiseEvent(new NavMenuItemSelectedEventArgs(NavMenuItemSelectedEvent, navMenuItem));
+        SetCurrentValue(SelectedItemProperty, navMenuItem);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -680,9 +690,45 @@ public class NavMenu : ItemsControl,
 
     private void ConfigureDefaultSelectedPath()
     {
-        if (DefaultSelectedPath != null)
+        INavMenuItemData? targetItem = null;
+        if (SelectedItem != null)
         {
+            targetItem = SelectedItem;
+        }
+        if (DefaultSelectedPath != null)
+        { 
             var pathNodes = FindMenuItemByPath(DefaultSelectedPath);
+            if (pathNodes.Count > 0)
+            {
+                targetItem = pathNodes.Last();
+            }
+        }
+
+        if (targetItem != null)
+        {
+            SelectTargetItem(targetItem);
+        }
+    }
+
+    private void SelectTargetItem(INavMenuItemData targetItem)
+    {
+        IList<INavMenuItemData>? pathNodes = null;
+        
+        if (targetItem.Children.Count > 0)
+        {
+            throw new InvalidOperationException("The selected item cannot have a submenu.");
+        }
+        pathNodes = new List<INavMenuItemData>();
+        var current = SelectedItem;
+        while (current != null)
+        {
+            pathNodes.Add(current);
+            current = current.ParentNode as INavMenuItemData;
+        }
+        pathNodes = pathNodes.Reverse().ToList();
+        
+        if (pathNodes?.Count > 0)
+        {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var navMenuItems = await OpenMenuItemPathAsync(pathNodes);

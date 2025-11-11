@@ -131,6 +131,8 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     }
     
     IList<ITreeViewItemData> ITreeNode<ITreeViewItemData>.Children => Items.OfType<ITreeViewItemData>().ToList();
+    ITreeNode<ITreeViewItemData>? ITreeNode<ITreeViewItemData>.ParentNode => Parent as ITreeNode<ITreeViewItemData>;
+    
     public TreeNodeKey? ItemKey { get; set; }
 
     #endregion

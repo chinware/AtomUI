@@ -55,6 +55,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     #endregion
     
     IList<IMenuItemData> ITreeNode<IMenuItemData>.Children => Items.OfType<IMenuItemData>().ToList();
+    public ITreeNode<IMenuItemData>? ParentNode => Parent as ITreeNode<IMenuItemData>;
     public TreeNodeKey? ItemKey { get; set; }
 
     #region 公共事件定义

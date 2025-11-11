@@ -188,6 +188,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;
     
     IList<INavMenuItemData> ITreeNode<INavMenuItemData>.Children => Items.OfType<INavMenuItemData>().ToList();
+    ITreeNode<INavMenuItemData>? ITreeNode<INavMenuItemData>.ParentNode => Parent as ITreeNode<INavMenuItemData>;
 
     protected override bool IsEnabledCore => base.IsEnabledCore && _commandCanExecute;
     

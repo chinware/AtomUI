@@ -8,7 +8,7 @@ internal interface INavMenu : INavMenuElement
     /// <summary>
     /// Gets or sets the currently selected submenu item.
     /// </summary>
-    INavMenuItem? SelectedItem { get; }
+    INavMenuItemData? SelectedItem { get; }
     
     /// <summary>
     /// Gets the menu interaction handler.
