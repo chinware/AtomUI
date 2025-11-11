@@ -74,6 +74,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
             nameof(IsTopLevel), o => o.IsTopLevel);
     
+    public static readonly StyledProperty<TreeNodeKey?> ItemKeyProperty =
+        AvaloniaProperty.Register<NavMenuItem, TreeNodeKey?>(nameof(ItemKey));
+    
     public ICommand? Command
     {
         get => GetValue(CommandProperty);
@@ -178,12 +181,13 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         private set => SetAndRaise(IsTopLevelProperty, ref _isTopLevel, value);
     }
     
+    public TreeNodeKey? ItemKey
+    {
+        get => GetValue(ItemKeyProperty);
+        set => SetValue(ItemKeyProperty, value);
+    }
+    
     bool INavMenuItem.IsPointerOverSubMenu => _popup?.IsPointerOverPopup ?? false;
-
-    /// <summary>
-    /// 获取或者设置菜单项的 Key
-    /// </summary>
-    public TreeNodeKey? ItemKey { get; set; }
     
     INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;
     
