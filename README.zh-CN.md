@@ -200,6 +200,18 @@ public partial class App : Application
 
 <div style="height:50px"></div>
 
+#### 体验所有控件
+
+您可以拉取控件库项目到本地来体验所有的 AtomUI 控件
+
+```bash
+git clone --recurse-submodules https://github.com/chinware/AtomUI.ControlGallery.git
+cd AtomUI.ControlGallery
+dotnet build
+```
+
+<div style="height:50px"></div>
+
 #### 致谢
 
 <div>

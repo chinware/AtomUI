@@ -211,6 +211,17 @@ You can start using it in your own projects
 
 <div style="height:50px"></div>
 
+#### All Control Gallery
+
+You can experience all the controls by cloning the control gallery project to your local machine.
+
+```bash
+git clone --recurse-submodules https://github.com/chinware/AtomUI.ControlGallery.git
+cd AtomUI.ControlGallery
+dotnet build
+```
+<div style="height:50px"></div>
+
 #### Acknowledgements
 
 <div>
