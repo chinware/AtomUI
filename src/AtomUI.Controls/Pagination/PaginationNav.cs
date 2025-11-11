@@ -12,7 +12,7 @@ internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
     #region 公共属性定义
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<PaginationNav>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<PaginationNav>();
 
     public SizeType SizeType
     {

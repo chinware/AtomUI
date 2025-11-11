@@ -67,7 +67,7 @@ public class CardGridItem : ContentControl
     #region 内部属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty = 
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<CardGridItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<CardGridItem>();
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CardGridItem>();

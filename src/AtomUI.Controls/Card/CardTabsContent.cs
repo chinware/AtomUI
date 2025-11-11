@@ -55,7 +55,7 @@ public class CardTabsContent : TemplatedControl
     #region 内部属性定义
     
     internal static readonly StyledProperty<SizeType> SizeTypeProperty = 
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<CardTabsContent>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<CardTabsContent>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CardTabsContent>();

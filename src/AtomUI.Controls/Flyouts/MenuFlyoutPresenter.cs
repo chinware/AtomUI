@@ -37,7 +37,7 @@ public class MenuFlyoutPresenter : MenuBase,
             RoutingStrategies.Bubble);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<MenuFlyoutPresenter>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<MenuFlyoutPresenter>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();

@@ -15,7 +15,7 @@ public class Spin : ContentControl, IMotionAwareControl
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Spin>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Spin>();
 
     public static readonly StyledProperty<string?> TipProperty =
         AvaloniaProperty.Register<Spin, string?>(nameof(Tip));

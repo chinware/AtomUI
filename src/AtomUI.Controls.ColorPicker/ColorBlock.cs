@@ -16,7 +16,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ColorBlock>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ColorBlock>();
     
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<ColorBlock, double>(nameof(Size), Double.NaN);

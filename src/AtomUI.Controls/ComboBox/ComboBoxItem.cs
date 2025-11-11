@@ -13,7 +13,7 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ComboBoxItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ComboBoxItem>();
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBoxItem>();

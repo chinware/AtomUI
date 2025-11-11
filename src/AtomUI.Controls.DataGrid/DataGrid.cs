@@ -36,7 +36,7 @@ public partial class DataGrid : TemplatedControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
     
     public static readonly StyledProperty<bool> IsOperatingProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsOperating));

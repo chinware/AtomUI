@@ -60,7 +60,7 @@ public class ToggleSwitch : ToggleButton,
     /// 设置预置的大小类型
     /// </summary>
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ToggleSwitch>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ToggleSwitch>();
 
     /// <summary>
     /// 是否处于加载状态

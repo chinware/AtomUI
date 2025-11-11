@@ -36,7 +36,7 @@ public class HyperLinkButton : AvaloniaButton,
         AvaloniaProperty.Register<HyperLinkButton, bool>(nameof(IsLoading));
     
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<HyperLinkButton>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<HyperLinkButton>();
 
     public static readonly StyledProperty<Icon?> IconProperty = 
         AvaloniaProperty.Register<HyperLinkButton, Icon?>(nameof(Icon));

@@ -100,7 +100,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<StepsItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<StepsItem>();
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<StepsItem>();

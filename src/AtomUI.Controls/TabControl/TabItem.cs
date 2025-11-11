@@ -83,7 +83,7 @@ public class TabItem : HeaderedContentControl, ISelectable
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<TabItem>();
 
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabItem, TabSharp>(nameof(Shape));

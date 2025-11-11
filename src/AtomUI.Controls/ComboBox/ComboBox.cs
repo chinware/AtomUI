@@ -48,7 +48,7 @@ public class ComboBox : AvaloniaComboBox,
         AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<ComboBox>();

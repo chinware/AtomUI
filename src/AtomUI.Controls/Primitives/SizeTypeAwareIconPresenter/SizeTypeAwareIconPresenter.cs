@@ -12,7 +12,7 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     #region 公共属性定义
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<Icon?> IconProperty =
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, Icon?>(nameof(Icon));

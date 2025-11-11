@@ -43,7 +43,7 @@ public class DataGridCell : ContentControl
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
 
     internal static readonly DirectProperty<DataGridCell, bool> IsSortingProperty =
         AvaloniaProperty.RegisterDirect<DataGridCell, bool>(

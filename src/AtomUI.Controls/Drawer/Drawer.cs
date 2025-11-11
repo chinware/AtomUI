@@ -4,20 +4,22 @@ using AtomUI.Controls.DesignTokens;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Metadata;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
+using AtomUI.Theme.Styling;
 
 namespace AtomUI.Controls;
 
 public class Drawer : Control,
                       IMotionAwareControl,
-                      IControlSharedTokenResourcesHost
+                      IControlSharedTokenResourcesHost,
+                      ICustomizableSizeTypeAware
 {
     #region 公共属性定义
 
@@ -33,8 +35,8 @@ public class Drawer : Control,
     public static readonly StyledProperty<DrawerPlacement> PlacementProperty = 
         AvaloniaProperty.Register<Drawer, DrawerPlacement>(nameof(Placement), DrawerPlacement.Right);
 
-    public static readonly StyledProperty<Visual?> OpenOnProperty =
-        AvaloniaProperty.Register<Drawer, Visual?>(nameof(OpenOn));
+    public static readonly StyledProperty<Control?> OpenOnProperty =
+        AvaloniaProperty.Register<Drawer, Control?>(nameof(OpenOn));
 
     public static readonly StyledProperty<bool> IsShowMaskProperty = 
         AvaloniaProperty.Register<Drawer, bool>(nameof(IsShowMask), true);
@@ -60,11 +62,11 @@ public class Drawer : Control,
     public static readonly StyledProperty<IDataTemplate?> ExtraTemplateProperty =
         AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ExtraTemplate));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Drawer>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Drawer>();
 
-    public static readonly StyledProperty<double> DialogSizeProperty =
-        AvaloniaProperty.Register<Drawer, double>(nameof(DialogSize));
+    public static readonly StyledProperty<Dimension> DialogSizeProperty =
+        AvaloniaProperty.Register<Drawer, Dimension>(nameof(DialogSize));
 
     public static readonly StyledProperty<double> PushOffsetPercentProperty =
         AvaloniaProperty.Register<Drawer, double>(nameof(PushOffsetPercent));
@@ -98,7 +100,7 @@ public class Drawer : Control,
         set => SetValue(PlacementProperty, value);
     }
 
-    public Visual? OpenOn
+    public Control? OpenOn
     {
         get => GetValue(OpenOnProperty);
         set => SetValue(OpenOnProperty, value);
@@ -154,13 +156,13 @@ public class Drawer : Control,
         set => SetValue(ExtraTemplateProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public double DialogSize
+    public Dimension DialogSize
     {
         get => GetValue(DialogSizeProperty);
         set => SetValue(DialogSizeProperty, value);
@@ -188,6 +190,19 @@ public class Drawer : Control,
     #endregion
 
     #region 内部属性定义
+    
+    internal static readonly DirectProperty<Drawer, double> EffectiveDialogSizeProperty =
+        AvaloniaProperty.RegisterDirect<Drawer, double>(nameof(EffectiveDialogSize),
+            o => o.EffectiveDialogSize,
+            (o, v) => o.EffectiveDialogSize = v);
+    
+    private double _effectiveDialogSize;
+
+    internal double EffectiveDialogSize
+    {
+        get => _effectiveDialogSize;
+        set => SetAndRaise(EffectiveDialogSizeProperty, ref _effectiveDialogSize, value);
+    }
 
     Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -201,15 +216,16 @@ public class Drawer : Control,
     
     static Drawer()
     {
-        SizeTypeProperty.OverrideDefaultValue<Drawer>(SizeType.Small);
+        SizeTypeProperty.OverrideDefaultValue<Drawer>(CustomizableSizeType.Small);
     }
 
     public Drawer()
     {
         this.RegisterResources();
         this.ConfigureMotionBindingStyle();
+        this.ConfigureInstanceStyles();
     }
-
+    
     public static Drawer? GetDrawer(Visual element)
     {
         var container = element.FindAncestorOfType<DrawerContainer>();
@@ -245,34 +261,12 @@ public class Drawer : Control,
                 }
             }));
         }
-        _relayBindingDisposables.Add(TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty,
-            DrawerTokenKey.PushOffsetPercent));
-        SetupDialogSizeTypeBindings();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _relayBindingDisposables?.Dispose();
-    }
-
-    private void SetupDialogSizeTypeBindings()
-    {
-        if (SizeType == SizeType.Large)
-        {
-            _relayBindingDisposables?.Add(
-                TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.LargeSize));
-        }
-        else if (SizeType == SizeType.Middle)
-        {
-            _relayBindingDisposables?.Add(
-                TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.MiddleSize));
-        }
-        else
-        {
-            _relayBindingDisposables?.Add(
-                TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, DrawerTokenKey.SmallSize));
-        }
     }
 
     private Drawer? FindParentDrawer()
@@ -309,19 +303,31 @@ public class Drawer : Control,
             {
                 HandleIsOpenChanged();
             }
-            else if (change.Property == SizeTypeProperty)
-            {
-                SetupDialogSizeTypeBindings();
-            }
         }
 
+        if (change.Property == OpenOnProperty ||
+            change.Property == DialogSizeProperty)
+        {
+            ConfigureEffectiveDialogSize();
+        }
+        
         if (change.Property == OpenOnProperty)
         {
-            if (OpenOn != null)
+            if (change.OldValue is Control oldOpenOn)
             {
-                ScopeAwareAdornerLayer.SetAdornedElement(this, OpenOn);
+                oldOpenOn.SizeChanged -= HandleOpenOnSizeChanged;
+            }
+            if (change.NewValue is Control newOpenOn)
+            {
+                newOpenOn.SizeChanged += HandleOpenOnSizeChanged;
+                ScopeAwareAdornerLayer.SetAdornedElement(this, newOpenOn);
             }
         }
+    }
+
+    private void HandleOpenOnSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        ConfigureEffectiveDialogSize();
     }
 
     private void HandleIsOpenChanged()
@@ -371,7 +377,7 @@ public class Drawer : Control,
             _containerDisposables.Add(BindUtils.RelayBind(this, FooterTemplateProperty, _container, DrawerContainer.FooterTemplateProperty));
             _containerDisposables.Add(BindUtils.RelayBind(this, ExtraProperty, _container, DrawerContainer.ExtraProperty));
             _containerDisposables.Add(BindUtils.RelayBind(this, ExtraTemplateProperty, _container, DrawerContainer.ExtraTemplateProperty));
-            _containerDisposables.Add(BindUtils.RelayBind(this, DialogSizeProperty, _container, DrawerContainer.DialogSizeProperty));
+            _containerDisposables.Add(BindUtils.RelayBind(this, EffectiveDialogSizeProperty, _container, DrawerContainer.DialogSizeProperty));
             _containerDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, _container, DrawerContainer.PlacementProperty));
             _containerDisposables.Add(BindUtils.RelayBind(this, TitleProperty, _container, DrawerContainer.TitleProperty));
             _containerDisposables.Add(BindUtils.RelayBind(this, IsShowMaskProperty, _container, DrawerContainer.IsShowMaskProperty));
@@ -382,7 +388,6 @@ public class Drawer : Control,
             _containerDisposables.Add(BindUtils.RelayBind(this, PushOffsetPercentProperty, _container,
                 DrawerContainer.PushOffsetPercentProperty));
         }
-       
     }
 
     protected internal virtual void NotifyBeforeOpen(ScopeAwareAdornerLayer layer)
@@ -437,5 +442,48 @@ public class Drawer : Control,
     protected internal virtual void NotifyClosed()
     {
         Closed?.Invoke(this, EventArgs.Empty);
+    }
+    
+    private void ConfigureInstanceStyles()
+    {
+        var style = new Style();
+        style.Add(PushOffsetPercentProperty, DrawerTokenKey.PushOffsetPercent);
+        Styles.Add(style);
+        
+        var smallStyle = new Style(x => x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Small)); 
+        smallStyle.Add(DialogSizeProperty, DrawerTokenKey.SmallSize);
+        Styles.Add(smallStyle);
+        
+        var largeStyle = new Style(x => x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Large));
+        largeStyle.Add(DialogSizeProperty, DrawerTokenKey.LargeSize);
+        Styles.Add(largeStyle);
+        
+        var middleStyle = new Style(x => x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Middle)); 
+        middleStyle.Add(DialogSizeProperty, DrawerTokenKey.MiddleSize);
+        Styles.Add(middleStyle);
+    }
+
+    private void ConfigureEffectiveDialogSize()
+    {
+        if (DialogSize.IsAbsolute)
+        {
+            SetCurrentValue(EffectiveDialogSizeProperty, DialogSize.Value);
+        } 
+        else if (DialogSize.IsPercentage)
+        {
+            if (OpenOn != null)
+            {
+                var containerSize = OpenOn.Bounds.Size;
+                if (Placement == DrawerPlacement.Top ||
+                    Placement == DrawerPlacement.Bottom)
+                {
+                    SetCurrentValue(EffectiveDialogSizeProperty, DialogSize.Resolve(containerSize.Height));
+                }
+                else
+                {
+                    SetCurrentValue(EffectiveDialogSizeProperty, DialogSize.Resolve(containerSize.Width));
+                }
+            }
+        }
     }
 }

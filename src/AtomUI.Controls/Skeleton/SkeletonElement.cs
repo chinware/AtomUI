@@ -8,7 +8,7 @@ public abstract class SkeletonElement : AbstractSkeleton, ISizeTypeAware
     #region 公共属性定义
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SkeletonButton>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SkeletonButton>();
     
     public static readonly StyledProperty<bool> IsBlockProperty =
         AvaloniaProperty.Register<SkeletonElement, bool>(nameof(IsBlock));

@@ -30,7 +30,7 @@ internal class QuickJumperBar : TemplatedControl
             (o, v) => o.PageText = v);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<QuickJumperBar>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<QuickJumperBar>();
     
     private string? _jumpToText;
     public string? JumpToText

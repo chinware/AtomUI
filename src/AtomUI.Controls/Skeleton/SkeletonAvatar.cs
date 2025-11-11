@@ -14,7 +14,7 @@ public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
         AvaloniaProperty.Register<SkeletonAvatar, AvatarShape>(nameof(AvatarShape), AvatarShape.Circle);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SkeletonAvatar>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SkeletonAvatar>();
     
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<SkeletonAvatar, double>(nameof(Size), Double.NaN);

@@ -48,17 +48,17 @@ internal class DrawerToken : AbstractControlDesignToken
     /// <summary>
     /// 中等尺寸大小的 Drawer
     /// </summary>
-    public double MiddleSize { get; set; }
+    public Dimension MiddleSize { get; set; }
     
     /// <summary>
     /// 大尺寸的 Drawer
     /// </summary>
-    public double LargeSize { get; set; }
+    public Dimension LargeSize { get; set; }
     
     /// <summary>
     /// 小尺寸的 Drawer
     /// </summary>
-    public double SmallSize { get; set; }
+    public Dimension SmallSize { get; set; }
     
     /// <summary>
     /// 关闭按钮内间距
@@ -188,9 +188,9 @@ internal class DrawerToken : AbstractControlDesignToken
             }
         ]);
 
-        SmallSize         = 378;
-        MiddleSize        = 520;
-        LargeSize         = 736;
+        SmallSize         = new Dimension(378);
+        MiddleSize        = new Dimension(520);
+        LargeSize         = new Dimension(736);
         HeaderMargin      = new Thickness(SharedToken.UniformlyMarginLG, SharedToken.UniformlyMargin);
         FooterPadding     = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXS);
         CloseIconPadding  = SharedToken.PaddingXXS;

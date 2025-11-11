@@ -29,7 +29,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     public new static readonly StyledProperty<Icon?> IconProperty = AvaloniaProperty.Register<MenuItem, Icon?>(nameof (Icon));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
     
     public static readonly StyledProperty<int> DisplayPageSizeProperty = 
         Menu.DisplayPageSizeProperty.AddOwner<MenuItem>();

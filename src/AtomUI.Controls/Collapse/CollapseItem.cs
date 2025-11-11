@@ -92,7 +92,7 @@ public class CollapseItem : HeaderedContentControl,
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<CollapseItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<CollapseItem>();
 
     internal static readonly DirectProperty<CollapseItem, bool> IsGhostStyleProperty =
         AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsGhostStyle),

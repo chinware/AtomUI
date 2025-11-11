@@ -35,7 +35,7 @@ public class Empty : TemplatedControl,
         AvaloniaProperty.Register<Empty, string?>(nameof(Description));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Empty>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Empty>();
 
     public static readonly StyledProperty<bool> IsShowDescriptionProperty =
         AvaloniaProperty.Register<Empty, bool>(nameof(IsShowDescription), true);

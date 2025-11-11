@@ -89,7 +89,7 @@ public class List : TemplatedControl,
         AvaloniaProperty.Register<List, bool>(nameof(IsItemSelectable), true);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<List>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<List>();
 
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
         AvaloniaProperty.Register<List, bool>(nameof(DisabledItemHoverEffect));

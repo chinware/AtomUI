@@ -23,7 +23,7 @@ public class Menu : AvaloniaMenu,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Menu>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Menu>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();

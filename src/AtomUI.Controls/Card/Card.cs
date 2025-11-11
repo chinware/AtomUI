@@ -53,7 +53,7 @@ public class Card : HeaderedContentControl,
         AvaloniaProperty.Register<Card, CardStyleVariant>(nameof (StyleVariant));
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty = 
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Card>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Card>();
     
     public static readonly StyledProperty<bool> IsLoadingProperty = 
         AvaloniaProperty.Register<Card, bool>(nameof (IsLoading));

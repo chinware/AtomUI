@@ -80,7 +80,7 @@ public class TabStripItem : AvaloniaTabStripItem
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
     
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));

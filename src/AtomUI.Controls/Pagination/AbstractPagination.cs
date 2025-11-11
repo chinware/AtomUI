@@ -19,7 +19,7 @@ public abstract class AbstractPagination : TemplatedControl, ISizeTypeAware, IMo
         AvaloniaProperty.Register<AbstractPagination, PaginationAlign>(nameof(PaginationAlign));
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
     
     public static readonly StyledProperty<int> CurrentPageProperty =
         AvaloniaProperty.Register<AbstractPagination, int>(nameof(CurrentPage), DefaultCurrentPage,

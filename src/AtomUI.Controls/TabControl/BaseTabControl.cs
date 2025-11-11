@@ -49,7 +49,7 @@ public class BaseTabControl : SelectingItemsControl,
         AvaloniaProperty.RegisterDirect<BaseTabControl, IDataTemplate?>(nameof(SelectedContentTemplate), o => o.SelectedContentTemplate);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<BaseTabControl>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<BaseTabControl>();
 
     public static readonly StyledProperty<bool> TabAlignmentCenterProperty =
         AvaloniaProperty.Register<BaseTabControl, bool>(nameof(TabAlignmentCenter));

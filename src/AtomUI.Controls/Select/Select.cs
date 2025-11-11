@@ -127,7 +127,7 @@ public class Select : TemplatedControl,
         AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<Select>();
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Select>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Select>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<Select>();

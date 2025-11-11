@@ -68,7 +68,7 @@ internal partial class DataGridColumnHeader : ContentControl
     #region 内部属性定义
     
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnHeader>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridColumnHeader>();
     
     internal static readonly DirectProperty<DataGridColumnHeader, bool> IsFirstVisibleProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(

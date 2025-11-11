@@ -83,7 +83,7 @@ public class SplitButton : ContentControl,
         AvaloniaProperty.Register<SplitButton, bool>(nameof(IsShowIndicator), true);
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SplitButton>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<Icon?> IconProperty =
         Button.IconProperty.AddOwner<SplitButton>();

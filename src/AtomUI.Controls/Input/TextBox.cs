@@ -18,7 +18,7 @@ public class TextBox : AvaloniaTextBox,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<TextBox>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<TextBox>();
 
     public static readonly StyledProperty<bool> IsEnableClearButtonProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsEnableClearButton));

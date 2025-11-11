@@ -190,10 +190,10 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             }
         }
 
-        CreateInstanceStyles();
+        ConfigureInstanceStyles();
     }
 
-    private void CreateInstanceStyles()
+    private void ConfigureInstanceStyles()
     {
         var style = new Style();
         style.Add(MaskShadowsProperty, SharedTokenKey.BoxShadowsSecondary);

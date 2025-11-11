@@ -45,6 +45,14 @@ public enum SizeType
     Small
 }
 
+public enum CustomizableSizeType
+{
+    Large,
+    Middle,
+    Small,
+    Custom
+}
+
 // 文本修饰信息定义
 // 类似 CSS text-decoration
 public record struct TextDecorationInfo

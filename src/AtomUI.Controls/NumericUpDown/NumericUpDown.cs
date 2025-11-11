@@ -18,7 +18,7 @@ public class NumericUpDown : AvaloniaNumericUpDown, IMotionAwareControl, IContro
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<NumericUpDown>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<NumericUpDown>();

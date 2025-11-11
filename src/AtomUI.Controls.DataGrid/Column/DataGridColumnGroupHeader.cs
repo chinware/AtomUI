@@ -60,7 +60,7 @@ internal class DataGridColumnGroupHeader : TemplatedControl
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<DataGridColumnGroupHeader>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridColumnGroupHeader>();
     
     internal SizeType SizeType
     {

@@ -57,7 +57,7 @@ public class OptionButton : AvaloniaRadioButton
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<OptionButton>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<OptionButton>();
 
     internal static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<OptionButton, OptionButtonStyle>(nameof(ButtonStyle));

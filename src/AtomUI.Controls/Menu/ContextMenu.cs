@@ -25,7 +25,7 @@ public class ContextMenu : AvaloniaContextMenu,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ContextMenu>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ContextMenu>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();

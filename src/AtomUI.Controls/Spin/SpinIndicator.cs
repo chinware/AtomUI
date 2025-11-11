@@ -26,7 +26,7 @@ public class SpinIndicator : TemplatedControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SpinIndicator>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SpinIndicator>();
 
     public static readonly StyledProperty<object?> CustomIndicatorProperty =
         Spin.CustomIndicatorProperty.AddOwner<SpinIndicator>();

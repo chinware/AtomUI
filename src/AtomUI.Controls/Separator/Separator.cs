@@ -68,7 +68,7 @@ public class Separator : AvaloniaSeparator,
         AvaloniaProperty.Register<Separator, bool>(nameof(IsPlain), false);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Separator>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Separator>();
 
     /// <summary>
     /// 分割线的标题

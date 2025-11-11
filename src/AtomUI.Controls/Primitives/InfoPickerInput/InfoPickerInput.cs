@@ -48,7 +48,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<InfoPickerInput>();

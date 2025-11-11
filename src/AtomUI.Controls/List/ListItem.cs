@@ -40,7 +40,7 @@ internal class ListItem : ContentControl, ISelectable
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ListItem>();
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ListItem>();

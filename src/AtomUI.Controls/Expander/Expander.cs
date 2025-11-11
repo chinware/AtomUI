@@ -46,7 +46,7 @@ public class Expander : AvaloniaExpander,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Expander>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Expander>();
 
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);

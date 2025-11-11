@@ -39,7 +39,7 @@ public class SegmentedItem : ContentControl, ISelectable
     #region 内部属性定义
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<SegmentedItem>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SegmentedItem>();
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SegmentedItem>();

@@ -65,7 +65,7 @@ public class Steps : SelectingItemsControl,
         AvaloniaProperty.Register<Steps, Orientation>(nameof(LabelPlacement), Orientation.Horizontal);
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Steps>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Steps>();
     
     public static readonly StyledProperty<StepsItemIndicatorType> ItemIndicatorTypeProperty =
         AvaloniaProperty.Register<Steps, StepsItemIndicatorType>(nameof(ItemIndicatorType), StepsItemIndicatorType.Default);

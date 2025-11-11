@@ -45,7 +45,7 @@ internal class ListDefaultView : SelectingItemsControl
        List.IsItemSelectableProperty.AddOwner<ListDefaultView>();
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ListDefaultView>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ListDefaultView>();
     
     public static readonly StyledProperty<bool> DisabledItemHoverEffectProperty =
         List.DisabledItemHoverEffectProperty.AddOwner<ListDefaultView>();

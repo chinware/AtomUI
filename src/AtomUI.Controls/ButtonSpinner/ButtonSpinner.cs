@@ -63,7 +63,7 @@ public class ButtonSpinner : Spinner,
         AvaloniaProperty.Register<ButtonSpinner, IDataTemplate?>(nameof(InnerRightContentTemplate));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<ButtonSpinner>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ButtonSpinner>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<ButtonSpinner>();

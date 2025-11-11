@@ -25,7 +25,7 @@ public class Segmented : SelectingItemsControl,
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<Segmented>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Segmented>();
 
     public static readonly StyledProperty<bool> IsExpandingProperty =
         AvaloniaProperty.Register<Segmented, bool>(nameof(IsExpanding));

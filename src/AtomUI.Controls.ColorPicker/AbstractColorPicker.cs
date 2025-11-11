@@ -77,7 +77,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         AbstractColorPickerView.IsClearEnabledProperty.AddOwner<AbstractColorPicker>();
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AbstractColorPicker>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractColorPicker>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractColorPicker>();

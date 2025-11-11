@@ -19,7 +19,7 @@ internal class StepsItemIndicator : TemplatedControl
         AvaloniaProperty.Register<StepsItemIndicator, StepsItemStatus>(nameof(Status), StepsItemStatus.Process);
     
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<StepsItemIndicator>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<StepsItemIndicator>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<StepsItemIndicator>();

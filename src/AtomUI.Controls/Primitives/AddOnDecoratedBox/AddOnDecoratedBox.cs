@@ -68,7 +68,7 @@ internal class AddOnDecoratedBox : ContentControl,
         AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(ContentRightAddOnTemplate));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeAwareControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
 
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, AddOnDecoratedVariant>(
