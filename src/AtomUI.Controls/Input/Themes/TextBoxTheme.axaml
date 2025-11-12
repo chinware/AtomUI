@@ -160,7 +160,7 @@
         </Style>
         
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
+            <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>
         </Style>

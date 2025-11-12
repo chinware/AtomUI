@@ -94,11 +94,6 @@ public class TextBox : AvaloniaTextBox,
     
     private IconButton? _clearButton;
 
-    static TextBox()
-    {
-        AffectsRender<TextBox>(BorderBrushProperty, BackgroundProperty);
-    }
-
     public TextBox()
     {
         this.RegisterResources();
@@ -113,11 +108,11 @@ public class TextBox : AvaloniaTextBox,
             change.Property == TextProperty ||
             change.Property == IsEnableClearButtonProperty)
         {
-            SetupEffectiveShowClearButton();
+            ConfigureEffectiveShowClearButton();
         }
     }
 
-    private void SetupEffectiveShowClearButton()
+    private void ConfigureEffectiveShowClearButton()
     {
         if (!IsEnableClearButton)
         {
@@ -136,7 +131,7 @@ public class TextBox : AvaloniaTextBox,
         {
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
-        SetupEffectiveShowClearButton();
+        ConfigureEffectiveShowClearButton();
     }
     
     protected virtual void NotifyClearButtonClicked()

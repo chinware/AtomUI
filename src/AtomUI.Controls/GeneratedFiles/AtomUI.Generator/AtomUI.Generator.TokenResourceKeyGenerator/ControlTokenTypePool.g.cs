@@ -58,6 +58,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TagToken));
+            tokenTypes.Add(typeof(AtomUI.Controls.TextAreaToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TimelineToken));
             tokenTypes.Add(typeof(AtomUI.Controls.TimePickerToken));
             tokenTypes.Add(typeof(AtomUI.Controls.ToggleSwitchToken));

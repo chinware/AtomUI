@@ -16,6 +16,7 @@
                 RightAddOn="{TemplateBinding RightAddOn}"
                 RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                 ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
                 StyleVariant="{TemplateBinding StyleVariant}"
                 SizeType="{TemplateBinding SizeType}"
                 Status="{TemplateBinding Status}"
@@ -56,7 +57,7 @@
                 </atom:AddOnDecoratedBox.ContentRightAddOn>
 
                 <ScrollViewer
-                    Name="ScrollViewer"
+                    Name="PART_ScrollViewer"
                     Cursor="Ibeam"
                     AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                     HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
@@ -101,13 +102,13 @@
 
         <Style Selector="^[StyleVariant=Borderless]">
             <Style Selector="^:error">
-                <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
-                <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
@@ -115,25 +116,19 @@
         </Style>
         <Style Selector="^[StyleVariant=Filled]">
             <Style Selector="^:error">
-                <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
                 </Style>
             </Style>
             <Style Selector="^:warning">
-                <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
                 </Style>
             </Style>
         </Style>
         
-        <Style Selector="^:disabled">
-            <Style Selector="^ /template/ ScrollViewer#ScrollViewer">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-            </Style>
-            
-        </Style>
     </Style>
 
 </ControlTheme>

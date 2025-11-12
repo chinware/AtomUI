@@ -1,0 +1,174 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Controls.Themes.TextAreaTheme"
+              x:ClassModifier="internal"
+              TargetType="atom:TextArea">
+
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:TextArea">
+            <atom:TextAreaDecoratedBox
+                Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
+                ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                StyleVariant="{TemplateBinding StyleVariant}"
+                SizeType="{TemplateBinding SizeType}"
+                Status="{TemplateBinding Status}"
+                Focusable="True"
+                IsAllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                <atom:TextAreaDecoratedBox.ContentRightAddOn>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
+                        <atom:IconButton
+                            Name="{x:Static atom:TextAreaThemeConstants.ClearButtonPart}"
+                            Icon="{atom:IconProvider CloseCircleFilled}"
+                            IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                            IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                            NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
+                            ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
+                            SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
+                            IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
+                            IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:TextArea}}" />
+                        <ContentPresenter
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Focusable="False"
+                            Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
+                            IsVisible="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:TextArea}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    </StackPanel>
+                </atom:TextAreaDecoratedBox.ContentRightAddOn>
+
+                <Panel Name="ContentLayout">
+                    <atom:TextBlock
+                        Name="Watermark"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Text="{TemplateBinding Watermark}"
+                        Foreground="{TemplateBinding WatermarkForeground}"
+                        LineHeight="{TemplateBinding LineHeight}"
+                        TextAlignment="{TemplateBinding TextAlignment}"
+                        TextWrapping="{TemplateBinding TextWrapping}"
+                        IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                    <TextPresenter
+                        Name="PART_TextPresenter"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                        CaretBrush="{TemplateBinding CaretBrush}"
+                        CaretIndex="{TemplateBinding CaretIndex}"
+                        LineHeight="{TemplateBinding LineHeight}"
+                        PasswordChar="{TemplateBinding PasswordChar}"
+                        RevealPassword="{TemplateBinding RevealPassword}"
+                        SelectionBrush="{TemplateBinding SelectionBrush}"
+                        SelectionStart="{TemplateBinding SelectionStart}"
+                        SelectionEnd="{TemplateBinding SelectionEnd}"
+                        SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                        Text="{TemplateBinding Text, Mode=TwoWay}"
+                        TextAlignment="{TemplateBinding TextAlignment}"
+                        TextWrapping="{TemplateBinding TextWrapping}" />
+                </Panel>
+            </atom:TextAreaDecoratedBox>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|TextArea)">
+
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionBackground}}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        <Setter Property="SelectionForegroundBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionForeground}}" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="WatermarkForeground"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="AcceptsReturn" Value="True" />
+
+        <Style Selector="^ /template/ Panel#ContentLayout">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Ibeam" />
+        </Style>
+
+        <Style Selector="^[StyleVariant=Borderless]">
+            <Style Selector="^:error">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
+                </Style>
+            </Style>
+            <Style Selector="^:warning">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
+                </Style>
+            </Style>
+        </Style>
+        <Style Selector="^[StyleVariant=Filled]">
+            <Style Selector="^:error">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorText}}" />
+                </Style>
+            </Style>
+            <Style Selector="^:warning">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarningText}}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightSM}}" />
+            <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+                <Setter Property="Margin" Value="0, 1, 0, 1" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TextAreaTokenKey.FontSizeLG}}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TextAreaTokenKey.FontSize}}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TextAreaTokenKey.FontSizeSM}}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Margin"
+                    Value="2 0 2 0" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#PART_LeftAddOnLayout, ^ /template/ StackPanel#PART_RightAddOnLayout">
+            <Setter Property="Spacing"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+            <Setter Property="NormalIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
+            <Setter Property="ActiveIconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+    </Style>
+</ControlTheme>

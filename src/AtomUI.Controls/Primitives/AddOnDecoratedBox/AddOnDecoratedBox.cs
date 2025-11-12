@@ -14,6 +14,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
@@ -104,6 +105,7 @@ internal class AddOnDecoratedBox : ContentControl,
         set => SetValue(RightAddOnTemplateProperty, value);
     }
     
+    [DependsOn(nameof(ContentLeftAddOnTemplate))]
     public object? ContentLeftAddOn
     {
         get => GetValue(ContentLeftAddOnProperty);
@@ -116,6 +118,7 @@ internal class AddOnDecoratedBox : ContentControl,
         set => SetValue(ContentLeftAddOnTemplateProperty, value);
     }
 
+    [DependsOn(nameof(ContentRightAddOnTemplate))]
     public object? ContentRightAddOn
     {
         get => GetValue(ContentRightAddOnProperty);

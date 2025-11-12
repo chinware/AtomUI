@@ -1,14 +1,13 @@
 namespace AtomUI.Controls.Themes;
 
-internal static class TextBoxInnerBoxThemeConstants
+internal static class TextBoxThemeConstants
 {
+    public const string ClearButtonPart = "PART_ClearButton";
     public const string RevealButtonPart = "PART_RevealButton";
 }
 
-internal static class TextBoxThemeConstants
+internal static class TextAreaThemeConstants
 {
-    public const string DecoratedBoxPart = "PART_DecoratedBox";
-    public const string TextBoxInnerBoxPart = "PART_TextBoxInnerBox";
+    public const string ScrollViewerPart = "PART_ScrollViewer";
     public const string ClearButtonPart = "PART_ClearButton";
-    public const string RevealButtonPart = "PART_RevealButton";
 }

@@ -387,6 +387,13 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey InputFontSizeSM = new TokenResourceKey("LineEdit.InputFontSizeSM");
     }
 
+    public static class TextAreaTokenKey
+    {
+        public static readonly TokenResourceKey FontSize = new TokenResourceKey("TextArea.FontSize");
+        public static readonly TokenResourceKey FontSizeLG = new TokenResourceKey("TextArea.FontSizeLG");
+        public static readonly TokenResourceKey FontSizeSM = new TokenResourceKey("TextArea.FontSizeSM");
+    }
+
     public static class ListTokenKey
     {
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("List.ContentPadding");

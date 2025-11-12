@@ -31,8 +31,8 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<IBrush?> HeaderTitleColorProperty =
         AvaloniaProperty.Register<GroupBox, IBrush?>(nameof(HeaderTitleColor));
 
-    public static readonly StyledProperty<Icon?> HeaderIconProperty
-        = AvaloniaProperty.Register<GroupBox, Icon?>(nameof(HeaderIcon));
+    public static readonly StyledProperty<Icon?> HeaderIconProperty =
+        AvaloniaProperty.Register<GroupBox, Icon?>(nameof(HeaderIcon));
 
     public static readonly StyledProperty<GroupBoxTitlePosition> HeaderTitlePositionProperty =
         AvaloniaProperty.Register<GroupBox, GroupBoxTitlePosition>(nameof(HeaderTitlePosition));
@@ -119,7 +119,7 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
     {
         base.OnApplyTemplate(e);
         _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxThemeConstants.HeaderContentPart);
-        _frame         = e.NameScope.Find<Border>(GroupBoxThemeConstants.FramePart);
+        _frame                  = e.NameScope.Find<Border>(GroupBoxThemeConstants.FramePart);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -150,8 +150,7 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
                 CornerRadius,
                 BackgroundSizing.InnerBorderEdge,
                 Background,
-                BorderBrush,
-                default);
+                BorderBrush);
         }
         {
             // 绘制遮挡

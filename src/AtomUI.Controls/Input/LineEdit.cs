@@ -28,6 +28,12 @@ public class LineEdit : TextBox
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
         AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<LineEdit>();
     
+    public static readonly StyledProperty<IDataTemplate?> InnerLeftContentTemplateProperty =
+        AvaloniaProperty.Register<LineEdit, IDataTemplate?>(nameof(InnerLeftContentTemplate));
+    
+    public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
+        AvaloniaProperty.Register<LineEdit, IDataTemplate?>(nameof(InnerRightContentTemplate));
+    
     public AddOnDecoratedVariant StyleVariant
     {
         get => GetValue(StyleVariantProperty);
@@ -64,6 +70,17 @@ public class LineEdit : TextBox
         set => SetValue(RightAddOnTemplateProperty, value);
     }
 
+    public IDataTemplate? InnerLeftContentTemplate
+    {
+        get => GetValue(InnerLeftContentTemplateProperty);
+        set => SetValue(InnerLeftContentTemplateProperty, value);
+    }
+    
+    public IDataTemplate? InnerRightContentTemplate
+    {
+        get => GetValue(InnerRightContentTemplateProperty);
+        set => SetValue(InnerRightContentTemplateProperty, value);
+    }
     #endregion
     
     public LineEdit()

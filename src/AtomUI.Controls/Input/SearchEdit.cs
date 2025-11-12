@@ -81,7 +81,7 @@ public class SearchEdit : LineEdit
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        var decoratedBox = e.NameScope.Find<SearchEditDecoratedBox>(TextBoxThemeConstants.DecoratedBoxPart);
+        var decoratedBox = e.NameScope.Find<SearchEditDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         if (decoratedBox != null)
         {
             decoratedBox.OwningSearchEdit = this;

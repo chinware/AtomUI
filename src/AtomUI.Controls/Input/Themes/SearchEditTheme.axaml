@@ -11,6 +11,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:SearchEditDecoratedBox
+                    Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
@@ -58,7 +59,7 @@
                     </atom:SearchEditDecoratedBox.ContentRightAddOn>
                     
                     <ScrollViewer
-                        Name="ScrollViewer"
+                        Name="PART_ScrollViewer"
                         Cursor="Ibeam"
                         AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                         HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
