@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -219,6 +220,20 @@ internal class FlyoutStateHelper : AvaloniaObject
             var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
             _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
         }
+        else if (TriggerType == FlyoutTriggerType.Focus)
+        {
+            _subscriptions.Add(InputElement.IsFocusedProperty.Changed.Subscribe(args =>
+            {
+                if (args.Sender == AnchorTarget &&
+                    AnchorTarget.IsEnabled &&
+                    AnchorTarget.IsVisible)
+                {
+                    HandleAnchorTargetFocus(args);
+                }
+            }));
+            var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
+            _subscriptions.Add(inputManager.Process.Subscribe(HandleFocusTriggerPointerEvents));
+        }
     }
 
     private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
@@ -341,6 +356,63 @@ internal class FlyoutStateHelper : AvaloniaObject
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void HandleAnchorTargetFocus(AvaloniaPropertyChangedEventArgs<bool> e)
+    {
+        if (Flyout is null)
+        {
+            return;
+        }
+
+        if (e.GetNewValue<bool>())
+        {
+            ShowFlyout(true);
+        }
+        else
+        {
+            HideFlyout(true);
+        }
+    }
+
+    private void HandleFocusTriggerPointerEvents(RawInputEventArgs args)
+    {
+        if (Flyout is null || AnchorTarget is null)
+        {
+            return;
+        }
+
+        if (args is RawPointerEventArgs pointerEventArgs &&
+            pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
+        {
+            if (Flyout is IPopupHostProvider popupHostProvider &&
+                popupHostProvider.PopupHost == pointerEventArgs.Root)
+            {
+                return;
+            }
+
+            var topLevel = TopLevel.GetTopLevel(AnchorTarget);
+            if (topLevel is null)
+            {
+                return;
+            }
+
+            var anchorOrigin = AnchorTarget.TranslatePoint(new Point(0, 0), topLevel);
+            if (!anchorOrigin.HasValue)
+            {
+                return;
+            }
+
+            var anchorBounds = new Rect(anchorOrigin.Value, AnchorTarget.Bounds.Size);
+            if (!anchorBounds.Contains(pointerEventArgs.Position))
+            {
+                if (AnchorTarget.IsFocused)
+                {
+                    FocusUtils.GetFocusManager(AnchorTarget)?.ClearFocus();
+                }
+                HideFlyout(true);
             }
         }
     }
