@@ -57,38 +57,46 @@ public class TabStrip : BaseTabStrip
     
     private void SetupSelectedIndicator()
     {
-        if (_selectedIndicator is not null && SelectedItem is not null && ContainerFromItem(SelectedItem) is TabStripItem tabStripItem)
+        if (Items.Count == 0)
         {
-            var selectedBounds = tabStripItem.Bounds;
-            var builder        = new TransformOperations.Builder(1);
-            var offset         = _itemsPresenter?.Bounds.Position ?? default;
+            _selectedIndicator?.SetCurrentValue(IsVisibleProperty, false);
+        }
+        else
+        {
+            if (_selectedIndicator is not null && SelectedItem is not null && ContainerFromItem(SelectedItem) is TabStripItem tabStripItem)
+            {
+                _selectedIndicator.SetCurrentValue(IsVisibleProperty, true);
+                var selectedBounds = tabStripItem.Bounds;
+                var builder        = new TransformOperations.Builder(1);
+                var offset         = _itemsPresenter?.Bounds.Position ?? default;
 
-            if (TabStripPlacement == Dock.Top)
-            {
-                _selectedIndicator.SetValue(WidthProperty, tabStripItem.DesiredSize.Width);
-                _selectedIndicator.SetValue(HeightProperty, SelectedIndicatorThickness);
-                builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
-            }
-            else if (TabStripPlacement == Dock.Right)
-            {
-                _selectedIndicator.SetValue(HeightProperty, tabStripItem.DesiredSize.Height);
-                _selectedIndicator.SetValue(WidthProperty, SelectedIndicatorThickness);
-                builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
-            }
-            else if (TabStripPlacement == Dock.Bottom)
-            {
-                _selectedIndicator.SetValue(WidthProperty, tabStripItem.DesiredSize.Width);
-                _selectedIndicator.SetValue(HeightProperty, SelectedIndicatorThickness);
-                builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
-            }
-            else
-            {
-                _selectedIndicator.SetValue(HeightProperty, tabStripItem.DesiredSize.Height);
-                _selectedIndicator.SetValue(WidthProperty, SelectedIndicatorThickness);
-                builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
-            }
+                if (TabStripPlacement == Dock.Top)
+                {
+                    _selectedIndicator.SetCurrentValue(WidthProperty, tabStripItem.DesiredSize.Width);
+                    _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
+                    builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
+                }
+                else if (TabStripPlacement == Dock.Right)
+                {
+                    _selectedIndicator.SetCurrentValue(HeightProperty, tabStripItem.DesiredSize.Height);
+                    _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
+                    builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
+                }
+                else if (TabStripPlacement == Dock.Bottom)
+                {
+                    _selectedIndicator.SetCurrentValue(WidthProperty, tabStripItem.DesiredSize.Width);
+                    _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
+                    builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
+                }
+                else
+                {
+                    _selectedIndicator.SetCurrentValue(HeightProperty, tabStripItem.DesiredSize.Height);
+                    _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
+                    builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
+                }
 
-            SelectedIndicatorRenderTransform = builder.Build();
+                SelectedIndicatorRenderTransform = builder.Build();
+            }
         }
     }
 

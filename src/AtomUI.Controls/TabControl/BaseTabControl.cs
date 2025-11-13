@@ -729,13 +729,16 @@ public class BaseTabControl : SelectingItemsControl,
 
     public override void Render(DrawingContext context)
     {
-        SetupTabStripBorderPoints();
-        var borderThickness = BorderThickness.Left;
-        using var optionState = context.PushRenderOptions(new RenderOptions
+        if (Items.Count > 0)
         {
-            EdgeMode = EdgeMode.Aliased
-        });
-        context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
+            SetupTabStripBorderPoints();
+            var borderThickness = BorderThickness.Left;
+            using var optionState = context.PushRenderOptions(new RenderOptions
+            {
+                EdgeMode = EdgeMode.Aliased
+            });
+            context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
+        }
     }
     
     private void ConfigureTabItem(TabItem tabItem)

@@ -395,36 +395,39 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 
     public override void Render(DrawingContext context)
     {
-        Point startPoint      = default;
-        Point endPoint        = default;
-        var   borderThickness = BorderThickness.Left;
-        var   offsetDelta     = borderThickness / 2;
-        if (TabStripPlacement == Dock.Top)
+        if (Items.Count > 0)
         {
-            startPoint = new Point(0, Bounds.Height - offsetDelta);
-            endPoint   = new Point(Bounds.Width, Bounds.Height - offsetDelta);
-        }
-        else if (TabStripPlacement == Dock.Right)
-        {
-            startPoint = new Point(offsetDelta, 0);
-            endPoint   = new Point(offsetDelta, Bounds.Height);
-        }
-        else if (TabStripPlacement == Dock.Bottom)
-        {
-            startPoint = new Point(0, offsetDelta);
-            endPoint   = new Point(Bounds.Width, offsetDelta);
-        }
-        else
-        {
-            startPoint = new Point(Bounds.Width - offsetDelta, 0);
-            endPoint   = new Point(Bounds.Width - offsetDelta, Bounds.Height);
-        }
+            Point startPoint      = default;
+            Point endPoint        = default;
+            var   borderThickness = BorderThickness.Left;
+            var   offsetDelta     = borderThickness / 2;
+            if (TabStripPlacement == Dock.Top)
+            {
+                startPoint = new Point(0, Bounds.Height - offsetDelta);
+                endPoint   = new Point(Bounds.Width, Bounds.Height - offsetDelta);
+            }
+            else if (TabStripPlacement == Dock.Right)
+            {
+                startPoint = new Point(offsetDelta, 0);
+                endPoint   = new Point(offsetDelta, Bounds.Height);
+            }
+            else if (TabStripPlacement == Dock.Bottom)
+            {
+                startPoint = new Point(0, offsetDelta);
+                endPoint   = new Point(Bounds.Width, offsetDelta);
+            }
+            else
+            {
+                startPoint = new Point(Bounds.Width - offsetDelta, 0);
+                endPoint   = new Point(Bounds.Width - offsetDelta, Bounds.Height);
+            }
 
-        using var optionState = context.PushRenderOptions(new RenderOptions
-        {
-            EdgeMode = EdgeMode.Aliased
-        });
-        context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
+            using var optionState = context.PushRenderOptions(new RenderOptions
+            {
+                EdgeMode = EdgeMode.Aliased
+            });
+            context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
+        }
     }
     
     private void ConfigureEffectiveHeaderPadding()
