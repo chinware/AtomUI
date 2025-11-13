@@ -33,6 +33,7 @@
         </Setter>
 
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ChromeTokenKey.CaptionButtonPadding}}" />
