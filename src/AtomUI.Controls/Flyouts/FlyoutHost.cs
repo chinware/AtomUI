@@ -16,7 +16,8 @@ using FlyoutControl = Flyout;
 public enum FlyoutTriggerType
 {
     Hover,
-    Click
+    Click,
+    Focus,
 }
 
 public class FlyoutHost : TemplatedControl, IMotionAwareControl
