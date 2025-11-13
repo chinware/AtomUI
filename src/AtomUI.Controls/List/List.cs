@@ -62,7 +62,7 @@ public class List : TemplatedControl,
         AvaloniaProperty.Register<List, IDataTemplate?>(nameof(EmptyIndicatorTemplate));
     
     public static readonly StyledProperty<bool> IsShowEmptyIndicatorProperty =
-        AvaloniaProperty.Register<List, bool>(nameof(IsShowEmptyIndicator), false);
+        AvaloniaProperty.Register<List, bool>(nameof(IsShowEmptyIndicator), true);
     
     public static readonly StyledProperty<bool> IsGroupEnabledProperty =
         AvaloniaProperty.Register<List, bool>(nameof(IsGroupEnabled), false);
