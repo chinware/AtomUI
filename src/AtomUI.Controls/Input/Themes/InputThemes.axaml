@@ -7,6 +7,7 @@
         <ResourceInclude Source="SearchEditDecoratedBoxTheme.axaml" />
         <ResourceInclude Source="TextAreaDecoratedBoxTheme.axaml" />
         <ResourceInclude Source="SearchEditTheme.axaml" />
+        <ResourceInclude Source="ResizeHandleTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:TextBoxTheme x:Key="{x:Type atom:TextBox}" TargetType="atom:TextBox"/>
     <themes:LineEditTheme x:Key="{x:Type atom:LineEdit}" TargetType="atom:LineEdit"/>

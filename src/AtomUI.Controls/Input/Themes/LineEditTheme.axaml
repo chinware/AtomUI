@@ -53,6 +53,11 @@
                             Focusable="False"
                             Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
                             IsVisible="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <atom:TextBlock Name="TextCountIndicator" 
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}"
+                                        Text="{Binding CountText, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
+                                        IsVisible="{Binding IsShowCount, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"/>
                     </StackPanel>
                 </atom:AddOnDecoratedBox.ContentRightAddOn>
 
@@ -128,7 +133,5 @@
                 </Style>
             </Style>
         </Style>
-        
     </Style>
-
 </ControlTheme>

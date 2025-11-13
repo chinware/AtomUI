@@ -47,8 +47,11 @@
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
-                            Focusable="False"
                             Content="{TemplateBinding InnerRightContent}"/>
+                        <atom:TextBlock Name="TextCountIndicator" 
+                                        VerticalAlignment="Center"
+                                        Text="{TemplateBinding CountText}"
+                                        IsVisible="{TemplateBinding IsShowCount}"/>
                     </StackPanel>
             
                     <ScrollViewer
@@ -157,6 +160,10 @@
             <Setter Property="ActiveIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
             <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|TextBlock#TextCountIndicator">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextPlaceholder}}" />
         </Style>
         
         <Style Selector="^:disabled">

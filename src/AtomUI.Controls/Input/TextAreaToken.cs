@@ -1,4 +1,5 @@
 using AtomUI.Theme.TokenSystem;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -26,12 +27,24 @@ internal class TextAreaToken : AbstractControlDesignToken
     /// 小号字体大小
     /// </summary>
     public double FontSizeSM { get; set; }
+    
+    /// <summary>
+    /// Resize 指示器颜色
+    /// </summary>
+    public Color ResizeIndicatorLineColor { get; set; }
+    
+    /// <summary>
+    /// Resize 指示器大小
+    /// </summary>
+    public double ResizeHandleSize { get; set; }
 
     public override void CalculateTokenValues()
     {
         base.CalculateTokenValues();
-        FontSize   = SharedToken.FontSize;
-        FontSizeLG = SharedToken.FontSizeLG;
-        FontSizeSM = SharedToken.FontSizeSM;
+        FontSize                 = SharedToken.FontSize;
+        FontSizeLG               = SharedToken.FontSizeLG;
+        FontSizeSM               = SharedToken.FontSizeSM;
+        ResizeIndicatorLineColor = SharedToken.ColorTextDescription;
+        ResizeHandleSize         = SharedToken.SizeXS;
     }
 }

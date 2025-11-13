@@ -392,6 +392,8 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey FontSize = new TokenResourceKey("TextArea.FontSize");
         public static readonly TokenResourceKey FontSizeLG = new TokenResourceKey("TextArea.FontSizeLG");
         public static readonly TokenResourceKey FontSizeSM = new TokenResourceKey("TextArea.FontSizeSM");
+        public static readonly TokenResourceKey ResizeHandleSize = new TokenResourceKey("TextArea.ResizeHandleSize");
+        public static readonly TokenResourceKey ResizeIndicatorLineColor = new TokenResourceKey("TextArea.ResizeIndicatorLineColor");
     }
 
     public static class ListTokenKey

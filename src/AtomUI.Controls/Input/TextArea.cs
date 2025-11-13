@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 
@@ -25,7 +26,13 @@ public class TextArea : AvaloniaTextBox,
     
     public static readonly StyledProperty<bool> IsAutoSizeProperty =
         AvaloniaProperty.Register<TextArea, bool>(nameof(IsAutoSize), false);
+    
+    public static readonly StyledProperty<bool> IsShowCountProperty =
+        AvaloniaProperty.Register<TextArea, bool>(nameof(IsShowCount));
 
+    public static readonly StyledProperty<bool> IsResizableProperty =
+        AvaloniaProperty.Register<TextArea, bool>(nameof(IsResizable));
+    
     public static readonly StyledProperty<AddOnDecoratedVariant> StyleVariantProperty =
         AddOnDecoratedBox.StyleVariantProperty.AddOwner<TextArea>();
 
@@ -64,6 +71,18 @@ public class TextArea : AvaloniaTextBox,
     {
         get => GetValue(IsAutoSizeProperty);
         set => SetValue(IsAutoSizeProperty, value);
+    }
+    
+    public bool IsShowCount
+    {
+        get => GetValue(IsShowCountProperty);
+        set => SetValue(IsShowCountProperty, value);
+    }
+    
+    public bool IsResizable
+    {
+        get => GetValue(IsResizableProperty);
+        set => SetValue(IsResizableProperty, value);
     }
 
     public AddOnDecoratedVariant StyleVariant
@@ -122,6 +141,11 @@ public class TextArea : AvaloniaTextBox,
         AvaloniaProperty.RegisterDirect<TextArea, bool>(nameof(IsEffectiveShowClearButton),
             o => o.IsEffectiveShowClearButton,
             (o, v) => o.IsEffectiveShowClearButton = v);
+    
+    internal static readonly DirectProperty<TextArea, string?> CountTextProperty =
+        AvaloniaProperty.RegisterDirect<TextArea, string?>(nameof(CountText),
+            o => o.CountText,
+            (o, v) => o.CountText = v);
 
     private bool _isEffectiveShowClearButton;
 
@@ -130,7 +154,15 @@ public class TextArea : AvaloniaTextBox,
         get => _isEffectiveShowClearButton;
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
+    
+    private string? _countText;
 
+    internal string? CountText
+    {
+        get => _countText;
+        set => SetAndRaise(CountTextProperty, ref _countText, value);
+    }
+    
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -139,6 +171,8 @@ public class TextArea : AvaloniaTextBox,
 
     private ScrollViewer? _scrollViewer;
     private IconButton? _clearButton;
+    private ResizeHandle? _resizeHandle;
+    private double? _originHeight; // 拖动改变高度的初始值
 
     static TextArea()
     {
@@ -174,6 +208,10 @@ public class TextArea : AvaloniaTextBox,
         {
             ConfigureEffectiveShowClearButton();
         }
+        else if (change.Property == IsShowCountProperty)
+        {
+            HandleInputChanged(Text);
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -190,8 +228,16 @@ public class TextArea : AvaloniaTextBox,
         {
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
+        
+        _resizeHandle = e.NameScope.Find<ResizeHandle>(TextAreaThemeConstants.ResizeHandle);
+        if (_resizeHandle is not null)
+        {
+            _resizeHandle.Owner = this;
+        }
 
         UpdatePseudoClasses();
+        ConfigureEffectiveShowClearButton();
+        HandleInputChanged(Text);
     }
 
     internal void NotifyScrollViewerCreated(ScrollViewer scrollViewer)
@@ -273,5 +319,55 @@ public class TextArea : AvaloniaTextBox,
     protected virtual void NotifyClearButtonClicked()
     {
         Clear();
+    }
+    
+    protected override void OnTextInput(TextInputEventArgs e)
+    {
+        base.OnTextInput(e);
+        HandleInputChanged(Text);
+    }
+    
+    private void HandleInputChanged(string? text)
+    {
+        if (IsShowCount)
+        {
+            SetCurrentValue(CountTextProperty, $"{text?.Length ?? 0} / {MaxLength}");
+        }
+    }
+
+    internal void NotifyAboutToResize()
+    {
+        if (_scrollViewer != null)
+        {
+            if (!double.IsNaN(Height))
+            {
+                _scrollViewer.SetCurrentValue(HeightProperty, _scrollViewer.Bounds.Height);
+            }
+            var minHeight = _scrollViewer.MinHeight;
+            var height    = _scrollViewer.Height;
+            if (double.IsNaN(height))
+            {
+                height = minHeight;
+            }
+            _originHeight = height;
+            SetCurrentValue(HeightProperty, double.NaN);
+        }
+    }
+
+    internal void NotifyResizing(Point delta)
+    {
+        if (_scrollViewer != null && _originHeight != null)
+        {
+            var minHeight = _scrollViewer.MinHeight;
+            var maxHeight = _scrollViewer.MaxHeight;
+            var height = _originHeight.Value + delta.Y;
+            height = Math.Max(minHeight, Math.Min(height, maxHeight));
+            _scrollViewer.SetCurrentValue(HeightProperty, height);
+        }
+    }
+    
+    internal void NotifyResizeCompleted()
+    {
+        _originHeight = null;
     }
 }

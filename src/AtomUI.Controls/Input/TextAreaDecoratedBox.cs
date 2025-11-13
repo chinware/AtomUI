@@ -2,6 +2,7 @@ using AtomUI.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -24,6 +25,10 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
     public static readonly StyledProperty<bool> IsScrollChainingEnabledProperty =
         AvaloniaProperty.Register<TextAreaDecoratedBox, bool>(
             nameof(IsScrollChainingEnabled), true);
+    
+    public static readonly StyledProperty<IBrush?> ResizeIndicatorLineBrushProperty =
+        AvaloniaProperty.Register<TextAreaDecoratedBox, IBrush?>(
+            nameof(ResizeIndicatorLineBrush));
     
     public bool IsAllowAutoHide
     {
@@ -48,7 +53,35 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
         get => GetValue(IsScrollChainingEnabledProperty);
         set => SetValue(IsScrollChainingEnabledProperty, value);
     }
+    
+    public IBrush? ResizeIndicatorLineBrush
+    {
+        get => GetValue(ResizeIndicatorLineBrushProperty);
+        set => SetValue(ResizeIndicatorLineBrushProperty, value);
+    }
     #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<TextAreaDecoratedBox, bool> IsResizableProperty =
+        AvaloniaProperty.RegisterDirect<TextAreaDecoratedBox, bool>(nameof(IsResizable),
+            o => o.IsResizable,
+            (o, v) => o.IsResizable = v);
+    
+    private bool _isResizable;
+
+    internal bool IsResizable
+    {
+        get => _isResizable;
+        set => SetAndRaise(IsResizableProperty, ref _isResizable, value);
+    }
+
+    #endregion
+
+    static TextAreaDecoratedBox()
+    {
+        AffectsRender<TextAreaDecoratedBox>(ResizeIndicatorLineBrushProperty, IsResizableProperty);
+    }
     
     internal ScrollViewer? ScrollViewer { get; set; }
     internal TextArea? Owner { get; set; }
@@ -61,5 +94,30 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
         {
             Owner?.NotifyScrollViewerCreated(ScrollViewer);
         }
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        if (IsResizable)
+        {
+            var bounds     = Bounds.Deflate(new Thickness(2));
+            var sideLength = 7d;
+            var (line1Start, line1End) = CalculateResizeLine(bounds, sideLength);
+            var (line2Start, line2End) = CalculateResizeLine(bounds, sideLength - 3);
+            var pen = new Pen(ResizeIndicatorLineBrush);
+        
+            context.DrawLine(pen, line1Start, line1End);
+            context.DrawLine(pen, line2Start, line2End);
+        }
+    }
+
+    private (Point, Point) CalculateResizeLine(Rect bounds, double sideLength)
+    {
+        double right       = bounds.Right;
+        double bottom      = bounds.Bottom;
+        Point rightSidePoint = new Point(right, bottom - sideLength);
+        Point bottomSidePoint = new Point(right - sideLength, bottom);
+        
+        return (rightSidePoint, bottomSidePoint);
     }
 }

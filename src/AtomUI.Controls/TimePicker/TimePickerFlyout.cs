@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -66,6 +67,8 @@ internal class TimePickerFlyout : Flyout
     
     protected override Control CreatePresenter()
     {
+        var flyoutPresenter = base.CreatePresenter() as FlyoutPresenter;
+        Debug.Assert(flyoutPresenter != null);
         TimePickerPresenter = new TimePickerPresenter();
         _presenterBindingDisposables?.Dispose();
         _presenterBindingDisposables = new CompositeDisposable(8);
@@ -77,14 +80,7 @@ internal class TimePickerFlyout : Flyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, TimePickerPresenter, TimePickerPresenter.IsNeedConfirmProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, TimePickerPresenter, TimePickerPresenter.IsShowNowProperty));
         
-        var flyoutPresenter = new FlyoutPresenter
-        {
-            Content = TimePickerPresenter
-        };
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty));
-        
-        ConfigureShowArrowEffective();
-        // SetupArrowPosition(flyoutPresenter);
+        flyoutPresenter.Content = TimePickerPresenter;
         return flyoutPresenter;
     }
 }

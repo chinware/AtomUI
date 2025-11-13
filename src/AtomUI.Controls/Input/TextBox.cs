@@ -4,6 +4,7 @@ using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
@@ -28,6 +29,9 @@ public class TextBox : AvaloniaTextBox,
     
     public static readonly StyledProperty<bool> IsCustomFontSizeProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsCustomFontSize));
+    
+    public static readonly StyledProperty<bool> IsShowCountProperty =
+        AvaloniaProperty.Register<TextBox, bool>(nameof(IsShowCount));
     
     public static readonly StyledProperty<IBrush?> WatermarkForegroundProperty =
         AvaloniaProperty.Register<TextBox, IBrush?>(nameof(WatermarkForeground));
@@ -58,6 +62,12 @@ public class TextBox : AvaloniaTextBox,
         get => GetValue(IsCustomFontSizeProperty);
         set => SetValue(IsCustomFontSizeProperty, value);
     }
+    
+    public bool IsShowCount
+    {
+        get => GetValue(IsShowCountProperty);
+        set => SetValue(IsShowCountProperty, value);
+    }
 
     public IBrush? WatermarkForeground
     {
@@ -78,6 +88,11 @@ public class TextBox : AvaloniaTextBox,
         AvaloniaProperty.RegisterDirect<TextBox, bool>(nameof(IsEffectiveShowClearButton),
             o => o.IsEffectiveShowClearButton,
             (o, v) => o.IsEffectiveShowClearButton = v);
+    
+    internal static readonly DirectProperty<TextBox, string?> CountTextProperty =
+        AvaloniaProperty.RegisterDirect<TextBox, string?>(nameof(CountText),
+            o => o.CountText,
+            (o, v) => o.CountText = v);
 
     private bool _isEffectiveShowClearButton;
 
@@ -87,6 +102,14 @@ public class TextBox : AvaloniaTextBox,
         set => SetAndRaise(IsEffectiveShowClearButtonProperty, ref _isEffectiveShowClearButton, value);
     }
 
+    private string? _countText;
+
+    internal string? CountText
+    {
+        get => _countText;
+        set => SetAndRaise(CountTextProperty, ref _countText, value);
+    }
+    
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => LineEditToken.ID;
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -110,6 +133,10 @@ public class TextBox : AvaloniaTextBox,
         {
             ConfigureEffectiveShowClearButton();
         }
+        else if (change.Property == IsShowCountProperty)
+        {
+            HandleInputChanged(Text);
+        }
     }
 
     private void ConfigureEffectiveShowClearButton()
@@ -132,10 +159,25 @@ public class TextBox : AvaloniaTextBox,
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
         ConfigureEffectiveShowClearButton();
+        HandleInputChanged(Text);
     }
     
     protected virtual void NotifyClearButtonClicked()
     {
         Clear();
+    }
+
+    protected override void OnTextInput(TextInputEventArgs e)
+    {
+        base.OnTextInput(e);
+        HandleInputChanged(Text);
+    }
+
+    private void HandleInputChanged(string? text)
+    {
+        if (IsShowCount)
+        {
+            SetCurrentValue(CountTextProperty, $"{text?.Length ?? 0} / {MaxLength}");
+        }
     }
 }
