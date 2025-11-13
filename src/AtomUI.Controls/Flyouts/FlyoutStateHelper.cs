@@ -215,24 +215,23 @@ internal class FlyoutStateHelper : AvaloniaObject
                 }
             }));
         }
-        else if (TriggerType == FlyoutTriggerType.Click)
+        else if (TriggerType == FlyoutTriggerType.Click ||
+                 TriggerType == FlyoutTriggerType.Focus)
         {
             var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
             _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
-        }
-        else if (TriggerType == FlyoutTriggerType.Focus)
-        {
-            _subscriptions.Add(InputElement.IsFocusedProperty.Changed.Subscribe(args =>
+            if (TriggerType == FlyoutTriggerType.Focus)
             {
-                if (args.Sender == AnchorTarget &&
-                    AnchorTarget.IsEnabled &&
-                    AnchorTarget.IsVisible)
+                _subscriptions.Add(InputElement.IsFocusedProperty.Changed.Subscribe(args =>
                 {
-                    HandleAnchorTargetFocus(args);
-                }
-            }));
-            var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-            _subscriptions.Add(inputManager.Process.Subscribe(HandleFocusTriggerPointerEvents));
+                    if (args.Sender == AnchorTarget &&
+                        AnchorTarget.IsEnabled &&
+                        AnchorTarget.IsVisible)
+                    {
+                        HandleAnchorTargetFocus(args);
+                    }
+                }));
+            }
         }
     }
 
@@ -311,47 +310,87 @@ internal class FlyoutStateHelper : AvaloniaObject
                 {
                     return;
                 }
-               
-                if (!Flyout.IsOpen && TopLevel.GetTopLevel(AnchorTarget) == args.Root)
+
+                if (TriggerType == FlyoutTriggerType.Click)
                 {
-                    if (OpenFlyoutPredicate is not null)
+                    if (!Flyout.IsOpen && TopLevel.GetTopLevel(AnchorTarget) == args.Root)
                     {
-                        if (OpenFlyoutPredicate(pointerEventArgs.Position))
+                        if (OpenFlyoutPredicate is not null)
                         {
-                            ShowFlyout();
+                            if (OpenFlyoutPredicate(pointerEventArgs.Position))
+                            {
+                                ShowFlyout();
+                            }
+                        }
+                        else
+                        {
+                            var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
+                            if (!pos.HasValue)
+                            {
+                                return;
+                            }
+
+                            var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
+                            if (bounds.Contains(pointerEventArgs.Position))
+                            {
+                                ShowFlyout();
+                            }
                         }
                     }
                     else
                     {
-                        var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
-                        if (!pos.HasValue)
+                        if (Flyout is IPopupHostProvider popupHostProvider)
                         {
-                            return;
-                        }
-
-                        var bounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
-                        if (bounds.Contains(pointerEventArgs.Position))
-                        {
-                            ShowFlyout();
+                            if (ClickHideFlyoutPredicate is not null)
+                            {
+                                if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs))
+                                {
+                                    HideFlyout();
+                                }
+                            }
+                            else
+                            {
+                                if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                                {
+                                    HideFlyout();
+                                }
+                            }
                         }
                     }
                 }
                 else
                 {
-                    if (Flyout is IPopupHostProvider popupHostProvider)
+                    var pos = AnchorTarget.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(AnchorTarget)!);
+                    if (!pos.HasValue)
                     {
-                        if (ClickHideFlyoutPredicate is not null)
+                        return;
+                    }
+                    var anchorBounds = new Rect(pos.Value, AnchorTarget.Bounds.Size);
+                    if (!anchorBounds.Contains(pointerEventArgs.Position))
+                    {
+                        if (Flyout is IPopupHostProvider popupHostProvider)
                         {
-                            if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs))
+                            if (ClickHideFlyoutPredicate is not null)
                             {
-                                HideFlyout();
+                                if (ClickHideFlyoutPredicate(popupHostProvider, pointerEventArgs))
+                                {
+                                    if (AnchorTarget.IsFocused)
+                                    {
+                                        FocusUtils.GetFocusManager(AnchorTarget)?.ClearFocus();
+                                    }
+                                    HideFlyout(true);
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                            else
                             {
-                                HideFlyout();
+                                if (popupHostProvider.PopupHost != pointerEventArgs.Root)
+                                {
+                                    if (AnchorTarget.IsFocused)
+                                    {
+                                        FocusUtils.GetFocusManager(AnchorTarget)?.ClearFocus();
+                                    }
+                                    HideFlyout(true);
+                                }
                             }
                         }
                     }
@@ -376,47 +415,7 @@ internal class FlyoutStateHelper : AvaloniaObject
             HideFlyout(true);
         }
     }
-
-    private void HandleFocusTriggerPointerEvents(RawInputEventArgs args)
-    {
-        if (Flyout is null || AnchorTarget is null)
-        {
-            return;
-        }
-
-        if (args is RawPointerEventArgs pointerEventArgs &&
-            pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
-        {
-            if (Flyout is IPopupHostProvider popupHostProvider &&
-                popupHostProvider.PopupHost == pointerEventArgs.Root)
-            {
-                return;
-            }
-
-            var topLevel = TopLevel.GetTopLevel(AnchorTarget);
-            if (topLevel is null)
-            {
-                return;
-            }
-
-            var anchorOrigin = AnchorTarget.TranslatePoint(new Point(0, 0), topLevel);
-            if (!anchorOrigin.HasValue)
-            {
-                return;
-            }
-
-            var anchorBounds = new Rect(anchorOrigin.Value, AnchorTarget.Bounds.Size);
-            if (!anchorBounds.Contains(pointerEventArgs.Position))
-            {
-                if (AnchorTarget.IsFocused)
-                {
-                    FocusUtils.GetFocusManager(AnchorTarget)?.ClearFocus();
-                }
-                HideFlyout(true);
-            }
-        }
-    }
-
+    
     private void DetectWhenToClosePopup(RawInputEventArgs args)
     {
         if (TriggerType == FlyoutTriggerType.Hover)
