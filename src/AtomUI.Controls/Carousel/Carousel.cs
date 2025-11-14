@@ -8,8 +8,11 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -53,6 +56,9 @@ public class Carousel : SelectingItemsControl,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Carousel>();
+
+    public static readonly StyledProperty<bool> IsSwipeEnabledProperty =
+        AvaloniaProperty.Register<Carousel, bool>(nameof(IsSwipeEnabled));
     
     public bool IsShowNavButtons
     {
@@ -124,6 +130,12 @@ public class Carousel : SelectingItemsControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public bool IsSwipeEnabled
+    {
+        get => GetValue(IsSwipeEnabledProperty);
+        set => SetValue(IsSwipeEnabledProperty, value);
     }
     #endregion
 
@@ -245,6 +257,10 @@ public class Carousel : SelectingItemsControl,
     private DispatcherTimer? _autoPlayTimer;
     private IconButton? _previousButton;
     private IconButton? _nextButton;
+    private bool _isPointerGestureActive;
+    private Point _pointerPressPoint;
+    private const double SwipeGestureThreshold = 30;
+    private bool _isSwipeCursorActive;
     
     static Carousel()
     {
@@ -338,6 +354,57 @@ public class Carousel : SelectingItemsControl,
         Next();
     }
 
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (!IsSwipeEnabled)
+        {
+            return;
+        }
+
+        var point = e.GetCurrentPoint(this);
+        var isPrimaryPointer = e.Pointer.Type != PointerType.Mouse || point.Properties.IsLeftButtonPressed;
+
+        if (!isPrimaryPointer)
+        {
+            return;
+        }
+
+        if (ShouldIgnorePointerSource(e.Source))
+        {
+            return;
+        }
+
+        _isPointerGestureActive = true;
+        _pointerPressPoint      = point.Position;
+        e.Pointer.Capture(this);
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+
+        if (!IsSwipeEnabled || !_isPointerGestureActive)
+        {
+            return;
+        }
+
+        var handled = TryHandleSwipe(e.GetPosition(this));
+        _isPointerGestureActive = false;
+        e.Pointer.Capture(null);
+        if (handled)
+        {
+            e.Handled = true;
+        }
+    }
+
+    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
+    {
+        base.OnPointerCaptureLost(e);
+        _isPointerGestureActive = false;
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -371,6 +438,10 @@ public class Carousel : SelectingItemsControl,
         if (change.Property == PaginationPositionProperty)
         {
             ConfigureEffectivePageTransition();
+            if (IsSwipeEnabled)
+            {
+                UpdateSwipeCursor();
+            }
         }
         else if (change.Property == IsAutoPlayProperty)
         {
@@ -379,6 +450,10 @@ public class Carousel : SelectingItemsControl,
         else if (change.Property == AutoPlaySpeedProperty)
         {
             ConfigureAutoPlayTimer();
+        }
+        else if (change.Property == IsSwipeEnabledProperty)
+        {
+            UpdateSwipeCursor();
         }
         else if (change.Property == SelectedIndexProperty)
         {
@@ -400,6 +475,102 @@ public class Carousel : SelectingItemsControl,
             {
                 SetCurrentValue(IsEffectiveShowTransitionProgressProperty, false);
             }
+        }
+    }
+
+    private bool TryHandleSwipe(Point releasePoint)
+    {
+        var delta       = releasePoint - _pointerPressPoint;
+        var orientation = GetSwipeOrientation();
+
+        if (orientation == Orientation.Horizontal)
+        {
+            if (Math.Abs(delta.X) >= SwipeGestureThreshold &&
+                Math.Abs(delta.X) > Math.Abs(delta.Y))
+            {
+                if (delta.X < 0)
+                {
+                    Next();
+                }
+                else
+                {
+                    Previous();
+                }
+
+                return true;
+            }
+        }
+        else
+        {
+            if (Math.Abs(delta.Y) >= SwipeGestureThreshold &&
+                Math.Abs(delta.Y) > Math.Abs(delta.X))
+            {
+                if (delta.Y < 0)
+                {
+                    Next();
+                }
+                else
+                {
+                    Previous();
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private Orientation GetSwipeOrientation()
+    {
+        if (PaginationPosition == CarouselPaginationPosition.Left ||
+            PaginationPosition == CarouselPaginationPosition.Right)
+        {
+            return Orientation.Vertical;
+        }
+
+        return Orientation.Horizontal;
+    }
+
+    private bool ShouldIgnorePointerSource(object? source)
+    {
+        if (source is not Visual visual)
+        {
+            return false;
+        }
+
+        if (_previousButton != null &&
+            (_previousButton == visual || _previousButton.IsVisualAncestorOf(visual)))
+        {
+            return true;
+        }
+
+        if (_nextButton != null &&
+            (_nextButton == visual || _nextButton.IsVisualAncestorOf(visual)))
+        {
+            return true;
+        }
+
+        if (_pagination != null &&
+            (_pagination == visual || _pagination.IsVisualAncestorOf(visual)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void UpdateSwipeCursor()
+    {
+        if (IsSwipeEnabled)
+        {
+            SetCurrentValue(CursorProperty, new Cursor(StandardCursorType.DragMove));
+            _isSwipeCursorActive = true;
+        }
+        else if (_isSwipeCursorActive)
+        {
+            SetCurrentValue(CursorProperty, Cursor.Default);
+            _isSwipeCursorActive = false;
         }
     }
 
