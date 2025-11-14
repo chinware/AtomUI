@@ -111,7 +111,6 @@ public struct DataGridLength : IEquatable<DataGridLength>
 
     #endregion
     
-    
     /// <summary>
     /// Initializes a new instance of the <see cref="T:AtomUI.Controls.DataGridLength" /> class. 
     /// </summary>
@@ -390,10 +389,7 @@ public class DataGridLengthConverter : TypeConverter
             // WPF returns Auto in this case as well
             return DataGridLength.Auto;
         }
-        else
-        {
-            return new DataGridLength(doubleValue);
-        }
+        return new DataGridLength(doubleValue);
     }
 
     /// <summary>
