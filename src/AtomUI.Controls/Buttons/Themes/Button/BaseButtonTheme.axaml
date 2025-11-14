@@ -60,12 +60,13 @@
 
     <Style Selector="^:is(atom|Button)">
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        
         <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="IsWaveSpiritEnabled"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
 

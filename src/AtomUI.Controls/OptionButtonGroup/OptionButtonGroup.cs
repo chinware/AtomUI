@@ -333,8 +333,6 @@ public class OptionButtonGroup : SelectingItemsControl,
 
     public override void Render(DrawingContext context)
     {
-        var borderThickness =
-            BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0);
         _borderRenderHelper.Render(context,
             new Size(DesiredSize.Width, DesiredSize.Height),
             new Thickness(1),
@@ -360,14 +358,14 @@ public class OptionButtonGroup : SelectingItemsControl,
 
             if (i != ItemCount - 1)
             {
-                var offsetX    = optionButton.Bounds.Right - borderThickness.Left / 2;
+                var offsetX    = optionButton.Bounds.Right - BorderThickness.Left / 2;
                 var startPoint = new Point(offsetX, 0);
                 var endPoint   = new Point(offsetX, Bounds.Height);
                 using var optionState = context.PushRenderOptions(new RenderOptions
                 {
                     EdgeMode = EdgeMode.Aliased
                 });
-                context.DrawLine(new Pen(BorderBrush, borderThickness.Left), startPoint, endPoint);
+                context.DrawLine(new Pen(BorderBrush, BorderThickness.Left), startPoint, endPoint);
             }
 
             if (ButtonStyle == OptionButtonStyle.Outline)
@@ -379,8 +377,8 @@ public class OptionButtonGroup : SelectingItemsControl,
                     var width   = optionButton.DesiredSize.Width;
                     if (i > 0)
                     {
-                        offsetX -= borderThickness.Left;
-                        width   += borderThickness.Left;
+                        offsetX -= BorderThickness.Left;
+                        width   += BorderThickness.Left;
                     }
 
                     var       translationMatrix = Matrix.CreateTranslation(offsetX, 0);
@@ -397,7 +395,7 @@ public class OptionButtonGroup : SelectingItemsControl,
 
                     _borderRenderHelper.Render(context,
                         new Size(width, DesiredSize.Height),
-                        borderThickness,
+                        BorderThickness,
                         cornerRadius,
                         BackgroundSizing.InnerBorderEdge,
                         null,
