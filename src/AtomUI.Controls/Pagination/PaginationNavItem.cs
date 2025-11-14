@@ -1,13 +1,10 @@
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -89,7 +86,6 @@ internal class PaginationNavItem : ContentControl, ISelectable
     }
 
     internal int PageNumber { get; set; } = -1;
-    private IDisposable? _borderThicknessDisposable;
     
     static PaginationNavItem()
     {
@@ -98,21 +94,6 @@ internal class PaginationNavItem : ContentControl, ISelectable
         FocusableProperty.OverrideDefaultValue<PaginationNavItem>(true);
         AffectsMeasure<PaginationNavItem>(BorderThicknessProperty);
         AffectsRender<PaginationNavItem>(BackgroundProperty, BorderBrushProperty);
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

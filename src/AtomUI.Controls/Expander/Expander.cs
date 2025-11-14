@@ -4,8 +4,6 @@ using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -208,24 +206,6 @@ public class Expander : AvaloniaExpander,
     private IconButton? _expandButton;
     private bool _animating;
     private bool _tempAnimationDisabled = false;
-    private IDisposable? _borderThicknessDisposable;
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        SetupEffectiveBorderThickness();
-        SetupExpanderBorderThickness();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -249,6 +229,8 @@ public class Expander : AvaloniaExpander,
                 IsExpanded = !IsExpanded;
             };
         }
+        SetupEffectiveBorderThickness();
+        SetupExpanderBorderThickness();
         SetupDefaultIcon();
         UpdatePseudoClasses();
     }

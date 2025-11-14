@@ -39,6 +39,7 @@
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:TagTokenKey.TagFontSize}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:TagTokenKey.TagPadding}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="RenderScaleAwareBorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         <Setter Property="TagTextPaddingInline"
                 Value="{DynamicResource {x:Static atom:TagTokenKey.TagTextPaddingInline}}" />

@@ -7,8 +7,6 @@ using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Input;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -287,7 +285,6 @@ public class SplitButton : ContentControl,
     
     private CompositeDisposable? _flyoutBindingDisposables;
     private CompositeDisposable? _flyoutHelperBindingDisposables;
-    private IDisposable? _borderThicknessDisposable;
 
     static SplitButton()
     {
@@ -451,10 +448,6 @@ public class SplitButton : ContentControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         _flyoutStateHelper.NotifyAttachedToVisualTree();
         UpdatePseudoClasses();
         RegisterFlyoutEvents(Flyout);
@@ -466,7 +459,6 @@ public class SplitButton : ContentControl,
         base.OnDetachedFromVisualTree(e);
         UnregisterFlyoutEvents(Flyout);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

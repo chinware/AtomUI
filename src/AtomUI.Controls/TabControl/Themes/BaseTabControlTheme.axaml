@@ -6,6 +6,7 @@
               x:ClassModifier="internal">
     
     <Style Selector="^:is(atom|BaseTabControl)">
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="TabAndContentGutter" Value="{DynamicResource {x:Static atom:TabControlTokenKey.TabAndContentGutter}}" />

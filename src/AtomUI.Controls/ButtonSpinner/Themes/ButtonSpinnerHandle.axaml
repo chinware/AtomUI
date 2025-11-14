@@ -32,6 +32,7 @@
         
         <Setter Property="ClipToBounds" Value="True"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        <Setter Property="SpinnerBorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}"/>
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
         <Style
             Selector="^ /template/ atom|IconButton#PART_IncreaseButton, ^ /template/ atom|IconButton#PART_DecreaseButton">

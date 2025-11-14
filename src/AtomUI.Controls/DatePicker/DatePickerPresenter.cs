@@ -1,12 +1,9 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls.CalendarView;
 using AtomUI.Controls.Themes;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
@@ -129,7 +126,6 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected PickerCalendar? CalendarView;
     protected TimeView? TimeView;
     private CompositeDisposable? _pointerDisposables;
-    private IDisposable? _borderThicknessDisposable;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -149,16 +145,12 @@ internal class DatePickerPresenter : PickerPresenterBase
                 EmitChoosingStatueChanged(args.GetNewValue<bool>());
             }
         }));
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _pointerDisposables?.Dispose();
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

@@ -5,11 +5,8 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -605,7 +602,6 @@ public class Calendar : TemplatedControl,
 
     private DateTime _selectedMonth;
     private DateTime _selectedYear;
-    private IDisposable? _borderThicknessDisposable;
 
     static Calendar()
     {
@@ -2234,20 +2230,5 @@ public class Calendar : TemplatedControl,
                 month.Owner = this;
             }
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 }

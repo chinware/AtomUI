@@ -1,8 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -69,22 +67,6 @@ internal class DataGridRowExpander : ToggleButton
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
     private IDisposable? _disposable;
-    private IDisposable? _borderThicknessDisposable;
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
 
     protected override Size ArrangeOverride(Size finalSize)
     {

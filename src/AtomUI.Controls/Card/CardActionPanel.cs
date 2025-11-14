@@ -10,7 +10,6 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -31,7 +30,6 @@ internal class CardActionPanel : TemplatedControl
 
     private UniformGrid? _uniformGrid;
     private readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
-    private IDisposable? _borderThicknessDisposable;
     
     static CardActionPanel()
     {
@@ -59,21 +57,6 @@ internal class CardActionPanel : TemplatedControl
                 _uniformGrid.Children.Add(action);
             }
         }
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

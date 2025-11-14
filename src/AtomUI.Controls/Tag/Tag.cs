@@ -2,9 +2,7 @@ using AtomUI.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Palette;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -174,7 +172,6 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     
     private static readonly Dictionary<PresetColorType, TagCalcColor> PresetColorMap;
     private static readonly Dictionary<TagStatus, TagStatusCalcColor> StatusColorMap;
-    private IDisposable? _borderThicknessDisposable;
     protected IconButton? CloseButton;
     
     static Tag()
@@ -199,11 +196,6 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this,
-            RenderScaleAwareBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         if (ThemeManager.Current != null)
         {
             ThemeManager.Current.ThemeChanged += HandleActualThemeVariantChanged;
@@ -217,7 +209,6 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
         {
             ThemeManager.Current.ThemeChanged -= HandleActualThemeVariantChanged;
         }
-        _borderThicknessDisposable?.Dispose();
     }
     
     private void HandleActualThemeVariantChanged(object? sender, ThemeChangedEventArgs e)

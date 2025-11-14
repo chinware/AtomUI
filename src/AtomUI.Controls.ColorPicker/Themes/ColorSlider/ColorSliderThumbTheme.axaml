@@ -29,6 +29,7 @@
         <Setter Property="UseLayoutRounding" Value="False" />
         <Setter Property="Focusable" Value="True" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         
         <Setter Property="Width"
                 Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorPickerSliderThumbSize}}" />

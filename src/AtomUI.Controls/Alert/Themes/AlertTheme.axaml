@@ -56,6 +56,7 @@
         </Setter>
         
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Style Selector="^:has-extra-action">
             <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>

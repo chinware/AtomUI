@@ -340,7 +340,6 @@ public partial class DataGrid
     private bool _templatedApplied;
     private Pagination? _topPagination;
     private Pagination? _bottomPagination;
-    private IDisposable? _borderThicknessDisposable;
 
     private void FlushCurrentCellChanged()
     {

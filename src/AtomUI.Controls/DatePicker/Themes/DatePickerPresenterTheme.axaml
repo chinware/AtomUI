@@ -12,7 +12,7 @@
             <DockPanel Name="{x:Static atom:DatePickerPresenterThemeConstants.MainLayoutPart}"
                        LastChildFill="True">
                 <Border Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsFramePart}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
                         IsVisible="{TemplateBinding ButtonsPanelVisible}"
                         DockPanel.Dock="Bottom">
                     <Panel Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsLayoutPart}">
@@ -52,8 +52,9 @@
     </Setter>
 
     <Style Selector="^:is(atom|DatePickerPresenter)">
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Style Selector="^ /template/ Border#PART_ButtonsFrame">
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
         </Style>
 
         <Style Selector="^ /template/ Panel#PART_ButtonsLayout">

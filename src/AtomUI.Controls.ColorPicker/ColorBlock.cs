@@ -108,8 +108,6 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     }
     
     #endregion
-
-    private IDisposable? _borderThicknessDisposable;
     
     static ColorBlock()
     {
@@ -165,21 +163,6 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
             SetValue(WidthProperty, Size, BindingPriority.Template);
             SetValue(HeightProperty, Size, BindingPriority.Template);
         }
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     public override void Render(DrawingContext context)

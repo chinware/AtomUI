@@ -28,6 +28,7 @@
         
         <Setter Property="TransparentBgIntervalColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillSecondary}}" />
         <Setter Property="TransparentBgSize" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TransparentBgSize}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         
         <Style Selector="^[IsEmptyColorMode=True]">
             <Setter Property="Cursor" Value="Hand" />

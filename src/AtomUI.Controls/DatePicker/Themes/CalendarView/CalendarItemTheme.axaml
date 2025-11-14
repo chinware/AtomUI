@@ -4,6 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
     x:Class="AtomUI.Controls.Themes.CalendarItemTheme"
+    xmlns:themes="using:AtomUI.Controls.Themes"
     TargetType="calendarView:CalendarItem"
     x:ClassModifier="internal">
     <Setter Property="Template">
@@ -16,7 +17,8 @@
                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemRootLayoutPart}"
                     LastChildFill="True">
                     <Border Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderFramePart}"
-                            DockPanel.Dock="Top">
+                            DockPanel.Dock="Top"
+                            BorderThickness="{TemplateBinding HeaderBorderThickness, Converter={x:Static themes:CalendarItemTheme.BorderThicknessFilterConverter}}">
                         <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderLayoutPart}"
                                      Columns="1">
                             <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
@@ -105,7 +107,9 @@
 
         <Setter Property="MinHeight" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.ItemPanelMinHeight}}" />
         <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.ItemPanelMinWidth}}" />
-
+        <Setter Property="HeaderBorderThickness"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
+        
         <Style Selector="^ /template/ Border#PART_HeaderFrame">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.HeaderMargin}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.HeaderPadding}}" />

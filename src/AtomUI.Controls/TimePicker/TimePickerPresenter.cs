@@ -1,11 +1,8 @@
 ﻿using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -79,8 +76,16 @@ internal class TimePickerPresenter : PickerPresenterBase
             o => o.ButtonsPanelVisible,
             (o, v) => o.ButtonsPanelVisible = v);
 
-    public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
+    internal static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<TimePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
+    
+    internal static readonly DirectProperty<TimePickerPresenter, Thickness> EffectiveBorderThicknessProperty =
+        AvaloniaProperty.RegisterDirect<TimePickerPresenter, Thickness>(nameof(EffectiveBorderThickness),
+            o => o.EffectiveBorderThickness,
+            (o, v) => o.EffectiveBorderThickness = v);
+    
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimePickerPresenter>();
 
     private bool _buttonsPanelVisible = true;
 
@@ -96,13 +101,18 @@ internal class TimePickerPresenter : PickerPresenterBase
         set => SetValue(TempSelectedTimeProperty, value);
     }
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TimePickerPresenter>();
-    
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    private Thickness _effectiveBorderThickness;
+
+    internal Thickness EffectiveBorderThickness
+    {
+        get => _effectiveBorderThickness;
+        set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
     
     #endregion
@@ -125,7 +135,6 @@ internal class TimePickerPresenter : PickerPresenterBase
     private Button? _nowButton;
     private Button? _confirmButton;
     private TimeView? _timeView;
-    private IDisposable? _borderThicknessDisposable;
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -286,9 +295,6 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty, SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, thickness.Top, 0, 0)));
         if (_timeView is not null)
         {
             _choosingStateDisposable = TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
@@ -301,7 +307,6 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
         _choosingStateDisposable?.Dispose();
         _choosingStateDisposable = null;
     }

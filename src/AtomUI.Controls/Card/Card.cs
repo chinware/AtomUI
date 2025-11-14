@@ -4,7 +4,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -12,7 +11,6 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using BoxShadowsTransition = AtomUI.Animations.BoxShadowsTransition;
@@ -221,7 +219,6 @@ public class Card : HeaderedContentControl,
     #endregion
 
     private CardActionPanel? _cardActionPanel;
-    private IDisposable? _borderThicknessDisposable;
     private CompositeDisposable? _contentBindingDisposables;
     
     static Card()
@@ -297,17 +294,7 @@ public class Card : HeaderedContentControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         ConfigureContentBorderThickness();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
     
     private void ConfigureContentBorderThickness()

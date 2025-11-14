@@ -4,14 +4,16 @@
     xmlns:atom="https://atomui.net"
     xmlns:timePickerLang="using:AtomUI.Controls.TimePickerLang"
     xmlns:localization="using:AtomUI.Controls.Localization"
+    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
+    <converters:BorderThicknessFilterConverter x:Key="BorderThicknessFilterConverter" Left="False" Right="False" Bottom="False"/>
     <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TimePickerPresenter">
                 <DockPanel Name="{x:Static atom:TimePickerPresenterThemeConstants.MainLayoutPart}"
                            LastChildFill="True">
                     <Border Name="{x:Static atom:TimePickerPresenterThemeConstants.ButtonsFramePart}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
                             IsVisible="{TemplateBinding ButtonsPanelVisible}"
                             DockPanel.Dock="Bottom">
                         <Panel Name="{x:Static atom:TimePickerPresenterThemeConstants.ButtonsLayoutPart}">
@@ -40,6 +42,7 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Style Selector="^ /template/ Border#PART_ButtonsFrame">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
         </Style>

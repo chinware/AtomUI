@@ -34,6 +34,7 @@
         <Setter Property="IsWaveSpiritEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}"/>
         <Setter Property="SplitSeparatorBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
         
         <Style Selector="^[SizeType=Large]">

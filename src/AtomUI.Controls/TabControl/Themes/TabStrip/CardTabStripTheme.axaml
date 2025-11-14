@@ -50,6 +50,8 @@
 
         <Setter Property="CardSize"
                 Value="{DynamicResource {x:Static atom:TabControlTokenKey.CardSize}}" />
+        <Setter Property="CardBorderThickness"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         
         <Style Selector="^ /template/ atom|IconButton#PART_AddTabButton">
             <Setter Property="NormalIconBrush"

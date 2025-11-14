@@ -1,15 +1,10 @@
 using AtomUI.Animations;
-using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.IconPkg;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -67,8 +62,6 @@ internal class PaletteColorItem : AvaloniaRadioButton
     }
     #endregion
     
-    private IDisposable? _borderThicknessDisposable;
-    
     static PaletteColorItem()
     {
         AffectsRender<PaletteColorItem>(ColorProperty, IsLightColorProperty);
@@ -94,21 +87,6 @@ internal class PaletteColorItem : AvaloniaRadioButton
                 ConfigureTransitions(true);
             }
         }
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
     
     private void ConfigureTransitions(bool force)

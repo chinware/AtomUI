@@ -1,12 +1,10 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaButton = Avalonia.Controls.Button;
@@ -47,7 +45,6 @@ internal class BaseCalendarDayButton : AvaloniaButton
     private bool _isInactive;
     private bool _isSelected;
     private bool _isToday;
-    private IDisposable? _borderThicknessDisposable;
     
     public BaseCalendarDayButton()
     {
@@ -285,21 +282,6 @@ internal class BaseCalendarDayButton : AvaloniaButton
         {
             CalendarDayButtonMouseUp?.Invoke(this, e);
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

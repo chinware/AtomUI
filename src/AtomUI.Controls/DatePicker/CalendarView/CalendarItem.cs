@@ -4,8 +4,6 @@ using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -67,11 +65,13 @@ internal class CalendarItem : TemplatedControl
             o => o.IsMonthViewMode,
             (o, v) => o.IsMonthViewMode = v);
     
+    internal static readonly StyledProperty<Thickness> HeaderBorderThicknessProperty =
+        AvaloniaProperty.Register<Calendar, Thickness>(nameof(HeaderBorderThickness));
+    
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     private bool _isMonthViewMode = true;
-    private IDisposable? _borderThicknessDisposable;
 
     /// <summary>
     /// 主要方便在模板中控制导航按钮的显示和关闭
@@ -86,6 +86,12 @@ internal class CalendarItem : TemplatedControl
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    internal Thickness HeaderBorderThickness
+    {
+        get => GetValue(HeaderBorderThicknessProperty);
+        set => SetValue(HeaderBorderThicknessProperty, value);
     }
 
     /// <summary>
@@ -1181,9 +1187,6 @@ internal class CalendarItem : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this, thickness => new Thickness(0, 0, 0, thickness.Bottom)));
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SetCalendarDayButtons();

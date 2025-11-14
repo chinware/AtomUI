@@ -49,5 +49,6 @@
 
     <Style Selector="^:is(atom|TreeViewItem)">
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
     </Style>
 </ControlTheme>

@@ -6,8 +6,6 @@ using AtomUI.Controls.Data;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -403,7 +401,6 @@ public class List : TemplatedControl,
 
     #endregion
     
-    private IDisposable? _borderThicknessDisposable;
     private IListCollectionView? _listCollectionView;
     private bool _areHandlersSuspended;
     private bool _measured;
@@ -421,21 +418,6 @@ public class List : TemplatedControl,
     public List()
     {
         this.RegisterResources();
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

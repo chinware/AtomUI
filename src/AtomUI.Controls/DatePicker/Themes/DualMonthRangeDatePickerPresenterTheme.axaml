@@ -17,7 +17,7 @@
                 <DockPanel Name="{x:Static atom:DatePickerPresenterThemeConstants.MainLayoutPart}"
                            LastChildFill="True">
                     <Border Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsFramePart}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
                             IsVisible="{TemplateBinding ButtonsPanelVisible}"
                             DockPanel.Dock="Bottom">
                         <Panel Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsLayoutPart}">

@@ -14,6 +14,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
         <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ColorPickerTokenKey.TriggerPadding}}" />
         <Setter Property="EmptyColorText" Value="{DynamicResource {x:Static colorPickerLang:ColorPickerLangResourceKey.EmptyColorText}}" />

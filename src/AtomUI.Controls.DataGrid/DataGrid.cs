@@ -8,8 +8,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
@@ -1198,10 +1196,6 @@ public partial class DataGrid : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         if (DataConnection.DataSource != null && !DataConnection.EventsWired)
         {
             DataConnection.WireEvents(DataConnection.DataSource);
@@ -1212,7 +1206,6 @@ public partial class DataGrid : TemplatedControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
         // When wired to INotifyCollectionChanged, the DataGrid will be cleaned up by GC
         if (DataConnection.DataSource != null && DataConnection.EventsWired)
         {

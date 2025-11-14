@@ -2,8 +2,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -183,8 +181,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     string IControlSharedTokenResourcesHost.TokenId => TabControlToken.ID;
     
     #endregion
-    
-    private IDisposable? _borderThicknessDisposable;
 
     static BaseTabStrip()
     {
@@ -330,21 +326,6 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 
     protected virtual void PrepareTabStripItem(TabStripItem tabStripItem, object? item, int index, CompositeDisposable compositeDisposable)
     {
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

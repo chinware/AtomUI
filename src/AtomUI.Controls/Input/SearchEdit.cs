@@ -1,10 +1,6 @@
-﻿using AtomUI.Controls.Themes;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Controls;
@@ -60,23 +56,6 @@ public class SearchEdit : LineEdit
     }
 
     #endregion
-
-    private IDisposable? _borderThicknessDisposable;
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

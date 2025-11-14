@@ -5,15 +5,11 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -269,7 +265,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     private BaseMotionActor? _itemsPresenterMotionActor;
     private readonly BorderRenderHelper _borderRenderHelper;
     private TreeViewItemHeader? _header;
-    private IDisposable? _borderThicknessDisposable;
     private readonly Dictionary<TreeViewItem, CompositeDisposable> _itemsBindingDisposables = new();
 
     static TreeViewItem()
@@ -315,19 +310,9 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault();
     }
     
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -512,8 +497,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
             return;
         }
 
-        var penWidth = BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0)
-                                  .Top;
+        var penWidth = BorderThickness.Top;
         using var state = context.PushRenderOptions(new RenderOptions
         {
             EdgeMode = EdgeMode.Aliased

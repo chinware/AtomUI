@@ -2,13 +2,10 @@
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 
@@ -101,8 +98,7 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
     private Control? _headerContentContainer;
     private Border? _frame;
     private Rect _borderBounds;
-    private IDisposable? _borderThicknessDisposable;
-
+    
     static GroupBox()
     {
         AffectsMeasure<GroupBox>(HeaderIconProperty);
@@ -162,20 +158,4 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
             }
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
-
 }

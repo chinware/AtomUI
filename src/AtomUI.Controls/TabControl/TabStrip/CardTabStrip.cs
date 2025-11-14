@@ -1,13 +1,10 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 
@@ -82,7 +79,6 @@ public class CardTabStrip : BaseTabStrip
     private IconButton? _addTabButton;
     private ItemsPresenter? _itemsPresenter;
     private TabStripScrollViewer? _scrollViewer;
-    private IDisposable? _borderBindingDisposable;
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -119,20 +115,6 @@ public class CardTabStrip : BaseTabStrip
         {
             _scrollViewer.TabStrip = this;
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderBindingDisposable = TokenResourceBinder.CreateTokenBinding(this, CardBorderThicknessProperty,
-            SharedTokenKey.BorderThickness, BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderBindingDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

@@ -1,12 +1,9 @@
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.VisualTree;
@@ -117,7 +114,6 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     #endregion
     
     private IDisposable? _mouseMoveDisposable;
-    private IDisposable? _borderThicknessDisposable;
     private Border? _contentFrame;
     
     protected void ConfigureEffectiveContentPadding()
@@ -148,10 +144,6 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         ConfigureMoveProcessor();
     }
 
@@ -159,7 +151,6 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     {
         base.OnDetachedFromVisualTree(e);
         _mouseMoveDisposable?.Dispose();
-        _borderThicknessDisposable?.Dispose();
     }
 
     private void ConfigureMoveProcessor()

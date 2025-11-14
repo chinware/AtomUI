@@ -4,8 +4,6 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,7 +11,6 @@ using Avalonia.Controls.Converters;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Data;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -228,7 +225,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     private protected bool IsFlyoutOpen;
     private CompositeDisposable? _flyoutBindingDisposables;
     private CompositeDisposable? _flyoutHelperBindingDisposables;
-    private IDisposable? _borderThicknessDisposable;
     
     static AbstractColorPicker()
     {
@@ -271,10 +267,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
 
@@ -282,7 +274,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

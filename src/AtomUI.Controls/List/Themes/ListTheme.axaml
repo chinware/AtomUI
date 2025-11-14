@@ -66,6 +66,7 @@
     <Style Selector="^:is(atom|List)">
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Style Selector="^ /template/ Border#Frame">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ListTokenKey.ContentPadding}}" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />

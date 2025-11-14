@@ -76,7 +76,8 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
+        
         <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.AddonBg}}" />
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />

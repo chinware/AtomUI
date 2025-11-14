@@ -49,7 +49,6 @@ internal class ButtonSpinnerHandle : TemplatedControl
     public event EventHandler? ButtonsCreated;
     
     private BorderRenderHelper _borderRenderHelper;
-    private IDisposable? _borderThicknessDisposable;
 
     static ButtonSpinnerHandle()
     {
@@ -59,21 +58,6 @@ internal class ButtonSpinnerHandle : TemplatedControl
     public ButtonSpinnerHandle()
     {
         _borderRenderHelper = new BorderRenderHelper();
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, SpinnerBorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

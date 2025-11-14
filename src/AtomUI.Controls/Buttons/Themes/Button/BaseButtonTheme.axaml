@@ -60,6 +60,7 @@
 
     <Style Selector="^:is(atom|Button)">
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="IsWaveSpiritEnabled"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableWaveSpirit}}" />

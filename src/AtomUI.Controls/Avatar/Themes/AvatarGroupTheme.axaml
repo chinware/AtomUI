@@ -9,5 +9,6 @@
         <Setter Property="FoldInfoAvatarForeground"
                 Value="{DynamicResource {x:Static atom:AvatarTokenKey.AvatarColor}}" />
         <Setter Property="FoldInfoAvatarBackground" Value="{DynamicResource {x:Static atom:AvatarTokenKey.AvatarBg}}" />
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
     </ControlTheme>
 </ResourceDictionary>

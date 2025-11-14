@@ -122,7 +122,6 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
 
     #endregion
     
-    private IDisposable? _borderThicknessDisposable;
     private IconButton? _closeButton;
 
     static Alert()
@@ -158,21 +157,6 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
         {
             UpdatePseudoClasses();
         }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -5,8 +5,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -14,7 +12,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -194,7 +191,6 @@ public class Button : AvaloniaButton,
     #endregion
     
     protected bool ThemeConfigured;
-    private IDisposable? _borderThicknessDisposable;
     private WaveSpiritDecorator? _waveSpiritDecorator;
 
     static Button()
@@ -286,7 +282,8 @@ public class Button : AvaloniaButton,
         }
         else if (e.Property == BorderBrushProperty ||
                  e.Property == ButtonTypeProperty ||
-                 e.Property == IsEnabledProperty)
+                 e.Property == IsEnabledProperty ||
+                 e.Property == BorderThicknessProperty)
         {
             SetupEffectiveBorderThickness();
         }
@@ -416,6 +413,7 @@ public class Button : AvaloniaButton,
         UpdatePseudoClasses();
         ConfigureControlThemeBindings(false);
         ConfigureWaveSpiritType();
+        SetupEffectiveBorderThickness();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -428,22 +426,6 @@ public class Button : AvaloniaButton,
     {
         base.OnUnloaded(e);
         Transitions = null;
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-        SetupEffectiveBorderThickness();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
 
     private void SetupEffectiveBorderThickness()

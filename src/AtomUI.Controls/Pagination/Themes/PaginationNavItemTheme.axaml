@@ -36,7 +36,7 @@
         <Setter Property="Padding"
                 Value="{DynamicResource {x:Static atom:PaginationTokenKey.PaginationItemPaddingInline}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
-        
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
             <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />

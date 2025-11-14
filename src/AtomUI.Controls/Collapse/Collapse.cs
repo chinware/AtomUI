@@ -3,8 +3,6 @@ using System.Reactive.Disposables;
 using AtomUI.Controls.Themes;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -12,7 +10,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
@@ -151,7 +148,6 @@ public class Collapse : SelectingItemsControl,
     #endregion
     
     private readonly Dictionary<CollapseItem, CompositeDisposable> _itemsBindingDisposables = new();
-    private IDisposable? _borderThicknessDisposable;
 
     static Collapse()
     {
@@ -163,7 +159,7 @@ public class Collapse : SelectingItemsControl,
 
     public Collapse()
     {
-        SelectionChanged        += HandleSelectionChanged;
+        SelectionChanged                  += HandleSelectionChanged;
         LogicalChildren.CollectionChanged += HandleCollectionChanged;
         this.RegisterResources();
     }
@@ -443,17 +439,7 @@ public class Collapse : SelectingItemsControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
         SetupEffectiveBorderThickness();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
     }
     
     private void ConfigureItemPaddings(CollapseItem collapseItem)

@@ -37,6 +37,7 @@
         <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.SizeMS}}"/>
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"/>
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}"/>
         
         <Setter Property="IndicatorFill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
         

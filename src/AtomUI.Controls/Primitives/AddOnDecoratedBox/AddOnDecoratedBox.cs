@@ -3,7 +3,6 @@ using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using Avalonia;
@@ -12,7 +11,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
 using Avalonia.Styling;
@@ -269,7 +267,6 @@ internal class AddOnDecoratedBox : ContentControl,
 
     #endregion
     
-    private IDisposable? _borderThicknessDisposable;
     private protected Control? _leftAddOn;
     private protected Control? _rightAddOn;
 
@@ -444,21 +441,6 @@ internal class AddOnDecoratedBox : ContentControl,
         ConfigureInnerBoxBorderThickness();
     }
     
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _borderThicknessDisposable = TokenResourceBinder.CreateTokenBinding(this, BorderThicknessProperty,
-            SharedTokenKey.BorderThickness,
-            BindingPriority.Template,
-            new RenderScaleAwareThicknessConfigure(this));
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _borderThicknessDisposable?.Dispose();
-    }
-
     protected virtual void NotifyAddOnBorderInfoCalculated()
     {
     }
