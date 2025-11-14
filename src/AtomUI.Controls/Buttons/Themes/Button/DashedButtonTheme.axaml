@@ -53,6 +53,14 @@
                             Text="{TemplateBinding Content}" />
                     </DockPanel>
                 </atom:DashedBorder>
+                <Border Name="FocusVisual"
+                        IsVisible="False"
+                        IsHitTestVisible="False"
+                        BorderThickness="{DynamicResource {x:Static atom:SharedTokenKey.FocusVisualBorderThickness}}"
+                        BorderBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorFocusBorder}}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Margin="{DynamicResource {x:Static atom:AdornerLayerTokenKey.FocusVisualMargin}}"
+                        ZIndex="1" />
             </Panel>
         </ControlTemplate>
     </Setter>
@@ -148,6 +156,13 @@
                 <Setter Property="atom:Icon.SelectedFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
             </Style>
+        </Style>
+
+        <Style Selector="^ /template/ Border#FocusVisual">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-visible /template/ Border#FocusVisual">
+            <Setter Property="IsVisible" Value="True" />
         </Style>
 
         <Style Selector="^:danger">

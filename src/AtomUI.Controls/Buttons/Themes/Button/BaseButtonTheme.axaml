@@ -46,6 +46,14 @@
                             Text="{TemplateBinding Content}" />
                     </DockPanel>
                 </Border>
+                <Border Name="FocusVisual"
+                        IsVisible="False"
+                        IsHitTestVisible="False"
+                        BorderThickness="{DynamicResource {x:Static atom:SharedTokenKey.FocusVisualBorderThickness}}"
+                        BorderBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorFocusBorder}}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Margin="{DynamicResource {x:Static atom:AdornerLayerTokenKey.FocusVisualMargin}}"
+                        ZIndex="1" />
             </Panel>
         </ControlTemplate>
     </Setter>
@@ -58,6 +66,7 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
 
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Border#Frame">
@@ -253,6 +262,13 @@
 
         <Style Selector="^[Shape=Circle]">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.CirclePadding}}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#FocusVisual">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:focus-visible /template/ Border#FocusVisual">
+            <Setter Property="IsVisible" Value="True" />
         </Style>
 
         <Style Selector="^:disabled">
