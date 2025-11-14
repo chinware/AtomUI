@@ -21,5 +21,10 @@
         <InternalsVisibleTo Include="AtomUI.Controls.ColorPicker"/>
         <InternalsVisibleTo Include="AtomUI.ReactiveUI"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyMetadata Include="AvaloniaVersion" Value="$(AvaloniaVersion)" />
+        <AssemblyMetadata Include="AtomUIVersion" Value="$(AtomUIVersion)" />
+    </ItemGroup>
     
 </Project>
