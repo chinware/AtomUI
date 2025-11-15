@@ -52,7 +52,6 @@
                                       IsEnableRevealButton="False"
                                       Width="{TemplateBinding PreferredInputWidth}"
                                       DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                      Foreground="{TemplateBinding InputTextBrush}"
                                       SizeType="{TemplateBinding SizeType}"
                                       IsReadOnly="{TemplateBinding IsReadOnly}"
                                       Text="{TemplateBinding Text}"
@@ -74,7 +73,6 @@
                             IsEnableRevealButton="False"
                             Width="{TemplateBinding PreferredInputWidth}"
                             DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                            Foreground="{TemplateBinding InputTextBrush}"
                             SizeType="{TemplateBinding SizeType}"
                             IsReadOnly="{TemplateBinding IsReadOnly}"
                             Text="{TemplateBinding SecondaryText}"
@@ -91,6 +89,30 @@
     </Setter>
 
     <Style Selector="^:is(atom|RangeInfoPickerInput)">
+        <Style Selector="^ /template/ atom|TextBox">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
+        
+        <Style Selector="^:flyout-open">
+            <Style Selector="^ /template/ atom|TextBox">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            </Style>
+            <Style Selector="^[RangeActivatedPart=Start]">
+                <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+                </Style>
+            </Style>
+            <Style Selector="^[RangeActivatedPart=End]">
+                <Style Selector="^ /template/ atom|TextBox#PART_SecondaryInfoInputBox">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+                </Style>
+            </Style>
+        </Style>
+        
         <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:InfoPickerInputTokenKey.RangePickerArrowMargin}}" />

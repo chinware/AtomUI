@@ -57,12 +57,12 @@
         
         <Style Selector="^:today">
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+            <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         </Style>
         
         <Style Selector="^:selected:not(:inactive)">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWhite}}" />
-            <Setter Property="BorderThickness" Value="0" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

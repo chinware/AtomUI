@@ -20,13 +20,10 @@ public class RangeDateSelectedEventArgs : EventArgs
 
 internal class RangeCalendar : Calendar
 {
-    protected override Type StyleKeyOverride => typeof(RangeCalendar);
-    
     #region 公共属性定义
 
     public static readonly StyledProperty<DateTime?> SecondarySelectedDateProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SecondarySelectedDate),
-            defaultBindingMode: BindingMode.TwoWay);
+        AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SecondarySelectedDate));
 
     public DateTime? SecondarySelectedDate
     {

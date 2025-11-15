@@ -62,8 +62,7 @@ internal class Calendar : TemplatedControl
             defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<DateTime?> SelectedDateProperty =
-        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SelectedDate),
-            defaultBindingMode: BindingMode.TwoWay);
+        AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SelectedDate));
     
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.
@@ -272,8 +271,8 @@ internal class Calendar : TemplatedControl
 
     #region 内部属性定义
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Calendar>();
     
     internal bool IsMotionEnabled
     {
@@ -951,10 +950,7 @@ internal class Calendar : TemplatedControl
         {
             return SelectedDate.Value.ToString(DateTimeHelper.GetCurrentDateFormat());
         }
-        else
-        {
-            return string.Empty;
-        }
+        return string.Empty;
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)

@@ -45,7 +45,6 @@
                                   Text="{TemplateBinding Text}"
                                   Watermark="{TemplateBinding Watermark}"
                                   DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
-                                  Foreground="{TemplateBinding InputTextBrush}"
                                   SizeType="{TemplateBinding SizeType}"
                                   IsReadOnly="{TemplateBinding IsReadOnly}" />
                 </atom:AddOnDecoratedBox>
@@ -58,16 +57,24 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}" />
-        <Setter Property="InputTextBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        
+        <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+            <Setter Property="Foreground"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
 
         <Style Selector="^:flyout-open">
-            <Setter Property="InputTextBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+            </Style>
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="InputTextBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
         </Style>
 
         <Style Selector="^[SizeType=Large]">

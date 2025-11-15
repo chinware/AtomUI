@@ -46,15 +46,15 @@ internal class RangeDatePickerFlyout : DatePickerFlyout
         }
         
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, RangeDatePickerPresenter.IsMotionEnabledProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, presenter, RangeDatePickerPresenter.IsNeedConfirmProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, presenter, RangeDatePickerPresenter.IsShowNowProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowTimeProperty, presenter, RangeDatePickerPresenter.IsShowTimeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, presenter, RangeDatePickerPresenter.ClockIdentifierProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SelectedDateTimeProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SecondarySelectedDateTimeProperty, presenter, RangeDatePickerPresenter.SecondarySelectedDateTimeProperty));
 
         flyoutPresenter.Content = presenter;
-        DatePickerPresenter      = presenter;
+        DatePickerPresenter     = presenter;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)

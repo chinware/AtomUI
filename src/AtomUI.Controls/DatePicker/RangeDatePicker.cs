@@ -197,10 +197,11 @@ public class RangeDatePicker : RangeInfoPickerInput,
             _pickerPresenter.HoverDateTimeChanged  -= HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
             _pickerPresenter.RangePartConfirmed    -= HandleRangePartConfirmed;
-            if (_pickerPresenter.SelectedDateTime == null || _pickerPresenter.SecondarySelectedDateTime == null)
+
+            if (RangeStartSelectedDate == null || RangeEndSelectedDate == null)
             {
-                _pickerPresenter.SelectedDateTime          = null;
-                _pickerPresenter.SecondarySelectedDateTime = null;
+                RangeStartSelectedDate = null;
+                RangeEndSelectedDate   = null;
             }
         }
     }
@@ -290,20 +291,14 @@ public class RangeDatePicker : RangeInfoPickerInput,
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {
             RangeStartSelectedDate = _pickerPresenter?.SelectedDateTime;
-            if (RangeEndSelectedDate is null)
-            {
-                RangeActivatedPart = RangeActivatedPart.End;
-                _pickerPresenter?.NotifySelectRangeStart(false);
-            }
+            RangeActivatedPart     = RangeActivatedPart.End;
+            _pickerPresenter?.NotifySelectRangeStart(false);
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
             RangeEndSelectedDate = _pickerPresenter?.SecondarySelectedDateTime;
-            if (RangeStartSelectedDate is null)
-            {
-                RangeActivatedPart = RangeActivatedPart.Start;
-                _pickerPresenter?.NotifySelectRangeStart(true);
-            }
+            RangeActivatedPart   = RangeActivatedPart.Start;
+            _pickerPresenter?.NotifySelectRangeStart(true);
         }
     }
     
@@ -366,17 +361,11 @@ public class RangeDatePicker : RangeInfoPickerInput,
         {
             if (change.Property == RangeStartSelectedDateProperty)
             {
-                if (RangeStartSelectedDate.HasValue)
-                {
-                    Text = FormatDateTime(RangeStartSelectedDate.Value);
-                }
+                Text = FormatDateTime(RangeStartSelectedDate);
             }
             else if (change.Property == RangeEndSelectedDateProperty)
             {
-                if (RangeEndSelectedDate.HasValue)
-                {
-                    SecondaryText = FormatDateTime(RangeEndSelectedDate.Value);
-                }
+                SecondaryText = FormatDateTime(RangeEndSelectedDate);
             }
         }
     }

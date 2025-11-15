@@ -24,6 +24,8 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     public event EventHandler? RangePartConfirmed;
 
     #endregion
+    
+    RangeDatePickState PickState = RangeDatePickState.None;
 
     protected void EmitRangePartConfirmed()
     {
@@ -32,6 +34,14 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     internal void NotifySelectRangeStart(bool isStart)
     {
+        if (isStart)
+        {
+            PickState = RangeDatePickState.PartStart;
+        }
+        else
+        {
+            PickState = RangeDatePickState.PartEnd;
+        }
         if (CalendarView is RangeCalendar rangeCalendar)
         {
             rangeCalendar.IsSelectRangeStart = isStart;
@@ -90,13 +100,12 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             // 部分确认
             if (rangeCalendar.IsSelectRangeStart)
             {
-                SelectedDateTime =
-                    CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime ?? TimeView?.SelectedTime);
+                SetCurrentValue(SelectedDateTimeProperty, CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime ?? TimeView?.SelectedTime));
             }
             else
             {
-                SecondarySelectedDateTime = CollectDateTime(rangeCalendar.SecondarySelectedDate,
-                    TempSelectedTime ?? TimeView?.SelectedTime);
+                SetCurrentValue(SecondarySelectedDateTimeProperty, CollectDateTime(rangeCalendar.SecondarySelectedDate,
+                    TempSelectedTime ?? TimeView?.SelectedTime));
             }
 
             if (!IsNeedConfirm)
@@ -117,20 +126,28 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     protected override void OnDismiss()
     {
         base.OnDismiss();
-        SecondarySelectedDateTime = null;
+        SetCurrentValue(SecondarySelectedDateTimeProperty, null);
     }
 
     protected override void OnConfirmed()
     {
         EmitChoosingStatueChanged(false);
 
-        if (SelectedDateTime is null || SecondarySelectedDateTime is null)
+        if (PickState.HasFlag(RangeDatePickState.PartStart) && PickState.HasFlag(RangeDatePickState.PartEnd))
         {
-            EmitRangePartConfirmed();
+            EmitConfirmed();
         }
         else
         {
-            EmitConfirmed();
+            EmitRangePartConfirmed();
+            if (PickState.HasFlag(RangeDatePickState.PartEnd))
+            {
+                PickState |= RangeDatePickState.PartStart;
+            }
+            else if (PickState.HasFlag(RangeDatePickState.PartStart))
+            {
+                PickState |= RangeDatePickState.PartEnd;
+            }
         }
     }
 
@@ -157,11 +174,11 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             // 部分确认
             if (rangeCalendar.IsSelectRangeStart)
             {
-                SelectedDateTime = CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime);
+                SetCurrentValue(SelectedDateTimeProperty, CollectDateTime(rangeCalendar.SelectedDate, TempSelectedTime));
             }
             else
             {
-                SecondarySelectedDateTime = CollectDateTime(rangeCalendar.SecondarySelectedDate, TempSelectedTime);
+                SetCurrentValue(SecondarySelectedDateTimeProperty, CollectDateTime(rangeCalendar.SecondarySelectedDate, TempSelectedTime));
             }
         }
     }
@@ -192,13 +209,32 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         if (change.Property == SecondarySelectedDateTimeProperty ||
             change.Property == SelectedDateTimeProperty)
         {
+            if (CalendarView is DualMonthRangeCalendar rangeCalendar)
+            {
+                rangeCalendar.SetCurrentValue(DualMonthRangeCalendar.SecondarySelectedDateProperty, SecondarySelectedDateTime);
+            }
             SetupConfirmButtonEnableStatus();
         }
     }
+
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         SetupConfirmButtonEnableStatus();
     }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        PickState = RangeDatePickState.None;
+    }
+}
+
+[Flags]
+internal enum RangeDatePickState
+{
+    None = 0x00,
+    PartStart = 0x01,
+    PartEnd = 0x02,
 }

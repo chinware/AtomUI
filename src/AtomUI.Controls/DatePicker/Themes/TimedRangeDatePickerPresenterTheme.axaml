@@ -14,13 +14,13 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel Name="{x:Static atom:DatePickerPresenterThemeConstants.MainLayoutPart}"
+                <DockPanel Name="RootLayout"
                            LastChildFill="True">
-                    <Border Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsFramePart}"
+                    <Border Name="ButtonsFrame"
                             BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
                             IsVisible="{TemplateBinding ButtonsPanelVisible}"
                             DockPanel.Dock="Bottom">
-                        <Panel Name="{x:Static atom:DatePickerPresenterThemeConstants.ButtonsLayoutPart}">
+                        <Panel Name="ButtonsLayout">
                             <atom:Button
                                 Name="{x:Static atom:DatePickerPresenterThemeConstants.NowButtonPart}"
                                 ButtonType="Link"

@@ -165,6 +165,7 @@ internal class DatePickerPresenter : PickerPresenterBase
         else if (change.Property == SelectedDateTimeProperty)
         {
             SetupConfirmButtonEnableStatus();
+            CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, SelectedDateTime);
         }
     }
 
@@ -241,11 +242,9 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     private void HandleTodayButtonClicked(object? sender, RoutedEventArgs args)
     {
-        SelectedDateTime = DateTime.Today;
-        if (CalendarView is not null)
-        {
-            CalendarView.DisplayDate = DateTime.Today;
-        }
+        SetCurrentValue(SelectedDateTimeProperty, DateTime.Today);
+        
+        CalendarView?.SetCurrentValue(PickerCalendar.DisplayDateProperty, DateTime.Today);
 
         if (!IsNeedConfirm)
         {
@@ -257,7 +256,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         if (CalendarView is not null)
         {
-            CalendarView.SelectedDate = DateTime.Now;
+            CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, DateTime.Now);
         }
 
         if (IsShowTime && TimeView is not null)
@@ -309,7 +308,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyCalendarViewDateSelected()
     {
-        SelectedDateTime = CollectDateTime(CalendarView?.SelectedDate, TempSelectedTime ?? TimeView?.SelectedTime);
+        SetCurrentValue(SelectedDateTimeProperty, CollectDateTime(CalendarView?.SelectedDate, TempSelectedTime ?? TimeView?.SelectedTime));
         if (!IsNeedConfirm)
         {
             OnConfirmed();
@@ -378,10 +377,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected override void OnConfirmed()
     {
-        if (CalendarView is not null)
-        {
-            CalendarView.SelectedDate = SelectedDateTime;
-        }
+        CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, SelectedDateTime);
         EmitChoosingStatueChanged(false);
         base.OnConfirmed();
     }
@@ -399,7 +395,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected override void OnDismiss()
     {
         base.OnDismiss();
-        SelectedDateTime = null;
+        SetCurrentValue(SelectedDateTimeProperty, null);
     }
 
     protected virtual void SyncTimeViewTimeValue()
