@@ -554,7 +554,6 @@ internal class CalendarItem : TemplatedControl
         if (Owner != null)
         {
             childButton.Opacity = 1;
-
             // If the day is outside the DisplayDateStart/End boundary, do
             // not show it
             if (DateTimeHelper.CompareDays(dateToAdd, Owner.DisplayDateRangeStart) < 0 ||

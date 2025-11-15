@@ -242,6 +242,11 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     private void HandleTodayButtonClicked(object? sender, RoutedEventArgs args)
     {
+        NotifyTodayButtonClicked();
+    }
+
+    protected virtual void NotifyTodayButtonClicked()
+    {
         SetCurrentValue(SelectedDateTimeProperty, DateTime.Today);
         
         CalendarView?.SetCurrentValue(PickerCalendar.DisplayDateProperty, DateTime.Today);
@@ -253,6 +258,11 @@ internal class DatePickerPresenter : PickerPresenterBase
     }
 
     private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        NotifyNowButtonClicked();
+    }
+
+    protected virtual void NotifyNowButtonClicked()
     {
         if (CalendarView is not null)
         {

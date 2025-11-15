@@ -8,8 +8,6 @@ namespace AtomUI.Controls.CalendarView;
 
 internal class DualMonthCalendarItem : RangeCalendarItem
 {
-    protected override Type StyleKeyOverride => typeof(DualMonthCalendarItem);
-    
     #region 内部属性定义
     
     protected HeadTextButton? _secondaryHeaderButton;

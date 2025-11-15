@@ -26,6 +26,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     #endregion
     
     RangeDatePickState PickState = RangeDatePickState.None;
+    private bool _isRangeStartActive = false;
 
     protected void EmitRangePartConfirmed()
     {
@@ -42,6 +43,8 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         {
             PickState = RangeDatePickState.PartEnd;
         }
+
+        _isRangeStartActive = isStart;
         if (CalendarView is RangeCalendar rangeCalendar)
         {
             rangeCalendar.IsSelectRangeStart = isStart;
@@ -150,6 +153,23 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             }
         }
     }
+    
+    protected override void NotifyTodayButtonClicked()
+    {
+        if (_isRangeStartActive)
+        {
+            SetCurrentValue(SelectedDateTimeProperty, DateTime.Today);
+        }
+        else
+        {
+            SetCurrentValue(SecondarySelectedDateTimeProperty, DateTime.Today);
+        }
+
+        if (!IsNeedConfirm)
+        {
+            OnConfirmed();
+        }
+    }
 
     protected override void SyncTimeViewTimeValue()
     {
@@ -216,7 +236,6 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             SetupConfirmButtonEnableStatus();
         }
     }
-
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

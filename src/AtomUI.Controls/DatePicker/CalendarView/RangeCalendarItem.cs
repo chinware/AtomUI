@@ -2,29 +2,18 @@
 
 internal class RangeCalendarItem : CalendarItem
 {
-    protected override Type StyleKeyOverride => typeof(CalendarItem);
-    
     protected override void CheckButtonSelectedState(CalendarDayButton childButton, DateTime dateToAdd)
     {
         // SET IF THE DAY IS SELECTED OR NOT
         childButton.IsSelected = false;
         if (Owner is RangeCalendar owner)
         {
-           
             DateTime? rangeStart = default;
             DateTime? rangeEnd   = default;
             owner.SortHoverIndexes(out rangeStart, out rangeEnd);
             if (rangeStart != null && rangeEnd != null)
             {
                 childButton.IsSelected = DateTimeHelper.InRange(dateToAdd, rangeStart.Value, rangeEnd.Value);
-            }
-            else if (rangeStart is not null)
-            {
-                childButton.IsSelected = DateTimeHelper.CompareDays(rangeStart.Value, dateToAdd) == 0;
-            }
-            else if (rangeEnd is not null)
-            {
-                childButton.IsSelected = DateTimeHelper.CompareDays(rangeEnd.Value, dateToAdd) == 0;
             }
         }
     }
