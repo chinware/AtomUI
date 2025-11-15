@@ -206,12 +206,16 @@ internal class DatePickerPresenter : PickerPresenterBase
 
         if (TodayButton is not null)
         {
-            TodayButton.Click += HandleTodayButtonClicked;
+            TodayButton.Click          += HandleTodayButtonClicked;
+            TodayButton.PointerEntered += (sender, args) => { NotifyPointerEnterTodayButton(); };
+            TodayButton.PointerExited  += (sender, args) => { NotifyPointerExitTodayButton(); };
         }
 
         if (NowButton is not null)
         {
-            NowButton.Click += HandleNowButtonClicked;
+            NowButton.Click          += HandleNowButtonClicked;
+            NowButton.PointerEntered += (sender, args) => { NotifyPointerEnterNowButton(); };
+            NowButton.PointerExited  += (sender, args) => { NotifyPointerExitNowButton(); };
         }
 
         if (ConfirmButton is not null)
@@ -236,6 +240,30 @@ internal class DatePickerPresenter : PickerPresenterBase
     }
 
     protected virtual void NotifyPointerExitConfirmButton()
+    {
+        EmitChoosingStatueChanged(false);
+    }
+    
+    protected virtual void NotifyPointerEnterTodayButton()
+    {
+        var hoverDateTime =
+            CollectDateTime(DateTime.Now, TimeSpan.Zero);
+        EmitHoverDateTimeChanged(hoverDateTime);
+    }
+
+    protected virtual void NotifyPointerExitTodayButton()
+    {
+        EmitChoosingStatueChanged(false);
+    }
+    
+    protected virtual void NotifyPointerEnterNowButton()
+    {
+        var hoverDateTime =
+            CollectDateTime(DateTime.Now, DateTime.Now.TimeOfDay);
+        EmitHoverDateTimeChanged(hoverDateTime);
+    }
+
+    protected virtual void NotifyPointerExitNowButton()
     {
         EmitChoosingStatueChanged(false);
     }

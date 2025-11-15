@@ -4,6 +4,8 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Controls;
 
+using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
+
 internal class RangeDatePickerPresenter : DatePickerPresenter
 {
     #region 公共属性定义
@@ -26,7 +28,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     #endregion
     
     RangeDatePickState PickState = RangeDatePickState.None;
-    private bool _isRangeStartActive = false;
+    protected bool IsRangeStartActive = false;
 
     protected void EmitRangePartConfirmed()
     {
@@ -44,7 +46,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             PickState = RangeDatePickState.PartEnd;
         }
 
-        _isRangeStartActive = isStart;
+        IsRangeStartActive = isStart;
         if (CalendarView is RangeCalendar rangeCalendar)
         {
             rangeCalendar.IsSelectRangeStart = isStart;
@@ -156,7 +158,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     
     protected override void NotifyTodayButtonClicked()
     {
-        if (_isRangeStartActive)
+        if (IsRangeStartActive)
         {
             SetCurrentValue(SelectedDateTimeProperty, DateTime.Today);
         }
@@ -165,10 +167,31 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
             SetCurrentValue(SecondarySelectedDateTimeProperty, DateTime.Today);
         }
 
-        if (!IsNeedConfirm)
+        OnConfirmed();
+    }
+    
+    protected override void NotifyNowButtonClicked()
+    {
+        if (IsRangeStartActive)
         {
-            OnConfirmed();
+            SetCurrentValue(SelectedDateTimeProperty, DateTime.Now);
         }
+        else
+        {
+            SetCurrentValue(SecondarySelectedDateTimeProperty, DateTime.Now);
+        }
+        
+        if (CalendarView is not null)
+        {
+            CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, DateTime.Now);
+        }
+
+        if (IsShowTime && TimeView is not null)
+        {
+            TimeView.SelectedTime = DateTime.Now.TimeOfDay;
+        }
+
+        OnConfirmed();
     }
 
     protected override void SyncTimeViewTimeValue()
@@ -229,10 +252,6 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         if (change.Property == SecondarySelectedDateTimeProperty ||
             change.Property == SelectedDateTimeProperty)
         {
-            if (CalendarView is DualMonthRangeCalendar rangeCalendar)
-            {
-                rangeCalendar.SetCurrentValue(DualMonthRangeCalendar.SecondarySelectedDateProperty, SecondarySelectedDateTime);
-            }
             SetupConfirmButtonEnableStatus();
         }
     }

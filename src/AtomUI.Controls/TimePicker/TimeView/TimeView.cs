@@ -424,7 +424,6 @@ internal class TimeView : TemplatedControl
         if (_periodSelector is not null)
         {
             _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
-            ;
         }
     }
 

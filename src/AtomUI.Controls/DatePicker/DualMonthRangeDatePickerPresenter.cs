@@ -1,6 +1,20 @@
-﻿namespace AtomUI.Controls;
+﻿using AtomUI.Controls.CalendarView;
+using Avalonia;
+
+namespace AtomUI.Controls;
 
 internal class DualMonthRangeDatePickerPresenter : RangeDatePickerPresenter
 {
-    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SecondarySelectedDateTimeProperty ||
+            change.Property == SelectedDateTimeProperty)
+        {
+            if (CalendarView is DualMonthRangeCalendar rangeCalendar)
+            {
+                rangeCalendar.SetCurrentValue(DualMonthRangeCalendar.SecondarySelectedDateProperty, SecondarySelectedDateTime);
+            }
+        }
+    }
 }

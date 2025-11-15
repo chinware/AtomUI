@@ -2,12 +2,15 @@
 
 internal class RangeCalendarItem : CalendarItem
 {
+    protected override Type StyleKeyOverride => typeof(CalendarItem);
+    
     protected override void CheckButtonSelectedState(CalendarDayButton childButton, DateTime dateToAdd)
     {
         // SET IF THE DAY IS SELECTED OR NOT
         childButton.IsSelected = false;
         if (Owner is RangeCalendar owner)
         {
+           
             DateTime? rangeStart = default;
             DateTime? rangeEnd   = default;
             owner.SortHoverIndexes(out rangeStart, out rangeEnd);
