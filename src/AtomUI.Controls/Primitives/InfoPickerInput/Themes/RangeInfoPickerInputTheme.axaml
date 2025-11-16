@@ -24,7 +24,9 @@
                     RightAddOn="{TemplateBinding RightAddOn}"
                     RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                     ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
-                    ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
+                    ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                    VerticalAlignment="{TemplateBinding VerticalAlignment}">
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                             <atom:PickerClearUpButton
@@ -89,6 +91,10 @@
     </Setter>
 
     <Style Selector="^:is(atom|RangeInfoPickerInput)">
+        
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        
         <Style Selector="^ /template/ atom|TextBox">
             <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />

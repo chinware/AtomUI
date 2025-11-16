@@ -770,13 +770,14 @@ public class SplitButton : ContentControl,
         {
             _originRect = _secondaryButton?.Bounds;
         }
-
+        
+        
         if (!IsPrimaryButtonType)
         {
             if (_secondaryButton is not null && _originRect.HasValue)
             {
                 _secondaryButton.Arrange(
-                    _originRect.Value.Inflate(new Thickness(_secondaryButton.BorderThickness.Left, 0, 0, 0)));
+                    _originRect.Value.Inflate(new Thickness(_secondaryButton.BorderThickness.Left * 2, 0, 0, 0)));
             }
         }
         else

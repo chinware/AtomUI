@@ -103,7 +103,8 @@
         <Setter Property="CaretBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         <Setter Property="SelectionForegroundBrush"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.SelectionForeground}}" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
     

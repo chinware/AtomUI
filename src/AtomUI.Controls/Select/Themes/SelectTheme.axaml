@@ -23,6 +23,8 @@
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                         Mode="{TemplateBinding Mode}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
                         IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}"
                         IsDropDownOpen="{TemplateBinding IsDropDownOpen}">
                         <atom:AddOnDecoratedBox.ContentRightAddOn>

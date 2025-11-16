@@ -47,7 +47,6 @@ internal static class ColorPickerInputThemeConstants
 internal static class ColorPickerThemeConstants
 {
     public const string ColorIndicatorPart = "PART_ColorIndicator";
-    public const string ColorTextPart = "PART_ColorText";
     public const string ColorTextPanelPart = "PART_ColorTextPanel";
 }
 

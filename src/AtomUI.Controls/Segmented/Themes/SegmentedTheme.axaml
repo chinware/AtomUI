@@ -27,7 +27,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="SelectedThumbBg" Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedBg}}" />
         <Setter Property="SelectedThumbBoxShadows" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsTertiary}}" />
-        
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Style Selector="^[IsExpanding=True]">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>

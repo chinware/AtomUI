@@ -45,8 +45,8 @@
         </Setter>
 
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:AvatarTokenKey.AvatarColor}}" />
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:AvatarTokenKey.GroupBorderColor}}" />
         <Style Selector="^[ContentType=Icon]">

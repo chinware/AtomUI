@@ -1,7 +1,5 @@
-using System.Reactive.Disposables;
 using AtomUI.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Theme.Utils;
 using AtomUI.Utils;
@@ -9,7 +7,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -72,35 +69,28 @@ public class MarqueeLabel : TextBlock, IControlSharedTokenResourcesHost
     private double _lastDesiredWidth;
     private double _lastTextWidth;
     private double _pivotOffsetStartValue;
-    private CompositeDisposable? _tokenBindingDisposables;
 
     static MarqueeLabel()
     {
         AffectsRender<MarqueeLabel>(PivotOffsetProperty, CycleSpaceProperty, MoveSpeedProperty);
+        HorizontalAlignmentProperty.OverrideDefaultValue<MarqueeLabel>(HorizontalAlignment.Stretch);
+        VerticalAlignmentProperty.OverrideDefaultValue<MarqueeLabel>(VerticalAlignment.Top);
     }
 
     public MarqueeLabel()
     {
         this.RegisterResources();
-        HorizontalAlignment = HorizontalAlignment.Stretch;
+        ConfigureInstanceStyles();
     }
 
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    private void ConfigureInstanceStyles()
     {
-        base.OnAttachedToLogicalTree(e);
-        _tokenBindingDisposables = new CompositeDisposable(2);
-        _tokenBindingDisposables.Add(
-            TokenResourceBinder.CreateTokenBinding(this, CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace));
-        _tokenBindingDisposables.Add(
-            TokenResourceBinder.CreateTokenBinding(this, MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed));
+        var style = new Style();
+        style.Add(CycleSpaceProperty, MarqueeLabelTokenKey.CycleSpace);
+        style.Add(MoveSpeedProperty, MarqueeLabelTokenKey.DefaultSpeed);
+        Styles.Add(style);
     }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _tokenBindingDisposables?.Dispose();
-    }
-
+    
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
@@ -262,5 +252,4 @@ public class MarqueeLabel : TextBlock, IControlSharedTokenResourcesHost
             TextLayout.Draw(context, origin + new Point(offset + _lastTextWidth + CycleSpace, 0));
         }
     }
-    
 }

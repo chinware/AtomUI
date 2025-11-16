@@ -17,6 +17,8 @@
                 RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                 ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
                 ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 StyleVariant="{TemplateBinding StyleVariant}"
                 SizeType="{TemplateBinding SizeType}"
                 Status="{TemplateBinding Status}"

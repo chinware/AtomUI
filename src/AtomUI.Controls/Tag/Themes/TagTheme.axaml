@@ -5,14 +5,14 @@
               x:Class="AtomUI.Controls.Themes.TagTheme"
               TargetType="atom:Tag">
     <Setter Property="Template">
-        <ControlTemplate>
+        <ControlTemplate TargetType="atom:Tag">
             <Panel>
                 <Border Name="Frame"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BorderThickness="{TemplateBinding BorderThickness}" />
-                <DockPanel LastChildFill="True" VerticalAlignment="Center"
+                <DockPanel LastChildFill="True" 
                            Margin="{TemplateBinding Padding}">
                     <atom:IconPresenter Name="IconPresenter"
                                         DockPanel.Dock="Left"
@@ -21,7 +21,8 @@
                     <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
                                      DockPanel.Dock="Right"
                                      IsVisible="{TemplateBinding IsClosable}"
-                                     Icon="{TemplateBinding CloseIcon}" />
+                                     Icon="{TemplateBinding CloseIcon}" 
+                                     VerticalAlignment="Center"/>
                     <atom:TextBlock Name="TagTextLabel"
                                     VerticalAlignment="Center"
                                     Text="{TemplateBinding TagText}"

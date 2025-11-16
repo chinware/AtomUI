@@ -4,6 +4,8 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:AvatarGroup}" TargetType="atom:AvatarGroup">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="GroupSpace" Value="{DynamicResource {x:Static atom:AvatarTokenKey.GroupSpace}}" />
         <Setter Property="GroupOverlapping" Value="{DynamicResource {x:Static atom:AvatarTokenKey.GroupOverlapping}}" />
         <Setter Property="FoldInfoAvatarForeground"

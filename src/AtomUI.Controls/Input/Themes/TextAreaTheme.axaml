@@ -24,6 +24,8 @@
                         SizeType="{TemplateBinding SizeType}"
                         Status="{TemplateBinding Status}"
                         Focusable="True"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
                         IsResizable="{TemplateBinding IsResizable}"
                         IsAllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
                         HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"

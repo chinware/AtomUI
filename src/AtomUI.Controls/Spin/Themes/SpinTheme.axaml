@@ -43,6 +43,8 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="MotionEasingCurve" Value="LinearEasing" />
         <Setter Property="MaskOpacity" Value="1.0" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />

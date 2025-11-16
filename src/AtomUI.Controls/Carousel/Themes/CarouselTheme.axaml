@@ -35,9 +35,7 @@
                 </Panel>
             </ControlTemplate>
         </Setter>
-
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
+        
         <Setter Property="PaginationOffset" Value="{DynamicResource {x:Static atom:CarouselTokenKey.PaginationOffset}}"/>
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
         <Setter Property="PageTransitionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationSlow}}"/>

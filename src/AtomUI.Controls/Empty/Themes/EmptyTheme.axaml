@@ -40,6 +40,8 @@
             </Style>
         </Style>
         
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="BorderColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFill}}"/>
         <Setter Property="BorderColorSecondary" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}"/>
         <Setter Property="ShadowColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillTertiary}}"/>

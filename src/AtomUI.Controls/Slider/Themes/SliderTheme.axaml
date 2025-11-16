@@ -45,8 +45,7 @@
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
         </Style>
-
-        <!-- BuildSliderTrackStyle begin -->
+        
         <Style Selector="^ /template/ atom|SliderTrack#PART_Track">
             <Setter Property="TrackGrooveBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.RailBg}}" />
             <Setter Property="TrackBarBrush" Value="{DynamicResource {x:Static atom:SliderTokenKey.TrackBg}}" />
@@ -76,7 +75,6 @@
                     Value="{DynamicResource {x:Static atom:SliderTokenKey.MarkBorderColorHover}}" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
-        <!-- BuildSliderTrackStyle end -->
 
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|SliderTrack">

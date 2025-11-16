@@ -23,6 +23,8 @@
                     SearchButtonText="{TemplateBinding SearchButtonText}"
                     SearchButtonLoading="{TemplateBinding IsOperating}"
                     IsEnabled="{TemplateBinding IsEnabled}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                     Focusable="True">
                     <atom:SearchEditDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"

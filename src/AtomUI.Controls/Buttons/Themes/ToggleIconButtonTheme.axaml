@@ -35,6 +35,8 @@
             </ControlTemplate>
         </Setter>
         
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Cursor" Value="Hand"/>
         <Style Selector="^ /template/ atom|IconPresenter">
             <Setter Property="IconMode" Value="Normal"/>

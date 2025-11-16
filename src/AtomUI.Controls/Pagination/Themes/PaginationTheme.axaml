@@ -31,7 +31,7 @@
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
         <Setter Property="PageText" Value="{DynamicResource {x:Static paginationLang:PaginationLangResourceKey.PageText}}"/>
         <Setter Property="TotalInfoTemplate" Value="{DynamicResource {x:Static paginationLang:PaginationLangResourceKey.TotalInfoFormat}}"/>
-        
+        <Setter Property="VerticalAlignment" Value="Top"/>
         <Style Selector="^[Align=Start]">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>

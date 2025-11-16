@@ -10,6 +10,8 @@
                     <atom:AddOnDecoratedBox
                         Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                         Focusable="True"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         SizeType="{TemplateBinding SizeType}"
                         Status="{TemplateBinding Status}"
