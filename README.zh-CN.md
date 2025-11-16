@@ -96,7 +96,7 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 | AtomUI.IconPkg.Generator    | 如果您需要自定义 Icon 包，需要引入此包                                |
 
 ```bash
-dotnet add package AtomUI --version 5.0.1-build.3
+dotnet add package AtomUI --version 5.0.2
 ```
 
 ##### 启用 AtomUI 库
@@ -114,9 +114,9 @@ dotnet add package AtomUI --version 5.0.1-build.3
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="5.0.1-build.3"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
+        <PackageReference Include="AtomUI" Version="5.0.2"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.8"/>
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.8">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>

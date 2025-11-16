@@ -107,7 +107,7 @@ The packages we have released are as follows:
 | AtomUI.IconPkg.Generator    | Required if you need to create custom icon packages.                                                                                       |
 
 ```bash
-dotnet add package AtomUI --version 5.0.1-build.3
+dotnet add package AtomUI --version 5.0.2
 ```
 
 ##### Enable AtomUI library
@@ -125,9 +125,9 @@ dotnet add package AtomUI --version 5.0.1-build.3
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="5.0.1-build.3"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6">
+        <PackageReference Include="AtomUI" Version="5.0.2"/>
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.8"/>
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.8">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
