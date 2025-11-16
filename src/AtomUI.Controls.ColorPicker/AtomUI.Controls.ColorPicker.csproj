@@ -37,9 +37,5 @@
         <PackageReference Include="AtomUI.Generator" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
                           PrivateAssets="all"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\AtomUI.Controls\AtomUI.Controls.csproj" />
-    </ItemGroup>
     
 </Project>
