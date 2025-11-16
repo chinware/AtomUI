@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Data;
 using Avalonia;
@@ -22,6 +23,8 @@ internal class GradientColorPickerFlyout : AbstractColorPickerFlyout
     
     protected override Control CreatePresenter()
     {
+        var flyoutPresenter = base.CreatePresenter() as FlyoutPresenter;
+        Debug.Assert(flyoutPresenter != null);
         _presenterBindingDisposables?.Dispose();
         Presenter                    = new GradientColorPickerView();
         _presenterBindingDisposables = new  CompositeDisposable(6);
@@ -34,14 +37,7 @@ internal class GradientColorPickerFlyout : AbstractColorPickerFlyout
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsPaletteGroupEnabledProperty, Presenter, GradientColorPickerView.IsPaletteGroupEnabledProperty));
         _presenterBindingDisposables.Add(BindUtils.RelayBind(this, PaletteGroupProperty, Presenter, GradientColorPickerView.PaletteGroupProperty));
         
-        var flyoutPresenter = new FlyoutPresenter
-        {
-            Content = Presenter
-        };
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, flyoutPresenter, IsShowArrowProperty));
-        
-        ConfigureShowArrowEffective();
-        // SetupArrowPosition(flyoutPresenter);
+        flyoutPresenter.Content = Presenter;
         return flyoutPresenter;
     }
 }
