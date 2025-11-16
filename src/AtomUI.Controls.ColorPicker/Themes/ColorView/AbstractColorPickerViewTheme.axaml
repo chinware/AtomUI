@@ -14,7 +14,8 @@
                     Padding="{TemplateBinding Padding}"
                     Margin="{TemplateBinding Margin}"
                     MinWidth="{TemplateBinding MinWidth}"
-                    MinHeight="{TemplateBinding MinHeight}">
+                    MinHeight="{TemplateBinding MinHeight}"
+                    ClipToBounds="False">
                 <StackPanel Name="{x:Static atom:ColorPickerViewThemeConstants.LayoutRootPart}"
                             Orientation="Horizontal" ClipToBounds="False">
                     <atom:ColorPickerPaletteGroup Name="{x:Static atom:ColorPickerViewThemeConstants.PaletteGroupPart}" 
@@ -24,7 +25,8 @@
                     <Rectangle Name="Separator" 
                                VerticalAlignment="Stretch" Width="1" 
                                IsVisible="{TemplateBinding IsPaletteGroupEnabled}"/>
-                    <StackPanel Orientation="Vertical" ClipToBounds="False"
+                    <StackPanel Orientation="Vertical" 
+                                ClipToBounds="False"
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}">
                         <atom:ColorBlock Name="{x:Static atom:ColorPickerViewThemeConstants.ClearColorPart}"
                                          HorizontalAlignment="Right" 
@@ -78,6 +80,7 @@
     </Setter>
 
     <Style Selector="^:is(atom|AbstractColorPickerView)">
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
