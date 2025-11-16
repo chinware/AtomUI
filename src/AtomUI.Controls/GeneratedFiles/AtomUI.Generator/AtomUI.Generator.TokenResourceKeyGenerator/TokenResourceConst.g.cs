@@ -278,7 +278,6 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey CellHeight = new TokenResourceKey("DatePicker.CellHeight");
         public static readonly TokenResourceKey CellHoverBg = new TokenResourceKey("DatePicker.CellHoverBg");
         public static readonly TokenResourceKey CellHoverWithRangeBg = new TokenResourceKey("DatePicker.CellHoverWithRangeBg");
-        public static readonly TokenResourceKey CellLineHeight = new TokenResourceKey("DatePicker.CellLineHeight");
         public static readonly TokenResourceKey CellMargin = new TokenResourceKey("DatePicker.CellMargin");
         public static readonly TokenResourceKey CellRangeBorderColor = new TokenResourceKey("DatePicker.CellRangeBorderColor");
         public static readonly TokenResourceKey CellWidth = new TokenResourceKey("DatePicker.CellWidth");
@@ -287,10 +286,9 @@ namespace AtomUI.Controls.DesignTokens
         public static readonly TokenResourceKey HeaderPadding = new TokenResourceKey("DatePicker.HeaderPadding");
         public static readonly TokenResourceKey ItemPanelMinHeight = new TokenResourceKey("DatePicker.ItemPanelMinHeight");
         public static readonly TokenResourceKey ItemPanelMinWidth = new TokenResourceKey("DatePicker.ItemPanelMinWidth");
+        public static readonly TokenResourceKey MonthViewMinWidth = new TokenResourceKey("DatePicker.MonthViewMinWidth");
         public static readonly TokenResourceKey PanelContentPadding = new TokenResourceKey("DatePicker.PanelContentPadding");
-        public static readonly TokenResourceKey RangeCalendarMonthViewMargin = new TokenResourceKey("DatePicker.RangeCalendarMonthViewMargin");
         public static readonly TokenResourceKey RangeCalendarSpacing = new TokenResourceKey("DatePicker.RangeCalendarSpacing");
-        public static readonly TokenResourceKey RangeItemPanelMinWidth = new TokenResourceKey("DatePicker.RangeItemPanelMinWidth");
         public static readonly TokenResourceKey TextHeight = new TokenResourceKey("DatePicker.TextHeight");
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("DatePicker.WithoutTimeCellHeight");
     }

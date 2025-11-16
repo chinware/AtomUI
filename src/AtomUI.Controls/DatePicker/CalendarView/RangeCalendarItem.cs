@@ -3,20 +3,37 @@
 internal class RangeCalendarItem : CalendarItem
 {
     protected override Type StyleKeyOverride => typeof(CalendarItem);
-    
+
     protected override void CheckButtonSelectedState(CalendarDayButton childButton, DateTime dateToAdd)
     {
         // SET IF THE DAY IS SELECTED OR NOT
-        childButton.IsSelected = false;
+        childButton.IsSelected    = false;
+        childButton.IsRangeStart  = false;
+        childButton.IsRangeEnd    = false;
+        childButton.IsRangeMiddle = false;
         if (Owner is RangeCalendar owner)
         {
-           
             DateTime? rangeStart = default;
             DateTime? rangeEnd   = default;
             owner.SortHoverIndexes(out rangeStart, out rangeEnd);
             if (rangeStart != null && rangeEnd != null)
             {
                 childButton.IsSelected = DateTimeHelper.InRange(dateToAdd, rangeStart.Value, rangeEnd.Value);
+                if (childButton.IsSelected)
+                {
+                    if (dateToAdd != rangeStart && dateToAdd != rangeEnd)
+                    {
+                        childButton.IsRangeMiddle = true;
+                    }
+                    else if (DateTimeHelper.CompareDays(dateToAdd, rangeStart.Value) == 0)
+                    {
+                        childButton.IsRangeStart  = true;
+                    }
+                    else if (DateTimeHelper.CompareDays(dateToAdd, rangeEnd.Value) == 0)
+                    {
+                        childButton.IsRangeEnd    = true;
+                    }
+                }
             }
         }
     }
@@ -26,17 +43,18 @@ internal class RangeCalendarItem : CalendarItem
         if (childButton.Parent == MonthView)
         {
             return base.CheckDayInactiveState(childButton, dateToAdd);
-        } 
-        
+        }
+
         var isSecondaryDayInactive = false;
         if (Owner is RangeCalendar owner)
         {
-            isSecondaryDayInactive = DateTimeHelper.CompareYearMonth(dateToAdd, owner.SecondaryDisplayDateInternal) != 0;
+            isSecondaryDayInactive =
+                DateTimeHelper.CompareYearMonth(dateToAdd, owner.SecondaryDisplayDateInternal) != 0;
         }
 
         return isSecondaryDayInactive;
     }
-    
+
     protected override void NotifyCellMouseEntered(CalendarDayButton dayButton, DateTime selectedDate)
     {
         if (Owner is RangeCalendar owner)
@@ -64,7 +82,7 @@ internal class RangeCalendarItem : CalendarItem
                     owner.SecondarySelectedDate = selectedDate;
                     owner.NotifyDateSelected(selectedDate);
                 }
-                
+
                 if (owner.SelectedDate is not null && owner.SecondarySelectedDate is not null)
                 {
                     owner.NotifyRangeDateSelected();
@@ -75,7 +93,7 @@ internal class RangeCalendarItem : CalendarItem
             }
         }
     }
-    
+
     protected override void NotifyPointerOutMonthView(bool originInMonthView)
     {
         if (Owner is RangeCalendar owner)

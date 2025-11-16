@@ -109,7 +109,7 @@
         <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.ItemPanelMinWidth}}" />
         <Setter Property="HeaderBorderThickness"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
-        
+
         <Style Selector="^ /template/ Border#PART_HeaderFrame">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.HeaderMargin}}" />
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.HeaderPadding}}" />
@@ -127,5 +127,10 @@
             <Setter Property="DisabledIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
+
+        <Style Selector="^ /template/ Grid#PART_MonthView">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.MonthViewMinWidth}}" />
+        </Style>
+
     </Style>
 </ControlTheme>

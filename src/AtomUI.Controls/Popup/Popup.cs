@@ -845,7 +845,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             _isNeedDetectFlip  = true;
             return;
         }
-        var motion       = CloseMotion ?? new ZoomBigOutMotion();
+
+        var motion = CloseMotion ?? new ZoomBigOutMotion();
         if (MotionDuration != TimeSpan.Zero)
         {
             motion.Duration = MotionDuration;

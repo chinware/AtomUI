@@ -71,7 +71,7 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
+            <Style Selector="^ /template/ atom|TextBox">
                 <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>

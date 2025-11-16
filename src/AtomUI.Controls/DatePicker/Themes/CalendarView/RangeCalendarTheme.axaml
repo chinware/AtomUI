@@ -10,7 +10,7 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:DatePickerCalendarThemeConstants.FramePart}"
+                <Border Name="Frame"
                         ClipToBounds="True"
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}"

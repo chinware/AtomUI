@@ -8,10 +8,9 @@
     x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="calendarView:Calendar">
-            <Border Name="{x:Static atom:DatePickerCalendarThemeConstants.FramePart}"
+            <Border Name="Frame"
                     ClipToBounds="True"
                     Background="{TemplateBinding Background}"
-                    Padding="{TemplateBinding Padding}"
                     MinWidth="{TemplateBinding MinWidth}"
                     MinHeight="{TemplateBinding MinHeight}">
                 <calendarView:CalendarItem Name="{x:Static atom:DatePickerCalendarThemeConstants.CalendarItemPart}"
@@ -23,7 +22,6 @@
 
     <Style Selector="^:is(calendarView|Calendar)">
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgElevated}}" />
-        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.PanelContentPadding}}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>

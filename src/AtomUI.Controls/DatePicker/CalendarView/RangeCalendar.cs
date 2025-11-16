@@ -81,41 +81,74 @@ internal class RangeCalendar : Calendar
         var count = targetMonthView.Children.Count;
         for (var i = 0; i < count; i++)
         {
-            if (targetMonthView.Children[i] is CalendarDayButton b)
+            if (targetMonthView.Children[i] is CalendarDayButton dayButton)
             {
-                var d = b.DataContext as DateTime?;
+                var d = dayButton.DataContext as DateTime?;
                 if (d.HasValue)
                 {
                     if (rangeStart is not null && rangeEnd is not null)
                     {
-                        b.IsSelected = DateTimeHelper.InRange(d.Value, rangeStart.Value, rangeEnd.Value);
+                        dayButton.IsSelected    = DateTimeHelper.InRange(d.Value, rangeStart.Value, rangeEnd.Value);
+                        if (dayButton.IsSelected)
+                        {
+                            if (d.Value != rangeStart && d.Value != rangeEnd)
+                            {
+                                dayButton.IsRangeMiddle = true;
+                                dayButton.IsRangeStart  = false;
+                                dayButton.IsRangeEnd    = false;
+                            }
+                            else if (DateTimeHelper.CompareDays(d.Value, rangeStart.Value) == 0)
+                            {
+                                dayButton.IsRangeStart  = true;
+                                dayButton.IsRangeMiddle = false;
+                                dayButton.IsRangeEnd    = false;
+                            }
+                            else if (DateTimeHelper.CompareDays(d.Value, rangeEnd.Value) == 0)
+                            {
+                                dayButton.IsRangeEnd    = true;
+                                dayButton.IsRangeStart  = false;
+                                dayButton.IsRangeMiddle = false;
+                            }
+                        }
+                        else
+                        {
+                            dayButton.IsRangeMiddle = false;
+                            dayButton.IsRangeStart  = false;
+                            dayButton.IsRangeEnd    = false;
+                        }
                     } else if (SelectedDate is not null)
                     {
-                        b.IsSelected = DateTimeHelper.CompareDays(SelectedDate.Value, d.Value) == 0;
+                        dayButton.IsSelected = DateTimeHelper.CompareDays(SelectedDate.Value, d.Value) == 0;
                     }
                     else if (SecondarySelectedDate is not null)
                     {
-                        b.IsSelected = DateTimeHelper.CompareDays(SecondarySelectedDate.Value, d.Value) == 0;
+                        dayButton.IsSelected = DateTimeHelper.CompareDays(SecondarySelectedDate.Value, d.Value) == 0;
                     }
                     else
                     {
-                        b.IsSelected = false;
+                        dayButton.IsSelected    = false;
+                        dayButton.IsRangeMiddle = false;
+                        dayButton.IsRangeStart  = false;
+                        dayButton.IsRangeEnd    = false;
                     }
 
-                    if (b.IsSelected)
+                    if (dayButton.IsSelected)
                     {
                         if (FocusButton != null)
                         {
                             FocusButton.IsCurrent = false;
                         }
                         
-                        b.IsCurrent = HasFocusInternal;
-                        FocusButton = b;
+                        dayButton.IsCurrent     = HasFocusInternal;
+                        FocusButton             = dayButton;
                     }
                 }
                 else
                 {
-                    b.IsSelected = false;
+                    dayButton.IsSelected    = false;
+                    dayButton.IsRangeStart  = false;
+                    dayButton.IsRangeEnd    = false;
+                    dayButton.IsRangeMiddle = false;
                 }
             }
         }

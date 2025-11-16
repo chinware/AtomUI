@@ -6,25 +6,24 @@
     xmlns:converters="using:AtomUI.Controls.Converters"
     x:ClassModifier="internal">
     <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
-    <ControlTheme x:Key="{x:Type calendarView:CalendarButton}" 
+    <ControlTheme x:Key="{x:Type calendarView:CalendarButton}"
                   TargetType="calendarView:CalendarButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter
-                    Name="{x:Static atom:DatePickerCalendarButtonThemeConstants.ContentPart}"
-                    Padding="{TemplateBinding Padding}"
-                    Foreground="{TemplateBinding Foreground}"
-                    Background="{TemplateBinding Background}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    FontSize="{TemplateBinding FontSize}"
-                    Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                <ContentPresenter Name="Content"
+                                  Padding="{TemplateBinding Padding}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  Background="{TemplateBinding Background}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
             </ControlTemplate>
         </Setter>
 
@@ -43,7 +42,7 @@
         <Setter Property="Height" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellHeight}}" />
         <Setter Property="Margin" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellMargin}}" />
 
-        <Style Selector="^ /template/ ContentPresenter#PART_Content">
+        <Style Selector="^ /template/ ContentPresenter#Content">
             <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:CalendarTokenKey.CellLineHeight}}" />
         </Style>
 

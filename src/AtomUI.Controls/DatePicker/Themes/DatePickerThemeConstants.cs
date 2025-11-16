@@ -1,15 +1,5 @@
 namespace AtomUI.Controls.Themes;
 
-internal static class DatePickerCalendarButtonThemeConstants
-{
-    public const string ContentPart = "PART_Content";
-}
-
-internal static class DatePickerCalendarDayButtonThemeConstants
-{
-    public const string ContentPart = "PART_Content";
-}
-
 internal static class DatePickerCalendarItemThemeConstants
 {
     public const string ItemFramePart = "PART_ItemFrame";
@@ -30,7 +20,6 @@ internal static class DatePickerCalendarItemThemeConstants
 internal static class DatePickerCalendarThemeConstants
 {
     public const string CalendarItemPart = "PART_CalendarItem";
-    public const string FramePart = "PART_Frame";
 }
 
 internal static class DualMonthCalendarItemThemeConstants

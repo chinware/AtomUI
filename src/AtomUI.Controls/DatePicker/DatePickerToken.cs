@@ -51,11 +51,6 @@ internal class DatePickerToken : AbstractControlDesignToken
     public double CellWidth { get; set; }
 
     /// <summary>
-    /// 单元格行高
-    /// </summary>
-    public double CellLineHeight { get; set; }
-
-    /// <summary>
     /// 单元格外边距
     /// </summary>
     public Thickness CellMargin { get; set; }
@@ -66,9 +61,9 @@ internal class DatePickerToken : AbstractControlDesignToken
     public double ItemPanelMinWidth { get; set; }
     
     /// <summary>
-    /// 两个月日历项最小宽度
+    /// 月历最小的宽度
     /// </summary>
-    public double RangeItemPanelMinWidth { get; set; }
+    public double MonthViewMinWidth { get; set; }
 
     /// <summary>
     /// 日历项最小高度
@@ -111,11 +106,6 @@ internal class DatePickerToken : AbstractControlDesignToken
     public double RangeCalendarSpacing { get; set; }
     
     /// <summary>
-    /// 双 Calendar 两个月视图的外间距
-    /// </summary>
-    public Thickness RangeCalendarMonthViewMargin { get; set; }
-    
-    /// <summary>
     /// 按钮区域面板外间距
     /// </summary>
     public Thickness ButtonsPanelMargin { get; set; }
@@ -126,26 +116,24 @@ internal class DatePickerToken : AbstractControlDesignToken
 
         var colorPrimary = SharedToken.ColorPrimary;
 
-        CellHoverBg                  = SharedToken.ControlItemBgHover;
-        CellActiveWithRangeBg        = SharedToken.ControlItemBgActive;
-        CellHoverWithRangeBg         = colorPrimary.Lighten(35);
-        CellRangeBorderColor         = colorPrimary.Lighten(20);
-        CellBgDisabled               = SharedToken.ColorBgContainerDisabled;
-        CellWidth                    = SharedToken.ControlHeightSM;
-        CellHeight                   = SharedToken.ControlHeightSM;
-        TextHeight                   = SharedToken.ControlHeightLG;
-        WithoutTimeCellHeight        = SharedToken.ControlHeightLG * 1.65;
-        CellMargin                   = SharedToken.MarginXXS;
-        PanelContentPadding          = SharedToken.PaddingSM;
-        ItemPanelMinWidth            = 225;
-        ItemPanelMinHeight           = 270;
-        RangeItemPanelMinWidth       = 260;
-        DayTitleHeight               = SharedToken.ControlHeightSM;
-        HeaderMargin                 = new Thickness(0, 0, 0, SharedToken.UniformlyMarginSM);
-        HeaderPadding                = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingSM);
-        CellLineHeight               = CellHeight - 2; // 不知道为啥设置成一样，或者不设置文字有些靠下
-        RangeCalendarSpacing         = 20;
-        RangeCalendarMonthViewMargin = new Thickness(RangeCalendarSpacing, 0, 0, 0);
-        ButtonsPanelMargin           = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+        CellHoverBg            = SharedToken.ControlItemBgHover;
+        CellActiveWithRangeBg  = SharedToken.ControlItemBgActive;
+        CellHoverWithRangeBg   = colorPrimary.Lighten(35);
+        CellRangeBorderColor   = colorPrimary.Lighten(20);
+        CellBgDisabled         = SharedToken.ColorBgContainerDisabled;
+        CellWidth              = SharedToken.ControlHeightSM;
+        CellHeight             = SharedToken.ControlHeightSM;
+        TextHeight             = SharedToken.ControlHeightLG;
+        WithoutTimeCellHeight  = SharedToken.ControlHeightLG * 1.65;
+        CellMargin             = SharedToken.MarginXXS;
+        PanelContentPadding    = SharedToken.PaddingSM;
+        ItemPanelMinWidth      = 225;
+        ItemPanelMinHeight     = 270;
+        MonthViewMinWidth      = 260;
+        DayTitleHeight         = SharedToken.ControlHeightSM;
+        HeaderMargin           = new Thickness(0, 0, 0, SharedToken.UniformlyMarginSM);
+        HeaderPadding          = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingSM);
+        RangeCalendarSpacing   = 20;
+        ButtonsPanelMargin     = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
     }
 }

@@ -16,23 +16,86 @@ namespace AtomUI.Controls.CalendarView;
     StdPseudoClass.Disabled,
     StdPseudoClass.Selected,
     StdPseudoClass.InActive,
-    TodayPC,
-    BlackoutPC,
-    DayfocusedPC)]
+    CalendarDayButtonPseudoClass.Today,
+    CalendarDayButtonPseudoClass.Blackout,
+    CalendarDayButtonPseudoClass.DayFocused)]
 internal sealed class CalendarDayButton : AvaloniaButton
 {
-    internal const string TodayPC = ":today";
-    internal const string BlackoutPC = ":blackout";
-    internal const string DayfocusedPC = ":dayfocused";
-    
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarDayButton>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarDayButton>();
 
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+    
+    /// <summary>
+    /// Occurs when the left mouse button is pressed (or when the tip of the
+    /// stylus touches the tablet PC) while the mouse pointer is over a
+    /// UIElement.
+    /// </summary>
+    public event EventHandler<PointerPressedEventArgs>? CalendarDayButtonMouseDown;
+
+    /// <summary>
+    /// Occurs when the left mouse button is released (or the tip of the
+    /// stylus is removed from the tablet PC) while the mouse (or the
+    /// stylus) is over a UIElement (or while a UIElement holds mouse
+    /// capture).
+    /// </summary>
+    public event EventHandler<PointerReleasedEventArgs>? CalendarDayButtonMouseUp;
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<CalendarDayButton, bool> IsRangeStartProperty =
+        AvaloniaProperty.RegisterDirect<CalendarDayButton, bool>(nameof(IsRangeStart),
+            o => o.IsRangeStart,
+            (o, v) => o.IsRangeStart = v);
+    
+    internal static readonly DirectProperty<CalendarDayButton, bool> IsRangeEndProperty =
+        AvaloniaProperty.RegisterDirect<CalendarDayButton, bool>(nameof(IsRangeEnd),
+            o => o.IsRangeEnd,
+            (o, v) => o.IsRangeEnd = v);
+    
+    internal static readonly DirectProperty<CalendarDayButton, bool> IsRangeMiddleProperty =
+        AvaloniaProperty.RegisterDirect<CalendarDayButton, bool>(nameof(IsRangeMiddle),
+            o => o.IsRangeMiddle,
+            (o, v) => o.IsRangeMiddle = v);
+    
+    internal static readonly DirectProperty<CalendarDayButton, CornerRadius> EffectiveCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<CalendarDayButton, CornerRadius>(nameof(EffectiveCornerRadius),
+            o => o.EffectiveCornerRadius,
+            (o, v) => o.EffectiveCornerRadius = v);
+
+    private bool _isRangeStart;
+    internal bool IsRangeStart
+    {
+        get => _isRangeStart;
+        set => SetAndRaise(IsRangeStartProperty, ref _isRangeStart, value);
+    }
+    
+    private bool _isRangeEnd;
+    internal bool IsRangeEnd
+    {
+        get => _isRangeEnd;
+        set => SetAndRaise(IsRangeEndProperty, ref _isRangeEnd, value);
+    }
+    
+    private bool _isRangeMiddle;
+    internal bool IsRangeMiddle
+    {
+        get => _isRangeMiddle;
+        set => SetAndRaise(IsRangeMiddleProperty, ref _isRangeMiddle, value);
+    }
+    
+    private CornerRadius _effectiveCornerRadius;
+    internal CornerRadius EffectiveCornerRadius
+    {
+        get => _effectiveCornerRadius;
+        set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
+    }
+
+    #endregion
     
     /// <summary>
     /// Gets or sets the Calendar associated with this button.
@@ -227,25 +290,13 @@ internal sealed class CalendarDayButton : AvaloniaButton
 
         PseudoClasses.Set(StdPseudoClass.Selected, IsSelected);
         PseudoClasses.Set(StdPseudoClass.InActive, IsInactive);
-        PseudoClasses.Set(TodayPC, IsToday);
-        PseudoClasses.Set(BlackoutPC, IsBlackout);
-        PseudoClasses.Set(DayfocusedPC, IsCurrent && IsEnabled);
+        PseudoClasses.Set(CalendarDayButtonPseudoClass.Today, IsToday);
+        PseudoClasses.Set(CalendarDayButtonPseudoClass.Blackout, IsBlackout);
+        PseudoClasses.Set(CalendarDayButtonPseudoClass.DayFocused, IsCurrent && IsEnabled);
+        PseudoClasses.Set(CalendarDayButtonPseudoClass.RangeStart, IsRangeStart);
+        PseudoClasses.Set(CalendarDayButtonPseudoClass.RangeEnd, IsRangeEnd);
+        PseudoClasses.Set(CalendarDayButtonPseudoClass.RangeMiddle, IsRangeMiddle);
     }
-
-    /// <summary>
-    /// Occurs when the left mouse button is pressed (or when the tip of the
-    /// stylus touches the tablet PC) while the mouse pointer is over a
-    /// UIElement.
-    /// </summary>
-    public event EventHandler<PointerPressedEventArgs>? CalendarDayButtonMouseDown;
-
-    /// <summary>
-    /// Occurs when the left mouse button is released (or the tip of the
-    /// stylus is removed from the tablet PC) while the mouse (or the
-    /// stylus) is over a UIElement (or while a UIElement holds mouse
-    /// capture).
-    /// </summary>
-    public event EventHandler<PointerReleasedEventArgs>? CalendarDayButtonMouseUp;
 
     /// <summary>
     /// Provides class handling for the MouseLeftButtonDown event that
@@ -310,6 +361,37 @@ internal sealed class CalendarDayButton : AvaloniaButton
             {
                 ConfigureTransitions(true);
             }
+        }
+
+        if (change.Property == IsRangeStartProperty ||
+            change.Property == IsRangeEndProperty ||
+            change.Property == IsRangeMiddleProperty)
+        {
+            UpdatePseudoClasses();
+           
+        }
+        if (change.Property == IsRangeStartProperty ||
+            change.Property == IsRangeEndProperty ||
+            change.Property == IsRangeMiddleProperty ||
+            change.Property == CornerRadiusProperty)
+        {
+            ConfigureEffectiveCornerRadius();
+        }
+    }
+
+    private void ConfigureEffectiveCornerRadius()
+    {
+        if (IsRangeStart)
+        {
+            SetCurrentValue(EffectiveCornerRadiusProperty, new CornerRadius(CornerRadius.TopLeft, 0, 0, CornerRadius.BottomLeft));
+        }
+        else if (IsRangeEnd)
+        {
+            SetCurrentValue(EffectiveCornerRadiusProperty, new CornerRadius(0, CornerRadius.TopRight, CornerRadius.BottomRight, 0));
+        }
+        else
+        {
+            SetCurrentValue(EffectiveCornerRadiusProperty, CornerRadius);
         }
     }
 }

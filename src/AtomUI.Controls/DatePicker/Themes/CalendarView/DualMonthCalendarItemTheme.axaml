@@ -82,7 +82,8 @@
                                      IsVisible="False">
                             <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewPart}"
                                   HorizontalAlignment="Stretch"
-                                  IsVisible="{TemplateBinding IsVisible}">
+                                  IsVisible="{TemplateBinding IsVisible}"
+                                  Width="250">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
@@ -146,9 +147,18 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ Grid#PART_SecondaryMonthView">
-            <Setter Property="Margin"
-                    Value="{DynamicResource {x:Static atom:DatePickerTokenKey.RangeCalendarMonthViewMargin}}" />
+        <Style Selector="^ /template/ UniformGrid#PART_MonthViewLayout">
+            <Setter Property="ColumnSpacing"
+                    Value="{DynamicResource {x:Static atom:DatePickerTokenKey.RangeCalendarSpacing}}" />
         </Style>
+        
+        <Style Selector="^ /template/ Grid#PART_MonthView">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.MonthViewMinWidth}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Grid#PART_SecondaryMonthView">
+            <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:DatePickerTokenKey.MonthViewMinWidth}}" />
+        </Style>
+
     </ControlTheme>
 </ResourceDictionary>
