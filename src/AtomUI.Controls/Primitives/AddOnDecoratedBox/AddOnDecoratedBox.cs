@@ -79,6 +79,7 @@ internal class AddOnDecoratedBox : ContentControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedBox>();
 
+    [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -91,6 +92,7 @@ internal class AddOnDecoratedBox : ContentControl,
         set => SetValue(LeftAddOnTemplateProperty, value);
     }
 
+    [DependsOn(nameof(RightAddOnTemplate))]
     public object? RightAddOn
     {
         get => GetValue(RightAddOnProperty);
@@ -428,6 +430,7 @@ internal class AddOnDecoratedBox : ContentControl,
             };
             ContentFrame.PointerPressed += (sender, args) =>
             {
+                IsInnerBoxHover   = true;
                 IsInnerBoxPressed = true;
             };
             ContentFrame.PointerReleased += (sender, args) =>

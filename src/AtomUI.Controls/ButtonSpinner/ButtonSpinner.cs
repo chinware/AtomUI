@@ -13,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -25,8 +26,8 @@ public enum ButtonSpinnerLocation
 
 [PseudoClasses(ButtonSpinnerPseudoClass.Left, ButtonSpinnerPseudoClass.Right)]
 public class ButtonSpinner : Spinner,
-                                   IMotionAwareControl,
-                                   IControlSharedTokenResourcesHost
+                             IMotionAwareControl,
+                             IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
     public static readonly StyledProperty<bool> AllowSpinProperty =
@@ -50,14 +51,14 @@ public class ButtonSpinner : Spinner,
     public static readonly StyledProperty<IDataTemplate?> RightAddOnTemplateProperty =
         AddOnDecoratedBox.RightAddOnTemplateProperty.AddOwner<ButtonSpinner>();
 
-    public static readonly StyledProperty<object?> InnerLeftContentProperty
-        = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerLeftContent));
+    public static readonly StyledProperty<object?> InnerLeftContentProperty =
+        AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerLeftContent));
     
     public static readonly StyledProperty<IDataTemplate?> InnerLeftContentTemplateProperty =
         AvaloniaProperty.Register<ButtonSpinner, IDataTemplate?>(nameof(InnerLeftContentTemplate));
 
-    public static readonly StyledProperty<object?> InnerRightContentProperty
-        = AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerRightContent));
+    public static readonly StyledProperty<object?> InnerRightContentProperty =
+        AvaloniaProperty.Register<ButtonSpinner, object?>(nameof(InnerRightContent));
     
     public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
         AvaloniaProperty.Register<ButtonSpinner, IDataTemplate?>(nameof(InnerRightContentTemplate));
@@ -95,6 +96,7 @@ public class ButtonSpinner : Spinner,
         set => SetValue(ButtonSpinnerLocationProperty, value);
     }
     
+    [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -106,7 +108,8 @@ public class ButtonSpinner : Spinner,
         get => GetValue(LeftAddOnTemplateProperty);
         set => SetValue(LeftAddOnTemplateProperty, value);
     }
-    
+        
+    [DependsOn(nameof(RightAddOnTemplate))]
     public object? RightAddOn
     {
         get => GetValue(RightAddOnProperty);
@@ -119,6 +122,7 @@ public class ButtonSpinner : Spinner,
         set => SetValue(RightAddOnTemplateProperty, value);
     }
 
+    [DependsOn(nameof(InnerLeftContentTemplate))]
     public object? InnerLeftContent
     {
         get => GetValue(InnerLeftContentProperty);
@@ -130,13 +134,14 @@ public class ButtonSpinner : Spinner,
         get => GetValue(InnerLeftContentTemplateProperty);
         set => SetValue(InnerLeftContentTemplateProperty, value);
     }
-
+    
+    [DependsOn(nameof(InnerRightContentTemplate))]
     public object? InnerRightContent
     {
         get => GetValue(InnerRightContentProperty);
         set => SetValue(InnerRightContentProperty, value);
     }
-    
+
     public IDataTemplate? InnerRightContentTemplate
     {
         get => GetValue(InnerRightContentTemplateProperty);

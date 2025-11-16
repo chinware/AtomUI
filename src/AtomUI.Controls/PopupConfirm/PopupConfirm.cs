@@ -88,7 +88,7 @@ public class PopupConfirm : FlyoutHost,
         set => SetValue(TitleProperty, value);
     }
 
-    [DependsOn("ConfirmContentTemplate")]
+    [DependsOn(nameof(ConfirmContentTemplate))]
     public object? ConfirmContent
     {
         get => GetValue(ConfirmContentProperty);

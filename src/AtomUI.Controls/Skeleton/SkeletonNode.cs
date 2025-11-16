@@ -16,7 +16,7 @@ public class SkeletonNode : SkeletonImage
         ContentControl.ContentTemplateProperty.AddOwner<SkeletonNode>();
     
     [Content]
-    [DependsOn("ContentTemplate")]
+    [DependsOn(nameof(ContentTemplate))]
     public object? Content
     {
         get => GetValue(ContentProperty);

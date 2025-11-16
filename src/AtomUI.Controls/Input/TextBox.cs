@@ -143,11 +143,11 @@ public class TextBox : AvaloniaTextBox,
     {
         if (!IsEnableClearButton)
         {
-            IsEffectiveShowClearButton = false;
+            SetCurrentValue(IsEffectiveShowClearButtonProperty, false);
             return;
         }
-
-        IsEffectiveShowClearButton = !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text);
+        
+        SetCurrentValue(IsEffectiveShowClearButtonProperty, !IsReadOnly && !AcceptsReturn && !string.IsNullOrEmpty(Text));
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

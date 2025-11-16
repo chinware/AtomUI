@@ -76,7 +76,7 @@ internal class PopupConfirmContainer : TemplatedControl,
         set => SetValue(TitleProperty, value);
     }
 
-    [DependsOn("ConfirmContentTemplate")]
+    [DependsOn(nameof(ConfirmContentTemplate))]
     public object? ConfirmContent
     {
         get => GetValue(ConfirmContentProperty);

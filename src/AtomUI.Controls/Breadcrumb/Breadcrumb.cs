@@ -27,7 +27,7 @@ public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotio
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Breadcrumb>();
 
-    [DependsOn("ContentTemplate")]
+    [DependsOn(nameof(SeparatorTemplate))]
     public object? Separator
     {
         get => GetValue(SeparatorProperty);

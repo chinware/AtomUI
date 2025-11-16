@@ -15,10 +15,36 @@
                     ShowButtonSpinner="True"
                     IsButtonSpinnerFloatable="True"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
-                    InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"
-                    InnerRightContent="{TemplateBinding InnerRightContent}"
+                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                    InnerLeftContent="{TemplateBinding InnerLeftContent}"
+                    InnerLeftContentTemplate="{TemplateBinding InnerLeftContentTemplate}"
                     SpinnerHandleWidth="{TemplateBinding SpinnerHandleWidth}">
+                    <atom:ButtonSpinner.InnerRightContent>
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
+                            <atom:IconButton
+                                Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
+                                Icon="{atom:IconProvider CloseCircleFilled}"
+                                IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                                IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
+                                NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
+                                ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
+                                SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
+                                IsPassthroughMouseEvent="False"
+                                IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}" 
+                                IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"/>
+                            <ContentPresenter
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Focusable="False"
+                                Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"
+                                ContentTemplate="{Binding InnerRightContentTemplate, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}" 
+                                IsVisible="{Binding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"/>
+                        </StackPanel>
+                    </atom:ButtonSpinner.InnerRightContent>
                     <atom:TextBox
                         Name="PART_TextBox"
                         VerticalContentAlignment="Center"
@@ -31,17 +57,16 @@
                         DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                         SizeType="{TemplateBinding SizeType}"
                         IsReadOnly="{TemplateBinding IsReadOnly}"
-                        Text="{TemplateBinding Text}"
-                        Watermark="{TemplateBinding Watermark}"
-                        IsEnableClearButton="{TemplateBinding IsEnableClearButton}" />
+                        Text="{TemplateBinding Text, Mode=TwoWay}"
+                        Watermark="{TemplateBinding Watermark}"/>
                 </atom:ButtonSpinner>
             </ControlTemplate>
         </Setter>
-        
+
         <Setter Property="IsMotionEnabled"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="SpinnerHandleWidth"
                 Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleWidth}}" />
-        
+
     </ControlTheme>
 </ResourceDictionary>

@@ -3,7 +3,6 @@ namespace AtomUI.Controls.Themes;
 internal class ButtonSpinnerThemeConstants
 {
     public const string DecoratedBoxPart = "PART_DecoratedBox";
-    public const string SpinnerInnerBoxPart = "PART_SpinnerInnerBox";
     public const string SpinnerButtonsLayoutPart = "PART_SpinnerButtonsLayout";
     public const string IncreaseButtonPart = "PART_IncreaseButton";
     public const string DecreaseButtonPart = "PART_DecreaseButton";

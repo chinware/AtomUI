@@ -47,6 +47,7 @@
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
+                            IsVisible="{TemplateBinding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}}"
                             Content="{TemplateBinding InnerRightContent}"/>
                         <atom:TextBlock Name="TextCountIndicator" 
                                         VerticalAlignment="Center"

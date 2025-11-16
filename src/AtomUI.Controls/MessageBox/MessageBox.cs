@@ -94,7 +94,7 @@ public class MessageBox : TemplatedControl,
     }
     
     [Content]
-    [DependsOn("ContentTemplate")]
+    [DependsOn(nameof(ContentTemplate))]
     public object? Content
     {
         get => GetValue(ContentProperty);

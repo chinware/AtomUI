@@ -54,7 +54,9 @@
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right"
                                 Focusable="False"
-                                Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}" />
+                                Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}"
+                                ContentTemplate="{Binding InnerRightContentTemplate, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}"
+                                IsVisible="{Binding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}"/>
                         </StackPanel>
                     </atom:SearchEditDecoratedBox.ContentRightAddOn>
                     

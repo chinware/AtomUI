@@ -74,6 +74,11 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     
     public static readonly StyledProperty<Thickness> ContentPaddingProperty =
         AvaloniaProperty.Register<ButtonSpinnerDecoratedBox, Thickness>(nameof(ContentPadding));
+    
+    internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, bool> IsSpinnerContentHoverProperty =
+        AvaloniaProperty.RegisterDirect<ButtonSpinnerDecoratedBox, bool>(nameof(IsSpinnerContentHover),
+            o => o.IsSpinnerContentHover,
+            (o, v) => o.IsSpinnerContentHover = v);
 
     private bool _showButtonSpinner;
 
@@ -109,6 +114,14 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     {
         get => GetValue(ContentPaddingProperty);
         set => SetValue(ContentPaddingProperty, value);
+    }
+    
+    private bool _isSpinnerContentHover;
+
+    internal bool IsSpinnerContentHover
+    {
+        get => _isSpinnerContentHover;
+        set => SetAndRaise(IsSpinnerContentHoverProperty, ref _isSpinnerContentHover, value);
     }
     
     #endregion
@@ -178,14 +191,16 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
             {
                 if (IsShowHandle && IsHandleFloatable)
                 {
-                    HandleOpacity = 1.0;
+                    HandleOpacity         = 1.0;
+                    IsSpinnerContentHover = true;
                 }
             }
             else
             {
                 if (IsShowHandle && IsHandleFloatable)
                 {
-                    HandleOpacity = 0.0;
+                    HandleOpacity         = 0.0;
+                    IsSpinnerContentHover = false;
                 }
             }
         }
@@ -244,7 +259,7 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentFrame =  e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
+        _contentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
         ConfigureEffectiveContentPadding();
     }
 }

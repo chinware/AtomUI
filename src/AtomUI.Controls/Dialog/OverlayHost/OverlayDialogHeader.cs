@@ -73,7 +73,7 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
         set => SetValue(TitleFontWeightProperty, value);
     }
 
-    [DependsOn("AddOnTemplate")]
+    [DependsOn(nameof(AddOnTemplate))]
     public object? AddOn
     {
         get => GetValue(AddOnProperty);

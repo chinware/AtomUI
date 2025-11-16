@@ -77,7 +77,7 @@ public class ToggleSwitch : ToggleButton,
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the On State.
     /// </summary>
-    [DependsOn("OnContentTemplate")]
+    [DependsOn(nameof(OnContentTemplate))]
     public object? OnContent
     {
         get => GetValue(OnContentProperty);
@@ -93,7 +93,7 @@ public class ToggleSwitch : ToggleButton,
     /// <summary>
     /// Gets or Sets the Content that is displayed when in the Off State.
     /// </summary>
-    [DependsOn("OffContentTemplate")]
+    [DependsOn(nameof(OffContentTemplate))]
     public object? OffContent
     {
         get => GetValue(OffContentProperty);

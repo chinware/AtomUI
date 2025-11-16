@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
@@ -46,6 +47,7 @@ public class LineEdit : TextBox
         set => SetValue(StatusProperty, value);
     }
     
+    [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -58,6 +60,7 @@ public class LineEdit : TextBox
         set => SetValue(LeftAddOnTemplateProperty, value);
     }
 
+    [DependsOn(nameof(RightAddOnTemplate))]
     public object? RightAddOn
     {
         get => GetValue(RightAddOnProperty);

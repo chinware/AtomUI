@@ -42,7 +42,14 @@
                                 CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 Background="{TemplateBinding Background}">
-                            <DockPanel Name="ContentLayout" LastChildFill="True">
+                            <atom:ButtonSpinnerContentPanel Name="ContentLayout"
+                                                            LastChildFill="True"
+                                                            HandleLocation="{TemplateBinding ButtonSpinnerLocation}"
+                                                            IsHandleFloatable="{TemplateBinding IsHandleFloatable}"
+                                                            HandleWidth="{TemplateBinding SpinnerHandleWidth}"
+                                                            Background="Transparent"
+                                                            ContentPadding="{Binding #PART_ContentFrame.Padding}"
+                                                            IsHover="{TemplateBinding IsSpinnerContentHover}">
                                 <ContentPresenter
                                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
                                     DockPanel.Dock="Left"
@@ -52,7 +59,8 @@
                                     Focusable="False"
                                     Content="{TemplateBinding ContentLeftAddOn}"
                                     ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
-                                    IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" 
+                                    ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"/>
 
                                 <ContentPresenter
                                     DockPanel.Dock="Right"
@@ -63,13 +71,14 @@
                                     Focusable="False"
                                     Content="{TemplateBinding ContentRightAddOn}"
                                     ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
-                                    IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" 
+                                    ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"/>
 
                                 <ContentPresenter
                                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}"
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
-                            </DockPanel>
+                            </atom:ButtonSpinnerContentPanel>
                         </Border>
 
                         <ContentPresenter
