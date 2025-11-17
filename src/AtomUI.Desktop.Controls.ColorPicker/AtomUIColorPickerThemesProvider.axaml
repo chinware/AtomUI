@@ -1,0 +1,23 @@
+<atom:ControlThemesProvider xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:atom="https://atomui.net"
+                            x:Class="AtomUI.Controls.AtomUIColorPickerThemesProvider"
+                            Id="AtomUI.Desktop.Controls.ColorPicker"
+                            x:ClassModifier="internal">
+    <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Themes/ColorBlockTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorPickerTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorPickerPaletteGroupTheme.axaml"/>
+        <ResourceInclude Source="Themes/GradientColorPickerTheme.axaml"/>
+        <ResourceInclude Source="Themes/PaletteColorItemTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorView/ColorPickerInput.axaml"/>
+        <ResourceInclude Source="Themes/ColorView/ColorPickerViewTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorView/GradientColorPickerViewTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorView/ColorSpectrumTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorSlider/ColorPickerSliderTrackTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorSlider/GradientColorPickerTrackTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorSlider/ColorSliderTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorSlider/GradientColorSliderTheme.axaml"/>
+        <ResourceInclude Source="Themes/ColorSlider/ColorSliderThumbTheme.axaml"/>
+    </atom:ControlThemesProvider.ControlThemes>
+</atom:ControlThemesProvider>

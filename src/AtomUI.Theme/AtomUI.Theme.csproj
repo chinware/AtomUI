@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.Base/AtomUI.Base.csproj"/>
+        <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
@@ -24,7 +24,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI"/>
-        <InternalsVisibleTo Include="AtomUI.Controls"/>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls"/>
         <InternalsVisibleTo Include="AtomUI.IconPkg"/>
     </ItemGroup>
 

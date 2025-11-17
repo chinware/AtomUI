@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.Controls/AtomUI.Controls.csproj"/>
+        <ProjectReference Include="..\AtomUI.Desktop.Controls\AtomUI.Desktop.Controls.csproj" />
         <PackageReference Include="ReactiveUI.Avalonia"/>
     </ItemGroup>
 

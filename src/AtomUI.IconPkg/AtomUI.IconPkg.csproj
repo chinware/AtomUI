@@ -7,11 +7,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.Base/AtomUI.Base.csproj"/>
+        <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
         <ProjectReference Include="../AtomUI.Theme/AtomUI.Theme.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI.Controls"/>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls"/>
     </ItemGroup>
 </Project>

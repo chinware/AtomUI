@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <RootNamespace>AtomUI</RootNamespace>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia"/>
+        <PackageReference Include="ReactiveUI.Avalonia"/>
+        <PackageReference Include="System.Reactive"/>
+        <PackageReference Include="AtomUI.Native"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI"/>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls"/>
+        <InternalsVisibleTo Include="AtomUI.Theme"/>
+        <InternalsVisibleTo Include="AtomUI.IconPkg"/>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid"/>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker"/>
+        <InternalsVisibleTo Include="AtomUI.ReactiveUI"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyMetadata Include="AvaloniaVersion" Value="$(AvaloniaVersion)" />
+        <AssemblyMetadata Include="AtomUIVersion" Value="$(AtomUIVersion)" />
+    </ItemGroup>
+    
+</Project>
