@@ -1,11 +1,7 @@
-﻿using AtomUI.Theme;
-using AtomUI.Theme.Language;
-using AtomUI.Utils;
+﻿using AtomUI.Theme.Language;
 
-// ReSharper disable once CheckNamespace
 namespace AtomUI.Controls.TimePickerLang;
 
-// ReSharper disable once InconsistentNaming
 [LanguageProvider(LanguageCode.zh_CN, TimePickerToken.ID)]
 internal class zh_CN : LanguageProvider
 {

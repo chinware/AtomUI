@@ -7,12 +7,14 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <DockPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.MainLayoutPart}"
-                           LastChildFill="True">
+                           LastChildFill="True"
+                           ClipToBounds="{TemplateBinding ClipToBounds}">
                     <StackPanel Name="{x:Static atom:PopupConfirmContainerThemeConstants.ButtonLayoutPart}"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                DockPanel.Dock="Bottom">
+                                DockPanel.Dock="Bottom"
+                                ClipToBounds="False">
                         <atom:Button Name="{x:Static atom:PopupConfirmContainerThemeConstants.CancelButtonPart}"
                                      SizeType="Small"
                                      Margin="0"
@@ -45,6 +47,7 @@
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="ClipToBounds" Value="False" />
         <Style Selector="^ /template/ atom|TextBlock#PART_Title">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.TitleMargin}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />

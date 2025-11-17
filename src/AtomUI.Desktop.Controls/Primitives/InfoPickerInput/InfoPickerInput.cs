@@ -3,7 +3,7 @@ using AtomUI.Controls.Primitives.Themes;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -12,7 +12,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Primitives;

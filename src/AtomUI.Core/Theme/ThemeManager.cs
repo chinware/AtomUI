@@ -17,7 +17,7 @@ namespace AtomUI.Theme;
 /// </summary>
 internal class ThemeManager : Styles, IThemeManager
 {
-    public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Theme/Assets/{THEME_DIR}";
+    public const string DEFAULT_THEME_RES_PATH = $"avares://AtomUI.Core/Assets/{THEME_DIR}";
     public const string DEFAULT_APP_NAME = "AtomUIApplication";
     public const string THEME_DIR = "Themes";
 

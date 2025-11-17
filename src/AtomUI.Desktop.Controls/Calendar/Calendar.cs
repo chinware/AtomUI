@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using AtomUI.Controls.Themes;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -311,7 +311,7 @@ public class Calendar : TemplatedControl,
     /// </summary>
     /// <value>
     /// A value indicating what length of time the
-    /// <see cref="T:System.Windows.Controls.Calendar" /> should display.
+    /// <see cref="T:Controls.Calendar" /> should display.
     /// </value>
     public CalendarMode DisplayMode
     {
@@ -325,7 +325,7 @@ public class Calendar : TemplatedControl,
     /// </summary>
     /// <value>
     /// A value that indicates the current selection mode. The default is
-    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.SingleDate" />.
+    /// <see cref="F:Controls.CalendarSelectionMode.SingleDate" />.
     /// </value>
     /// <remarks>
     /// <para>
@@ -350,18 +350,18 @@ public class Calendar : TemplatedControl,
     /// <value>The date currently selected. The default is null.</value>
     /// <exception cref="T:System.ArgumentOutOfRangeException">
     /// The given date is outside the range specified by
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
-    /// and <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />
+    /// <see cref="P:Controls.Calendar.DisplayDateStart" />
+    /// and <see cref="P:Controls.Calendar.DisplayDateEnd" />
     /// -or-
     /// The given date is in the
-    /// <see cref="P:System.Windows.Controls.Calendar.BlackoutDates" />
+    /// <see cref="P:Controls.Calendar.BlackoutDates" />
     /// collection.
     /// </exception>
     /// <exception cref="T:System.InvalidOperationException">
     /// If set to anything other than null when
-    /// <see cref="P:System.Windows.Controls.Calendar.SelectionMode" /> is
+    /// <see cref="P:Avalonia.Controls.SelectionMode" /> is
     /// set to
-    /// <see cref="F:System.Windows.Controls.CalendarSelectionMode.None" />.
+    /// <see cref="F:Controls.CalendarSelectionMode.None" />.
     /// </exception>
     /// <remarks>
     /// Use this property when SelectionMode is set to SingleDate.  In other
@@ -379,9 +379,9 @@ public class Calendar : TemplatedControl,
     /// <value>The date to display.</value>
     /// <exception cref="T:System.ArgumentOutOfRangeException">
     /// The given date is not in the range specified by
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateStart" />
+    /// <see cref="P:Controls.Calendar.DisplayDateStart" />
     /// and
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDateEnd" />.
+    /// <see cref="P:Controls.Calendar.DisplayDateEnd" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -408,7 +408,7 @@ public class Calendar : TemplatedControl,
     /// Gets a collection of selected dates.
     /// </summary>
     /// <value>
-    /// A <see cref="T:System.Windows.Controls.SelectedDatesCollection" />
+    /// A <see cref="T:Controls.SelectedDatesCollection" />
     /// object that contains the currently selected dates. The default is an
     /// empty collection.
     /// </value>
@@ -622,7 +622,7 @@ public class Calendar : TemplatedControl,
 
     /// <summary>
     /// Initializes a new instance of the
-    /// <see cref="T:System.Windows.Controls.Calendar" /> class.
+    /// <see cref="T:Controls.Calendar" /> class.
     /// </summary>
     public Calendar()
     {
@@ -1521,7 +1521,7 @@ public class Calendar : TemplatedControl,
 
     /// <summary>
     /// Occurs when the
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayDate" />
+    /// <see cref="P:Controls.Calendar.DisplayDate" />
     /// property is changed.
     /// </summary>
     /// <remarks>
@@ -1531,7 +1531,7 @@ public class Calendar : TemplatedControl,
 
     /// <summary>
     /// Occurs when the
-    /// <see cref="P:System.Windows.Controls.Calendar.DisplayMode" />
+    /// <see cref="P:ExCSS.DisplayMode" />
     /// property is changed.
     /// </summary>
     public event EventHandler<CalendarModeChangedEventArgs>? DisplayModeChanged;
@@ -2211,7 +2211,7 @@ public class Calendar : TemplatedControl,
 
     /// <summary>
     /// Builds the visual tree for the
-    /// <see cref="T:System.Windows.Controls.Calendar" /> when a new
+    /// <see cref="T:Controls.Calendar" /> when a new
     /// template is applied.
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -3,7 +3,6 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -153,7 +152,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     private bool _ignoreIsOpenChanged;
 
     // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
-    private bool _isNeedWaitFlipSync;
     private bool _openAnimating;
     private bool _closeAnimating;
     private bool _motionAwareOpened;
@@ -894,10 +892,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsFlippedProperty)
-        {
-            _isNeedWaitFlipSync = true;
-        }
         if (change.Property == IsMotionAwareOpenProperty)
         {
             if (!_ignoreIsOpenChanged)

@@ -37,7 +37,8 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         MenuFlyout = new MenuFlyout()
         {
             IsShowArrow              = false,
-            ClickHideFlyoutPredicate = ClickHideFlyoutPredicate
+            ClickHideFlyoutPredicate = ClickHideFlyoutPredicate,
+            IsUseOverlayLayer        = true
         };
         MenuFlyout.Closed += (o, eventArgs) =>
         {

@@ -3,7 +3,7 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Utils;
+namespace AtomUI.Utils;
 
 public static class WaveSpiritAwareControlExtensions
 {

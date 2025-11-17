@@ -4,7 +4,8 @@ using AtomUI.Controls.DesignTokens;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
+using AtomUI.Theme.Styling;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -12,7 +13,6 @@ using Avalonia.Data;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using AtomUI.Theme.Styling;
 
 namespace AtomUI.Controls;
 

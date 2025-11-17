@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using AtomUI.Controls.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -432,7 +431,7 @@ public partial class DataGrid : TemplatedControl,
     }
 
     /// <summary>
-    /// Gets or sets the maximum width of columns in the <see cref="T:AtomUI.Desktop.Controls.DataGrid" /> .
+    /// Gets or sets the maximum width of columns in the <see cref="T:DataGrid" /> .
     /// </summary>
     public double MaxColumnWidth
     {
@@ -441,7 +440,7 @@ public partial class DataGrid : TemplatedControl,
     }
 
     /// <summary>
-    /// Gets or sets the minimum width of columns in the <see cref="T:AtomUI.Desktop.Controls.DataGrid" />.
+    /// Gets or sets the minimum width of columns in the <see cref="T:DataGrid" />.
     /// </summary>
     public double MinColumnWidth
     {
@@ -539,7 +538,7 @@ public partial class DataGrid : TemplatedControl,
 
     /// <summary>
     /// Gets or sets a value that indicates whether columns are created
-    /// automatically when the <see cref="P:AtomUI.Desktop.Controls.DataGrid.ItemsSource" /> property is set.
+    /// automatically when the <see cref="P:DataGrid.ItemsSource" /> property is set.
     /// </summary>
     public bool AutoGenerateColumns
     {
@@ -794,8 +793,8 @@ public partial class DataGrid : TemplatedControl,
 
     /// <summary>
     /// Occurs one time for each public, non-static property in the bound data type when the
-    /// <see cref="P:AtomUI.Desktop.Controls.DataGrid.ItemsSource" /> property is changed and the
-    /// <see cref="P:AtomUI.Desktop.Controls.DataGrid.AutoGenerateColumns" /> property is true.
+    /// <see cref="P:DataGrid.ItemsSource" /> property is changed and the
+    /// <see cref="P:DataGrid.AutoGenerateColumns" /> property is true.
     /// </summary>
     public event EventHandler<DataGridAutoGeneratingColumnEventArgs>? AutoGeneratingColumn;
 
@@ -820,7 +819,7 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<DataGridCellPointerPressedEventArgs>? CellPointerPressed;
 
     /// <summary>
-    /// Occurs when the <see cref="P:AtomUI.Desktop.Controls.DataGridColumn.DisplayIndex" />
+    /// Occurs when the <see cref="P:DataGridColumn.DisplayIndex" />
     /// property of a column changes.
     /// </summary>
     public event EventHandler<DataGridColumnEventArgs>? ColumnDisplayIndexChanged;
@@ -860,13 +859,13 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<EventArgs>? CurrentCellChanged;
 
     /// <summary>
-    /// Occurs after a <see cref="T:AtomUI.Desktop.Controls.DataGridRow" />
+    /// Occurs after a <see cref="T:DataGridError.DataGridRow" />
     /// is instantiated, so that you can customize it before it is used.
     /// </summary>
     public event EventHandler<DataGridRowEventArgs>? LoadingRow;
 
     /// <summary>
-    /// Occurs when a cell in a <see cref="T:AtomUI.Desktop.Controls.DataGridTemplateColumn" /> enters editing mode.
+    /// Occurs when a cell in a <see cref="T:DataGridError.DataGridTemplateColumn" /> enters editing mode.
     ///
     /// </summary>
     public event EventHandler<DataGridPreparingCellForEditEventArgs>? PreparingCellForEdit;
@@ -882,8 +881,8 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<DataGridRowEditEndingEventArgs>? RowEditEnding;
 
     /// <summary>
-    /// Occurs when the <see cref="P:AtomUI.Desktop.Controls.DataGrid.SelectedItem" /> or
-    /// <see cref="P:AtomUI.Desktop.Controls.DataGrid.SelectedItems" /> property value changes.
+    /// Occurs when the <see cref="P:DataGrid.SelectedItem" /> or
+    /// <see cref="P:DataGrid.SelectedItems" /> property value changes.
     /// </summary>
     public event EventHandler<SelectionChangedEventArgs>? SelectionChanged
     {
@@ -902,7 +901,7 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<DataGridColumnEventArgs>? Filtering;
 
     /// <summary>
-    /// Occurs when a <see cref="T:AtomUI.Desktop.Controls.DataGridRow" />
+    /// Occurs when a <see cref="T:DataGridError.DataGridRow" />
     /// object becomes available for reuse.
     /// </summary>
     public event EventHandler<DataGridRowEventArgs>? UnloadingRow;
@@ -914,7 +913,7 @@ public partial class DataGrid : TemplatedControl,
     public event EventHandler<DataGridRowDetailsEventArgs>? LoadingRowDetails;
 
     /// <summary>
-    /// Occurs when the <see cref="P:AtomUI.Desktop.Controls.DataGrid.RowDetailsVisibilityMode" />
+    /// Occurs when the <see cref="P:DataGrid.RowDetailsVisibilityMode" />
     /// property value changes.
     /// </summary>
     public event EventHandler<DataGridRowDetailsEventArgs>? RowDetailsVisibilityChanged;
@@ -1214,13 +1213,13 @@ public partial class DataGrid : TemplatedControl,
     }
 
     /// <summary>
-    /// Arranges the content of the <see cref="T:AtomUI.Desktop.Controls.DataGridRow" />.
+    /// Arranges the content of the <see cref="T:DataGridError.DataGridRow" />.
     /// </summary>
     /// <param name="finalSize">
     /// The final area within the parent that this element should use to arrange itself and its children.
     /// </param>
     /// <returns>
-    /// The actual size used by the <see cref="T:AtomUI.Desktop.Controls.DataGridRow" />.
+    /// The actual size used by the <see cref="T:DataGridError.DataGridRow" />.
     /// </returns>
     protected override Size ArrangeOverride(Size finalSize)
     {
@@ -1240,12 +1239,12 @@ public partial class DataGrid : TemplatedControl,
     }
 
     /// <summary>
-    /// Measures the children of a <see cref="T:AtomUI.Desktop.Controls.DataGridRow" /> to prepare for
+    /// Measures the children of a <see cref="T:DataGridError.DataGridRow" /> to prepare for
     /// arranging them during the
-    /// <see cref="M:AtomUI.Desktop.Controls.DataGridRow.ArrangeOverride(System.Windows.Size)" /> pass.
+    /// <see cref="M:DataGridError.DataGridRow.ArrangeOverride(System.Windows.Size)" /> pass.
     /// </summary>
     /// <returns>
-    /// The size that the <see cref="T:AtomUI.Desktop.Controls.DataGridRow" /> determines it needs during layout, based on its calculations of child object allocated sizes.
+    /// The size that the <see cref="T:DataGridError.DataGridRow" /> determines it needs during layout, based on its calculations of child object allocated sizes.
     /// </returns>
     /// <param name="availableSize">
     /// The available size that this element can give to child elements. Indicates an upper limit that

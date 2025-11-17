@@ -3,8 +3,6 @@ using AtomUI.Controls.DesignTokens;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;

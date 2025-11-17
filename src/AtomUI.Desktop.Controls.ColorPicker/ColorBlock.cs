@@ -1,6 +1,4 @@
 using AtomUI.Controls.Primitives;
-using AtomUI.Theme.Data;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;

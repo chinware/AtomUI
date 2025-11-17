@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 
 namespace AtomUI.Theme;
 

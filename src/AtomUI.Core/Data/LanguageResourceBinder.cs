@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Data;
+namespace AtomUI.Data;
 
 public static class LanguageResourceBinder
 {

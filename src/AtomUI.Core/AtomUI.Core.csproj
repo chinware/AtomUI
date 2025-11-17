@@ -3,8 +3,25 @@
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
         <RootNamespace>AtomUI</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets/**/*.*"/>
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="ReactiveUI.Avalonia"/>
@@ -15,7 +32,6 @@
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls"/>
-        <InternalsVisibleTo Include="AtomUI.Theme"/>
         <InternalsVisibleTo Include="AtomUI.IconPkg"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker"/>
@@ -25,6 +41,10 @@
     <ItemGroup>
         <AssemblyMetadata Include="AvaloniaVersion" Value="$(AvaloniaVersion)" />
         <AssemblyMetadata Include="AtomUIVersion" Value="$(AtomUIVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
     </ItemGroup>
     
 </Project>

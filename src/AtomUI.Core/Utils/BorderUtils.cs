@@ -1,7 +1,6 @@
-﻿using AtomUI.Utils;
-using Avalonia;
+﻿using Avalonia;
 
-namespace AtomUI.Theme.Utils;
+namespace AtomUI.Utils;
 
 internal static class BorderUtils
 {

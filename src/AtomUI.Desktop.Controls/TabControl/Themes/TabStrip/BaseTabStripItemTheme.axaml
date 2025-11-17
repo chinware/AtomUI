@@ -19,7 +19,8 @@
                                       ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
                     <atom:IconButton Name="{x:Static atom:TabStripItemThemeConstants.ItemCloseButtonPart}"
                                      Icon="{TemplateBinding CloseIcon}"
-                                     Opacity="{TemplateBinding CloseButtonOpacity}" />
+                                     Opacity="{TemplateBinding CloseButtonOpacity}" 
+                                     VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>
         </ControlTemplate>

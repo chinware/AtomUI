@@ -8,7 +8,7 @@ using System.Diagnostics;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.DataGridLocalization;
 using AtomUI.Controls.Utils;
-using AtomUI.Theme.Data;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Input;
 

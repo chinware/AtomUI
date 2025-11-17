@@ -1,9 +1,8 @@
-using System;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
-using AtomUI.Theme.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Animation;

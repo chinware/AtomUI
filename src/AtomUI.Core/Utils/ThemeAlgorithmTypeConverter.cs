@@ -1,7 +1,8 @@
 using System.ComponentModel;
 using System.Globalization;
+using AtomUI.Theme;
 
-namespace AtomUI.Theme.Utils;
+namespace AtomUI.Utils;
 
 public class ThemeAlgorithmTypeConverter : TypeConverter
 {

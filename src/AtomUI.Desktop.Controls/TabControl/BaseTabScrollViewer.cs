@@ -257,15 +257,16 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     
     protected bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
     {
-        if (hostProvider.PopupHost != args.Root)
+        if (hostProvider.PopupHost is OverlayPopupHost overlayPopupHost && args.Root is Control root)
         {
-            var menuIndicatorOrigin = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(MenuIndicator)!);
-            var menuIndicatorBounds = menuIndicatorOrigin.HasValue ? new Rect(menuIndicatorOrigin.Value, Bounds.Size) : new Rect();
-            if (!menuIndicatorBounds.Contains(args.Position))
+            var offset = overlayPopupHost.TranslatePoint(default, root);
+            if (offset.HasValue)
             {
-                return true;
+                var bounds = new Rect(offset.Value, overlayPopupHost.Bounds.Size);
+                return !bounds.Contains(args.Position);
             }
         }
+                
         return false;
     }
 }

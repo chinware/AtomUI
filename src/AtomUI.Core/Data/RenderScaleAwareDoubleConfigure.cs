@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Theme.Data;
+namespace AtomUI.Data;
 
 internal class RenderScaleAwareDoubleConfigure
 {

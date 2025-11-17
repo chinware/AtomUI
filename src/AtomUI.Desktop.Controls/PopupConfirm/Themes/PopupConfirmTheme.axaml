@@ -5,9 +5,21 @@
     xmlns:popupConfirmLang="clr-namespace:AtomUI.Controls.PopupConfirmLang"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:PopupConfirm}" TargetType="atom:PopupConfirm">
+        
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:PopupConfirm">
+                <ContentPresenter Name="{x:Static atom:PopupConfirmThemeConstants.ContentPresenterPart}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  ClipToBounds="{TemplateBinding ClipToBounds}"/>
+            </ControlTemplate>
+        </Setter>
+        
         <Setter Property="OkText" Value="{DynamicResource {x:Static popupConfirmLang:PopupConfirmLangResourceKey.Ok}}"/>
         <Setter Property="CancelText" Value="{DynamicResource {x:Static popupConfirmLang:PopupConfirmLangResourceKey.Cancel}}"/>
         <Setter Property="MarginToAnchor" Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyMarginXXS}}"/>
         <Setter Property="MotionDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}"/>
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}"/>
+        <Setter Property="ClipToBounds" Value="False"/>
     </ControlTheme>
 </ResourceDictionary>

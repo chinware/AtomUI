@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme.Data;
+namespace AtomUI.Data;
 
 public static class TokenResourceUtils
 {

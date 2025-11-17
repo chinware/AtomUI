@@ -1,10 +1,11 @@
 using System.Diagnostics;
-using AtomUI.Theme.Data;
+using AtomUI.Data;
+using AtomUI.Theme;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
-namespace AtomUI.Theme.Utils;
+namespace AtomUI.Utils;
 
 public static class ControlSharedTokenResourcesHostExtensions
 {

@@ -1,10 +1,12 @@
 ﻿using System.Reactive.Disposables;
+using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Metadata;
@@ -20,13 +22,10 @@ public enum FlyoutTriggerType
     Focus,
 }
 
-public class FlyoutHost : TemplatedControl, IMotionAwareControl
+public class FlyoutHost : ContentControl, IMotionAwareControl
 {
     #region 公共属性定义
-
-    public static readonly StyledProperty<Control?> AnchorTargetProperty =
-        AvaloniaProperty.Register<FlyoutHost, Control?>(nameof(AnchorTarget));
-
+    
     /// <summary>
     /// Defines the <see cref="Flyout" /> property
     /// </summary>
@@ -85,16 +84,6 @@ public class FlyoutHost : TemplatedControl, IMotionAwareControl
 
     public static readonly StyledProperty<int> MouseLeaveDelayProperty =
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<FlyoutHost>();
-
-    /// <summary>
-    /// 装饰的目标控件
-    /// </summary>
-    [Content]
-    public Control? AnchorTarget
-    {
-        get => GetValue(AnchorTargetProperty);
-        set => SetValue(AnchorTargetProperty, value);
-    }
 
     public PopupFlyoutBase? Flyout
     {
@@ -191,6 +180,7 @@ public class FlyoutHost : TemplatedControl, IMotionAwareControl
     private readonly FlyoutStateHelper _flyoutStateHelper;
     private CompositeDisposable? _flyoutStateHelperDisposables;
     private CompositeDisposable? _flyoutDisposables;
+    private ContentPresenter? _contentPresenter;
     
     static FlyoutHost()
     {
@@ -200,14 +190,13 @@ public class FlyoutHost : TemplatedControl, IMotionAwareControl
     public FlyoutHost()
     {
         _flyoutStateHelper = new FlyoutStateHelper();
-        this.ConfigureMotionBindingStyle();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         _flyoutStateHelperDisposables = new CompositeDisposable();
-        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, AnchorTargetProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty));
+        _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, ContentProperty, _flyoutStateHelper, FlyoutStateHelper.AnchorTargetProperty));
         _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, FlyoutProperty, _flyoutStateHelper, FlyoutStateHelper.FlyoutProperty));
         _flyoutStateHelperDisposables.Add(BindUtils.RelayBind(this, MouseEnterDelayProperty, _flyoutStateHelper,
             FlyoutStateHelper.MouseEnterDelayProperty));
@@ -259,23 +248,12 @@ public class FlyoutHost : TemplatedControl, IMotionAwareControl
                 }
             }
         }
+    }
 
-        if (change.Property == AnchorTargetProperty)
-        {
-            var oldAnchorTarget = change.GetOldValue<Control?>();
-            var newAnchorTarget = change.GetNewValue<Control?>();
-            if (oldAnchorTarget != null)
-            {
-                LogicalChildren.Remove(oldAnchorTarget);
-                VisualChildren.Remove(oldAnchorTarget);
-            }
-
-            if (newAnchorTarget != null)
-            {
-                LogicalChildren.Add(newAnchorTarget);
-                VisualChildren.Add(newAnchorTarget);
-            }
-        }
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _contentPresenter = e.NameScope.Find<ContentPresenter>(FlyoutHostThemeConstants.ContentPresenterPart);
     }
 
     public void ShowFlyout(bool immediately)

@@ -4,7 +4,7 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Themes;
 using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -284,8 +284,7 @@ public class OptionButton : AvaloniaRadioButton
             CornerRadius,
             BackgroundSizing.InnerBorderEdge,
             Background,
-            BorderBrush,
-            default);
+            BorderBrush);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

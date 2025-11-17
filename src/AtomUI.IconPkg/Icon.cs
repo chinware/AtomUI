@@ -1,13 +1,12 @@
 ﻿using System.Collections.Specialized;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Rendering;

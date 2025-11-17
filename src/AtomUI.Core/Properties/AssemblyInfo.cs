@@ -4,3 +4,6 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Animations")]
 [assembly: XmlnsDefinition("https://atomui.net", "AtomUI.MotionScene")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Language")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme")]
+[assembly: XmlnsDefinition("https://atomui.net", "AtomUI.Theme.Styling")]

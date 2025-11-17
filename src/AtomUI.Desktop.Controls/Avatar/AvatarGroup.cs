@@ -2,7 +2,7 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -275,10 +275,10 @@ public class AvatarGroup : TemplatedControl,
         if (_foldCountFlyout == null)
         {
             _flyoutBindingDisposables?.Dispose();
-            _flyoutBindingDisposables               = new CompositeDisposable();
+            _flyoutBindingDisposables        = new CompositeDisposable();
             _foldCountFlyout                 = new FlyoutHost();
             _foldCountFlyout.ZIndex          = Int32.MaxValue;
-            _foldCountFlyout.AnchorTarget    = foldCountAvatar;
+            _foldCountFlyout.Content         = foldCountAvatar;
             _foldCountStackPanel             = new StackPanel();
             _foldCountStackPanel.Orientation = Orientation.Horizontal;
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, GroupSpaceProperty, _foldCountStackPanel, StackPanel.SpacingProperty));

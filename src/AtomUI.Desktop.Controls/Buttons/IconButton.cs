@@ -5,7 +5,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Reflection;
 using AtomUI.Theme;
-using AtomUI.Theme.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
