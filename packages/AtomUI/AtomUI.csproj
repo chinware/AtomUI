@@ -39,9 +39,6 @@
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj">
             <IncludeAssets>$(IncludeAssets)</IncludeAssets>
         </ProjectReference>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.ReactiveUI/AtomUI.ReactiveUI.csproj">
-            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
-        </ProjectReference>
     </ItemGroup>
 
     <PropertyGroup>
