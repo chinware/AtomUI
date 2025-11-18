@@ -5,7 +5,7 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.DataGridLocalization;
 using AtomUI.Data;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;

@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;

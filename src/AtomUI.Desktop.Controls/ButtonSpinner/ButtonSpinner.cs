@@ -3,7 +3,6 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Theme;
 using AtomUI.Utils;

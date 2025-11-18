@@ -2,11 +2,10 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
-                                           VerticalAlignment="Center" 
-                                           TextWrapping="Wrap"/>
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"
+                                     VerticalAlignment="Center" 
+                                     TextWrapping="Wrap"/>
     <ControlTheme x:Key="{x:Type atom:TimelineItem}" TargetType="atom:TimelineItem">
         <Setter Property="Template">
             <ControlTemplate>

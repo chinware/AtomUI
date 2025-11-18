@@ -24,14 +24,14 @@
                     <atom:Icon Name="{x:Static atom:DropdownButtonThemeConstants.DropdownIndicatorPart}"
                                DockPanel.Dock="Right"
                                VerticalAlignment="Center"
-                               IconInfo="{atom:IconInfoProvider DownOutlined}"
+                               IconInfo="{atom:AntDesignIconInfoProvider DownOutlined}"
                                NormalFilledBrush="{TemplateBinding Foreground}" />
                     <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Orientation="Horizontal">
                         <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                   IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                                   IconInfo="{atom:AntDesignIconInfoProvider LoadingOutlined}"
                                    Margin="{Binding (atom:IconPresenter.Margin), 
                                    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
                         <atom:IconPresenter

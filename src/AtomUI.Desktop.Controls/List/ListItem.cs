@@ -3,8 +3,7 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;

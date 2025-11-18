@@ -1,4 +1,5 @@
-﻿using AtomUI.Desktop.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Utils;

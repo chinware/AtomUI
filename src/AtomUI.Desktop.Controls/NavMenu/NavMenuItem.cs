@@ -5,7 +5,6 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Exceptions;
-using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.MotionScene;
 using Avalonia;

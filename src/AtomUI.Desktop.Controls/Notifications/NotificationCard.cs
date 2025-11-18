@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Utils;

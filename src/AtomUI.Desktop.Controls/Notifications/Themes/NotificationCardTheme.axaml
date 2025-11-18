@@ -2,9 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:StringToSelectableTextBlockConverter x:Key="StringToSelectableTextBlockConverter" />
+    <atom:StringToSelectableTextBlockConverter x:Key="StringToSelectableTextBlockConverter" />
     <atom:NotificationProgressBarVisibleConverter x:Key="NotificationProgressBarVisibleConverter" />
     <ControlTheme x:Key="{x:Type atom:NotificationCard}" TargetType="atom:NotificationCard">
         <Setter Property="Template">
@@ -27,7 +26,7 @@
                                 LastChildFill="True">
                                 <atom:IconButton
                                     Name="{x:Static atom:NotificationCardThemeConstants.CloseButtonPart}"
-                                    Icon="{atom:IconProvider Kind=CloseOutlined}"
+                                    Icon="{atom:AntDesignIconProvider Kind=CloseOutlined}"
                                     DockPanel.Dock="Right" />
                                 <atom:SelectableTextBlock
                                     Name="{x:Static atom:NotificationCardThemeConstants.HeaderTitlePart}"

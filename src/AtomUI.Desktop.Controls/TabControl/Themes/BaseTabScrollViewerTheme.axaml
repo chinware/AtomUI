@@ -16,7 +16,7 @@
                         <atom:IconButton Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollMenuIndicatorPart}"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Stretch"
-                                         Icon="{atom:IconProvider EllipsisOutlined}" />
+                                         Icon="{atom:AntDesignIconProvider EllipsisOutlined}" />
                         <atom:TabScrollContentPresenter
                             Name="ScrollViewContent"
                             TabStripPlacement="{TemplateBinding TabStripPlacement}"

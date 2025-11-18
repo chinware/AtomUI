@@ -16,15 +16,15 @@
                         <StackPanel Orientation="Horizontal" Name="ButtonGroup" DockPanel.Dock="Right">
                             <atom:DialogCaptionButton
                                 Name="{x:Static atom:OverlayDialogHeaderThemeConstants.MaximizeButtonPart}"
-                                NormalIcon="{atom:IconProvider Kind=WindowMaximizedOutlined}"
-                                CheckedIcon="{atom:IconProvider Kind=WindowRestoreOutlined}"
+                                NormalIcon="{atom:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
+                                CheckedIcon="{atom:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsChecked="{TemplateBinding IsDialogMaximized}"
                                 IsVisible="{TemplateBinding IsMaximizeButtonEnabled}">
                             </atom:DialogCaptionButton>
                             <atom:DialogCaptionButton
                                 Name="{x:Static atom:OverlayDialogHeaderThemeConstants.CloseButtonPart}"
-                                NormalIcon="{atom:IconProvider Kind=CloseOutlined}"
+                                NormalIcon="{atom:AntDesignIconProvider Kind=CloseOutlined}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsVisible="{TemplateBinding IsCloseButtonEnabled}" />
                         </StackPanel>

@@ -35,7 +35,7 @@
                                 </atom:TabsContainerPanel.TabScrollViewer>
                                 <atom:TabsContainerPanel.AddTabButton>
                                     <atom:IconButton Name="{x:Static atom:TabStripThemeConstants.AddTabButtonPart}"
-                                                     Icon="{atom:IconProvider PlusOutlined}"
+                                                     Icon="{atom:AntDesignIconProvider PlusOutlined}"
                                                      BorderThickness="{TemplateBinding CardBorderThickness}"
                                                      CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"
                                                      IsVisible="{TemplateBinding IsShowAddTabButton}" />

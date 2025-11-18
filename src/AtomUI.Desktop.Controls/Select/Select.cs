@@ -5,7 +5,6 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;

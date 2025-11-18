@@ -9,7 +9,7 @@
                 <atom:RowReorderButton
                     Name = "{x:Static atom:DataGridRowReorderHandleConstants.IndicatorIconButtonPart}"
                     IsEnableHoverEffect="True"
-                    Icon="{atom:IconProvider  HolderOutlined}"
+                    Icon="{atom:AntDesignIconProvider  HolderOutlined}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">

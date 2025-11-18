@@ -2,9 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:HorizontalNavMenuItemHeader}" TargetType="atom:HorizontalNavMenuItemHeader">
         <ControlTheme.BasedOn>
             <atom:BaseNavMenuItemHeaderTheme TargetType="atom:HorizontalNavMenuItemHeader" />
@@ -44,7 +43,7 @@
                             <atom:Icon
                                 Name="MenuIndicatorIcon"
                                 Grid.Column="2"
-                                IconInfo="{atom:IconInfoProvider RightOutlined}"
+                                IconInfo="{atom:AntDesignIconInfoProvider RightOutlined}"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 IsEnabled="{TemplateBinding IsEnabled}"

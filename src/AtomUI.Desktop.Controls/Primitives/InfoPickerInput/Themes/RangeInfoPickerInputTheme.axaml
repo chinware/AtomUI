@@ -59,7 +59,7 @@
                                       Text="{TemplateBinding Text}"
                                       Watermark="{TemplateBinding Watermark}" />
                         <atom:Icon Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerArrowPart}"
-                                   IconInfo="{atom:IconInfoProvider SwapRightOutlined}"
+                                   IconInfo="{atom:AntDesignIconInfoProvider SwapRightOutlined}"
                                    Grid.Column="1" />
                         <atom:TextBox
                             Name="{x:Static atom:RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart}"

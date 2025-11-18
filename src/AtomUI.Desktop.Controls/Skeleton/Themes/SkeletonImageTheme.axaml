@@ -22,7 +22,7 @@
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <atom:Icon Name="Image"
-                               IconInfo="{atom:IconInfoProvider Kind=ImageFilled}"
+                               IconInfo="{atom:AntDesignIconInfoProvider Kind=ImageFilled}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                NormalFilledBrush="#bfbfbf" />

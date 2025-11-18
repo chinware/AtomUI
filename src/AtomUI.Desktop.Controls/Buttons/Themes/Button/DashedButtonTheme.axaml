@@ -31,7 +31,7 @@
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center">
                         <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                   IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                                   IconInfo="{atom:AntDesignIconInfoProvider LoadingOutlined}"
                                    Margin="{Binding (atom:IconPresenter.Margin),
                                    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
                                    DockPanel.Dock="Left" />

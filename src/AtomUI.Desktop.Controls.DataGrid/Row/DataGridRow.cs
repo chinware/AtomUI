@@ -4,10 +4,9 @@
 // All other rights reserved.
 
 using AtomUI.Animations;
-using AtomUI.Desktop.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;

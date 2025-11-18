@@ -53,7 +53,7 @@
                                                 Text="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Expired}}" />
                                 <atom:Button Name="{x:Static atom:QRCodeThemeConstants.RefreshPart}"
                                              HorizontalAlignment="Center"
-                                             Icon="{atom:IconProvider Kind=ReloadOutlined}"
+                                             Icon="{atom:AntDesignIconProvider Kind=ReloadOutlined}"
                                              ButtonType="Link"
                                              Content="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Refresh}}" />
                             </StackPanel>

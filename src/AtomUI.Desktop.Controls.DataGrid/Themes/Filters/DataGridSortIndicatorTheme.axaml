@@ -13,7 +13,7 @@
                         </Border.RenderTransform>
                         <atom:Icon
                             Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}"
-                            IconInfo="{atom:IconInfoProvider CaretUpOutlined}" />
+                            IconInfo="{atom:AntDesignIconInfoProvider CaretUpOutlined}" />
                     </Border>
                     <Border IsVisible="{TemplateBinding DescendingIndicatorVisible}">
                         <Border.RenderTransform>
@@ -21,7 +21,7 @@
                         </Border.RenderTransform>
                         <atom:Icon
                             Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}"
-                            IconInfo="{atom:IconInfoProvider CaretDownOutlined}" />
+                            IconInfo="{atom:AntDesignIconInfoProvider CaretDownOutlined}" />
                     </Border>
                 </StackPanel>
             </ControlTemplate>

@@ -16,7 +16,7 @@
                               ColumnDefinitions="Auto, *, Auto">
                             <atom:IconButton Name="{x:Static atom:DrawerInfoContainerThemeConstants.CloseButtonPart}"
                                              Grid.Column="0"
-                                             Icon="{atom:IconProvider CloseOutlined}"
+                                             Icon="{atom:AntDesignIconProvider CloseOutlined}"
                                              IsEnableHoverEffect="True"
                                              VerticalAlignment="Center"
                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

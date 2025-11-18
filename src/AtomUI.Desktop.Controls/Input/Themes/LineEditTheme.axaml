@@ -28,7 +28,7 @@
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
                         <atom:IconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                            Icon="{atom:IconProvider CloseCircleFilled}"
+                            Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
                             IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                             IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                             NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
@@ -39,8 +39,8 @@
                         <!-- 新增显示密码按钮 -->
                         <atom:ToggleIconButton
                             Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                            CheckedIcon="{atom:IconProvider EyeOutlined}"
-                            UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider EyeOutlined}"
+                            UnCheckedIcon="{atom:AntDesignIconProvider EyeInvisibleOutlined}"
                             IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                             IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                             NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"

@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using AtomUI.IconPkg;
+using AtomUI.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-public class Notification : INotification, 
-                            INotifyPropertyChanged
+public class Notification : INotification, INotifyPropertyChanged
 {
     private string _title;
     private object? _content;

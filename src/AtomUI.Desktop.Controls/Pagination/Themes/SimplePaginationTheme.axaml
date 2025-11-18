@@ -11,7 +11,7 @@
                             Orientation="Horizontal">
                     <atom:PaginationNavItem Name="{x:Static atom:SimplePaginationThemeConstants.PreviousNavItemPart}"
                                             PaginationItemType="Previous"
-                                            Icon="{atom:IconProvider LeftOutlined}"
+                                            Icon="{atom:AntDesignIconProvider LeftOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
@@ -26,7 +26,7 @@
                                     IsEnabled="{TemplateBinding IsEnabled}" />
                     <atom:PaginationNavItem Name="{x:Static atom:SimplePaginationThemeConstants.NextNavItemPart}"
                                             PaginationItemType="Previous"
-                                            Icon="{atom:IconProvider RightOutlined}"
+                                            Icon="{atom:AntDesignIconProvider RightOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}" 
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>

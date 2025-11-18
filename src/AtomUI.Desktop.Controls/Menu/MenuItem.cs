@@ -5,7 +5,6 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.IconPkg;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;

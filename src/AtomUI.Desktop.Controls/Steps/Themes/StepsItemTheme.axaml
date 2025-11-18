@@ -2,9 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="clr-namespace:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" TextWrapping="Wrap" />
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" TextWrapping="Wrap" />
     <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
         <!-- 通用样式 -->
         <Style Selector="^[IsClickable=True]">
@@ -703,7 +702,7 @@
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
                                     <atom:Icon Name="NavArrow"
-                                               IconInfo="{atom:IconInfoProvider Kind=RightOutlined}"
+                                               IconInfo="{atom:AntDesignIconInfoProvider Kind=RightOutlined}"
                                                DockPanel.Dock="Right"
                                                VerticalAlignment="Center"
                                                IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
@@ -789,7 +788,7 @@
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
                                     <atom:Icon Name="NavArrow"
-                                               IconInfo="{atom:IconInfoProvider Kind=RightOutlined}"
+                                               IconInfo="{atom:AntDesignIconInfoProvider Kind=RightOutlined}"
                                                DockPanel.Dock="Right"
                                                VerticalAlignment="Center"
                                                IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
@@ -865,7 +864,7 @@
                         <ControlTemplate>
                             <DockPanel LastChildFill="True" Name="RootLayout">
                                 <atom:Icon Name="NavArrow"
-                                           IconInfo="{atom:IconInfoProvider Kind=RightOutlined}"
+                                           IconInfo="{atom:AntDesignIconInfoProvider Kind=RightOutlined}"
                                            DockPanel.Dock="Right"
                                            VerticalAlignment="Center"
                                            IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
@@ -1022,7 +1021,7 @@
                                                 ContentTemplate="{TemplateBinding DescriptionTemplate}" />
 
                                             <atom:Icon Name="NavArrow"
-                                                       IconInfo="{atom:IconInfoProvider Kind=DownOutlined}"
+                                                       IconInfo="{atom:AntDesignIconInfoProvider Kind=DownOutlined}"
                                                        HorizontalAlignment="Center"
                                                        IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                         </StackPanel>
@@ -1100,7 +1099,7 @@
                                                 ContentTemplate="{TemplateBinding DescriptionTemplate}" />
 
                                             <atom:Icon Name="NavArrow"
-                                                       IconInfo="{atom:IconInfoProvider Kind=DownOutlined}"
+                                                       IconInfo="{atom:AntDesignIconInfoProvider Kind=DownOutlined}"
                                                        HorizontalAlignment="Center"
                                                        IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                         </StackPanel>

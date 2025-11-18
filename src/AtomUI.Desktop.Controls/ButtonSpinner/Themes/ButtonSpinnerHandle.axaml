@@ -15,13 +15,13 @@
                         RowSpacing="1">
                         <atom:IconButton
                             Name="{x:Static atom:ButtonSpinnerThemeConstants.IncreaseButtonPart}"
-                            Icon="{atom:IconProvider UpOutlined}"
+                            Icon="{atom:AntDesignIconProvider UpOutlined}"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
                             BackgroundSizing="InnerBorderEdge"/>
                         <atom:IconButton
                             Name="{x:Static atom:ButtonSpinnerThemeConstants.DecreaseButtonPart}"
-                            Icon="{atom:IconProvider DownOutlined}"
+                            Icon="{atom:AntDesignIconProvider DownOutlined}"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
                             BackgroundSizing="InnerBorderEdge"/>

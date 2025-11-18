@@ -33,13 +33,13 @@
                         DockPanel.Dock="Right">
                         <atom:IconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                            Icon="{atom:IconProvider CloseCircleFilled}"
+                            Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
                             IsVisible="{TemplateBinding IsEffectiveShowClearButton}" />
                         <!-- 新增显示密码按钮 -->
                         <atom:ToggleIconButton
                             Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                            CheckedIcon="{atom:IconProvider EyeOutlined}"
-                            UnCheckedIcon="{atom:IconProvider EyeInvisibleOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider EyeOutlined}"
+                            UnCheckedIcon="{atom:AntDesignIconProvider EyeInvisibleOutlined}"
                             IsChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
                             IsVisible="{TemplateBinding IsEnableRevealButton}" />
                         <ContentPresenter

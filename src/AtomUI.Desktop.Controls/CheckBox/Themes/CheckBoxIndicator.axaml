@@ -16,7 +16,7 @@
                             CornerRadius="{TemplateBinding CornerRadius}">
                         <Panel>
                             <atom:Icon Name="CheckedMark"
-                                       IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
+                                       IconInfo="{atom:AntDesignIconInfoProvider CheckBoldOutlined}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" 
                                        NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"

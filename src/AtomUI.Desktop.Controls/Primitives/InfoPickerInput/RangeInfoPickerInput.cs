@@ -1,6 +1,6 @@
-﻿using AtomUI.Desktop.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;

@@ -28,7 +28,7 @@
                                     Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
                             <atom:IconButton
                                 Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                                Icon="{atom:IconProvider CloseCircleFilled}"
+                                Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
                                 IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                                 IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                                 NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"

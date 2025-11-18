@@ -24,12 +24,12 @@
                                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
-                                        Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                        Icon="{atom:AntDesignIconProvider DoubleLeftOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="0" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
-                                        Icon="{atom:IconProvider LeftOutlined}"
+                                        Icon="{atom:AntDesignIconProvider LeftOutlined}"
                                         Grid.Column="1" />
 
                                     <atom:HeadTextButton
@@ -39,11 +39,11 @@
 
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
-                                        Icon="{atom:IconProvider RightOutlined}"
+                                        Icon="{atom:AntDesignIconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
-                                        Icon="{atom:IconProvider DoubleRightOutlined}"
+                                        Icon="{atom:AntDesignIconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />
                                 </Grid>
@@ -51,12 +51,12 @@
                                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousButtonPart}"
-                                        Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                        Icon="{atom:AntDesignIconProvider DoubleLeftOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="0" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousMonthButtonPart}"
-                                        Icon="{atom:IconProvider LeftOutlined}"
+                                        Icon="{atom:AntDesignIconProvider LeftOutlined}"
                                         Grid.Column="1" />
 
                                     <atom:HeadTextButton
@@ -66,11 +66,11 @@
 
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart}"
-                                        Icon="{atom:IconProvider RightOutlined}"
+                                        Icon="{atom:AntDesignIconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart}"
-                                        Icon="{atom:IconProvider DoubleRightOutlined}"
+                                        Icon="{atom:AntDesignIconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />
                                 </Grid>

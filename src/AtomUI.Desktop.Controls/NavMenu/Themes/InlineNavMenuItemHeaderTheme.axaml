@@ -53,7 +53,7 @@
                                 RenderTransform="{TemplateBinding MenuIndicatorRenderTransform}">
                             <atom:Icon
                                 Name="MenuIndicatorIcon"
-                                IconInfo="{atom:IconInfoProvider RightOutlined}"
+                                IconInfo="{atom:AntDesignIconInfoProvider RightOutlined}"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 IsEnabled="{TemplateBinding IsEnabled}" />

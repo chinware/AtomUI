@@ -5,7 +5,8 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reactive.Disposables; 
+using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Automation;

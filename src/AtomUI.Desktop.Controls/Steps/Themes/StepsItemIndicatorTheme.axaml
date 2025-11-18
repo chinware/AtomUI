@@ -24,13 +24,13 @@
                                                    HorizontalAlignment="Center"
                                                    IsVisible="True" />
                                         <atom:Icon Name="FinishedMark"
-                                                   IconInfo="{atom:IconInfoProvider Kind=CheckOutlined}"
+                                                   IconInfo="{atom:AntDesignIconInfoProvider Kind=CheckOutlined}"
                                                    VerticalAlignment="Center"
                                                    HorizontalAlignment="Center"
                                                    IsVisible="False"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                                         <atom:Icon Name="ErrorMark"
-                                                   IconInfo="{atom:IconInfoProvider Kind=CloseOutlined}"
+                                                   IconInfo="{atom:AntDesignIconInfoProvider Kind=CloseOutlined}"
                                                    VerticalAlignment="Center"
                                                    HorizontalAlignment="Center"
                                                    IsVisible="False"

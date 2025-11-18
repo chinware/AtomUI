@@ -1,4 +1,4 @@
-﻿using AtomUI.IconPkg;
+﻿using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,17 +13,17 @@ public class ToggleIconButton : ToggleButton,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> CheckedIconProperty
-        = AvaloniaProperty.Register<ToggleIconButton, Icon?>(nameof(CheckedIcon));
+    public static readonly StyledProperty<Icon?> CheckedIconProperty =
+        AvaloniaProperty.Register<ToggleIconButton, Icon?>(nameof(CheckedIcon));
 
-    public static readonly StyledProperty<Icon?> UnCheckedIconProperty
-        = AvaloniaProperty.Register<ToggleIconButton, Icon?>(nameof(UnCheckedIcon));
+    public static readonly StyledProperty<Icon?> UnCheckedIconProperty =
+        AvaloniaProperty.Register<ToggleIconButton, Icon?>(nameof(UnCheckedIcon));
 
-    public static readonly StyledProperty<double> IconWidthProperty
-        = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconWidth));
+    public static readonly StyledProperty<double> IconWidthProperty =
+        AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconWidth));
 
-    public static readonly StyledProperty<double> IconHeightProperty
-        = AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
+    public static readonly StyledProperty<double> IconHeightProperty =
+        AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
         
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(

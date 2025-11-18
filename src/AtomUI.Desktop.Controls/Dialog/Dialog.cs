@@ -10,7 +10,6 @@ using AtomUI.Data;
 using AtomUI.Desktop.Controls.DialogPositioning;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Reflection;
 using AtomUI.Theme;

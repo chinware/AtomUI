@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Utils;

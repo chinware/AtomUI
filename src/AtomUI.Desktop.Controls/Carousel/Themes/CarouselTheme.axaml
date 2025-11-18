@@ -17,11 +17,11 @@
                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </ScrollViewer>
                     <atom:CarouselNavButton Name="{x:Static atom:CarouselThemeConstants.PreviousButtonPart}"
-                                            Icon="{atom:IconProvider LeftOutlined}"
+                                            Icon="{atom:AntDesignIconProvider LeftOutlined}"
                                             Margin="{TemplateBinding EffectivePreviousButtonMargin}"
                                             IsVisible="{TemplateBinding PreviousNavButtonVisible}"/>
                     <atom:CarouselNavButton Name="{x:Static atom:CarouselThemeConstants.NextButtonPart}"
-                                            Icon="{atom:IconProvider RightOutlined}"
+                                            Icon="{atom:AntDesignIconProvider RightOutlined}"
                                             Margin="{TemplateBinding EffectiveNextButtonMargin}"
                                             IsVisible="{TemplateBinding NextNavButtonVisible}"/>
                     <LayoutTransformControl Name="PaginationLayoutTransform"

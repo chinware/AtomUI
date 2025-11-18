@@ -16,8 +16,8 @@
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonEnabled}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{atom:IconProvider Kind=FullscreenOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=FullscreenExitOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=FullscreenOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowFullScreen}">
                             <atom:CaptionButton.IsVisible>
@@ -34,13 +34,13 @@
                             IsVisible="{TemplateBinding IsPinCaptionButtonEnabled}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonEnabled}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{atom:IconProvider Kind=WindowPinOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=WindowUnpinOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowPinOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=WindowUnpinOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowPinned}" />
                         <atom:CaptionButton
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.MinimizeButtonPart}"
-                            NormalIcon="{atom:IconProvider Kind=MinusOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <atom:CaptionButton.IsVisible>
@@ -55,8 +55,8 @@
                         </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.MaximizeButtonPart}"
-                            NormalIcon="{atom:IconProvider Kind=WindowMaximizedOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=WindowRestoreOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowMaximized}">
@@ -72,7 +72,7 @@
                         </atom:CaptionButton>
                         <atom:CaptionButton
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
-                            NormalIcon="{atom:IconProvider Kind=WindowCloseOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowCloseOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsVisible="{TemplateBinding IsCloseCaptionButtonEnabled}" />
@@ -90,8 +90,8 @@
                             IsVisible="{TemplateBinding IsPinCaptionButtonEnabled}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonEnabled}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{atom:IconProvider Kind=WindowPinOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=WindowUnpinOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowPinOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=WindowUnpinOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowPinned}" />
                     </StackPanel>
@@ -107,8 +107,8 @@
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonEnabled}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{atom:IconProvider Kind=FullscreenOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=FullscreenExitOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=FullscreenOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowFullScreen}">
                             <atom:CaptionButton.IsVisible>
@@ -125,13 +125,13 @@
                             IsVisible="{TemplateBinding IsPinCaptionButtonEnabled}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonEnabled}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            NormalIcon="{atom:IconProvider Kind=WindowPinOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=WindowUnpinOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowPinOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=WindowUnpinOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowPinned}" />
                         <atom:WindowsCaptionButton
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.MinimizeButtonPart}"
-                            NormalIcon="{atom:IconProvider Kind=MinusOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <atom:CaptionButton.IsVisible>
@@ -146,8 +146,8 @@
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.MaximizeButtonPart}"
-                            NormalIcon="{atom:IconProvider Kind=WindowMaximizedOutlined}"
-                            CheckedIcon="{atom:IconProvider Kind=WindowRestoreOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
+                            CheckedIcon="{atom:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowMaximized}">
@@ -164,7 +164,7 @@
                         <atom:WindowsCaptionButton
                             Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
                             IsCloseButton="True"
-                            NormalIcon="{atom:IconProvider Kind=WindowCloseOutlined}"
+                            NormalIcon="{atom:AntDesignIconProvider Kind=WindowCloseOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsVisible="{TemplateBinding IsCloseCaptionButtonEnabled}" />

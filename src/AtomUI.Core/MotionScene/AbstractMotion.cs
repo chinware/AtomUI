@@ -29,9 +29,7 @@ public class AbstractMotion : IMotion
         Transitions           = new List<INotifyTransitionCompleted>();
     }
     
-    public void Run(BaseMotionActor actor,
-                    Action? aboutToStart = null,
-                    Action? completedAction = null)
+    public void Run(BaseMotionActor actor, Action? aboutToStart = null, Action? completedAction = null)
     {
         if (actor.IsFollowMode())
         {

@@ -1,7 +1,6 @@
 ﻿using AtomUI.Controls;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;

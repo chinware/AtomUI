@@ -4,7 +4,7 @@ using AtomUI.Data;
 using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Desktop.Controls.TimePickerLang;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Icons.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Utils;

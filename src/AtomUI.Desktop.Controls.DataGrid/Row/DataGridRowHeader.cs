@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;

@@ -2,10 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     xmlns:paginationLang="clr-namespace:AtomUI.Desktop.Controls.PaginationLang"
     x:ClassModifier="internal">
-    <converters:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
     <ControlTheme x:Key="{x:Type atom:Pagination}" TargetType="atom:Pagination">
         <Setter Property="Template">
             <ControlTemplate>

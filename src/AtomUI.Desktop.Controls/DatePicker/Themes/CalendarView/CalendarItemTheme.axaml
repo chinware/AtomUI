@@ -24,12 +24,12 @@
                             <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
-                                    Icon="{atom:IconProvider DoubleLeftOutlined}"
+                                    Icon="{atom:AntDesignIconProvider DoubleLeftOutlined}"
                                     Grid.Column="0" />
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
                                     IsVisible="{TemplateBinding IsMonthViewMode}"
-                                    Icon="{atom:IconProvider LeftOutlined}"
+                                    Icon="{atom:AntDesignIconProvider LeftOutlined}"
                                     Grid.Column="1" />
 
                                 <atom:HeadTextButton
@@ -39,12 +39,12 @@
 
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
-                                    Icon="{atom:IconProvider RightOutlined}"
+                                    Icon="{atom:AntDesignIconProvider RightOutlined}"
                                     IsVisible="{TemplateBinding IsMonthViewMode}"
                                     Grid.Column="3" />
                                 <atom:IconButton
                                     Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
-                                    Icon="{atom:IconProvider DoubleRightOutlined}"
+                                    Icon="{atom:AntDesignIconProvider DoubleRightOutlined}"
                                     Grid.Column="4" />
                             </Grid>
                         </UniformGrid>

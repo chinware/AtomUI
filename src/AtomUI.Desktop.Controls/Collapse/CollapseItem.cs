@@ -2,8 +2,7 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.IconPkg;
-using AtomUI.IconPkg.AntDesign;
+using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Animation;

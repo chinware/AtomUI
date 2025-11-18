@@ -17,7 +17,7 @@
     </ItemGroup>
     
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ProjectReference Include="../AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj"/>
+        <ProjectReference Include="..\AtomUI.Icons.AntDesign\AtomUI.Icons.AntDesign.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"

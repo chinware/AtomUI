@@ -8,21 +8,21 @@
             <ControlTemplate>
                 <Panel>
                     <atom:Icon Name="OpenIndicator"
-                               IconInfo="{atom:IconInfoProvider Kind=DownOutlined}"
+                               IconInfo="{atom:AntDesignIconInfoProvider Kind=DownOutlined}"
                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                IsVisible="True" />
                     <atom:Icon Name="LoadingIndicator"
-                               IconInfo="{atom:IconInfoProvider LoadingOutlined}"
+                               IconInfo="{atom:AntDesignIconInfoProvider LoadingOutlined}"
                                LoadingAnimation="Spin"
                                IsVisible="False" />
                     <atom:Icon Name="SearchIndicator"
-                               IconInfo="{atom:IconInfoProvider Kind=SearchOutlined}"
+                               IconInfo="{atom:AntDesignIconInfoProvider Kind=SearchOutlined}"
                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                IsVisible="False" />
                     <atom:IconButton
                         Name="{x:Static atom:SelectHandleThemeConstants.ClearButtonPart}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                        Icon="{atom:IconProvider CloseCircleFilled}"
+                        Icon="{atom:AntDesignIconInfoProvider CloseCircleFilled}"
                         IsVisible="False" />
                 </Panel>
             </ControlTemplate>
@@ -79,7 +79,6 @@
                     </Style>
                 </Style>
             </Style>
-           
         </Style>
 
     </ControlTheme>

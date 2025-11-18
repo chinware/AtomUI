@@ -33,11 +33,8 @@
         <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj">
             <IncludeAssets>all</IncludeAssets>
         </ProjectReference>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg/AtomUI.IconPkg.csproj">
-            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
-        </ProjectReference>
-        <ProjectReference Include="$(MSBuildThisFileDirectory)/../../src/AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj">
-            <IncludeAssets>$(IncludeAssets)</IncludeAssets>
+        <ProjectReference Include="..\..\src\AtomUI.Icons.AntDesign\AtomUI.Icons.AntDesign.csproj">
+          <IncludeAssets>all</IncludeAssets>
         </ProjectReference>
     </ItemGroup>
 

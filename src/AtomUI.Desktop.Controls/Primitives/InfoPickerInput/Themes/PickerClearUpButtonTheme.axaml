@@ -8,7 +8,7 @@
                 <Panel>
                     <atom:IconButton
                         Name="{x:Static atom:PickerClearUpButtonThemeConstants.ClearButtonPart}"
-                        Icon="{atom:IconProvider CloseCircleFilled}"
+                        Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
                         IsVisible="{TemplateBinding IsInClearMode}" />
                     <atom:IconPresenter
                         Name="{x:Static atom:PickerClearUpButtonThemeConstants.InfoIconPresenterPart}"

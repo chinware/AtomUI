@@ -10,7 +10,7 @@
                     Name="{x:Static atom:ComboBoxHandleThemeConstants.OpenIndicatorButtonPart}"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                     IsEnabled="{TemplateBinding IsEnabled}"
-                    Icon="{atom:IconProvider DownOutlined}"/>
+                    Icon="{atom:AntDesignIconProvider DownOutlined}"/>
             </ControlTemplate>
         </Setter>
 

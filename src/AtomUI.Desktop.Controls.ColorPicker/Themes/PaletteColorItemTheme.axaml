@@ -16,7 +16,7 @@
                             Background="{TemplateBinding Background}"
                             BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}">
                         <atom:Icon Name="{x:Static atom:PaletteColorItemThemeConstants.CheckedMarkPart}"
-                                   IconInfo="{atom:IconInfoProvider CheckBoldOutlined}"
+                                   IconInfo="{atom:AntDesignIconInfoProvider CheckBoldOutlined}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    IsVisible="False" 

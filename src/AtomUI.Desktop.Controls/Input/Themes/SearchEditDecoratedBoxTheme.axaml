@@ -29,7 +29,7 @@
                         DockPanel.Dock="Right"
                         Focusable="False"
                         IsEnabled="{TemplateBinding IsEnabled}"
-                        Icon="{atom:IconProvider SearchOutlined}"
+                        Icon="{atom:AntDesignIconProvider SearchOutlined}"
                         BackgroundSizing="OuterBorderEdge"
                         IsLoading="{TemplateBinding SearchButtonLoading}"
                         Content="{TemplateBinding SearchButtonText}"
