@@ -6,7 +6,7 @@
 using System.ComponentModel;
 using Avalonia;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class DataGridHelper
 {

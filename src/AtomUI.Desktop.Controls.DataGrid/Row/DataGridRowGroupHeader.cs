@@ -5,7 +5,7 @@
 
 using System.Diagnostics;
 using System.Reactive.Linq;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -14,7 +14,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Current, StdPseudoClass.Expanded)]
 public class DataGridRowGroupHeader : TemplatedControl

@@ -1,5 +1,5 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class ColorPicker : AbstractColorPicker
 {

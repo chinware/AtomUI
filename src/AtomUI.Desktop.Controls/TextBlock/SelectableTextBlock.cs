@@ -1,4 +1,4 @@
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Media.TextFormatting;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -10,7 +10,7 @@ using Avalonia.Media.TextFormatting;
 using Avalonia.Styling;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class SelectableTextBlock : TextBlock
 {

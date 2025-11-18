@@ -7,7 +7,7 @@ using System.Collections;
 using System.Diagnostics;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridSelectedItemsCollection : IList
 {

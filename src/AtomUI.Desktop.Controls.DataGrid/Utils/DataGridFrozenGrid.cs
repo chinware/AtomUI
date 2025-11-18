@@ -6,7 +6,7 @@
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 public class DataGridFrozenGrid : Grid
 {

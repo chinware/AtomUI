@@ -1,7 +1,7 @@
 ﻿using AtomUI.Media;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal static class BuiltInImageBuilder
 {

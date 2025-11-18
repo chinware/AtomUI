@@ -1,7 +1,7 @@
 using AtomUI.Theme.TokenSystem;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
 internal class AvatarToken : AbstractControlDesignToken

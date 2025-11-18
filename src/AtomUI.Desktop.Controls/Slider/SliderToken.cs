@@ -3,7 +3,7 @@ using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 // vertical: part   (水平时，垂直方向命名为 part)
 // horizontal: full (水平时，水平方向命名为 full)

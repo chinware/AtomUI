@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ResizeHandle : TemplatedControl
 {

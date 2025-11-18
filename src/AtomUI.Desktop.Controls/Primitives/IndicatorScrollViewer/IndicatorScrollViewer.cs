@@ -1,4 +1,5 @@
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -6,7 +7,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 internal class IndicatorScrollViewer : ScrollViewer, IMotionAwareControl, IControlSharedTokenResourcesHost
 {

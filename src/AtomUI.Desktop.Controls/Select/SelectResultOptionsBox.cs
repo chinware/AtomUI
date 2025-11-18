@@ -1,13 +1,13 @@
 using System.Collections;
-using AtomUI.Controls.Themes;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class SelectResultOptionsBox : TemplatedControl
 {

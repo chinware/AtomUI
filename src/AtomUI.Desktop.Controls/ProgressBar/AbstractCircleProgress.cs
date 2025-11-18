@@ -9,7 +9,7 @@ using Avalonia.Layout;
 using Avalonia.VisualTree;
 using Math = System.Math;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class AbstractCircleProgress : AbstractProgressBar
 {

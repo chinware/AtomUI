@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
 using Avalonia.Controls.Diagnostics;
-using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input.Raw;
@@ -12,7 +12,7 @@ using Avalonia.Media;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal abstract class BaseTabScrollViewer : ScrollViewer
 {

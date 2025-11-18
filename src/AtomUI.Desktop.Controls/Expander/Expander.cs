@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -15,7 +16,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaExpander = Avalonia.Controls.Expander;
 

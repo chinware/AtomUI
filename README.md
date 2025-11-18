@@ -101,8 +101,8 @@ The packages we have released are as follows:
 | Package                     | Description                                                                                                                                |
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | AtomUI                      | Main library, includes the theme system and all controls of the AtomUI OSS version                                                         |
-| AtomUI.Controls.DataGrid    | Data grid control. Can be omitted if not used.                                                                                             |
-| AtomUI.Controls.ColorPicker | ColorPicker control. Can be omitted if not used.                                                                                           |
+| AtomUI.Desktop.Controls.DataGrid    | Data grid control. Can be omitted if not used.                                                                                             |
+| AtomUI.Desktop.Controls.ColorPicker | ColorPicker control. Can be omitted if not used.                                                                                           |
 | AtomUI.Generator            | Source generator definitions required for custom controls. Required if integrating with AtomUI theme system when creating custom controls. |
 | AtomUI.IconPkg.Generator    | Required if you need to create custom icon packages.                                                                                       |
 

@@ -8,7 +8,7 @@ namespace AtomUI.Theme
         internal static IList<Type> GetTokenTypes()
         {
             List<Type> tokenTypes = new List<Type>();
-            tokenTypes.Add(typeof(AtomUI.Controls.DataGridToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DataGridToken));
             return tokenTypes;
         }
     }

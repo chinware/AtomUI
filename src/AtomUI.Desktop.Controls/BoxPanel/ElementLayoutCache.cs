@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Cached layout information for a single element to avoid redundant calculations

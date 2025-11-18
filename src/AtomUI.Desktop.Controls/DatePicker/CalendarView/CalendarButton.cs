@@ -1,5 +1,6 @@
 ﻿using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,7 +10,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls.CalendarView;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 /// <summary>
 /// Represents a button on a
@@ -20,8 +21,8 @@ internal sealed class CalendarButton : AvaloniaButton
 {
     internal const string BtnFocusedPC = ":btnfocused";
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarButton>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarButton>();
 
     internal bool IsMotionEnabled
     {
@@ -112,7 +113,7 @@ internal sealed class CalendarButton : AvaloniaButton
 
     /// <summary>
     /// Builds the visual tree for the
-    /// <see cref="T:System.Windows.Controls.Primitives.CalendarButton" />
+    /// <see cref="T:Controls.Primitives.CalendarButton" />
     /// when a new template is applied.
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

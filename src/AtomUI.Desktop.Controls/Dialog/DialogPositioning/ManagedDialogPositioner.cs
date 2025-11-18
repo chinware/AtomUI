@@ -1,7 +1,7 @@
 using AtomUI.Utils;
 using Avalonia;
 
-namespace AtomUI.Controls.DialogPositioning;
+namespace AtomUI.Desktop.Controls.DialogPositioning;
 
 internal interface IManagedDialogPositionerDialog
 {

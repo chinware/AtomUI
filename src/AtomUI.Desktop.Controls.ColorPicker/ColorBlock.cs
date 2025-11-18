@@ -1,4 +1,4 @@
-using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -7,7 +7,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ColorBlock : TemplatedControl, ISizeTypeAware
 {

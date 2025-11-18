@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.PopupConfirmLang;
+namespace AtomUI.Desktop.Controls.PopupConfirmLang;
 
 [LanguageProvider(LanguageCode.zh_CN, PopupConfirmToken.ID)]
 internal class zh_CN : LanguageProvider

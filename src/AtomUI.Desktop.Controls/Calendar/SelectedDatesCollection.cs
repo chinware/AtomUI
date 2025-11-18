@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public sealed class SelectedDatesCollection : ObservableCollection<DateTime>
 {

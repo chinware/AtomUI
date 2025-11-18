@@ -5,7 +5,7 @@ using AtomUI.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 

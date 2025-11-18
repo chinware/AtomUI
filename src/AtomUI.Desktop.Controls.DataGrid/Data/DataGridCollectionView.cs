@@ -9,11 +9,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridEditableCollectionView, IList,
                                              INotifyPropertyChanged

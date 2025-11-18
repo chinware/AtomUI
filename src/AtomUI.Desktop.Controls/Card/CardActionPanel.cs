@@ -1,10 +1,11 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
-using AtomUI.Controls.DesignTokens;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -12,7 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class CardActionPanel : TemplatedControl
 {

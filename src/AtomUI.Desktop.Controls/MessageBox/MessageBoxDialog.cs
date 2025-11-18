@@ -1,11 +1,11 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class MessageBoxDialog : Dialog
 {

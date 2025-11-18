@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -7,7 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaNumericUpDown = Avalonia.Controls.NumericUpDown;
 

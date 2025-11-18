@@ -1,8 +1,8 @@
 <ControlTheme TargetType="atom:DataGridColumnHeader"
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:converters="using:AtomUI.Controls.Converters"
-              x:Class="AtomUI.Controls.Themes.DataGridColumnHeaderTheme"
+              xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
+              x:Class="AtomUI.Desktop.Controls.Themes.DataGridColumnHeaderTheme"
               x:ClassModifier="internal"
               xmlns:atom="https://atomui.net">
     <Setter Property="Template">

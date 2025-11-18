@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls;
+﻿namespace AtomUI.Desktop.Controls;
 
 public enum NotificationType
 {

@@ -2,8 +2,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using AtomUI.Controls.Data;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -20,7 +21,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum SelectMode
 {

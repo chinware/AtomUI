@@ -2,9 +2,10 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Data;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -17,7 +18,7 @@ using Avalonia.Interactivity;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class List : TemplatedControl,
                     IMotionAwareControl,

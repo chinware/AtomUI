@@ -11,7 +11,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 /// <summary>
 /// Contains internal, special-purpose helpers used with the color picker.

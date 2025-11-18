@@ -4,11 +4,11 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Reactive;
 using Avalonia.Data;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class CellEditBinding : ICellEditBinding
 {

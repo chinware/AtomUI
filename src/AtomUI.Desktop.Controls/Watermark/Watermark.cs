@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public sealed class Watermark : Control
 {

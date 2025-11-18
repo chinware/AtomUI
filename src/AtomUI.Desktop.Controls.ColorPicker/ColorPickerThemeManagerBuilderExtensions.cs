@@ -1,11 +1,11 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public static class ColorPickerThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseColorPicker(this IThemeManagerBuilder themeManagerBuilder)
+    public static IThemeManagerBuilder UseDesktopColorPicker(this IThemeManagerBuilder themeManagerBuilder)
     {
         var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
         foreach (var controlType in controlTokenTypes)

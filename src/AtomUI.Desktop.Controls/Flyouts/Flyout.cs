@@ -11,7 +11,7 @@ using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using PopupControl = Popup;
 

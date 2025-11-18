@@ -2,7 +2,7 @@
 using System.Globalization;
 using AtomUI.Theme;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal static class DateTimeHelper
 {

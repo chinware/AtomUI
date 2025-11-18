@@ -1,20 +1,16 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
-using System.Reflection;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.Native;
-using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input.Raw;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.Utilities;
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class WindowBuddyLayer : AvaloniaWindow
 {

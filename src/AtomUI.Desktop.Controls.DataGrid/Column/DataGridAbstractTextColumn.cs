@@ -1,11 +1,11 @@
 using System.ComponentModel;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class DataGridAbstractTextColumn :  DataGridBoundColumn
 {

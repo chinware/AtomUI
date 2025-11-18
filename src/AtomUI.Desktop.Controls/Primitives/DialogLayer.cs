@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 internal class DialogLayer : Canvas
 {

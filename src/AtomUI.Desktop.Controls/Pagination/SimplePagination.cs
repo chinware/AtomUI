@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -8,7 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class SimplePagination : AbstractPagination, IControlSharedTokenResourcesHost
 {

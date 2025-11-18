@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 [PseudoClasses(StdPseudoClass.Pressed)]
 public class Thumb : TemplatedControl

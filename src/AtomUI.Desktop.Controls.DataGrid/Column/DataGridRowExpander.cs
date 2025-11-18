@@ -1,5 +1,6 @@
 using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Animation;
@@ -10,7 +11,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridRowExpander : ToggleButton
 {

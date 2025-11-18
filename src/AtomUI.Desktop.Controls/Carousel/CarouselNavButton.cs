@@ -1,7 +1,7 @@
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia.Animation;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class CarouselNavButton : IconButton
 {

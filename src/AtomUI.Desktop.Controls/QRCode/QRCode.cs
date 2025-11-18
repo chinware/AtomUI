@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,7 +13,7 @@ using SkiaSharp;
 using SkiaSharp.QrCode;
 using static System.Enum;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// 二维码纠错等级

@@ -1,6 +1,7 @@
 using AtomUI.Animations;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -16,7 +17,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StepsPseudoClass.Finished)]
 public class StepsItem : HeaderedContentControl, ISelectable

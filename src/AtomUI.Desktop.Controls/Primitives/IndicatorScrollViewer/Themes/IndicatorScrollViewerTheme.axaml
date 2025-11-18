@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:primitives="using:AtomUI.Controls.Primitives"
+    xmlns:primitives="using:AtomUI.Desktop.Controls.Primitives"
     xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type atom:IndicatorScrollViewer}"
                   TargetType="atom:IndicatorScrollViewer">

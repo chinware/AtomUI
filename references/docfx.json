@@ -11,10 +11,10 @@
                         "AtomUI.Theme/AtomUI.Theme.csproj",
                         "AtomUI.IconPkg/AtomUI.IconPkg.csproj",
                         "AtomUI.IconPkg.AntDesign/AtomUI.IconPkg.AntDesign.csproj",
-                        "AtomUI.Controls/AtomUI.Controls.csproj",
+                        "AtomUI.Controls/AtomUI.Desktop.Controls.csproj",
                         "AtomUI.ReactiveUI/AtomUI.ReactiveUI.csproj",
-                        "AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj",
-                        "AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj"
+                        "AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj",
+                        "AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj"
                     ]
                 }
             ],

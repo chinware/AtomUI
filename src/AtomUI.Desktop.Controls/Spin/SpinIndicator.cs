@@ -1,5 +1,6 @@
-﻿using AtomUI.Controls.DesignTokens;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
@@ -16,7 +17,7 @@ using Avalonia.Media.Transformation;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class SpinIndicator : TemplatedControl,
                              IControlSharedTokenResourcesHost,

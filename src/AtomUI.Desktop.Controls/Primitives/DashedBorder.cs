@@ -1,11 +1,11 @@
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 public class DashedBorder : Decorator
 {

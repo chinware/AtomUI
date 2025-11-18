@@ -1,7 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,15 +14,13 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class Segmented : SelectingItemsControl,
                          IMotionAwareControl,
                          ISizeTypeAware,
                          IControlSharedTokenResourcesHost
 {
-    protected override Type StyleKeyOverride { get; } = typeof(Segmented);
-    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =

@@ -1,6 +1,7 @@
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -8,7 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class OverlayDialogMask : TemplatedControl
 {

@@ -1,9 +1,10 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.DialogPositioning;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.DialogPositioning;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -13,7 +14,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DialogHost : Window,
                             IDialogHost,

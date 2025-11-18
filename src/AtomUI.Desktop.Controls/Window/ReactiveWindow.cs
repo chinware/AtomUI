@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using ReactiveUI;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// A ReactiveUI <see cref="Window"/> that implements the <see cref="IViewFor"/> interface and will

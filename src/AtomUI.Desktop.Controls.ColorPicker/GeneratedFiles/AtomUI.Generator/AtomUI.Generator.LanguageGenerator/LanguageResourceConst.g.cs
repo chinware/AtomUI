@@ -1,7 +1,7 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.ColorPickerLang
+namespace AtomUI.Desktop.Controls.ColorPickerLang
 {
     internal static class ColorPickerLangResourceKey
     {

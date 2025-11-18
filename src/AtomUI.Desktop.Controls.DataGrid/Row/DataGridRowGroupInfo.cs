@@ -3,9 +3,9 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridRowGroupInfo
 {

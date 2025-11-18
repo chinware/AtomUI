@@ -2,7 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:calendarView="using:AtomUI.Controls.CalendarView"
+    xmlns:calendarView="using:AtomUI.Desktop.Controls.CalendarView"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type calendarView:DualMonthRangeCalendar}" TargetType="calendarView:DualMonthRangeCalendar">
         <ControlTheme.BasedOn>

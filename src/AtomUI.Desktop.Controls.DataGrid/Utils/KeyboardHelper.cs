@@ -6,7 +6,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class KeyboardHelper
 {

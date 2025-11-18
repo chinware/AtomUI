@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.Primitives;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class CardMetaContent : HeaderedContentControl
 {

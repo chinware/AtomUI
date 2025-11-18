@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
@@ -13,7 +13,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class MenuFlyout : Flyout
 {

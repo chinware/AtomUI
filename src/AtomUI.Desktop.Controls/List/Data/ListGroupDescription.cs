@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public abstract class ListGroupDescription : INotifyPropertyChanged
 {

@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 /// <summary>
 /// 只在动画过程中使用且不能改变属性，所以在这里使用了自动属性

@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:atom="https://atomui.net"
-                    xmlns:themes="using:AtomUI.Controls.Primitives.Themes">
+                    xmlns:themes="using:AtomUI.Desktop.Controls.Themes">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="PickerClearUpButtonTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>

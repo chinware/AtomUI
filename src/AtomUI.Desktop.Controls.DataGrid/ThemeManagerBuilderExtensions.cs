@@ -1,11 +1,11 @@
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public static class OSSDataGridThemeManagerBuilderExtensions
 {
-    public static IThemeManagerBuilder UseOSSDataGrid(this IThemeManagerBuilder themeManagerBuilder)
+    public static IThemeManagerBuilder UseDesktopDataGrid(this IThemeManagerBuilder themeManagerBuilder)
     {
         var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
         foreach (var controlType in controlTokenTypes)

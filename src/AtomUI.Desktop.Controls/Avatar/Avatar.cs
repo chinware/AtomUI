@@ -1,5 +1,6 @@
 using System.Diagnostics;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -12,7 +13,7 @@ using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum AvatarSizeType
 {

@@ -1,4 +1,4 @@
-using AtomUI.Controls.DesignTokens;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -11,7 +11,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class MarqueeLabel : TextBlock, IControlSharedTokenResourcesHost
 {

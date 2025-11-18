@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Primitives.Themes;
+namespace AtomUI.Desktop.Controls.Themes;
 
 internal static class InfoPickerInputThemeConstants
 {

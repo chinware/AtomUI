@@ -2,7 +2,7 @@ using System.Diagnostics;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public class ListFilterDescription
 {

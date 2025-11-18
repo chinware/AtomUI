@@ -1,5 +1,6 @@
 using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation;
@@ -9,7 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(NavMenuItemPseudoClass.Icon)]
 internal class BaseNavMenuItemHeader : TemplatedControl

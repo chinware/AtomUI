@@ -5,14 +5,14 @@
 
 using System.Collections.Specialized;
 using System.Diagnostics;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
 {

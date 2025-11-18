@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Handles user interaction for TreeView.

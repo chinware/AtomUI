@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
-    xmlns:qrcodelang="using:AtomUI.Controls.QRCodeLang">
+    xmlns:qrcodelang="using:AtomUI.Desktop.Controls.QRCodeLang">
     <ControlTheme x:Key="{x:Type atom:QRCode}" TargetType="atom:QRCode">
         <Setter Property="Template">
             <ControlTemplate>

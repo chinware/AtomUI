@@ -1,4 +1,4 @@
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +7,7 @@ using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class GradientColorPickerView : AbstractColorPickerView
 {

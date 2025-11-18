@@ -1,6 +1,6 @@
 using AvaloniaVisualLayerManager = Avalonia.Controls.Primitives.VisualLayerManager;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 public class VisualLayerManager : AvaloniaVisualLayerManager
 {

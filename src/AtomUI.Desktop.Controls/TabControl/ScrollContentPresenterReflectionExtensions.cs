@@ -5,7 +5,7 @@ using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls.Presenters;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal static class ScrollContentPresenterReflectionExtensions
 {

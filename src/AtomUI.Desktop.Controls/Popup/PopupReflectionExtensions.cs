@@ -10,7 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Point = Avalonia.Point;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 

@@ -1,4 +1,4 @@
-using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
@@ -9,9 +9,9 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
-using Thumb = AtomUI.Controls.Primitives.Thumb;
+using Thumb = AtomUI.Desktop.Controls.Primitives.Thumb;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal abstract class AbstractColorSlider : RangeBase
 {

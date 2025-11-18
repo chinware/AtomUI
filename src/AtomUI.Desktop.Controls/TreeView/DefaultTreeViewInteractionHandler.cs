@@ -1,4 +1,4 @@
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,7 +8,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 {

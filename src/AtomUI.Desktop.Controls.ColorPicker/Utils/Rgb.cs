@@ -5,7 +5,7 @@ using AtomUI.Media;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 /// <summary>
 /// Contains and allows modification of Red, Green and Blue components.

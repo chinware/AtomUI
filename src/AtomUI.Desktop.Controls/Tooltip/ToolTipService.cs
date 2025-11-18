@@ -1,5 +1,5 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,7 +9,7 @@ using Avalonia.Input.Raw;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Handles <see cref="ToolTip" /> interaction with controls.

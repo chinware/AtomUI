@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class SkeletonAvatar : AbstractSkeleton, IControlSharedTokenResourcesHost
 {

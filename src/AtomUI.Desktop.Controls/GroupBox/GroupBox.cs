@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -9,7 +9,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum GroupBoxTitlePosition
 {

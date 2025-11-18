@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Input;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -20,7 +21,7 @@ using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public record struct SliderRangeValue
 {

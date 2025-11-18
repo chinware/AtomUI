@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.DataGridLocalization;
+namespace AtomUI.Desktop.Controls.DataGridLocalization;
 
 [LanguageProvider(LanguageCode.zh_CN, DataGridToken.ID)]
 internal class zh_CN : LanguageProvider

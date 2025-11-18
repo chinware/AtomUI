@@ -2,7 +2,7 @@
 using Avalonia.Input;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 public static class FocusUtils
 {

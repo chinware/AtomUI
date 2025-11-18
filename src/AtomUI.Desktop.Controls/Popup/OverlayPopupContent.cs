@@ -1,12 +1,12 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class OverlayPopupContent : ContentControl
 {

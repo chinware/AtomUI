@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [Flags]
 public enum ResizeHandleLocation

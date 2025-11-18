@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
-using AtomUI.Controls.TimePickerLang;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.TimePickerLang;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class DateTimeUtils
 {

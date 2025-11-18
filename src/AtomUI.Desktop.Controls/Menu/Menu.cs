@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -11,7 +12,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Styling;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaMenu = Avalonia.Controls.Menu;
 

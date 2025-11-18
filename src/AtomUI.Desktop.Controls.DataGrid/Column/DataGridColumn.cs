@@ -6,7 +6,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,7 +18,7 @@ using Avalonia.Layout;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract partial class DataGridColumn : AvaloniaObject
 {

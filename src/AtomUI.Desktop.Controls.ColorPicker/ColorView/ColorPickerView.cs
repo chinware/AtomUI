@@ -4,7 +4,7 @@ using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class ColorPickerView : AbstractColorPickerView
 {

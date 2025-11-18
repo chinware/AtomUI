@@ -3,7 +3,7 @@ using System.Text;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls.CalendarView;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 public class RangeDateSelectedEventArgs : EventArgs
 {

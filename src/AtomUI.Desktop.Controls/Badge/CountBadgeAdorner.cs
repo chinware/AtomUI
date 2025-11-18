@@ -1,5 +1,6 @@
-﻿using AtomUI.Controls.Badge;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Badge;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,7 +9,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class CountBadgeAdorner : TemplatedControl
 {

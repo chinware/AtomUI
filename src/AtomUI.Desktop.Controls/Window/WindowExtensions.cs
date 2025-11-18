@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public static class WindowExtensions
 {

@@ -1,7 +1,7 @@
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Converters;
+namespace AtomUI.Desktop.Controls.Converters;
 
 internal class NodeSwitcherIconModeConverter : IValueConverter
 {

@@ -1,10 +1,10 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="using:AtomUI.Controls.Converters"
+    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
-    xmlns:dataGridLocalization="clr-namespace:AtomUI.Controls.DataGridLocalization">
+    xmlns:dataGridLocalization="clr-namespace:AtomUI.Desktop.Controls.DataGridLocalization">
     <converters:DataGridHeaderCornerRadiusConverter x:Key="DataGridHeaderCornerRadiusConverter" />
     <converters:DataGridUniformBorderThicknessToScalarConverter x:Key="DataGridUniformBorderThicknessToScalarConverter" />
     <converters:DataGridPaginationVisibilityConvertor x:Key="TopPaginationVisibilityConvertor" IsTop="True" />

@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.TimePickerLang;
+namespace AtomUI.Desktop.Controls.TimePickerLang;
 
 [LanguageProvider(LanguageCode.en_US, TimePickerToken.ID)]
 internal class en_US : LanguageProvider

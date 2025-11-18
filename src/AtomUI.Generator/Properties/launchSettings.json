@@ -7,7 +7,7 @@
     },
     "AtomUIControlsGenerators": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../AtomUI.Controls/AtomUI.Controls.csproj"
+      "targetProject": "../AtomUI.Controls/AtomUI.Desktop.Controls.csproj"
     }
   }
 }

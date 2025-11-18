@@ -1,4 +1,4 @@
-﻿namespace AtomUI.Controls.CalendarView;
+﻿namespace AtomUI.Desktop.Controls.CalendarView;
 
 internal class RangeCalendarItem : CalendarItem
 {

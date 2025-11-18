@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyChanged
 {

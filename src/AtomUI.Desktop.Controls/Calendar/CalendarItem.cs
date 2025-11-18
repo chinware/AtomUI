@@ -2,8 +2,9 @@
 using System.Globalization;
 using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -14,7 +15,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [TemplatePart(CalendarItemThemeConstants.HeaderButtonPart, typeof(AvaloniaButton))]
 [TemplatePart(CalendarItemThemeConstants.MonthViewPart, typeof(Grid))]
@@ -368,7 +369,7 @@ internal class CalendarItem : TemplatedControl
 
     /// <summary>
     /// Builds the visual tree for the
-    /// <see cref="T:System.Windows.Controls.Primitives.CalendarItem" />
+    /// <see cref="T:Controls.Primitives.CalendarItem" />
     /// when a new template is applied.
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

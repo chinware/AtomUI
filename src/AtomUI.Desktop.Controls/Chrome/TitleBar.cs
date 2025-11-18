@@ -1,7 +1,8 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,7 +14,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Active)]
 [PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized, StdPseudoClass.Fullscreen)]

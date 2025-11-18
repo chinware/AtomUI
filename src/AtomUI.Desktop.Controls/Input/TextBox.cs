@@ -1,4 +1,5 @@
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -7,7 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
@@ -153,7 +154,7 @@ public class TextBox : AvaloniaTextBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _clearButton      = e.NameScope.Find<IconButton>(TextBoxThemeConstants.ClearButtonPart);
+        _clearButton = e.NameScope.Find<IconButton>(TextBoxThemeConstants.ClearButtonPart);
         if (_clearButton is not null)
         {
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };

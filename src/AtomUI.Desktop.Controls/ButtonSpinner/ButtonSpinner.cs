@@ -1,7 +1,8 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.Input;
 using AtomUI.Theme;
@@ -16,7 +17,7 @@ using Avalonia.Interactivity;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum ButtonSpinnerLocation
 {

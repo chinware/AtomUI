@@ -1,5 +1,5 @@
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -8,7 +8,7 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
 {

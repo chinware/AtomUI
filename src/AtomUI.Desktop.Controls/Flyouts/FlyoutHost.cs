@@ -1,17 +1,16 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.MotionScene;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using FlyoutControl = Flyout;
 

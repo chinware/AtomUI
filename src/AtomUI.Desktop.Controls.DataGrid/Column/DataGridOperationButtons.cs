@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,7 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridOperationButtons : TemplatedControl
 {

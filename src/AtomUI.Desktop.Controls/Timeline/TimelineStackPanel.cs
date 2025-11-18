@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class TimelineStackPanel : StackPanel
 {

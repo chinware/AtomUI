@@ -1,10 +1,10 @@
-﻿using AtomUI.Controls.Primitives.Themes;
+﻿using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class PickerClearUpButton : TemplatedControl
 {

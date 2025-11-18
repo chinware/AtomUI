@@ -1,4 +1,5 @@
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Utils;
@@ -9,7 +10,7 @@ using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class AbstractColorPickerView : TemplatedControl,
                                                 IMotionAwareControl,

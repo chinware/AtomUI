@@ -1,9 +1,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.DialogPositioning;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.IconPkg;
 using Avalonia;
@@ -18,11 +16,14 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.DialogPositioning;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia.Animation.Easings;
 using Avalonia.Media.Transformation;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class OverlayDialogHost : ContentControl,
                                    IInputRoot,

@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Reflection;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal static class WindowBaseReflectionExtensions
 {

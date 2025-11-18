@@ -4,7 +4,7 @@ using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Layout;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class ILayoutRootReflectionExtensions
 {

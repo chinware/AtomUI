@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -17,10 +18,10 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
-using AtomUIFlyout = AtomUI.Controls.Flyout;
+using AtomUIFlyout = AtomUI.Desktop.Controls.Flyout;
 
 public enum ColorPickerValueSyncMode
 {

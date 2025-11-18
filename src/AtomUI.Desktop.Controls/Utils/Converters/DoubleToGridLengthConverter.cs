@@ -2,7 +2,7 @@ using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Converters;
+namespace AtomUI.Desktop.Controls.Converters;
 
 internal class DoubleToGridLengthConverter : IValueConverter
 {

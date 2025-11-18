@@ -4,7 +4,7 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DatePickerFlyout : Flyout
 {

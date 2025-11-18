@@ -1,7 +1,7 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.DatePickerLang
+namespace AtomUI.Desktop.Controls.DatePickerLang
 {
     internal static class DatePickerLangResourceKey
     {
@@ -10,7 +10,7 @@ namespace AtomUI.Controls.DatePickerLang
     }
 }
 
-namespace AtomUI.Controls.DialogLang
+namespace AtomUI.Desktop.Controls.DialogLang
 {
     internal static class DialogLangResourceKey
     {
@@ -36,7 +36,7 @@ namespace AtomUI.Controls.DialogLang
     }
 }
 
-namespace AtomUI.Controls.Localization
+namespace AtomUI.Desktop.Controls.Localization
 {
     internal static class CommonLangResourceKey
     {
@@ -50,7 +50,7 @@ namespace AtomUI.Controls.Localization
     }
 }
 
-namespace AtomUI.Controls.PaginationLang
+namespace AtomUI.Desktop.Controls.PaginationLang
 {
     internal static class PaginationLangResourceKey
     {
@@ -60,7 +60,7 @@ namespace AtomUI.Controls.PaginationLang
     }
 }
 
-namespace AtomUI.Controls.PopupConfirmLang
+namespace AtomUI.Desktop.Controls.PopupConfirmLang
 {
     internal static class PopupConfirmLangResourceKey
     {
@@ -69,7 +69,7 @@ namespace AtomUI.Controls.PopupConfirmLang
     }
 }
 
-namespace AtomUI.Controls.QRCodeLang
+namespace AtomUI.Desktop.Controls.QRCodeLang
 {
     internal static class QRCodeLangResourceKey
     {
@@ -79,7 +79,7 @@ namespace AtomUI.Controls.QRCodeLang
     }
 }
 
-namespace AtomUI.Controls.TimePickerLang
+namespace AtomUI.Desktop.Controls.TimePickerLang
 {
     internal static class TimePickerLangResourceKey
     {

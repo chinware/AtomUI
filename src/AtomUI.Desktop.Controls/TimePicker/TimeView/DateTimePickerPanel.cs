@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
-using AtomUI.Controls.TimePickerLang;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.TimePickerLang;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -12,7 +13,7 @@ using Avalonia.Media;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal enum DateTimePickerPanelType
 {
@@ -102,8 +103,8 @@ internal class DateTimePickerPanel : Panel,
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
 
     internal bool IsMotionEnabled
     {

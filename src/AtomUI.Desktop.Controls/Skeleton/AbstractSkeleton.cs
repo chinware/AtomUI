@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Animation;
@@ -8,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class AbstractSkeleton : TemplatedControl
 {

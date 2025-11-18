@@ -1,9 +1,10 @@
 ﻿using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -15,7 +16,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaTreeView = Avalonia.Controls.TreeView;
 

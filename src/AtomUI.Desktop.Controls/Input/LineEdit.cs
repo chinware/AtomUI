@@ -5,7 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class LineEdit : TextBox
 {

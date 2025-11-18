@@ -5,7 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
 {

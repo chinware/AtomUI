@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using AtomUI.Animations;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Utils;
 using Avalonia;
@@ -14,7 +15,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaRadioButton = Avalonia.Controls.RadioButton;
 

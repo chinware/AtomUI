@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Utils;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public readonly struct TreeNodeKey : IEquatable<TreeNodeKey>
 {

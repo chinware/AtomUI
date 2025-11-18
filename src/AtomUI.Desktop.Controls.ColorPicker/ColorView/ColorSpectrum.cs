@@ -2,8 +2,8 @@
 // (https://github.com/microsoft/microsoft-ui-xaml)
 
 using AtomUI.Collections.Pooled;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -17,7 +17,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ColorSpectrum : TemplatedControl
 {

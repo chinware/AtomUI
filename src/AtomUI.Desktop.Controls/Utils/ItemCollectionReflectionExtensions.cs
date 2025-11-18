@@ -4,7 +4,7 @@ using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class ItemCollectionReflectionExtensions
 {

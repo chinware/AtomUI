@@ -1,9 +1,10 @@
+using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaCheckBox = Avalonia.Controls.CheckBox;
 
@@ -30,8 +31,6 @@ public class CheckBox : AvaloniaCheckBox, IWaveSpiritAwareControl, IControlShare
     }
 
     #endregion
-
-    protected override Type StyleKeyOverride { get; } = typeof(CheckBox);
     
     #region 内部属性定义
 

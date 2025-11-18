@@ -2,9 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:timePickerLang="using:AtomUI.Controls.TimePickerLang"
-    xmlns:localization="using:AtomUI.Controls.Localization"
-    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
+    xmlns:timePickerLang="using:AtomUI.Desktop.Controls.TimePickerLang"
+    xmlns:localization="using:AtomUI.Desktop.Controls.Localization"
+    xmlns:converters="clr-namespace:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
     <converters:BorderThicknessFilterConverter x:Key="BorderThicknessFilterConverter" Left="False" Right="False" Bottom="False"/>
     <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">

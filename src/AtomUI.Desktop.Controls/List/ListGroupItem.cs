@@ -1,7 +1,8 @@
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ListGroupItem : ContentControl
 {

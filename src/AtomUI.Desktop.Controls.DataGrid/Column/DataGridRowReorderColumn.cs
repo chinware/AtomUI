@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public sealed class DataGridRowReorderColumn : DataGridColumn
 {

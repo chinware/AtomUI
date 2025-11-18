@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using AtomUI.Controls.Themes;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -10,7 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum PaginationAlign
 {

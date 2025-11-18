@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal"
-    x:Class="AtomUI.Controls.Themes.OverlayDialogHostTheme"
+    x:Class="AtomUI.Desktop.Controls.Themes.OverlayDialogHostTheme"
     TargetType="atom:OverlayDialogHost">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:OverlayDialogHost">

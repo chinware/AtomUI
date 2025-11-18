@@ -2,7 +2,7 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Converters;
+namespace AtomUI.Desktop.Controls.Converters;
 
 internal class HsvColorToBrushConverter : IValueConverter
 {

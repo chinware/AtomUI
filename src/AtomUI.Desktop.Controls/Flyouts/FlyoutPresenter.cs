@@ -5,7 +5,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class FlyoutPresenter : ArrowDecoratedBox,
                                IControlSharedTokenResourcesHost

@@ -90,8 +90,8 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 | 包名称                         | 描述                                                    |
 |-----------------------------|-------------------------------------------------------|
 | AtomUI                      | 主库，包含了主题系统和 AtomUI OSS 版本所有的控件                        |
-| AtomUI.Controls.DataGrid    | 数据表格控件，如果不用可以不引入                                      |
-| AtomUI.Controls.ColorPicker | 颜色选择控件，如果不用可以不引入                                      |
+| AtomUI.Desktop.Controls.DataGrid    | 数据表格控件，如果不用可以不引入                                      |
+| AtomUI.Desktop.Controls.ColorPicker | 颜色选择控件，如果不用可以不引入                                      |
 | AtomUI.Generator            | 自定义控件需要的一些源码生成器定义，您如果在自定义控件的时候需要接入 AtomUI 主题系统，需要引入此包 |
 | AtomUI.IconPkg.Generator    | 如果您需要自定义 Icon 包，需要引入此包                                |
 

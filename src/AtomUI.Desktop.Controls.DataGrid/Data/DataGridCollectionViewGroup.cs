@@ -6,7 +6,7 @@
 using System.ComponentModel;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
 {

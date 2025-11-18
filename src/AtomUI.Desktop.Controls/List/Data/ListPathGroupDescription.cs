@@ -3,7 +3,7 @@ using System.Globalization;
 using AtomUI.Utils;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public class ListPathGroupDescription : ListGroupDescription
 {

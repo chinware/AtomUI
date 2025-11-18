@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Represents a wrapped line in flex layout

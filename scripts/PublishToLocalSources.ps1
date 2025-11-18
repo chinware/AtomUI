@@ -48,10 +48,10 @@ dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI
 
 Push-NuGetPackages -Source $localSourcesDir
 
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
 
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
 
 Push-NuGetPackages -Source $localSourcesDir

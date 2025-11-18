@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using AtomUI.IconPkg;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class Notification : INotification, 
                             INotifyPropertyChanged

@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Primitives.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -14,7 +15,7 @@ using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 [PseudoClasses(InfoPickerPseudoClass.Choosing, InfoPickerPseudoClass.FlyoutOpen)]
 public abstract class InfoPickerInput : TemplatedControl,

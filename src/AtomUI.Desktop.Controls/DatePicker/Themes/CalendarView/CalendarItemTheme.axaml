@@ -2,9 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
-    x:Class="AtomUI.Controls.Themes.CalendarItemTheme"
-    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
+    x:Class="AtomUI.Desktop.Controls.Themes.CalendarItemTheme"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     TargetType="calendarView:CalendarItem"
     x:ClassModifier="internal">
     <Setter Property="Template">

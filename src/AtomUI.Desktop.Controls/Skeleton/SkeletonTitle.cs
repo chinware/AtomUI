@@ -2,7 +2,7 @@ using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class SkeletonTitle : SkeletonLine, IControlSharedTokenResourcesHost
 {

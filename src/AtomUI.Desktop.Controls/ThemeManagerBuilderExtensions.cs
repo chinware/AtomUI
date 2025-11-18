@@ -1,5 +1,5 @@
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
@@ -9,13 +9,12 @@ using Avalonia.Animation;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 
-namespace AtomUI.Controls
+namespace AtomUI.Desktop.Controls
 {
     public static class ThemeManagerBuilderExtensions
     {
-        public static IThemeManagerBuilder UseOSSControls(this IThemeManagerBuilder themeManagerBuilder)
+        public static IThemeManagerBuilder UseDesktopControls(this IThemeManagerBuilder themeManagerBuilder)
         {
-            // ControlTheme 必须在 UI 线程创建好了才能实例化，不然会炸，切记切记
             var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
             foreach (var controlType in controlTokenTypes)
             {

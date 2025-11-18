@@ -6,7 +6,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
@@ -15,7 +15,7 @@ using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public partial class DataGrid
 {

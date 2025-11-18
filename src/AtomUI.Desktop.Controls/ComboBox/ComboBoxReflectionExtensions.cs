@@ -4,7 +4,7 @@ using AtomUI.Reflection;
 
 using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal static class ComboBoxReflectionExtensions
 {

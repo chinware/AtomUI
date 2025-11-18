@@ -1,6 +1,6 @@
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class NavMenuItemClickEventArgs : RoutedEventArgs
 {

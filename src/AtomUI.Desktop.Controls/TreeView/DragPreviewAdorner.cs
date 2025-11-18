@@ -1,11 +1,11 @@
-﻿using AtomUI.Controls.DesignTokens;
-using AtomUI.Data;
+﻿using AtomUI.Data;
+using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DragPreviewAdorner : Decorator
 {

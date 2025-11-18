@@ -1,13 +1,13 @@
 using System.Diagnostics;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Utilities;
-using Thumb = AtomUI.Controls.Primitives.Thumb;
+using Thumb = AtomUI.Desktop.Controls.Primitives.Thumb;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ColorSliderThumb : Thumb
 {

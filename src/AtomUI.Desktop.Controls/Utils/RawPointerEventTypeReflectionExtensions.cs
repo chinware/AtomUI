@@ -4,7 +4,7 @@ using AtomUI.Reflection;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class RawPointerEventTypeReflectionExtensions
 {

@@ -9,7 +9,7 @@ using System.Globalization;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public abstract class DataGridSortDescription
 {

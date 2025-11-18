@@ -1,5 +1,6 @@
-﻿using AtomUI.Controls.Badge;
-using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Badge;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Animation;
@@ -7,7 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DotBadgeAdorner : TemplatedControl
 {

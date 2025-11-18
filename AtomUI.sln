@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Theme", "src\AtomUI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Base", "src\AtomUI.Base\AtomUI.Base.csproj", "{8FFEB15F-7E48-4AF4-B708-8E96A68CF2D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Controls", "src\AtomUI.Controls\AtomUI.Controls.csproj", "{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AtomUI.Controls", "src\AtomUI.Controls\AtomUI.Desktop.Controls.csproj", "{A07CB66E-7A5F-4C44-BB16-02A0A99D6C2D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{279BC2C9-A818-4D6C-9274-678649932057}"
 EndProject

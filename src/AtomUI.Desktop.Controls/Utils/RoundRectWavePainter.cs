@@ -1,10 +1,11 @@
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal class RoundRectWavePainter : AbstractWavePainter
 {

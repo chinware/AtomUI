@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Primitives.Themes;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Animation;
@@ -10,7 +10,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 public abstract class RangeInfoPickerInput : InfoPickerInput
 {

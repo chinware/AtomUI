@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using AtomUI.Animations;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -18,7 +19,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 

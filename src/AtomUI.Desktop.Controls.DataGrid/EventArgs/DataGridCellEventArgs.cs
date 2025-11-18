@@ -5,7 +5,7 @@
 
 using System.Diagnostics;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class DataGridCellEventArgs : EventArgs
 {

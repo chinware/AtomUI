@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -11,7 +11,7 @@ using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaSeparator = Avalonia.Controls.Separator;
 

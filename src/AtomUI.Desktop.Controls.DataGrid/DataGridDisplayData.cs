@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridDisplayData
 {

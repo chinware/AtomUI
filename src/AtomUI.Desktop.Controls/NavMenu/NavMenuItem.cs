@@ -1,8 +1,9 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using System.Windows.Input;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Exceptions;
 using AtomUI.IconPkg;
 using AtomUI.Input;
@@ -24,7 +25,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Point = Avalonia.Point;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(NavMenuItemPseudoClass.Separator, 
     NavMenuItemPseudoClass.Icon, 

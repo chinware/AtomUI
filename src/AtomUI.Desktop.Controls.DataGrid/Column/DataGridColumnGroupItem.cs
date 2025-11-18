@@ -9,7 +9,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class DataGridColumnGroupItem : AvaloniaObject,
                                        IDataGridColumnGroupItemInternal, 

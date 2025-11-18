@@ -4,9 +4,9 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class IndexToValueTable<T> : IEnumerable<Range<T>>
 {

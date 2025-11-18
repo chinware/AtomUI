@@ -1,7 +1,7 @@
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class SearchButton : Button
 {

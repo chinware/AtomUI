@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
 using AtomUI.Utils;
@@ -12,7 +13,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum DotBadgeStatus
 {

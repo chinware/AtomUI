@@ -1,9 +1,10 @@
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class AbstractPagination : TemplatedControl, ISizeTypeAware, IMotionAwareControl
 {

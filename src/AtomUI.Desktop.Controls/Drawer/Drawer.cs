@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.DesignTokens;
-using AtomUI.Controls.Primitives;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -14,7 +15,7 @@ using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class Drawer : Control,
                       IMotionAwareControl,

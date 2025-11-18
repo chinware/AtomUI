@@ -1,6 +1,7 @@
-﻿using AtomUI.Theme.Language;
+﻿using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.Localization;
+namespace AtomUI.Desktop.Controls.Localization;
 
 [LanguageProvider(LanguageCode.en_US, Constants.CommonLangID)]
 internal class en_US : LanguageProvider

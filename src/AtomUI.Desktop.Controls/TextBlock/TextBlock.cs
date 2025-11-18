@@ -2,7 +2,7 @@ using AtomUI.Theme.Styling;
 using Avalonia.Media;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 

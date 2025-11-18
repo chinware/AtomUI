@@ -2,7 +2,7 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class TextGlyph : WatermarkGlyph
 {

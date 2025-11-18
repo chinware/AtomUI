@@ -1,11 +1,12 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
 {

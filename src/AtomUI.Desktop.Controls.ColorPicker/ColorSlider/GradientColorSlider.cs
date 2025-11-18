@@ -1,4 +1,4 @@
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,9 +7,9 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Thumb = AtomUI.Controls.Primitives.Thumb;
+using Thumb = AtomUI.Desktop.Controls.Primitives.Thumb;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class GradientColorSlider : AbstractColorSlider
 {

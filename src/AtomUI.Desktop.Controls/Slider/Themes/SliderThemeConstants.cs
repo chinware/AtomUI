@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Themes;
+namespace AtomUI.Desktop.Controls.Themes;
 
 internal static class SliderThemeConstants
 {

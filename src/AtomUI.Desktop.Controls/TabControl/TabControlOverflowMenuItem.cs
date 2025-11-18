@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class TabControlOverflowMenuItem : BaseOverflowMenuItem
 {

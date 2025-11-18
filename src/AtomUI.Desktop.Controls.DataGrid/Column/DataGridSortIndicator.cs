@@ -2,7 +2,7 @@ using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridSortIndicator : TemplatedControl
 {

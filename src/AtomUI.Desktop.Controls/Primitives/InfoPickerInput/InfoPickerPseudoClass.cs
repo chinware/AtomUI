@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 public static class InfoPickerPseudoClass
 {

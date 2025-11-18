@@ -1,9 +1,9 @@
 using Avalonia;
 using Avalonia.Metadata;
-using Thumb = AtomUI.Controls.Primitives.Thumb;
+using Thumb = AtomUI.Desktop.Controls.Primitives.Thumb;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
 {

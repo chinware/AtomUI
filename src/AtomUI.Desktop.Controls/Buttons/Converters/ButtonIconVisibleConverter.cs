@@ -2,7 +2,7 @@ using System.Globalization;
 using AtomUI.IconPkg;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Converters;
+namespace AtomUI.Desktop.Controls.Converters;
 
 internal class ButtonIconVisibleConverter : IMultiValueConverter
 {

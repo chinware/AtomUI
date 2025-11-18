@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using Avalonia.Collections;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 internal class ListCollectionViewGroupRoot : ListCollectionViewGroupInternal, INotifyCollectionChanged
 {

@@ -4,7 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,7 +13,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Used within the template of a <see cref="T:AtomUI.Desktop.Controls.DataGrid" /> to specify the

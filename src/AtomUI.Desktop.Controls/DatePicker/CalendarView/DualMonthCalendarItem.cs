@@ -1,10 +1,10 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
-namespace AtomUI.Controls.CalendarView;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 internal class DualMonthCalendarItem : RangeCalendarItem
 {

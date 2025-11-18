@@ -5,14 +5,14 @@
 
 using System.ComponentModel;
 using System.Diagnostics;
-using AtomUI.Controls.Data;
-using AtomUI.Controls.DataGridLocalization;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Data;
+using AtomUI.Desktop.Controls.DataGridLocalization;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Input;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal partial class DataGridColumnHeader
 {

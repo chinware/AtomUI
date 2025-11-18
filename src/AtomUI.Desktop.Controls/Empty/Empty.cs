@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -8,7 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum PresetEmptyImage
 {
@@ -231,7 +231,7 @@ public class Empty : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _svg                = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyThemeConstants.SvgImagePart);
+        _svg = e.NameScope.Find<Avalonia.Svg.Svg>(EmptyThemeConstants.SvgImagePart);
         CheckImageSource();
         SetupImage();
     }

@@ -1,7 +1,7 @@
 using AtomUI.IconPkg;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public record DialogOptions
 {

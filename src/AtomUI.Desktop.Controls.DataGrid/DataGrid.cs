@@ -6,7 +6,8 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using AtomUI.Controls.Data;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Data;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -22,7 +23,7 @@ using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
 public partial class DataGrid : TemplatedControl,

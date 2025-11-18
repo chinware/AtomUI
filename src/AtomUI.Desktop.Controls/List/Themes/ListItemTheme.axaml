@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     TargetType="atom:ListItem"
-    x:Class="AtomUI.Controls.Themes.ListItemTheme"
+    x:Class="AtomUI.Desktop.Controls.Themes.ListItemTheme"
     x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ListItem">

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -9,7 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class Breadcrumb : ItemsControl, IControlSharedTokenResourcesHost, IMotionAwareControl
 {

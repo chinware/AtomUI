@@ -2,7 +2,7 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Data.Converters;
 
-namespace AtomUI.Controls.Converters;
+namespace AtomUI.Desktop.Controls.Converters;
 
 internal class NavMenuIsSubMenuOpenConverter : IMultiValueConverter
 {

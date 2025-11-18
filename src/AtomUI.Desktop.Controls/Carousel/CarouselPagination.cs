@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class CarouselPagination : SelectingItemsControl
 {

@@ -2,9 +2,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    x:Class="AtomUI.Controls.Themes.SkeletonImageTheme"
+    x:Class="AtomUI.Desktop.Controls.Themes.SkeletonImageTheme"
     TargetType="atom:SkeletonImage"
-    xmlns:themes="using:AtomUI.Controls.Themes" 
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes" 
     x:ClassModifier="internal">
     
     <ControlTheme.BasedOn>

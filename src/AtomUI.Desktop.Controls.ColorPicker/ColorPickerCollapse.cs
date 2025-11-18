@@ -1,6 +1,6 @@
 using System.Reactive.Disposables;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ColorPickerCollapse : Collapse
 {

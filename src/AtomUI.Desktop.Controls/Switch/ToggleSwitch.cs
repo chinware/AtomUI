@@ -1,9 +1,10 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -20,7 +21,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Rendering;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class ToggleSwitch : ToggleButton,
                             ISizeTypeAware,

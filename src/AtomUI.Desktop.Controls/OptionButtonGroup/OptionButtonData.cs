@@ -1,6 +1,6 @@
 using AtomUI.IconPkg;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 interface IOptionButtonData : IHeadered
 {

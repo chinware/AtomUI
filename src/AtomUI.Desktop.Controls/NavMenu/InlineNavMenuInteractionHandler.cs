@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using NavMenuControl = NavMenu;
 

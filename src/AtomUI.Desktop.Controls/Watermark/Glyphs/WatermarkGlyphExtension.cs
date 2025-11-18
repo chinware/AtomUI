@@ -1,6 +1,6 @@
 using Avalonia.Markup.Xaml;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class WatermarkGlyphExtension : MarkupExtension
 {

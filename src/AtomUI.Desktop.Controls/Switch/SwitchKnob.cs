@@ -1,7 +1,8 @@
 using System.Reactive.Disposables;
-using AtomUI.Controls.DesignTokens;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
@@ -14,7 +15,7 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class SwitchKnob : Control
 {

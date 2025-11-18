@@ -1,6 +1,6 @@
 using AtomUI.Collections.Pooled;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Themes;
+using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -13,7 +13,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Utilities;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed)]
 internal class ColorSlider : AbstractColorSlider

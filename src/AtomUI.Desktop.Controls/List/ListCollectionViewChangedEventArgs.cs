@@ -1,6 +1,6 @@
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class ListCollectionViewChangedEventArgs : EventArgs
 {

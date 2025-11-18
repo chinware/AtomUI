@@ -6,7 +6,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,7 +17,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
 {

@@ -6,7 +6,7 @@
 using System.ComponentModel;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class DataGridCellEditEndingEventArgs : CancelEventArgs
 {

@@ -71,13 +71,13 @@ jobs:
          -  name: Build AtomUI Extensions projects
             shell: pwsh
             run: |
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
          -  name: Create AtomUI Extensions NuGet packages
             shell: pwsh
             run: |
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.DataGrid/AtomUI.Controls.DataGrid.csproj
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.ColorPicker/AtomUI.Controls.ColorPicker.csproj
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
          -  name: Upload NuGet artifacts
             uses: actions/upload-artifact@v4.6.2
             with:

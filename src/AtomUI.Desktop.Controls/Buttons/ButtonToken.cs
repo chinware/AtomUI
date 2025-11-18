@@ -4,7 +4,7 @@ using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
 internal class ButtonToken : AbstractControlDesignToken

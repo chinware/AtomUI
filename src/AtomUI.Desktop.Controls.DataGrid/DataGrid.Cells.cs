@@ -6,7 +6,7 @@
 using System.Diagnostics;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public partial class DataGrid
 {

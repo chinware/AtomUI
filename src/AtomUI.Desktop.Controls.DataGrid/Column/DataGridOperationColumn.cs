@@ -4,7 +4,7 @@ using AtomUI.Data;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridOperationColumn : DataGridColumn
 {

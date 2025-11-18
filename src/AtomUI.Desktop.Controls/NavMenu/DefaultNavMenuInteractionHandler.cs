@@ -8,7 +8,7 @@ using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 using Avalonia.Threading;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {

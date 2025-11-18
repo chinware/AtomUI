@@ -3,7 +3,7 @@
 
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
   /// <summary>
     /// Contains and allows modification of Hue, Saturation and Value components.

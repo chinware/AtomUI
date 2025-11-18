@@ -1,6 +1,7 @@
-﻿using AtomUI.Theme.Language;
+﻿using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.PaginationLang;
+namespace AtomUI.Desktop.Controls.PaginationLang;
 
 [LanguageProvider(LanguageCode.en_US, PaginationToken.ID)]
 internal class en_US : LanguageProvider

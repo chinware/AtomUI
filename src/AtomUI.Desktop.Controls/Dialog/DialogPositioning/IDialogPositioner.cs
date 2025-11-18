@@ -1,6 +1,6 @@
 using Avalonia;
 
-namespace AtomUI.Controls.DialogPositioning;
+namespace AtomUI.Desktop.Controls.DialogPositioning;
 
 internal record struct DialogPositionerParameters
 {

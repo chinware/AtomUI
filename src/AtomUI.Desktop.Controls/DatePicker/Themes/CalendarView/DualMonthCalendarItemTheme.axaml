@@ -1,7 +1,7 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:calendarView="clr-namespace:AtomUI.Controls.CalendarView"
+    xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type calendarView:DualMonthCalendarItem}" TargetType="calendarView:DualMonthCalendarItem">

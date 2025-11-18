@@ -16,7 +16,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [TemplatePart(DataGridCellThemeConstants.RightGridLinePart, typeof(Rectangle))]
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.Current, StdPseudoClass.Edited, StdPseudoClass.Invalid,

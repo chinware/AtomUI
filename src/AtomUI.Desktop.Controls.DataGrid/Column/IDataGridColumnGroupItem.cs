@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls.Templates;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public interface IDataGridColumnGroupItem
 {

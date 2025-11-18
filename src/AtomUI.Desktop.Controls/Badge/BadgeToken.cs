@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
 internal class BadgeToken : AbstractControlDesignToken

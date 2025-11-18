@@ -6,7 +6,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
 {

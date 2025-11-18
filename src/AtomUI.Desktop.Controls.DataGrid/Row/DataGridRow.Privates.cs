@@ -10,6 +10,7 @@ using Avalonia.Input;
 using Avalonia.Utilities;
 using System.Diagnostics;
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
@@ -17,7 +18,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public partial class DataGridRow
 {
@@ -30,11 +31,11 @@ public partial class DataGridRow
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridRow>();
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridRow>();
     
-    internal static readonly StyledProperty<bool> IsDraggingProperty
-        = AvaloniaProperty.Register<DataGridRow, bool>(nameof(IsDragging));
+    internal static readonly StyledProperty<bool> IsDraggingProperty =
+        AvaloniaProperty.Register<DataGridRow, bool>(nameof(IsDragging));
     
     internal static readonly DirectProperty<DataGridRow, bool> IsEditingModeProperty =
         AvaloniaProperty.RegisterDirect<DataGridRow, bool>(

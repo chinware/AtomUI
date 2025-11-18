@@ -4,7 +4,7 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Controls.Utils;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,7 +13,7 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Metadata;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class DataGridBoundColumn : DataGridColumn
 {

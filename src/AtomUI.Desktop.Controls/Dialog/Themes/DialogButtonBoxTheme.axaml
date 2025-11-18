@@ -2,8 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="clr-namespace:AtomUI.Controls.Converters"
-    xmlns:dialogLang="clr-namespace:AtomUI.Controls.DialogLang"
+    xmlns:converters="clr-namespace:AtomUI.Desktop.Controls.Converters"
+    xmlns:dialogLang="clr-namespace:AtomUI.Desktop.Controls.DialogLang"
     x:ClassModifier="internal">
     <converters:OverlayDialogResizerVisibleConverter x:Key="OverlayDialogResizerVisibleConverter" />
     <ControlTheme x:Key="{x:Type atom:DialogButtonBox}" TargetType="atom:DialogButtonBox">

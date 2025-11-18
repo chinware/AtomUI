@@ -1,6 +1,7 @@
-﻿using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -12,7 +13,7 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class TimeSelectedEventArgs : EventArgs
 {

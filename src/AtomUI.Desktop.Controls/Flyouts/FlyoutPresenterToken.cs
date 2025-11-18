@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.TokenSystem;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [ControlDesignToken]
 internal class FlyoutPresenterToken : AbstractControlDesignToken

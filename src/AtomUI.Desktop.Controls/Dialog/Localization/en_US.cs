@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.DialogLang;
+namespace AtomUI.Desktop.Controls.DialogLang;
 
 [LanguageProvider(LanguageCode.en_US, DialogToken.ID)]
 internal class en_US : LanguageProvider

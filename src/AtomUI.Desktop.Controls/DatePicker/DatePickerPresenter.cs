@@ -1,14 +1,15 @@
 ﻿using System.Reactive.Disposables;
-using AtomUI.Controls.CalendarView;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.CalendarView;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
+using PickerCalendar = AtomUI.Desktop.Controls.CalendarView.Calendar;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class ChoosingStatusEventArgs : EventArgs
 {

@@ -5,7 +5,7 @@ using AtomUI.Reflection;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class TextLayoutReflectionExtensions
 {

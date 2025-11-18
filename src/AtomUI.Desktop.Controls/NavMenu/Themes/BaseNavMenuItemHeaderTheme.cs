@@ -1,9 +1,9 @@
-using AtomUI.Controls.Converters;
+using AtomUI.Desktop.Controls.Converters;
 using Avalonia.Controls.Converters;
 using Avalonia.Layout;
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Themes;
+namespace AtomUI.Desktop.Controls.Themes;
 
 internal class BaseNavMenuItemHeaderTheme : ControlTheme
 {

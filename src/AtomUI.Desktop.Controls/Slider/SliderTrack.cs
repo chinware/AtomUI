@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
@@ -16,7 +17,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Vertical, StdPseudoClass.Horizontal)]
 public class SliderTrack : TemplatedControl

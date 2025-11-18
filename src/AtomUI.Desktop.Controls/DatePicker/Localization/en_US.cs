@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.DatePickerLang;
+namespace AtomUI.Desktop.Controls.DatePickerLang;
 
 [LanguageProvider(LanguageCode.en_US, DatePickerToken.ID)]
 internal class en_US : LanguageProvider

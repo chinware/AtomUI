@@ -1,11 +1,11 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:themes="using:AtomUI.Controls.Themes"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     xmlns:atom="https://atomui.net"
-    xmlns:calendarview="using:AtomUI.Controls.CalendarView"
-    xmlns:datePickerLang="using:AtomUI.Controls.DatePickerLang"
-    xmlns:localization="clr-namespace:AtomUI.Controls.Localization"
+    xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
+    xmlns:datePickerLang="using:AtomUI.Desktop.Controls.DatePickerLang"
+    xmlns:localization="clr-namespace:AtomUI.Desktop.Controls.Localization"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DualMonthRangeDatePickerPresenter}"
                   TargetType="atom:DualMonthRangeDatePickerPresenter">

@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.QRCodeLang;
+namespace AtomUI.Desktop.Controls.QRCodeLang;
 
 [LanguageProvider(LanguageCode.zh_CN, QRCodeToken.ID)]
 internal class zh_CN : LanguageProvider

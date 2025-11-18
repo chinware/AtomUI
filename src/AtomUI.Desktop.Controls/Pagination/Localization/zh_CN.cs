@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.PaginationLang;
+namespace AtomUI.Desktop.Controls.PaginationLang;
 
 [LanguageProvider(LanguageCode.zh_CN, PaginationToken.ID)]
 internal class zh_CN : LanguageProvider

@@ -1,6 +1,6 @@
 using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.ColorPickerLang;
+namespace AtomUI.Desktop.Controls.ColorPickerLang;
 
 [LanguageProvider(LanguageCode.zh_CN, ColorPickerToken.ID)]
 internal class zh_CN : LanguageProvider

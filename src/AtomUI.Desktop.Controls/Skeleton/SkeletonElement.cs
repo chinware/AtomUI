@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Data;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public abstract class SkeletonElement : AbstractSkeleton, ISizeTypeAware
 {

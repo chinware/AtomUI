@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.MotionScene;
@@ -13,7 +14,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(MessageCardPseudoClass.Error, 
     MessageCardPseudoClass.Information,

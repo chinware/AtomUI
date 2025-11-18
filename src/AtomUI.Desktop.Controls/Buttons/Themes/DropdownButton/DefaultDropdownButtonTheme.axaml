@@ -1,9 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themes="using:AtomUI.Controls.Themes"
+              xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
               TargetType="{x:Type atom:DropdownButton}"
-              x:Class="AtomUI.Controls.Themes.DefaultDropdownButtonTheme"
+              x:Class="AtomUI.Desktop.Controls.Themes.DefaultDropdownButtonTheme"
               x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:DefaultButtonTheme TargetType="{x:Type atom:DropdownButton}" />

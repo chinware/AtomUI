@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.TokenSystem;
 
-namespace AtomUI.Controls.DesignTokens
+namespace AtomUI.Desktop.Controls.DesignTokens
 {
     public static class AdornerLayerTokenKey
     {
@@ -1009,7 +1009,7 @@ namespace AtomUI.Controls.DesignTokens
     }
 }
 
-namespace AtomUI.Controls.Primitives.DesignTokens
+namespace AtomUI.Desktop.Controls.Primitives.DesignTokens
 {
     public static class IndicatorScrollViewerTokenKey
     {

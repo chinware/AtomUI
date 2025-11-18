@@ -6,7 +6,7 @@
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Data;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class ValidationUtils
 {

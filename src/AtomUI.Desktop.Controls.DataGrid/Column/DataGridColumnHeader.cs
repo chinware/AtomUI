@@ -6,7 +6,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
@@ -21,7 +22,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.DragIndicator, StdPseudoClass.Pressed, StdPseudoClass.SortAscending, StdPseudoClass.SortDescending)]
 internal partial class DataGridColumnHeader : ContentControl

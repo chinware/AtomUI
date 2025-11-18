@@ -1,7 +1,7 @@
 using AtomUI.IconPkg;
 using Avalonia.Input;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public interface IMenuItemData : ITreeNode<IMenuItemData>
 {

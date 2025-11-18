@@ -1,7 +1,7 @@
 ﻿using Avalonia.Input;
 using Avalonia.LogicalTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public interface INavMenuElement : IInputElement, ILogical
 {

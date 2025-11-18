@@ -2,7 +2,7 @@ using AtomUI.IconPkg;
 using Avalonia;
 using Avalonia.Controls;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class MessageBoxDialogHost : DialogHost
 {

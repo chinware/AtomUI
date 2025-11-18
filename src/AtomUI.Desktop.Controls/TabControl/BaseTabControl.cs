@@ -1,7 +1,8 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -17,7 +18,7 @@ using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class BaseTabControl : SelectingItemsControl,
                               IMotionAwareControl,
@@ -369,8 +370,8 @@ public class BaseTabControl : SelectingItemsControl,
                 panel,
                 KeyboardNavigation.GetTabOnceActiveElement(this));
         }
-        
-        _alignWrapper   = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
+
+        _alignWrapper = e.NameScope.Find<Panel>(TabControlThemeConstants.AlignWrapperPart);
         HandlePlacementChanged();
         ConfigureEffectiveHeaderPadding();
     }

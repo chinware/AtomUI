@@ -48,7 +48,7 @@
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Core.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Fonts.AlibabaSans.dll"/>
-        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Controls.dll"/>
+        <Reference Include="$(AtomUIPackageOutput)/AtomUI.Desktop.Controls.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.IconPkg.AntDesign.dll"/>
         <Reference Include="$(AtomUIPackageOutput)/AtomUI.Theme.dll"/>
@@ -66,8 +66,8 @@
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Core.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Fonts.AlibabaSans.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Fonts.AlibabaSans.pdb" PackagePath="lib/$(TargetFramework)"/>
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.dll" PackagePath="lib/$(TargetFramework)"/>
-            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Controls.pdb" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Desktop.Controls.dll" PackagePath="lib/$(TargetFramework)"/>
+            <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.Desktop.Controls.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.dll" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.pdb" PackagePath="lib/$(TargetFramework)"/>
             <TfmSpecificPackageFile Include="$(OutputPath)/AtomUI.IconPkg.AntDesign.dll" PackagePath="lib/$(TargetFramework)"/>

@@ -1,6 +1,6 @@
 using Avalonia.Styling;
 
-namespace AtomUI.Controls.Themes;
+namespace AtomUI.Desktop.Controls.Themes;
 
 internal class AbstractSkeletonTheme : ControlTheme
 {

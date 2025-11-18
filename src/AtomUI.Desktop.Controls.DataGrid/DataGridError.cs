@@ -5,7 +5,7 @@
 
 using System.Globalization;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal static class DataGridError
 {

@@ -1,8 +1,8 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:atom="https://atomui.net"
-                    xmlns:themes="using:AtomUI.Controls.Themes"
-                    xmlns:calendarview="using:AtomUI.Controls.CalendarView"
+                    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+                    xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="CalendarView/CalendarButtonTheme.axaml"/>

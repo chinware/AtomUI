@@ -1,6 +1,6 @@
 using Avalonia.Interactivity;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class GradientActiveStopChangedEventArgs : RoutedEventArgs
 {

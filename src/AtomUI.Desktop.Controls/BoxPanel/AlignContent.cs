@@ -1,4 +1,4 @@
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Defines how multiple lines are aligned in the cross axis (only applies when wrapping)

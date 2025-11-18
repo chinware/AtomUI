@@ -1,7 +1,7 @@
-using AtomUI.Controls.DialogPositioning;
+using AtomUI.Desktop.Controls.DialogPositioning;
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class DialogPositionRequest
 {

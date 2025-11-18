@@ -5,7 +5,7 @@ using Avalonia.Threading;
 
 // ReSharper disable SuggestBaseTypeForParameter
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 public class AtomLayer : Canvas
 {

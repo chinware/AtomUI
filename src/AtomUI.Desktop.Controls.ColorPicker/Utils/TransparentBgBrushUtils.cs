@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Media;
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 internal static class TransparentBgBrushUtils
 {

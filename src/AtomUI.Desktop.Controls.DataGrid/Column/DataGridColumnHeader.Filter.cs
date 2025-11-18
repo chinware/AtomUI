@@ -4,10 +4,10 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Data;
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal partial class DataGridColumnHeader
 {

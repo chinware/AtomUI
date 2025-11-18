@@ -1,9 +1,9 @@
-﻿using AtomUI.Controls.CalendarView;
+﻿using AtomUI.Desktop.Controls.CalendarView;
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
-using PickerCalendar = AtomUI.Controls.CalendarView.Calendar;
+using PickerCalendar = AtomUI.Desktop.Controls.CalendarView.Calendar;
 
 internal class TimedRangeDatePickerPresenter : RangeDatePickerPresenter
 {

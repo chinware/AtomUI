@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.MotionScene;
 using AtomUI.Reflection;
 using Avalonia;
@@ -14,7 +15,7 @@ using Avalonia.Input.Raw;
 using Avalonia.Layout;
 using Avalonia.Logging;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class FlyoutPresenterCreatedEventArgs : EventArgs
 {

@@ -1,6 +1,6 @@
 using AtomUI.Theme;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class AtomUIColorPickerThemesProvider : ControlThemesProvider
 {

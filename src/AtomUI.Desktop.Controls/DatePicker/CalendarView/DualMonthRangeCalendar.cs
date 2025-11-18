@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace AtomUI.Controls.CalendarView;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 internal class DualMonthRangeCalendar : RangeCalendar
 {

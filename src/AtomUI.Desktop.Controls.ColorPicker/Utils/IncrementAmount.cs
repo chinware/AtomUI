@@ -1,7 +1,7 @@
 // This source file is adapted from the WinUI project.
 // (https://github.com/microsoft/microsoft-ui-xaml)
 
-namespace AtomUI.Controls.Primitives;
+namespace AtomUI.Desktop.Controls.Primitives;
 
 /// <summary>
 /// Defines a relative amount that a color component should be incremented.

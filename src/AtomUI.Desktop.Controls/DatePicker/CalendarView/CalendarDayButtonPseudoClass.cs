@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.CalendarView;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 internal static class CalendarDayButtonPseudoClass
 {

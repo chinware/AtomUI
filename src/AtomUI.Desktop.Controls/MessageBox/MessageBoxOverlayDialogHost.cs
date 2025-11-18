@@ -1,8 +1,8 @@
-using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.IconPkg;
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class MessageBoxOverlayDialogHost : OverlayDialogHost
 {

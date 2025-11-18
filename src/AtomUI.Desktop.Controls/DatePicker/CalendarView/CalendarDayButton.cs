@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,7 +11,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls.CalendarView;
+namespace AtomUI.Desktop.Controls.CalendarView;
 
 [PseudoClasses(StdPseudoClass.Pressed,
     StdPseudoClass.Disabled,

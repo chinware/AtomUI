@@ -1,9 +1,9 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:themes="using:AtomUI.Controls.Themes"
+              xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
               TargetType="atom:LineEdit"
-              x:Class="AtomUI.Controls.Themes.LineEditTheme"
+              x:Class="AtomUI.Desktop.Controls.Themes.LineEditTheme"
               x:ClassModifier="internal">
     <ControlTheme.BasedOn>
         <themes:TextBoxTheme TargetType="{x:Type atom:LineEdit}" />

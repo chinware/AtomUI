@@ -2,7 +2,7 @@
 using AtomUI.IconPkg.AntDesign;
 using Avalonia.Markup.Xaml;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 public class IconInfoProvider : MarkupExtension
 {

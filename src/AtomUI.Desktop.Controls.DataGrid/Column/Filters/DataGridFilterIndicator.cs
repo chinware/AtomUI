@@ -1,8 +1,9 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Controls.Data;
-using AtomUI.Controls.DataGridLocalization;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Data;
+using AtomUI.Desktop.Controls.DataGridLocalization;
 using AtomUI.Data;
 using AtomUI.IconPkg.AntDesign;
 using Avalonia;
@@ -12,7 +13,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridFilterIndicator : IconButton
 {

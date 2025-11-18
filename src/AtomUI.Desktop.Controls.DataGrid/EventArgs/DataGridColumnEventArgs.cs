@@ -5,7 +5,7 @@
 
 using System.ComponentModel;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public class DataGridColumnEventArgs : HandledEventArgs
 {

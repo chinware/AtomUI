@@ -8,7 +8,7 @@ using System.Globalization;
 using AtomUI.Utils;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum DataGridLengthUnitType
 {

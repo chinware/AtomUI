@@ -1,7 +1,7 @@
 ﻿using AtomUI.Theme;
 using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.DataGridLocalization
+namespace AtomUI.Desktop.Controls.DataGridLocalization
 {
     internal static class DataGridLangResourceKey
     {

@@ -6,7 +6,7 @@
 using System.Collections;
 using System.Diagnostics;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DataGridCellCollection
 {

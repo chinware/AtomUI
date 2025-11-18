@@ -1,9 +1,10 @@
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class ColorPickerPaletteGroup : TemplatedControl
 {

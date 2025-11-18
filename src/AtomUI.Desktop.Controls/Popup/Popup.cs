@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
-using AtomUI.Controls.Primitives;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -17,7 +18,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 

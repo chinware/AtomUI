@@ -1,7 +1,7 @@
-﻿using AtomUI.Controls.Primitives;
+﻿using AtomUI.Desktop.Controls.Primitives;
 using Avalonia.Rendering;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal interface INavMenu : INavMenuElement
 {

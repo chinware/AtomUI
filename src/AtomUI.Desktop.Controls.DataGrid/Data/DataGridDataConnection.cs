@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Utils;
 
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 internal class DataGridDataConnection
 {

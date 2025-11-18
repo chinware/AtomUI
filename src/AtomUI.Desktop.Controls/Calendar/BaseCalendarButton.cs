@@ -1,5 +1,6 @@
 ﻿using AtomUI.Animations;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,7 +9,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using AvaloniaButton = Avalonia.Controls.Button;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 /// <summary>
 /// Represents a button on a
@@ -19,8 +20,8 @@ internal class BaseCalendarButton : AvaloniaButton
 {
     private const string BtnFocusedPC = ":btnfocused";
     
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseCalendarButton>();
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseCalendarButton>();
 
     internal bool IsMotionEnabled
     {

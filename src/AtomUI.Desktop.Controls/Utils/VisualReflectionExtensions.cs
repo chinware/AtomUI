@@ -7,7 +7,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls.Utils;
+namespace AtomUI.Desktop.Controls.Utils;
 
 internal static class VisualReflectionExtensions
 {

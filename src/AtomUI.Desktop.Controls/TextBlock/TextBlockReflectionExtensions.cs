@@ -4,7 +4,7 @@ using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaTextBlock = Avalonia.Controls.TextBlock;
 

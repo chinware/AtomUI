@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls.Themes;
+﻿using AtomUI.Desktop.Controls.Themes;
 using AtomUI.IconPkg;
 using AtomUI.IconPkg.AntDesign;
 using AtomUI.Theme;
@@ -11,7 +11,7 @@ using Avalonia.Data;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public enum AlertType
 {

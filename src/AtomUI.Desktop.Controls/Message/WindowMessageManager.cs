@@ -1,6 +1,7 @@
 ﻿using System.Collections;
-using AtomUI.Controls.Themes;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -11,7 +12,7 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 [TemplatePart(WindowNotificationManagerThemeConstants.ItemsPart, typeof(Panel))]
 public class WindowMessageManager : TemplatedControl,

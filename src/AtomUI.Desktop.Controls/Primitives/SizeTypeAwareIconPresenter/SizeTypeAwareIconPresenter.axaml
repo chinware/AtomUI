@@ -2,7 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:primitives="using:AtomUI.Controls.Primitives">
+    xmlns:primitives="using:AtomUI.Desktop.Controls.Primitives">
     <ControlTheme x:Key="{x:Type primitives:SizeTypeAwareIconPresenter}"
                   TargetType="primitives:SizeTypeAwareIconPresenter">
         <Setter Property="Template">

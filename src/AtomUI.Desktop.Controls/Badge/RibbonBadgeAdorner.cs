@@ -1,5 +1,5 @@
-﻿using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,7 +8,7 @@ using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class RibbonBadgeAdorner : TemplatedControl
 {

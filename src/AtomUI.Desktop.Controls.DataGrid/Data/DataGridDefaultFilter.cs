@@ -1,4 +1,4 @@
-namespace AtomUI.Controls.Data;
+namespace AtomUI.Desktop.Controls.Data;
 
 public class DataGridDefaultFilter
 {

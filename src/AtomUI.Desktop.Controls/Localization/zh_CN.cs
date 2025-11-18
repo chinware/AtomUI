@@ -1,6 +1,6 @@
 ﻿using AtomUI.Theme.Language;
 
-namespace AtomUI.Controls.Localization;
+namespace AtomUI.Desktop.Controls.Localization;
 
 [LanguageProvider(LanguageCode.zh_CN, Constants.CommonLangID)]
 internal class zh_CN : LanguageProvider

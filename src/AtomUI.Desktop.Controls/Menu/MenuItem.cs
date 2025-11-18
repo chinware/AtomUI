@@ -1,9 +1,10 @@
 ﻿using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Animations;
-using AtomUI.Controls.Themes;
-using AtomUI.Controls.Utils;
+using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Desktop.Controls.Utils;
 using AtomUI.IconPkg;
 using AtomUI.Reflection;
 using Avalonia;
@@ -17,7 +18,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
@@ -295,9 +296,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _radioButton         = e.NameScope.Find<RadioButton>(MenuItemThemeConstants.ToggleRadioPart);
-        _checkBox            = e.NameScope.Find<CheckBox>(MenuItemThemeConstants.ToggleCheckboxPart);
-        _popup               = e.NameScope.Find<Popup>(MenuItemThemeConstants.PopupPart);
+        _radioButton = e.NameScope.Find<RadioButton>(MenuItemThemeConstants.ToggleRadioPart);
+        _checkBox    = e.NameScope.Find<CheckBox>(MenuItemThemeConstants.ToggleCheckboxPart);
+        _popup       = e.NameScope.Find<Popup>(MenuItemThemeConstants.PopupPart);
         if (_popup != null)
         {
             _popup.ClickHidePredicate = MenuPopupClosePredicate;

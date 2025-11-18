@@ -1,6 +1,6 @@
 using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Desktop.Controls;
 
 public interface ISizeTypeAware
 {
