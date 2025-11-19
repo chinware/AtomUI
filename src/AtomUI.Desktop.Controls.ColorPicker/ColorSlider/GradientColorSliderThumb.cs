@@ -7,6 +7,7 @@ namespace AtomUI.Desktop.Controls;
 
 internal class GradientColorSliderThumb : ColorSliderThumb
 {
+    protected override Type StyleKeyOverride { get; } = typeof(ColorSliderThumb);
     public const int ActivatedZIndex = 1000;
     public const int NormalZIndex = 1;
     

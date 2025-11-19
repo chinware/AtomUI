@@ -35,8 +35,6 @@ public class RadioButton : AvaloniaRadioButton,
 
     #endregion
     
-    protected override Type StyleKeyOverride { get; } = typeof(RadioButton);
-    
     #region 内部属性定义
 
     Control IMotionAwareControl.PropertyBindTarget => this;

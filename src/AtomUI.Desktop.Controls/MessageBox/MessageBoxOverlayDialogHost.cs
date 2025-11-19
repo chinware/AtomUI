@@ -24,8 +24,6 @@ internal class MessageBoxOverlayDialogHost : OverlayDialogHost
         set => SetValue(StyleProperty, value);
     }
     
-    protected override Type StyleKeyOverride { get; } = typeof(MessageBoxOverlayDialogHost);
-    
     public MessageBoxOverlayDialogHost(DialogLayer dialogLayer, Dialog dialog)
         : base(dialogLayer, dialog)
     {

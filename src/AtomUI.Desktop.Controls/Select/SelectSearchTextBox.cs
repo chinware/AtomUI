@@ -4,8 +4,6 @@ namespace AtomUI.Desktop.Controls;
 
 internal class SelectSearchTextBox : TextBox
 {
-    protected override Type StyleKeyOverride { get; } = typeof(SelectSearchTextBox);
-    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);

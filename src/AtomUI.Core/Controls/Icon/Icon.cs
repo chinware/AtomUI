@@ -11,7 +11,6 @@ using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
@@ -182,7 +181,10 @@ public class Icon : PathIcon, IMotionAwareControl
     {
         AffectsMeasure<Icon>(HeightProperty, WidthProperty, IconInfoProperty);
         AffectsRender<Icon>(IconModeProperty,
-            FilledBrushProperty,
+            NormalFilledBrushProperty,
+            ActiveFilledBrushProperty,
+            SelectedFilledBrushProperty,
+            DisabledFilledBrushProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
     }
@@ -232,27 +234,24 @@ public class Icon : PathIcon, IMotionAwareControl
             SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == LoadingAnimationProperty)
         {
-            if (change.Property == LoadingAnimationProperty)
+            SetupRotateAnimation();
+            if (_animation != null)
             {
-                SetupRotateAnimation();
-                if (_animation != null)
-                {
-                    StartLoadingAnimation();
-                }
+                StartLoadingAnimation();
             }
-            else if (change.Property == NormalFilledBrushProperty ||
-                     change.Property == ActiveFilledBrushProperty ||
-                     change.Property == SelectedFilledBrushProperty ||
-                     change.Property == DisabledFilledBrushProperty ||
-                     change.Property == PrimaryFilledBrushProperty ||
-                     change.Property == SecondaryFilledBrushProperty ||
-                     change.Property == IconModeProperty ||
-                     change.Property == IconInfoProperty)
-            {
-                SetupFilledBrush();
-            }
+        }
+        else if (change.Property == NormalFilledBrushProperty ||
+                 change.Property == ActiveFilledBrushProperty ||
+                 change.Property == SelectedFilledBrushProperty ||
+                 change.Property == DisabledFilledBrushProperty ||
+                 change.Property == PrimaryFilledBrushProperty ||
+                 change.Property == SecondaryFilledBrushProperty ||
+                 change.Property == IconModeProperty ||
+                 change.Property == IconInfoProperty)
+        {
+            SetupFilledBrush();
         }
 
         if (IsLoaded)
@@ -518,6 +517,7 @@ public class Icon : PathIcon, IMotionAwareControl
     {
         if (IsVisible && _transforms.Count == _sourceGeometriesData.Count && _sourceGeometriesData.Count > 0 && DesiredSize != default)
         {
+          
             for (var i = 0; i < _sourceGeometriesData.Count; i++)
             {
                 var     renderedGeometry = _sourceGeometriesData[i];
@@ -538,7 +538,6 @@ public class Icon : PathIcon, IMotionAwareControl
                 {
                     fillBrush = FilledBrush;
                 }
-
                 using var state = context.PushTransform(_transforms[i]);
                 context.DrawGeometry(fillBrush, null, renderedGeometry);
             }

@@ -163,6 +163,7 @@ public class IconButton : AvaloniaButton,
     static IconButton()
     {
         AffectsMeasure<IconButton>(IconProperty);
+        AffectsRender<IconButton>(NormalIconBrushProperty, ActiveIconBrushProperty, DisabledIconBrushProperty, SelectedIconBrushProperty);
     }
 
     public IconButton()

@@ -5,7 +5,6 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="WindowResizerTheme.axaml" />
-        <ResourceInclude Source="WindowBuddyLayer.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:WindowTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window" />
 </ResourceDictionary>

@@ -29,8 +29,6 @@ public class SkeletonLine : AbstractSkeleton
 
     #endregion
 
-    protected override Type StyleKeyOverride { get; } = typeof(SkeletonLine);
-
     private Panel? _rootLayout;
 
     protected override Size MeasureOverride(Size availableSize)

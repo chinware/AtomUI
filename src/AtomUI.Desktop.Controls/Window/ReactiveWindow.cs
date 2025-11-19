@@ -12,8 +12,6 @@ namespace AtomUI.Desktop.Controls;
 /// <typeparam name="TViewModel">ViewModel type.</typeparam>
 public class ReactiveWindow<TViewModel> : Window, IViewFor<TViewModel> where TViewModel : class
 {
-    protected override Type StyleKeyOverride { get; } = typeof(Window);
-
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1002",
         Justification = "Generic avalonia property is expected here.")]
     public static readonly StyledProperty<TViewModel?> ViewModelProperty = AvaloniaProperty

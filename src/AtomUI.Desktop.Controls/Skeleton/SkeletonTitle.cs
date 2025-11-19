@@ -6,6 +6,8 @@ namespace AtomUI.Desktop.Controls;
 
 public class SkeletonTitle : SkeletonLine, IControlSharedTokenResourcesHost
 {
+    protected override Type StyleKeyOverride { get; } = typeof(SkeletonLine);
+    
     #region 内部属性定义
 
     Control IControlSharedTokenResourcesHost.HostControl => this;

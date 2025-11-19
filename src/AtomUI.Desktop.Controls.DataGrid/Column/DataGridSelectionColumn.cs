@@ -311,6 +311,8 @@ public sealed class DataGridSelectionColumn : DataGridColumn
 
 internal class SelectionRadioButton : RadioButton
 {
+    protected override Type StyleKeyOverride { get; } = typeof(RadioButton);
+    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -320,6 +322,7 @@ internal class SelectionRadioButton : RadioButton
 
 internal class SelectionCheckBox : CheckBox
 {
+    protected override Type StyleKeyOverride { get; } = typeof(CheckBox);
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);

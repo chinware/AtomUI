@@ -34,8 +34,6 @@ public class Collapse : SelectingItemsControl,
                         IMotionAwareControl,
                         IControlSharedTokenResourcesHost
 {
-    protected override Type StyleKeyOverride { get; } = typeof(Collapse);
-    
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =

@@ -1,6 +1,5 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
@@ -31,8 +30,6 @@ public class ComboBoxItem : AvaloniaComboBoxItem
         set => SetValue(IsMotionEnabledProperty, value);
     }
     #endregion
-    
-    protected override Type StyleKeyOverride { get; } = typeof(ComboBoxItem);
     
     private void ConfigureTransitions(bool force)
     {

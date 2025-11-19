@@ -20,8 +20,6 @@ namespace AtomUI.Desktop.Controls;
 [PseudoClasses(StdPseudoClass.Normal, StdPseudoClass.Minimized, StdPseudoClass.Maximized, StdPseudoClass.Fullscreen)]
 internal class TitleBar : ContentControl, IControlSharedTokenResourcesHost, IMotionAwareControl, IOperationSystemAware
 {
-    protected override Type StyleKeyOverride { get; } = typeof(TitleBar);
-
     #region 公共属性定义
 
     public static readonly StyledProperty<Control?> LogoProperty =
