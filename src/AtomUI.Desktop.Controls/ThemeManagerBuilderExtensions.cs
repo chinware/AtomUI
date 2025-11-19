@@ -1,5 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
@@ -20,7 +21,7 @@ namespace AtomUI.Desktop.Controls
             {
                 themeManagerBuilder.AddControlToken(controlType);
             }
-            themeManagerBuilder.AddControlThemesProvider(new AtomUIOSSControlThemesProvider());
+            themeManagerBuilder.AddControlThemesProvider(new DesktopControlThemesProvider());
 
             var languageProviders = LanguageProviderPool.GetLanguageProviders();
             foreach (var languageProvider in languageProviders)
@@ -40,7 +41,7 @@ namespace AtomUI.Desktop.Controls
             var colorTextTertiary = TokenResourceUtils.FindGlobalTokenResource(SharedTokenKey.ColorTextTertiary);
             if (colorTextTertiary is IBrush defaultFilledColor)
             {
-                IconProvider.DefaultFilledColor = defaultFilledColor;
+                IconProvider<AntDesignIconKind>.DefaultFilledColor = defaultFilledColor;
             }
 
             var colorInfoText = TokenResourceUtils.FindGlobalTokenResource(SharedTokenKey.ColorTextTertiary);
@@ -48,12 +49,12 @@ namespace AtomUI.Desktop.Controls
 
             if (colorInfoText is IBrush primaryFilledColor)
             {
-                IconProvider.DefaultPrimaryFilledColor = primaryFilledColor;
+                IconProvider<AntDesignIconKind>.DefaultPrimaryFilledColor = primaryFilledColor;
             }
 
             if (colorInfoBg is IBrush secondaryFilledColor)
             {
-                IconProvider.DefaultSecondaryFilledColor = secondaryFilledColor;
+                IconProvider<AntDesignIconKind>.DefaultSecondaryFilledColor = secondaryFilledColor;
             }
         }
     }

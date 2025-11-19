@@ -1,15 +1,17 @@
-﻿using Avalonia.Layout;
+﻿using System.Diagnostics;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-public abstract class IconProvider : MarkupExtension
+public abstract class IconProvider<TIconKind> : MarkupExtension
+    where TIconKind : Enum
 {
     public static IBrush? DefaultFilledColor { get; set; }
     public static IBrush? DefaultPrimaryFilledColor { get; set; }
     public static IBrush? DefaultSecondaryFilledColor { get; set; }
-    public string Kind { get; set; }
+    public TIconKind? Kind { get; set; }
 
     // Filled 和 Outlined
     public IBrush? NormalFilledColor { get; set; }
@@ -27,16 +29,16 @@ public abstract class IconProvider : MarkupExtension
 
     public IconProvider()
     {
-        Kind = string.Empty;
     }
 
-    public IconProvider(string kind)
+    public IconProvider(TIconKind kind)
     {
         Kind = kind;
     }
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
+        Debug.Assert(Kind != null);
         var icon = GetIcon(Kind);
         icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
         icon.SetCurrentValue(Icon.NormalFilledBrushProperty, NormalFilledColor ?? DefaultFilledColor);
@@ -59,5 +61,5 @@ public abstract class IconProvider : MarkupExtension
         return icon;
     }
 
-    protected abstract Icon GetIcon(string kind);
+    protected abstract Icon GetIcon(TIconKind kind);
 }

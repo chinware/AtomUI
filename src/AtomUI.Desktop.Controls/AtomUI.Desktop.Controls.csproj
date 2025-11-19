@@ -4,7 +4,7 @@
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-        <RootNamespace>AtomUI.Controls</RootNamespace>
+        <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -17,6 +17,7 @@
         <PackageReference Include="Avalonia.Svg" />
         <PackageReference Include="SkiaSharp.QrCode" />
         <PackageReference Include="ReactiveUI.Avalonia"/>
+        <PackageReference Include="Avalonia.Desktop"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -2,16 +2,15 @@
 
 namespace AtomUI.Controls;
 
-public abstract class IconInfoProvider : MarkupExtension
+public abstract class IconInfoProvider<TIconKind> : MarkupExtension
+    where TIconKind : Enum
 {
-    public string Kind { get; set; }
-
+    public TIconKind? Kind { get; set; }
+    
     public IconInfoProvider()
-    {
-        Kind = string.Empty;
-    }
+    {}
 
-    public IconInfoProvider(string kind)
+    public IconInfoProvider(TIconKind kind)
     {
         Kind = kind;
     }

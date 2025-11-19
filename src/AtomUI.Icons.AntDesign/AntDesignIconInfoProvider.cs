@@ -3,13 +3,13 @@ using AtomUI.Controls;
 
 namespace AtomUI.Icons.AntDesign;
 
-public class AntDesignIconInfoProvider : IconInfoProvider
+public class AntDesignIconInfoProvider : IconInfoProvider<AntDesignIconKind>
 {
     public AntDesignIconInfoProvider()
     {
     }
     
-    public AntDesignIconInfoProvider(string kind)
+    public AntDesignIconInfoProvider(AntDesignIconKind kind)
         : base(kind)
     {
     }

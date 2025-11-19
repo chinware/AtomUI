@@ -2,9 +2,10 @@
 
 namespace AtomUI.Controls;
 
-public abstract class IconPackage : IIconPackage
+public abstract class IconPackage<TIconKind> : IIconPackage<TIconKind>
+    where TIconKind : Enum
 {
-    protected IDictionary<int, Func<IconInfo>> _iconInfoPool;
+    protected IDictionary<TIconKind, Func<IconInfo>> _iconInfoPool;
     
     public ColorInfo DefaultColorInfo { get; set; }
     
@@ -19,7 +20,7 @@ public abstract class IconPackage : IIconPackage
     public IconPackage(string id)
     {
         Id               = id;
-        _iconInfoPool    = new Dictionary<int, Func<IconInfo>>();
+        _iconInfoPool    = new Dictionary<TIconKind, Func<IconInfo>>();
         DefaultColorInfo = new ColorInfo(Color.FromRgb(85, 85, 85)); // #333
         DefaultTwoToneColorInfo = new TwoToneColorInfo
         {
@@ -29,15 +30,7 @@ public abstract class IconPackage : IIconPackage
         IconThemeRanges = new Dictionary<IconThemeType, (int, int)>();
     }
     
-    public abstract IconInfo? GetIconInfo(string iconKind);
-    public abstract IconInfo? GetIconInfo(string iconKind, ColorInfo colorInfo);
-    public abstract IconInfo? GetIconInfo(string iconKind, TwoToneColorInfo twoToneColorInfo);
-    
-    public abstract Icon? BuildIcon(string iconKind);
-    public abstract Icon? BuildIcon(string iconKind, ColorInfo colorInfo);
-    public abstract Icon? BuildIcon(string iconKind, TwoToneColorInfo twoToneColorInfo);
-    
-    protected Icon? BuildIcon(int iconKind)
+    public Icon? BuildIcon(TIconKind iconKind)
     {
         var iconInfo = GetIconInfo(iconKind);
         if (iconInfo is null)
@@ -51,7 +44,7 @@ public abstract class IconPackage : IIconPackage
         };
     }
     
-    protected Icon? BuildIcon(int iconKind, ColorInfo colorInfo)
+    public Icon? BuildIcon(TIconKind iconKind, ColorInfo colorInfo)
     {
         var iconInfo = GetIconInfo(iconKind, colorInfo);
         if (iconInfo is null)
@@ -65,7 +58,7 @@ public abstract class IconPackage : IIconPackage
         };
     }
     
-    protected Icon? BuildIcon(int iconKind, TwoToneColorInfo twoToneColorInfo)
+    public Icon? BuildIcon(TIconKind iconKind, TwoToneColorInfo twoToneColorInfo)
     {
         var iconInfo = GetIconInfo(iconKind, twoToneColorInfo);
         if (iconInfo is null)
@@ -79,7 +72,7 @@ public abstract class IconPackage : IIconPackage
         };
     }
     
-    protected IconInfo? GetIconInfo(int iconKind)
+    public IconInfo? GetIconInfo(TIconKind iconKind)
     {
         if (!_iconInfoPool.ContainsKey(iconKind))
         {
@@ -98,7 +91,7 @@ public abstract class IconPackage : IIconPackage
         return iconInfo;
     }
     
-    protected IconInfo? GetIconInfo(int iconKind, ColorInfo colorInfo)
+    public IconInfo? GetIconInfo(TIconKind iconKind, ColorInfo colorInfo)
     {
         var iconInfo = GetIconInfo(iconKind);
         if (iconInfo is null)
@@ -113,7 +106,7 @@ public abstract class IconPackage : IIconPackage
         return iconInfo;
     }
     
-    protected IconInfo? GetIconInfo(int iconKind, TwoToneColorInfo twoToneColorInfo)
+    public IconInfo? GetIconInfo(TIconKind iconKind, TwoToneColorInfo twoToneColorInfo)
     {
         var iconInfo = GetIconInfo(iconKind);
         if (iconInfo is null)
@@ -149,16 +142,18 @@ public abstract class IconPackage : IIconPackage
                             });
     }
 
-    private IconThemeType GetIconThemeType(int id)
+    private IconThemeType GetIconThemeType(TIconKind kind)
     {
+        var kindValue = Convert.ToInt32(kind);
         foreach (var entry in IconThemeRanges)
         {
-            if (id >= entry.Value.Item1 && id <= entry.Value.Item2)
+            
+            if (kindValue >= entry.Value.Item1 && kindValue <= entry.Value.Item2)
             {
                 return entry.Key;
             }
         }
-        throw new ArgumentException($"Unknown icon kind: {id}");
+        throw new ArgumentException($"Unknown icon kind: {kind}");
     }
 
     private void EnsureDefaultColorInfo(IconInfo iconInfo)

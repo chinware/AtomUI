@@ -126,7 +126,7 @@ public class IconPackageGenerator : IIncrementalGenerator
   
             var viewBox       = svgParsedInfo.ViewBox;
             sourceText.Append(
-                $"        _iconInfoPool.Add((int){packageName}IconKind.{info.Name}{info.ThemeType}, ");
+                $"        _iconInfoPool.Add({packageName}IconKind.{info.Name}{info.ThemeType}, ");
             
             sourceText.Append("() => new IconInfo(");
             sourceText.Append($"\"{info.Name}{info.ThemeType}\", ");
