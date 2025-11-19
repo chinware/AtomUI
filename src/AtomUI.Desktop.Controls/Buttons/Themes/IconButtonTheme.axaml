@@ -9,7 +9,7 @@
             <Border
                 Name="Frame"
                 BorderThickness="{TemplateBinding BorderThickness}"
-                BorderBrush="{TemplateBinding BorderThickness}"
+                BorderBrush="{TemplateBinding BorderBrush}"
                 CornerRadius="{TemplateBinding CornerRadius}"
                 Background="{TemplateBinding Background}"
                 HorizontalAlignment="Stretch"
