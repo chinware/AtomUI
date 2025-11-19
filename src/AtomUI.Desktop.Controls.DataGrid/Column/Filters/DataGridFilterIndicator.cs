@@ -105,7 +105,7 @@ internal class DataGridFilterIndicator : IconButton
     {
         if (Icon is null)
         {
-            SetValue(IconProperty, AntDesignIconPackage.FilterFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new FilterFilled(), BindingPriority.Template);
         }
         base.OnApplyTemplate(e);
         CreateFlyout();

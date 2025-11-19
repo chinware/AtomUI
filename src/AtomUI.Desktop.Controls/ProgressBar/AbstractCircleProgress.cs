@@ -7,7 +7,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
-using Math = System.Math;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -342,12 +341,12 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         base.OnApplyTemplate(e);
         if (ExceptionCompletedIcon == null)
         {
-            SetValue(ExceptionCompletedIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
+            SetValue(ExceptionCompletedIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
         
         if (SuccessCompletedIcon == null)
         {
-            SetValue(SuccessCompletedIconProperty, AntDesignIconPackage.CheckOutlined(), BindingPriority.Template);
+            SetValue(SuccessCompletedIconProperty, new CheckOutlined(), BindingPriority.Template);
         }
     }
 }

@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
@@ -51,9 +52,8 @@
                             ContentTemplate="{TemplateBinding HeaderTemplate}" />
                         <Border Grid.Column="2" Name="MenuIndicatorIconFrame"
                                 RenderTransform="{TemplateBinding MenuIndicatorRenderTransform}">
-                            <atom:Icon
+                            <antdicons:RightOutlined
                                 Name="MenuIndicatorIcon"
-                                IconInfo="{atom:AntDesignIconInfoProvider RightOutlined}"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 IsEnabled="{TemplateBinding IsEnabled}" />

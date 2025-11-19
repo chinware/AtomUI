@@ -153,7 +153,7 @@ public class Timeline : ItemsControl,
                 }
             }
 
-            var icon = PendingIcon ?? AntDesignIconPackage.LoadingOutlined();
+            var icon = PendingIcon ?? new LoadingOutlined();
             icon.LoadingAnimation = IconAnimation.Spin;
             var pendingTimelineItem = new TimelineItem()
             {

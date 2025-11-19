@@ -166,7 +166,7 @@ internal class ListItem : ContentControl, ISelectable
         base.OnApplyTemplate(e);
         if (!IsSet(SelectedIndicatorProperty))
         {
-            SetCurrentValue(SelectedIndicatorProperty, AntDesignIconPackage.CheckOutlined());
+            SetCurrentValue(SelectedIndicatorProperty, new CheckOutlined());
         }
     }
     

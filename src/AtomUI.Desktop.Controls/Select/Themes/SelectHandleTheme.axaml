@@ -2,23 +2,21 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SelectHandle}" TargetType="atom:SelectHandle">
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:Icon Name="OpenIndicator"
-                               IconInfo="{atom:AntDesignIconInfoProvider Kind=DownOutlined}"
-                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                               IsVisible="True" />
-                    <atom:Icon Name="LoadingIndicator"
-                               IconInfo="{atom:AntDesignIconInfoProvider LoadingOutlined}"
-                               LoadingAnimation="Spin"
-                               IsVisible="False" />
-                    <atom:Icon Name="SearchIndicator"
-                               IconInfo="{atom:AntDesignIconInfoProvider Kind=SearchOutlined}"
-                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                               IsVisible="False" />
+                    <antdicons:DownOutlined Name="OpenIndicator"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                            IsVisible="True" />
+                    <antdicons:LoadingOutlined Name="LoadingIndicator"
+                                               LoadingAnimation="Spin"
+                                               IsVisible="False" />
+                    <antdicons:SearchOutlined Name="SearchIndicator"
+                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                              IsVisible="False" />
                     <atom:IconButton
                         Name="{x:Static atom:SelectHandleThemeConstants.ClearButtonPart}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

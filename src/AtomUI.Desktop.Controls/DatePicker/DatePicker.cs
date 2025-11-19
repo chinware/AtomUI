@@ -252,7 +252,7 @@ public class DatePicker : InfoPickerInput,
         
         if (InfoIcon is null)
         {
-            SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
+            SetValue(InfoIconProperty, new CalendarOutlined(), BindingPriority.Template);
         }
     }
 

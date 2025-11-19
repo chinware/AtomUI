@@ -424,7 +424,7 @@ public class SplitButton : ContentControl,
         if (FlyoutButtonIcon == null)
         {
             ClearValue(FlyoutButtonIconProperty);
-            SetValue(FlyoutButtonIconProperty, AntDesignIconPackage.EllipsisOutlined(), BindingPriority.Template);
+            SetValue(FlyoutButtonIconProperty, new EllipsisOutlined(), BindingPriority.Template);
         }
     }
     

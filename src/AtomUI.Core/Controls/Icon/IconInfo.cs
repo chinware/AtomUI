@@ -19,8 +19,6 @@ public record GeometryData
 public class IconInfo
 {
     public IList<GeometryData> Data { get; }
-    public ColorInfo? ColorInfo { get; internal set; }
-    public TwoToneColorInfo? TwoToneColorInfo { get; internal set; }
     public bool IsTwoTone => ThemeType == IconThemeType.TwoTone;
     public IconThemeType ThemeType { get; }
 
@@ -32,14 +30,12 @@ public class IconInfo
             string.Empty,
             IconThemeType.Filled,
             new Rect(),
-            new List<GeometryData> { new(string.Empty) },
-            new ColorInfo(Colors.Black))
+            new List<GeometryData> { new(string.Empty) })
     {
     }
 
     public IconInfo(string name, IconThemeType themeType,
-                    Rect viewBox, IList<GeometryData> data,
-                    ColorInfo? colorInfo = null)
+                    Rect viewBox, IList<GeometryData> data)
     {
         if (themeType == IconThemeType.TwoTone)
         {
@@ -53,7 +49,7 @@ public class IconInfo
         ViewBox   = viewBox;
     }
 
-    public IconInfo(string name, Rect viewBox, IList<GeometryData> data, TwoToneColorInfo? colorInfo = null)
+    public IconInfo(string name, Rect viewBox, IList<GeometryData> data)
     {
         Name             = name;
         Data             = data;

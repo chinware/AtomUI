@@ -210,25 +210,25 @@ internal class NodeSwitcherButton : ToggleButton
         if (ExpandIcon == null)
         {
             ClearValue(ExpandIconProperty);
-            SetValue(ExpandIconProperty, AntDesignIconPackage.PlusSquareOutlined(), BindingPriority.Template);
+            SetValue(ExpandIconProperty, new PlusSquareOutlined(), BindingPriority.Template);
         }
         
         if (CollapseIcon == null)
         {
             ClearValue(CollapseIconProperty);
-            SetValue(CollapseIconProperty, AntDesignIconPackage.MinusSquareOutlined(), BindingPriority.Template);
+            SetValue(CollapseIconProperty, new MinusSquareOutlined(), BindingPriority.Template);
         }
         
         if (RotationIcon == null)
         {
             ClearValue(RotationIconProperty);
-            SetValue(RotationIconProperty, AntDesignIconPackage.CaretRightOutlined(), BindingPriority.Template);
+            SetValue(RotationIconProperty, new CaretRightOutlined(), BindingPriority.Template);
         }
         
         if (LeafIcon == null)
         {
             ClearValue(LeafIconProperty);
-            SetValue(LeafIconProperty, AntDesignIconPackage.FileOutlined(), BindingPriority.Template);
+            SetValue(LeafIconProperty, new FileOutlined(), BindingPriority.Template);
         }
     }
 

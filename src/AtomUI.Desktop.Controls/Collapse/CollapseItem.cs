@@ -276,7 +276,7 @@ public class CollapseItem : HeaderedContentControl,
         if (ExpandIcon is null)
         {
             ClearValue(ExpandIconProperty);
-            SetValue(ExpandIconProperty, AntDesignIconPackage.RightOutlined(), BindingPriority.Template);
+            SetValue(ExpandIconProperty, new RightOutlined(), BindingPriority.Template);
         }
         Debug.Assert(ExpandIcon != null);
     }

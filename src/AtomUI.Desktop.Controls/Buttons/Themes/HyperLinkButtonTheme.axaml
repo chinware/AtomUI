@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:HyperLinkButton}" TargetType="atom:HyperLinkButton">
 
@@ -15,9 +16,8 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Orientation="Horizontal">
-                        <atom:Icon Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                   IconInfo="{atom:AntDesignIconInfoProvider LoadingOutlined}"
-                                   Margin="{Binding (atom:IconPresenter.Margin), 
+                        <antdicons:LoadingOutlined Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                                                   Margin="{Binding (atom:IconPresenter.Margin), 
                                    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" />
                         <atom:IconPresenter
                             Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
@@ -203,9 +203,6 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
 
-        <!-- BuildIconStyle 结束 -->
-
-        <!-- BuildLoadingStyle 开始 -->
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
             <Setter Property="IsVisible" Value="True" />
         </Style>
@@ -223,7 +220,6 @@
             </Style>
             <Setter Property="Opacity" Value="{DynamicResource {x:Static atom:SharedTokenKey.OpacityLoading}}" />
         </Style>
-        <!-- BuildLoadingStyle 结束 -->
 
         <Style Selector="^:not(:disabled)">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />

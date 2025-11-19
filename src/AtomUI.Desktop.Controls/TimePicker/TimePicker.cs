@@ -299,7 +299,7 @@ public class TimePicker : InfoPickerInput, IControlSharedTokenResourcesHost
         base.OnApplyTemplate(e);
         if (InfoIcon is null)
         {
-            SetValue(InfoIconProperty, AntDesignIconPackage.ClockCircleOutlined(), BindingPriority.Template);
+            SetValue(InfoIconProperty, new ClockCircleOutlined(), BindingPriority.Template);
         }
     }
 }

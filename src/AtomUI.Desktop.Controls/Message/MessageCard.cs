@@ -269,23 +269,23 @@ public class MessageCard : TemplatedControl,
         Icon? icon = null;
         if (MessageType == MessageType.Information)
         {
-            icon = AntDesignIconPackage.InfoCircleFilled();
+            icon = new InfoCircleFilled();
         }
         else if (MessageType == MessageType.Success)
         {
-            icon = AntDesignIconPackage.CheckCircleFilled();
+            icon = new CheckCircleFilled();
         }
         else if (MessageType == MessageType.Error)
         {
-            icon = AntDesignIconPackage.CloseCircleFilled();
+            icon = new CloseCircleFilled();
         }
         else if (MessageType == MessageType.Warning)
         {
-            icon = AntDesignIconPackage.ExclamationCircleFilled();
+            icon = new ExclamationCircleFilled();
         }
         else if (MessageType == MessageType.Loading)
         {
-            icon                  = AntDesignIconPackage.LoadingOutlined();
+            icon                  = new LoadingOutlined();
             icon.LoadingAnimation = IconAnimation.Spin;
         }
 

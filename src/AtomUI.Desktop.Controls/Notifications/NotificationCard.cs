@@ -342,19 +342,19 @@ public class NotificationCard : ContentControl,
             Icon? icon = null;
             if (NotificationType == NotificationType.Information)
             {
-                icon = AntDesignIconPackage.InfoCircleFilled();
+                icon = new InfoCircleFilled();
             }
             else if (NotificationType == NotificationType.Success)
             {
-                icon = AntDesignIconPackage.CheckCircleFilled();
+                icon = new CheckCircleFilled();
             }
             else if (NotificationType == NotificationType.Error)
             {
-                icon = AntDesignIconPackage.CloseCircleFilled();
+                icon = new CloseCircleFilled();
             }
             else if (NotificationType == NotificationType.Warning)
             {
-                icon = AntDesignIconPackage.ExclamationCircleFilled();
+                icon = new ExclamationCircleFilled();
             }
         
             ClearValue(IconProperty);

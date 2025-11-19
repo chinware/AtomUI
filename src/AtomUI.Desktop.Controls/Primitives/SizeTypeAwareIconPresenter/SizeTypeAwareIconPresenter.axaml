@@ -17,6 +17,8 @@
                     ActiveFilledBrush="{TemplateBinding ActiveFilledBrush}"
                     SelectedFilledBrush="{TemplateBinding SelectedFilledBrush}"
                     DisabledFilledBrush="{TemplateBinding DisabledFilledBrush}"
+                    PrimaryFilledBrush="{TemplateBinding PrimaryFilledBrush}"
+                    SecondaryFilledBrush="{TemplateBinding SecondaryFilledBrush}"
                     IconWidth="{TemplateBinding IconWidth}"
                     IconHeight="{TemplateBinding IconHeight}"
                     IconMode="{TemplateBinding IconMode}" />
@@ -47,5 +49,12 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>
+        
+        <Setter Property="NormalFilledBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+        <Setter Property="PrimaryFilledBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+        <Setter Property="SecondaryFilledBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
     </ControlTheme>
 </ResourceDictionary>

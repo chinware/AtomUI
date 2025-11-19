@@ -1,6 +1,7 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net">
     <ControlTheme x:Key="{x:Type atom:DataGridSortIndicator}" TargetType="atom:DataGridSortIndicator">
@@ -11,17 +12,15 @@
                         <Border.RenderTransform>
                             <TranslateTransform Y="1" />
                         </Border.RenderTransform>
-                        <atom:Icon
-                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}"
-                            IconInfo="{atom:AntDesignIconInfoProvider CaretUpOutlined}" />
+                        <antdicons:CaretUpOutlined
+                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}" />
                     </Border>
                     <Border IsVisible="{TemplateBinding DescendingIndicatorVisible}">
                         <Border.RenderTransform>
                             <TranslateTransform Y="-1" />
                         </Border.RenderTransform>
-                        <atom:Icon
-                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}"
-                            IconInfo="{atom:AntDesignIconInfoProvider CaretDownOutlined}" />
+                        <antdicons:CaretDownOutlined
+                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}" />
                     </Border>
                 </StackPanel>
             </ControlTemplate>

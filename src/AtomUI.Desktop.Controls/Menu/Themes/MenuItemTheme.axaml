@@ -1,6 +1,7 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
+              xmlns:antdicons="https://atomui.net/icons/antdesign"
               x:Class="AtomUI.Desktop.Controls.Themes.MenuItemTheme"
               TargetType="atom:MenuItem"
               x:ClassModifier="internal">
@@ -66,11 +67,10 @@
                                         IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
                                         Grid.Column="3" />
 
-                        <atom:Icon Name="MenuIndicatorIcon"
-                                   IconInfo="{atom:AntDesignIconInfoProvider RightOutlined}"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
-                                   Grid.Column="4" />
+                        <antdicons:RightOutlined Name="MenuIndicatorIcon"
+                                                 HorizontalAlignment="Right"
+                                                 VerticalAlignment="Center"
+                                                 Grid.Column="4" />
                     </Grid>
                 </Border>
                 <atom:Popup Name="{x:Static atom:MenuItemThemeConstants.PopupPart}"

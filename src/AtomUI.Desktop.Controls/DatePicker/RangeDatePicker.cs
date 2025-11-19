@@ -489,7 +489,7 @@ public class RangeDatePicker : RangeInfoPickerInput,
         base.OnApplyTemplate(e);
         if (InfoIcon is null)
         {
-            SetValue(InfoIconProperty, AntDesignIconPackage.CalendarOutlined(), BindingPriority.Template);
+            SetValue(InfoIconProperty, new CalendarOutlined(), BindingPriority.Template);
         }
         Text = FormatDateTime(RangeStartSelectedDate);
         SecondaryText = FormatDateTime(RangeEndSelectedDate);

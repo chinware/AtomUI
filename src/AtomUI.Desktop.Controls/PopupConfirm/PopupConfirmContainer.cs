@@ -184,7 +184,7 @@ internal class PopupConfirmContainer : TemplatedControl,
         if (Icon == null)
         {
             ClearValue(IconProperty);
-            SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
         }
     }
     

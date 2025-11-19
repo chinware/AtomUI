@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:PaletteColorItem}" TargetType="atom:PaletteColorItem">
         <Setter Property="Template">
@@ -15,13 +16,12 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Background="{TemplateBinding Background}"
                             BoxShadow="{DynamicResource {x:Static atom:ColorPickerTokenKey.ColorBlockInnerShadows}}">
-                        <atom:Icon Name="{x:Static atom:PaletteColorItemThemeConstants.CheckedMarkPart}"
-                                   IconInfo="{atom:AntDesignIconInfoProvider CheckBoldOutlined}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   IsVisible="False" 
-                                   RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
-                                   RenderTransformOrigin="{x:Static RelativePoint.Center}"/>
+                        <antdicons:CheckBoldOutlined Name="{x:Static atom:PaletteColorItemThemeConstants.CheckedMarkPart}"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"
+                                                     IsVisible="False" 
+                                                     RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
+                                                     RenderTransformOrigin="{x:Static RelativePoint.Center}"/>
                     </Border>
                 </Border>
             </ControlTemplate>

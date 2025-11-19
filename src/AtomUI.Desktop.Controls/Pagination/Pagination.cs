@@ -165,13 +165,13 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
             {
                 navItem.PaginationItemType = PaginationItemType.Previous;
                 _previousPageItem          = navItem;
-                _previousPageItem.Icon  = AntDesignIconPackage.LeftOutlined();
+                _previousPageItem.Icon  = new LeftOutlined();
             }
             else if (count - 1 == args.Index)
             {
                 navItem.PaginationItemType = PaginationItemType.Next;
                 _nextPageItem              = navItem;
-                _nextPageItem.Icon         = AntDesignIconPackage.RightOutlined();
+                _nextPageItem.Icon         = new RightOutlined();
             }
             else
             {
@@ -310,7 +310,7 @@ public class Pagination : AbstractPagination, IControlSharedTokenResourcesHost
         Debug.Assert(_paginationNav != null);
         var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
         Debug.Assert(navItem != null);
-        navItem.Icon               = AntDesignIconPackage.EllipsisOutlined();
+        navItem.Icon               = new EllipsisOutlined();
         navItem.PaginationItemType = PaginationItemType.Ellipses;
         navItem.IsVisible          = true;
     }

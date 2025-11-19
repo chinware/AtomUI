@@ -108,7 +108,11 @@
                     <Setter Property="HorizontalAlignment" Value="Right" />
                 </Style>
             </Style>
-
+            
+            <Style Selector="^ /template/ atom|ButtonSpinnerContentPanel#ContentLayout">
+                <Setter Property="HorizontalSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}" />
+            </Style>
+            
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="ContentPadding"
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingLG}}" />

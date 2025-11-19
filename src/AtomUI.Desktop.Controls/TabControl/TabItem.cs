@@ -137,7 +137,7 @@ public class TabItem : HeaderedContentControl, ISelectable
         if (CloseIcon is null)
         {
             ClearValue(CloseIconProperty);
-            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
+            SetValue(CloseIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
     }
 

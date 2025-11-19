@@ -409,7 +409,7 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
         if (CloseIcon is null)
         {
             ClearValue(CloseIconProperty);
-            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined());
+            SetValue(CloseIconProperty, new CloseOutlined());
         }
     }
 

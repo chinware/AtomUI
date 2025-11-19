@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" TextWrapping="Wrap" />
     <ControlTheme x:Key="{x:Type atom:StepsItem}" TargetType="atom:StepsItem">
@@ -701,11 +702,10 @@
                         <Setter Property="Template">
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
-                                    <atom:Icon Name="NavArrow"
-                                               IconInfo="{atom:AntDesignIconInfoProvider Kind=RightOutlined}"
-                                               DockPanel.Dock="Right"
-                                               VerticalAlignment="Center"
-                                               IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                    <antdicons:RightOutlined Name="NavArrow"
+                                                             DockPanel.Dock="Right"
+                                                             VerticalAlignment="Center"
+                                                             IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                     <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
                                         <Rectangle DockPanel.Dock="Bottom"
                                                    Classes="NavIndicatorLine"
@@ -787,11 +787,10 @@
                         <Setter Property="Template">
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
-                                    <atom:Icon Name="NavArrow"
-                                               IconInfo="{atom:AntDesignIconInfoProvider Kind=RightOutlined}"
-                                               DockPanel.Dock="Right"
-                                               VerticalAlignment="Center"
-                                               IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                    <antdicons:RightOutlined Name="NavArrow"
+                                                             DockPanel.Dock="Right"
+                                                             VerticalAlignment="Center"
+                                                             IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                     <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
                                         <Rectangle DockPanel.Dock="Bottom" Classes="NavIndicatorLine"
                                                    Opacity="0.0"
@@ -863,11 +862,10 @@
                     <Setter Property="Template">
                         <ControlTemplate>
                             <DockPanel LastChildFill="True" Name="RootLayout">
-                                <atom:Icon Name="NavArrow"
-                                           IconInfo="{atom:AntDesignIconInfoProvider Kind=RightOutlined}"
-                                           DockPanel.Dock="Right"
-                                           VerticalAlignment="Center"
-                                           IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                <antdicons:RightOutlined Name="NavArrow"
+                                                         DockPanel.Dock="Right"
+                                                         VerticalAlignment="Center"
+                                                         IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                 <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
                                     <Rectangle DockPanel.Dock="Bottom" Classes="NavIndicatorLine"
                                                Opacity="0.0"
@@ -1020,10 +1018,9 @@
                                                 Content="{TemplateBinding Description, Converter={StaticResource StringToTextBlockConverter}}"
                                                 ContentTemplate="{TemplateBinding DescriptionTemplate}" />
 
-                                            <atom:Icon Name="NavArrow"
-                                                       IconInfo="{atom:AntDesignIconInfoProvider Kind=DownOutlined}"
-                                                       HorizontalAlignment="Center"
-                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                            <antdicons:DownOutlined Name="NavArrow"
+                                                                    HorizontalAlignment="Center"
+                                                                    IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                         </StackPanel>
                                     </DockPanel>
                                 </Panel>
@@ -1098,10 +1095,9 @@
                                                 Content="{TemplateBinding Description, Converter={StaticResource StringToTextBlockConverter}}"
                                                 ContentTemplate="{TemplateBinding DescriptionTemplate}" />
 
-                                            <atom:Icon Name="NavArrow"
-                                                       IconInfo="{atom:AntDesignIconInfoProvider Kind=DownOutlined}"
-                                                       HorizontalAlignment="Center"
-                                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                            <antdicons:DownOutlined Name="NavArrow"
+                                                                    HorizontalAlignment="Center"
+                                                                    IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
                                         </StackPanel>
                                     </DockPanel>
                                 </Panel>

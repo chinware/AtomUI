@@ -162,12 +162,12 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         _successCompletedIconPresenter   = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.SuccessCompletedIconPresenterPart);
         if (ExceptionCompletedIcon == null)
         {
-            SetValue(ExceptionCompletedIconProperty, AntDesignIconPackage.CloseCircleFilled(), BindingPriority.Template);
+            SetValue(ExceptionCompletedIconProperty, new CloseCircleFilled(), BindingPriority.Template);
         }
         
         if (SuccessCompletedIcon == null)
         {
-            SetValue(SuccessCompletedIconProperty, AntDesignIconPackage.CheckCircleFilled(), BindingPriority.Template);
+            SetValue(SuccessCompletedIconProperty, new CheckCircleFilled(), BindingPriority.Template);
         }
     }
 

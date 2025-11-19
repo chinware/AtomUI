@@ -124,7 +124,7 @@ public class TabStripItem : AvaloniaTabStripItem
         if (CloseIcon is null)
         {
             ClearValue(CloseIconProperty);
-            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
+            SetValue(CloseIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
         Debug.Assert(CloseIcon is not null);
     }

@@ -12,10 +12,12 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Padding="{TemplateBinding Padding}">
                     <DockPanel Name="RootLayout" LastChildFill="True">
-                        <atom:Icon
-                            Name="InfoIcon"
+                        <atom:IconPresenter
+                            Name="InfoIconPresenterPresenter"
                             IsVisible="{TemplateBinding IsShowIcon}"
-                            DockPanel.Dock="Left" />
+                            DockPanel.Dock="Left"
+                            />
+                        
                         <atom:IconButton
                             Name="{x:Static atom:AlertThemeConstants.CloseBtnPart}"
                             IsVisible="{TemplateBinding IsClosable}"
@@ -143,38 +145,38 @@
         </Style>
 
         <Style Selector="^[Type=Success]">
-            <Style Selector="^ /template/ atom|Icon#InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:AntDesignIconInfoProvider Kind=CheckCircleFilled}" />
+            <Style Selector="^ /template/ atom|IconPresenter#InfoIconPresenter">
+                <Setter Property="Icon" Value="{atom:AntDesignIconProvider Kind=CheckCircleFilled}" />
                 <Setter Property="NormalFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Type=Info]">
-            <Style Selector="^ /template/ atom|Icon#InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:AntDesignIconInfoProvider Kind=InfoCircleFilled}" />
+            <Style Selector="^ /template/ atom|IconPresenter#InfoIconPresenter">
+                <Setter Property="Icon" Value="{atom:AntDesignIconProvider Kind=InfoCircleFilled}" />
                 <Setter Property="NormalFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Type=Warning]">
-            <Style Selector="^ /template/ atom|Icon#InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:AntDesignIconInfoProvider Kind=ExclamationCircleFilled}" />
+            <Style Selector="^ /template/ atom|IconPresenter#InfoIconPresenter">
+                <Setter Property="Icon" Value="{atom:AntDesignIconProvider Kind=ExclamationCircleFilled}" />
                 <Setter Property="NormalFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
 
         <Style Selector="^[Type=Error]">
-            <Style Selector="^ /template/ atom|Icon#InfoIcon">
-                <Setter Property="IconInfo" Value="{atom:AntDesignIconInfoProvider Kind=CloseCircleFilled}" />
+            <Style Selector="^ /template/ atom|IconPresenter#InfoIconPresenter">
+                <Setter Property="Icon" Value="{atom:AntDesignIconProvider Kind=CloseCircleFilled}" />
                 <Setter Property="NormalFilledBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             </Style>
         </Style>
         <Style Selector="^:has-description">
-            <Style Selector="^ /template/ atom|Icon#InfoIcon">
+            <Style Selector="^ /template/ atom|IconPresenter#InfoIconPresenter">
                 <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:AlertTokenKey.WithDescriptionIconSize}}" />
                 <Setter Property="Height"
@@ -186,7 +188,7 @@
         </Style>
 
         <Style Selector="^:not(:has-description)">
-            <Style Selector="^ /template/ atom|Icon#InfoIcon">
+            <Style Selector="^ /template/ atom|IconPresenter#InfoIconPresenter">
                 <Setter Property="Width" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconSize}}" />
                 <Setter Property="Height" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconSize}}" />
                 <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.IconDefaultMargin}}" />

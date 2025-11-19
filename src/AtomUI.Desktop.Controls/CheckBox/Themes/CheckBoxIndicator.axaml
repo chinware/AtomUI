@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CheckBoxIndicator}" TargetType="atom:CheckBoxIndicator">
         <Setter Property="Template">
@@ -15,14 +16,13 @@
                             Background="{TemplateBinding Background}"
                             CornerRadius="{TemplateBinding CornerRadius}">
                         <Panel>
-                            <atom:Icon Name="CheckedMark"
-                                       IconInfo="{atom:AntDesignIconInfoProvider CheckBoldOutlined}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center" 
-                                       NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"
-                                       RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
-                                       RenderTransformOrigin="{x:Static RelativePoint.Center}"
-                                       IsVisible="False"/>
+                            <antdicons:CheckBoldOutlined Name="CheckedMark"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center" 
+                                                         NormalFilledBrush="{TemplateBinding CheckedMarkBrush}"
+                                                         RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
+                                                         RenderTransformOrigin="{x:Static RelativePoint.Center}"
+                                                         IsVisible="False"/>
                             <Rectangle Name="TristateMark"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"

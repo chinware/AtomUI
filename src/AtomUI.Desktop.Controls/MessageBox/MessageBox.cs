@@ -337,22 +337,22 @@ public class MessageBox : TemplatedControl,
         Debug.Assert(_dialog != null);
         if (Style == MessageBoxStyle.Information)
         {
-            SetValue(IconProperty, AntDesignIconPackage.InfoCircleFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new InfoCircleFilled(), BindingPriority.Template);
             _dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Success)
         {
-            SetValue(IconProperty, AntDesignIconPackage.CheckCircleFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new CheckCircleFilled(), BindingPriority.Template);
             _dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Error)
         {
-            SetValue(IconProperty, AntDesignIconPackage.CloseCircleFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new CloseCircleFilled(), BindingPriority.Template);
             _dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Warning)
         {
-            SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
             _dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Normal)
@@ -361,7 +361,7 @@ public class MessageBox : TemplatedControl,
         }
         else if (Style == MessageBoxStyle.Confirm)
         {
-            SetValue(IconProperty, AntDesignIconPackage.ExclamationCircleFilled(), BindingPriority.Template);
+            SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
             _dialog.StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel;
         }
     }

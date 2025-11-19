@@ -8,7 +8,8 @@
         <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
-        <PackageVersion Include="ReactiveUI.Avalonia" Version="$(AvaloniaVersion)"/>
+        
+        <PackageVersion Include="ReactiveUI.Avalonia" Version="11.3.8"/>
 
         <!-- TODO 版本是否跟随 AvaloniaVersion？-->
         <PackageVersion Include="Avalonia.Svg" Version="11.3.0"/>

@@ -34,6 +34,12 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     
     public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
         Icon.DisabledFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
+        Icon.PrimaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+
+    public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
+        Icon.SecondaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
 
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, double>(nameof(IconWidth), double.NaN);
@@ -105,6 +111,18 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
         set => SetValue(DisabledFilledBrushProperty, value);
     }
     
+    public IBrush? PrimaryFilledBrush
+    {
+        get => GetValue(PrimaryFilledBrushProperty);
+        set => SetValue(PrimaryFilledBrushProperty, value);
+    }
+
+    public IBrush? SecondaryFilledBrush
+    {
+        get => GetValue(SecondaryFilledBrushProperty);
+        set => SetValue(SecondaryFilledBrushProperty, value);
+    }
+    
     public IconMode IconMode
     {
         get => GetValue(IconModeProperty);
@@ -117,7 +135,13 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     {
         AffectsMeasure<SizeTypeAwareIconPresenter>(IconProperty, PaddingProperty);
     }
-    
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        UpdatePseudoClasses();
+    }
+
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Empty, Icon is null);

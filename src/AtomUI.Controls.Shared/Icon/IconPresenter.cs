@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Data;
+using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Styling;
 
 namespace AtomUI.Controls;
 
@@ -41,6 +43,12 @@ public class IconPresenter : Control, IMotionAwareControl
     
     public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
         Icon.DisabledFilledBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
+        Icon.PrimaryFilledBrushProperty.AddOwner<IconPresenter>();
+
+    public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
+        Icon.SecondaryFilledBrushProperty.AddOwner<IconPresenter>();
 
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<IconPresenter, double>(nameof(IconWidth), double.NaN);
@@ -115,6 +123,18 @@ public class IconPresenter : Control, IMotionAwareControl
         set => SetValue(DisabledFilledBrushProperty, value);
     }
     
+    public IBrush? PrimaryFilledBrush
+    {
+        get => GetValue(PrimaryFilledBrushProperty);
+        set => SetValue(PrimaryFilledBrushProperty, value);
+    }
+
+    public IBrush? SecondaryFilledBrush
+    {
+        get => GetValue(SecondaryFilledBrushProperty);
+        set => SetValue(SecondaryFilledBrushProperty, value);
+    }
+    
     public IconMode IconMode
     {
         get => GetValue(IconModeProperty);
@@ -147,15 +167,23 @@ public class IconPresenter : Control, IMotionAwareControl
     {
         UpdatePseudoClasses();
         this.ConfigureMotionBindingStyle();
+        ConfigureInstanceStyles();
     }
 
-    /// <inheritdoc/>
+    private void ConfigureInstanceStyles()
+    {
+        var style = new Style();
+        style.Add(NormalFilledBrushProperty, SharedTokenKey.ColorTextTertiary);
+        style.Add(PrimaryFilledBrushProperty, SharedTokenKey.ColorPrimary);
+        style.Add(SecondaryFilledBrushProperty, SharedTokenKey.ColorInfoBg);
+        Styles.Add(style);
+    }
+        
     protected override Size MeasureOverride(Size availableSize)
     {
         return LayoutHelper.MeasureChild(Icon, availableSize, Padding);
     }
-
-    /// <inheritdoc/>
+    
     protected override Size ArrangeOverride(Size finalSize)
     {
         return LayoutHelper.ArrangeChild(Icon, finalSize, Padding);
@@ -224,6 +252,17 @@ public class IconPresenter : Control, IMotionAwareControl
                 SetCurrentValue(DisabledFilledBrushProperty, icon.DisabledFilledBrush);
             }
         }
+        else
+        {
+            if (icon.PrimaryFilledBrush != null)
+            {
+                SetCurrentValue(PrimaryFilledBrushProperty, icon.PrimaryFilledBrush);
+            }
+            if (icon.SecondaryFilledBrush != null)
+            {
+                SetCurrentValue(SecondaryFilledBrushProperty, icon.SecondaryFilledBrush);
+            }
+        }
         
         _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationProperty, icon, Icon.LoadingAnimationProperty));
         _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationDurationProperty, icon,
@@ -232,12 +271,18 @@ public class IconPresenter : Control, IMotionAwareControl
         _bindingDisposables.Add(BindUtils.RelayBind(this, IconWidthProperty, icon, WidthProperty));
         _bindingDisposables.Add(BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty));
         _bindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, IsMotionEnabledProperty));
+        
         if (icon.ThemeType != IconThemeType.TwoTone)
         {
             _bindingDisposables.Add(BindUtils.RelayBind(this, NormalFilledBrushProperty, icon, Icon.NormalFilledBrushProperty));
             _bindingDisposables.Add(BindUtils.RelayBind(this, ActiveFilledBrushProperty, icon, Icon.ActiveFilledBrushProperty));
             _bindingDisposables.Add(BindUtils.RelayBind(this, SelectedFilledBrushProperty, icon, Icon.SelectedFilledBrushProperty));
             _bindingDisposables.Add(BindUtils.RelayBind(this, DisabledFilledBrushProperty, icon, Icon.DisabledFilledBrushProperty));
+        }
+        else
+        {
+            _bindingDisposables.Add(BindUtils.RelayBind(this, PrimaryFilledBrushProperty, icon, Icon.PrimaryFilledBrushProperty));
+            _bindingDisposables.Add(BindUtils.RelayBind(this, SecondaryFilledBrushProperty, icon, Icon.SecondaryFilledBrushProperty));
         }
     }
     
