@@ -1,6 +1,6 @@
 using AtomUI.Controls;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Controls;
 
 public interface ITreeNode<TChild>
     where TChild : class, ITreeNode<TChild>

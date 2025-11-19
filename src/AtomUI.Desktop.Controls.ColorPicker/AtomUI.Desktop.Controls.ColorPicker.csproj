@@ -6,14 +6,10 @@
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-        <RootNamespace>AtomUI.Controls</RootNamespace>
+        <RootNamespace>AtomUI.Desktop.Controls</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
-    <ItemGroup>
-        <InternalsVisibleTo Include="AtomUI"/>
-    </ItemGroup>
-
+    
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
@@ -22,19 +18,12 @@
         <PackageReference Include="Avalonia.Controls.ColorPicker" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ProjectReference Include="..\AtomUI.Icons.AntDesign\AtomUI.Icons.AntDesign.csproj" />
+    <ItemGroup>
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all"/>
-        <ProjectReference Include="..\AtomUI.Desktop.Controls\AtomUI.Desktop.Controls.csproj" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-        <PackageReference Include="AtomUI"/>
-        <PackageReference Include="AtomUI.Generator" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
-                          PrivateAssets="all"/>
+        <ProjectReference Include="../AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
     </ItemGroup>
     
 </Project>

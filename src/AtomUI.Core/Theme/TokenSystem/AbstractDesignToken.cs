@@ -93,7 +93,7 @@ public abstract class AbstractDesignToken : IDesignToken
         }
     }
 
-    private string? GetTokenResourceCatalog()
+    protected string? GetTokenResourceCatalog()
     {
         var tokenType                   = GetType();
         var globalDesignTokenAttributes = tokenType.GetCustomAttributes<GlobalDesignTokenAttribute>();

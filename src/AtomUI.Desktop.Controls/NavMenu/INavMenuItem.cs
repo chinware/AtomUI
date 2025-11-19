@@ -1,4 +1,6 @@
-﻿namespace AtomUI.Desktop.Controls;
+﻿using AtomUI.Controls;
+
+namespace AtomUI.Desktop.Controls;
 
 public interface INavMenuItem : INavMenuElement
 {

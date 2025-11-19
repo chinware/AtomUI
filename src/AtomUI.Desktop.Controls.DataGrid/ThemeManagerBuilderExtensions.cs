@@ -3,7 +3,7 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls;
 
-public static class OSSDataGridThemeManagerBuilderExtensions
+public static class DataGridThemeManagerBuilderExtensions
 {
     public static IThemeManagerBuilder UseDesktopDataGrid(this IThemeManagerBuilder themeManagerBuilder)
     {

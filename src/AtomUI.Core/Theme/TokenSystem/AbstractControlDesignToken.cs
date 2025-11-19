@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Media.Immutable;
 
 namespace AtomUI.Theme.TokenSystem;
 
@@ -36,19 +38,27 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken, IControl
 
     public override void BuildResourceDictionary(IResourceDictionary dictionary)
     {
-        var tempDictionary = new ResourceDictionary();
-        base.BuildResourceDictionary(tempDictionary);
-        // 增加自己的命名空间，现在这种方法效率不是很高，需要优化
-        // 暂时先用这种方案，后期有更好的方案再做调整
-        foreach (var entry in tempDictionary)
+        var type = GetType();
+        // internal 这里也考虑进去，还是具体的 Token 自己处理？
+        var tokenProperties = type.GetProperties(BindingFlags.Public |
+                                                 BindingFlags.NonPublic |
+                                                 BindingFlags.Instance |
+                                                 BindingFlags.FlattenHierarchy);
+        var ns                     = type.Namespace;
+        var tokenResourceNamespace = GetTokenResourceCatalog();
+        foreach (var property in tokenProperties)
         {
-            if (entry.Key is TokenResourceKey entryResourceKey)
+            var tokenName  = $"{ns}.{_id}.{property.Name}";
+            var tokenValue = property.GetValue(this);
+            if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) && 
+                tokenValue is not null)
             {
-                var resourceKey = new TokenResourceKey($"{_id}.{entryResourceKey.UnQualifiedKey()}",
-                    entryResourceKey.Catalog);
-                dictionary[resourceKey] = entry.Value;
+                tokenValue = new ImmutableSolidColorBrush((Color)tokenValue);
             }
+
+            dictionary[new TokenResourceKey(tokenName, tokenResourceNamespace)] = tokenValue;
         }
+        
     }
 
     internal void BuildSharedResourceDeltaDictionary(DesignToken globalSharedToken)

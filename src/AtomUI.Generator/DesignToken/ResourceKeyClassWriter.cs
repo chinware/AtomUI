@@ -116,7 +116,7 @@ internal class ResourceKeyClassWriter
         var tokenNames = controlTokenInfo.Tokens.ToList().OrderBy(token => token.Name);
         foreach (var tokenName in tokenNames)
         {
-            resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{tokenId}.{tokenName.Name}"));
+            resourceKeyFields.Add(BuildResourceKeyFieldSyntax(tokenName, $"{controlTokenInfo.ControlNamespace}.{tokenId}.{tokenName.Name}"));
         }
 
         controlClassSyntax = controlClassSyntax.AddMembers(resourceKeyFields.ToArray());

@@ -7,7 +7,6 @@
         <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
-        <PackageVersion Include="AtomUI.Desktop.Controls.DataGrid" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="ReactiveUI.Avalonia" Version="$(AvaloniaVersion)"/>
 
@@ -32,10 +31,5 @@
 
     <ItemGroup>
         <PackageVersion Include="AtomUI.Native" Version="$(AtomUINativeVersion)"/>
-    </ItemGroup>
-    
-    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-        <PackageVersion Include="AtomUI" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Generator" Version="$(AtomUIVersion)"/>
     </ItemGroup>
 </Project>
