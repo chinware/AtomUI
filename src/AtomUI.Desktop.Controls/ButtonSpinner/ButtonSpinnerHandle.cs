@@ -50,7 +50,7 @@ internal class ButtonSpinnerHandle : TemplatedControl
 
     static ButtonSpinnerHandle()
     {
-        AffectsRender<ButtonSpinnerHandle>(ButtonSpinnerLocationProperty);
+        AffectsRender<ButtonSpinnerHandle>(ButtonSpinnerLocationProperty, CornerRadiusProperty, BackgroundProperty, BorderBrushProperty);
     }
     
     public ButtonSpinnerHandle()

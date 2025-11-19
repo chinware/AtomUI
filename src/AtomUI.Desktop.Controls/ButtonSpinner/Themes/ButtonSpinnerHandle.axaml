@@ -7,10 +7,8 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border
-                    Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandleDecoratorPart}"
                     BackgroundSizing="InnerBorderEdge">
                     <UniformGrid
-                        Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerButtonsLayoutPart}"
                         Columns="1" Rows="2"
                         RowSpacing="1">
                         <atom:IconButton

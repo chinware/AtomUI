@@ -20,7 +20,9 @@
                                IsShowTip="True"
                                Tip="{TemplateBinding OperatingMsg}"
                                CustomIndicator="{TemplateBinding CustomOperatingIndicator}"
-                               CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}">
+                               CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}"
+                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalAlignment}">
                         <DockPanel LastChildFill="True">
                             <atom:Pagination DockPanel.Dock="Top"
                                              Name="{x:Static atom:DataGridThemeConstants.TopPaginationPart}"

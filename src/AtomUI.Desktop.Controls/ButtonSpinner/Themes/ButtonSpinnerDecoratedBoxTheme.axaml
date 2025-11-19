@@ -12,7 +12,7 @@
 
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ButtonSpinnerDecoratedBox">
-                <DockPanel Name="RootLayout" LastChildFill="True">
+                <DockPanel Name="RootLayout" LastChildFill="True"> 
                     <ContentPresenter
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                         VerticalAlignment="Stretch"
@@ -48,7 +48,7 @@
                                                             IsHandleFloatable="{TemplateBinding IsHandleFloatable}"
                                                             HandleWidth="{TemplateBinding SpinnerHandleWidth}"
                                                             Background="Transparent"
-                                                            ContentPadding="{Binding #PART_ContentFrame.Padding}"
+                                                            ContentPadding="{TemplateBinding EffectiveContentPadding}"
                                                             IsHover="{TemplateBinding IsSpinnerContentHover}">
                                 <ContentPresenter
                                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
@@ -121,6 +121,13 @@
                 <Setter Property="ContentPadding"
                         Value="{DynamicResource {x:Static atom:AddOnDecoratedBoxTokenKey.PaddingSM}}" />
             </Style>
+            <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#PART_ContentFrame">
+                    <Setter Property="Padding"
+                            Value="{Binding EffectiveContentPadding, RelativeSource={RelativeSource TemplatedParent}}" />
+                </Style>
+            </Style>
+           
         </Style>
     </ControlTheme>
 </ResourceDictionary>

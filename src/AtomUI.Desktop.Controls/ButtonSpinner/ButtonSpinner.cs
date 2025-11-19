@@ -274,7 +274,7 @@ public class ButtonSpinner : Spinner,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _decoratedBox          = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerThemeConstants.DecoratedBoxPart);
+        _decoratedBox = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerThemeConstants.DecoratedBoxPart);
         base.OnApplyTemplate(e);
         if (_decoratedBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
         {

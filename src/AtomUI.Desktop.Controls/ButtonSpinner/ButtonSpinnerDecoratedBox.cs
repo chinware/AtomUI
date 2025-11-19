@@ -1,5 +1,4 @@
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -75,6 +74,11 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     public static readonly StyledProperty<Thickness> ContentPaddingProperty =
         AvaloniaProperty.Register<ButtonSpinnerDecoratedBox, Thickness>(nameof(ContentPadding));
     
+    internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, Thickness> EffectiveContentPaddingProperty =
+        AvaloniaProperty.RegisterDirect<ButtonSpinnerDecoratedBox, Thickness>(nameof(EffectiveContentPadding),
+            o => o.EffectiveContentPadding,
+            (o, v) => o.EffectiveContentPadding = v);
+    
     internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, bool> IsSpinnerContentHoverProperty =
         AvaloniaProperty.RegisterDirect<ButtonSpinnerDecoratedBox, bool>(nameof(IsSpinnerContentHover),
             o => o.IsSpinnerContentHover,
@@ -116,6 +120,14 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
         set => SetValue(ContentPaddingProperty, value);
     }
     
+    private Thickness _effectiveContentPadding;
+
+    internal Thickness EffectiveContentPadding
+    {
+        get => _effectiveContentPadding;
+        set => SetAndRaise(EffectiveContentPaddingProperty, ref _effectiveContentPadding, value);
+    }
+    
     private bool _isSpinnerContentHover;
 
     internal bool IsSpinnerContentHover
@@ -127,30 +139,26 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     #endregion
     
     private IDisposable? _mouseMoveDisposable;
-    private Border? _contentFrame;
     
     protected void ConfigureEffectiveContentPadding()
     {
-        if (_contentFrame != null)
+        if (IsShowHandle && !IsHandleFloatable)
         {
-            if (IsShowHandle && !IsHandleFloatable)
+            var padding = SpinnerHandleWidth * 1.1;
+            if (ButtonSpinnerLocation == ButtonSpinnerLocation.Right)
             {
-                var padding = SpinnerHandleWidth * 1.1;
-                if (ButtonSpinnerLocation == ButtonSpinnerLocation.Right)
-                {
-                    _contentFrame.SetCurrentValue(PaddingProperty, new Thickness(ContentPadding.Left, ContentPadding.Top, padding,
-                        ContentPadding.Bottom));
-                }
-                else
-                {
-                    _contentFrame.SetCurrentValue(PaddingProperty, new Thickness(padding, ContentPadding.Top, ContentPadding.Right,
-                        ContentPadding.Bottom));
-                }
+                SetCurrentValue(EffectiveContentPaddingProperty, new Thickness(ContentPadding.Left, ContentPadding.Top, padding,
+                    ContentPadding.Bottom));
             }
             else
             {
-                _contentFrame.SetCurrentValue(PaddingProperty, ContentPadding);
+                SetCurrentValue(EffectiveContentPaddingProperty, new Thickness(padding, ContentPadding.Top, ContentPadding.Right,
+                    ContentPadding.Bottom));
             }
+        }
+        else
+        {
+            SetCurrentValue(EffectiveContentPaddingProperty, ContentPadding);
         }
     }
 
@@ -259,7 +267,6 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
         ConfigureEffectiveContentPadding();
     }
 }
