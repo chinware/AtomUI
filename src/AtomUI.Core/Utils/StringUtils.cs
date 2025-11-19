@@ -1,6 +1,6 @@
 using Avalonia.Media.TextFormatting.Unicode;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Utils;
 
 internal static class StringUtils
 {

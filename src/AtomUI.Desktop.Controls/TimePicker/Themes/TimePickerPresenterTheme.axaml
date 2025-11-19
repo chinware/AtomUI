@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     xmlns:timePickerLang="using:AtomUI.Desktop.Controls.TimePickerLang"
-    xmlns:localization="using:AtomUI.Desktop.Controls.Localization"
     x:ClassModifier="internal">
     <atom:BorderThicknessFilterConverter x:Key="BorderThicknessFilterConverter" Left="False" Right="False" Bottom="False"/>
     <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">
@@ -27,7 +26,7 @@
                                 ButtonType="Primary"
                                 HorizontalAlignment="Right"
                                 SizeType="Small"
-                                Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
+                                Content="{DynamicResource {x:Static atom:CommonLangResourceKey.Ok}}" />
                         </Panel>
                     </Border>
                     <atom:TimeView Name="{x:Static atom:TimePickerPresenterThemeConstants.TimeViewPart}"

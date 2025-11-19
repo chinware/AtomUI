@@ -2,7 +2,7 @@ using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 
-namespace AtomUI.Desktop.Controls;
+namespace AtomUI.Controls;
 
 public static class ApplicationExtensions
 {

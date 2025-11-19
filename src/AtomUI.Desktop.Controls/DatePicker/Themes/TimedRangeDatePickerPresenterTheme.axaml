@@ -5,7 +5,6 @@
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
     xmlns:datePickerLang="using:AtomUI.Desktop.Controls.DatePickerLang"
-    xmlns:localization="clr-namespace:AtomUI.Desktop.Controls.Localization"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:TimedRangeDatePickerPresenter}"
                   TargetType="atom:TimedRangeDatePickerPresenter">
@@ -38,7 +37,7 @@
                                 ButtonType="Primary"
                                 HorizontalAlignment="Right"
                                 SizeType="Small"
-                                Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
+                                Content="{DynamicResource {x:Static atom:CommonLangResourceKey.Ok}}" />
                         </Panel>
                     </Border>
                     <StackPanel Orientation="Horizontal">

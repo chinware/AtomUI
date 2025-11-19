@@ -2,7 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:localization="using:AtomUI.Desktop.Controls.Localization"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Empty}" TargetType="atom:Empty">
         <Setter Property="Template">
@@ -20,7 +19,7 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="Description" Value="{DynamicResource {x:Static localization:CommonLangResourceKey.NoData}}"/>
+        <Setter Property="Description" Value="{DynamicResource {x:Static atom:CommonLangResourceKey.NoData}}"/>
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Svg#PART_SvgImage">

@@ -1,8 +1,8 @@
 ﻿using Avalonia;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Utils;
 
-public static class MatrixUtil
+public static class MatrixUtils
 {
     public static void ScaleAt(ref this Matrix matrix, double scaleX, double scaleY, double centerX, double centerY)
     {

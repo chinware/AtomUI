@@ -1,9 +1,8 @@
-using AtomUI.Controls;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Styling;
 
-namespace AtomUI.Utils;
+namespace AtomUI.Controls;
 
 public static class WaveSpiritAwareControlExtensions
 {

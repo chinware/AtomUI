@@ -13,7 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" />
         <PackageReference Include="Avalonia.Svg" />
         <PackageReference Include="SkiaSharp.QrCode" />
         <PackageReference Include="ReactiveUI.Avalonia"/>
@@ -26,10 +25,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
-        <ProjectReference Include="../AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj" />
-        <ProjectReference Include="../AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj" />
-        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+        <ProjectReference Include="../AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj" />
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj" 
+                          OutputItemType="Analyzer" 
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Localization\" />
     </ItemGroup>
     
 </Project>

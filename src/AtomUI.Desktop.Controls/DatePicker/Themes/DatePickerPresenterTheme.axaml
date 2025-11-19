@@ -3,7 +3,6 @@
               xmlns:atom="https://atomui.net"
               xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
               xmlns:datePickerLang="using:AtomUI.Desktop.Controls.DatePickerLang"
-              xmlns:localization="clr-namespace:AtomUI.Desktop.Controls.Localization"
               x:Class="AtomUI.Desktop.Controls.Themes.DatePickerPresenterTheme"
               TargetType="atom:DatePickerPresenter"
               x:ClassModifier="internal">
@@ -33,7 +32,7 @@
                             ButtonType="Primary"
                             HorizontalAlignment="Right"
                             SizeType="Small"
-                            Content="{DynamicResource {x:Static localization:CommonLangResourceKey.Ok}}" />
+                            Content="{DynamicResource {x:Static atom:CommonLangResourceKey.Ok}}" />
                     </Panel>
                 </Border>
                 <StackPanel Orientation="Horizontal">

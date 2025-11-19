@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -154,7 +154,7 @@ public sealed class Watermark : Control
                             angle = -angle;
                         }
 
-                        var m = MatrixUtil.CreateRotationRadians(angle * Math.PI / 180, size.Width / 2,
+                        var m = MatrixUtils.CreateRotationRadians(angle * Math.PI / 180, size.Width / 2,
                             size.Height / 2);
                         using (context.PushTransform(Matrix.CreateTranslation(l, t)))
                         using (context.PushTransform(m))

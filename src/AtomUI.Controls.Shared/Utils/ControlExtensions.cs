@@ -4,7 +4,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media.Imaging;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Utils;
 
 internal static class ControlUtilsExtensions
 {

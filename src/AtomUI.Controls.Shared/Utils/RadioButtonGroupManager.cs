@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Utils;
 
 internal interface IRadioButton : ILogical
 {

@@ -33,7 +33,7 @@ internal class ThemeManager : Styles, IThemeManager
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ThemeManager>();
     
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
-        WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<ThemeManager>();
+        AvaloniaProperty.Register<ThemeManager, bool>(nameof(IsWaveSpiritEnabled));
     
     public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
         IThemeManager.IsDarkThemeModeProperty.AddOwner<ThemeManager>();

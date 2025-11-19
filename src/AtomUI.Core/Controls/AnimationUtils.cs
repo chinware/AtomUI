@@ -22,7 +22,7 @@ public sealed class TransitionUtils : BaseTransitionUtils
         {
             Property = targetProperty,
             Easing   = easing,
-            Delay = delay ??  TimeSpan.Zero,
+            Delay    = delay ??  TimeSpan.Zero,
         };
         var application = Application.Current;
         Debug.Assert(application != null);

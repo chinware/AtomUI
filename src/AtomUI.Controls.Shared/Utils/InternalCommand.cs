@@ -1,6 +1,6 @@
 using System.Windows.Input;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Utils;
 
 internal class InternalCommand : ICommand
 {

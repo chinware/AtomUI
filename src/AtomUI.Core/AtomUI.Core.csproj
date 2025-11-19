@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI.Controls.Shared"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid"/>
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker"/>

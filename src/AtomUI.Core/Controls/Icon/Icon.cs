@@ -15,7 +15,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class Icon : Control, ICustomHitTest, IMotionAwareControl
+public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 {
     public static readonly StyledProperty<IconInfo?> IconInfoProperty =
         AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));

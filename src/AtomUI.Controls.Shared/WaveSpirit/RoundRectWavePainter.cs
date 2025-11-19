@@ -1,4 +1,4 @@
-using AtomUI.Controls;
+using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;

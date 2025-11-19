@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <RootNamespace>AtomUI.Controls</RootNamespace>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
+        <ProjectReference Include="../AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj" />
+        <ProjectReference Include="../AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj" />
+        <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls" />
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid" />
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Avalonia.Controls">
+        <HintPath>..\..\..\..\output\bin\Debug\net9.0\Avalonia.Controls.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+    
+</Project>

@@ -17,7 +17,10 @@
 
     <ItemGroup>
         <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
-        <ProjectReference Include="../AtomUI.Icons.Generator/AtomUI.Icons.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all"/>
+        <ProjectReference Include="../AtomUI.Icons.Generator/AtomUI.Icons.Generator.csproj" 
+                          OutputItemType="Analyzer" 
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>

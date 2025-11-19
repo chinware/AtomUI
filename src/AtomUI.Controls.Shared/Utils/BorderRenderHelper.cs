@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Utils;
 
 /// <summary>
 /// Contains helper methods for rendering a <see cref="Border" />'s background and border to a given context.

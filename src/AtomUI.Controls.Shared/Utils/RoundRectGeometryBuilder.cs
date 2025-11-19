@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Utilities;
 
-namespace AtomUI.Controls;
+namespace AtomUI.Controls.Utils;
 
 /// <summary>
 /// Contains internal helpers used to build and draw various geometries.

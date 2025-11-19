@@ -13,8 +13,6 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new AtomUI.Desktop.Controls.DatePickerLang.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.DialogLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.DialogLang.zh_CN());
-            languageProviders.Add(new AtomUI.Desktop.Controls.Localization.en_US());
-            languageProviders.Add(new AtomUI.Desktop.Controls.Localization.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.PaginationLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.PaginationLang.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.PopupConfirmLang.en_US());
