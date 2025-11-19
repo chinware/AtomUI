@@ -208,6 +208,56 @@ public class IconPackageGenerator : IIncrementalGenerator
 
         sourceText.AppendLine("    }");
         sourceText.AppendLine("}");
+        
+        foreach (var info in fileInfos)
+        {
+            var svgParsedInfo = _svgParser.Parse(info.FileContent);
+            var viewBox   = svgParsedInfo.ViewBox;
+            var className = $"{info.Name}{info.ThemeType}";
+            sourceText.AppendLine($"public class {className} : Icon");
+            sourceText.AppendLine("{");
+            sourceText.AppendLine($"    public {className}()");
+            sourceText.AppendLine("    {");
+            sourceText.Append("        IconInfo = new IconInfo(");
+            sourceText.Append($"\"{info.Name}{info.ThemeType}\", ");
+            if (info.ThemeType == "TwoTone")
+            {
+                sourceText.Append($"new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height}), ");
+                sourceText.Append("new List<GeometryData>{");
+                // 需要判断主要颜色和次要颜色
+                for (var i = 0; i < svgParsedInfo.PathInfos.Count; i++)
+                {
+                    var pathInfo = svgParsedInfo.PathInfos[i];
+                    var isPrimary = !(pathInfo.FillColor != null &&
+                                      _twotoneTplSecondaryColors.Contains(pathInfo.FillColor));
+
+                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", {isPrimary.ToString().ToLower()})");
+                    if (i != svgParsedInfo.PathInfos.Count - 1)
+                    {
+                        sourceText.Append(", ");
+                    }
+                }
+            }
+            else
+            {
+                sourceText.Append($"IconThemeType.{info.ThemeType}, ");
+                sourceText.Append($"new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height}), ");
+                sourceText.Append("new List<GeometryData>{");
+                for (var i = 0; i < svgParsedInfo.PathInfos.Count; i++)
+                {
+                    var pathInfo = svgParsedInfo.PathInfos[i];
+                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", true)");
+                    if (i != svgParsedInfo.PathInfos.Count - 1)
+                    {
+                        sourceText.Append(", ");
+                    }
+                }
+            }
+
+            sourceText.Append("});\n");
+            sourceText.AppendLine("    }\n");
+            sourceText.AppendLine("}\n");
+        }
 
         ctx.AddSource($"{packageName}IconPackage.g.cs", sourceText.ToString());
     }

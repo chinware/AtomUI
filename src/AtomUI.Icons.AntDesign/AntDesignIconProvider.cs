@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using AtomUI.Controls;
 
 namespace AtomUI.Icons.AntDesign;
@@ -15,8 +16,24 @@ public class AntDesignIconProvider : IconProvider<AntDesignIconKind>
     
     protected override Icon GetIcon(AntDesignIconKind kind)
     {
-        var icon = AntDesignIconPackage.Current.BuildIcon(Kind);
-        Debug.Assert(icon != null);
-        return icon;
+        try
+        {
+            var fullTypeName = $"AtomUI.Icons.AntDesign.{kind.ToString()}";
+            var type = Type.GetType(fullTypeName) 
+                        ?? Assembly.GetExecutingAssembly().GetType(fullTypeName);
+            
+            if (type == null)
+            {
+                throw new InvalidOperationException($"{fullTypeName} not exist");
+            }
+            
+            var icon = (Icon?)Activator.CreateInstance(type);
+            Debug.Assert(icon != null);
+            return icon;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"create icon {kind.ToString()} failed", ex);
+        }
     }
 }

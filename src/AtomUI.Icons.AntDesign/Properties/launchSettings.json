@@ -3,7 +3,7 @@
   "profiles": {
     "Generators": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj"
+      "targetProject": "../AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj"
     }
   }
 }

@@ -4,9 +4,19 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Icon}" TargetType="atom:Icon">
+        
         <Setter Property="Template">
             <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"/>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+        <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
+        <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+        <Setter Property="PrimaryFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
+        <Setter Property="SecondaryFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
+        
     </ControlTheme>
 </ResourceDictionary>

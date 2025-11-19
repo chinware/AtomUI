@@ -177,7 +177,7 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
         if (CloseIcon == null)
         {
             ClearValue(CloseIconProperty);
-            SetValue(CloseIconProperty, AntDesignIconPackage.CloseOutlined(), BindingPriority.Template);
+            SetValue(CloseIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
     }
     

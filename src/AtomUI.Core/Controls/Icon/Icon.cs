@@ -4,19 +4,21 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Rendering;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
-public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
+public class Icon : PathIcon, IMotionAwareControl
 {
+    protected override Type StyleKeyOverride { get; } = typeof(Icon);
+    
     public static readonly StyledProperty<IconInfo?> IconInfoProperty =
         AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));
 
@@ -178,8 +180,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 
     static Icon()
     {
-        HeightProperty.OverrideDefaultValue<Icon>(14);
-        WidthProperty.OverrideDefaultValue<Icon>(14);
         AffectsMeasure<Icon>(HeightProperty, WidthProperty, IconInfoProperty);
         AffectsRender<Icon>(IconModeProperty,
             FilledBrushProperty,
@@ -301,17 +301,9 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 
     private void SetupFilledBrush()
     {
-        var colorInfo = IconInfo?.ColorInfo;
         if (IconMode == IconMode.Normal)
         {
-            if (NormalFilledBrush is not null)
-            {
-                FilledBrush = NormalFilledBrush;
-            }
-            else if (colorInfo.HasValue)
-            {
-                FilledBrush = new SolidColorBrush(colorInfo.Value.NormalColor);
-            }
+            FilledBrush = NormalFilledBrush;
         }
         else if (IconMode == IconMode.Active)
         {
@@ -322,10 +314,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             else if (NormalFilledBrush is not null)
             {
                 FilledBrush = NormalFilledBrush;
-            }
-            else if (colorInfo.HasValue)
-            {
-                FilledBrush = new SolidColorBrush(colorInfo.Value.ActiveColor);
             }
         }
         else if (IconMode == IconMode.Selected)
@@ -338,10 +326,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             {
                 FilledBrush = NormalFilledBrush;
             }
-            else if (colorInfo.HasValue)
-            {
-                FilledBrush = new SolidColorBrush(colorInfo.Value.SelectedColor);
-            }
         }
         else
         {
@@ -352,10 +336,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             else if (NormalFilledBrush is not null)
             {
                 FilledBrush = NormalFilledBrush;
-            }
-            else if (colorInfo.HasValue)
-            {
-                FilledBrush = new SolidColorBrush(colorInfo.Value.DisabledColor);
             }
         }
     }
@@ -425,7 +405,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         base.OnAttachedToLogicalTree(e);
         SetupRotateAnimation();
         BuildSourceRenderData();
-        SetupFilledBrush();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -446,6 +425,12 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         base.OnDetachedFromVisualTree(e);
         _animationCancellationTokenSource?.Cancel();
         Transitions = null;
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        SetupFilledBrush();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -540,31 +525,13 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
                 IBrush? fillBrush        = null;
                 if (IconInfo.ThemeType == IconThemeType.TwoTone)
                 {
-                    var colorInfo = IconInfo.TwoToneColorInfo;
-                    if (colorInfo.HasValue)
+                    if (geometryData.IsPrimary)
                     {
-                        if (geometryData.IsPrimary)
-                        {
-                            if (PrimaryFilledBrush is not null)
-                            {
-                                fillBrush = PrimaryFilledBrush;
-                            }
-                            else
-                            {
-                                fillBrush = new SolidColorBrush(colorInfo.Value.PrimaryColor);
-                            }
-                        }
-                        else
-                        {
-                            if (SecondaryFilledBrush is not null)
-                            {
-                                fillBrush = SecondaryFilledBrush;
-                            }
-                            else
-                            {
-                                fillBrush = new SolidColorBrush(colorInfo.Value.SecondaryColor);
-                            }
-                        }
+                        fillBrush = PrimaryFilledBrush;
+                    }
+                    else
+                    {
+                        fillBrush = SecondaryFilledBrush;
                     }
                 }
                 else
@@ -647,11 +614,5 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         translate *= Matrix.CreateScale(sx, sy);
         var size = new Size(shapeSize.Width * sx, shapeSize.Height * sy);
         return (size, translate);
-    }
-
-    public bool HitTest(Point point)
-    {
-        var targetRect = new Rect(0, 0, DesiredSize.Width, DesiredSize.Height);
-        return targetRect.Contains(point);
     }
 }

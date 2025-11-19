@@ -4,7 +4,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
-public record  GeometryData
+public record GeometryData
 {
     public string PathData { get; }
     public bool IsPrimary { get; }
