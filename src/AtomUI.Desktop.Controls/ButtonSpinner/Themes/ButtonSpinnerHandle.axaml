@@ -40,8 +40,8 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimaryActive}}" />
             <Setter Property="DisabledIconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleIconSize}}" />
-            <Setter Property="IconHeight"
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleIconSize}}" />
+            <Setter Property="Height"
                     Value="{DynamicResource {x:Static atom:ButtonSpinnerTokenKey.HandleIconSize}}" />
         </Style>
 
