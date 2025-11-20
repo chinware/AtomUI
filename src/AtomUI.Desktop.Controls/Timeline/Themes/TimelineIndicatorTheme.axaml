@@ -21,8 +21,8 @@
         <Setter Property="IndicatorTailColor" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorTailColor}}"/>
         
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
         </Style>
         
     </ControlTheme>

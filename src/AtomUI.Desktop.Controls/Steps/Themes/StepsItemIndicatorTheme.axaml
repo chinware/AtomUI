@@ -120,9 +120,9 @@
                     <Setter Property="Width" Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconSize}}" />
                     <Setter Property="Height" Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconSize}}" />
                     <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="IconWidth"
+                        <Setter Property="Width"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconFontSize}}" />
-                        <Setter Property="IconHeight"
+                        <Setter Property="Height"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.CustomIconFontSize}}" />
                     </Style>
                 </Style>

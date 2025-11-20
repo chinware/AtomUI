@@ -19,33 +19,33 @@
                     DisabledFilledBrush="{TemplateBinding DisabledFilledBrush}"
                     PrimaryFilledBrush="{TemplateBinding PrimaryFilledBrush}"
                     SecondaryFilledBrush="{TemplateBinding SecondaryFilledBrush}"
-                    IconWidth="{TemplateBinding IconWidth}"
-                    IconHeight="{TemplateBinding IconHeight}"
+                    Width="{TemplateBinding IconWidth}"
+                    Height="{TemplateBinding IconHeight}"
                     IconMode="{TemplateBinding IconMode}" />
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconWidth"
+                <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
-                <Setter Property="IconHeight"
+                <Setter Property="Height"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconWidth"
+                <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-                <Setter Property="IconHeight"
+                <Setter Property="Height"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconWidth"
+                <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-                <Setter Property="IconHeight"
+                <Setter Property="Height"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>

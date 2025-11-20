@@ -4,6 +4,6 @@
                             x:Class="AtomUI.Controls.SharedControlThemesProvider"
                             Id="AtomUI.Controls.Shared">
     <atom:ControlThemesProvider.ControlThemes>
-        <ResourceInclude Source="Icon/Themes/IconTheme.axaml" />
+        <ResourceInclude Source="Icon/Themes/IconThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>
