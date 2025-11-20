@@ -99,8 +99,7 @@
             <Setter Property="Padding"
                     Value="{DynamicResource {x:Static atom:SegmentedTokenKey.SegmentedItemPaddingSM}}" />
         </Style>
-
-        <!-- BuildIconStyle begin -->
+        
         <Style Selector="^:has-icon">
             <Style Selector="^ /template/ ContentPresenter#PART_Content">
                 <Setter Property="Margin"
@@ -121,31 +120,30 @@
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconWidth"
+                <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
-                <Setter Property="IconHeight"
+                <Setter Property="Height"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconWidth"
+                <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-                <Setter Property="IconHeight"
+                <Setter Property="Height"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             </Style>
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconWidth"
+                <Setter Property="Width"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-                <Setter Property="IconHeight"
+                <Setter Property="Height"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>
-        <!-- BuildIconStyle end -->
         
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
