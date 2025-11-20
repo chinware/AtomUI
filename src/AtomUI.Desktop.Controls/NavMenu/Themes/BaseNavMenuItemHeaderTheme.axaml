@@ -115,9 +115,9 @@
             <Setter Property="IsVisible" Value="False" />
             <Setter Property="Margin"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemMargin}}" />
-            <Setter Property="IconWidth"
+            <Setter Property="Width"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemIconSize}}" />
-            <Setter Property="IconHeight"
+            <Setter Property="Height"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemIconSize}}" />
             <Setter Property="NormalFilledBrush"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.ItemColor}}" />
