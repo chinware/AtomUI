@@ -13,8 +13,8 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"/>
                     <atom:IconPresenter Name="IconPresenter"
-                                        IconWidth="{TemplateBinding EffectiveIconSize}"
-                                        IconHeight="{TemplateBinding EffectiveIconSize}"
+                                        Width="{TemplateBinding EffectiveIconSize}"
+                                        Height="{TemplateBinding EffectiveIconSize}"
                                         Icon="{TemplateBinding Icon}"
                                         NormalFilledBrush="{TemplateBinding Foreground}"
                                         IsVisible="False" 
