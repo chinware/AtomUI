@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia.Svg" />
+        <PackageReference Include="Svg.Controls.Avalonia" />
         <PackageReference Include="SkiaSharp.QrCode" />
         <PackageReference Include="ReactiveUI.Avalonia"/>
         <PackageReference Include="Avalonia.Desktop"/>
@@ -30,10 +30,6 @@
                           OutputItemType="Analyzer" 
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Localization\" />
     </ItemGroup>
     
 </Project>

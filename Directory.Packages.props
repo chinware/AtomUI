@@ -10,9 +10,8 @@
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
         
         <PackageVersion Include="ReactiveUI.Avalonia" Version="11.3.8"/>
-
-        <!-- TODO 版本是否跟随 AvaloniaVersion？-->
-        <PackageVersion Include="Avalonia.Svg" Version="11.3.0"/>
+        
+        <PackageVersion Include="Svg.Controls.Avalonia" Version="11.3.6.2"/>
         <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1"/>
         <PackageVersion Include="SkiaSharp.QrCode" Version="0.7.0" />
 
