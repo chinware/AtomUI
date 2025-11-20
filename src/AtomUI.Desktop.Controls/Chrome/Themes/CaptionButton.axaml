@@ -14,8 +14,8 @@
                         <atom:IconPresenter
                             Name="{x:Static atom:CaptionButtonThemeConstants.NormalIconPresenterPart}"
                             Icon="{TemplateBinding NormalIcon}"
-                            IconWidth="{TemplateBinding IconWidth}"
-                            IconHeight="{TemplateBinding IconHeight}"
+                            Width="{TemplateBinding IconWidth}"
+                            Height="{TemplateBinding IconHeight}"
                             IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" />
@@ -23,8 +23,8 @@
                             Name="{x:Static atom:CaptionButtonThemeConstants.CheckedIconPresenterPart}"
                             Icon="{TemplateBinding CheckedIcon}"
                             IsVisible="{TemplateBinding IsChecked}"
-                            IconWidth="{TemplateBinding IconWidth}"
-                            IconHeight="{TemplateBinding IconHeight}"
+                            Width="{TemplateBinding IconWidth}"
+                            Height="{TemplateBinding IconHeight}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" />
                     </Panel>
