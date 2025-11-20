@@ -126,12 +126,11 @@
         <Style Selector="^[IsClosed=True]">
             <Setter Property="Margin" Value="0" />
         </Style>
-
-        <!-- BuildIconStyle begin -->
+        
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-            <Setter Property="IconWidth"
+            <Setter Property="Width"
                     Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationIconSize}}" />
-            <Setter Property="IconHeight"
+            <Setter Property="Height"
                     Value="{DynamicResource {x:Static atom:NotificationTokenKey.NotificationIconSize}}" />
         </Style>
 
@@ -162,9 +161,7 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
-        <!-- BuildIconStyle end -->
-
-        <!-- BuildHeaderStyle begin -->
+        
         <Style Selector="^ /template/ atom|SelectableTextBlock#PART_HeaderTitle">
             <Setter Property="LineHeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
@@ -197,7 +194,6 @@
             <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
         </Style>
-        <!-- BuildHeaderStyle end -->
 
         <Style Selector="^ /template/ ContentPresenter#Content">
             <Setter Property="Foreground"

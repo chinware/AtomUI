@@ -73,8 +73,8 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:PopupConfirmTokenKey.IconMargin}}" />
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
             <Setter Property="VerticalAlignment" Value="Top" />
         </Style>
 
