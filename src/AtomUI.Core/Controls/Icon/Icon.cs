@@ -11,12 +11,13 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Rendering;
 using Avalonia.Styling;
 using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public class Icon : PathIcon, IMotionAwareControl
+public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 {
     protected override Type StyleKeyOverride { get; } = typeof(Icon);
     
@@ -642,5 +643,10 @@ public class Icon : PathIcon, IMotionAwareControl
         translate *= Matrix.CreateScale(sx, sy);
         var size = new Size(shapeSize.Width * sx, shapeSize.Height * sy);
         return (size, translate);
+    }
+
+    public bool HitTest(Point point)
+    {
+        return true;
     }
 }
