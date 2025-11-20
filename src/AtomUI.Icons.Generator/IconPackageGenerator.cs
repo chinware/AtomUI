@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
@@ -86,7 +85,6 @@ public class IconPackageGenerator : IIncrementalGenerator
     private void GenerateIconPackage(string ns, ImmutableArray<SvgFileInfo> fileInfos, SourceProductionContext ctx)
     {
         var packageName      = GetPackageNameFromNs(ns);
-        var packageClassName = $"{packageName}IconPackage";
         
         var sourceText  = new StringBuilder();
         sourceText.AppendLine("///");
@@ -119,7 +117,7 @@ public class IconPackageGenerator : IIncrementalGenerator
                     var isPrimary = !(pathInfo.FillColor != null &&
                                       _twotoneTplSecondaryColors.Contains(pathInfo.FillColor));
 
-                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", {isPrimary.ToString().ToLower()})");
+                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", \"{pathInfo.Transform}\", {isPrimary.ToString().ToLower()})");
                     if (i != svgParsedInfo.PathInfos.Count - 1)
                     {
                         sourceText.Append(", ");
@@ -134,7 +132,7 @@ public class IconPackageGenerator : IIncrementalGenerator
                 for (var i = 0; i < svgParsedInfo.PathInfos.Count; i++)
                 {
                     var pathInfo = svgParsedInfo.PathInfos[i];
-                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", true)");
+                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", \"{pathInfo.Transform}\", true)");
                     if (i != svgParsedInfo.PathInfos.Count - 1)
                     {
                         sourceText.Append(", ");

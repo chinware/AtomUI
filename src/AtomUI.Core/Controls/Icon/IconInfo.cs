@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using Avalonia;
-using Avalonia.Media;
 
 namespace AtomUI.Controls;
 
@@ -8,11 +7,13 @@ public record GeometryData
 {
     public string PathData { get; }
     public bool IsPrimary { get; }
+    public string? Transform { get; }
 
-    public GeometryData(string pathData, bool isPrimary = true)
+    public GeometryData(string pathData, string? transform = null, bool isPrimary = true)
     {
         PathData  = pathData;
         IsPrimary = isPrimary;
+        Transform = transform;
     }
 }
 
@@ -43,7 +44,6 @@ public class IconInfo
         }
 
         Name      = name;
-        
         Data      = data;
         ThemeType = themeType;
         ViewBox   = viewBox;

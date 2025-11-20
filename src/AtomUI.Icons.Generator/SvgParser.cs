@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace AtomUI.Icons.Generators;
@@ -5,6 +6,7 @@ namespace AtomUI.Icons.Generators;
 internal record PathInfo
 {
     public string Data { get; set; }
+    public string? Transform { get; set; }
     public string? FillColor { get; set; }
 
     public PathInfo(string data, string? fillColor = null)
@@ -22,6 +24,11 @@ internal struct ViewBox
     public int Height { get; set; }
 }
 
+internal record GroupInfo
+{
+    public string? Transform { get; set; }
+}
+
 internal record SvgParsedInfo
 {
     public List<PathInfo> PathInfos { get; set; } = new();
@@ -32,13 +39,18 @@ internal class SvgParser
 {
     private const string SvgElementName = "svg";
     private const string PathElementName = "path";
+    private const string GroupElementName = "g";
     private const string FillAttrName = "fill";
     private const string DataAttrName = "d";
+    private const string TransformAttrName = "transform";
     private const string ViewBoxAttrName = "viewBox";
 
     private List<PathInfo>? _pathInfos;
     private ViewBox _viewBox;
     private bool _parseFinished;
+    // 暂时我只支持解析一层 g 标签
+    
+    private Stack<GroupInfo>? _groupInfoStack;
 
     // 上下文信息
     private Stack<string>? _currentElementNames;
@@ -96,12 +108,21 @@ internal class SvgParser
             return HandleStartPathElement(reader);
         }
 
+        if (name == GroupElementName)
+        {
+            return HandleStartGroupElement(reader);
+        }
+
         return false;
     }
 
     private bool HandleEndElement(string name)
     {
         _currentElementNames!.Pop();
+        if (name == GroupElementName)
+        {
+            HandleEndGroupElement();
+        }
         return name == SvgElementName;
     }
 
@@ -110,7 +131,7 @@ internal class SvgParser
         var viewBox = reader.GetAttribute(ViewBoxAttrName);
         if (viewBox is not null)
         {
-            var parts = viewBox.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = viewBox.Split([' '], StringSplitOptions.RemoveEmptyEntries);
             // 暂时没有进行错误处理
             _viewBox.X      = int.Parse(parts[0]);
             _viewBox.Y      = int.Parse(parts[1]);
@@ -126,7 +147,33 @@ internal class SvgParser
         var data      = reader.GetAttribute(DataAttrName);
         var fillColor = reader.GetAttribute(FillAttrName);
         var pathInfo  = new PathInfo(data!, fillColor);
+        if (_groupInfoStack?.Count > 0)
+        {
+            var groupInfo = _groupInfoStack.Peek();
+            pathInfo.Transform = groupInfo.Transform;
+        }
+        // 暂时自己的优先级大
+        var transform = reader.GetAttribute(TransformAttrName);
+        if (!string.IsNullOrEmpty(transform))
+        {
+            pathInfo.Transform = transform;
+        }
         _pathInfos!.Add(pathInfo);
         return false;
+    }
+    
+    private bool HandleStartGroupElement(XmlReader reader)
+    {
+        _groupInfoStack ??= new Stack<GroupInfo>();
+        var groupInfo = new GroupInfo();
+        var transform      = reader.GetAttribute(TransformAttrName);
+        groupInfo.Transform = transform;
+        _groupInfoStack.Push(groupInfo);
+        return false;
+    }
+
+    private void HandleEndGroupElement()
+    {
+        _groupInfoStack?.Pop();
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Specialized;
+using System.Diagnostics;
 using AtomUI.Animations;
+using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
@@ -351,7 +353,7 @@ public class Icon : PathIcon, IMotionAwareControl
         {
             return;
         }
-
+        
         foreach (var geometryData in IconInfo.Data)
         {
             _sourceGeometriesData.Add(Geometry.Parse(geometryData.PathData));
@@ -361,8 +363,10 @@ public class Icon : PathIcon, IMotionAwareControl
         // 先求最大的 bounds
         // 裁剪边距算法，暂时先注释掉
         Geometry? combined = null;
-        foreach (var geometry in _sourceGeometriesData)
+
+        for (var i = 0; i < _sourceGeometriesData.Count; i++)
         {
+            var geometry  = _sourceGeometriesData[i];
             if (combined is null)
             {
                 combined = geometry;
@@ -381,23 +385,45 @@ public class Icon : PathIcon, IMotionAwareControl
 
         var scaleX = 1 - margin / _viewBox.Width;
         var scaleY = 1 - margin / _viewBox.Height;
-
+        
         if (margin > 0)
         {
+            _viewBox = combined.Bounds;
             for (var i = 0; i < _sourceGeometriesData.Count; i++)
             {
                 var geometry = _sourceGeometriesData[i];
                 var cloned   = geometry.Clone();
                 var offsetX  = -margin / 2;
                 var offsetY  = -margin / 2;
-                var matrix   = Matrix.CreateTranslation(offsetX, offsetY);
+                var matrix   = BuildGeometryItemMatrix(i);
+                matrix                   *= Matrix.CreateTranslation(offsetX, offsetY);
                 matrix                   *= Matrix.CreateScale(scaleX, scaleY);
                 cloned.Transform         =  new MatrixTransform(matrix);
                 _sourceGeometriesData[i] =  cloned;
             }
-
-            _viewBox = combined.Bounds;
         }
+        else
+        {
+            for (var i = 0; i < _sourceGeometriesData.Count; i++)
+            {
+                var geometry = _sourceGeometriesData[i];
+                var cloned   = geometry.Clone();
+                cloned.Transform         = new MatrixTransform(BuildGeometryItemMatrix(i));
+                _sourceGeometriesData[i] = cloned;
+            }
+        }
+    }
+
+    private Matrix BuildGeometryItemMatrix(int index)
+    {
+        Debug.Assert(IconInfo != null);
+        var data = IconInfo.Data[index];
+        if (string.IsNullOrEmpty(data.Transform))
+        {
+            return Matrix.Identity;
+        }
+
+        return TransformParser.Parse(data.Transform).Value;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -508,6 +534,7 @@ public class Icon : PathIcon, IMotionAwareControl
         {
             var sourceGeometry = _sourceGeometriesData[i];
             var (_, transform) = CalculateSizeAndTransform(finalSize, sourceGeometry.Bounds);
+            
             _transforms.Insert(i, transform);
         }
 
@@ -518,7 +545,6 @@ public class Icon : PathIcon, IMotionAwareControl
     {
         if (IsVisible && _transforms.Count == _sourceGeometriesData.Count && _sourceGeometriesData.Count > 0 && DesiredSize != default)
         {
-          
             for (var i = 0; i < _sourceGeometriesData.Count; i++)
             {
                 var     renderedGeometry = _sourceGeometriesData[i];
@@ -562,6 +588,9 @@ public class Icon : PathIcon, IMotionAwareControl
         // 计算位移的比例因子
         var offsetXScale = Math.Floor(availableSize.Width / viewBoxWidth);
         var offsetYScale = Math.Floor(availableSize.Height / viewBoxHeight);
+        
+        offsetXScale = offsetXScale > 1 ? 1 / offsetXScale : offsetXScale;
+        offsetYScale = offsetYScale > 1 ? 1 / offsetYScale : offsetYScale;
 
         var offsetX = shapeBounds.X;
         var offsetY = shapeBounds.Y;
@@ -598,7 +627,7 @@ public class Icon : PathIcon, IMotionAwareControl
         {
             sy = desiredY / shapeSize.Height;
         }
-
+        
         if (double.IsInfinity(availableSize.Width))
         {
             sx = sy;

@@ -175,7 +175,7 @@ public class List : TemplatedControl,
     
     private IList? _selectedItems;
 
-    internal IList? SelectedItems
+    public IList? SelectedItems
     {
         get => _selectedItems;
         set => SetAndRaise(SelectedItemsProperty, ref _selectedItems, value);
@@ -183,7 +183,7 @@ public class List : TemplatedControl,
     
     private object? _selectedItem;
 
-    internal object? SelectedItem
+    public object? SelectedItem
     {
         get => _selectedItem;
         set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
