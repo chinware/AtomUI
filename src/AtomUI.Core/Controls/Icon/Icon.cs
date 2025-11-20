@@ -196,7 +196,6 @@ public class Icon : PathIcon, IMotionAwareControl
     {
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
-        this.ConfigureMotionBindingStyle();
         Classes.CollectionChanged += HandlePseudoClassesChanged;
     }
 
@@ -507,7 +506,7 @@ public class Icon : PathIcon, IMotionAwareControl
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        base.MeasureOverride(availableSize);
+        var size = base.MeasureOverride(availableSize);
         if (_sourceGeometriesData.Count == 0)
         {
             return default;

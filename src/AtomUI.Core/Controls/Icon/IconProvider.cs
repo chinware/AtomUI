@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -23,7 +22,7 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
 
     public double Width { get; set; } = double.NaN;
     public double Height { get; set; } = double.NaN;
-    public IconAnimation Animation { get; set; } = IconAnimation.None;
+    public IconAnimation? Animation { get; set; }
 
     public IconProvider()
     {
@@ -38,15 +37,39 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
     {
         Debug.Assert(Kind != null);
         var icon = GetIcon(Kind);
-        icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
-        
-        icon.SetValue(Icon.NormalFilledBrushProperty, NormalFilledColor, NormalFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
-        icon.SetValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor, ActiveFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
-        icon.SetValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor, SelectedFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
-        icon.SetValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor, DisabledFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
-        icon.SetValue(Icon.PrimaryFilledBrushProperty, PrimaryFilledColor, PrimaryFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
-        icon.SetValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor, SecondaryFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
 
+        if (Animation != null)
+        {
+            icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
+        }
+        
+        if (NormalFilledColor != null)
+        {
+            icon.SetCurrentValue(Icon.NormalFilledBrushProperty, NormalFilledColor);
+        }
+        if (ActiveFilledColor != null)
+        {
+            icon.SetCurrentValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor);
+        }
+        if (SelectedFilledColor != null)
+        {
+            icon.SetCurrentValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor);
+        }
+        
+        if (DisabledFilledColor != null)
+        {
+            icon.SetCurrentValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor);
+        }
+        
+        if (PrimaryFilledColor != null)
+        {
+            icon.SetCurrentValue(Icon.PrimaryFilledBrushProperty, PrimaryFilledColor);
+        }
+        if (SecondaryFilledColor != null)
+        {
+            icon.SetCurrentValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor);
+        }
+        
         if (!double.IsNaN(Width))
         {
             icon.SetCurrentValue(Layoutable.WidthProperty, Width);

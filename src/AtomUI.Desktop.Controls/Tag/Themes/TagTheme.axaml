@@ -17,7 +17,8 @@
                     <atom:IconPresenter Name="IconPresenter"
                                         DockPanel.Dock="Left"
                                         Icon="{TemplateBinding Icon}"
-                                        NormalFilledBrush="{TemplateBinding Foreground}" />
+                                        NormalFilledBrush="{TemplateBinding Foreground}" 
+                                        IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
                                      DockPanel.Dock="Right"
                                      IsVisible="{TemplateBinding IsClosable}"

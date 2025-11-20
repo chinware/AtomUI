@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
-using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -140,16 +139,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     public IconPresenter()
     {
         UpdatePseudoClasses();
-    }
-    
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        return LayoutHelper.MeasureChild(Icon, availableSize, Padding);
-    }
-    
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        return LayoutHelper.ArrangeChild(Icon, finalSize, Padding);
     }
     
     private void ChildChanged(AvaloniaPropertyChangedEventArgs e)
