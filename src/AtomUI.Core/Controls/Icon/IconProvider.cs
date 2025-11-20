@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -8,9 +9,6 @@ namespace AtomUI.Controls;
 public abstract class IconProvider<TIconKind> : MarkupExtension
     where TIconKind : Enum
 {
-    public static IBrush? DefaultFilledColor { get; set; }
-    public static IBrush? DefaultPrimaryFilledColor { get; set; }
-    public static IBrush? DefaultSecondaryFilledColor { get; set; }
     public TIconKind? Kind { get; set; }
 
     // Filled 和 Outlined
@@ -41,12 +39,13 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
         Debug.Assert(Kind != null);
         var icon = GetIcon(Kind);
         icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
-        icon.SetCurrentValue(Icon.NormalFilledBrushProperty, NormalFilledColor ?? DefaultFilledColor);
-        icon.SetCurrentValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor ?? DefaultFilledColor);
-        icon.SetCurrentValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor ?? DefaultFilledColor);
-        icon.SetCurrentValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor ?? DefaultFilledColor);
-        icon.SetCurrentValue(Icon.PrimaryFilledBrushProperty, PrimaryFilledColor ?? DefaultPrimaryFilledColor);
-        icon.SetCurrentValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor ?? DefaultSecondaryFilledColor);
+        
+        icon.SetValue(Icon.NormalFilledBrushProperty, NormalFilledColor, NormalFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
+        icon.SetValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor, ActiveFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
+        icon.SetValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor, SelectedFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
+        icon.SetValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor, DisabledFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
+        icon.SetValue(Icon.PrimaryFilledBrushProperty, PrimaryFilledColor, PrimaryFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
+        icon.SetValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor, SecondaryFilledColor != null ? BindingPriority.LocalValue : BindingPriority.Template);
 
         if (!double.IsNaN(Width))
         {
