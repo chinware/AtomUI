@@ -60,9 +60,9 @@
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="NormalFilledBrush"
                     Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.ItemColor}}" />
-            <Setter Property="IconWidth"
+            <Setter Property="Width"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="IconHeight"
+            <Setter Property="Height"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
         </Style>
         
