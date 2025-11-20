@@ -82,7 +82,7 @@
 
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Color" Value="Black" />
+        <Setter Property="Color" Value="{DynamicResource {x:Static atom:QRCodeTokenKey.QRCodeTextColor}}" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:QRCodeTokenKey.QRCodeTextColor}}" />
         <Setter Property="Background" Value="Transparent" />
         
