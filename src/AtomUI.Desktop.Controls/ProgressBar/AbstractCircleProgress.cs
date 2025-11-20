@@ -261,11 +261,11 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     {
         var circleSize     = CalculateCircleSize();
         var calculatedSize = Math.Max(circleSize / 4.5, CircleMinimumIconSize);
-        _exceptionCompletedIconPresenter!.IconWidth  = calculatedSize;
-        _exceptionCompletedIconPresenter!.IconHeight = calculatedSize;
+        _exceptionCompletedIconPresenter!.Width  = calculatedSize;
+        _exceptionCompletedIconPresenter!.Height = calculatedSize;
 
-        _successCompletedIconPresenter!.IconWidth  = calculatedSize;
-        _successCompletedIconPresenter!.IconHeight = calculatedSize;
+        _successCompletedIconPresenter!.Width  = calculatedSize;
+        _successCompletedIconPresenter!.Height = calculatedSize;
     }
 
     protected override Size ArrangeOverride(Size finalSize)
