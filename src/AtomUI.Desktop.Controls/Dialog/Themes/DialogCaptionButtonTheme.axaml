@@ -14,8 +14,8 @@
                         <atom:IconPresenter
                             Name="NormalIconPresenter"
                             Icon="{TemplateBinding NormalIcon}"
-                            IconWidth="{TemplateBinding IconWidth}"
-                            IconHeight="{TemplateBinding IconHeight}"
+                            Width="{TemplateBinding IconWidth}"
+                            Height="{TemplateBinding IconHeight}"
                             IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -24,8 +24,8 @@
                             Name="CheckedIconPresenter"
                             Icon="{TemplateBinding CheckedIcon}"
                             IsVisible="{TemplateBinding IsChecked}"
-                            IconWidth="{TemplateBinding IconWidth}"
-                            IconHeight="{TemplateBinding IconHeight}"
+                            Width="{TemplateBinding IconWidth}"
+                            Height="{TemplateBinding IconHeight}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" 
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
