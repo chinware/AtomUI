@@ -48,7 +48,9 @@ Documentation Language: [English](README.md) | [简体中文](README.zh-CN.md)
 
 <img src="./resources/images/readme/Gitee2025.png"/>
 
-Developing foundational software can be exceptionally tedious. Dear developer friends, if you have a Gitee account, we would greatly appreciate your valuable vote for AtomUI OSS. Our project is also free for commercial use, empowering small and medium-sized enterprises in their digital transformation. Your precious vote is our driving force forward.
+Developing foundational software can be exceptionally tedious. Dear developer friends, if you have a Gitee account, we
+would greatly appreciate your valuable vote for AtomUI OSS. Our project is also free for commercial use, empowering
+small and medium-sized enterprises in their digital transformation. Your precious vote is our driving force forward.
 
 [Click to Vote](https://gitee.com/activity/2025opensource?ident=IAHHVA)
 
@@ -98,21 +100,25 @@ has not released a long-term support version, so it is recommended to install th
 
 The packages we have released are as follows:
 
-| Package                     | Description                                                                                                                                |
-|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| AtomUI                      | Main library, includes the theme system and all controls of the AtomUI OSS version                                                         |
+| Package                             | Description                                                                                                                                |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| AtomUI.Core                         | The basic functional package includes basic classes and a style system.                                                                    |
+| AtomUI.Controls.Shared              | Basic control package for both mobile phones and desktops                                                                                  |
+| AtomUI.Desktop.Controls             | Main Controls package for desktops                                                                                                         |
 | AtomUI.Desktop.Controls.DataGrid    | Data grid control. Can be omitted if not used.                                                                                             |
 | AtomUI.Desktop.Controls.ColorPicker | ColorPicker control. Can be omitted if not used.                                                                                           |
-| AtomUI.Generator            | Source generator definitions required for custom controls. Required if integrating with AtomUI theme system when creating custom controls. |
-| AtomUI.IconPkg.Generator    | Required if you need to create custom icon packages.                                                                                       |
+| AtomUI.Generator                    | Source generator definitions required for custom controls. Required if integrating with AtomUI theme system when creating custom controls. |
+| AtomUI.Icons.Generator              | Required if you need to create custom icon packages.                                                                                       |
+| AtomUI.Fonts.AlibabaSans            | Alibaba Sans font package                                                                                                                  |
 
 ```bash
-dotnet add package AtomUI --version 5.0.2
+dotnet add package AtomUI --version 5.1.0
 ```
 
 ##### Enable AtomUI library
 
 ###### Project Configure
+
 ```xaml
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
@@ -125,8 +131,7 @@ dotnet add package AtomUI --version 5.0.2
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="5.0.2"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.8"/>
+        <PackageReference Include="AtomUI" Version="5.1.0"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.8">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
@@ -151,7 +156,6 @@ class Program
         return AppBuilder.Configure<App>()
             .UseReactiveUI()
             .UsePlatformDetect()
-            .WithAlibabaSansFont()
             .With(new Win32PlatformOptions())
             .LogToTrace();
     }
@@ -171,7 +175,11 @@ public partial class App : Application
         {
             builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
-            builder.UseOSSControls();
+            builder.UseAlibabaSansFont(); // 配置字体
+            builder.UseDesktopControls();
+            builder.UseGalleryControls();
+            builder.UseDesktopDataGrid();
+            builder.UseDesktopColorPicker(); 
         });
     }
 }
@@ -186,6 +194,7 @@ You can start using it in your own projects
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:atom="using:AtomUI.Controls"
              xmlns:local="using:AtomUIProgressApp"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              x:Class="AtomUIProgressApp.MainWindow"
              Title="AtomUIProgressApp"
              Width="800"
@@ -201,7 +210,7 @@ You can start using it in your own projects
             <atom:CircleProgress Value="{Binding ProgressValue}" Minimum="0" Maximum="100"
                                  HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                <atom:Button Click="HandleSubBtnClicked">Sub</atom:Button>
+                <atom:Button Click="HandleSubBtnClicked" Icon="{atom:AntDesignIconProvider PlusOutlined}">Sub</atom:Button>
                 <atom:Button Click="HandleAddBtnClicked">Add</atom:Button>
             </StackPanel>
         </StackPanel>
@@ -220,6 +229,7 @@ git clone --recurse-submodules https://github.com/chinware/AtomUI.ControlGallery
 cd AtomUI.ControlGallery
 dotnet build
 ```
+
 <div style="height:50px"></div>
 
 #### Acknowledgements
@@ -274,7 +284,8 @@ GitHub [Issues][github-issues-link] to get stuck in to show us what you’re mad
     <img src="./resources/images/readme/Qinware.png" width="300" />
 </p>
 
-Qinware Technology Co., Ltd. is a technology company dedicated to the development of productivity tool software. Since its
+Qinware Technology Co., Ltd. is a technology company dedicated to the development of productivity tool software. Since
+its
 inception, it has been determined to deepen its roots in the field of tool software, practice the spirit of continuous
 improvement in research and development, and strive to launch high-quality productivity tool software to serve
 developers at home and abroad, improve developers' work efficiency, and create commercial value and social value.

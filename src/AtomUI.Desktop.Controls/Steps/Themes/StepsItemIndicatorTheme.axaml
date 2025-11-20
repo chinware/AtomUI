@@ -29,6 +29,7 @@
                                                                  HorizontalAlignment="Center"
                                                                  IsVisible="False"
                                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                        
                                         <antdicons:CloseOutlined Name="ErrorMark"
                                                                  VerticalAlignment="Center"
                                                                  HorizontalAlignment="Center"

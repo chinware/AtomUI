@@ -13,18 +13,31 @@
 ![](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
 [github-release-shield]: https://img.shields.io/github/v/release/chinware/AtomUI?color=369eff&labelColor=black&logo=github&style=flat-square
+
 [github-release-link]: https://github.com/chinware/AtomUI/releases
+
 [github-releasedate-shield]: https://img.shields.io/github/release-date/chinware/AtomUI?color=black&labelColor=black&style=flat-square
+
 [github-releasedate-link]: https://github.com/chinware/AtomUI/releases
+
 [github-contributors-shield]: https://img.shields.io/github/contributors/chinware/AtomUI?color=c4f042&labelColor=black&style=flat-square
+
 [github-contributors-link]: https://github.com/chinware/AtomUI/graphs/contributors
+
 [github-forks-shield]: https://img.shields.io/github/forks/chinware/AtomUI?color=8ae8ff&labelColor=black&style=flat-square
+
 [github-forks-link]: https://github.com/chinware/AtomUI/network/members
+
 [github-stars-shield]: https://img.shields.io/github/stars/chinware/AtomUI?color=ffcb47&labelColor=black&style=flat-square
+
 [github-stars-link]: https://github.com/chinware/AtomUI/network/stargazers
+
 [github-issues-shield]: https://img.shields.io/github/issues/chinware/AtomUI?color=ff80eb&labelColor=black&style=flat-square
+
 [github-issues-link]: https://github.com/chinware/AtomUI/issues
+
 [github-license-shield]: https://img.shields.io/github/license/chinware/AtomUI?color=white&labelColor=black&style=flat-square
+
 [github-license-link]: https://github.com/chinware/AtomUI/blob/master/LICENSE
 
 文档语言: [English](README.md) | [简体中文](README.zh-CN.md)
@@ -33,7 +46,8 @@
 
 <img src="./resources/images/readme/Gitee2025.png"/>
 
-研发基础软件过程异常枯燥，各位开发者朋友，如果您有 Gitee 账户，辛苦给 AtomUI OSS 投下宝贵一票，因为我们项目也是免费商用，赋能中小企业数字化转型，您宝贵的投票就是我们前进的动力。
+研发基础软件过程异常枯燥，各位开发者朋友，如果您有 Gitee 账户，辛苦给 AtomUI OSS
+投下宝贵一票，因为我们项目也是免费商用，赋能中小企业数字化转型，您宝贵的投票就是我们前进的动力。
 [点击投票](https://gitee.com/activity/2025opensource?ident=IAHHVA)
 
 #### 介绍
@@ -63,6 +77,7 @@ PS: AtomUI 目前仅在 Windows 11 平台测试<br>
 </p>
 
 #### 中文社区
+
 目前我们暂时只创建 QQ 和微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
 
 <table border="0">
@@ -87,21 +102,25 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 
 目前我们已经发布的包如下：
 
-| 包名称                         | 描述                                                    |
-|-----------------------------|-------------------------------------------------------|
-| AtomUI                      | 主库，包含了主题系统和 AtomUI OSS 版本所有的控件                        |
-| AtomUI.Desktop.Controls.DataGrid    | 数据表格控件，如果不用可以不引入                                      |
-| AtomUI.Desktop.Controls.ColorPicker | 颜色选择控件，如果不用可以不引入                                      |
-| AtomUI.Generator            | 自定义控件需要的一些源码生成器定义，您如果在自定义控件的时候需要接入 AtomUI 主题系统，需要引入此包 |
-| AtomUI.IconPkg.Generator    | 如果您需要自定义 Icon 包，需要引入此包                                |
+| 包名                                  | 描述                                                 |
+|-------------------------------------|----------------------------------------------------|
+| AtomUI.Core                         | 基础功能包，包含基本类和样式系统                                   |
+| AtomUI.Controls.Shared              | 手机和桌面通用的基础控件包                                      |
+| AtomUI.Desktop.Controls             | 桌面端主要控件包                                           |
+| AtomUI.Desktop.Controls.DataGrid    | 数据表格控件。开发者按需引入                                     |
+| AtomUI.Desktop.Controls.ColorPicker | 颜色选择器控件。开发者按需引入                                    |
+| AtomUI.Generator                    | 自定义控件所需的源生成器定义。如果创建自定义控件时需要与 AtomUI 主题系统集成，则必须包含此包 |
+| AtomUI.Icons.Generator              | 如果需要创建自定义图标包，则必须包含此包                               |
+| AtomUI.Fonts.AlibabaSans            | 阿里巴巴普惠体字体包                                         |
 
 ```bash
-dotnet add package AtomUI --version 5.0.2
+dotnet add package AtomUI --version 5.1.0
 ```
 
 ##### 启用 AtomUI 库
 
 ###### 配置项目文件
+
 ```xaml
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
@@ -114,8 +133,7 @@ dotnet add package AtomUI --version 5.0.2
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="5.0.2"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.8"/>
+        <PackageReference Include="AtomUI" Version="5.1.0"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.8">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
@@ -140,7 +158,6 @@ class Program
         return AppBuilder.Configure<App>()
             .UseReactiveUI()
             .UsePlatformDetect()
-            .WithAlibabaSansFont()
             .With(new Win32PlatformOptions())
             .LogToTrace();
     }
@@ -160,7 +177,11 @@ public partial class App : Application
         {
             builder.WithDefaultLanguageVariant(LanguageVariant.zh_CN);
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
-            builder.UseOSSControls();
+            builder.UseAlibabaSansFont(); // 配置字体
+            builder.UseDesktopControls();
+            builder.UseGalleryControls();
+            builder.UseDesktopDataGrid();
+            builder.UseDesktopColorPicker(); 
         });
     }
 }
@@ -175,6 +196,7 @@ public partial class App : Application
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:atom="using:AtomUI.Controls"
              xmlns:local="using:AtomUIProgressApp"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              x:Class="AtomUIProgressApp.MainWindow"
              Title="AtomUIProgressApp"
              Width="800"
@@ -190,7 +212,7 @@ public partial class App : Application
             <atom:CircleProgress Value="{Binding ProgressValue}" Minimum="0" Maximum="100"
                                  HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                <atom:Button Click="HandleSubBtnClicked">Sub</atom:Button>
+                <atom:Button Click="HandleSubBtnClicked" Icon="{atom:AntDesignIconProvider PlusOutlined}">Sub</atom:Button>
                 <atom:Button Click="HandleAddBtnClicked">Add</atom:Button>
             </StackPanel>
         </StackPanel>
@@ -231,7 +253,10 @@ Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面�
 </div>
 
 #### 许可证说明
-使用 AtomUI 的项目需要遵循 LGPL v3 协议，<strong>商业应用(包括且不限于公司内部项目、个人使用 AtomUI OSS 开发的商业项目和承接的外包项目)在使用二进制连接的情况下免费</strong>，如果基于源码定制 AtomUI 需要修改的代码开源或者购买商业授权，需要商业授权，欢迎联系：北京秦派软件科技有限公司。
+
+使用 AtomUI 的项目需要遵循 LGPL v3 协议，<strong>商业应用(包括且不限于公司内部项目、个人使用 AtomUI OSS
+开发的商业项目和承接的外包项目)在使用二进制连接的情况下免费</strong>，如果基于源码定制 AtomUI
+需要修改的代码开源或者购买商业授权，需要商业授权，欢迎联系：北京秦派软件科技有限公司。
 
 ### 🤝 贡献
 
@@ -242,9 +267,13 @@ Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面�
 [![][github-contrib-shield]][github-contrib-link]
 
 [github-issues-link]: https://github.com/chinware/AtomUI/issues
+
 [pr-welcome-shield]: https://img.shields.io/badge/PR%20WELCOME-%E2%86%92-ffcb47?labelColor=black&style=for-the-badge
+
 [pr-welcome-link]: https://github.com/chinware/AtomUI/pulls
+
 [github-contrib-shield]: https://contrib.rocks/image?repo=chinware%2FAtomUI
+
 [github-contrib-link]: https://github.com/chinware/AtomUI/graphs/contributors
 
 #### 关于秦派软件
@@ -253,4 +282,5 @@ Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面�
     <img src="./resources/images/readme/Qinware.png" width="300" />
 </p>
 
-北京秦派软件科技有限公司(Qinware Technology Co., Ltd.)是一家致力于开发生产力工具软件的技术公司，成立之初立志要在工具软件领域深耕，践行精益求精的研发精神，努力推出优质的生产力工具软件服务国内外的开发者，提升开发者的工作效率，同时创造出商业价值和社会价值。
+北京秦派软件科技有限公司(Qinware Technology Co., Ltd.)
+是一家致力于开发生产力工具软件的技术公司，成立之初立志要在工具软件领域深耕，践行精益求精的研发精神，努力推出优质的生产力工具软件服务国内外的开发者，提升开发者的工作效率，同时创造出商业价值和社会价值。
