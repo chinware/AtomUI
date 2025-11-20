@@ -61,8 +61,8 @@ internal class ButtonSpinnerHandle : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        IncreaseButton          = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.IncreaseButtonPart);
-        DecreaseButton          = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.DecreaseButtonPart);
+        IncreaseButton = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.IncreaseButtonPart);
+        DecreaseButton = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.DecreaseButtonPart);
         ButtonsCreated?.Invoke(this, EventArgs.Empty);
     }
     

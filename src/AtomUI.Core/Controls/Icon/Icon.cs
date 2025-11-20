@@ -185,6 +185,7 @@ public class Icon : PathIcon, IMotionAwareControl
             ActiveFilledBrushProperty,
             SelectedFilledBrushProperty,
             DisabledFilledBrushProperty,
+            FilledBrushProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
     }
