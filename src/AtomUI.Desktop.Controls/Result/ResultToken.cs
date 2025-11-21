@@ -1,0 +1,61 @@
+using AtomUI.Theme.TokenSystem;
+using Avalonia;
+using Avalonia.Media;
+
+namespace AtomUI.Desktop.Controls;
+
+[ControlDesignToken]
+internal class ResultToken : AbstractControlDesignToken
+{
+    public const string ID = "Result";
+    
+    /// <summary>
+    /// 标题字体大小
+    /// </summary>
+    public double TitleFontSize { get; set; }
+    
+    /// <summary>
+    /// 副标题字体大小
+    /// </summary>
+    public double SubtitleFontSize { get; set; }
+    
+    /// <summary>
+    /// 图标大小
+    /// </summary>
+    public double IconSize { get; set; }
+    
+    /// <summary>
+    /// 额外区域外间距
+    /// </summary>
+    public Thickness ExtraMargin { get; set; }
+    
+    public double ImageWidth { get; set; }
+    public double ImageHeight { get; set; }
+    
+    public Color ResultInfoIconColor { get; set; }
+    public Color ResultSuccessIconColor { get; set; }
+    public Color ResultWarningIconColor { get; set; }
+    public Color ResultErrorIconColor { get; set; }
+    
+    public ResultToken()
+        : base(ID)
+    {
+    }
+
+    public override void CalculateTokenValues()
+    {
+        base.CalculateTokenValues();
+        TitleFontSize    = SharedToken.FontSizeHeading3;
+        SubtitleFontSize = SharedToken.FontSize;
+        IconSize         = SharedToken.FontSizeHeading3 * 3;
+        ExtraMargin      = new Thickness(0, SharedToken.UniformlyPaddingLG, 0, 0);
+
+        ImageWidth = 250;
+        ImageHeight = 295;
+
+        ResultInfoIconColor = SharedToken.ColorInfo;
+        ResultSuccessIconColor = SharedToken.ColorSuccess;
+        ResultWarningIconColor = SharedToken.ColorWarning;
+        ResultErrorIconColor = SharedToken.ColorError;
+    }
+}
