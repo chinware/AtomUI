@@ -29,6 +29,8 @@
                                         CornerRadius="{TemplateBinding CornerRadius}"
                                         ClipToBounds="True"
                                         Cursor="Arrow"
+                                        Container.Name="{x:Static atom:WindowThemeConstants.GlobalQueryContainerPart}"
+                                        Container.Sizing="WidthAndHeight"
                                         Padding="{TemplateBinding Padding}">
                                     <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
                                                       ContentTemplate="{TemplateBinding ContentTemplate}"

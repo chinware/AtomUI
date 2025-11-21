@@ -6,6 +6,7 @@ internal static class WindowThemeConstants
     public const string WindowResizerPart = "PART_WindowResizer";
     public const string TitleBarPart = "PART_TitleBar";
     public const string ContentLayoutPart = "PART_ContentLayout";
+    public const string GlobalQueryContainerPart = "PART_GlobalQueryContainer";
 }
 
 internal static class WindowResizerThemeConstants
