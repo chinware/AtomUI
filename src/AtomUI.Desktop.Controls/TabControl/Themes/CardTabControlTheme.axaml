@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:CardTabControl}" TargetType="atom:CardTabControl">
@@ -41,7 +42,7 @@
                                         <atom:TabsContainerPanel.AddTabButton>
                                             <atom:IconButton
                                                 Name="{x:Static atom:TabControlThemeConstants.AddTabButtonPart}"
-                                                Icon="{atom:AntDesignIconProvider PlusOutlined}"
+                                                Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
                                                 BorderThickness="{TemplateBinding CardBorderThickness}"
                                                 CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"
                                                 IsVisible="{TemplateBinding IsShowAddTabButton}" />

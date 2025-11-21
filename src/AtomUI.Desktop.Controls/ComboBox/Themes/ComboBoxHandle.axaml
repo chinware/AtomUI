@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ComboBoxHandle}" TargetType="atom:ComboBoxHandle">
         <Setter Property="Template">
@@ -10,7 +11,7 @@
                     Name="{x:Static atom:ComboBoxHandleThemeConstants.OpenIndicatorButtonPart}"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                     IsEnabled="{TemplateBinding IsEnabled}"
-                    Icon="{atom:AntDesignIconProvider DownOutlined}"
+                    Icon="{antdicons:AntDesignIconProvider DownOutlined}"
                     VerticalAlignment="Center"/>
             </ControlTemplate>
         </Setter>

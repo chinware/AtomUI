@@ -20,7 +20,7 @@
                     <atom:IconButton
                         Name="{x:Static atom:SelectHandleThemeConstants.ClearButtonPart}"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                        Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
+                        Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
                         IsVisible="False" />
                 </Panel>
             </ControlTemplate>

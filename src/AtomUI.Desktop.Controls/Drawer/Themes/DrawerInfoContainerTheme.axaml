@@ -1,6 +1,7 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DrawerInfoContainer}" TargetType="atom:DrawerInfoContainer">
@@ -16,7 +17,7 @@
                               ColumnDefinitions="Auto, *, Auto">
                             <atom:IconButton Name="{x:Static atom:DrawerInfoContainerThemeConstants.CloseButtonPart}"
                                              Grid.Column="0"
-                                             Icon="{atom:AntDesignIconProvider CloseOutlined}"
+                                             Icon="{antdicons:AntDesignIconProvider CloseOutlined}"
                                              IsEnableHoverEffect="True"
                                              VerticalAlignment="Center"
                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

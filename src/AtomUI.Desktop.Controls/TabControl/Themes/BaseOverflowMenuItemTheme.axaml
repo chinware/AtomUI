@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:BaseOverflowMenuItem}" TargetType="atom:BaseOverflowMenuItem">
@@ -29,7 +30,7 @@
                                          Grid.Column="1"
                                          HorizontalAlignment="Right"
                                          VerticalAlignment="Center"
-                                         Icon="{atom:AntDesignIconProvider CloseOutlined}" />
+                                         Icon="{antdicons:AntDesignIconProvider CloseOutlined}" />
                     </Grid>
                 </Border>
             </ControlTemplate>

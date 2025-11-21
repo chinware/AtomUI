@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:NumericUpDown}" TargetType="atom:NumericUpDown">
         <Setter Property="Template">
@@ -28,7 +29,7 @@
                                     Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
                             <atom:IconButton
                                 Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                                Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
+                                Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
                                 IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                                 IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
                                 NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"

@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SimplePagination}" TargetType="atom:SimplePagination">
         <Setter Property="Template">
@@ -11,7 +12,7 @@
                             Orientation="Horizontal">
                     <atom:PaginationNavItem Name="{x:Static atom:SimplePaginationThemeConstants.PreviousNavItemPart}"
                                             PaginationItemType="Previous"
-                                            Icon="{atom:AntDesignIconProvider LeftOutlined}"
+                                            Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
@@ -26,7 +27,7 @@
                                     IsEnabled="{TemplateBinding IsEnabled}" />
                     <atom:PaginationNavItem Name="{x:Static atom:SimplePaginationThemeConstants.NextNavItemPart}"
                                             PaginationItemType="Previous"
-                                            Icon="{atom:AntDesignIconProvider RightOutlined}"
+                                            Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}" 
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>

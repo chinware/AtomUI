@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
               
-            </ControlTemplate>
+            </ControlTemplate> 
         </Setter>
     </ControlTheme>
 </ResourceDictionary>

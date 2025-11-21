@@ -1,6 +1,7 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:calendarView="clr-namespace:AtomUI.Desktop.Controls.CalendarView"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
@@ -24,12 +25,12 @@
                                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider DoubleLeftOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="0" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider LeftOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                         Grid.Column="1" />
 
                                     <atom:HeadTextButton
@@ -39,11 +40,11 @@
 
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider RightOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider DoubleRightOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />
                                 </Grid>
@@ -51,12 +52,12 @@
                                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider DoubleLeftOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="0" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousMonthButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider LeftOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                         Grid.Column="1" />
 
                                     <atom:HeadTextButton
@@ -66,11 +67,11 @@
 
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider RightOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
                                         Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart}"
-                                        Icon="{atom:AntDesignIconProvider DoubleRightOutlined}"
+                                        Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />
                                 </Grid>

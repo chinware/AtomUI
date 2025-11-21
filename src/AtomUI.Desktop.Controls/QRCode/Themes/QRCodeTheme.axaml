@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:ClassModifier="internal"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:qrcodelang="using:AtomUI.Desktop.Controls.QRCodeLang">
     <ControlTheme x:Key="{x:Type atom:QRCode}" TargetType="atom:QRCode">
         <Setter Property="Template">
@@ -53,7 +54,7 @@
                                                 Text="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Expired}}" />
                                 <atom:Button Name="{x:Static atom:QRCodeThemeConstants.RefreshPart}"
                                              HorizontalAlignment="Center"
-                                             Icon="{atom:AntDesignIconProvider Kind=ReloadOutlined}"
+                                             Icon="{antdicons:AntDesignIconProvider Kind=ReloadOutlined}"
                                              ButtonType="Link"
                                              Content="{DynamicResource {x:Static qrcodelang:QRCodeLangResourceKey.Refresh}}" />
                             </StackPanel>

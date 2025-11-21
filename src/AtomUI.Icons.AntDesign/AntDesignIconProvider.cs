@@ -3,7 +3,7 @@ using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 
-namespace AtomUI.Icons;
+namespace AtomUI.Icons.AntDesign;
 
 public class AntDesignIconProvider : IconProvider<AntDesignIconKind>
 {

@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:OverlayDialogHeader}" TargetType="atom:OverlayDialogHeader">
         <Setter Property="Template">
@@ -16,15 +17,15 @@
                         <StackPanel Orientation="Horizontal" Name="ButtonGroup" DockPanel.Dock="Right">
                             <atom:DialogCaptionButton
                                 Name="{x:Static atom:OverlayDialogHeaderThemeConstants.MaximizeButtonPart}"
-                                NormalIcon="{atom:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
-                                CheckedIcon="{atom:AntDesignIconProvider Kind=WindowRestoreOutlined}"
+                                NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
+                                CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsChecked="{TemplateBinding IsDialogMaximized}"
                                 IsVisible="{TemplateBinding IsMaximizeButtonEnabled}">
                             </atom:DialogCaptionButton>
                             <atom:DialogCaptionButton
                                 Name="{x:Static atom:OverlayDialogHeaderThemeConstants.CloseButtonPart}"
-                                NormalIcon="{atom:AntDesignIconProvider Kind=CloseOutlined}"
+                                NormalIcon="{antdicons:AntDesignIconProvider Kind=CloseOutlined}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 IsVisible="{TemplateBinding IsCloseButtonEnabled}" />
                         </StackPanel>

@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
     <ControlTheme x:Key="{x:Type atom:CalendarItem}" TargetType="atom:CalendarItem">
@@ -17,11 +18,11 @@
                               DockPanel.Dock="Top">
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.PreviousButtonPart}"
-                                Icon="{atom:AntDesignIconProvider DoubleLeftOutlined}"
+                                Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
                                 Grid.Column="0" />
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.PreviousMonthButtonPart}"
-                                Icon="{atom:AntDesignIconProvider LeftOutlined}"
+                                Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                 IsVisible="{TemplateBinding IsMonthViewMode}"
                                 Grid.Column="1" />
                             <atom:HeadTextButton
@@ -30,12 +31,12 @@
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.NextMonthButtonPart}"
-                                Icon="{atom:AntDesignIconProvider RightOutlined}"
+                                Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                 IsVisible="{TemplateBinding IsMonthViewMode}"
                                 Grid.Column="3" />
                             <atom:IconButton
                                 Name="{x:Static atom:CalendarItemThemeConstants.NextButtonPart}"
-                                Icon="{atom:AntDesignIconProvider DoubleRightOutlined}"
+                                Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
                                 Grid.Column="4" />
                         </Grid>
 

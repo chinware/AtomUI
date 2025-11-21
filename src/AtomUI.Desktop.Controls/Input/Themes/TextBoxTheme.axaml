@@ -2,6 +2,7 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               x:Class="AtomUI.Desktop.Controls.Themes.TextBoxTheme"
+              xmlns:antdicons="https://atomui.net/icons/antdesign"
               x:ClassModifier="internal"
               TargetType="atom:TextBox">
     <Setter Property="Template">
@@ -33,13 +34,13 @@
                         DockPanel.Dock="Right">
                         <atom:IconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                            Icon="{atom:AntDesignIconProvider CloseCircleFilled}"
+                            Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
                             IsVisible="{TemplateBinding IsEffectiveShowClearButton}" />
                         <!-- 新增显示密码按钮 -->
                         <atom:ToggleIconButton
                             Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                            CheckedIcon="{atom:AntDesignIconProvider EyeOutlined}"
-                            UnCheckedIcon="{atom:AntDesignIconProvider EyeInvisibleOutlined}"
+                            CheckedIcon="{antdicons:AntDesignIconProvider EyeOutlined}"
+                            UnCheckedIcon="{antdicons:AntDesignIconProvider EyeInvisibleOutlined}"
                             IsChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
                             IsVisible="{TemplateBinding IsEnableRevealButton}" />
                         <ContentPresenter
