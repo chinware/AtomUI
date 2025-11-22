@@ -1,0 +1,444 @@
+name: Build AtomUIGallery Installers
+on:
+   workflow_dispatch:
+      inputs:
+         TargetBranch:
+            description: 'Target branch to build'
+            type: string
+            default: 'main'
+         BuildConfiguration:
+            description: 'Build configuration'
+            type: choice
+            options:
+               - Debug
+               - Release
+            default: 'Release'
+env:
+   SourceDir: ${{ github.workspace }}
+   BuildDir: ${{ github.workspace }}/binaries
+   AtomUIToolsBinDir: ${{ github.workspace }}/binaries/atomuitools
+   GalleryPublishDir: ${{ github.workspace }}/binaries/gallery_published
+   GalleryArtifactsOutputDir: ${{ github.workspace }}/binaries/artifacts_output
+   AtomUIToolsMacBin: ${{ github.workspace }}/binaries/atomuitools/AtomUITools.Mac
+   AtomUIToolsWinBin: ${{ github.workspace }}/binaries/atomuitools/AtomUITools.Windows
+   AtomUIToolsLinuxBin: ${{ github.workspace }}/binaries/atomuitools/AtomUITools.Linux
+jobs:
+   BuildAtomUIGalleryDmgX64Installers:
+      name: Build macOS x86_64 DMG Installer
+      runs-on: macos-13
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Install Apple Certificate
+            shell: pwsh
+            env:
+               CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
+               CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+               KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+            run: |
+               $certPath = Join-Path $env:RUNNER_TEMP "QinwareCodeSign.p12"
+               $bytes = [System.Convert]::FromBase64String($env:CERT_P12_BASE64)
+               [System.IO.File]::WriteAllBytes($certPath, $bytes)
+
+               security create-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+               security default-keychain -s build.keychain
+               security unlock-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+
+               security import $certPath -k build.keychain -P $env:CERT_PASSWORD -T /usr/bin/codesign
+               security set-key-partition-list -S apple-tool:,apple: -s -k $env:KEYCHAIN_PASSWORD build.keychain
+               Remove-Item $certPath -Force
+
+               Write-Host "Installed certificates:"
+               security find-identity -v -p codesigning
+         -  name: Checkout AtomUITools code
+            uses: actions/checkout@v4.2.2
+            with:
+               repository: chinware/AtomUITools
+               ref: develop
+               token: ${{ secrets.ACCESS_TOKEN }}
+               path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Prepare build environment
+            shell: pwsh
+            run: |
+               New-Item -ItemType Directory -Path "${{ env.BuildDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.AtomUIToolsBinDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/x64" -Force
+               brew install create-dmg
+               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-x64
+         -  name: Build DMG for osx-x64
+            shell: pwsh
+            run: |
+               $galleryScriptsPath = "${{ env.SourceDir }}/src/AtomUIGallery.Desktop/scripts"
+               $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/osx-x64"
+
+               if (Test-Path "${{ env.SourceDir }}/output") {
+                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               }
+
+               Set-Location $galleryScriptsPath
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime osx-x64 -buildType ${{ inputs.BuildConfiguration }}
+
+               ${{ env.AtomUIToolsMacBin }} create-dmg `
+                  --runtime osx-x64 `
+                  --config "$galleryPublishDirX64/config/InstallerConfig.xml" `
+                  --packages "$galleryPublishDirX64/packages" `
+                  --output "${{ env.GalleryArtifactsOutputDir }}/dmg/x64" `
+                  --verbosity Detailed `
+                  --certIdentity "${{ secrets.CERT_IDENTITY }}" `
+                  --cleanupBundleOption true
+
+         -  name: Upload x86_64 DMG artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: dmg-packages-osx-x64
+               path: ${{ env.GalleryArtifactsOutputDir }}/dmg/x64/*.dmg
+               
+   BuildAtomUIGalleryDmgArm64Installers:
+      name: Build macOS arm64 DMG Installer
+      runs-on: macos-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Install Apple Certificate
+            shell: pwsh
+            env:
+               CERT_P12_BASE64: ${{ secrets.CERT_P12_BASE64 }}
+               CERT_PASSWORD: ${{ secrets.CERT_PASSWORD }}
+               KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+            run: |
+               $certPath = Join-Path $env:RUNNER_TEMP "QinwareCodeSign.p12"
+               $bytes = [System.Convert]::FromBase64String($env:CERT_P12_BASE64)
+               [System.IO.File]::WriteAllBytes($certPath, $bytes)
+
+               security create-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+               security default-keychain -s build.keychain
+               security unlock-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+
+               security import $certPath -k build.keychain -P $env:CERT_PASSWORD -T /usr/bin/codesign
+               security set-key-partition-list -S apple-tool:,apple: -s -k $env:KEYCHAIN_PASSWORD build.keychain
+               Remove-Item $certPath -Force
+
+               Write-Host "Installed certificates:"
+               security find-identity -v -p codesigning
+         -  name: Checkout AtomUITools code
+            uses: actions/checkout@v4.2.2
+            with:
+               repository: chinware/AtomUITools
+               ref: develop
+               token: ${{ secrets.ACCESS_TOKEN }}
+               path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Prepare build environment
+            shell: pwsh
+            run: |
+               New-Item -ItemType Directory -Path "${{ env.BuildDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.AtomUIToolsBinDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/arm64" -Force
+               brew install create-dmg
+               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-arm64
+         -  name: Build DMG for osx-arm64
+            shell: pwsh
+            run: |
+               $galleryScriptsPath = "${{ env.SourceDir }}/src/AtomUIGallery.Desktop/scripts"
+               $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/osx-arm64"
+
+               if (Test-Path "${{ env.SourceDir }}/output") {
+                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               }
+
+               Set-Location $galleryScriptsPath
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime osx-arm64 -buildType ${{ inputs.BuildConfiguration }}
+
+               & ${{ env.AtomUIToolsMacBin }} create-dmg `
+               --runtime osx-arm64 `
+               --config "$galleryPublishDirArm64/config/InstallerConfig.xml" `
+               --packages "$galleryPublishDirArm64/packages" `
+               --output "${{ env.GalleryArtifactsOutputDir }}/dmg/arm64" `
+               --verbosity Detailed `
+               --certIdentity "${{ secrets.CERT_IDENTITY }}" `
+               --cleanupBundleOption true
+
+               Get-ChildItem -Path "${{ env.GalleryArtifactsOutputDir }}" | Format-Table
+         -  name: Upload x86_64 DMG artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: dmg-packages-osx-arm64
+               path: ${{ env.GalleryArtifactsOutputDir }}/dmg/arm64/*.dmg
+            
+   BuildAtomUIGalleryAppImageX64Installers:
+      name: Build Linux X64 AppImage Installer
+      runs-on: qinware-ubuntu-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Prepare build environment
+            shell: pwsh
+            run: |
+               New-Item -ItemType Directory -Path "${{ env.BuildDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.AtomUIToolsBinDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/appimage/x64" -Force
+               
+               sudo apt-get update
+               sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file
+               sudo apt-get install -y libxcb1 libxcb-shape0 libxcb-shape0-dev
+               
+               wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20250213-2/linuxdeploy-x86_64.AppImage
+               chmod +x linuxdeploy-x86_64.AppImage
+               sudo mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+               
+               wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+               chmod +x appimagetool-x86_64.AppImage
+               sudo mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
+               
+               linuxdeploy --version
+               appimagetool --version
+               
+         -  name: Setup .NET 9
+            uses: actions/setup-dotnet@v4
+            with:
+               dotnet-version: '9.0.x'
+               
+         -  name: Checkout AtomUITools code
+            uses: actions/checkout@v4.2.2
+            with:
+               repository: chinware/AtomUITools
+               ref: develop
+               token: ${{ secrets.ACCESS_TOKEN }}
+               path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Build AtomUITools (Linux)
+            shell: pwsh
+            run: |
+               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime linux-x64
+               
+         -  name: Build AppImage for linux-x64
+            shell: pwsh
+            run: |
+               $galleryScriptsPath = "${{ env.SourceDir }}/src/AtomUIGallery.Desktop/scripts"
+               $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/linux-x64"
+
+               if (Test-Path "${{ env.SourceDir }}/output") {
+                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               }
+
+               Set-Location $galleryScriptsPath
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime linux-x64 -buildType ${{ inputs.BuildConfiguration }}
+               
+               Set-Location ${{ env.BuildDir }}
+               Get-Location
+               ${{ env.AtomUIToolsLinuxBin }} create-appimage `
+                 --runtime linux-x64 `
+                 --config "$galleryPublishDirX64/config/InstallerConfig.xml" `
+                 --packages "$galleryPublishDirX64/packages" `
+                 --output "${{ env.GalleryArtifactsOutputDir }}/appimage/x64" `
+                 --verbosity Detailed `
+                 --cleanupBundleOption false
+               ls -al $galleryPublishDirX64/packages
+               ls -al ${{ env.GalleryArtifactsOutputDir }}/appimage/x64
+         -  name: Upload x86_64 AppImage artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: linux-appimage-x86_64
+               path: ${{ env.GalleryArtifactsOutputDir }}/appimage/x64/*.AppImage
+               
+   BuildAtomUIGalleryAppImageArm64Installers:
+      name: Build Linux Arm64 AppImage Installer
+      runs-on: qinware-ubuntu-arm64-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Prepare build environment
+            shell: pwsh
+            run: |
+               New-Item -ItemType Directory -Path "${{ env.BuildDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.AtomUIToolsBinDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/appimage/arm64" -Force
+
+               sudo apt-get update
+               sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file
+               sudo apt-get install -y libxcb1 libxcb-shape0 libxcb-shape0-dev
+
+               wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20250213-2/linuxdeploy-aarch64.AppImage
+               chmod +x linuxdeploy-aarch64.AppImage
+               sudo mv linuxdeploy-aarch64.AppImage /usr/local/bin/linuxdeploy
+
+               wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-aarch64.AppImage
+               chmod +x appimagetool-aarch64.AppImage
+               sudo mv appimagetool-aarch64.AppImage /usr/local/bin/appimagetool
+
+               linuxdeploy --version
+               appimagetool --version
+
+         -  name: Setup .NET 9
+            uses: actions/setup-dotnet@v4
+            with:
+               dotnet-version: '9.0.x'
+
+         -  name: Checkout AtomUITools code
+            uses: actions/checkout@v4.2.2
+            with:
+               repository: chinware/AtomUITools
+               ref: develop
+               token: ${{ secrets.ACCESS_TOKEN }}
+               path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Build AtomUITools (Linux)
+            shell: pwsh
+            run: |
+               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime linux-arm64
+
+         -  name: Build AppImage for linux-arm64
+            shell: pwsh
+            run: |
+               $galleryScriptsPath = "${{ env.SourceDir }}/src/AtomUIGallery.Desktop/scripts"
+               $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/linux-arm64"
+
+               if (Test-Path "${{ env.SourceDir }}/output") {
+                  Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               }
+
+               Set-Location $galleryScriptsPath
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime linux-arm64 -buildType ${{ inputs.BuildConfiguration }}
+
+               Set-Location ${{ env.BuildDir }}
+               Get-Location
+               ${{ env.AtomUIToolsLinuxBin }} create-appimage `
+                 --runtime linux-arm64 `
+                 --config "$galleryPublishDirArm64/config/InstallerConfig.xml" `
+                 --packages "$galleryPublishDirArm64/packages" `
+                 --output "${{ env.GalleryArtifactsOutputDir }}/appimage/arm64" `
+                 --verbosity Detailed `
+                 --cleanupBundleOption false
+               ls -al $galleryPublishDirArm64/packages
+               ls -al ${{ env.GalleryArtifactsOutputDir }}/appimage/arm64
+         -  name: Upload arm64 AppImage artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: linux-appimage-arm64
+               path: ${{ env.GalleryArtifactsOutputDir }}/appimage/arm64/*.AppImage
+               
+   BuildAtomUIGalleryWindowsX64Zip:
+      name: Build Windows X86_64 Zip Package
+      runs-on: windows-latest
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Prepare build environment
+            shell: pwsh
+            run: |
+               New-Item -ItemType Directory -Path "${{ env.BuildDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.AtomUIToolsBinDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/zip/x64" -Force
+         -  name: Checkout AtomUITools code
+            uses: actions/checkout@v4.2.2
+            with:
+               repository: chinware/AtomUITools
+               ref: develop
+               token: ${{ secrets.ACCESS_TOKEN }}
+               path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Build AtomUITools (Windows)
+            shell: pwsh
+            run: |
+               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime win-x64
+         -  name: Build Zip package for win-x64
+            shell: pwsh
+            run: |
+               $galleryScriptsPath = "${{ env.SourceDir }}/src/AtomUIGallery.Desktop/scripts"
+               $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/win-x64"
+
+               if (Test-Path "${{ env.SourceDir }}/output") {
+                 Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               }
+
+               Set-Location $galleryScriptsPath
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime win-x64 -buildType ${{ inputs.BuildConfiguration }}
+               Set-Location ${{ env.BuildDir }}
+               Get-Location
+               ${{ env.AtomUIToolsWinBin }} create-zip `
+                 --runtime win-x64 `
+                 --config "$galleryPublishDirX64/config/InstallerConfig.xml" `
+                 --packages "$galleryPublishDirX64/packages" `
+                 --output "${{ env.GalleryArtifactsOutputDir }}/zip/x64" `
+                 --verbosity Detailed `
+                 --cleanupBundleOption false
+         -  name: Upload x86_64 zip artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: windows-zip-x86_64
+               path: ${{ env.GalleryArtifactsOutputDir }}/zip/x64/*.zip
+   BuildAtomUIGalleryWindowsArm64Zip:
+      name: Build Windows Arm64 Zip Package
+      runs-on: windows-11-arm
+      steps:
+         -  name: Checkout code
+            uses: actions/checkout@v4.2.2
+            with:
+               ref: ${{ inputs.TargetBranch }}
+         -  name: Prepare build environment
+            shell: pwsh
+            run: |
+               New-Item -ItemType Directory -Path "${{ env.BuildDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.AtomUIToolsBinDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
+               New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/zip/arm64" -Force
+         -  name: Checkout AtomUITools code
+            uses: actions/checkout@v4.2.2
+            with:
+               repository: chinware/AtomUITools
+               ref: develop
+               token: ${{ secrets.ACCESS_TOKEN }}
+               path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Build AtomUITools (Windows Arm64)
+            shell: pwsh
+            run: |
+               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime win-arm64
+         -  name: Build Zip package for win-arm64
+            shell: pwsh
+            run: |
+               $galleryScriptsPath = "${{ env.SourceDir }}/src/AtomUIGallery.Desktop/scripts"
+               $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/win-arm64"
+
+               if (Test-Path "${{ env.SourceDir }}/output") {
+                 Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
+               }
+
+               Set-Location $galleryScriptsPath
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime win-arm64 -buildType ${{ inputs.BuildConfiguration }}
+               Set-Location ${{ env.BuildDir }}
+               Get-Location
+               ${{ env.AtomUIToolsWinBin }} create-zip `
+                 --runtime win-arm64 `
+                 --config "$galleryPublishDirArm64/config/InstallerConfig.xml" `
+                 --packages "$galleryPublishDirArm64/packages" `
+                 --output "${{ env.GalleryArtifactsOutputDir }}/zip/arm64" `
+                 --verbosity Detailed `
+                 --cleanupBundleOption false
+         -  name: Upload arm64 zip artifacts
+            uses: actions/upload-artifact@v4.6.2
+            with:
+               name: windows-zip-arm64
+               path: ${{ env.GalleryArtifactsOutputDir }}/zip/arm64/*.zip
