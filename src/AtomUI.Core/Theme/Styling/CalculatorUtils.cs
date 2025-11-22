@@ -86,19 +86,19 @@ internal static class CalculatorUtils
         designToken.FontSizeHeading4 = fontSizes[3];
         designToken.FontSizeHeading5 = fontSizes[2];
 
-        designToken.LineHeightRatio   = lineHeight;
-        designToken.LineHeightRatioLG = lineHeightLG;
-        designToken.LineHeightRatioSM = lineHeightSM;
+        designToken.RelativeLineHeight   = lineHeight;
+        designToken.RelativeLineHeightLG = lineHeightLG;
+        designToken.RelativeLineHeightSM = lineHeightSM;
 
         designToken.FontHeight   = Math.Round(lineHeight * fontSizeMD);
         designToken.FontHeightLG = Math.Round(lineHeightLG * fontSizeLG);
         designToken.FontHeightSM = Math.Round(lineHeightSM * fontSizeSM);
 
-        designToken.LineHeightHeading1 = lineHeights[6];
-        designToken.LineHeightHeading2 = lineHeights[5];
-        designToken.LineHeightHeading3 = lineHeights[4];
-        designToken.LineHeightHeading4 = lineHeights[3];
-        designToken.LineHeightHeading5 = lineHeights[2];
+        designToken.RelativeLineHeightHeading1 = lineHeights[6];
+        designToken.RelativeLineHeightHeading2 = lineHeights[5];
+        designToken.RelativeLineHeightHeading3 = lineHeights[4];
+        designToken.RelativeLineHeightHeading4 = lineHeights[3];
+        designToken.RelativeLineHeightHeading5 = lineHeights[2];
     }
 
     public static void CalculateControlHeightMapTokenValues(DesignToken designToken)

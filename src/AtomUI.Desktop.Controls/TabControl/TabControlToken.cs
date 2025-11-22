@@ -162,7 +162,7 @@ internal class TabControlToken : AbstractControlDesignToken
     public override void CalculateTokenValues()
     {
         base.CalculateTokenValues();
-        var lineHeight = SharedToken.LineHeightRatio;
+        var lineHeight = SharedToken.RelativeLineHeight;
         var lineWidth  = SharedToken.LineWidth;
 
         CardBg = SharedToken.ColorFillAlter;

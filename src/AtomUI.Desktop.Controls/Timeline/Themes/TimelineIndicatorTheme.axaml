@@ -13,7 +13,7 @@
             </ControlTemplate>
         </Setter>
         
-        <Setter Property="LineHeightRatio" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineHeightRatio}}"/>
+        <Setter Property="RelativeLineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.RelativeLineHeight}}"/>
         <Setter Property="IndicatorDotBorderWidth" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorDotBorderWidth}}"/>
         <Setter Property="IndicatorDotSize" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorDotSize}}"/>
         <Setter Property="DefaultIndicatorColor" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>

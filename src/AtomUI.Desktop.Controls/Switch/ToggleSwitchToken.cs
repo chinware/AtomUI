@@ -124,7 +124,7 @@ internal class ToggleSwitchToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues();
         var fontSize      = SharedToken.FontSize;
-        var lineHeight    = SharedToken.LineHeightRatio;
+        var lineHeight    = SharedToken.RelativeLineHeight;
         var controlHeight = SharedToken.ControlHeight;
 
         var    height       = fontSize * lineHeight;

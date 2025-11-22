@@ -25,6 +25,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CollapseToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ComboBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DatePickerToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DescriptionsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DialogToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DrawerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));

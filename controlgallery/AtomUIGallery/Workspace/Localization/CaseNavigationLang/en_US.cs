@@ -48,6 +48,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay_Card = "Card";
     public const string DataDisplay_Carousel = "Carousel";
     public const string DataDisplay_Collapse = "Collapse";
+    public const string DataDisplay_Descriptions = "Descriptions";
     public const string DataDisplay_DataGrid = "DataGrid";
     public const string DataDisplay_Expander = "Expander";
     public const string DataDisplay_Empty = "Empty";

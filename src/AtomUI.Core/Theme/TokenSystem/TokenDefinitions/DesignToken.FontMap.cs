@@ -62,19 +62,19 @@ public partial class DesignToken
     /// 文本行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightRatio { get; set; }
+    public double RelativeLineHeight { get; set; }
 
     /// <summary>
     /// 大型文本行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightRatioLG { get; set; }
+    public double RelativeLineHeightLG { get; set; }
 
     /// <summary>
     /// 小型文本行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightRatioSM { get; set; }
+    public double RelativeLineHeightSM { get; set; }
 
     // TextHeight
     /// <summary>
@@ -100,33 +100,33 @@ public partial class DesignToken
     /// H1 标签所使用的行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightHeading1 { get; set; }
+    public double RelativeLineHeightHeading1 { get; set; }
 
     /// <summary>
     /// 二级标题行高
     /// h2 标签所使用的行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightHeading2 { get; set; }
+    public double RelativeLineHeightHeading2 { get; set; }
 
     /// <summary>
     /// 三级标题行高
     /// h3 标签所使用的行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightHeading3 { get; set; }
+    public double RelativeLineHeightHeading3 { get; set; }
 
     /// <summary>
     /// 四级标题行高
     /// h4 标签所使用的行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightHeading4 { get; set; }
+    public double RelativeLineHeightHeading4 { get; set; }
 
     /// <summary>
     /// 五级标题行高
     /// h5 标签所使用的行高
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Map)]
-    public double LineHeightHeading5 { get; set; }
+    public double RelativeLineHeightHeading5 { get; set; }
 }

@@ -293,6 +293,18 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         public static readonly TokenResourceKey WithoutTimeCellHeight = new TokenResourceKey("AtomUI.Desktop.Controls.DatePicker.WithoutTimeCellHeight");
     }
 
+    public static class DescriptionsTokenKey
+    {
+        public static readonly TokenResourceKey ColonMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ColonMargin");
+        public static readonly TokenResourceKey ContentColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ContentColor");
+        public static readonly TokenResourceKey ExtraColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ExtraColor");
+        public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ItemPadding");
+        public static readonly TokenResourceKey LabelBg = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.LabelBg");
+        public static readonly TokenResourceKey LabelColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.LabelColor");
+        public static readonly TokenResourceKey TitleColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.TitleColor");
+        public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.TitleMargin");
+    }
+
     public static class DialogTokenKey
     {
         public static readonly TokenResourceKey ButtonGroupSpacing = new TokenResourceKey("AtomUI.Desktop.Controls.Dialog.ButtonGroupSpacing");

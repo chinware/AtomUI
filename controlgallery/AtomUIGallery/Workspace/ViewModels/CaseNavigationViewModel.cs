@@ -57,6 +57,7 @@ public class CaseNavigationViewModel : ReactiveObject
         _showCaseViewModelFactories.Add(CardViewModel.ID, () => new CardViewModel(HostScreen));
         _showCaseViewModelFactories.Add(CarouselViewModel.ID, () => new CarouselViewModel(HostScreen));
         _showCaseViewModelFactories.Add(CollapseViewModel.ID, () => new CollapseViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(DescriptionsViewModel.ID, () => new DescriptionsViewModel(HostScreen));
         _showCaseViewModelFactories.Add(DataGridViewModel.ID, () => new DataGridViewModel(HostScreen));
         _showCaseViewModelFactories.Add(EmptyViewModel.ID, () => new EmptyViewModel(HostScreen));
         _showCaseViewModelFactories.Add(ExpanderViewModel.ID, () => new ExpanderViewModel(HostScreen));

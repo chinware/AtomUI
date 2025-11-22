@@ -90,6 +90,8 @@
                               ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
             <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Collapse}}"
                               ItemKey="{x:Static viewmodels:CollapseViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Descriptions}}"
+                              ItemKey="{x:Static viewmodels:DescriptionsViewModel.ID}" />
             <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_DataGrid}}"
                               ItemKey="{x:Static viewmodels:DataGridViewModel.ID}" />
             <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Expander}}"

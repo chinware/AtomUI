@@ -34,8 +34,8 @@ internal class TimelineIndicator : TemplatedControl
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> LineHeightRatioProperty =
-        AvaloniaProperty.Register<TimelineIndicator, double>(nameof(LineHeightRatio));
+    internal static readonly StyledProperty<double> RelativeLineHeightProperty =
+        AvaloniaProperty.Register<TimelineIndicator, double>(nameof(RelativeLineHeight));
 
     internal static readonly DirectProperty<TimelineIndicator, bool> IsFirstProperty =
         AvaloniaProperty.RegisterDirect<TimelineIndicator, bool>(nameof(IsFirst),
@@ -48,7 +48,7 @@ internal class TimelineIndicator : TemplatedControl
             (o, v) => o.IsLast = v);
 
     internal static readonly DirectProperty<TimelineIndicator, double> IndicatorMinHeightProperty =
-        AvaloniaProperty.RegisterDirect<TimelineIndicator, double>(nameof(LineHeightRatio),
+        AvaloniaProperty.RegisterDirect<TimelineIndicator, double>(nameof(RelativeLineHeight),
             o => o.IndicatorMinHeight,
             (o, v) => o.IndicatorMinHeight = v);
     
@@ -73,10 +73,10 @@ internal class TimelineIndicator : TemplatedControl
             o => o.NextIsPending,
             (o, v) => o.NextIsPending = v);
     
-    public double LineHeightRatio
+    public double RelativeLineHeight
     {
-        get => GetValue(LineHeightRatioProperty);
-        set => SetValue(LineHeightRatioProperty, value);
+        get => GetValue(RelativeLineHeightProperty);
+        set => SetValue(RelativeLineHeightProperty, value);
     }
 
     public IBrush? DefaultIndicatorColor
@@ -152,7 +152,7 @@ internal class TimelineIndicator : TemplatedControl
             IndicatorTailWidthProperty, IndicatorTailColorProperty);
         TextElement.FontSizeProperty.Changed.AddClassHandler<TimelineIndicator>((indicator, args) =>
         {
-            indicator.IndicatorMinHeight = args.GetNewValue<double>() * indicator.LineHeightRatio;
+            indicator.IndicatorMinHeight = args.GetNewValue<double>() * indicator.RelativeLineHeight;
         });
     }
 
@@ -166,9 +166,9 @@ internal class TimelineIndicator : TemplatedControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == LineHeightRatioProperty)
+        if (change.Property == RelativeLineHeightProperty)
         {
-            IndicatorMinHeight = LineHeightRatio * TextElement.GetFontSize(this);
+            IndicatorMinHeight = RelativeLineHeight * TextElement.GetFontSize(this);
         }
     }
 
