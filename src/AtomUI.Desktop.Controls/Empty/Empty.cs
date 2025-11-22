@@ -17,8 +17,7 @@ public enum PresetEmptyImage
     Default
 }
 
-public class Empty : TemplatedControl,
-                     IControlSharedTokenResourcesHost
+public class Empty : TemplatedControl, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -217,7 +216,6 @@ public class Empty : TemplatedControl,
                     _svg.Source = BuiltInImageBuilder.BuildSimpleImage(contentColor, borderColor, shadowColor);
                 }
             }
-            
         }
         else if (ImageSource is not null)
         {

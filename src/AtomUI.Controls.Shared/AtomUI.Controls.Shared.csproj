@@ -30,11 +30,4 @@
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Avalonia.Controls">
-        <HintPath>..\..\..\..\output\bin\Debug\net9.0\Avalonia.Controls.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-    
 </Project>

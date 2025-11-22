@@ -45,6 +45,7 @@
         <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" />
         <ResourceInclude Source="QRCode/Themes/QRCodeTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
+        <ResourceInclude Source="Result/Themes/ResultTheme.axaml" />
         <ResourceInclude Source="ScrollBar/Themes/ScrollBarThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />

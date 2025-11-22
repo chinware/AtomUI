@@ -6,8 +6,88 @@
     <ControlTheme x:Key="{x:Type atom:Result}" TargetType="atom:Result">
         <Setter Property="Template">
             <ControlTemplate>
-              
-            </ControlTemplate> 
+                <Border Name="Frame" Padding="{TemplateBinding Padding}">
+                    <StackPanel Name="RootLayout">
+                        <ContentPresenter Name="{x:Static atom:ResultThemeConstants.StatusIconPresenterPart}"
+                                          HorizontalAlignment="Center"
+                                          IsVisible="False"
+                                          Content="{TemplateBinding StatusIcon}" />
+                        <Svg Name="{x:Static atom:ResultThemeConstants.ErrorCodeImagePart}"
+                             HorizontalAlignment="Center"
+                             IsVisible="False" />
+                        <TextBlock Name="Title"
+                                   HorizontalAlignment="Center"
+                                   Text="{TemplateBinding Title}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   LineHeight="{TemplateBinding TitleLineHeight}"
+                                   IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <TextBlock Name="SubTitle"
+                                   HorizontalAlignment="Center"
+                                   Text="{TemplateBinding SubTitle}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   LineHeight="{TemplateBinding SubTitleLineHeight}"
+                                   IsVisible="{TemplateBinding SubTitle, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter Name="ExtraContent"
+                                          HorizontalAlignment="Center"
+                                          Content="{TemplateBinding Extra}"
+                                          ContentTemplate="{TemplateBinding ExtraTemplate}"
+                                          TextAlignment="Center" />
+                        <ContentPresenter Name="Content"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          ClipToBounds="False" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
         </Setter>
+
+        <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ResultTokenKey.FramePadding}}" />
+
+        <Style Selector="^/template/ ContentPresenter#PART_StatusIconPresenter">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ResultTokenKey.IconMargin}}" />
+        </Style>
+        
+        <Style Selector="^/template/ Svg#PART_ErrorCodeImage">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:ResultTokenKey.ImageWidth}}" />
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:ResultTokenKey.ImageHeight}}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextBlock#Title">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextHeading}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ResultTokenKey.TitleFontSize}}" />
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ResultTokenKey.TitleMargin}}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextBlock#SubTitle">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:ResultTokenKey.SubtitleFontSize}}" />
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeight}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#Content">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ResultTokenKey.ContentMargin}}" />
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ResultTokenKey.ContentPadding}}" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillAlter}}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#ExtraContent">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:ResultTokenKey.ExtraMargin}}" />
+        </Style>
+
+        <Style Selector="^[Status=Info],^[Status=Success], ^[Status=Warning], ^[Status=Error]">
+            <Style Selector="^ /template/ ContentPresenter#PART_StatusIconPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=ErrorCode403],^[Status=ErrorCode404], ^[Status=ErrorCode500]">
+            <Style Selector="^ /template/ Svg#PART_ErrorCodeImage">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
     </ControlTheme>
 </ResourceDictionary>
