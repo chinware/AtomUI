@@ -4,5 +4,6 @@
         <AvaloniaVersion>11.3.9</AvaloniaVersion>
         <AtomUIVersion>5.1.0</AtomUIVersion>
         <AtomUINativeVersion>1.0.1</AtomUINativeVersion>
+        <AtomUIGalleryVersion>5.1.0</AtomUIGalleryVersion>
     </PropertyGroup>
 </Project>

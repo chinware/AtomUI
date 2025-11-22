@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.SegmentedShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic"
+            Description="The most basic usage.">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
+                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                </atom:Segmented>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Block Segmented"
+            Description="block property will make the Segmented fit to its parent width.">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                <atom:Segmented IsExpanding="True" Margin="20">
+                    <atom:SegmentedItem>123</atom:SegmentedItem>
+                    <atom:SegmentedItem>456</atom:SegmentedItem>
+                    <atom:SegmentedItem>longtext-longtext-longtext-longtext</atom:SegmentedItem>
+                </atom:Segmented>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled Segmented.">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem IsEnabled="False">Map</atom:SegmentedItem>
+                    <atom:SegmentedItem IsEnabled="False">Transit</atom:SegmentedItem>
+                    <atom:SegmentedItem IsEnabled="False">Satellite</atom:SegmentedItem>
+                </atom:Segmented>
+                <atom:Segmented>
+                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
+                    <atom:SegmentedItem IsEnabled="False">Weekly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
+                    <atom:SegmentedItem IsEnabled="False">Quarterly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                </atom:Segmented>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Three sizes of Segmented"
+            Description="There are three sizes of an Segmented: large (40px), default (32px) and small (24px).">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented SizeType="Large" Margin="20">
+                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
+                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                </atom:Segmented>
+
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
+                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                </atom:Segmented>
+
+                <atom:Segmented SizeType="Small" Margin="20">
+                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
+                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
+                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                </atom:Segmented>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="With Icon only"
+            Description="Set icon without label for Segmented Item.">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" />
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="With Icon"
+            Description="Set icon for Segmented Item.">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">
+                        List
+                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Content="Kanban" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+                </atom:Segmented>
+
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">
+                        Ava 牛逼
+                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Content="群主牛逼" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" IsEnabled="False"/>
+
+                    <atom:SegmentedItem Content="微软牛逼"
+                                        Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
+
+                </atom:Segmented>
+
+                <atom:Segmented SizeType="Large" Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">
+                        Ava 牛逼
+                    </atom:SegmentedItem>
+                    <atom:SegmentedItem Content="群主牛逼" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" />
+
+                    <atom:SegmentedItem Content="微软牛逼"
+                                        Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
+
+                </atom:Segmented>
+
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

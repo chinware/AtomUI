@@ -1,0 +1,73 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets/**/*.*"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PackageReference Include="AtomUI.Desktop.Controls"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker"/>
+        <PackageReference Include="AtomUI.Generator"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <ProjectReference Include="../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj" />
+        <ProjectReference Include="../../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
+        <ProjectReference Include="../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets/ATOMUI-LOGO.png"/>
+        <AvaloniaResource Include="Assets/avalonia-logo.ico"/>
+        <AvaloniaResource Include="Assets/EmptyShowCase/empty.svg"/>
+        <AvaloniaResource Include="Assets/AvatarShowCase/AntDesign.svg"/>
+        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar1.svg"/>
+        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar2.svg"/>
+        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar3.svg"/>
+        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar4.png"/>
+        <AvaloniaResource Include="Assets/CardShowCase/Cover1.png"/>
+        <AvaloniaResource Include="Assets/CardShowCase/Cover2.png"/>
+        <AvaloniaResource Include="Assets/watermark-sample.png"/>
+        <AvaloniaResource Include="Assets/qinware-logo.png"/>
+        <AvaloniaResource Include="Assets/qinware-logo-white.png"/>
+        <AvaloniaResource Include="Assets/qinware-wechatpress.png"/>
+        <AvaloniaResource Include="Assets/atomui-qq.png"/>
+        <AvaloniaResource Include="Assets/atomui-wechat.png"/>
+        <AvaloniaResource Include="Assets/gallery-logo.png"/>
+        <AvaloniaResource Include="Assets/OSLogos/Deepin.svg"/>
+        <AvaloniaResource Include="Assets/OSLogos/Linux.svg"/>
+        <AvaloniaResource Include="Assets/OSLogos/Ubuntu.svg"/>
+        <AvaloniaResource Include="Assets/OSLogos/Windows.svg"/>
+        <AvaloniaResource Include="Assets/OSLogos/MacOS.svg"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AtomUIGallery.Icons.Desktop\AtomUIGallery.Icons.Desktop.csproj" />
+    </ItemGroup>
+    
+</Project>

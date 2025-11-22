@@ -1,0 +1,289 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.CollapseShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Collapse"
+            Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
+            <atom:Collapse>
+                <atom:CollapseItem Header="This is panel header 1">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 3">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Size"
+            Description="Ant Design supports a default collapse size as well as a large and small size.
+If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
+            <StackPanel Orientation="Vertical" Spacing="20" >
+                <atom:Separator Title="Default Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Collapse SizeType="Middle">
+                    <atom:CollapseItem Header="This is default size panel header">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+                <atom:Separator Title="Small Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Collapse SizeType="Small">
+                    <atom:CollapseItem Header="This is small size panel header">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+                <atom:Separator Title="Large Size" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Collapse SizeType="Large">
+                    <atom:CollapseItem Header="This is large size panel header">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Accordion"
+            Description="In accordion mode, only one panel can be expanded at a time.">
+            <atom:Collapse IsAccordion="True">
+                <atom:CollapseItem Header="This is panel header 1">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 3">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Nested panel"
+            Description="Collapse is nested inside the Collapse." >
+            <atom:Collapse>
+                <atom:CollapseItem Header="This is panel header 1">
+                    <atom:Collapse>
+                        <atom:CollapseItem Header="This is panel header 1">
+                            <atom:TextBlock TextWrapping="Wrap">
+                                A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                            </atom:TextBlock>
+                        </atom:CollapseItem>
+                    </atom:Collapse>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 3">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Borderless"
+            Description="A borderless style of Collapse." >
+            <atom:Collapse IsBorderless="True">
+                <atom:CollapseItem Header="This is panel header 1">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 3">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="No Arrow"
+            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
+            >
+            <atom:Collapse>
+                <atom:CollapseItem Header="This is panel header 1">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2" IsShowExpandIcon="False">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Expand icon location"
+            Description="The expand icon can be placed in front or in the back." >
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Collapse ExpandIconPosition="{Binding CollapseExpandIconPosition}">
+                    <atom:CollapseItem Header="This is panel header 1"
+                                       AddOnContent="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                    <atom:CollapseItem Header="This is panel header 2"
+                                       AddOnContent="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                    <atom:CollapseItem Header="This is panel header 3"
+                                       AddOnContent="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center">Expand Icon Position:</atom:TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="ExpandButtonPosGroup">
+                        <atom:OptionButton IsChecked="True">Start</atom:OptionButton>
+                        <atom:OptionButton>End</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+            </StackPanel>
+
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Ghost Collapse"
+            Description="Making collapse's background to transparent." >
+            <atom:Collapse IsGhostStyle="True">
+                <atom:CollapseItem Header="This is panel header 1">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 2">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="This is panel header 3">
+                    <atom:TextBlock TextWrapping="Wrap">
+                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                    </atom:TextBlock>
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Collapsible"
+            Description="Specify the trigger area of collapsible by collapsible." >
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Collapse>
+                    <atom:CollapseItem Header="This panel can only be collapsed by clicking text">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+                <atom:Collapse TriggerType="Icon">
+                    <atom:CollapseItem Header="This panel can only be collapsed by clicking icon">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+
+                <atom:Collapse IsEnabled="False">
+                    <atom:CollapseItem Header="This panel can't be collapsed">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+
+                <atom:Collapse IsEnabled="False">
+                    <atom:CollapseItem Header="This panel can't be collapsed" IsSelected="True">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Custom Header And Content Padding"
+            Description="Please set custom header margins and content spacing.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Collapse ItemHeaderPadding="5" ItemContentPadding="5">
+                    <atom:CollapseItem Header="This is panel header 1">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                    <atom:CollapseItem Header="This is panel header 2">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                    <atom:CollapseItem Header="This is panel header 3">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+                
+                <atom:Collapse ItemHeaderPadding="0" ItemContentPadding="0" IsGhostStyle="True">
+                    <atom:CollapseItem Header="This is panel header 1">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                    <atom:CollapseItem Header="This is panel header 2">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                    <atom:CollapseItem Header="This is panel header 3">
+                        <atom:TextBlock TextWrapping="Wrap">
+                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
+                        </atom:TextBlock>
+                    </atom:CollapseItem>
+                </atom:Collapse>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

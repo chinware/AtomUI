@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.PaletteShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+
+    <atom:TabControl SizeType="Large">
+        <atom:TabItem Header="Light">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding PresetPaletteInfos}" Padding="10">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:PresetPaletteInfoPair">
+                            <UniformGrid Rows="1" Columns="2">
+                                <gallerycontrols:ColorListControl Margin="0,0,10,10"
+                                                                  PaletteMetaInfo="{Binding Left}" />
+                                <gallerycontrols:ColorListControl Margin="0,0,0,10" 
+                                                                  PaletteMetaInfo="{Binding Right}" />
+                            </UniformGrid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </atom:TabItem>
+        <atom:TabItem Header="Dark">
+            <ScrollViewer>
+                <Border Background="Black">
+                    <ItemsControl ItemsSource="{Binding PresetPaletteInfos}" Padding="10">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="viewModels:PresetPaletteInfoPair">
+                                <UniformGrid Rows="1" Columns="2">
+                                    <gallerycontrols:ColorListControl Margin="0,0,10,10" 
+                                                                      PaletteMetaInfo="{Binding Left}"
+                                                                      IsDark="True"
+                                                                      />
+                                    <gallerycontrols:ColorListControl Margin="0,0,0,10"
+                                                                      PaletteMetaInfo="{Binding Right}"
+                                                                      IsDark="True"
+                                                                      />
+                                </UniformGrid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </ScrollViewer>
+        </atom:TabItem>
+    </atom:TabControl>
+</UserControl>

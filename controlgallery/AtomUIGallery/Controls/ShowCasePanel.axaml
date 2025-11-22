@@ -1,0 +1,20 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:gallerycontrols="using:AtomUIGallery.Controls">
+    <ControlTheme x:Key="{x:Type gallerycontrols:ShowCasePanel}"
+                  TargetType="{x:Type gallerycontrols:ShowCasePanel}">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type gallerycontrols:ShowCasePanel}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" AllowAutoHide="False" BringIntoViewOnFocusChange="False">
+                    <Grid Margin="5" Name="PART_MainPanel" RowSpacing="15" ColumnSpacing="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

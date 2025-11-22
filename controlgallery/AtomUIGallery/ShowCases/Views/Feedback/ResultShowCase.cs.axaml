@@ -1,0 +1,133 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.ResultShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Success"
+            Description="Show successful results."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="Success"
+                         Title="Successfully Purchased Cloud Server ECS!"
+                         SubTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.">
+                <atom:Result.Extra>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:Button ButtonType="Primary">Go Console</atom:Button>
+                        <atom:Button>Buy Again</atom:Button>
+                    </StackPanel>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Info"
+            Description="Show processing results."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="Info"
+                         Title="Your operation has been executed.">
+                <atom:Result.Extra>
+                    <atom:Button ButtonType="Primary">Go Console</atom:Button>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Warning"
+            Description="The result of the warning."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="Warning"
+                         Title="There are some problems with your operation.">
+                <atom:Result.Extra>
+                    <atom:Button ButtonType="Primary">Go Console</atom:Button>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="403"
+            Description="you are not authorized to access this page."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="ErrorCode403"
+                         Title="403"
+                         SubTitle="Sorry, you are not authorized to access this page.">
+                <atom:Result.Extra>
+                    <atom:Button ButtonType="Primary">Back Home</atom:Button>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="404"
+            Description="The page you visited does not exist."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="ErrorCode404"
+                         Title="404"
+                         SubTitle="Sorry, the page you visited does not exist.">
+                <atom:Result.Extra>
+                    <atom:Button ButtonType="Primary">Back Home</atom:Button>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="500"
+            Description="Something went wrong on server."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="ErrorCode500"
+                         Title="500"
+                         SubTitle="Sorry, something went wrong.">
+                <atom:Result.Extra>
+                    <atom:Button ButtonType="Primary">Back Home</atom:Button>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="error"
+            Description="Something went wrong on server."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="Error"
+                         Title="Submission Failed"
+                         SubTitle="Please check and modify the following information before resubmitting.">
+                <atom:Result.Extra>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:Button ButtonType="Primary">Go Console</atom:Button>
+                        <atom:Button>Buy Again</atom:Button>
+                    </StackPanel>
+                </atom:Result.Extra>
+                <StackPanel Spacing="8">
+                    <TextBlock FontWeight="Bold" FontSize="16">
+                        The content you submitted has the following error:
+                    </TextBlock>
+    
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <antdicons:CloseCircleOutlined NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}"/>
+                        <TextBlock>Your account has been frozen. </TextBlock>
+                        <TextBlock Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}">Thaw immediately ></TextBlock>
+                    </StackPanel>
+    
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <antdicons:CloseCircleOutlined NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}"/>
+                        <TextBlock>Your account is not yet eligible to apply. </TextBlock>
+                        <TextBlock Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}">Apply Unlock ></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Custom icon"
+            Description="Custom icon."
+            IsOccupyEntireRow="True">
+            <atom:Result Status="Info"
+                         Icon="{antdicons:AntDesignIconProvider SmileOutlined}"
+                         Title="Great, we have done all the operations!">
+                <atom:Result.Extra>
+                    <atom:Button ButtonType="Primary">Next</atom:Button>
+                </atom:Result.Extra>
+            </atom:Result>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

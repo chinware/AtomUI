@@ -1,0 +1,145 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.Workspace.Views.CaseNavigation"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:viewmodels="using:AtomUIGallery.ShowCases.ViewModels"
+             xmlns:lang="using:AtomUIGallery.Workspace.Localization.CaseNavigationLang">
+    <atom:NavMenu Mode="Inline" Width="260" Name="ShowCaseNavMenu">
+        <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General}}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_AboutUs}}"
+                              ItemKey="{x:Static viewmodels:AboutUsViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_OsInfo}}"
+                              ItemKey="{x:Static viewmodels:OsInfoViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_Palette}}"
+                              ItemKey="{x:Static viewmodels:PaletteViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_Icons}}"
+                              ItemKey="{x:Static viewmodels:IconViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_Button}}"
+                              ItemKey="{x:Static viewmodels:ButtonViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_SplitButton}}"
+                              ItemKey="{x:Static viewmodels:SplitButtonViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_Separator}}"
+                              ItemKey="{x:Static viewmodels:SeparatorViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.General_CustomizeTheme}}"
+                              ItemKey="{x:Static viewmodels:CustomizeThemeViewModel.ID}" />
+        </atom:NavMenuItem>
+        
+        <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Layout}}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=LayoutOutlined}">
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Layout_BoxPanel}}"
+                              ItemKey="{x:Static viewmodels:BoxPanelViewModel.ID}" />
+        </atom:NavMenuItem>
+
+        <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation}}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}">
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_Breadcrumb}}"
+                              ItemKey="{x:Static viewmodels:BreadcrumbViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_ButtonSpinner}}"
+                              ItemKey="{x:Static viewmodels:ButtonSpinnerViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_ComboBox}}"
+                              ItemKey="{x:Static viewmodels:ComboBoxViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_DropdownButton}}"
+                              ItemKey="{x:Static viewmodels:DropdownButtonViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_Menu}}"
+                              ItemKey="{x:Static viewmodels:MenuViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_Pagination}}"
+                              ItemKey="{x:Static viewmodels:PaginationViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_Steps}}"
+                              ItemKey="{x:Static viewmodels:StepsViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Navigation_TabControl}}"
+                              ItemKey="{x:Static viewmodels:TabControlViewModel.ID}" />
+        </atom:NavMenuItem>
+
+        <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry}}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}">
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_CheckBox}}"
+                              ItemKey="{x:Static viewmodels:CheckBoxViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_ColorPicker}}"
+                              ItemKey="{x:Static viewmodels:ColorPickerViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_DatePicker}}"
+                              ItemKey="{x:Static viewmodels:DatePickerViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_TimePicker}}"
+                              ItemKey="{x:Static viewmodels:TimePickerViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_LineEdit}}"
+                              ItemKey="{x:Static viewmodels:LineEditViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_NumberUpDown}}"
+                              ItemKey="{x:Static viewmodels:NumberUpDownViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_RadioButton}}"
+                              ItemKey="{x:Static viewmodels:RadioButtonViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_Select}}"
+                              ItemKey="{x:Static viewmodels:SelectViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_Slider}}"
+                              ItemKey="{x:Static viewmodels:SliderViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_ToggleSwitch}}"
+                              ItemKey="{x:Static viewmodels:ToggleSwitchViewModel.ID}" />
+        </atom:NavMenuItem>
+
+        <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay}}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}">
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Avatar}}"
+                              ItemKey="{x:Static viewmodels:AvatarViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Badge}}"
+                              ItemKey="{x:Static viewmodels:BadgeViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Calendar}}"
+                              ItemKey="{x:Static viewmodels:CalendarViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Card}}"
+                              ItemKey="{x:Static viewmodels:CardViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Carousel}}"
+                              ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Collapse}}"
+                              ItemKey="{x:Static viewmodels:CollapseViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_DataGrid}}"
+                              ItemKey="{x:Static viewmodels:DataGridViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Expander}}"
+                              ItemKey="{x:Static viewmodels:ExpanderViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Empty}}"
+                              ItemKey="{x:Static viewmodels:EmptyViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_GroupBox}}"
+                              ItemKey="{x:Static viewmodels:GroupBoxViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_InfoFlyout}}"
+                              ItemKey="{x:Static viewmodels:InfoFlyoutViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_List}}"
+                              ItemKey="{x:Static viewmodels:ListViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_QRCode}}"
+                              ItemKey="{x:Static viewmodels:QRCodeViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Segmented}}"
+                              ItemKey="{x:Static viewmodels:SegmentedViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Timeline}}"
+                              ItemKey="{x:Static viewmodels:TimelineViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_TreeView}}"
+                              ItemKey="{x:Static viewmodels:TreeViewViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Tooltip}}"
+                              ItemKey="{x:Static viewmodels:TooltipViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataDisplay_Tag}}"
+                              ItemKey="{x:Static viewmodels:TagViewModel.ID}" />
+        </atom:NavMenuItem>
+
+        <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback}}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=UserSwitchOutlined}">
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Alert}}"
+                              ItemKey="{x:Static viewmodels:AlertViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Drawer}}"
+                              ItemKey="{x:Static viewmodels:DrawerViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Message}}"
+                              ItemKey="{x:Static viewmodels:MessageViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Modal}}"
+                              ItemKey="{x:Static viewmodels:ModalViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Notification}}"
+                              ItemKey="{x:Static viewmodels:NotificationViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_PopupConfirm}}"
+                              ItemKey="{x:Static viewmodels:PopupConfirmViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_ProgressBar}}"
+                              ItemKey="{x:Static viewmodels:ProgressBarViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Result}}"
+                              ItemKey="{x:Static viewmodels:ResultViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Skeleton}}"
+                              ItemKey="{x:Static viewmodels:SkeletonViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Spin}}"
+                              ItemKey="{x:Static viewmodels:SpinViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.Feedback_Watermark}}"
+                              ItemKey="{x:Static viewmodels:WatermarkViewModel.ID}" />
+        </atom:NavMenuItem>
+    </atom:NavMenu>
+</UserControl>

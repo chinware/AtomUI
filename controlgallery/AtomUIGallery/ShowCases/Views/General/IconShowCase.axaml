@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.IconShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <atom:TabControl>
+        <atom:TabItem Header="Outlined">
+            <ScrollViewer>
+                <gallerycontrols:IconGallery IconThemeType="Outlined" />
+            </ScrollViewer>
+        </atom:TabItem>
+        <atom:TabItem Header="Filled">
+            <ScrollViewer>
+                <gallerycontrols:IconGallery IconThemeType="Filled" />
+            </ScrollViewer>
+        </atom:TabItem>
+        <atom:TabItem Header="Two Tone">
+            <ScrollViewer>
+                <gallerycontrols:IconGallery IconThemeType="TwoTone" />
+            </ScrollViewer>
+        </atom:TabItem>
+    </atom:TabControl>
+</UserControl>

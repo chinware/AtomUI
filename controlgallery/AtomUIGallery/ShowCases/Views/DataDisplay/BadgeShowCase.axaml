@@ -1,0 +1,338 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.BadgeShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem Title="Basic"
+                                      Description="Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <atom:CountBadge Count="5">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+                <atom:CountBadge Count="0" ShowZero="True">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Overflow Count"
+                                      Description="${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <atom:CountBadge Count="99">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+                <atom:CountBadge Count="100">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+                <atom:CountBadge Count="99" OverflowCount="10">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+                <atom:CountBadge Count="1000" OverflowCount="999">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Offset"
+                                      Description="Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <atom:CountBadge Count="5" Offset="10, 10">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Size" Description="Set size of numeral Badge.">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <atom:CountBadge Count="5">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+                <atom:CountBadge Count="5" Size="Small">
+                    <Border Width="40"
+                            Height="40"
+                            Background="rgb(191,191,191)"
+                            CornerRadius="8" />
+                </atom:CountBadge>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Standalone" Description="Used in standalone when children is empty.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:ToggleSwitch IsChecked="{Binding StandaloneSwitchChecked}" />
+                <atom:CountBadge BadgeColor="#faad14"
+                                 Count="{Binding StandaloneBadgeCount1}"
+                                 ShowZero="True" />
+                <atom:CountBadge Count="{Binding StandaloneBadgeCount2}" />
+                <atom:CountBadge BadgeColor="#52c41a" Count="{Binding StandaloneBadgeCount3}" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Dynamic" Description="The count will be animated as it changes.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <atom:CountBadge Count="{Binding DynamicBadgeCount}" OverflowCount="99">
+                        <Border Width="40"
+                                Height="40"
+                                Background="rgb(191,191,191)"
+                                CornerRadius="8" />
+                    </atom:CountBadge>
+                    <StackPanel VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="10">
+                        <atom:Button Command="{Binding AddDynamicBadgeCount}" SizeType="Small">Add</atom:Button>
+                        <atom:Button Command="{Binding SubDynamicBadgeCount}" SizeType="Small">Sub</atom:Button>
+                        <atom:Button Command="{Binding RandomDynamicBadgeCount}" SizeType="Small">Random</atom:Button>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <atom:CountBadge BadgeIsVisible="{Binding DynamicDotBadgeVisible}" Count="9">
+                        <Border Width="40"
+                                Height="40"
+                                Background="rgb(191,191,191)"
+                                CornerRadius="8" />
+                    </atom:CountBadge>
+                    <atom:DotBadge BadgeIsVisible="{Binding DynamicDotBadgeVisible}">
+                        <Border Width="40"
+                                Height="40"
+                                Background="rgb(191,191,191)"
+                                CornerRadius="8" />
+                    </atom:DotBadge>
+                    <atom:ToggleSwitch VerticalAlignment="Center"
+                                       IsChecked="{Binding DynamicDotBadgeVisible, Mode=TwoWay}" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Red badge"
+                                      Description="This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal">
+                    <atom:DotBadge Offset="-7,8">
+                        <atom:Button ButtonType="Link" Icon="{antdicons:AntDesignIconProvider Kind=NotificationOutlined}" />
+                    </atom:DotBadge>
+                    <atom:DotBadge Offset="-14,12">
+                        <atom:Button ButtonType="Link" Content="Link something" />
+                    </atom:DotBadge>
+                    <atom:Button ButtonType="Link" Content="Link something" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Status" Description="Standalone badge with status.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:DotBadge Status="Success" />
+                    <atom:DotBadge Status="Error" />
+                    <atom:DotBadge Status="Default" />
+                    <atom:DotBadge Status="Processing" />
+                    <atom:DotBadge Status="Warning" />
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <atom:DotBadge Status="Success" Text="Success" />
+                    <atom:DotBadge Status="Error" Text="Error" />
+                    <atom:DotBadge Status="Default" Text="Default" />
+                    <atom:DotBadge Status="Processing" Text="Processing" />
+                    <atom:DotBadge Status="Warning" Text="Warning" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Ribbon" Description="Use ribbon badge.">
+            <StackPanel Margin="20,0,20,0"
+                        Orientation="Vertical"
+                        Spacing="20">
+                <atom:RibbonBadge Text="精益求精，打造体验优秀的 UISDK">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <atom:TextBlock Height="38"
+                                            FontWeight="Bold"
+                                            LineHeight="38">
+                                Pushes open the window
+                            </atom:TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <atom:TextBlock Margin="0,10,0,0">and raises the spyglass.</atom:TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+                <atom:RibbonBadge RibbonColor="Pink" Text="甲辰计划雄起">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+                <atom:RibbonBadge RibbonColor="Cyan" Text="Avalonia 非常优秀">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+                <atom:RibbonBadge RibbonColor="Green" Text="Hippies">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+                <atom:RibbonBadge Placement="Start"
+                                  RibbonColor="purple"
+                                  Text="Hippies">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+                <atom:RibbonBadge Placement="Start"
+                                  RibbonColor="volcano"
+                                  Text="Hippies">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+                <atom:RibbonBadge Placement="Start"
+                                  RibbonColor="magenta"
+                                  Text="Hippies">
+                    <Border
+                        Padding="10,0,10,0"
+                        BorderBrush="#d9d9d9"
+                        BorderThickness="1"
+                        CornerRadius="6">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Height="38"
+                                       FontWeight="Bold"
+                                       LineHeight="38">
+                                Pushes open the window
+                            </TextBlock>
+                            <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
+                            <TextBlock Margin="0,10,0,0">and raises the spyglass.</TextBlock>
+                        </StackPanel>
+                    </Border>
+                </atom:RibbonBadge>
+
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Colorful Badge"
+                                      Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Separator Title="Presets"
+                                FontWeight="SemiBold"
+                                TitlePosition="Left" />
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <atom:DotBadge DotColor="Pink" Text="Pink" />
+                    <atom:DotBadge DotColor="Red" Text="Red" />
+                    <atom:DotBadge DotColor="Yellow" Text="Yellow" />
+                    <atom:DotBadge DotColor="Orange" Text="Orange" />
+                    <atom:DotBadge DotColor="Cyan" Text="Cyan" />
+                    <atom:DotBadge DotColor="Green" Text="Green" />
+                    <atom:DotBadge DotColor="Blue" Text="Blue" />
+                    <atom:DotBadge DotColor="Purple" Text="Purple" />
+                    <atom:DotBadge DotColor="GeekBlue" Text="GeekBlue" />
+                    <atom:DotBadge DotColor="Magenta" Text="Magenta" />
+                    <atom:DotBadge DotColor="Volcano" Text="Volcano" />
+                    <atom:DotBadge DotColor="Gold" Text="Gold" />
+                    <atom:DotBadge DotColor="Lime" Text="Lime" />
+                </StackPanel>
+                <atom:Separator Title="Custom"
+                                FontWeight="SemiBold"
+                                TitlePosition="Left" />
+                <StackPanel Orientation="Vertical" Spacing="10">
+                    <atom:DotBadge DotColor="#f50" Text="#f50" />
+                    <atom:DotBadge DotColor="rgb(45, 183, 245)" Text="rgb(45, 183, 245)" />
+                    <atom:DotBadge DotColor="hsl(102, 53%, 61%)" Text="hsl(102, 53%, 61%)" />
+                    <atom:DotBadge DotColor="rgb(15, 141, 230)" Text="rgb(15, 141, 230)" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

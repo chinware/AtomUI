@@ -1,0 +1,131 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.AvatarShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|Avatar">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+        <gallerycontrols:ShowCaseItem Title="Basic"
+                                      Description="Three sizes and two shapes are available.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="64" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" SizeType="Large" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" SizeType="Small" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="14" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="64" />
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" SizeType="Large" />
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" SizeType="Small" />
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="14" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Type"
+                                      Description="Image, Icon and letter are supported, and the latter two kinds of avatar can have custom colors and background colors.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar>U</atom:Avatar>
+                    <atom:Avatar Size="40">USER</atom:Avatar>
+                    <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
+                    <atom:Avatar Background="#fde3cf" Foreground="#f56a00">U</atom:Avatar>
+                    <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="With Badge"
+                                      Description="Usually used for reminders and notifications.">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <atom:CountBadge Count="5">
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                </atom:CountBadge>
+                <atom:DotBadge>
+                    <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                </atom:DotBadge>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem Title="Autoset Font Size"
+                                      Description="For letter type Avatar, when the letters are too long to display, the font size can be automatically adjusted according to the width of the Avatar. You can also use gap to set the unit distance between left and right sides.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:Avatar Background="{Binding AvatarBackground}"
+                             Gap="{Binding AvatarGap}"
+                             SizeType="Large"
+                             Text="{Binding AvatarText}"/>
+                <atom:Button Name="ChangeUserButton"
+                             ButtonType="Default"
+                             SizeType="Small"
+                             VerticalAlignment="Center">
+                    ChangeUser
+                </atom:Button>
+                <atom:Button Name="ChangeGapButton"
+                             ButtonType="Default"
+                             SizeType="Small"
+                             VerticalAlignment="Center">
+                    ChangeGap
+                </atom:Button>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Title="Avatar.Group"
+                                      Description="Avatar group display.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:AvatarGroup>
+                    <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg"/>
+                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
+                </atom:AvatarGroup>
+                <atom:Separator/>
+                <atom:AvatarGroup MaxDisplayCount="2"
+                                  FoldInfoAvatarForeground="#f56a00"
+                                  FoldInfoAvatarBackground="#fde3cf">
+                    <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar2.svg"/>
+                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
+                </atom:AvatarGroup>
+                <atom:Separator/>
+                <atom:AvatarGroup MaxDisplayCount="2"
+                                  FoldInfoAvatarForeground="#f56a00"
+                                  FoldInfoAvatarBackground="#fde3cf"
+                                  SizeType="Large">
+                    <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar3.svg"/>
+                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
+                </atom:AvatarGroup>
+                <atom:Separator/>
+                <atom:AvatarGroup MaxDisplayCount="2"
+                                  FoldInfoAvatarForeground="#f56a00"
+                                  FoldInfoAvatarBackground="#fde3cf"
+                                  SizeType="Large"
+                                  FoldAvatarFlyoutTriggerType="Click">
+                    <atom:Avatar BitmapSrc="/Assets/AvatarShowCase/PeopleAvatar4.png"/>
+                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
+                </atom:AvatarGroup>
+                <atom:Separator/>
+                <atom:AvatarGroup Shape="Square">
+                    <atom:Avatar Background="#fde3cf">A</atom:Avatar>
+                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
+                    <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
+                </atom:AvatarGroup>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

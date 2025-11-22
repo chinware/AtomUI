@@ -1,0 +1,79 @@
+<atom:Window xmlns="https://github.com/avaloniaui"
+             xmlns:rxui="http://reactiveui.net"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="using:AtomUI.Desktop.Controls"
+             xmlns:workspaceviews="using:AtomUIGallery.Workspace.Views"
+             x:Class="AtomUIGallery.Workspace.Views.WorkspaceWindow"
+             Icon="/Assets/AtomUIGallery.ico"
+             IsPinCaptionButtonEnabled="True"
+             WindowState="Normal"
+             WindowStartupLocation="CenterScreen"
+             Height="900"
+             Width="1300"
+             xmlns:lang="using:AtomUIGallery.Workspace.Localization.WorkspaceWindowLang">
+    <atom:Window.Logo>
+        <Image Source="/Assets/gallery-logo.png" />
+    </atom:Window.Logo>
+    <DockPanel LastChildFill="True">
+        <atom:Menu DockPanel.Dock="Top" Margin="4, 0, 4, 0">
+            <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemSettings}}">
+                <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemWindowOptions}}">
+                    <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableFullScreen}}" 
+                                   ToggleType="CheckBox" 
+                                   IsChecked="True"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.FullScreen}"/>
+                    <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnablePin}}" 
+                                   ToggleType="CheckBox"
+                                   IsChecked="True"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.Pin}"/>
+                    <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableMinimize}}" 
+                                   ToggleType="CheckBox"
+                                   IsChecked="True"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.Minimize}"/>
+                    <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableMaximize}}"
+                                   ToggleType="CheckBox"
+                                   IsChecked="True"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.Maximize}"/>
+                    <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableMove}}" 
+                                   ToggleType="CheckBox"
+                                   IsChecked="True"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.Move}"/>
+                    <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableResize}}"
+                                   ToggleType="CheckBox"
+                                   IsChecked="True"
+                                   Tag="{x:Static workspaceviews:WindowMenuItemKind.Resize}"/>
+                </atom:MenuItem>
+            </atom:MenuItem>
+            <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemTheme}}">
+                <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemDarkMode}}" 
+                               ToggleType="CheckBox"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.DarkMode}"/>
+                <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemCompactMode}}" 
+                               ToggleType="CheckBox"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.Compact}"/>
+                <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableMotion}}" 
+                               ToggleType="CheckBox"
+                               IsChecked="True"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.Motion}"/>
+                <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemEnableWaveSpirit}}" 
+                               ToggleType="CheckBox"
+                               IsChecked="True"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.WaveSpirit}"/>
+            </atom:MenuItem>
+            <atom:MenuItem Header="{DynamicResource {x:Static lang:WorkspaceWindowLangResourceKey.MenuItemLanguage}}">
+                <atom:MenuItem Header="简体中文" 
+                               ToggleType="Radio"
+                               IsChecked="True"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageZhCN}"
+                              />
+                <atom:MenuItem Header="English" 
+                               ToggleType="Radio"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageEnUS}"/>
+            </atom:MenuItem>
+        </atom:Menu>
+        <workspaceviews:CaseNavigation DockPanel.Dock="Left" />
+        <rxui:RoutedViewHost Router="{Binding Router}"
+                             PageTransition="{x:Null}"
+                             ClipToBounds="True" />
+    </DockPanel>
+</atom:Window>

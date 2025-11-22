@@ -1,0 +1,160 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.TagShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|Tag">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic"
+            Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
+            <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <atom:Tag>Tag 1</atom:Tag>
+                <atom:Tag>Link</atom:Tag>
+                <atom:Tag IsClosable="true">Prevent Default</atom:Tag>
+                <atom:Tag IsClosable="True"
+                          CloseIcon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}">
+                    Tag 2
+                </atom:Tag>
+            </WrapPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Colorful Tag"
+            Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</atom:TextBlock>
+                <WrapPanel HorizontalAlignment="Left">
+                    <atom:Tag TagColor="magenta">magenta</atom:Tag>
+                    <atom:Tag TagColor="red">red</atom:Tag>
+                    <atom:Tag TagColor="volcano">volcano</atom:Tag>
+                    <atom:Tag TagColor="orange">orange</atom:Tag>
+                    <atom:Tag TagColor="gold">gold</atom:Tag>
+                    <atom:Tag TagColor="lime">lime</atom:Tag>
+                    <atom:Tag TagColor="green">green</atom:Tag>
+                    <atom:Tag TagColor="cyan">cyan</atom:Tag>
+                    <atom:Tag TagColor="blue">blue</atom:Tag>
+                    <atom:Tag TagColor="geekblue">geekblue</atom:Tag>
+                    <atom:Tag TagColor="purple">purple</atom:Tag>
+                </WrapPanel>
+
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</atom:TextBlock>
+                <WrapPanel HorizontalAlignment="Left">
+                    <atom:Tag TagColor="#f50">#f50</atom:Tag>
+                    <atom:Tag TagColor="#2db7f5" IsClosable="True">#2db7f5</atom:Tag>
+                    <atom:Tag TagColor="#87d068">#87d068</atom:Tag>
+                    <atom:Tag TagColor="#108ee9">#108ee9</atom:Tag>
+                </WrapPanel>
+            </StackPanel>
+
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Status Tag"
+            Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Without icon</atom:TextBlock>
+                <WrapPanel HorizontalAlignment="Left">
+                    <atom:Tag TagColor="success">success</atom:Tag>
+                    <atom:Tag TagColor="info">processing</atom:Tag>
+                    <atom:Tag TagColor="error">error</atom:Tag>
+                    <atom:Tag TagColor="warning">warning</atom:Tag>
+                    <atom:Tag TagColor="default">default</atom:Tag>
+                </WrapPanel>
+
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</atom:TextBlock>
+                <WrapPanel HorizontalAlignment="Left">
+                    <atom:Tag TagColor="success"
+                              Icon="{antdicons:AntDesignIconProvider Kind=CheckCircleOutlined}">
+                        success
+                    </atom:Tag>
+                    <atom:Tag TagColor="info"
+                              Icon="{antdicons:AntDesignIconProvider Kind=SyncOutlined}">
+                        processing
+                    </atom:Tag>
+                    <atom:Tag TagColor="error"
+                              Icon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}">
+                        error
+                    </atom:Tag>
+                    <atom:Tag TagColor="warning"
+                              Icon="{antdicons:AntDesignIconProvider Kind=ExclamationCircleOutlined}">
+                        warning
+                    </atom:Tag>
+                    <atom:Tag TagColor="default"
+                              Icon="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                        default
+                    </atom:Tag>
+                    <atom:Tag TagColor="default"
+                              Icon="{antdicons:AntDesignIconProvider Kind=MinusCircleOutlined}">
+                        default
+                    </atom:Tag>
+                </WrapPanel>
+            </StackPanel>
+
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Icon"
+            Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag.
+If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
+            <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                <atom:Tag TagColor="#55acee"
+                          Icon="{antdicons:AntDesignIconProvider Kind=TwitterOutlined}">
+                    Twitter
+                </atom:Tag>
+                <atom:Tag TagColor="#cd201f"
+                          Icon="{antdicons:AntDesignIconProvider Kind=YoutubeOutlined}">
+                    Youtube
+                </atom:Tag>
+                <atom:Tag TagColor="#3b5999"
+                          Icon="{antdicons:AntDesignIconProvider Kind=FacebookOutlined}">
+                    Facebook
+                </atom:Tag>
+                <atom:Tag TagColor="#55acee"
+                          Icon="{antdicons:AntDesignIconProvider Kind=LinkedinOutlined}">
+                    Linkedin
+                </atom:Tag>
+            </WrapPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="borderless"
+            Description="borderless">
+            <StackPanel Orientation="Vertical">
+                <WrapPanel HorizontalAlignment="Left">
+                    <atom:Tag Bordered="False">Tag1</atom:Tag>
+                    <atom:Tag Bordered="False">Tag2</atom:Tag>
+                    <atom:Tag Bordered="False" IsClosable="True">Tag3</atom:Tag>
+                    <atom:Tag Bordered="False" IsClosable="True">Tag4</atom:Tag>
+                </WrapPanel>
+
+                <atom:Separator FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 20" />
+                <WrapPanel HorizontalAlignment="Left">
+                    <atom:Tag TagColor="magenta" Bordered="False">magenta</atom:Tag>
+                    <atom:Tag TagColor="red" Bordered="False">red</atom:Tag>
+                    <atom:Tag TagColor="volcano" Bordered="False">volcano</atom:Tag>
+                    <atom:Tag TagColor="orange" Bordered="False">orange</atom:Tag>
+                    <atom:Tag TagColor="gold" Bordered="False">gold</atom:Tag>
+                    <atom:Tag TagColor="lime" Bordered="False">lime</atom:Tag>
+                    <atom:Tag TagColor="green" Bordered="False">green</atom:Tag>
+                    <atom:Tag TagColor="cyan" Bordered="False">cyan</atom:Tag>
+                    <atom:Tag TagColor="blue" Bordered="False">blue</atom:Tag>
+                    <atom:Tag TagColor="geekblue" Bordered="False">geekblue</atom:Tag>
+                    <atom:Tag TagColor="purple" Bordered="False">purple</atom:Tag>
+
+                    <atom:Tag TagColor="success" Bordered="False">success</atom:Tag>
+                    <atom:Tag TagColor="info" Bordered="False">processing</atom:Tag>
+                    <atom:Tag TagColor="error" Bordered="False">error</atom:Tag>
+                    <atom:Tag TagColor="warning" Bordered="False">warning</atom:Tag>
+                </WrapPanel>
+            </StackPanel>
+
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

@@ -1,0 +1,143 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.SeparatorShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Horizontal"
+            Description="A Separator is horizontal by default. You can add text within Separator.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Divider with title"
+            Description="Divider with inner title, set orientation='left/right' to align it.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Text" FontStyle="Italic" />
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Left text" TitlePosition="Left" FontWeight="Bold" />
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Right text" TitlePosition="Right" FontStyle="Oblique" />
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Left Text with 0 orientationMargin" TitlePosition="Left" FontStyle="Oblique"
+                                FontWeight="Medium" OrientationMargin="0" />
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+        
+                <atom:Separator Title="Right Text with 50px orientationMargin" TitlePosition="Right" TitleColor="Coral"
+                                FontWeight="Medium"
+                                OrientationMargin="50" />
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Text without heading style"
+            Description="You can use non-heading style of divider text by setting the plain property.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Text" IsPlain="True"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Left Text" TitlePosition="Left" IsPlain="True"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Right Text" TitlePosition="Right" IsPlain="True"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Set the spacing size of the divider"
+            Description="The size of the spacing.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator SizeType="Small"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator SizeType="Middle"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator SizeType="Large"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Vertical"
+            Description="Use type='vertical' to make the divider vertical.">
+            <StackPanel Orientation="Horizontal">
+                <atom:TextBlock>
+                    Item1
+                </atom:TextBlock>
+                <atom:VerticalSeparator Title="Right text" />
+                <atom:TextBlock>
+                    Item2
+                </atom:TextBlock>
+                <atom:VerticalSeparator />
+                <atom:TextBlock>
+                    Item3
+                </atom:TextBlock>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Variant"
+            Description="Divider is of solid variant by default. You can change that to either dashed or dotted.">
+            <StackPanel Orientation="Vertical">
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Solid" LineColor="#7cb305"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Dotted" LineColor="#7cb305" Variant="Dotted"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+                <atom:Separator Title="Dashed" LineColor="#7cb305" Variant="Dashed"/>
+                <atom:TextBlock TextWrapping="Wrap">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
+                </atom:TextBlock>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

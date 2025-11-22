@@ -1,0 +1,28 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:gallerycontrols="using:AtomUIGallery.Controls"
+    xmlns:atom="https://atomui.net"
+    xmlns:models="using:AtomUIGallery.Models">
+
+    <ControlTheme x:Key="{x:Type gallerycontrols:IconGallery}" TargetType="gallerycontrols:IconGallery">
+        <Setter Property="gallerycontrols:IconGallery.Template">
+            <ControlTemplate TargetType="gallerycontrols:IconGallery">
+                <ItemsControl ItemsSource="{TemplateBinding IconInfos}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:PackageIconItem">
+                            <gallerycontrols:IconInfoItem
+                                IconName="{Binding IconName}"
+                                Icon="{Binding Icon}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

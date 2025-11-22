@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.CheckBoxShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|CheckBox">
+                <Setter Property="Margin" Value="0, 0, 5, 5" />
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic"
+            Description="The simplest use.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10">
+                <atom:CheckBox>Checkbox</atom:CheckBox>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled checkbox.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <atom:CheckBox IsChecked="False" IsEnabled="False">UnChecked</atom:CheckBox>
+                <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False">Indeterminate</atom:CheckBox>
+                <atom:CheckBox IsChecked="True" IsEnabled="False">Checked</atom:CheckBox>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Controlled Checkbox"
+            Description="Communicated with other components.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <atom:CheckBox IsChecked="{Binding ControlledCheckBoxCheckedStatus}"
+                               IsEnabled="{Binding ControlledCheckBoxEnabledStatus}"
+                               Command="{Binding CheckBoxCommand}"
+                               Content="{Binding ControlledCheckBoxText}" />
+                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0, 10, 0, 0">
+                    <atom:Button SizeType="Small" ButtonType="Primary"
+                                 x:Name="CheckStatusBtn"
+                                 Command="{Binding CheckStatusCommand}"
+                                 CommandParameter="{Binding ElementName=CheckStatusBtn}"
+                                 Content="{Binding CheckStatusBtnText}" />
+                    <atom:Button SizeType="Small" ButtonType="Primary"
+                                 x:Name="EnableStatusBtn"
+                                 CommandParameter="{Binding ElementName=EnableStatusBtn}"
+                                 Command="{Binding EnableStatusCommand}"
+                                 Content="{Binding EnableStatusBtnText}" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Checkbox Group"
+            Description="Generate a group of checkboxes from an array.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                <WrapPanel Margin="0, 0, 0, 10">
+                    <atom:CheckBox IsChecked="True">Apple</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True">Orange</atom:CheckBox>
+                </WrapPanel>
+                <WrapPanel Margin="0, 0, 0, 10">
+                    <atom:CheckBox>Apple</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
+                    <atom:CheckBox>Orange</atom:CheckBox>
+                </WrapPanel>
+                <WrapPanel Margin="0, 0, 0, 10">
+                    <atom:CheckBox IsChecked="True" IsEnabled="False">Apple</atom:CheckBox>
+                    <atom:CheckBox IsEnabled="False">Pear</atom:CheckBox>
+                    <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
+                </WrapPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Check all"
+            Description="The indeterminate property can help you to achieve a 'check all' effect.">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10">
+                <StackPanel>
+                    <atom:CheckBox IsChecked="{Binding CheckedAllStatus}"
+                                   Command="{Binding CheckedAllStatusCommand}">
+                        Check all
+                    </atom:CheckBox>
+                </StackPanel>
+                <WrapPanel Margin="0, 20, 0, 0">
+                    <atom:CheckBox x:Name="AppleCheckBox"
+                                   IsChecked="{Binding AppleCheckedStatus}"
+                                   Command="{Binding CheckedItemStatusCommand1}">
+                        Apple
+                    </atom:CheckBox>
+                    <atom:CheckBox x:Name="PearCheckBox"
+                                   IsChecked="{Binding PearCheckedStatus}"
+                                   Command="{Binding CheckedItemStatusCommand2}">
+                        Pear
+                    </atom:CheckBox>
+                    <atom:CheckBox x:Name="OrangeCheckBox"
+                                   IsChecked="{Binding OrangeCheckedStatus}"
+                                   Command="{Binding CheckedItemStatusCommand3}">
+                        Orange
+                    </atom:CheckBox>
+                </WrapPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Use with Grid"
+            Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
+                <atom:CheckBox Grid.Row="0" Grid.Column="0">A</atom:CheckBox>
+                <atom:CheckBox Grid.Row="0" Grid.Column="1">B</atom:CheckBox>
+                <atom:CheckBox Grid.Row="0" Grid.Column="2">C</atom:CheckBox>
+                <atom:CheckBox Grid.Row="1" Grid.Column="0">D</atom:CheckBox>
+                <atom:CheckBox Grid.Row="1" Grid.Column="1">D</atom:CheckBox>
+            </Grid>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

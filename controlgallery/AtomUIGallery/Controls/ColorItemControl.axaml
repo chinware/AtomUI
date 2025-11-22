@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallerycontrols="using:AtomUIGallery.Controls"
+                    xmlns:atom="https://atomui.net"
+                    x:CompileBindings="True">
+
+    <ControlTheme x:Key="{x:Type gallerycontrols:ColorItemControl}" TargetType="gallerycontrols:ColorItemControl">
+        <Setter Property="gallerycontrols:ColorItemControl.Height" Value="35" />
+        <Setter Property="gallerycontrols:ColorItemControl.Template">
+            <ControlTemplate TargetType="gallerycontrols:ColorItemControl">
+                <Border Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}">
+                    <Panel>
+                        <atom:TextBlock Padding="8"
+                                   FontSize="12"
+                                   FontWeight="600"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Text="{TemplateBinding ColorName}" />
+                        <atom:TextBlock Name="PART_HexTextBlock"
+                                   Padding="8"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   FontWeight="600"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   IsVisible="False"
+                                   Opacity="0.8"
+                                   Text="{TemplateBinding Hex}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ atom|TextBlock#PART_HexTextBlock">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

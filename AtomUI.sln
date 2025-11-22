@@ -39,6 +39,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Desktop.Controls.Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUI.Icons.AntDesign", "src\AtomUI.Icons.AntDesign\AtomUI.Icons.AntDesign.csproj", "{52DB6052-DAC9-404F-B94B-4F35AD831FB2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gallery", "Gallery", "{D386F47F-AAD9-4F8E-AC50-43E0189717AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUIGallery", "controlgallery\AtomUIGallery\AtomUIGallery.csproj", "{40CA8799-6B60-44AC-AF5E-B683C04680AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUIGallery.Desktop", "controlgallery\AtomUIGallery.Desktop\AtomUIGallery.Desktop.csproj", "{93901B98-3F64-443F-A7A1-B2B709AAE91C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtomUIGallery.Icons.Desktop", "controlgallery\AtomUIGallery.Icons.Desktop\AtomUIGallery.Icons.Desktop.csproj", "{3ED28AE9-ECFF-4C74-B37F-EF8E4D060772}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +89,18 @@ Global
 		{52DB6052-DAC9-404F-B94B-4F35AD831FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52DB6052-DAC9-404F-B94B-4F35AD831FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52DB6052-DAC9-404F-B94B-4F35AD831FB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40CA8799-6B60-44AC-AF5E-B683C04680AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CA8799-6B60-44AC-AF5E-B683C04680AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40CA8799-6B60-44AC-AF5E-B683C04680AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40CA8799-6B60-44AC-AF5E-B683C04680AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93901B98-3F64-443F-A7A1-B2B709AAE91C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93901B98-3F64-443F-A7A1-B2B709AAE91C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93901B98-3F64-443F-A7A1-B2B709AAE91C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93901B98-3F64-443F-A7A1-B2B709AAE91C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ED28AE9-ECFF-4C74-B37F-EF8E4D060772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ED28AE9-ECFF-4C74-B37F-EF8E4D060772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ED28AE9-ECFF-4C74-B37F-EF8E4D060772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ED28AE9-ECFF-4C74-B37F-EF8E4D060772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +108,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2AAAF06F-B1D1-4B3F-885A-F0C329F31C78} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
 		{47394EE2-C42B-41CF-A84D-0C33E4302683} = {B4C46C3E-0CCC-4861-95B6-CA08D501A46F}
+		{40CA8799-6B60-44AC-AF5E-B683C04680AC} = {D386F47F-AAD9-4F8E-AC50-43E0189717AF}
+		{93901B98-3F64-443F-A7A1-B2B709AAE91C} = {D386F47F-AAD9-4F8E-AC50-43E0189717AF}
+		{3ED28AE9-ECFF-4C74-B37F-EF8E4D060772} = {D386F47F-AAD9-4F8E-AC50-43E0189717AF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {056F1B83-F604-4F7D-A255-0B40FB31A8F6}

@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.AboutUsPage"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:views="clr-namespace:AtomUIGallery.ShowCases.Views">
+    <UserControl.Styles>
+        <Style Selector="Image#QinwareLogo">
+            <Setter Property="Source" Value="/Assets/qinware-logo.png" />
+        </Style>
+        <Style Selector="views|AboutUsPage[IsDarkThemeMode=True]">
+            <Style Selector="^ Image#QinwareLogo">
+                <Setter Property="Source" Value="/Assets/qinware-logo-white.png" />
+            </Style>
+        </Style>
+    </UserControl.Styles>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Auto"
+                  AllowAutoHide="False">
+        <StackPanel MinWidth="800" MinHeight="600">
+            <Image
+                Name="QinwareLogo"
+                HorizontalAlignment="Center"
+                Width="300"
+                Margin="0, 80, 0, 20" />
+            <StackPanel Spacing="10" HorizontalAlignment="Center">
+                <atom:TextBlock HorizontalAlignment="Center" FontWeight="Bold" FontSize="18">
+                    <Run Text="愿景：" Foreground="Red" />
+                    <Run Text="成为世界一流的生产力工具软件提供商" />
+                </atom:TextBlock>
+                <atom:TextBlock HorizontalAlignment="Center" FontWeight="Bold" FontSize="18">
+                    <Run Text="使命：" Foreground="Red" />
+                    <Run Text="让数字世界建设者更高效" />
+                </atom:TextBlock>
+            </StackPanel>
+
+            <Image Source="/Assets/AtomUIOSS-release-banner.png"
+                   HorizontalAlignment="Center"
+                   Width="800"
+                   Margin="0, 20, 0, 20" />
+
+            <StackPanel HorizontalAlignment="Center" Spacing="10" Orientation="Horizontal">
+                <atom:HyperLinkButton NavigateUri="https://qinware.com">Home Page</atom:HyperLinkButton>
+                <atom:HyperLinkButton Icon="{antdicons:AntDesignIconProvider GiteeOutlined}"
+                                      NavigateUri="https://gitee.com/chinware/atomui">
+                    Gitee
+                </atom:HyperLinkButton>
+                <atom:HyperLinkButton Icon="{antdicons:AntDesignIconProvider GithubOutlined}"
+                                      NavigateUri="https://github.com/chinware/atomui">
+                    Github
+                </atom:HyperLinkButton>
+            </StackPanel>
+
+            <StackPanel HorizontalAlignment="Center" Spacing="20" Orientation="Horizontal" Margin="0, 20, 0, 20">
+                <atom:GroupBox HeaderTitle="微信公众号">
+                    <Image Source="/Assets/qinware-wechatpress.png"
+                           HorizontalAlignment="Center"
+                           Width="200" />
+                </atom:GroupBox>
+
+                <atom:GroupBox HeaderTitle="微信交流群">
+                    <Image Source="/Assets/atomui-wechat.png"
+                           HorizontalAlignment="Center"
+                           Width="200" />
+                </atom:GroupBox>
+
+                <atom:GroupBox HeaderTitle="QQ 交流群">
+                    <Image Source="/Assets/atomui-qq.png"
+                           HorizontalAlignment="Center"
+                           Width="200" />
+                </atom:GroupBox>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

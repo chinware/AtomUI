@@ -1,0 +1,374 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.StepsShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             x:Name="StepsShowCaseName">
+    <gallerycontrols:ShowCasePanel>
+    <gallerycontrols:ShowCaseItem
+        Title="Basic"
+        Description="The most basic step bar."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="0">
+            <atom:StepsItem Header="Finished" Description="This is a description." />
+            <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+            <atom:StepsItem Header="Waiting" Description="This is a description." />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Mini version"
+        Description="By setting like this: SizeType to Small, you can get a mini version."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="0" SizeType="Small">
+            <atom:StepsItem Header="Finished" Description="This is a description." />
+            <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+            <atom:StepsItem Header="Waiting" Description="This is a description." />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="With icon"
+        Description="You can use your own custom icons by setting the property icon for items."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="0">
+            <atom:StepsItem Header="Login" Status="Finish" Icon="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+            <atom:StepsItem Header="Verification" Status="Finish" Icon="{antdicons:AntDesignIconProvider Kind=SolutionOutlined}" />
+            <atom:StepsItem Header="Pay" Status="Process"
+                            Icon="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, Animation=Spin}" />
+            <atom:StepsItem Header="Done" Status="Wait" Icon="{antdicons:AntDesignIconProvider Kind=SmileOutlined}" />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Switch Step"
+        Description="Cooperate with the content and buttons, to represent the progress of a process."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:Steps Name="CurrentStepContentSteps" CurrentStep="{Binding CurrentStep}">
+                <atom:StepsItem Header="First" Content="First-content" />
+                <atom:StepsItem Header="Second" Content="Second-content" />
+                <atom:StepsItem Header="Third" Content="Last-content" />
+            </atom:Steps>
+            <atom:DashedBorder BorderThickness="1"
+                               BorderBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}"
+                               StrokeDashArray="{Binding #StepsShowCaseName.DashedArray}"
+                               CornerRadius="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}"
+                               Background="{DynamicResource {x:Static atom:SharedTokenKey.ColorFillAlter}}"
+                               TextElement.Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
+                               Height="260">
+                <ContentPresenter Content="{Binding #CurrentStepContentSteps.CurrentContent}"
+                                  ContentTemplate="{Binding #CurrentStepContentSteps.CurrentContentTemplate}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" />
+            </atom:DashedBorder>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:Button ButtonType="Primary" Content="Next" Name="NextStepButton" />
+                <atom:Button ButtonType="Default" Content="Previous" Name="PreviousButton"
+                             IsVisible="{Binding PreviousButtonVisible}" />
+            </StackPanel>
+        </StackPanel>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Vertical"
+        Description="A simple step bar in the vertical direction."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="1" Orientation="Vertical">
+            <atom:StepsItem Header="Finished" Description="This is a description." />
+            <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+            <atom:StepsItem Header="Waiting" Description="This is a description." />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Vertical mini version"
+        Description="A simple mini version step bar in the vertical direction."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="1" Orientation="Vertical" SizeType="Small">
+            <atom:StepsItem Header="Finished" Description="This is a description." />
+            <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+            <atom:StepsItem Header="Waiting" Description="This is a description." />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Error status"
+        Description="By using status of Steps, you can specify the state for current step."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="1" CurrentStepStatus="Error">
+            <atom:StepsItem Header="Finished" Description="This is a description." />
+            <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+            <atom:StepsItem Header="Waiting" Description="This is a description." />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Dot Style"
+        Description="Steps with progress dot style."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <atom:Steps CurrentStep="1" ItemIndicatorType="Dot">
+            <atom:StepsItem Header="Finished" Description="This is a description." />
+            <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+            <atom:StepsItem Header="Waiting" Description="This is a description." />
+        </atom:Steps>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Dot Style Vertical"
+        Description="Steps with progress dot style vertical."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:Steps CurrentStep="1" ItemIndicatorType="Dot" Orientation="Vertical">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="1" ItemIndicatorType="Dot" Orientation="Vertical" SizeType="Small">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+        </StackPanel>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Clickable"
+        Description="Setting IsItemClickable=true makes Steps clickable."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:Steps CurrentStep="0" IsItemClickable="True">
+                <atom:StepsItem Header="Step 1" Description="This is a description." />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="Left 00:00:08"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" IsItemClickable="True" Orientation="Vertical">
+                <atom:StepsItem Header="Step 1" Description="This is a description." />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="Left 00:00:08"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" IsItemClickable="True" ItemIndicatorType="Dot">
+                <atom:StepsItem Header="Step 1" Description="This is a description." />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="Left 00:00:08"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." />
+                <atom:StepsItem Header="Step 4" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" IsItemClickable="True" ItemIndicatorType="Dot" Orientation="Vertical">
+                <atom:StepsItem Header="Step 1" Description="This is a description." />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="Left 00:00:08"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." />
+                <atom:StepsItem Header="Step 4" Description="This is a description." />
+            </atom:Steps>
+        </StackPanel>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Navigation Steps"
+        Description="Navigation steps."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" SizeType="Small">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" Status="Finish"/>
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="00:01:02" Status="Process"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="waiting for longlong time" Status="Wait"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True">
+                <atom:StepsItem Header="Step 1" Status="Finish"/>
+                <atom:StepsItem Header="Step 2" Status="Process"/>
+                <atom:StepsItem Header="Step 3" Status="Wait"/>
+                <atom:StepsItem Header="Step 4" Status="Wait"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" SizeType="Small">
+                <atom:StepsItem Header="finish 1" Status="Finish"/>
+                <atom:StepsItem Header="finish 2" Status="Finish"/>
+                <atom:StepsItem Header="current process" Status="Process"/>
+                <atom:StepsItem Header="wait" Status="Wait" IsEnabled="False"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" Orientation="Vertical">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" Status="Finish"/>
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="10:00:05" Status="Process"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="00:30:05" Status="Wait"/>
+                <atom:StepsItem Header="Step 4" SubHeader="waiting for longlong time" Status="Wait"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" Orientation="Vertical" SizeType="Small">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" Status="Finish"/>
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="10:00:05" Status="Process"/>
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="00:30:05" Status="Wait"/>
+                <atom:StepsItem Header="Step 4" SubHeader="waiting for longlong time" Status="Wait"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="00:01:02" />
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="03:01:02"/>
+                <atom:StepsItem Header="Step 4" Description="This is a description." SubHeader="10:01:02"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" SizeType="Small">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="00:01:02" />
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="03:01:02"/>
+                <atom:StepsItem Header="Step 4" Description="This is a description." SubHeader="10:01:02"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" Orientation="Vertical">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="00:01:02" />
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="03:01:02"/>
+                <atom:StepsItem Header="Step 4" Description="This is a description." SubHeader="10:01:02"/>
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" SizeType="Small" Orientation="Vertical">
+                <atom:StepsItem Header="Step 1" Description="This is a description." SubHeader="00:00:05" />
+                <atom:StepsItem Header="Step 2" Description="This is a description." SubHeader="00:01:02" />
+                <atom:StepsItem Header="Step 3" Description="This is a description." SubHeader="03:01:02"/>
+                <atom:StepsItem Header="Step 4" Description="This is a description." SubHeader="10:01:02"/>
+            </atom:Steps>
+        </StackPanel>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Steps with progress"
+        Description="Steps with progress."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:Steps CurrentStep="1" ProgressValue="60" IsShowItemProgress="True">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator/>
+            <atom:Steps CurrentStep="1" ProgressValue="30" IsShowItemProgress="True" SizeType="Small">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+        </StackPanel>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem
+        Title="Label Placement"
+        Description="Set labelPlacement to vertical."
+        IsOccupyEntireRow="True"
+        MinHeight="200">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:Steps CurrentStep="1" LabelPlacement="Vertical">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator />
+            <atom:Steps CurrentStep="1" LabelPlacement="Vertical" ProgressValue="45" IsShowItemProgress="True">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator />
+            <atom:Steps CurrentStep="1" LabelPlacement="Vertical" ProgressValue="45" IsShowItemProgress="True" SizeType="Small">
+                <atom:StepsItem Header="Finished" Description="This is a description." />
+                <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
+                <atom:StepsItem Header="Waiting" Description="This is a description." />
+            </atom:Steps>
+            <atom:Separator />
+            <atom:Steps CurrentStep="1" Style="Navigation" IsItemClickable="True" ProgressValue="45" IsShowItemProgress="True" LabelPlacement="Vertical">
+                <atom:StepsItem Header="Step 1" Description="This is a description."/>
+                <atom:StepsItem Header="Step 2" Description="This is a description."/>
+                <atom:StepsItem Header="Step 3" Description="This is a description."/>
+                <atom:StepsItem Header="Step 4" Description="This is a description."/>
+            </atom:Steps>
+            <atom:Separator />
+            <atom:Steps CurrentStep="1" Style="Navigation" IsItemClickable="True" ProgressValue="67" IsShowItemProgress="True" LabelPlacement="Vertical" SizeType="Small">
+                <atom:StepsItem Header="Step 1" Description="This is a description."/>
+                <atom:StepsItem Header="Step 2" Description="This is a description."/>
+                <atom:StepsItem Header="Step 3" Description="This is a description."/>
+                <atom:StepsItem Header="Step 4" Description="This is a description."/>
+            </atom:Steps>
+        </StackPanel>
+    </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Inline Steps"
+            Description="Inline type steps, suitable for displaying the process and current state of the object in the list content scene."
+            IsOccupyEntireRow="True"
+            MinHeight="200">
+            <ItemsControl>
+                <DockPanel LastChildFill="True">
+                    <atom:Steps CurrentStep="0" DockPanel.Dock="Right" Style="Inline">
+                        <atom:StepsItem Header="Step 1" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 2" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 3" Description="This is a description."/>
+                    </atom:Steps>
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <TextBlock FontWeight="Bold">Ant Design Title 1</TextBlock>
+                        <TextBlock Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}">
+                            Ant Design, a design language for background applications, is refined by Ant UED Team
+                        </TextBlock>
+                        <atom:Separator/>
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel LastChildFill="True">
+                    <atom:Steps CurrentStep="1" DockPanel.Dock="Right" Style="Inline" CurrentStepStatus="Error">
+                        <atom:StepsItem Header="Step 1" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 2" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 3" Description="This is a description."/>
+                    </atom:Steps>
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <TextBlock FontWeight="Bold">Ant Design Title 2</TextBlock>
+                        <TextBlock Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}">
+                            Ant Design, a design language for background applications, is refined by Ant UED Team
+                        </TextBlock>
+                        <atom:Separator/>
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel LastChildFill="True">
+                    <atom:Steps CurrentStep="2" DockPanel.Dock="Right" Style="Inline">
+                        <atom:StepsItem Header="Step 1" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 2" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 3" Description="This is a description."/>
+                    </atom:Steps>
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <TextBlock FontWeight="Bold">Ant Design Title 3</TextBlock>
+                        <TextBlock Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}">
+                            Ant Design, a design language for background applications, is refined by Ant UED Team
+                        </TextBlock>
+                        <atom:Separator/>
+                    </StackPanel>
+                </DockPanel>
+                <DockPanel LastChildFill="True">
+                    <atom:Steps CurrentStep="1" DockPanel.Dock="Right" Style="Inline">
+                        <atom:StepsItem Header="Step 1" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 2" Description="This is a description."/>
+                        <atom:StepsItem Header="Step 3" Description="This is a description."/>
+                    </atom:Steps>
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <TextBlock FontWeight="Bold">Ant Design Title 4</TextBlock>
+                        <TextBlock Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}">
+                            Ant Design, a design language for background applications, is refined by Ant UED Team
+                        </TextBlock>
+                    </StackPanel>
+                </DockPanel>
+            </ItemsControl>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

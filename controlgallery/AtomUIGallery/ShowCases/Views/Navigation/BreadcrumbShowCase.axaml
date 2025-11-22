@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.BreadcrumbShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic Usage"
+            Description="The simplest use.">
+            <StackPanel>
+                <atom:Breadcrumb>
+                    <atom:BreadcrumbItem>Home</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="#">Application Center</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="#">Application List</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem>An Application</atom:BreadcrumbItem>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="With an Icon"
+            Description="The icon should be placed in front of the text.">
+            <StackPanel>
+                <atom:Breadcrumb>
+                    <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=HomeOutlined}"></atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=UserOutlined}" NavigateContext="#">Application List</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem>Application</atom:BreadcrumbItem>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="With Params"
+            Description="With route params.">
+            <StackPanel>
+                <atom:Breadcrumb NavigateRequest="HandleNavigateRequest">
+                    <atom:BreadcrumbItem>Users</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="Param(1)">Param</atom:BreadcrumbItem>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Configuring the Separator"
+            Description="The separator can be customized by setting the separator property: separator equals >">
+            <StackPanel>
+                <atom:Breadcrumb Separator=">">
+                    <atom:BreadcrumbItem>Home</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="#">Application Center</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="#">Application List</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem>An Application</atom:BreadcrumbItem>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Configuring the Separator Independently"
+            Description="Customize separator for each other.">
+            <StackPanel>
+                <atom:Breadcrumb>
+                    <atom:BreadcrumbItem Separator=":">Location</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="#">Application Center</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem NavigateContext="#">Application List</atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem>An Application</atom:BreadcrumbItem>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Generate BreadcrumbItem by template"
+            Description="Generate BreadcrumbItem by template.">
+            <StackPanel>
+                <atom:Breadcrumb ItemsSource="{Binding BreadcrumbItems}"
+                                 x:DataType="viewModels:BreadcrumbViewModel">
+                    <atom:Breadcrumb.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Content}"/>
+                        </DataTemplate>
+                    </atom:Breadcrumb.ItemTemplate>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

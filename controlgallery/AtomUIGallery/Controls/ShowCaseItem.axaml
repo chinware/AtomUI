@@ -1,0 +1,42 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:gallerycontrols="using:AtomUIGallery.Controls">
+
+    <ControlTheme x:Key="{x:Type gallerycontrols:ShowCaseItem}"
+                  TargetType="{x:Type gallerycontrols:ShowCaseItem}">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type gallerycontrols:ShowCaseItem}">
+                <Border x:Name="PART_RootBorder"
+                        Padding="20"
+                        CornerRadius="8">
+                    <StackPanel Orientation="Vertical">
+                        <ContentPresenter
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Margin="0, 0, 0, 40" />
+                        <atom:Separator TitlePosition="Left"
+                                        FontWeight="Bold"
+                                        Title="{TemplateBinding Title}" />
+                        <atom:TextBlock TextWrapping="Wrap"
+                                        Margin="0, 10, 0, 0"
+                                        Text="{TemplateBinding Description}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsFake=False] /template/ Border#PART_RootBorder">
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="^[IsFake=True] /template/ Border#PART_RootBorder">
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="^[IsFake=True] /template/ atom|Separator">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

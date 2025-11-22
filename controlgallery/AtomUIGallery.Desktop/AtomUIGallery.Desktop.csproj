@@ -1,0 +1,104 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <OutputType>WinExe</OutputType>
+        <RootNamespace>AtomUIGallery.Desktop</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <ApplicationIcon>../AtomUIGallery/Assets/AtomUIGallery.ico</ApplicationIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <TrimmerRootDescriptor Include="Roots.xml"/>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <!--        <IsTrimmable>true</IsTrimmable>-->
+        <!--        <PublishTrimmed>true</PublishTrimmed>-->
+        <!--        <PublishAot>true</PublishAot>-->
+        <UseAppHost>true</UseAppHost>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Assets/Images/AtomUIGallery.ico">
+            <Link>AtomUIGallery.ico</Link>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Remove="Assets/Images/AtomUIGallery.ico" />
+    </ItemGroup>
+
+    <Choose>
+        <When Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+            <ItemGroup Condition="'$(Configuration)' == 'Release'">
+                <None Include="Assets/Images/AtomUIGallery.icns">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                </None>
+                <None Include="Assets/Images/DmgInstallerBg@2x.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                </None>
+            </ItemGroup>
+        </When>
+        <When Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+            <ItemGroup Condition="'$(Configuration)' == 'Release'">
+                <None Include="Assets/Images/AppLogo.iconset/icon_16x16.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/icons/hicolor/16x16/apps/AtomUIGallery.png</TargetPath>
+                </None>
+                <None Include="Assets/Images/AppLogo.iconset/icon_32x32.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/icons/hicolor/32x32/apps/AtomUIGallery.png</TargetPath>
+                </None>
+                <None Include="Assets/Images/AppLogo.iconset/icon_64x64.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/icons/hicolor/64x64/apps/AtomUIGallery.png</TargetPath>
+                </None>
+                <None Include="Assets/Images/AppLogo.iconset/icon_128x128.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/icons/hicolor/128x128/apps/AtomUIGallery.png</TargetPath>
+                </None>
+                <None Include="Assets/Images/AppLogo.iconset/icon_256x256.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/icons/hicolor/256x256/apps/AtomUIGallery.png</TargetPath>
+                </None>
+                <None Include="Assets/Images/AppLogo.iconset/icon_256x256.png">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/AtomUIGallery.png</TargetPath>
+                </None>
+            </ItemGroup>
+        </When>
+        <When Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+            <ItemGroup Condition="'$(Configuration)' == 'Release'">
+                <None Include="Assets/Images/Wix/InstallerBanner.bmp">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/%(Filename)%(Extension)</TargetPath>
+                </None>
+                <None Include="Assets/Images/Wix/InstallerWizard.bmp">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/%(Filename)%(Extension)</TargetPath>
+                </None>
+                <None Include="../AtomUIGallery/Assets/AtomUIGallery.ico">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                    <TargetPath>Assets/Images/%(Filename)%(Extension)</TargetPath>
+                </None>
+                <None Include="Assets/Images/AtomUIGalleryInstaller.ico">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                </None>
+                <None Include="Assets/License.rtf">
+                    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+                </None>
+            </ItemGroup>
+        </When>
+    </Choose>
+</Project>

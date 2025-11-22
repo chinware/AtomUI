@@ -1,0 +1,9 @@
+<linker>
+    <assembly fullname="AtomUI.Demo.Desktop" preserve="All"/>
+    <assembly fullname="AtomUI.Theme" preserve="All"/>
+    <assembly fullname="Avalonia.Base" preserve="All"/>
+    <assembly fullname="AtomUI.Desktop.Controls" preserve="All"/>
+    <assembly fullname="AtomUI.IconPkg" preserve="All"/>
+    <assembly fullname="AtomUI.Icons.AntDesign" preserve="All"/>
+    <assembly fullname="Avalonia.Remote.Protocol" preserve="All"/>
+</linker>

@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.ModalUserControlView"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
+             x:DataType="viewModels:ModalUserControlViewModel">
+    <StackPanel Orientation="Vertical" Spacing="10">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock>Name</TextBlock>
+            <TextBlock Text="{Binding Name}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock>Age</TextBlock>
+            <TextBlock Text="{Binding Age}"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Installer>
+    <Name>AtomUIGallery</Name>
+    <AssemblyName>AtomUIGallery.Desktop</AssemblyName>
+    <Version>__VERSION__</Version>
+    <AppBundleIdentifier>net.atomui.gallery</AppBundleIdentifier>
+    <Title>AtomUIGallery Installer</Title>
+    <AppIcon>Assets/Images/AtomUIGallery</AppIcon>
+    <Company>Qinware</Company>
+    <License>Assets/License.rtf</License>
+    <CompanyFullName>Qinware Technology Co., Ltd.</CompanyFullName>
+    <CompanyUrl>https://www.qinware.com</CompanyUrl>
+    <Copyright>Copyright Qinware Technology Co., Ltd.</Copyright>
+    <InstallerWindowIcon>AtomUIGallery</InstallerWindowIcon>
+    <InstallerApplicationIcon>AtomUIGallery</InstallerApplicationIcon>
+    <Banner>Assets/Images/InstallerBanner.bmp</Banner>
+    <Background>Assets/Images/InstallerWizard.bmp</Background>
+    <ProductCode>a20bd155-1c89-4d7a-88b3-48705dc6eb10</ProductCode>
+    <UpgradeCode>0d6ae373-6c21-4726-b649-ec29bfbf6feb</UpgradeCode>
+</Installer>

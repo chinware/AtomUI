@@ -1,0 +1,145 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.ListShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
+    <gallerycontrols:ShowCasePanel>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Basic usage"
+            Description="Basic usage example.">
+            <atom:List ItemsSource="{Binding ListItems}"
+                       x:DataType="viewModels:ListViewModel"
+                       IsItemSelectable="False">
+                <atom:List.ItemTemplate>
+                    <DataTemplate x:DataType="atom:ListItemData">
+                        <atom:TextBlock Text="{Binding Content}" />
+                    </DataTemplate>
+                </atom:List.ItemTemplate>
+            </atom:List>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Selection"
+            Description="You can set single selection, multiple selection or no selection.">
+            <StackPanel Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                    <atom:TextBlock VerticalAlignment="Center">Selection Mode:</atom:TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Solid" Name="SelectionModeOptionGroup">
+                        <atom:OptionButton IsChecked="True" Tag="{x:Static SelectionMode.Single}">Single</atom:OptionButton>
+                        <atom:OptionButton Tag="{x:Static SelectionMode.Multiple}">Multiple</atom:OptionButton>
+                        <atom:OptionButton Tag="{x:Static SelectionMode.Toggle}">Toggle</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+                <atom:List SelectionMode="{Binding SelectionMode}"
+                           ItemsSource="{Binding ListItems}"
+                           x:DataType="viewModels:ListViewModel"
+                           IsShowSelectedIndicator="True">
+                    <atom:List.ItemTemplate>
+                        <DataTemplate x:DataType="atom:ListItemData">
+                            <atom:TextBlock Text="{Binding Content}" />
+                        </DataTemplate>
+                    </atom:List.ItemTemplate>
+                </atom:List>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Hover effect"
+            Description="Disabled item hover effect.">
+            <atom:List DisabledItemHoverEffect="True"
+                       x:DataType="viewModels:ListViewModel"
+                       ItemsSource="{Binding ListItems}">
+                <atom:List.ItemTemplate>
+                    <DataTemplate x:DataType="atom:ListItemData">
+                        <atom:TextBlock Text="{Binding Content}" />
+                    </DataTemplate>
+                </atom:List.ItemTemplate>
+            </atom:List>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Group"
+            Description="You can group the data based on conditions.">
+            <atom:List x:DataType="viewModels:ListViewModel"
+                       ItemsSource="{Binding GroupListItems}"
+                       IsGroupEnabled="True"
+                       Height="300">
+                <atom:List.ItemTemplate>
+                    <DataTemplate x:DataType="atom:ListItemData">
+                        <atom:TextBlock Text="{Binding Content}" />
+                    </DataTemplate>
+                </atom:List.ItemTemplate>
+            </atom:List>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Item disabled"
+            Description="Disabled item.">
+            <atom:List x:DataType="viewModels:ListViewModel"
+                       ItemsSource="{Binding ListItemsWidthDisabled}">
+                <atom:List.ItemTemplate>
+                    <DataTemplate x:DataType="atom:ListItemData">
+                        <atom:TextBlock Text="{Binding Content}" />
+                    </DataTemplate>
+                </atom:List.ItemTemplate>
+            </atom:List>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Empty"
+            Description="show empty indicator when no data.">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:Button Content="Add Item"
+                                 Click="HandleAddEmptyItemClicked" />
+                    <atom:Button Content="Remove Item"
+                                 Click="HandleRemoveEmptyItemClicked" />
+                </StackPanel>
+                <atom:List
+                           x:DataType="viewModels:ListViewModel"
+                           ItemsSource="{Binding EmptyDemoItems}"
+                           IsShowEmptyIndicator="True"
+                           IsGroupEnabled="False">
+                    <atom:List.ItemTemplate>
+                        <DataTemplate x:DataType="atom:ListItemData">
+                            <atom:TextBlock Text="{Binding Content}" />
+                        </DataTemplate>
+                    </atom:List.ItemTemplate>
+                </atom:List>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Filter"
+            Description="You can filter the data based on criteria; here we've filtered for items containing 'a'.">
+            <atom:List Name="FilteredList"
+                x:DataType="viewModels:ListViewModel"
+                       ItemsSource="{Binding GroupListItems}"
+                       IsGroupEnabled="False">
+                <atom:List.ItemTemplate>
+                    <DataTemplate x:DataType="atom:ListItemData">
+                        <atom:TextBlock Text="{Binding Content}" />
+                    </DataTemplate>
+                </atom:List.ItemTemplate>
+            </atom:List>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Ordered"
+            Description="We can sort according to specified attributes.">
+            <atom:List Name="OrderedList" 
+                       x:DataType="viewModels:ListViewModel"
+                       ItemsSource="{Binding GroupListItems}"
+                       IsGroupEnabled="True">
+                <atom:List.ItemTemplate>
+                    <DataTemplate x:DataType="atom:ListItemData">
+                        <atom:TextBlock Text="{Binding Content}" />
+                    </DataTemplate>
+                </atom:List.ItemTemplate>
+            </atom:List>
+        </gallerycontrols:ShowCaseItem>
+        
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

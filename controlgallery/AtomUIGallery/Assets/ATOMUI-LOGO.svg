@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="128px" height="128px" viewBox="0 0 128 128" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path d="M128 0L128 0L128 128L0 128L0 0L128 0Z" id="path_1" />
+    <clipPath id="clip_1">
+      <use xlink:href="#path_1" clip-rule="evenodd" fill-rule="evenodd" />
+    </clipPath>
+  </defs>
+  <g id="ATOMUI-LOGO">
+    <path d="M128 0L128 0L128 128L0 128L0 0L128 0Z" id="ATOMUI-LOGO" fill="none" stroke="none" />
+    <path d="M58 20.3163C65.1 16.9163 74.2 20.4163 77.9 27.2163C94 54.4163 109.9 81.6163 125.7 108.916C118.3 108.916 110.8 109.016 103.4 108.616C93.7 91.9163 83.6 75.4163 73.8 58.7163C70.8 53.4163 66.9 48.8163 64 43.4163C53.5 60.4163 43.3 77.5163 32.9 94.6163C46.3 94.6163 59.8 94.6163 73.2 94.6163C76 99.3163 78.8 104.116 81.6 108.816C55.1 108.816 28.5 108.816 2 108.816C17.6 82.5163 33.5 56.4163 49.1 30.2163C51.3 26.3163 53.8 22.1163 58 20.3163L58 20.3163Z" id="Shape" fill="#E60012" fill-rule="evenodd" stroke="none" clip-path="url(#clip_1)" />
+  </g>
+</svg>

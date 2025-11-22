@@ -1,0 +1,116 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.NumberUpDownShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+            <gallerycontrols:ShowCaseItem
+                Title="Basic usage"
+                Description="Numeric-only NumberUpDown.">
+            <atom:NumericUpDown Value="3" HorizontalAlignment="Stretch"/>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Three sizes of NumberUpDown"
+            Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown SizeType="Large" Value="3" />
+                <atom:NumericUpDown SizeType="Middle" Value="3" />
+                <atom:NumericUpDown SizeType="Small" Value="3" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Variants"
+            Description="Variants of NumberUpDown.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outline" />
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" />
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" />
+            </StackPanel>
+            
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Disabled"
+            Description="Variants of NumberUpDown of disabled style.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outline" IsEnabled="False"/>
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" IsEnabled="False"/>
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" IsEnabled="False"/>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Pre / Post tab"
+            Description="Using pre and post tabs example.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown LeftAddOn="http://" RightAddOn=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400" 
+                                    Value="3" />
+                <atom:NumericUpDown RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown LeftAddOn="http://" InnerRightContent=".com" 
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="With clear icon"
+            Description="Input box with the remove icon, click the icon to delete everything.">
+            <atom:NumericUpDown Watermark="input with clear icon" Width="400" HorizontalAlignment="Left"
+                                IsEnableClearButton="True" />
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="prefix and suffix"
+            Description="Add a prefix or suffix icons inside input.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Watermark="Enter your value"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7}"
+                                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Status"
+            Description="Add status to Input with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown Watermark="Error" Status="Error" />
+                <atom:NumericUpDown Watermark="Warning" Status="Warning" />
+                <atom:NumericUpDown Watermark="Error with prefix"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Error" />
+                <atom:NumericUpDown Watermark="Warning with prefix"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Warning" />
+
+                <atom:NumericUpDown Watermark="Error" Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+                <atom:NumericUpDown Watermark="Warning" Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+
+                <atom:NumericUpDown Watermark="Error" Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+                <atom:NumericUpDown Watermark="Warning" Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

@@ -1,0 +1,134 @@
+<UserControl
+    x:Class="AtomUIGallery.ShowCases.Views.TimelineShowCase"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <gallerycontrols:ShowCasePanel>
+    <gallerycontrols:ShowCaseItem Description="Basic usage example." Title="Basic usage">
+        <atom:Timeline>
+            <atom:TimelineItem>
+                2024-01-01 AtomUI Officially Initiated
+            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="green">
+                2024-08-12 After more than 7 months of development, AtomUI is officially open-source.
+                Welcome everyone to follow us.
+            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="red">
+                2024-10-01 Release of the 0.0.1 Preview Version
+            </atom:TimelineItem>
+        </atom:Timeline>
+    </gallerycontrols:ShowCaseItem>
+    
+    <gallerycontrols:ShowCaseItem Description="Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status." Title="Color">
+        <atom:Timeline>
+            <atom:TimelineItem IndicatorColor="green">
+                2024-01-01 AtomUI Officially Initiated
+            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="blue">
+                2024-01-01 AtomUI Officially Initiated
+            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="Red">
+                2024-01-01 AtomUI Officially Initiated
+            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="gray">
+                2024-01-01 AtomUI Officially Initiated
+            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="#00CCFF">
+                2024-01-01 AtomUI Officially Initiated
+            </atom:TimelineItem>
+        </atom:Timeline>
+    </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes." Title="Last node and Reversing">
+            <StackPanel>
+                <atom:Timeline
+                    Pending="Recording..."
+                    IsReverse="False"
+                    x:Name="ReverseTimeline">
+                    <atom:TimelineItem Label="2024-01-01">
+                        2024-01-01 AtomUI Officially Initiated. 1
+                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-08-12">
+                        2024-01-01 AtomUI Officially Initiated. 2
+                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-10-01">
+                        2024-01-01 AtomUI Officially Initiated. 3
+                    </atom:TimelineItem>
+                </atom:Timeline>
+                <DockPanel>
+                    <atom:Button ButtonType="Primary" x:Name="ReverseButton">Toggle Reverse</atom:Button>
+                </DockPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Description="Alternate timeline." Title="Alternate">
+            <atom:Timeline Mode="Alternate">
+                <atom:TimelineItem Label="2024-01-01">
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+                <atom:TimelineItem IndicatorIcon="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                   IndicatorColor ="Red"
+                                   Label="2024-01-01">
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+            </atom:Timeline>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Description="Use label show time alone." Title="Label">
+            <StackPanel>
+                <WrapPanel Margin="0,0,0,20" Orientation="Horizontal">
+                    <WrapPanel.Styles>
+                        <Style Selector="atom|RadioButton">
+                            <Setter Property="Margin" Value="5" />
+                        </Style>
+                    </WrapPanel.Styles>
+                    <atom:RadioButton IsChecked="True" x:Name="ModeLeft">Left</atom:RadioButton>
+                    <atom:RadioButton x:Name="ModeRight">Right</atom:RadioButton>
+                    <atom:RadioButton x:Name="ModeAlternate">Alternate</atom:RadioButton>
+                </WrapPanel>
+                <atom:Timeline Mode="Left" x:Name="LabelTimeline">
+                    <atom:TimelineItem
+                        Label="2024-01-01">
+                        AtomUI Officially Initiated 2024-01-01 
+                    </atom:TimelineItem>
+                    <atom:TimelineItem>
+                        Create a services site 2015-09-01
+                    </atom:TimelineItem>
+                    <atom:TimelineItem>
+                        Qinware website online 2024-01-01 
+                    </atom:TimelineItem>
+                    <atom:TimelineItem 
+                        Label="2029-09-01">
+                        Network problems being solved 2029-09-01
+                    </atom:TimelineItem>
+                </atom:Timeline>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Description="Right alternate timeline." Title="Right alternate">
+            <atom:Timeline Mode="Right">
+                <atom:TimelineItem>
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+                <atom:TimelineItem>
+                    2024-01-01 AtomUI Officially Initiated
+                </atom:TimelineItem>
+            </atom:Timeline>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

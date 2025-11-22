@@ -1,0 +1,104 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.CarouselShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|Carousel">
+                <Setter Property="Background" Value="#364d79" />
+                <Setter Property="Foreground" Value="#fff" />
+                <Setter Property="Height" Value="160" />
+            </Style>
+            <Style Selector="atom|CarouselPage">
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+        <gallerycontrols:ShowCaseItem Title="Basic" Description="Basic usage.">
+            <atom:Carousel SelectedIndex="2">
+                <atom:CarouselPage>1</atom:CarouselPage>
+                <atom:CarouselPage>2</atom:CarouselPage>
+                <atom:CarouselPage>3</atom:CarouselPage>
+                <atom:CarouselPage>4</atom:CarouselPage>
+            </atom:Carousel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Card Shape Position"
+            Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
+            Margin="0, 0, 5, 0">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center">Pagination Position:</atom:TextBlock>
+                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionOptionGroup">
+                        <atom:OptionButton>Top</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True">Bottom</atom:OptionButton>
+                        <atom:OptionButton>Left</atom:OptionButton>
+                        <atom:OptionButton>Right</atom:OptionButton>
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+        
+                <atom:Carousel PaginationPosition="{Binding PaginationPosition}">
+                    <atom:CarouselPage>1</atom:CarouselPage>
+                    <atom:CarouselPage>2</atom:CarouselPage>
+                    <atom:CarouselPage>3</atom:CarouselPage>
+                    <atom:CarouselPage>4</atom:CarouselPage>
+                </atom:Carousel>
+        
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Title="Scroll automatically"
+                                      Description="Timing of scrolling to the next card/picture.">
+            <atom:Carousel IsAutoPlay="True" IsInfinite="False">
+                <atom:CarouselPage>1</atom:CarouselPage>
+                <atom:CarouselPage>2</atom:CarouselPage>
+                <atom:CarouselPage>3</atom:CarouselPage>
+                <atom:CarouselPage>4</atom:CarouselPage>
+            </atom:Carousel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Title="Fade in"
+                                      Description="Slides use fade for transition.">
+            <atom:Carousel TransitionEffect="Fade">
+                <atom:CarouselPage Background="#B3001B">1</atom:CarouselPage>
+                <atom:CarouselPage Background="#255C99">2</atom:CarouselPage>
+                <atom:CarouselPage Background="#262626">3</atom:CarouselPage>
+                <atom:CarouselPage Background="#CCAD8F">4</atom:CarouselPage>
+            </atom:Carousel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Title="Arrows for switching" 
+                                      Description="Show the arrows for switching.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Carousel IsShowNavButtons="True">
+                    <atom:CarouselPage>1</atom:CarouselPage>
+                    <atom:CarouselPage>2</atom:CarouselPage>
+                    <atom:CarouselPage>3</atom:CarouselPage>
+                    <atom:CarouselPage>4</atom:CarouselPage>
+                </atom:Carousel>
+                <atom:Carousel PaginationPosition="Left" IsShowNavButtons="True" IsInfinite="False">
+                    <atom:CarouselPage>1</atom:CarouselPage>
+                    <atom:CarouselPage>2</atom:CarouselPage>
+                    <atom:CarouselPage>3</atom:CarouselPage>
+                    <atom:CarouselPage>4</atom:CarouselPage>
+                </atom:Carousel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem Title="Progress of dots" 
+                                      Description="Show progress of dots.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Carousel IsShowTransitionProgress="True" IsAutoPlay="True">
+                    <atom:CarouselPage>1</atom:CarouselPage>
+                    <atom:CarouselPage>2</atom:CarouselPage>
+                    <atom:CarouselPage>3</atom:CarouselPage>
+                    <atom:CarouselPage>4</atom:CarouselPage>
+                </atom:Carousel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

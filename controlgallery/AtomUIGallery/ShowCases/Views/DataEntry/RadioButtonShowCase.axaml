@@ -1,0 +1,242 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.RadioButtonShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:showCase="clr-namespace:AtomUIGallery.ShowCases.Views">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|RadioButton">
+                <Setter Property="Margin" Value="0, 0, 5, 10" />
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic"
+            Description="The simplest use.">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
+                <atom:RadioButton>Radio</atom:RadioButton>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Disabled"
+            Description="Disabled state of RadioButton.">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <atom:RadioButton x:Name="ToggleDisabledRadioUnChecked">Radio1</atom:RadioButton>
+                    <atom:RadioButton x:Name="ToggleDisabledRadioChecked" IsChecked="True">Radio2</atom:RadioButton>
+                </StackPanel>
+                <atom:Button ButtonType="Primary"
+                             x:Name="ToggleDisabledButton"
+                             Margin="0, 20, 0, 0"
+                             Command="{Binding $parent[showCase:RadioButtonShowCase].ToggleDisabledStatus}"
+                             CommandParameter="{Binding ElementName=ToggleDisabledButton}">
+                    toggle disabled
+                </atom:Button>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Radio Group"
+            Description="A group of radio components.">
+            <WrapPanel Orientation="Horizontal" ItemSpacing="10">
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:LineChartOutlined Width="18" Height="18"/>
+                        <TextBlock>LineChart</TextBlock>
+                    </StackPanel>
+                </atom:RadioButton>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:DotChartOutlined Width="18" Height="18"/>
+                        <TextBlock>DotChart</TextBlock>
+                    </StackPanel>
+                </atom:RadioButton>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:BarChartOutlined Width="18" Height="18"/>
+                        <TextBlock>BarChart</TextBlock>
+                    </StackPanel>
+                </atom:RadioButton>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:PieChartOutlined Width="18" Height="18"/>
+                        <TextBlock>PieChart</TextBlock>
+                    </StackPanel>
+                </atom:RadioButton>
+            </WrapPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Vertical Radio Group"
+            Description="Vertical Radio Group.">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                <atom:RadioButton>Option A</atom:RadioButton>
+                <atom:RadioButton>Option B</atom:RadioButton>
+                <atom:RadioButton>Option C</atom:RadioButton>
+                <atom:RadioButton>Option D</atom:RadioButton>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Option Button"
+            Description="OptionButton Group.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <atom:RadioButton IsChecked="True">Apple</atom:RadioButton>
+                    <atom:RadioButton>Pear</atom:RadioButton>
+                    <atom:RadioButton>Orange</atom:RadioButton>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <atom:RadioButton IsChecked="True">Apple</atom:RadioButton>
+                    <atom:RadioButton>Pear</atom:RadioButton>
+                    <atom:RadioButton IsEnabled="False">Orange</atom:RadioButton>
+                </StackPanel>
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True">Apple</atom:OptionButton>
+                    <atom:OptionButton>Pear</atom:OptionButton>
+                    <atom:OptionButton>Orange</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                
+                <atom:OptionButtonGroup ButtonStyle="Outline">
+                    <atom:OptionButton>Apple</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True">Pear</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Orange</atom:OptionButton>
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Option Button with icon"
+            Description="OptionButton Group with icon.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                
+                <atom:OptionButtonGroup ButtonStyle="Outline">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                
+                <atom:OptionButtonGroup ButtonStyle="Solid" IsEnabled="False">
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                
+                <atom:OptionButtonGroup ButtonStyle="Outline" IsEnabled="False">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                <atom:Separator Title="SizeType"/>
+                <atom:OptionButtonGroup ButtonStyle="Outline" SizeType="Large">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                <atom:OptionButtonGroup ButtonStyle="Outline">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+                <atom:OptionButtonGroup ButtonStyle="Outline" SizeType="Small">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}">Linux</atom:OptionButton>
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="option style"
+            Description="The combination of option button style.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup>
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton>Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+                <atom:OptionButtonGroup>
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+                <atom:OptionButtonGroup>
+                    <atom:OptionButton IsChecked="True" IsEnabled="False">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Beijing</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Solid option button"
+            Description="Solid option button style.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+        
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton>Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" IsEnabled="False">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Shanghai</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Beijing</atom:OptionButton>
+                    <atom:OptionButton IsEnabled="False">Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Size type"
+            Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup SizeType="Large">
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton>Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+                <atom:OptionButtonGroup SizeType="Middle">
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton>Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+                <atom:OptionButtonGroup SizeType="Small">
+                    <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
+                    <atom:OptionButton>Shanghai</atom:OptionButton>
+                    <atom:OptionButton>Beijing</atom:OptionButton>
+                    <atom:OptionButton>Chengdu</atom:OptionButton>
+                </atom:OptionButtonGroup>
+        
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

@@ -1,0 +1,300 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.DropdownButtonShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic"
+            Description="The most basic dropdown menu.">
+            <atom:DropdownButton ButtonType="Link" TriggerType="Hover" x:Name="Test">
+                Hover me
+                <atom:DropdownButton.DropdownFlyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        <atom:MenuItem Header="Paste">
+                            <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
+                            <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+                        </atom:MenuItem>
+                    </atom:MenuFlyout>
+                </atom:DropdownButton.DropdownFlyout>
+            </atom:DropdownButton>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Button Types"
+            Description="Support centralized button type.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:DropdownButton ButtonType="Primary" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                            <atom:MenuItem Header="Paste">
+                                <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
+                                <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+                            </atom:MenuItem>
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Primary" Shape="Round" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Text" TriggerType="Click">
+                    Edit File
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Arrow"
+            Description="You could display an arrow.">
+            <gallerycontrols:ShowCaseItem.Styles>
+                <Style Selector="atom|DropdownButton">
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </gallerycontrols:ShowCaseItem.Styles>
+            <WrapPanel>
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                                     Placement="BottomEdgeAlignedLeft">
+                    BottomLeft
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                                     Placement="Bottom">
+                    Bottom
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                                     Placement="BottomEdgeAlignedRight">
+                    BottomRight
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                                     Placement="TopEdgeAlignedLeft">
+                    TopLeft
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                                     Placement="Top">
+                    Top
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                                     Placement="TopEdgeAlignedRight">
+                    TopRight
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+            </WrapPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Placement"
+            Description="Support 6 placements.">
+            <gallerycontrols:ShowCaseItem.Styles>
+                <Style Selector="atom|DropdownButton">
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </gallerycontrols:ShowCaseItem.Styles>
+            <WrapPanel>
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
+                                     Placement="BottomEdgeAlignedLeft">
+                    BottomLeft
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
+                                     Placement="Bottom">
+                    Bottom
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
+                                     Placement="BottomEdgeAlignedRight">
+                    BottomRight
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
+                                     Placement="TopEdgeAlignedLeft">
+                    TopLeft
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
+                                     Placement="Top">
+                    Top
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
+                                     Placement="TopEdgeAlignedRight">
+                    TopRight
+                    <atom:DropdownButton.DropdownFlyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:DropdownButton.DropdownFlyout>
+                </atom:DropdownButton>
+            </WrapPanel>
+        </gallerycontrols:ShowCaseItem>
+
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

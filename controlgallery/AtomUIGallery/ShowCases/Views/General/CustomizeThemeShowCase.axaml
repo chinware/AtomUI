@@ -1,0 +1,163 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.CustomizeThemeShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCasePanel.Styles>
+            <Style Selector="atom|Button">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+            <Style Selector="atom|CheckBox">
+                <Setter Property="Margin" Value="0, 0, 5, 0" />
+            </Style>
+        </gallerycontrols:ShowCasePanel.Styles>
+        <gallerycontrols:ShowCaseItem
+            Title="Customize Design Token"
+            Description="By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.">
+            <StackPanel Orientation="Vertical">
+                <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                    <atom:Button ButtonType="Primary">Primary Button</atom:Button>
+                    <atom:Button>Default Button</atom:Button>
+                    <atom:Button ButtonType="Text">Text Button</atom:Button>
+                    <atom:Button ButtonType="Link">Link Button</atom:Button>
+                </WrapPanel>
+                <atom:ThemeConfigProvider>
+                    <atom:ThemeConfigProvider.Algorithms>
+                        <x:String>Default</x:String>
+                    </atom:ThemeConfigProvider.Algorithms>
+                    <atom:ThemeConfigProvider.SharedTokenSetters>
+                        <!-- Seed Token，影响范围大 -->
+                        <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
+                        <atom:TokenSetter Key="BorderRadius" Value="2" />
+                        <!-- 派生变量，影响范围小 -->
+                        <atom:TokenSetter Key="ColorBgContainer" Value="#f6ffed" />
+                    </atom:ThemeConfigProvider.SharedTokenSetters>
+                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <atom:Button ButtonType="Primary">Primary Button</atom:Button>
+                        <atom:Button>Default Button</atom:Button>
+                        <atom:Button ButtonType="Text">Text Button</atom:Button>
+                        <atom:Button ButtonType="Link">Link Button</atom:Button>
+                    </WrapPanel>
+                </atom:ThemeConfigProvider>
+                <atom:ThemeConfigProvider>
+                    <atom:ThemeConfigProvider.Algorithms>
+                        <x:String>Default</x:String>
+                    </atom:ThemeConfigProvider.Algorithms>
+                    <atom:ThemeConfigProvider.SharedTokenSetters>
+                        <atom:TokenSetter Key="ColorPrimary" Value="red" />
+                        <atom:TokenSetter Key="BorderRadius" Value="0" />
+                    </atom:ThemeConfigProvider.SharedTokenSetters>
+                    <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <atom:Button ButtonType="Primary">Primary Button</atom:Button>
+                        <atom:Button>Default Button</atom:Button>
+                        <atom:Button ButtonType="Text">Text Button</atom:Button>
+                        <atom:Button ButtonType="Link">Link Button</atom:Button>
+                    </WrapPanel>
+                </atom:ThemeConfigProvider>
+                <atom:ThemeConfigProvider>
+                    <atom:ThemeConfigProvider.Algorithms>
+                        <x:String>Default</x:String>
+                    </atom:ThemeConfigProvider.Algorithms>
+                    <atom:ThemeConfigProvider.SharedTokenSetters>
+                        <atom:TokenSetter Key="ColorPrimary" Value="#7D3C98" />
+                    </atom:ThemeConfigProvider.SharedTokenSetters>
+                    <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical" Margin="5, 10, 0, 0">
+                        <WrapPanel Margin="0, 0, 0, 5">
+                            <atom:CheckBox IsChecked="True">Apple</atom:CheckBox>
+                            <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
+                            <atom:CheckBox IsChecked="True">Orange</atom:CheckBox>
+                        </WrapPanel>
+                        <WrapPanel Margin="0, 0, 0, 5">
+                            <atom:CheckBox>Apple</atom:CheckBox>
+                            <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
+                            <atom:CheckBox>Orange</atom:CheckBox>
+                        </WrapPanel>
+                        <WrapPanel Margin="0, 0, 0, 5">
+                            <atom:CheckBox IsChecked="True" IsEnabled="False">Apple</atom:CheckBox>
+                            <atom:CheckBox IsEnabled="False">Pear</atom:CheckBox>
+                            <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
+                        </WrapPanel>
+                    </StackPanel>
+                </atom:ThemeConfigProvider>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        <gallerycontrols:ShowCaseItem
+            Title="Use Preset Algorithms"
+            Description="Themes with different styles can be quickly generated by modifying algorithm. Ant Design 5.0 provides three sets of preset algorithms by default:DefaultAlgorithm, DarkAlgorithm, CompactAlgorithm">
+            <atom:ThemeConfigProvider>
+                <atom:ThemeConfigProvider.Algorithms>
+                    <x:String>Dark</x:String>
+                </atom:ThemeConfigProvider.Algorithms>
+                <Border Background="#2b2d30" Padding="20">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <atom:LineEdit Watermark="Please input" Width="200" />
+                        <atom:Button ButtonType="Primary">Submit</atom:Button>
+                    </StackPanel>
+                </Border>
+            </atom:ThemeConfigProvider>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Customize Component Token"
+            Description="In addition to Design Token, each component will also have its own Component Token to achieve style customization capabilities for components, and different components will not affect each other. Similarly, other Design Token of components can also be overridden in this way.">
+        
+            <Border Padding="20">
+                <StackPanel Spacing="10">
+                    <atom:ThemeConfigProvider>
+                        <atom:ThemeConfigProvider.ControlTokenInfoSetters>
+                            <atom:ControlTokenInfoSetter TokenId="Button" EnableAlgorithm="True">
+                                <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
+                            </atom:ControlTokenInfoSetter>
+                            <atom:ControlTokenInfoSetter TokenId="AddOnDecoratedBox" EnableAlgorithm="True">
+                                <atom:TokenSetter Key="ColorPrimary" Value="#eb2f96" />
+                            </atom:ControlTokenInfoSetter>
+                        </atom:ThemeConfigProvider.ControlTokenInfoSetters>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <atom:TextBlock VerticalAlignment="Center" Width="120">Enable algorithm:</atom:TextBlock>
+                            <atom:LineEdit Watermark="Please input" Width="200" VerticalAlignment="Center" />
+                            <atom:Button ButtonType="Primary" VerticalAlignment="Center">Submit</atom:Button>
+                        </StackPanel>
+                    </atom:ThemeConfigProvider>
+                    <atom:Separator />
+                    <atom:ThemeConfigProvider>
+                        <atom:ThemeConfigProvider.ControlTokenInfoSetters>
+                            <atom:ControlTokenInfoSetter TokenId="Button">
+                                <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
+                            </atom:ControlTokenInfoSetter>
+                            <atom:ControlTokenInfoSetter TokenId="AddOnDecoratedBox">
+                                <atom:TokenSetter Key="ColorPrimary" Value="#eb2f96" />
+                            </atom:ControlTokenInfoSetter>
+                        </atom:ThemeConfigProvider.ControlTokenInfoSetters>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <atom:TextBlock VerticalAlignment="Center" Width="120">Disable algorithm:</atom:TextBlock>
+                            <atom:LineEdit Watermark="Please input" Width="200" VerticalAlignment="Center" />
+                            <atom:Button ButtonType="Primary" VerticalAlignment="Center">Submit</atom:Button>
+                        </StackPanel>
+                    </atom:ThemeConfigProvider>
+                </StackPanel>
+            </Border>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Nested Theme"
+            Description="By nesting ConfigProvider you can apply local theme to some parts of your page. Design Tokens that have not been changed in the child theme will inherit the parent theme.">
+            <atom:ThemeConfigProvider>
+                <atom:ThemeConfigProvider.SharedTokenSetters>
+                    <atom:TokenSetter Key="ColorPrimary" Value="#1677ff" />
+                </atom:ThemeConfigProvider.SharedTokenSetters>
+                <Border Padding="20">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <atom:Button ButtonType="Primary" VerticalAlignment="Center">Theme 1</atom:Button>
+                        <atom:ThemeConfigProvider>
+                            <atom:ThemeConfigProvider.SharedTokenSetters>
+                                <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
+                            </atom:ThemeConfigProvider.SharedTokenSetters>
+                            <atom:Button ButtonType="Primary" VerticalAlignment="Center">Theme 2</atom:Button>
+                        </atom:ThemeConfigProvider>
+                    </StackPanel>
+                </Border>
+            </atom:ThemeConfigProvider>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>

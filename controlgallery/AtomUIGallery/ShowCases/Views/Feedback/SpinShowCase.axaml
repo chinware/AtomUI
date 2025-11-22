@@ -1,0 +1,99 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.SpinShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+    <gallerycontrols:ShowCasePanel>
+        <gallerycontrols:ShowCaseItem
+            Title="Basic Usage"
+            Description="A simple loading status.">
+            <atom:SpinIndicator />
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Size"
+            Description="A small SpinIndicator is used for loading text, default sized SpinIndicator for loading a card-level block, and large SpinIndicator used for loading a page.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:SpinIndicator SizeType="Small" VerticalAlignment="Center" />
+                <atom:SpinIndicator SizeType="Middle" VerticalAlignment="Center" />
+                <atom:SpinIndicator SizeType="Large" VerticalAlignment="Center" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Custom spinning indicator"
+            Description="Use custom loading indicator.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:SpinIndicator SizeType="Small"
+                                    VerticalAlignment="Center"
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, NormalFilledColor=#1677ff}" />
+                <atom:SpinIndicator SizeType="Middle"
+                                    VerticalAlignment="Center"
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, NormalFilledColor=#1677ff}" />
+                <atom:SpinIndicator SizeType="Large"
+                                    VerticalAlignment="Center"
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, NormalFilledColor=#1677ff}" />
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+
+        <gallerycontrols:ShowCaseItem
+            Title="Customized description"
+            Description="Customized description" IsOccupyEntireRow="True">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Spin IsSpinning="True" SizeType="Small"
+                               IsShowTip="True"
+                               Tip="Loading...">
+                        <Border Width="100" Height="100" Background="#0D000000" />
+                    </atom:Spin>
+                    <atom:Spin IsSpinning="True" SizeType="Middle"
+                               IsShowTip="True"
+                               Tip="Loading...">
+                        <Border Width="100" Height="100" Background="#0D000000" />
+                    </atom:Spin>
+                    <atom:Spin IsSpinning="True" SizeType="Large"
+                               IsShowTip="True"
+                               Tip="Loading...">
+                        <Border Width="100" Height="100" Background="#0D000000" />
+                    </atom:Spin>
+                </StackPanel>
+                <atom:Spin IsSpinning="True"
+                           IsShowTip="True"
+                           Tip="Loading...">
+                    <atom:Alert Message="Alert message title"
+                                Description="Further details about the context of this alert."
+                                Type="Info" />
+                </atom:Spin>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+        
+        <gallerycontrols:ShowCaseItem
+            Title="Embedded mode"
+            Description="Embedding content into Spin will set it into loading state."
+            IsOccupyEntireRow="True">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+                           IsShowTip="True"
+                           Tip="Loading...">
+                    <atom:Alert Message="Alert message title"
+                                Description="Further details about the context of this alert."
+                                Type="Info" />
+                </atom:Spin>
+                
+                <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
+                           IsShowTip="True"
+                           Tip="Loading..."
+                           IsMaskBlurEnabled="True">
+                    <atom:Alert Message="Alert message title"
+                                Description="Further details about the context of this alert."
+                                Type="Info" />
+                </atom:Spin>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:TextBlock>Loading state：</atom:TextBlock>
+                    <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
+                </StackPanel>
+            </StackPanel>
+        </gallerycontrols:ShowCaseItem>
+    </gallerycontrols:ShowCasePanel>
+</UserControl>
