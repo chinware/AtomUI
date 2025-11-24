@@ -6,53 +6,66 @@
     <ControlTheme x:Key="{x:Type atom:Descriptions}" TargetType="atom:Descriptions">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame">
-                   <StackPanel Orientation="Vertical">
-                       <DockPanel Name="HeaderLayout" LastChildFill="True" IsVisible="{TemplateBinding IsHeaderLayoutVisible}">
-                            <ContentPresenter Name="ExtraPresenter" DockPanel.Dock="Right"
-                                              Content="{TemplateBinding Extra}"
-                                              ContentTemplate="{TemplateBinding ExtraTemplate}"/>
-                            <ContentPresenter Name="HeaderPresenter"
-                                              Content="{TemplateBinding Header}"
-                                              ContentTemplate="{TemplateBinding HeaderTemplate}"/>
-                       </DockPanel>
-                       <Grid Name="{x:Static atom:DescriptionsThemeConstants.GridLayoutPart}"/>
-                   </StackPanel>
-                </Border>
+
+                <StackPanel Orientation="Vertical">
+                    <DockPanel Name="HeaderLayout" LastChildFill="True"
+                               IsVisible="{TemplateBinding IsHeaderLayoutVisible}">
+                        <ContentPresenter Name="ExtraPresenter" DockPanel.Dock="Right"
+                                          Content="{TemplateBinding Extra}"
+                                          ContentTemplate="{TemplateBinding ExtraTemplate}" />
+                        <ContentPresenter Name="HeaderPresenter"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                    </DockPanel>
+                    <Border Name="ContentFrame">
+                        <Grid Name="{x:Static atom:DescriptionsThemeConstants.GridLayoutPart}" />
+                    </Border>
+                </StackPanel>
+
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ DockPanel#HeaderLayout">
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.HeaderMargin}}"/>
+        <Style Selector="^[IsBordered=True]">
+            <Style Selector="^ /template/ Border#ContentFrame">
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+                <Setter Property="BorderThickness"
+                        Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
+                <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusLG}}" />
+                <Setter Property="ClipToBounds" Value="True" />
+            </Style>
         </Style>
-        
+
+        <Style Selector="^ /template/ DockPanel#HeaderLayout">
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.HeaderMargin}}" />
+        </Style>
+
         <Style Selector="^ /template/ ContentPresenter#ExtraPresenter">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ExtraColor}}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ExtraColor}}" />
         </Style>
         <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.TitleColor}}"/>
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}"/>
-            <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}"/>
-            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.TitleColor}}" />
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSizeLG}}" />
+            <Setter Property="FontWeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontWeightStrong}}" />
+            <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
         </Style>
-        
+
         <Style Selector="^[IsBordered=False]">
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ Grid#PART_GridLayout">
-                    <Setter Property="RowSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}"/>
+                    <Setter Property="RowSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.Spacing}}" />
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Middle]">
                 <Style Selector="^ /template/ Grid#PART_GridLayout">
-                    <Setter Property="RowSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}"/>
+                    <Setter Property="RowSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingSM}}" />
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Small]">
                 <Style Selector="^ /template/ Grid#PART_GridLayout">
-                    <Setter Property="RowSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}"/>
+                    <Setter Property="RowSpacing" Value="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXS}}" />
                 </Style>
             </Style>
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

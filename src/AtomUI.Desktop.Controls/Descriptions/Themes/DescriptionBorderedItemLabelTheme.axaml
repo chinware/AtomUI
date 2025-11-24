@@ -6,7 +6,34 @@
     <ControlTheme x:Key="{x:Type atom:DescriptionBorderedItemLabel}" TargetType="atom:DescriptionBorderedItemLabel">
         <Setter Property="Template">
             <ControlTemplate>
+                <ContentPresenter Name="ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  LineHeight="{TemplateBinding LineHeight}"
+                                  TextWrapping="Wrap"
+                                  VerticalContentAlignment="Center"
+                                  BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  Background="{TemplateBinding Background}"
+                                  Padding="{TemplateBinding Padding}"/>
             </ControlTemplate>
         </Setter>
+        
+        <Setter Property="RelativeLineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.RelativeLineHeight}}"/>
+        <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
+        
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelBg}}"/>
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ItemPaddingLG}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ItemPadding}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ItemPaddingSM}}"/>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

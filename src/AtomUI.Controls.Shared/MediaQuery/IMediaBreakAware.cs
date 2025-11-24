@@ -14,5 +14,5 @@ public abstract class MediaBreakAwareControlProperty
     public const string MediaBreakPointPropertyName = "MediaBreakPoint";
     
     public static readonly StyledProperty<MediaBreakPoint> MediaBreakPointProperty = 
-        AvaloniaProperty.Register<StyledElement, MediaBreakPoint>(MediaBreakPointPropertyName, MediaBreakPoint.None);
+        AvaloniaProperty.Register<StyledElement, MediaBreakPoint>(MediaBreakPointPropertyName, MediaBreakPoint.Large);
 }

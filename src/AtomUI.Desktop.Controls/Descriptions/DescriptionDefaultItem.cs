@@ -3,16 +3,16 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class DescriptionSimpleItem : HeaderedContentControl
+internal class DescriptionDefaultItem : HeaderedContentControl
 {
     public static readonly StyledProperty<double> RelativeLineHeightProperty =
-        AvaloniaProperty.Register<DescriptionSimpleItem, double>(nameof(RelativeLineHeight));
+        AvaloniaProperty.Register<DescriptionDefaultItem, double>(nameof(RelativeLineHeight));
     
     public static readonly StyledProperty<double> LineHeightProperty =
-        AvaloniaProperty.Register<DescriptionSimpleItem, double>(nameof(LineHeight));
+        AvaloniaProperty.Register<DescriptionDefaultItem, double>(nameof(LineHeight));
     
-    internal static readonly DirectProperty<DescriptionSimpleItem, bool> IsColonVisibleProperty =
-        AvaloniaProperty.RegisterDirect<DescriptionSimpleItem, bool>(nameof(IsColonVisible),
+    internal static readonly DirectProperty<DescriptionDefaultItem, bool> IsColonVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DescriptionDefaultItem, bool>(nameof(IsColonVisible),
             o => o.IsColonVisible,
             (o, v) => o.IsColonVisible = v);
     

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -15,21 +16,138 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public record DescriptionsColumnInfo
+public record DescriptionsMediaBreakInfo
 {
-    public int SmallColumns { get; init; } = 3;
-    public int MediumColumns { get; init; } = 3;
-    public int LargeColumns { get; init; } = 3;
-    public int ExtraLargeColumns { get; init; } = 3;
-    public int ExtraExtraLargeColumns { get; init; } = 3;
+    public int ExtraSmall { get; init; }
+    public int Small { get; init; }
+    public int Medium { get; init; }
+    public int Large { get; init; }
+    public int ExtraLarge { get; init; }
+    public int ExtraExtraLarge { get; init; }
 
-    public DescriptionsColumnInfo(int column)
+    public DescriptionsMediaBreakInfo()
+        : this(1)
     {
-        SmallColumns           = column;
-        MediumColumns          = column;
-        LargeColumns           = column;
-        ExtraLargeColumns      = column;
-        ExtraExtraLargeColumns = column;
+    }
+    
+    public DescriptionsMediaBreakInfo(int column)
+    {
+        ExtraSmall      = column;
+        Small           = column;
+        Medium          = column;
+        Large           = column;
+        ExtraLarge      = column;
+        ExtraExtraLarge = column;
+    }
+
+    public DescriptionsMediaBreakInfo(int extraSmall, int small, int medium, int large, int extraLarge, int extraExtraLarge)
+    {
+        ExtraSmall      = extraSmall;
+        Small           = small;
+        Medium          = medium;
+        Large           = large;
+        ExtraLarge      = extraLarge;
+        ExtraExtraLarge = extraExtraLarge;
+    }
+    
+    public static DescriptionsMediaBreakInfo Parse(string input)
+    {
+        if (int.TryParse(input.Trim(), out int singleColumn))
+        {
+            if (singleColumn <= 0)
+            {
+                throw new ArgumentException("The number of columns must be greater than 0", nameof(input));
+            }
+                
+            return new DescriptionsMediaBreakInfo(singleColumn);
+        }
+        
+        return ParseKeyValueFormat(input);
+    }
+
+    private static DescriptionsMediaBreakInfo ParseKeyValueFormat(string input)
+    {
+        var result       = new DescriptionsMediaBreakInfo();
+        var span         = input.AsSpan();
+        int segmentIndex = 0;
+        
+        while (!span.IsEmpty)
+        {
+            segmentIndex++;
+            int                commaIndex = span.IndexOf(',');
+            ReadOnlySpan<char> segment    = commaIndex >= 0 ? span[..commaIndex] : span;
+            
+            ProcessSegmentWithSwitch(segment, segmentIndex, ref result);
+            
+            span = commaIndex >= 0 ? span[(commaIndex + 1)..] : ReadOnlySpan<char>.Empty;
+        }
+
+        return result;
+    }
+
+    private static void ProcessSegmentWithSwitch(ReadOnlySpan<char> segment, int segmentIndex, ref DescriptionsMediaBreakInfo result)
+    {
+        int colonIndex = segment.IndexOf(':');
+        if (colonIndex < 0)
+        {
+            throw new FormatException($"Segment {segmentIndex}: Missing colon separator '{segment.ToString()}'");
+        }
+
+        var breakpoint = segment[..colonIndex].Trim();
+        var valueSpan  = segment[(colonIndex + 1)..].Trim();
+
+        // 检查断点名称是否为空
+        if (breakpoint.IsEmpty)
+        {
+            throw new FormatException($"Segment {segmentIndex}: Breakpoint name is empty.");
+        }
+
+        // 检查值是否为空
+        if (valueSpan.IsEmpty)
+        {
+            throw new FormatException($"The breakpoint '{breakpoint.ToString()}' at segment {segmentIndex} is null.");
+        }
+
+        // 解析数值
+        if (!int.TryParse(valueSpan, out int value))
+        {
+            throw new FormatException($"The value of breakpoint '{breakpoint.ToString()}' is not a valid integer.");
+        }
+
+        // 检查数值有效性
+        if (value <= 0)
+        {
+            throw new FormatException($"The value of the breakpoint '{breakpoint.ToString()}' must be greater than 0, and its current value is {value}.");
+        }
+
+        if (breakpoint.Equals("xs", StringComparison.OrdinalIgnoreCase))
+        {
+            result = result with { ExtraSmall = value };
+        }
+        else if (breakpoint.Equals("sm", StringComparison.OrdinalIgnoreCase))
+        {
+            result = result with { Small = value };
+        }
+        else if (breakpoint.Equals("md", StringComparison.OrdinalIgnoreCase))
+        {
+            result = result with { Medium = value };
+        }
+        else if (breakpoint.Equals("lg", StringComparison.OrdinalIgnoreCase))
+        {
+            result = result with { Large = value };
+        }
+        else if (breakpoint.Equals("xl", StringComparison.OrdinalIgnoreCase))
+        {
+            result = result with { ExtraLarge = value };
+        }
+        else if (breakpoint.Equals("xxl", StringComparison.OrdinalIgnoreCase))
+        {
+            result = result with { ExtraExtraLarge = value };
+        }
+        else
+        {
+            throw new FormatException($"`{segmentIndex}`: An unknown breakpoint name '{breakpoint.ToString()}', supporting breakpoints are: xs, sm, md, lg, xl, xxl");
+        }
     }
 }
 
@@ -45,9 +163,9 @@ public class Descriptions : TemplatedControl,
     public static readonly StyledProperty<bool> IsShowColonProperty =
         AvaloniaProperty.Register<Descriptions, bool>(nameof(IsShowColon), true);
 
-    public static readonly StyledProperty<DescriptionsColumnInfo> ColumnInfoProperty =
-        AvaloniaProperty.Register<Descriptions, DescriptionsColumnInfo>(nameof(ColumnInfo),
-            new DescriptionsColumnInfo(3));
+    public static readonly StyledProperty<DescriptionsMediaBreakInfo> ColumnInfoProperty =
+        AvaloniaProperty.Register<Descriptions, DescriptionsMediaBreakInfo>(nameof(ColumnInfo),
+            new DescriptionsMediaBreakInfo(3));
 
     public static readonly StyledProperty<object?> ExtraProperty =
         AvaloniaProperty.Register<Descriptions, object?>(nameof(Extra));
@@ -82,7 +200,7 @@ public class Descriptions : TemplatedControl,
         set => SetValue(IsShowColonProperty, value);
     }
 
-    public DescriptionsColumnInfo ColumnInfo
+    public DescriptionsMediaBreakInfo ColumnInfo
     {
         get => GetValue(ColumnInfoProperty);
         set => SetValue(ColumnInfoProperty, value);
@@ -160,6 +278,11 @@ public class Descriptions : TemplatedControl,
     private int _effectiveColumns;
     private readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
 
+    static Descriptions()
+    {
+        SizeTypeProperty.OverrideDefaultValue<Descriptions>(SizeType.Large);
+    }
+
     public Descriptions()
     {
         Items.CollectionChanged += HandleCollectionChanged;
@@ -224,25 +347,29 @@ public class Descriptions : TemplatedControl,
     private int GetColumnsForMediaBreak(MediaBreakPoint breakPoint)
     {
         var columns = 1;
-        if (breakPoint == MediaBreakPoint.Small)
+        if (breakPoint == MediaBreakPoint.ExtraSmall)
         {
-            columns = ColumnInfo.SmallColumns;
+            columns = ColumnInfo.ExtraSmall;
+        }
+        else if (breakPoint == MediaBreakPoint.Small)
+        {
+            columns = ColumnInfo.Small;
         }
         else if (breakPoint == MediaBreakPoint.Medium)
         {
-            columns = ColumnInfo.MediumColumns;
+            columns = ColumnInfo.Medium;
         }
         else if (breakPoint == MediaBreakPoint.Large)
         {
-            columns = ColumnInfo.LargeColumns;
+            columns = ColumnInfo.Large;
         }
         else if (breakPoint == MediaBreakPoint.ExtraLarge)
         {
-            columns = ColumnInfo.ExtraLargeColumns;
+            columns = ColumnInfo.ExtraLarge;
         }
         else if (breakPoint == MediaBreakPoint.ExtraExtraLarge)
         {
-            columns = ColumnInfo.ExtraExtraLargeColumns;
+            columns = ColumnInfo.ExtraExtraLarge;
         }
 
         return columns;
@@ -274,7 +401,7 @@ public class Descriptions : TemplatedControl,
         }
         else if (change.Property == IsBorderedProperty)
         {
-            DoLayoutChildren();
+            HandleBorderedChanged();
         }
         else if (change.Property == HeaderProperty ||
                  change.Property == ExtraProperty)
@@ -292,18 +419,40 @@ public class Descriptions : TemplatedControl,
                 if (IsBordered)
                 {
                     var itemLabel   = new DescriptionBorderedItemLabel();
+                    {
+                        var disposables = new CompositeDisposable(2);
+                        disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, itemLabel, SizeTypeProperty));
+                        if (_itemsBindingDisposables.TryGetValue(itemLabel, out var oldDisposables))
+                        {
+                            oldDisposables.Dispose();
+                            _itemsBindingDisposables.Remove(itemLabel);
+                        }
+                        _itemsBindingDisposables.Add(itemLabel, disposables);
+                    }
+                    
                     var itemContent = new DescriptionBorderedItemContent();
-                    itemLabel.DataContext   = item;
-                    itemContent.DataContext = item;
+                    {
+                        var disposables = new CompositeDisposable(2);
+                        disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, itemContent, SizeTypeProperty));
+                        if (_itemsBindingDisposables.TryGetValue(itemContent, out var oldDisposables))
+                        {
+                            oldDisposables.Dispose();
+                            _itemsBindingDisposables.Remove(itemContent);
+                        }
+                        _itemsBindingDisposables.Add(itemContent, disposables);
+                    }
+                    
+                    itemLabel.Content   = item.Label;
+                    itemContent.Content = item.Content;
                     _gridLayout.Children.Add(itemLabel);
                     _gridLayout.Children.Add(itemContent);
                 }
                 else
                 {
                     var disposables           = new CompositeDisposable(2);
-                    var descriptionSimpleItem = new DescriptionSimpleItem();
-                    disposables.Add(BindUtils.RelayBind(this, IsShowColonProperty, descriptionSimpleItem, DescriptionSimpleItem.IsColonVisibleProperty));
-                    descriptionSimpleItem.Header = item.Label;
+                    var descriptionSimpleItem = new DescriptionDefaultItem();
+                    disposables.Add(BindUtils.RelayBind(this, IsShowColonProperty, descriptionSimpleItem, DescriptionDefaultItem.IsColonVisibleProperty));
+                    descriptionSimpleItem.Header  = item.Label;
                     descriptionSimpleItem.Content = item.Content;
                     _gridLayout.Children.Add(descriptionSimpleItem);
                     if (_itemsBindingDisposables.TryGetValue(descriptionSimpleItem, out var oldDisposables))
@@ -350,7 +499,7 @@ public class Descriptions : TemplatedControl,
                     }
                     else
                     {
-                        if (_gridLayout.Children[index] is DescriptionSimpleItem simpleItem)
+                        if (_gridLayout.Children[index] is DescriptionDefaultItem simpleItem)
                         {
                             _gridLayout.Children.Remove(simpleItem);
                             if (_itemsBindingDisposables.TryGetValue(simpleItem, out var disposable))
@@ -369,16 +518,42 @@ public class Descriptions : TemplatedControl,
     {
         if (columnCount != _effectiveColumns)
         {
-            _effectiveColumns = columnCount;
+            if (IsBordered)
+            {
+                _effectiveColumns = columnCount * 2;
+            }
+            else
+            {
+                _effectiveColumns = columnCount;
+            }
+   
             DoLayoutChildren();
         }
+    }
+
+    private void HandleBorderedChanged()
+    {
+        if (_breakPoint == null)
+        {
+            if (TopLevel.GetTopLevel(this) is Window window)
+            {
+                _breakPoint = window.MediaBreakPoint;
+            }
+        }
+
+        if (_breakPoint == null)
+        {
+            return;
+        }
+        var columns = GetColumnsForMediaBreak(_breakPoint.Value);
+        UpdateGridColumns(columns);
     }
 
     private void DoLayoutChildren()
     {
         if (_gridLayout != null)
         {
-            var row = 0;
+            var row    = 0;
             var column = 0;
             for (var i = 0; i < Items.Count; i++)
             {
@@ -388,12 +563,42 @@ public class Descriptions : TemplatedControl,
                 {
                     if (IsBordered)
                     {
+                        index *= 2;
+                        if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
+                        {
+                            Grid.SetRow(itemLabel, row);
+                            Grid.SetColumn(itemLabel, column);
+                            column += 1;
+                        }
+
+                        if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
+                        {
+                            var itemSpan = Math.Max(1, Math.Min(_effectiveColumns - column, GetItemSpan(item.Span) * 2 - 1));
+                            if (i == Items.Count - 1)
+                            {
+                                itemSpan = _effectiveColumns - column;
+                            }
+                            Grid.SetRow(itemContent, row);
+                            Grid.SetColumn(itemContent, column);
+                            Grid.SetColumnSpan(itemContent, itemSpan);
+                            column += itemSpan;
+                            if (column >= _effectiveColumns)
+                            {
+                                column                   = 0;
+                                itemContent.IsLastColumn = true;
+                                ++row;
+                            }
+                            else
+                            {
+                                itemContent.IsLastColumn = false;
+                            }
+                        }
                     }
                     else
                     {
-                        if (_gridLayout.Children[index] is DescriptionSimpleItem simpleItem)
+                        if (_gridLayout.Children[index] is DescriptionDefaultItem simpleItem)
                         {
-                            var itemSpan = Math.Max(1, Math.Min(_effectiveColumns - column, item.Span));
+                            var itemSpan = Math.Max(1, Math.Min(_effectiveColumns - column, GetItemSpan(item.Span)));
                             if (i == Items.Count - 1)
                             {
                                 itemSpan = _effectiveColumns - column;
@@ -412,6 +617,30 @@ public class Descriptions : TemplatedControl,
                     }
                 }
             }
+            
+            // 寻找最后一行
+            for (var i = 0; i < Items.Count; i++)
+            {
+                var item  = Items[i];
+                var index = Items.IndexOf(item);
+                if (index != -1)
+                {
+                    if (IsBordered)
+                    {
+                        index *= 2;
+                        if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
+                        {
+                            itemLabel.IsLastRow = Grid.GetRow(itemLabel) == row - 1;
+                        }
+
+                        if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
+                        {
+                            itemContent.IsLastRow = Grid.GetRow(itemContent) == row - 1;
+                        }
+                    }
+                }
+            }
+
             _gridLayout.ColumnDefinitions.Clear();
             var columnDefinitions = new ColumnDefinitions();
             for (var i = 0; i < _effectiveColumns; i++)
@@ -421,11 +650,25 @@ public class Descriptions : TemplatedControl,
             _gridLayout.ColumnDefinitions = columnDefinitions;
             _gridLayout.RowDefinitions.Clear();
             var rowDefinitions = new RowDefinitions();
-            for (var i = 0; i <= row; i++)
+            for (var i = 0; i < row; i++)
             {
                 rowDefinitions.Add(new RowDefinition(GridLength.Auto));
             }
             _gridLayout.RowDefinitions = rowDefinitions;
         }
+    }
+
+    private int GetItemSpan(DescriptionsMediaBreakInfo breakInfo)
+    {
+        Debug.Assert(_breakPoint != null);
+        return _breakPoint switch
+        {
+            MediaBreakPoint.ExtraSmall => breakInfo.ExtraSmall,
+            MediaBreakPoint.Small => breakInfo.Small,
+            MediaBreakPoint.Medium => breakInfo.Medium,
+            MediaBreakPoint.Large => breakInfo.Large,
+            MediaBreakPoint.ExtraLarge => breakInfo.ExtraLarge,
+            _ => breakInfo.ExtraExtraLarge
+        };
     }
 }

@@ -1,8 +1,5 @@
-using Avalonia.Controls.Primitives;
-
 namespace AtomUI.Desktop.Controls;
 
-public class DescriptionBorderedItemContent : TemplatedControl
+internal class DescriptionBorderedItemContent : DescriptionBorderedCell
 {
-    
 }

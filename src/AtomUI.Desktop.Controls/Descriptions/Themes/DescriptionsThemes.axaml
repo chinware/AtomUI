@@ -5,6 +5,6 @@
         <ResourceInclude Source="DescriptionsTheme.axaml" />
         <ResourceInclude Source="DescriptionBorderedItemLabelTheme.axaml" />
         <ResourceInclude Source="DescriptionBorderedItemContentTheme.axaml" />
-        <ResourceInclude Source="DescriptionSimpleItemTheme.axaml" />
+        <ResourceInclude Source="DescriptionDefaultItemTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

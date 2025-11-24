@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:DescriptionSimpleItem}" TargetType="atom:DescriptionSimpleItem">
+    <ControlTheme x:Key="{x:Type atom:DescriptionDefaultItem}" TargetType="atom:DescriptionDefaultItem">
         <Setter Property="Template">
             <ControlTemplate>
                 <DockPanel LastChildFill="True">

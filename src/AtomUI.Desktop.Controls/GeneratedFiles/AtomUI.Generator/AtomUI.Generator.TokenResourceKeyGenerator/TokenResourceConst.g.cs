@@ -300,6 +300,8 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         public static readonly TokenResourceKey ExtraColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ExtraColor");
         public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.HeaderMargin");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ItemPadding");
+        public static readonly TokenResourceKey ItemPaddingLG = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ItemPaddingLG");
+        public static readonly TokenResourceKey ItemPaddingSM = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ItemPaddingSM");
         public static readonly TokenResourceKey LabelBg = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.LabelBg");
         public static readonly TokenResourceKey LabelColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.LabelColor");
         public static readonly TokenResourceKey TitleColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.TitleColor");

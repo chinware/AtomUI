@@ -2,7 +2,7 @@ namespace AtomUI.Controls;
 
 public enum MediaBreakPoint
 {
-    None = 0,
+    ExtraSmall = 0,
     Small = 576,
     Medium = 768,
     Large = 992,

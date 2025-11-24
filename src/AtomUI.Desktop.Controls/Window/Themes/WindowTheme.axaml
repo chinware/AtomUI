@@ -141,6 +141,13 @@
     </Style>
 
     <!-- media query -->
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="max-width:575">
+        <ContainerQuery.Children>
+            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
+                <Setter Property="MediaBreakPoint" Value="ExtraSmall" />
+            </Style>
+        </ContainerQuery.Children>
+    </ContainerQuery>
     <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:576">
         <ContainerQuery.Children>
             <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">

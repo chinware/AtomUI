@@ -34,10 +34,22 @@ internal class DescriptionsToken : AbstractControlDesignToken
     public Thickness HeaderMargin { get; set; }
 
     /// <summary>
-    /// 子项下间距
-    /// Bottom padding of item
+    /// 子项下间距，大号
+    /// padding of item
+    /// </summary>
+    public Thickness ItemPaddingLG { get; set; }
+    
+    /// <summary>
+    /// 子项下间距，默认
+    /// padding of item
     /// </summary>
     public Thickness ItemPadding { get; set; }
+    
+    /// <summary>
+    /// 子项下间距，小号
+    /// padding of item
+    /// </summary>
+    public Thickness ItemPaddingSM { get; set; }
 
     /// <summary>
     /// 冒号间距
@@ -69,7 +81,9 @@ internal class DescriptionsToken : AbstractControlDesignToken
         LabelColor   = SharedToken.ColorTextTertiary;
         TitleColor   = SharedToken.ColorText;
         HeaderMargin = new Thickness(0, 0, 0, SharedToken.FontSizeSM * SharedToken.RelativeLineHeightSM);
-        ItemPadding  = new Thickness(0, 0, SharedToken.UniformlyPadding, SharedToken.UniformlyPadding);
+        ItemPaddingLG  = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPadding);
+        ItemPadding  = new Thickness(SharedToken.UniformlyPaddingLG, SharedToken.UniformlyPaddingSM);
+        ItemPaddingSM  = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXS);
         ColonMargin  = new Thickness(SharedToken.UniformlyMarginXXS / 2, 0, SharedToken.UniformlyMarginXS, 0);
         ContentColor = SharedToken.ColorText;
         ExtraColor   = SharedToken.ColorText;
