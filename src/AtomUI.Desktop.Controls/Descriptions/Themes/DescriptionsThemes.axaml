@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="DescriptionsTheme.axaml" />
+        <ResourceInclude Source="DescriptionBorderedItemLabelTheme.axaml" />
+        <ResourceInclude Source="DescriptionBorderedItemContentTheme.axaml" />
+        <ResourceInclude Source="DescriptionSimpleItemTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

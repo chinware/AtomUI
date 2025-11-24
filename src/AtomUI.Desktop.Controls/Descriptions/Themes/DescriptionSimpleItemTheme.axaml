@@ -1,0 +1,41 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:DescriptionSimpleItem}" TargetType="atom:DescriptionSimpleItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel LastChildFill="True">
+                    <ContentPresenter Name="Label" 
+                                      Content="{TemplateBinding Header}" 
+                                      DockPanel.Dock="Left"
+                                      TextWrapping="Wrap"
+                                      LineHeight="{TemplateBinding LineHeight}"/>
+                    <TextBlock Name="Colon" Text=":" DockPanel.Dock="Left" IsVisible="{TemplateBinding IsColonVisible}"/>
+                    <ContentPresenter Name="Content" 
+                                      Content="{TemplateBinding Content}" 
+                                      TextWrapping="Wrap"
+                                      LineHeight="{TemplateBinding LineHeight}"/>
+                </DockPanel>
+            </ControlTemplate> 
+        </Setter>
+        
+        <Style Selector="^ /template/ TextBlock#Colon">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ColonMargin}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#Label">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#Content">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ContentColor}}"/>
+            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

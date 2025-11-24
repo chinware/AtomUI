@@ -10,14 +10,15 @@
                 <Border Name="WindowFrame"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        BackgroundSizing="InnerBorderEdge"/>
+                        BackgroundSizing="InnerBorderEdge" />
                 <Border Name="BodyFrame"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
                     <atom:VisualLayerManager Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                         <Panel>
-                            <atom:GlobalDialogManager/>
-                            <DockPanel LastChildFill="True" Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
+                            <atom:GlobalDialogManager />
+                            <DockPanel LastChildFill="True"
+                                       Name="{x:Static atom:WindowThemeConstants.ContentLayoutPart}">
                                 <Border Padding="{TemplateBinding TitleBarOSOffsetMargin}" DockPanel.Dock="Top"
                                         IsVisible="{TemplateBinding IsTitleBarVisible}">
                                     <atom:TitleBar Name="{x:Static atom:WindowThemeConstants.TitleBarPart}"
@@ -29,14 +30,17 @@
                                         CornerRadius="{TemplateBinding CornerRadius}"
                                         ClipToBounds="True"
                                         Cursor="Arrow"
-                                        Container.Name="{x:Static atom:WindowThemeConstants.GlobalQueryContainerPart}"
+                                        Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                                         Container.Sizing="WidthAndHeight"
                                         Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
-                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                      Content="{TemplateBinding Content}"
-                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    <Panel>
+                                        <ContentPresenter Name="{x:Static atom:WindowThemeConstants.ContentPresenterPart}"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          Content="{TemplateBinding Content}"
+                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowThemeConstants.MediaQueryIndicatorPart}"/>
+                                    </Panel>
                                 </Border>
                             </DockPanel>
                         </Panel>
@@ -61,20 +65,20 @@
         <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
         <Setter Property="FontFamily" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontFamily}}" />
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
-        
+
         <Style Selector="^[OsType=Windows]">
             <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="1" />
         </Style>
-        
+
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:WindowTokenKey.CornerRadius}}" />
-        
+
         <Setter Property="ExtendClientAreaChromeHints" Value="SystemChrome" />
-        
+
         <Style Selector="^[OsType=Linux]">
             <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
         </Style>
-        
+
         <Style Selector="^[OsType=macOS]">
             <Setter Property="MacOSCaptionGroupOffset" Value="10, 0" />
             <Setter Property="MacOSCaptionGroupSpacing" Value="5" />
@@ -93,7 +97,7 @@
             </Setter>
             <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorder}}" />
         </Style>
-        
+
         <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
             <Setter Property="Margin">
                 <OnPlatform>
@@ -136,4 +140,45 @@
         </Style>
     </Style>
 
+    <!-- media query -->
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:576">
+        <ContainerQuery.Children>
+            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
+                <Setter Property="MediaBreakPoint" Value="Small" />
+            </Style>
+        </ContainerQuery.Children>
+    </ContainerQuery>
+    
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:768">
+        <ContainerQuery.Children>
+            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
+                <Setter Property="MediaBreakPoint" Value="Medium" />
+            </Style>
+        </ContainerQuery.Children>
+    </ContainerQuery>
+    
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:992">
+        <ContainerQuery.Children>
+            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
+                <Setter Property="MediaBreakPoint" Value="Large" />
+            </Style>
+        </ContainerQuery.Children>
+    </ContainerQuery>
+    
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:1200">
+        <ContainerQuery.Children>
+            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
+                <Setter Property="MediaBreakPoint" Value="ExtraLarge" />
+            </Style>
+        </ContainerQuery.Children>
+    </ContainerQuery>
+    
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:1600">
+        <ContainerQuery.Children>
+            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
+                <Setter Property="MediaBreakPoint" Value="ExtraExtraLarge" />
+            </Style>
+        </ContainerQuery.Children>
+    </ContainerQuery>
+    
 </ControlTheme>

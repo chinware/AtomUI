@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
-        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>

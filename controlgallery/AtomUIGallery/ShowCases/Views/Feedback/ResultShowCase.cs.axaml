@@ -10,8 +10,8 @@
             Description="Show successful results."
             IsOccupyEntireRow="True">
             <atom:Result Status="Success"
-                         Title="Successfully Purchased Cloud Server ECS!"
-                         SubTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.">
+                         Header="Successfully Purchased Cloud Server ECS!"
+                         SubHeader="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.">
                 <atom:Result.Extra>
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <atom:Button ButtonType="Primary">Go Console</atom:Button>
@@ -26,7 +26,7 @@
             Description="Show processing results."
             IsOccupyEntireRow="True">
             <atom:Result Status="Info"
-                         Title="Your operation has been executed.">
+                         Header="Your operation has been executed.">
                 <atom:Result.Extra>
                     <atom:Button ButtonType="Primary">Go Console</atom:Button>
                 </atom:Result.Extra>
@@ -38,7 +38,7 @@
             Description="The result of the warning."
             IsOccupyEntireRow="True">
             <atom:Result Status="Warning"
-                         Title="There are some problems with your operation.">
+                         Header="There are some problems with your operation.">
                 <atom:Result.Extra>
                     <atom:Button ButtonType="Primary">Go Console</atom:Button>
                 </atom:Result.Extra>
@@ -50,8 +50,8 @@
             Description="you are not authorized to access this page."
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode403"
-                         Title="403"
-                         SubTitle="Sorry, you are not authorized to access this page.">
+                         Header="403"
+                         SubHeader="Sorry, you are not authorized to access this page.">
                 <atom:Result.Extra>
                     <atom:Button ButtonType="Primary">Back Home</atom:Button>
                 </atom:Result.Extra>
@@ -63,8 +63,8 @@
             Description="The page you visited does not exist."
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode404"
-                         Title="404"
-                         SubTitle="Sorry, the page you visited does not exist.">
+                         Header="404"
+                         SubHeader="Sorry, the page you visited does not exist.">
                 <atom:Result.Extra>
                     <atom:Button ButtonType="Primary">Back Home</atom:Button>
                 </atom:Result.Extra>
@@ -76,8 +76,8 @@
             Description="Something went wrong on server."
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode500"
-                         Title="500"
-                         SubTitle="Sorry, something went wrong.">
+                         Header="500"
+                         SubHeader="Sorry, something went wrong.">
                 <atom:Result.Extra>
                     <atom:Button ButtonType="Primary">Back Home</atom:Button>
                 </atom:Result.Extra>
@@ -89,8 +89,8 @@
             Description="Something went wrong on server."
             IsOccupyEntireRow="True">
             <atom:Result Status="Error"
-                         Title="Submission Failed"
-                         SubTitle="Please check and modify the following information before resubmitting.">
+                         Header="Submission Failed"
+                         SubHeader="Please check and modify the following information before resubmitting.">
                 <atom:Result.Extra>
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <atom:Button ButtonType="Primary">Go Console</atom:Button>
@@ -123,7 +123,7 @@
             IsOccupyEntireRow="True">
             <atom:Result Status="Info"
                          Icon="{antdicons:AntDesignIconProvider SmileOutlined}"
-                         Title="Great, we have done all the operations!">
+                         Header="Great, we have done all the operations!">
                 <atom:Result.Extra>
                     <atom:Button ButtonType="Primary">Next</atom:Button>
                 </atom:Result.Extra>

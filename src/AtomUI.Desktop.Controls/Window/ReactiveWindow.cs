@@ -14,8 +14,8 @@ public class ReactiveWindow<TViewModel> : Window, IViewFor<TViewModel> where TVi
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("AvaloniaProperty", "AVP1002",
         Justification = "Generic avalonia property is expected here.")]
-    public static readonly StyledProperty<TViewModel?> ViewModelProperty = AvaloniaProperty
-        .Register<ReactiveWindow<TViewModel>, TViewModel?>(nameof(ViewModel));
+    public static readonly StyledProperty<TViewModel?> ViewModelProperty = 
+        AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel?>(nameof(ViewModel));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReactiveWindow{TViewModel}"/> class.

@@ -17,7 +17,7 @@ public enum PresetEmptyImage
     Default
 }
 
-public class Empty : TemplatedControl, IControlSharedTokenResourcesHost
+public class Empty : TemplatedControl, IControlSharedTokenResourcesHost, ISizeTypeAware
 {
     #region 公共属性定义
 

@@ -298,11 +298,11 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         public static readonly TokenResourceKey ColonMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ColonMargin");
         public static readonly TokenResourceKey ContentColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ContentColor");
         public static readonly TokenResourceKey ExtraColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ExtraColor");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.HeaderMargin");
         public static readonly TokenResourceKey ItemPadding = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.ItemPadding");
         public static readonly TokenResourceKey LabelBg = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.LabelBg");
         public static readonly TokenResourceKey LabelColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.LabelColor");
         public static readonly TokenResourceKey TitleColor = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.TitleColor");
-        public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Descriptions.TitleMargin");
     }
 
     public static class DialogTokenKey
@@ -701,7 +701,8 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         public static readonly TokenResourceKey ContentPadding = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ContentPadding");
         public static readonly TokenResourceKey ExtraMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ExtraMargin");
         public static readonly TokenResourceKey FramePadding = new TokenResourceKey("AtomUI.Desktop.Controls.Result.FramePadding");
-        public static readonly TokenResourceKey IconMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Result.IconMargin");
+        public static readonly TokenResourceKey HeaderFontSize = new TokenResourceKey("AtomUI.Desktop.Controls.Result.HeaderFontSize");
+        public static readonly TokenResourceKey HeaderMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Result.HeaderMargin");
         public static readonly TokenResourceKey IconSize = new TokenResourceKey("AtomUI.Desktop.Controls.Result.IconSize");
         public static readonly TokenResourceKey ImageHeight = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ImageHeight");
         public static readonly TokenResourceKey ImageWidth = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ImageWidth");
@@ -709,9 +710,8 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         public static readonly TokenResourceKey ResultInfoIconColor = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ResultInfoIconColor");
         public static readonly TokenResourceKey ResultSuccessIconColor = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ResultSuccessIconColor");
         public static readonly TokenResourceKey ResultWarningIconColor = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ResultWarningIconColor");
-        public static readonly TokenResourceKey SubtitleFontSize = new TokenResourceKey("AtomUI.Desktop.Controls.Result.SubtitleFontSize");
-        public static readonly TokenResourceKey TitleFontSize = new TokenResourceKey("AtomUI.Desktop.Controls.Result.TitleFontSize");
-        public static readonly TokenResourceKey TitleMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Result.TitleMargin");
+        public static readonly TokenResourceKey StatusImageMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Result.StatusImageMargin");
+        public static readonly TokenResourceKey SubHeaderFontSize = new TokenResourceKey("AtomUI.Desktop.Controls.Result.SubHeaderFontSize");
     }
 
     public static class ScrollBarTokenKey

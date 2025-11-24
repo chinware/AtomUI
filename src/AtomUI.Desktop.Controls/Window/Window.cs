@@ -17,7 +17,10 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
+public class Window : AvaloniaWindow, 
+                      IOperationSystemAware,
+                      IMediaBreakAwareControl,
+                      IDisposable
 {
     #region 公共属性定义
 
@@ -59,6 +62,9 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
     
     public static readonly StyledProperty<Version> OsVersionProperty =
         OperationSystemAwareControlProperty.OsVersionProperty.AddOwner<Window>();
+    
+    public static readonly StyledProperty<MediaBreakPoint> MediaBreakPointProperty = 
+        MediaBreakAwareControlProperty.MediaBreakPointProperty.AddOwner<Window>();
     
     public double TitleFontSize
     {
@@ -126,9 +132,21 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         set => SetValue(IsMoveEnabledProperty, value);
     }
     
+    public MediaBreakPoint MediaBreakPoint
+    {
+        get => GetValue(MediaBreakPointProperty);
+        internal set => SetValue(MediaBreakPointProperty, value);
+    }
+    
     public OsType OsType => GetValue(OsTypeProperty);
     public Version OsVersion => GetValue(OsVersionProperty);
     
+    #endregion
+
+    #region 公共事件定义
+    
+    public event EventHandler<MediaBreakPointChangedEventArgs>? MediaBreakPointChanged;
+
     #endregion
 
     #region macOS 特有属性
@@ -287,6 +305,12 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
                 _titleBar.PointerReleased -= HandleTitleBarPointerReleased;
                 _titleBar.PointerMoved    -= HandleTitleBarPointerMoved;
             });
+        }
+
+        var mediaQueryIndicator = e.NameScope.Find<WindowMediaQueryIndicator>(WindowThemeConstants.MediaQueryIndicatorPart);
+        if (mediaQueryIndicator != null)
+        {
+            mediaQueryIndicator.OwnerWindow = this;
         }
 
         if (OsType == OsType.macOS)
@@ -453,5 +477,11 @@ public class Window : AvaloniaWindow, IOperationSystemAware, IDisposable
         {
             SetCurrentValue(IsCustomResizerVisibleProperty, CanResize);
         }
+    }
+
+    internal void NotifyMediaBreakPointChanged(MediaBreakPoint breakPoint)
+    {
+        SetCurrentValue(MediaBreakPointProperty, breakPoint);
+        MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(breakPoint));
     }
 }

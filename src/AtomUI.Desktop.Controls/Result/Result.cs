@@ -43,11 +43,23 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<ResultStatus> StatusProperty =
         AvaloniaProperty.Register<Result, ResultStatus>(nameof(Status));
     
-    public static readonly StyledProperty<string?> TitleProperty =
-        AvaloniaProperty.Register<Result, string?>(nameof(Title));
+    public static readonly StyledProperty<object?> HeaderProperty =
+        AvaloniaProperty.Register<Result, object?>(nameof(Header));
+
+    public static readonly StyledProperty<IDataTemplate?> HeaderTemplateProperty =
+        AvaloniaProperty.Register<Result, IDataTemplate?>(nameof(HeaderTemplate));
     
-    public static readonly StyledProperty<string?> SubTitleProperty =
-        AvaloniaProperty.Register<Result, string?>(nameof(SubTitle));
+    public static readonly StyledProperty<object?> SubHeaderProperty =
+        AvaloniaProperty.Register<Result, object?>(nameof(SubHeader));
+
+    public static readonly StyledProperty<IDataTemplate?> SubHeaderTemplateProperty =
+        AvaloniaProperty.Register<Result, IDataTemplate?>(nameof(SubHeaderTemplate));
+    
+    public static readonly StyledProperty<double> HeaderFontSizeProperty =
+        AvaloniaProperty.Register<Result, double>(nameof(HeaderFontSize));
+    
+    public static readonly StyledProperty<double> SubHeaderFontSizeProperty =
+        AvaloniaProperty.Register<Result, double>(nameof(SubHeaderFontSize));
     
     [DependsOn(nameof(ExtraTemplate))]
     public object? Extra
@@ -74,39 +86,65 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         set => SetValue(StatusProperty, value);
     }
     
-    public string? Title
+    [DependsOn(nameof(HeaderTemplate))]
+    public object? Header
     {
-        get => GetValue(TitleProperty);
-        set => SetValue(TitleProperty, value);
+        get => GetValue(HeaderProperty);
+        set => SetValue(HeaderProperty, value);
     }
     
-    public string? SubTitle
+    public IDataTemplate? HeaderTemplate
     {
-        get => GetValue(SubTitleProperty);
-        set => SetValue(SubTitleProperty, value);
+        get => GetValue(HeaderTemplateProperty);
+        set => SetValue(HeaderTemplateProperty, value);
+    }
+    
+    [DependsOn(nameof(SubHeaderTemplate))]
+    public object? SubHeader
+    {
+        get => GetValue(SubHeaderProperty);
+        set => SetValue(SubHeaderProperty, value);
+    }
+    
+    public IDataTemplate? SubHeaderTemplate
+    {
+        get => GetValue(SubHeaderTemplateProperty);
+        set => SetValue(SubHeaderTemplateProperty, value);
+    }
+    
+    public double HeaderFontSize
+    {
+        get => GetValue(HeaderFontSizeProperty);
+        set => SetValue(HeaderFontSizeProperty, value);
+    }
+    
+    public double SubHeaderFontSize
+    {
+        get => GetValue(SubHeaderFontSizeProperty);
+        set => SetValue(SubHeaderFontSizeProperty, value);
     }
     
     #endregion
 
     #region 内部属性定义
     
-    internal static readonly StyledProperty<double> RelativeTitleLineHeightProperty =
-        AvaloniaProperty.Register<Result, double>(nameof(RelativeTitleLineHeight));
+    internal static readonly StyledProperty<double> RelativeHeaderLineHeightProperty =
+        AvaloniaProperty.Register<Result, double>(nameof(RelativeHeaderLineHeight));
     
-    internal static readonly StyledProperty<double> RelativeSubTitleLineHeightProperty =
-        AvaloniaProperty.Register<Result, double>(nameof(RelativeSubTitleLineHeight));
+    internal static readonly StyledProperty<double> RelativeSubHeaderLineHeightProperty =
+        AvaloniaProperty.Register<Result, double>(nameof(RelativeSubHeaderLineHeight));
     
-    internal static readonly DirectProperty<Result, double> TitleLineHeightProperty =
+    internal static readonly DirectProperty<Result, double> HeaderLineHeightProperty =
         AvaloniaProperty.RegisterDirect<Result, double>(
-            nameof(TitleLineHeight),
-            o => o.TitleLineHeight,
-            (o, v) => o.TitleLineHeight = v);
+            nameof(HeaderLineHeight),
+            o => o.HeaderLineHeight,
+            (o, v) => o.HeaderLineHeight = v);
     
-    internal static readonly DirectProperty<Result, double> SubTitleLineHeightProperty =
+    internal static readonly DirectProperty<Result, double> SubHeaderLineHeightProperty =
         AvaloniaProperty.RegisterDirect<Result, double>(
-            nameof(SubTitleLineHeight),
-            o => o.SubTitleLineHeight,
-            (o, v) => o.SubTitleLineHeight = v);
+            nameof(SubHeaderLineHeight),
+            o => o.SubHeaderLineHeight,
+            (o, v) => o.SubHeaderLineHeight = v);
     
     internal static readonly DirectProperty<Result, PathIcon?> StatusIconProperty =
         AvaloniaProperty.RegisterDirect<Result, PathIcon?>(
@@ -114,32 +152,32 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
             o => o.StatusIcon,
             (o, v) => o.StatusIcon = v);
     
-    internal double RelativeTitleLineHeight
+    internal double RelativeHeaderLineHeight
     {
-        get => GetValue(RelativeTitleLineHeightProperty);
-        set => SetValue(RelativeTitleLineHeightProperty, value);
+        get => GetValue(RelativeHeaderLineHeightProperty);
+        set => SetValue(RelativeHeaderLineHeightProperty, value);
     }
     
-    internal double RelativeSubTitleLineHeight
+    internal double RelativeSubHeaderLineHeight
     {
-        get => GetValue(RelativeSubTitleLineHeightProperty);
-        set => SetValue(RelativeSubTitleLineHeightProperty, value);
+        get => GetValue(RelativeSubHeaderLineHeightProperty);
+        set => SetValue(RelativeSubHeaderLineHeightProperty, value);
     }
 
-    private double _titleLineHeight;
+    private double _headerLineHeight;
 
-    internal double TitleLineHeight
+    internal double HeaderLineHeight
     {
-        get => _titleLineHeight;
-        set => SetAndRaise(TitleLineHeightProperty, ref _titleLineHeight, value);
+        get => _headerLineHeight;
+        set => SetAndRaise(HeaderLineHeightProperty, ref _headerLineHeight, value);
     }
 
-    private double _subTitleLineHeight;
+    private double _subHeaderLineHeight;
 
-    internal double SubTitleLineHeight
+    internal double SubHeaderLineHeight
     {
-        get => _subTitleLineHeight;
-        set => SetAndRaise(SubTitleLineHeightProperty, ref _subTitleLineHeight, value);
+        get => _subHeaderLineHeight;
+        set => SetAndRaise(SubHeaderLineHeightProperty, ref _subHeaderLineHeight, value);
     }
     
     private PathIcon? _statusIcon;
@@ -235,15 +273,15 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         }
 
         if (change.Property == FontSizeProperty ||
-            change.Property == RelativeTitleLineHeightProperty)
+            change.Property == RelativeHeaderLineHeightProperty)
         {
-            ConfigureTitleLineHeight();
+            ConfigureHeaderLineHeight();
         }
         
         if (change.Property == FontSizeProperty ||
-            change.Property == RelativeSubTitleLineHeightProperty)
+            change.Property == RelativeSubHeaderLineHeightProperty)
         {
-            ConfigureSubTitleLineHeight();
+            ConfigureSubHeaderLineHeight();
         }
     }
 
@@ -252,8 +290,8 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         base.OnApplyTemplate(e);
         _statusImage = e.NameScope.Find<SvgControl>(ResultThemeConstants.ErrorCodeImagePart);
         ConfigureStatusImage();
-        ConfigureTitleLineHeight();
-        ConfigureSubTitleLineHeight();
+        ConfigureHeaderLineHeight();
+        ConfigureSubHeaderLineHeight();
     }
 
     private void ConfigureStatusImage()
@@ -305,13 +343,13 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         }
     }
 
-    private void ConfigureTitleLineHeight()
+    private void ConfigureHeaderLineHeight()
     {
-        SetCurrentValue(TitleLineHeightProperty, RelativeTitleLineHeight * FontSize);
+        SetCurrentValue(HeaderLineHeightProperty, RelativeHeaderLineHeight * HeaderFontSize);
     }
 
-    private void ConfigureSubTitleLineHeight()
+    private void ConfigureSubHeaderLineHeight()
     {
-        SetCurrentValue(SubTitleLineHeightProperty, RelativeSubTitleLineHeight * FontSize);
+        SetCurrentValue(SubHeaderLineHeightProperty, RelativeSubHeaderLineHeight * SubHeaderFontSize);
     }
 }
