@@ -16,30 +16,30 @@ public partial class DescriptionsShowCase : ReactiveUserControl<DescriptionsView
         }
 
         InitializeComponent();
-        // MiddleSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
-        // DefaultSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
-        // SmallSizeRadioButton.IsCheckedChanged   += SizeTypeCheckChanged;
+        MiddleSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
+        DefaultSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
+        SmallSizeRadioButton.IsCheckedChanged   += SizeTypeCheckChanged;
     }
     
-    // private void SizeTypeCheckChanged(object? sender, RoutedEventArgs e)
-    // {
-    //     if (sender is RadioButton radioButton && radioButton.IsChecked == true)
-    //     {
-    //         if (DataContext is DescriptionsViewModel viewModel)
-    //         {
-    //             if (radioButton == DefaultSizeRadioButton)
-    //             {
-    //                 viewModel.DescriptionsSizeType = SizeType.Large;
-    //             }
-    //             else if (radioButton == MiddleSizeRadioButton)
-    //             {
-    //                 viewModel.DescriptionsSizeType = SizeType.Middle;
-    //             }
-    //             else
-    //             {
-    //                 viewModel.DescriptionsSizeType = SizeType.Small;
-    //             }
-    //         }
-    //     }
-    // }
+    private void SizeTypeCheckChanged(object? sender, RoutedEventArgs e)
+    {
+        if (sender is RadioButton radioButton && radioButton.IsChecked == true)
+        {
+            if (DataContext is DescriptionsViewModel viewModel)
+            {
+                if (radioButton == DefaultSizeRadioButton)
+                {
+                    viewModel.DescriptionsSizeType = SizeType.Large;
+                }
+                else if (radioButton == MiddleSizeRadioButton)
+                {
+                    viewModel.DescriptionsSizeType = SizeType.Middle;
+                }
+                else
+                {
+                    viewModel.DescriptionsSizeType = SizeType.Small;
+                }
+            }
+        }
+    }
 }

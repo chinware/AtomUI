@@ -4,38 +4,141 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DescriptionDefaultItem}" TargetType="atom:DescriptionDefaultItem">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <DockPanel LastChildFill="True">
-                    <ContentPresenter Name="Label" 
-                                      Content="{TemplateBinding Header}" 
-                                      DockPanel.Dock="Left"
-                                      TextWrapping="Wrap"
-                                      LineHeight="{TemplateBinding LineHeight}"/>
-                    <TextBlock Name="Colon" Text=":" DockPanel.Dock="Left" IsVisible="{TemplateBinding IsColonVisible}"/>
-                    <ContentPresenter Name="Content" 
-                                      Content="{TemplateBinding Content}" 
-                                      TextWrapping="Wrap"
-                                      LineHeight="{TemplateBinding LineHeight}"/>
-                </DockPanel>
-            </ControlTemplate> 
-        </Setter>
-        
-        <Style Selector="^ /template/ TextBlock#Colon">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}"/>
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
-            <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ColonMargin}}"/>
+
+        <Style Selector="^[Layout=Horizontal]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DockPanel LastChildFill="True">
+                        <ContentPresenter Name="Label"
+                                          Content="{TemplateBinding Header}"
+                                          DockPanel.Dock="Left"
+                                          TextWrapping="Wrap"
+                                          LineHeight="{TemplateBinding LineHeight}" />
+                        <TextBlock Name="Colon" Text=":" DockPanel.Dock="Left"
+                                   IsVisible="{TemplateBinding IsColonVisible}" />
+                        <ContentPresenter Name="Content"
+                                          Content="{TemplateBinding Content}"
+                                          TextWrapping="Wrap"
+                                          LineHeight="{TemplateBinding LineHeight}" />
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        
-        <Style Selector="^ /template/ ContentPresenter#Label">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}"/>
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+
+        <Style Selector="^[Layout=Vertical][IsBordered=False]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DockPanel LastChildFill="True">
+                        <StackPanel Orientation="Horizontal"
+                                    DockPanel.Dock="Top">
+                            <ContentPresenter Name="Label"
+                                              Content="{TemplateBinding Header}"
+                                              TextWrapping="NoWrap"
+                                              TextTrimming="{x:Static TextTrimming.WordEllipsis}"
+                                              LineHeight="{TemplateBinding LineHeight}" />
+                            <TextBlock Name="Colon" Text=":" DockPanel.Dock="Left"
+                                       IsVisible="{TemplateBinding IsColonVisible}" />
+                        </StackPanel>
+                        <ContentPresenter Name="Content"
+                                          Content="{TemplateBinding Content}"
+                                          TextWrapping="Wrap"
+                                          LineHeight="{TemplateBinding LineHeight}" />
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        
-        <Style Selector="^ /template/ ContentPresenter#Content">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ContentColor}}"/>
-            <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}"/>
+
+        <Style Selector="^[Layout=Vertical][IsBordered=True]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding EffectiveBorderThickness}">
+                        <DockPanel LastChildFill="True">
+                            <ContentPresenter Name="Label"
+                                              DockPanel.Dock="Top"
+                                              Content="{TemplateBinding Header}"
+                                              TextWrapping="NoWrap"
+                                              TextTrimming="{x:Static TextTrimming.WordEllipsis}"
+                                              LineHeight="{TemplateBinding LineHeight}" 
+                                              Padding="{TemplateBinding Padding}"/>
+                            <Rectangle Name="Separator"  DockPanel.Dock="Top"/>
+                            <ContentPresenter Name="Content"
+                                              Content="{TemplateBinding Content}"
+                                              TextWrapping="Wrap"
+                                              LineHeight="{TemplateBinding LineHeight}"
+                                              Padding="{TemplateBinding Padding}"/>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        
+
+        <Setter Property="RelativeLineHeight"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.RelativeLineHeight}}" />
+        <Setter Property="FontSize" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontSize}}" />
+
+        <Style Selector="^[Layout=Horizontal]">
+            <Style Selector="^ /template/ TextBlock#Colon">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}" />
+                <Setter Property="Margin" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ColonMargin}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#Label">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}" />
+            </Style>
+
+            <Style Selector="^ /template/ ContentPresenter#Content">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ContentColor}}" />
+            </Style>
+        </Style>
+        <Style Selector="^[Layout=Vertical]">
+            <Style Selector="^[IsBordered=False]">
+                <Style Selector="^ /template/ TextBlock#Colon">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}" />
+                    <Setter Property="Margin"
+                            Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ColonMargin}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#Label">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelColor}}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#Content">
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ContentColor}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsBordered=True]">
+                <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+                
+                <Style Selector="^ /template/ ContentPresenter#Label">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.LabelBg}}"/>
+                </Style>
+                <Style Selector="^ /template/ ContentPresenter#Content">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ContentColor}}"/>
+                </Style>
+                <Style Selector="^ /template/ Rectangle#Separator">
+                    <Setter Property="Fill" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSplit}}" />
+                    <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.LineWidth}}" />
+                </Style>
+
+                <Style Selector="^[SizeType=Large]">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ItemPaddingLG}}"/>
+                </Style>
+                <Style Selector="^[SizeType=Middle]">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ItemPadding}}"/>
+                </Style>
+                <Style Selector="^[SizeType=Small]">
+                    <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DescriptionsTokenKey.ItemPaddingSM}}"/>
+                </Style>
+            </Style>
+        </Style>
+
     </ControlTheme>
 </ResourceDictionary>
