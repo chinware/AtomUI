@@ -19,11 +19,11 @@ internal class CaptionButton : AvaloniaButton, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> NormalIconProperty =
-        AvaloniaProperty.Register<CaptionButton, Icon?>(nameof(NormalIcon));
+    public static readonly StyledProperty<PathIcon?> NormalIconProperty =
+        AvaloniaProperty.Register<CaptionButton, PathIcon?>(nameof(NormalIcon));
     
-    public static readonly StyledProperty<Icon?> CheckedIconProperty =
-        AvaloniaProperty.Register<CaptionButton, Icon?>(nameof(CheckedIcon));
+    public static readonly StyledProperty<PathIcon?> CheckedIconProperty =
+        AvaloniaProperty.Register<CaptionButton, PathIcon?>(nameof(CheckedIcon));
     
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<CaptionButton, double>(nameof(IconWidth));
@@ -34,13 +34,13 @@ internal class CaptionButton : AvaloniaButton, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<bool> IsCheckedProperty = 
         AvaloniaProperty.Register<CaptionButton, bool>(nameof(IsChecked), defaultBindingMode: BindingMode.TwoWay, defaultValue:false);
     
-    public Icon? NormalIcon
+    public PathIcon? NormalIcon
     {
         get => GetValue(NormalIconProperty);
         set => SetValue(NormalIconProperty, value);
     }
     
-    public Icon? CheckedIcon
+    public PathIcon? CheckedIcon
     {
         get => GetValue(CheckedIconProperty);
         set => SetValue(CheckedIconProperty, value);
