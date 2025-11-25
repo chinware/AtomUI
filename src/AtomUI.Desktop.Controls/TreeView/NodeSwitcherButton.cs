@@ -4,6 +4,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
@@ -24,31 +25,31 @@ internal class NodeSwitcherButton : ToggleButton
 {
     #region 公共属性定义
     
-    public static readonly StyledProperty<Icon?> ExpandIconProperty = 
-        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(ExpandIcon));
+    public static readonly StyledProperty<PathIcon?> ExpandIconProperty = 
+        AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(ExpandIcon));
 
-    public static readonly StyledProperty<Icon?> CollapseIconProperty = 
-        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(CollapseIcon));
+    public static readonly StyledProperty<PathIcon?> CollapseIconProperty = 
+        AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(CollapseIcon));
 
-    public static readonly StyledProperty<Icon?> LoadingIconProperty = 
-        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LoadingIcon));
+    public static readonly StyledProperty<PathIcon?> LoadingIconProperty = 
+        AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LoadingIcon));
 
-    public static readonly StyledProperty<Icon?> LeafIconProperty =
-        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(LeafIcon));
+    public static readonly StyledProperty<PathIcon?> LeafIconProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(LeafIcon));
     
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<NodeSwitcherButton, bool>(nameof(IsLoading), false);
     
-    public static readonly StyledProperty<Icon?> RotationIconProperty =
-        AvaloniaProperty.Register<NodeSwitcherButton, Icon?>(nameof(RotationIcon));
+    public static readonly StyledProperty<PathIcon?> RotationIconProperty =
+        AvaloniaProperty.Register<NodeSwitcherButton, PathIcon?>(nameof(RotationIcon));
 
-    public Icon? LoadingIcon
+    public PathIcon? LoadingIcon
     {
         get => GetValue(LoadingIconProperty);
         set => SetValue(LoadingIconProperty, value);
     }
 
-    public Icon? LeafIcon
+    public PathIcon? LeafIcon
     {
         get => GetValue(LeafIconProperty);
         set => SetValue(LeafIconProperty, value);
@@ -60,19 +61,19 @@ internal class NodeSwitcherButton : ToggleButton
         set => SetValue(IsLoadingProperty, value);
     }
     
-    public Icon? RotationIcon
+    public PathIcon? RotationIcon
     {
         get => GetValue(RotationIconProperty);
         set => SetValue(RotationIconProperty, value);
     }
     
-    public Icon? ExpandIcon
+    public PathIcon? ExpandIcon
     {
         get => GetValue(ExpandIconProperty);
         set => SetValue(ExpandIconProperty, value);
     }
 
-    public Icon? CollapseIcon
+    public PathIcon? CollapseIcon
     {
         get => GetValue(CollapseIconProperty);
         set => SetValue(CollapseIconProperty, value);
