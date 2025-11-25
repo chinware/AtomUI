@@ -35,8 +35,8 @@ internal class PaginationNavItem : ContentControl, ISelectable
     public static readonly DirectProperty<PaginationNavItem, bool> IsPressedProperty =
         AvaloniaProperty.RegisterDirect<PaginationNavItem, bool>(nameof(IsPressed), b => b.IsPressed);
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<PaginationNavItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<PaginationNavItem, PathIcon?>(nameof(Icon));
     
     public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
         RoutedEvent.Register<PaginationNavItem, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
@@ -65,7 +65,7 @@ internal class PaginationNavItem : ContentControl, ISelectable
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
