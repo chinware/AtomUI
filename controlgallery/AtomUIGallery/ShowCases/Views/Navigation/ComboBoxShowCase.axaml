@@ -169,8 +169,8 @@
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ComboBox PlaceholderText="Please select" Width="300"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7}"
-                               ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}">
+                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined, Foreground=#D7D7D7}"
+                               ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, Foreground=#8C8C8C}">
                     <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
                     <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
                     <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>

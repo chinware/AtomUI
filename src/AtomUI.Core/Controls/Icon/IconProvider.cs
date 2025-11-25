@@ -10,10 +10,7 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
     public TIconKind? Kind { get; set; }
 
     // Filled 和 Outlined
-    public IBrush? NormalFilledColor { get; set; }
-    public IBrush? ActiveFilledColor { get; set; }
-    public IBrush? SelectedFilledColor { get; set; }
-    public IBrush? DisabledFilledColor { get; set; }
+    public IBrush? Foreground { get; set; }
 
     // TwoTone
     public IBrush? PrimaryFilledColor { get; set; }
@@ -42,22 +39,9 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
             icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
         }
         
-        if (NormalFilledColor != null)
+        if (Foreground != null)
         {
-            icon.NormalFilledBrush = NormalFilledColor;
-        }
-        if (ActiveFilledColor != null)
-        {
-            icon.ActiveFilledBrush = ActiveFilledColor;
-        }
-        if (SelectedFilledColor != null)
-        {
-            icon.SelectedFilledBrush = SelectedFilledColor;
-        }
-        
-        if (DisabledFilledColor != null)
-        {
-            icon.DisabledFilledBrush = DisabledFilledColor;
+            icon.Foreground = Foreground;
         }
         
         if (PrimaryFilledColor != null)

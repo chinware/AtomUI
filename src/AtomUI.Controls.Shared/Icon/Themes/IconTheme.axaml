@@ -20,6 +20,6 @@
         <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
         <Setter Property="PrimaryFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
         <Setter Property="SecondaryFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
-        
+        <Setter Property="FillAnimationDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />
     </ControlTheme>
 </ResourceDictionary>

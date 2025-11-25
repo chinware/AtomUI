@@ -136,8 +136,8 @@
             <StackPanel Orientation="Vertical" Spacing="10">
         
                 <atom:ButtonSpinner
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, NormalFilledColor=#D7D7D7}"
-                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, NormalFilledColor=#8C8C8C}"
+                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, Foreground=#D7D7D7}"
+                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, Foreground=#8C8C8C}"
                     Width="400"
                     HorizontalAlignment="Left">
                     <atom:TextBlock
@@ -254,7 +254,7 @@
                 <atom:ButtonSpinner
                     Status="Warning"
                     Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined, NormalFilledColor=Red}"
+                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined, Foreground=Red}"
                     HorizontalAlignment="Left"
                     StyleVariant="Borderless">
                     <atom:TextBlock

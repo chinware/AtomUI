@@ -1,13 +1,9 @@
-﻿using System.Collections.Specialized;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Media;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -60,7 +56,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 
     public static readonly StyledProperty<TimeSpan> FillAnimationDurationProperty =
         AvaloniaProperty.Register<Icon, TimeSpan>(
-            nameof(FillAnimationDuration), TimeSpan.FromMilliseconds(300));
+            nameof(FillAnimationDuration), TimeSpan.FromMilliseconds(200));
 
     public static readonly StyledProperty<IconMode> IconModeProperty =
         AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
@@ -157,19 +153,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         set => SetValue(AngleAnimationRotateProperty, value);
     }
 
-    internal static readonly StyledProperty<IBrush?> FilledBrushProperty = 
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(FilledBrush));
-
-    /// <summary>
-    /// 当是非 TwoTone icon 的时候，填充色是支持渐变的
-    /// </summary>
-    internal IBrush? FilledBrush
-    {
-        get => GetValue(FilledBrushProperty);
-        set => SetValue(FilledBrushProperty, value);
-    }
-
     #endregion
 
     Control IMotionAwareControl.PropertyBindTarget => this;
@@ -183,12 +166,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     static Icon()
     {
         AffectsMeasure<Icon>(HeightProperty, WidthProperty, IconInfoProperty);
-        AffectsRender<Icon>(IconModeProperty,
-            NormalFilledBrushProperty,
-            ActiveFilledBrushProperty,
-            SelectedFilledBrushProperty,
-            DisabledFilledBrushProperty,
-            FilledBrushProperty,
+        AffectsRender<Icon>(ForegroundProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
     }
@@ -197,7 +175,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     {
         _sourceGeometriesData = new List<Geometry>();
         _transforms           = new List<Matrix>();
-        Classes.CollectionChanged += HandlePseudoClassesChanged;
     }
 
     private void ConfigureTransitions(bool force)
@@ -207,7 +184,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             if (force || Transitions == null)
             {
                 Transitions = [
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FilledBrushProperty, FillAnimationDuration)
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty, TimeSpan.FromMilliseconds(100))
                 ];
             }
         }
@@ -224,14 +201,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         {
             BuildSourceRenderData();
         }
-        else if (change.Property == IsEnabledProperty)
-        {
-            // TODO 这个地方需要优化一点，是否需要保存老的，当状态为 Enabled 的时候进行还原
-            if (!IsEnabled)
-            {
-                IconMode = IconMode.Disabled;
-            }
-        }
         else if (change.Property == AngleAnimationRotateProperty)
         {
             SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
@@ -245,18 +214,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
                 StartLoadingAnimation();
             }
         }
-        else if (change.Property == NormalFilledBrushProperty ||
-                 change.Property == ActiveFilledBrushProperty ||
-                 change.Property == SelectedFilledBrushProperty ||
-                 change.Property == DisabledFilledBrushProperty ||
-                 change.Property == PrimaryFilledBrushProperty ||
-                 change.Property == SecondaryFilledBrushProperty ||
-                 change.Property == IconModeProperty ||
-                 change.Property == IconInfoProperty)
-        {
-            SetupFilledBrush();
-        }
-
         if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
@@ -297,47 +254,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             if (LoadingAnimation == IconAnimation.Pulse)
             {
                 _animation.Easing = new PulseEasing();
-            }
-        }
-    }
-
-    private void SetupFilledBrush()
-    {
-        if (IconMode == IconMode.Normal)
-        {
-            FilledBrush = NormalFilledBrush;
-        }
-        else if (IconMode == IconMode.Active)
-        {
-            if (ActiveFilledBrush is not null)
-            {
-                FilledBrush = ActiveFilledBrush;
-            }
-            else if (NormalFilledBrush is not null)
-            {
-                FilledBrush = NormalFilledBrush;
-            }
-        }
-        else if (IconMode == IconMode.Selected)
-        {
-            if (SelectedFilledBrush is not null)
-            {
-                FilledBrush = SelectedFilledBrush;
-            }
-            else if (NormalFilledBrush is not null)
-            {
-                FilledBrush = NormalFilledBrush;
-            }
-        }
-        else
-        {
-            if (DisabledFilledBrush is not null)
-            {
-                FilledBrush = DisabledFilledBrush;
-            }
-            else if (NormalFilledBrush is not null)
-            {
-                FilledBrush = NormalFilledBrush;
             }
         }
     }
@@ -453,12 +369,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         Transitions = null;
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetupFilledBrush();
-    }
-
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
@@ -485,29 +395,9 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         Dispatcher.UIThread.InvokeAsync(StartLoadingAnimationAsync);
     }
 
-    private void HandlePseudoClassesChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (Classes.Contains(StdPseudoClass.Disabled))
-        {
-            SetValue(IconModeProperty, IconMode.Disabled, BindingPriority.Template);
-        }
-        else if (Classes.Contains(StdPseudoClass.Selected))
-        {
-            SetValue(IconModeProperty, IconMode.Selected, BindingPriority.Template);
-        }
-        else if (Classes.Contains(StdPseudoClass.PointerOver))
-        {
-            SetValue(IconModeProperty, IconMode.Active, BindingPriority.Template);
-        }
-        else
-        {
-            SetValue(IconModeProperty, IconMode.Normal, BindingPriority.Template);
-        }
-    }
-
     protected override Size MeasureOverride(Size availableSize)
     {
-        var size = base.MeasureOverride(availableSize);
+        base.MeasureOverride(availableSize);
         if (_sourceGeometriesData.Count == 0)
         {
             return default;
@@ -563,7 +453,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
                 }
                 else
                 {
-                    fillBrush = FilledBrush;
+                    fillBrush = Foreground;
                 }
                 using var state = context.PushTransform(_transforms[i]);
                 context.DrawGeometry(fillBrush, null, renderedGeometry);

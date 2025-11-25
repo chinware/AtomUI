@@ -129,10 +129,7 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     static IconPresenter()
     {
         AffectsMeasure<IconPresenter>(IconProperty, PaddingProperty);
-        AffectsRender<IconPresenter>(IconModeProperty, NormalFilledBrushProperty, 
-            ActiveFilledBrushProperty, 
-            SelectedFilledBrushProperty, 
-            DisabledFilledBrushProperty,
+        AffectsRender<IconPresenter>(ForegroundProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
         IconProperty.Changed.AddClassHandler<IconPresenter>((x, e) => x.ChildChanged(e));
@@ -189,31 +186,19 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
         
         _bindingDisposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty, BindingMode.Default, BindingPriority.Template));
         _bindingDisposables.Add(BindUtils.RelayBind(this, WidthProperty, pathIcon, WidthProperty, BindingMode.Default, BindingPriority.Template));
-        
+        _bindingDisposables.Add(BindUtils.RelayBind(this, ForegroundProperty, pathIcon, ForegroundProperty, BindingMode.Default, BindingPriority.Template));
         if (pathIcon is Icon icon)
         {
             _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationProperty, icon, IconControl.LoadingAnimationProperty, BindingMode.Default, BindingPriority.Template));
             _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationDurationProperty, icon,
                 IconControl.LoadingAnimationDurationProperty, BindingMode.Default, BindingPriority.Template));
-            _bindingDisposables.Add(BindUtils.RelayBind(this, IconModeProperty, icon, IconModeProperty, BindingMode.Default, BindingPriority.Template));
             _bindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, IsMotionEnabledProperty));
         
-            if (icon.ThemeType != IconThemeType.TwoTone)
-            {
-                _bindingDisposables.Add(BindUtils.RelayBind(this, NormalFilledBrushProperty, icon, IconControl.NormalFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
-                _bindingDisposables.Add(BindUtils.RelayBind(this, ActiveFilledBrushProperty, icon, IconControl.ActiveFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
-                _bindingDisposables.Add(BindUtils.RelayBind(this, SelectedFilledBrushProperty, icon, IconControl.SelectedFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
-                _bindingDisposables.Add(BindUtils.RelayBind(this, DisabledFilledBrushProperty, icon, IconControl.DisabledFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
-            }
-            else
+            if (icon.ThemeType == IconThemeType.TwoTone)
             {
                 _bindingDisposables.Add(BindUtils.RelayBind(this, PrimaryFilledBrushProperty, icon, IconControl.PrimaryFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
                 _bindingDisposables.Add(BindUtils.RelayBind(this, SecondaryFilledBrushProperty, icon, IconControl.SecondaryFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
             }
-        }
-        else
-        {
-            _bindingDisposables.Add(BindUtils.RelayBind(this, NormalFilledBrushProperty, pathIcon, PathIcon.ForegroundProperty, BindingMode.Default, BindingPriority.Template));
         }
     }
     
