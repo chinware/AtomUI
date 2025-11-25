@@ -266,9 +266,9 @@ public class SpinIndicator : TemplatedControl,
                 x.PropertyEquals(SizeTypeProperty, SizeType.Middle));
             var iconStyle = new Style(x => 
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
-                 .OfType<Icon>());
-            iconStyle.Add(Icon.WidthProperty, SpinTokenKey.IndicatorSize);
-            iconStyle.Add(Icon.HeightProperty, SpinTokenKey.IndicatorSize);
+                 .OfType<PathIcon>());
+            iconStyle.Add(WidthProperty, SpinTokenKey.IndicatorSize);
+            iconStyle.Add(HeightProperty, SpinTokenKey.IndicatorSize);
             middleStyle.Add(iconStyle);
             Styles.Add(middleStyle);
         }
@@ -277,9 +277,9 @@ public class SpinIndicator : TemplatedControl,
                 x.PropertyEquals(SizeTypeProperty, SizeType.Small));
             var iconStyle = new Style(x => 
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
-                 .OfType<Icon>());
-            iconStyle.Add(Icon.WidthProperty, SpinTokenKey.IndicatorSizeSM);
-            iconStyle.Add(Icon.HeightProperty, SpinTokenKey.IndicatorSizeSM);
+                 .OfType<PathIcon>());
+            iconStyle.Add(WidthProperty, SpinTokenKey.IndicatorSizeSM);
+            iconStyle.Add(HeightProperty, SpinTokenKey.IndicatorSizeSM);
             smallStyle.Add(iconStyle);
             Styles.Add(smallStyle);
         }
@@ -288,9 +288,9 @@ public class SpinIndicator : TemplatedControl,
                 x.PropertyEquals(SizeTypeProperty, SizeType.Large));
             var iconStyle = new Style(x => 
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
-                 .OfType<Icon>());
-            iconStyle.Add(Icon.WidthProperty, SpinTokenKey.IndicatorSizeLG);
-            iconStyle.Add(Icon.HeightProperty, SpinTokenKey.IndicatorSizeLG);
+                 .OfType<PathIcon>());
+            iconStyle.Add(WidthProperty, SpinTokenKey.IndicatorSizeLG);
+            iconStyle.Add(HeightProperty, SpinTokenKey.IndicatorSizeLG);
             largeStyle.Add(iconStyle);
             Styles.Add(largeStyle);
         }
