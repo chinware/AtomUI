@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls;
-using AtomUI.Icons.AntDesign;
 
 namespace AtomUI.Icons.AntDesign;
 

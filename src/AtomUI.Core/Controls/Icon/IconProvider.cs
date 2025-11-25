@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
@@ -45,39 +44,39 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
         
         if (NormalFilledColor != null)
         {
-            icon.SetCurrentValue(Icon.NormalFilledBrushProperty, NormalFilledColor);
+            icon.NormalFilledBrush = NormalFilledColor;
         }
         if (ActiveFilledColor != null)
         {
-            icon.SetCurrentValue(Icon.ActiveFilledBrushProperty, ActiveFilledColor);
+            icon.ActiveFilledBrush = ActiveFilledColor;
         }
         if (SelectedFilledColor != null)
         {
-            icon.SetCurrentValue(Icon.SelectedFilledBrushProperty, SelectedFilledColor);
+            icon.SelectedFilledBrush = SelectedFilledColor;
         }
         
         if (DisabledFilledColor != null)
         {
-            icon.SetCurrentValue(Icon.DisabledFilledBrushProperty, DisabledFilledColor);
+            icon.DisabledFilledBrush = DisabledFilledColor;
         }
         
         if (PrimaryFilledColor != null)
         {
-            icon.SetCurrentValue(Icon.PrimaryFilledBrushProperty, PrimaryFilledColor);
+            icon.PrimaryFilledBrush = PrimaryFilledColor;
         }
         if (SecondaryFilledColor != null)
         {
-            icon.SetCurrentValue(Icon.SecondaryFilledBrushProperty, SecondaryFilledColor);
+            icon.SecondaryFilledBrush = SecondaryFilledColor;
         }
         
         if (!double.IsNaN(Width))
         {
-            icon.SetCurrentValue(Layoutable.WidthProperty, Width);
+            icon.Width = Width;
         }
 
         if (!double.IsNaN(Height))
         {
-            icon.SetCurrentValue(Layoutable.HeightProperty, Height);
+            icon.Height = Height;
         }
 
         return icon;

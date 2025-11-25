@@ -264,9 +264,11 @@ public class SpinIndicator : TemplatedControl,
         {
             var middleStyle = new Style(x =>
                 x.PropertyEquals(SizeTypeProperty, SizeType.Middle));
-            var iconStyle = new Style(x => 
+            var iconStyle = new Style(x => Selectors.Or(
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
-                 .OfType<PathIcon>());
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
+                 .OfType<Icon>()));
             iconStyle.Add(WidthProperty, SpinTokenKey.IndicatorSize);
             iconStyle.Add(HeightProperty, SpinTokenKey.IndicatorSize);
             middleStyle.Add(iconStyle);
@@ -275,9 +277,11 @@ public class SpinIndicator : TemplatedControl,
         {
             var smallStyle = new Style(x =>
                 x.PropertyEquals(SizeTypeProperty, SizeType.Small));
-            var iconStyle = new Style(x => 
+            var iconStyle = new Style(x => Selectors.Or(
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
-                 .OfType<PathIcon>());
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
+                 .OfType<Icon>()));
             iconStyle.Add(WidthProperty, SpinTokenKey.IndicatorSizeSM);
             iconStyle.Add(HeightProperty, SpinTokenKey.IndicatorSizeSM);
             smallStyle.Add(iconStyle);
@@ -286,9 +290,11 @@ public class SpinIndicator : TemplatedControl,
         {
             var largeStyle = new Style(x =>
                 x.PropertyEquals(SizeTypeProperty, SizeType.Large));
-            var iconStyle = new Style(x => 
+            var iconStyle = new Style(x => Selectors.Or(
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
-                 .OfType<PathIcon>());
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(SpinThemeConstants.CustomIndicatorPresenterPart).Child()
+                 .OfType<Icon>()));
             iconStyle.Add(WidthProperty, SpinTokenKey.IndicatorSizeLG);
             iconStyle.Add(HeightProperty, SpinTokenKey.IndicatorSizeLG);
             largeStyle.Add(iconStyle);

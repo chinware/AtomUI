@@ -49,7 +49,7 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>
-        
+
         <Setter Property="NormalFilledBrush"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
         <Setter Property="PrimaryFilledBrush"
