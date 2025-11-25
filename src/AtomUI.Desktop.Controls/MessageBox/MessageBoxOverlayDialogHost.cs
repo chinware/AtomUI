@@ -1,18 +1,18 @@
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives;
 using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
 internal class MessageBoxOverlayDialogHost : OverlayDialogHost
 {
-    public static readonly StyledProperty<Icon?> StyleIconProperty =
-        AvaloniaProperty.Register<MessageBoxOverlayDialogHost, Icon?>(nameof (StyleIcon));
+    public static readonly StyledProperty<PathIcon?> StyleIconProperty =
+        AvaloniaProperty.Register<MessageBoxOverlayDialogHost, PathIcon?>(nameof (StyleIcon));
     
     public static readonly StyledProperty<MessageBoxStyle> StyleProperty =
         MessageBox.StyleProperty.AddOwner<MessageBoxOverlayDialogHost>();
     
-    public Icon? StyleIcon
+    public PathIcon? StyleIcon
     {
         get => GetValue(StyleIconProperty);
         set => SetValue(StyleIconProperty, value);

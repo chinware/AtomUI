@@ -9,13 +9,13 @@ namespace AtomUI.Desktop.Controls;
 
 internal class MessageBoxDialog : Dialog
 {
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<MessageBoxDialog, Icon?>(nameof (Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<MessageBoxDialog, PathIcon?>(nameof (Icon));
     
     public static readonly StyledProperty<MessageBoxStyle> StyleProperty =
         MessageBox.StyleProperty.AddOwner<MessageBoxDialog>();
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

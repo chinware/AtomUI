@@ -30,8 +30,8 @@ public class MessageBox : TemplatedControl,
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<MessageBox, string?>(nameof (Title));
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<MessageBox, Icon?>(nameof (Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<MessageBox, PathIcon?>(nameof (Icon));
     
     public static readonly StyledProperty<object?> ContentProperty = Dialog.ContentProperty.AddOwner<MessageBox>();
 
@@ -87,7 +87,7 @@ public class MessageBox : TemplatedControl,
         set => SetValue(TitleProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
