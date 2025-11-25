@@ -16,7 +16,7 @@
                                         Width="{TemplateBinding EffectiveIconSize}"
                                         Height="{TemplateBinding EffectiveIconSize}"
                                         Icon="{TemplateBinding Icon}"
-                                        NormalFilledBrush="{TemplateBinding Foreground}"
+                                        Foreground="{TemplateBinding Foreground}"
                                         IsVisible="False" 
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"/>
