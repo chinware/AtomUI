@@ -6,7 +6,7 @@ namespace AtomUI.Desktop.Controls;
 public record DialogOptions
 {
     public string? Title { get; init; }
-    public Icon? TitleIcon { get; init; }
+    public PathIcon? TitleIcon { get; init; }
     public bool IsLightDismissEnabled { get; init; } = false;
     public bool IsModal { get; init; } = true;
     public bool IsResizable { get; init; } = false;
@@ -33,6 +33,6 @@ public record DialogOptions
     public DialogHostType DialogHostType { get; init; } = DialogHostType.Overlay;
     public DialogStandardButtons StandardButtons { get; init; } = DialogStandardButton.NoButton;
     public DialogStandardButton DefaultStandardButton { get; init; }
-    public DialogHorizontalAnchor HorizontalStartupLocation { get; init; } =  DialogHorizontalAnchor.Custom;
+    public DialogHorizontalAnchor HorizontalStartupLocation { get; init; } = DialogHorizontalAnchor.Custom;
     public DialogVerticalAnchor VerticalStartupLocation { get; init; } = DialogVerticalAnchor.Custom;
 }

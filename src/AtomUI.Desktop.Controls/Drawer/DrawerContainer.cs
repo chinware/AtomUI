@@ -3,7 +3,6 @@ using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Animation;

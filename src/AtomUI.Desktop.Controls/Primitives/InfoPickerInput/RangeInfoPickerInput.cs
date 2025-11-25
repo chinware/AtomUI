@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;

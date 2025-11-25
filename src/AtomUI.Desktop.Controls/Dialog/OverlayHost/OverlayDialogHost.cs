@@ -18,7 +18,6 @@ using Avalonia.VisualTree;
 using AtomUI.Desktop.Controls.DialogPositioning;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Desktop.Controls.Utils;
 using Avalonia.Animation.Easings;
 using Avalonia.Media.Transformation;
 
@@ -34,8 +33,8 @@ internal class OverlayDialogHost : ContentControl,
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<OverlayDialogHost, string?>(nameof (Title));
     
-    public static readonly StyledProperty<Icon?> TitleIconProperty =
-        AvaloniaProperty.Register<OverlayDialogHost, Icon?>(nameof (TitleIcon));
+    public static readonly StyledProperty<PathIcon?> TitleIconProperty =
+        AvaloniaProperty.Register<OverlayDialogHost, PathIcon?>(nameof (TitleIcon));
     
     public static readonly StyledProperty<bool> IsResizableProperty =
         Dialog.IsResizableProperty.AddOwner<OverlayDialogHost>();
@@ -82,7 +81,7 @@ internal class OverlayDialogHost : ContentControl,
         set => SetValue(TitleProperty, value);
     }
     
-    public Icon? TitleIcon
+    public PathIcon? TitleIcon
     {
         get => GetValue(TitleIconProperty);
         set => SetValue(TitleIconProperty, value);

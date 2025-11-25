@@ -9,7 +9,6 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DialogPositioning;
 using AtomUI.Desktop.Controls.Primitives;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Input;
 using AtomUI.Reflection;
 using AtomUI.Theme;
@@ -40,8 +39,8 @@ public partial class Dialog : TemplatedControl,
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<Dialog, string?>(nameof (Title));
     
-    public static readonly StyledProperty<Icon?> TitleIconProperty =
-        AvaloniaProperty.Register<Dialog, Icon?>(nameof (TitleIcon));
+    public static readonly StyledProperty<PathIcon?> TitleIconProperty =
+        AvaloniaProperty.Register<Dialog, PathIcon?>(nameof (TitleIcon));
 
     public static readonly StyledProperty<object?> ContentProperty = ContentPresenter.ContentProperty.AddOwner<Dialog>();
 
@@ -132,7 +131,7 @@ public partial class Dialog : TemplatedControl,
         set => SetValue(TitleProperty, value);
     }
     
-    public Icon? TitleIcon
+    public PathIcon? TitleIcon
     {
         get => GetValue(TitleIconProperty);
         set => SetValue(TitleIconProperty, value);

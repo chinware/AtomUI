@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
 using Avalonia.Collections;
 

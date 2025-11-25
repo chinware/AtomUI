@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -22,8 +21,8 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<OverlayDialogHeader, string?>(nameof (Title));
     
-    public static readonly StyledProperty<Icon?> LogoProperty =
-        AvaloniaProperty.Register<OverlayDialogHeader, Icon?>(nameof(Logo));
+    public static readonly StyledProperty<PathIcon?> LogoProperty =
+        AvaloniaProperty.Register<OverlayDialogHeader, PathIcon?>(nameof(Logo));
     
     public static readonly StyledProperty<double> TitleFontSizeProperty =
         AvaloniaProperty.Register<OverlayDialogHeader, double>(nameof(TitleFontSize), defaultValue: 14);
@@ -55,7 +54,7 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
         set => SetValue(TitleProperty, value);
     }
     
-    public Control? Logo
+    public PathIcon? Logo
     {
         get => GetValue(LogoProperty);
         set => SetValue(LogoProperty, value);

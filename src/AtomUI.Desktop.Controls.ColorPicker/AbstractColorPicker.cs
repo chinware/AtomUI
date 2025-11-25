@@ -1,7 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
