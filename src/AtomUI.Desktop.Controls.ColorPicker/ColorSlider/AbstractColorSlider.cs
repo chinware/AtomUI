@@ -23,7 +23,6 @@ internal abstract class AbstractColorSlider : RangeBase
     internal static readonly StyledProperty<double> TransparentBgSizeProperty =
         AvaloniaProperty.Register<AbstractColorSlider, double>(nameof(TransparentBgSize), 4.0);
     
-    
     internal IBrush? TransparentBgIntervalColor
     {
         get => GetValue(TransparentBgIntervalColorProperty);

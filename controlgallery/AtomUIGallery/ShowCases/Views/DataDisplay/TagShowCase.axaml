@@ -119,6 +119,12 @@ If you want specific control over the positioning and placement of the Icon, the
                           Icon="{antdicons:AntDesignIconProvider Kind=LinkedinOutlined}">
                     Linkedin
                 </atom:Tag>
+                <atom:Tag TagColor="#55acee">
+                    <atom:Tag.Icon>
+                        <PathIcon Data="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/>
+                    </atom:Tag.Icon>
+                    Material icon
+                </atom:Tag>
             </WrapPanel>
         </gallerycontrols:ShowCaseItem>
 

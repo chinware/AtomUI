@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
@@ -53,11 +52,11 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<bool> BorderedProperty =
         AvaloniaProperty.Register<Tag, bool>(nameof(Bordered), true);
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<Tag, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<Tag, PathIcon?>(nameof(Icon));
 
-    public static readonly StyledProperty<Icon?> CloseIconProperty =
-        AvaloniaProperty.Register<Tag, Icon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
+        AvaloniaProperty.Register<Tag, PathIcon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<string?> TagTextProperty =
         AvaloniaProperty.Register<Tag, string?>(
@@ -81,13 +80,13 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
         set => SetValue(BorderedProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public Icon? CloseIcon
+    public PathIcon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);
