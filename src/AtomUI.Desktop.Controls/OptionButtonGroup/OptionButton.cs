@@ -46,9 +46,9 @@ public class OptionButtonPointerEventArgs : EventArgs
 
 public class OptionButton : AvaloniaRadioButton
 {
-    public static readonly StyledProperty<Icon?> IconProperty = AvaloniaProperty.Register<OptionButton, Icon?>(nameof (Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty = AvaloniaProperty.Register<OptionButton, PathIcon?>(nameof (Icon));
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
