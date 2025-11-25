@@ -646,7 +646,7 @@ public class Select : TemplatedControl,
             }
             else
             {
-                if (e.Source is Icon icon)
+                if (e.Source is PathIcon icon)
                 {
                     var parent = icon.FindAncestorOfType<IconButton>();
                     var tag = parent?.FindAncestorOfType<SelectTag>();
@@ -678,7 +678,7 @@ public class Select : TemplatedControl,
             else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
             {
                 var clickInTagCloseButton = false;
-                if (e.Source is Icon icon)
+                if (e.Source is PathIcon icon)
                 {
                     var parent = icon.FindAncestorOfType<IconButton>();
                     var tag    = parent?.FindAncestorOfType<SelectTag>();
