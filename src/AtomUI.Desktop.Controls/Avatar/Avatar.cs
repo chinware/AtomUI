@@ -43,8 +43,8 @@ public class Avatar : TemplatedControl, IControlSharedTokenResourcesHost, IMotio
     public static readonly StyledProperty<double> GapProperty =
         AvaloniaProperty.Register<Avatar, double>(nameof(Gap), defaultValue: 4.0);
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<Avatar, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<Avatar, PathIcon?>(nameof(Icon));
     
     public static readonly StyledProperty<IImage?> BitmapSrcProperty =
         AvaloniaProperty.Register<Avatar, IImage?>(nameof(BitmapSrc));
@@ -74,7 +74,7 @@ public class Avatar : TemplatedControl, IControlSharedTokenResourcesHost, IMotio
         set => SetValue(GapProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
