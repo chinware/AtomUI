@@ -49,8 +49,8 @@ public class Expander : AvaloniaExpander,
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);
 
-    public static readonly StyledProperty<Icon?> ExpandIconProperty =
-        AvaloniaProperty.Register<Expander, Icon?>(nameof(ExpandIcon));
+    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
+        AvaloniaProperty.Register<Expander, PathIcon?>(nameof(ExpandIcon));
 
     public static readonly StyledProperty<object?> AddOnContentProperty =
         AvaloniaProperty.Register<Expander, object?>(nameof(AddOnContent));
@@ -91,7 +91,7 @@ public class Expander : AvaloniaExpander,
         set => SetValue(IsShowExpandIconProperty, value);
     }
 
-    public Icon? ExpandIcon
+    public PathIcon? ExpandIcon
     {
         get => GetValue(ExpandIconProperty);
         set => SetValue(ExpandIconProperty, value);
