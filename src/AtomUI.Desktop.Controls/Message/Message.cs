@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using AtomUI.Controls;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
 public class Message : IMessage, INotifyPropertyChanged
 {
     private string _content;
-    private Icon? _icon;
+    private PathIcon? _icon;
 
     public Message(string content,
                    MessageType type = MessageType.Information,
-                   Icon? icon = null,
+                   PathIcon? icon = null,
                    TimeSpan? expiration = null,
                    Action? onClose = null)
     {
@@ -36,7 +36,7 @@ public class Message : IMessage, INotifyPropertyChanged
         }
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => _icon;
 

@@ -52,8 +52,8 @@ public class MessageCard : TemplatedControl,
     public static readonly RoutedEvent<RoutedEventArgs> MessageClosedEvent =
         RoutedEvent.Register<MessageCard, RoutedEventArgs>(nameof(MessageClosed), RoutingStrategies.Bubble);
 
-    public static readonly StyledProperty<Icon?> IconProperty = 
-        AvaloniaProperty.Register<MessageCard, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty = 
+        AvaloniaProperty.Register<MessageCard, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<MessageCard, string>(nameof(Message));
@@ -97,7 +97,7 @@ public class MessageCard : TemplatedControl,
         remove => RemoveHandler(MessageClosedEvent, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
