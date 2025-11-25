@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -31,8 +30,8 @@ public class CollapseItem : HeaderedContentControl,
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<CollapseItem, bool>(nameof(IsShowExpandIcon), true);
 
-    public static readonly StyledProperty<Icon?> ExpandIconProperty =
-        AvaloniaProperty.Register<CollapseItem, Icon?>(nameof(ExpandIcon));
+    public static readonly StyledProperty<PathIcon?> ExpandIconProperty =
+        AvaloniaProperty.Register<CollapseItem, PathIcon?>(nameof(ExpandIcon));
 
     public static readonly StyledProperty<object?> AddOnContentProperty =
         AvaloniaProperty.Register<CollapseItem, object?>(nameof(AddOnContent));
@@ -58,7 +57,7 @@ public class CollapseItem : HeaderedContentControl,
         set => SetValue(IsShowExpandIconProperty, value);
     }
 
-    public Icon? ExpandIcon
+    public PathIcon? ExpandIcon
     {
         get => GetValue(ExpandIconProperty);
         set => SetValue(ExpandIconProperty, value);
@@ -403,7 +402,6 @@ public class CollapseItem : HeaderedContentControl,
         base.OnUnloaded(e);
         Transitions = null;
     }
-
     
     private void UpdatePseudoClasses()
     {
