@@ -37,8 +37,8 @@ public class StepsItem : HeaderedContentControl, ISelectable
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<StepsItem>();
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<StepsItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<StepsItem, PathIcon?>(nameof(Icon));
     
     public static readonly StyledProperty<StepsItemStatus> StatusProperty =
         AvaloniaProperty.Register<StepsItem, StepsItemStatus>(nameof(Status), StepsItemStatus.Process);
@@ -76,7 +76,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
         set => SetValue(IsSelectedProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

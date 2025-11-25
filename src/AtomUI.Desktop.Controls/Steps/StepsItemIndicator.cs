@@ -26,7 +26,7 @@ internal class StepsItemIndicator : TemplatedControl
     public static readonly StyledProperty<StepsItemIndicatorType> IndicatorTypeProperty =
         StepsItem.IndicatorTypeProperty.AddOwner<StepsItemIndicator>();
 
-    public static readonly StyledProperty<Icon?> IconProperty =
+    public static readonly StyledProperty<PathIcon?> IconProperty =
         StepsItem.IconProperty.AddOwner<StepsItemIndicator>();
     
     public static readonly StyledProperty<StepsStyle> StyleProperty =
@@ -56,7 +56,7 @@ internal class StepsItemIndicator : TemplatedControl
         set => SetValue(IndicatorTypeProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
