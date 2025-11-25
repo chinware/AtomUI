@@ -44,8 +44,8 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<Alert, bool>(nameof(IsClosable));
 
-    public static readonly StyledProperty<Icon?> CloseIconProperty =
-        AvaloniaProperty.Register<Alert, Icon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
+        AvaloniaProperty.Register<Alert, PathIcon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<string> MessageProperty =
         AvaloniaProperty.Register<Alert, string>(nameof(Message));
@@ -80,7 +80,7 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
         set => SetValue(IsClosableProperty, value);
     }
 
-    public Icon? CloseIcon
+    public PathIcon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);

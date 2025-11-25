@@ -15,6 +15,7 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls;
 
 using AvaloniaButton = Avalonia.Controls.Button;
+using IconControl = Icon;
 
 public class IconButton : AvaloniaButton,
                           IMotionAwareControl,
@@ -22,14 +23,14 @@ public class IconButton : AvaloniaButton,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<IconButton, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<IconButton, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
-        Icon.LoadingAnimationProperty.AddOwner<IconButton>();
+        IconControl.LoadingAnimationProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
-        Icon.LoadingAnimationDurationProperty.AddOwner<IconButton>();
+        IconControl.LoadingAnimationDurationProperty.AddOwner<IconButton>();
     
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
@@ -54,7 +55,7 @@ public class IconButton : AvaloniaButton,
         AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
-        Icon.IconModeProperty.AddOwner<IconButton>();
+        IconControl.IconModeProperty.AddOwner<IconButton>();
 
     public static readonly StyledProperty<bool> IsEnableHoverEffectProperty = 
         AvaloniaProperty.Register<IconButton, bool>(nameof(IsEnableHoverEffect));
@@ -62,7 +63,7 @@ public class IconButton : AvaloniaButton,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconButton>();
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
