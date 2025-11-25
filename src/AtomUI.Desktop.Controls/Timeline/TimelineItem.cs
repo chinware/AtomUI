@@ -20,8 +20,8 @@ public class TimelineItem : ContentControl
     public static readonly StyledProperty<string?> LabelProperty =
         AvaloniaProperty.Register<TimelineItem, string?>(nameof(Label));
     
-    public static readonly StyledProperty<Icon?> IndicatorIconProperty =
-        AvaloniaProperty.Register<TimelineItem, Icon?>(nameof(IndicatorIcon));
+    public static readonly StyledProperty<PathIcon?> IndicatorIconProperty =
+        AvaloniaProperty.Register<TimelineItem, PathIcon?>(nameof(IndicatorIcon));
     
     public static readonly StyledProperty<IBrush?> IndicatorColorProperty =
         AvaloniaProperty.Register<TimelineItem, IBrush?>(nameof(IndicatorColor));
@@ -32,7 +32,7 @@ public class TimelineItem : ContentControl
         set => SetValue(LabelProperty, value);
     }
 
-    public Icon? IndicatorIcon
+    public PathIcon? IndicatorIcon
     {
         get => GetValue(IndicatorIconProperty);
         set => SetValue(IndicatorIconProperty, value);

@@ -12,13 +12,13 @@ internal class TimelineIndicator : TemplatedControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> IndicatorIconProperty =
-        AvaloniaProperty.Register<TimelineIndicator, Icon?>(nameof(IndicatorIcon));
+    public static readonly StyledProperty<PathIcon?> IndicatorIconProperty =
+        AvaloniaProperty.Register<TimelineIndicator, PathIcon?>(nameof(IndicatorIcon));
 
     public static readonly StyledProperty<IBrush?> IndicatorColorProperty =
         AvaloniaProperty.Register<TimelineIndicator, IBrush?>(nameof(IndicatorColor));
 
-    public Icon? IndicatorIcon
+    public PathIcon? IndicatorIcon
     {
         get => GetValue(IndicatorIconProperty);
         set => SetValue(IndicatorIconProperty, value);

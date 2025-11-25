@@ -33,8 +33,8 @@ public class Timeline : ItemsControl,
     public static readonly StyledProperty<bool> IsReverseProperty =
         AvaloniaProperty.Register<Timeline, bool>(nameof(IsReverse), false);
 
-    public static readonly StyledProperty<Icon?> PendingIconProperty =
-        AvaloniaProperty.Register<Timeline, Icon?>(nameof(PendingIcon));
+    public static readonly StyledProperty<PathIcon?> PendingIconProperty =
+        AvaloniaProperty.Register<Timeline, PathIcon?>(nameof(PendingIcon));
 
     public TimeLineMode Mode
     {
@@ -54,7 +54,7 @@ public class Timeline : ItemsControl,
         set => SetValue(IsReverseProperty, value);
     }
 
-    public Icon? PendingIcon
+    public PathIcon? PendingIcon
     {
         get => GetValue(PendingIconProperty);
         set => SetValue(PendingIconProperty, value);
@@ -153,12 +153,16 @@ public class Timeline : ItemsControl,
                 }
             }
 
-            var icon = PendingIcon ?? new LoadingOutlined();
-            icon.LoadingAnimation = IconAnimation.Spin;
+            var pathIcon = PendingIcon ?? new LoadingOutlined();
+            if (pathIcon is Icon icon)
+            {
+                icon.LoadingAnimation = IconAnimation.Spin;
+            }
+      
             var pendingTimelineItem = new TimelineItem()
             {
                 Content       = Pending,
-                IndicatorIcon = icon,
+                IndicatorIcon = pathIcon,
                 IsPending     = true
             };
             _pendingItemReference = new WeakReference<TimelineItem>(pendingTimelineItem);
