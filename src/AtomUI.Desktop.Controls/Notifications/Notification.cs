@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using AtomUI.Controls;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -9,12 +9,12 @@ public class Notification : INotification, INotifyPropertyChanged
     private string _title;
     private object? _content;
     private bool _showProgress;
-    private Icon? _icon;
+    private PathIcon? _icon;
 
     public Notification(string title,
                         object? content,
                         NotificationType type = NotificationType.Information,
-                        Icon? icon = null,
+                        PathIcon? icon = null,
                         TimeSpan? expiration = null,
                         bool showProgress = false,
                         Action? onClick = null,
@@ -58,7 +58,7 @@ public class Notification : INotification, INotifyPropertyChanged
         }
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => _icon;
 

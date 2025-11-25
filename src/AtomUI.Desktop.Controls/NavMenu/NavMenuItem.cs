@@ -803,12 +803,12 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         }
         else if (change.Property == IconProperty)
         {
-            if (change.OldValue is Icon oldIcon)
+            if (change.OldValue is PathIcon)
             {
                 PseudoClasses.Remove(NavMenuItemPseudoClass.Icon);
             }
 
-            if (change.NewValue is Icon newIcon)
+            if (change.NewValue is PathIcon)
             {
                 PseudoClasses.Add(NavMenuItemPseudoClass.Icon);
             }

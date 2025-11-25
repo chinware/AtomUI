@@ -20,8 +20,8 @@ internal class BaseNavMenuItemHeader : TemplatedControl
     public static readonly StyledProperty<IDataTemplate?> HeaderTemplateProperty =
         HeaderedItemsControl.HeaderTemplateProperty.AddOwner<BaseNavMenuItemHeader>();
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<BaseNavMenuItemHeader, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<BaseNavMenuItemHeader, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<BaseNavMenuItemHeader>();
@@ -57,7 +57,7 @@ internal class BaseNavMenuItemHeader : TemplatedControl
         set => SetValue(HeaderTemplateProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

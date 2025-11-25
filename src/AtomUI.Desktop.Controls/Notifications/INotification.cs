@@ -1,4 +1,4 @@
-﻿using AtomUI.Controls;
+﻿using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -17,7 +17,7 @@ public interface INotification
    /// <summary>
    /// 自定义图标
    /// </summary>
-   Icon? Icon { get; }
+   PathIcon? Icon { get; }
 
    /// <summary>
    /// Gets the <see cref="NotificationType" /> of the notification.

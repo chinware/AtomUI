@@ -47,8 +47,8 @@ public class NotificationCard : ContentControl,
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<NotificationCard, string>(nameof(Title));
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<NotificationCard, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<NotificationCard, PathIcon?>(nameof(Icon));
     
     public static readonly StyledProperty<TimeSpan?> ExpirationProperty =
         AvaloniaProperty.Register<NotificationCard, TimeSpan?>(nameof(Expiration));
@@ -83,7 +83,7 @@ public class NotificationCard : ContentControl,
         set => SetValue(TitleProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
