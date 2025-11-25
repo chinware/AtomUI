@@ -28,8 +28,8 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<IBrush?> HeaderTitleColorProperty =
         AvaloniaProperty.Register<GroupBox, IBrush?>(nameof(HeaderTitleColor));
 
-    public static readonly StyledProperty<Icon?> HeaderIconProperty =
-        AvaloniaProperty.Register<GroupBox, Icon?>(nameof(HeaderIcon));
+    public static readonly StyledProperty<PathIcon?> HeaderIconProperty =
+        AvaloniaProperty.Register<GroupBox, PathIcon?>(nameof(HeaderIcon));
 
     public static readonly StyledProperty<GroupBoxTitlePosition> HeaderTitlePositionProperty =
         AvaloniaProperty.Register<GroupBox, GroupBoxTitlePosition>(nameof(HeaderTitlePosition));
@@ -55,7 +55,7 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
         set => SetValue(HeaderTitleColorProperty, value);
     }
 
-    public Icon? HeaderIcon
+    public PathIcon? HeaderIcon
     {
         get => GetValue(HeaderIconProperty);
         set => SetValue(HeaderIconProperty, value);
