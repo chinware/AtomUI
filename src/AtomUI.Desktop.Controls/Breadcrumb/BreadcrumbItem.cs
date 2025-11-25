@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -20,8 +19,8 @@ using AvaloniaButton = Avalonia.Controls.Button;
 public class BreadcrumbItem : AvaloniaButton
 {
     #region 公共属性定义
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<BreadcrumbItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<BreadcrumbItem, PathIcon?>(nameof(Icon));
     
     public static readonly StyledProperty<object?> NavigateContextProperty =
         AvaloniaProperty.Register<BreadcrumbItem, object?>(nameof(NavigateContext));
@@ -43,7 +42,7 @@ public class BreadcrumbItem : AvaloniaButton
         set => SetValue(NavigateContextProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
