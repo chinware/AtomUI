@@ -18,7 +18,7 @@ internal class TreeViewItemHeader : ContentControl
     public static readonly StyledProperty<bool> IsExpandedProperty =
         TreeViewItem.IsExpandedProperty.AddOwner<TreeViewItemHeader>();
     
-    public static readonly StyledProperty<Icon?> IconProperty =
+    public static readonly StyledProperty<PathIcon?> IconProperty =
         TreeViewItem.IconProperty.AddOwner<TreeViewItemHeader>();
 
     public static readonly StyledProperty<bool?> IsCheckedProperty =
@@ -27,19 +27,19 @@ internal class TreeViewItemHeader : ContentControl
     public static readonly StyledProperty<bool> IsSelectedProperty =
         TreeViewItem.IsSelectedProperty.AddOwner<TreeViewItemHeader>();
 
-    public static readonly StyledProperty<Icon?> SwitcherExpandIconProperty =
+    public static readonly StyledProperty<PathIcon?> SwitcherExpandIconProperty =
         TreeViewItem.SwitcherExpandIconProperty.AddOwner<TreeViewItemHeader>();
 
-    public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty =
+    public static readonly StyledProperty<PathIcon?> SwitcherCollapseIconProperty =
         TreeViewItem.SwitcherCollapseIconProperty.AddOwner<TreeViewItemHeader>();
 
-    public static readonly StyledProperty<Icon?> SwitcherRotationIconProperty =
+    public static readonly StyledProperty<PathIcon?> SwitcherRotationIconProperty =
         TreeViewItem.SwitcherRotationIconProperty.AddOwner<TreeViewItemHeader>();
 
-    public static readonly StyledProperty<Icon?> SwitcherLoadingIconProperty =
+    public static readonly StyledProperty<PathIcon?> SwitcherLoadingIconProperty =
         TreeViewItem.SwitcherLoadingIconProperty.AddOwner<TreeViewItemHeader>();
 
-    public static readonly StyledProperty<Icon?> SwitcherLeafIconProperty =
+    public static readonly StyledProperty<PathIcon?> SwitcherLeafIconProperty =
         TreeViewItem.SwitcherLeafIconProperty.AddOwner<TreeViewItemHeader>();
 
     public static readonly DirectProperty<TreeViewItemHeader, bool> IsLeafProperty =
@@ -62,37 +62,37 @@ internal class TreeViewItemHeader : ContentControl
         set => SetValue(IsExpandedProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public Icon? SwitcherExpandIcon
+    public PathIcon? SwitcherExpandIcon
     {
         get => GetValue(SwitcherExpandIconProperty);
         set => SetValue(SwitcherExpandIconProperty, value);
     }
 
-    public Icon? SwitcherCollapseIcon
+    public PathIcon? SwitcherCollapseIcon
     {
         get => GetValue(SwitcherCollapseIconProperty);
         set => SetValue(SwitcherCollapseIconProperty, value);
     }
 
-    public Icon? SwitcherRotationIcon
+    public PathIcon? SwitcherRotationIcon
     {
         get => GetValue(SwitcherRotationIconProperty);
         set => SetValue(SwitcherRotationIconProperty, value);
     }
 
-    public Icon? SwitcherLoadingIcon
+    public PathIcon? SwitcherLoadingIcon
     {
         get => GetValue(SwitcherLoadingIconProperty);
         set => SetValue(SwitcherLoadingIconProperty, value);
     }
 
-    public Icon? SwitcherLeafIcon
+    public PathIcon? SwitcherLeafIcon
     {
         get => GetValue(SwitcherLeafIconProperty);
         set => SetValue(SwitcherLeafIconProperty, value);

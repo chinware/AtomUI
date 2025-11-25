@@ -24,26 +24,26 @@ using AvaloniaTreeItem = Avalonia.Controls.TreeViewItem;
 public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
 {
     #region 公共属性定义
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<bool?> IsCheckedProperty =
         AvaloniaProperty.Register<TreeViewItem, bool?>(nameof(IsChecked), false);
 
-    public static readonly StyledProperty<Icon?> SwitcherExpandIconProperty =
-        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherExpandIcon));
+    public static readonly StyledProperty<PathIcon?> SwitcherExpandIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherExpandIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherCollapseIconProperty =
-        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherCollapseIcon));
+    public static readonly StyledProperty<PathIcon?> SwitcherCollapseIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherCollapseIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherRotationIconProperty =
-        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
+    public static readonly StyledProperty<PathIcon?> SwitcherRotationIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherRotationIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherLoadingIconProperty =
-        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherRotationIcon));
+    public static readonly StyledProperty<PathIcon?> SwitcherLoadingIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherRotationIcon));
 
-    public static readonly StyledProperty<Icon?> SwitcherLeafIconProperty =
-        AvaloniaProperty.Register<TreeViewItem, Icon?>(nameof(SwitcherLeafIcon));
+    public static readonly StyledProperty<PathIcon?> SwitcherLeafIconProperty =
+        AvaloniaProperty.Register<TreeViewItem, PathIcon?>(nameof(SwitcherLeafIcon));
 
     public static readonly DirectProperty<TreeViewItem, bool> IsLeafProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(nameof(IsLeaf),
@@ -58,37 +58,37 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
     public static readonly StyledProperty<bool> IsIndicatorEnabledProperty =
         AvaloniaProperty.Register<TreeViewItem, bool>(nameof(IsIndicatorEnabled), true);
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public Icon? SwitcherExpandIcon
+    public PathIcon? SwitcherExpandIcon
     {
         get => GetValue(SwitcherExpandIconProperty);
         set => SetValue(SwitcherExpandIconProperty, value);
     }
 
-    public Icon? SwitcherCollapseIcon
+    public PathIcon? SwitcherCollapseIcon
     {
         get => GetValue(SwitcherCollapseIconProperty);
         set => SetValue(SwitcherCollapseIconProperty, value);
     }
 
-    public Icon? SwitcherRotationIcon
+    public PathIcon? SwitcherRotationIcon
     {
         get => GetValue(SwitcherRotationIconProperty);
         set => SetValue(SwitcherRotationIconProperty, value);
     }
 
-    public Icon? SwitcherLoadingIcon
+    public PathIcon? SwitcherLoadingIcon
     {
         get => GetValue(SwitcherLoadingIconProperty);
         set => SetValue(SwitcherLoadingIconProperty, value);
     }
 
-    public Icon? SwitcherLeafIcon
+    public PathIcon? SwitcherLeafIcon
     {
         get => GetValue(SwitcherLeafIconProperty);
         set => SetValue(SwitcherLeafIconProperty, value);

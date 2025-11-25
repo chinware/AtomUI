@@ -51,8 +51,8 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     public static readonly StyledProperty<object?> CommandParameterProperty =
         Button.CommandParameterProperty.AddOwner<NavMenuItem>();
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<NavMenuItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<NavMenuItem, PathIcon?>(nameof(Icon));
     
     public static readonly StyledProperty<KeyGesture?> InputGestureProperty =
         AvaloniaProperty.Register<NavMenuItem, KeyGesture?>(nameof(InputGesture));
@@ -95,7 +95,7 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetValue(CommandParameterProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

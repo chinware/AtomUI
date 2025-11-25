@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -11,7 +12,7 @@ public record NavMenuItemData : INavMenuItemData
     public ITreeNode<INavMenuItemData>? ParentNode { get; internal set; }
     public TreeNodeKey? ItemKey { get; init; }
     public object? Header { get; init; }
-    public Icon? Icon { get; init; }
+    public PathIcon? Icon { get; init; }
     public bool IsEnabled { get; init; } = true;
 
     private IList<INavMenuItemData> _children = [];

@@ -20,8 +20,8 @@ internal class ListItem : ContentControl, ISelectable
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<ListItem>();
     
-    public static readonly StyledProperty<Icon?> SelectedIndicatorProperty =
-        AvaloniaProperty.Register<List, Icon?>(nameof(SelectedIndicator));
+    public static readonly StyledProperty<PathIcon?> SelectedIndicatorProperty =
+        AvaloniaProperty.Register<List, PathIcon?>(nameof(SelectedIndicator));
     
     public bool IsSelected
     {
@@ -29,7 +29,7 @@ internal class ListItem : ContentControl, ISelectable
         set => SetValue(IsSelectedProperty, value);
     }
 
-    public Icon? SelectedIndicator
+    public PathIcon? SelectedIndicator
     {
         get => GetValue(SelectedIndicatorProperty);
         set => SetValue(SelectedIndicatorProperty, value);

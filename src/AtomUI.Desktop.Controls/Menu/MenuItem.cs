@@ -25,7 +25,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 {
     #region 公共属性定义
     
-    public new static readonly StyledProperty<Icon?> IconProperty = AvaloniaProperty.Register<MenuItem, Icon?>(nameof (Icon));
+    public new static readonly StyledProperty<PathIcon?> IconProperty = AvaloniaProperty.Register<MenuItem, PathIcon?>(nameof (Icon));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
@@ -39,7 +39,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         set => SetValue(SizeTypeProperty, value);
     }
     
-    public new Icon? Icon
+    public new PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

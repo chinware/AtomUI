@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using Avalonia.Controls;
 using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
@@ -13,7 +14,7 @@ public class MenuItemData : IMenuItemData
     public ITreeNode<IMenuItemData>? ParentNode { get; internal set; }
     public TreeNodeKey? ItemKey { get; init; }
     public object? Header { get; init; }
-    public Icon? Icon { get; init; }
+    public PathIcon? Icon { get; init; }
     public bool IsEnabled { get; init; } = true;
     public KeyGesture? InputGesture { get; init; }
     

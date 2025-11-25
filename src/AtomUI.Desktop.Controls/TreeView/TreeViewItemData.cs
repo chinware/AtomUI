@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -7,7 +8,7 @@ public record TreeViewItemData : ITreeViewItemData
     public ITreeNode<ITreeViewItemData>? ParentNode { get; internal set; }
     public TreeNodeKey? ItemKey { get; init; }
     public object? Header { get; init; }
-    public Icon? Icon { get; init; }
+    public PathIcon? Icon { get; init; }
     public bool IsEnabled { get; init; } = true;
     public bool? IsChecked { get; init; } = false;
     public bool IsSelected { get; init; }
