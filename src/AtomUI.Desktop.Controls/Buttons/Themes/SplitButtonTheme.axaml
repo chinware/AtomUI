@@ -16,8 +16,7 @@
                                  IsDanger="{TemplateBinding IsDanger}"
                                  ButtonType="{TemplateBinding EffectiveButtonType}"
                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                 IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
-                                 />
+                                 IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"/>
                     <atom:Button Name="{x:Static atom:SplitButtonThemeConstants.SecondaryButtonPart}"
                                  SizeType="{TemplateBinding SizeType}"
                                  Icon="{TemplateBinding FlyoutButtonIcon}"

@@ -1,6 +1,5 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -37,8 +36,8 @@ public class HyperLinkButton : AvaloniaButton,
     public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<HyperLinkButton>();
 
-    public static readonly StyledProperty<Icon?> IconProperty = 
-        AvaloniaProperty.Register<HyperLinkButton, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty = 
+        AvaloniaProperty.Register<HyperLinkButton, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<HyperLinkButton>();
@@ -77,7 +76,7 @@ public class HyperLinkButton : AvaloniaButton,
         set => SetValue(SizeTypeProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

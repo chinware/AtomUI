@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,11 +12,11 @@ public class ToggleIconButton : ToggleButton,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> CheckedIconProperty =
-        AvaloniaProperty.Register<ToggleIconButton, Icon?>(nameof(CheckedIcon));
+    public static readonly StyledProperty<PathIcon?> CheckedIconProperty =
+        AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(CheckedIcon));
 
-    public static readonly StyledProperty<Icon?> UnCheckedIconProperty =
-        AvaloniaProperty.Register<ToggleIconButton, Icon?>(nameof(UnCheckedIcon));
+    public static readonly StyledProperty<PathIcon?> UnCheckedIconProperty =
+        AvaloniaProperty.Register<ToggleIconButton, PathIcon?>(nameof(UnCheckedIcon));
 
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconWidth));
@@ -41,13 +40,13 @@ public class ToggleIconButton : ToggleButton,
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(DisabledIconBrush));
 
-    public Icon? CheckedIcon
+    public PathIcon? CheckedIcon
     {
         get => GetValue(CheckedIconProperty);
         set => SetValue(CheckedIconProperty, value);
     }
 
-    public Icon? UnCheckedIcon
+    public PathIcon? UnCheckedIcon
     {
         get => GetValue(UnCheckedIconProperty);
         set => SetValue(UnCheckedIconProperty, value);

@@ -82,11 +82,11 @@ public class SplitButton : ContentControl,
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<Icon?> IconProperty =
+    public static readonly StyledProperty<PathIcon?> IconProperty =
         Button.IconProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<Icon?> FlyoutButtonIconProperty =
-        AvaloniaProperty.Register<SplitButton, Icon?>(nameof(FlyoutButtonIcon));
+    public static readonly StyledProperty<PathIcon?> FlyoutButtonIconProperty =
+        AvaloniaProperty.Register<SplitButton, PathIcon?>(nameof(FlyoutButtonIcon));
 
     public static readonly StyledProperty<bool> IsDangerProperty =
         Button.IsDangerProperty.AddOwner<SplitButton>();
@@ -205,13 +205,13 @@ public class SplitButton : ContentControl,
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public Icon? FlyoutButtonIcon
+    public PathIcon? FlyoutButtonIcon
     {
         get => GetValue(FlyoutButtonIconProperty);
         set => SetValue(FlyoutButtonIconProperty, value);
