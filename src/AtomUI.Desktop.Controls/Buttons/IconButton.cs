@@ -32,6 +32,10 @@ public class IconButton : AvaloniaButton,
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         IconControl.LoadingAnimationDurationProperty.AddOwner<IconButton>();
     
+    public static readonly StyledProperty<IBrush?> IconBrushProperty =
+        AvaloniaProperty.Register<IconButton, IBrush?>(
+            nameof(IconBrush));
+    
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
             nameof(NormalIconBrush));
@@ -109,6 +113,12 @@ public class IconButton : AvaloniaButton,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
+    public IBrush? IconBrush
+    {
+        get => GetValue(IconBrushProperty);
+        set => SetValue(IconBrushProperty, value);
     }
     
     public IBrush? NormalIconBrush

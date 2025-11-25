@@ -16,16 +16,16 @@
                         <Panel IsVisible="{TemplateBinding IsShowIcon}"
                                DockPanel.Dock="Left">
                             <antdicons:CheckCircleFilled Name="SuccessIcon"
-                                                         NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}"
+                                                         Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}"
                                                          IsVisible="False"/>
                             <antdicons:InfoCircleFilled Name="InfoIcon"
-                                                        NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"
+                                                        Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"
                                                         IsVisible="False"/>
                             <antdicons:ExclamationCircleFilled Name="WarningIcon"
-                                                               NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}"
+                                                               Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}"
                                                                IsVisible="False"/>
                             <antdicons:CloseCircleFilled Name="ErrorIcon"
-                                                         NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}"
+                                                         Foreground="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}"
                                                          IsVisible="False"/>
                         </Panel>
                         
@@ -149,10 +149,6 @@
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:AlertTokenKey.ExtraElementMargin}}" />
-            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
-            <Setter Property="SelectedIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
         </Style>
 
         <Style Selector="^[Type=Success]">

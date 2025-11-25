@@ -24,11 +24,7 @@
                     LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
                     Width="{TemplateBinding IconWidth}"
                     Height="{TemplateBinding IconHeight}"
-                    IconMode="{TemplateBinding IconMode}"
-                    NormalFilledBrush="{TemplateBinding NormalIconBrush}"
-                    ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
-                    SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"
-                    DisabledFilledBrush="{TemplateBinding DisabledIconBrush}" />
+                    Foreground="{TemplateBinding IconBrush}" />
             </Border>
         </ControlTemplate>
     </Setter>
@@ -42,8 +38,6 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
-        <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
-        <Setter Property="DisabledIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         
         <Style Selector="^[IsEnableHoverEffect=True]">
             <Style Selector="^:pointerover">
@@ -57,26 +51,22 @@
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-            <Setter Property="IconMode" Value="Normal" />
-        </Style>
+        <Setter Property="IconBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
 
         <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconMode" Value="Active" />
-            </Style>
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
         </Style>
 
         <Style Selector="^:pressed">
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconMode" Value="Selected" />
-            </Style>
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconMode" Value="Disabled" />
-            </Style>
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
     </Style>
 
