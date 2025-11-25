@@ -292,7 +292,7 @@ public class ButtonSpinner : Spinner,
     {
         _addOnBindingDisposables?.Dispose();
         _addOnBindingDisposables = new CompositeDisposable();
-        if (LeftAddOn is Icon leftAddOnIcon)
+        if (LeftAddOn is PathIcon leftAddOnIcon)
         {
             var iconPresenter = new SizeTypeAwareIconPresenter()
             {
@@ -301,7 +301,7 @@ public class ButtonSpinner : Spinner,
             _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             LeftAddOn = iconPresenter;
         }
-        if (InnerLeftContent is Icon innerLeftContent)
+        if (InnerLeftContent is PathIcon innerLeftContent)
         {
             var iconPresenter = new SizeTypeAwareIconPresenter()
             {
@@ -310,7 +310,7 @@ public class ButtonSpinner : Spinner,
             _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             InnerLeftContent = iconPresenter;
         }
-        if (RightAddOn is Icon rightAddOnIcon)
+        if (RightAddOn is PathIcon rightAddOnIcon)
         {
             var iconPresenter = new SizeTypeAwareIconPresenter()
             {
@@ -319,7 +319,7 @@ public class ButtonSpinner : Spinner,
             _addOnBindingDisposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, iconPresenter, SizeTypeProperty));
             RightAddOn = iconPresenter;
         }
-        if (InnerRightContent is Icon innerRightContent)
+        if (InnerRightContent is PathIcon innerRightContent)
         {
             var iconPresenter = new SizeTypeAwareIconPresenter()
             {
@@ -458,5 +458,4 @@ public class ButtonSpinner : Spinner,
             OnSpin(new SpinEventArgs(SpinEvent, direction));
         }
     }
-
 }

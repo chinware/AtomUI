@@ -7,6 +7,8 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
+using IconControl = Icon;
+
 internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
 {
     #region 公共属性定义
@@ -14,32 +16,32 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<SizeTypeAwareIconPresenter, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<SizeTypeAwareIconPresenter, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
-        Icon.LoadingAnimationProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.LoadingAnimationProperty.AddOwner<SizeTypeAwareIconPresenter>();
 
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
-        Icon.LoadingAnimationDurationProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.LoadingAnimationDurationProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
-        Icon.NormalFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.NormalFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<IBrush?> ActiveFilledBrushProperty =
-        Icon.ActiveFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.ActiveFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<IBrush?> SelectedFilledBrushProperty =
-        Icon.SelectedFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.SelectedFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
-        Icon.DisabledFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.DisabledFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
-        Icon.PrimaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.PrimaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
 
     public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
-        Icon.SecondaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.SecondaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
 
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, double>(nameof(IconWidth), double.NaN);
@@ -48,7 +50,7 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, double>(nameof(IconHeight), double.NaN);
     
     public static readonly StyledProperty<IconMode> IconModeProperty =
-        Icon.IconModeProperty.AddOwner<SizeTypeAwareIconPresenter>();
+        IconControl.IconModeProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public SizeType SizeType
     {
@@ -57,7 +59,7 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     }
     
     [Content]
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
