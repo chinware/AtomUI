@@ -27,11 +27,11 @@ public class TabStripItem : AvaloniaTabStripItem
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<TabStripItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(Icon));
 
-    public static readonly StyledProperty<Icon?> CloseIconProperty =
-        AvaloniaProperty.Register<TabStripItem, Icon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
+        AvaloniaProperty.Register<TabStripItem, PathIcon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsClosable));
@@ -43,13 +43,13 @@ public class TabStripItem : AvaloniaTabStripItem
         AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), 
             o => o.TabStripPlacement);
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public Icon? CloseIcon
+    public PathIcon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);

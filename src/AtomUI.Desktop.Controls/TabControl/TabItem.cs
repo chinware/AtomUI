@@ -30,11 +30,11 @@ public class TabItem : HeaderedContentControl, ISelectable
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<TabItem>();
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<TabItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<TabItem, PathIcon?>(nameof(Icon));
 
-    public static readonly StyledProperty<Icon?> CloseIconProperty =
-        AvaloniaProperty.Register<TabItem, Icon?>(nameof(CloseIcon));
+    public static readonly StyledProperty<PathIcon?> CloseIconProperty =
+        AvaloniaProperty.Register<TabItem, PathIcon?>(nameof(CloseIcon));
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(IsClosable));
@@ -54,13 +54,13 @@ public class TabItem : HeaderedContentControl, ISelectable
         set => SetValue(IsSelectedProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
 
-    public Icon? CloseIcon
+    public PathIcon? CloseIcon
     {
         get => GetValue(CloseIconProperty);
         set => SetValue(CloseIconProperty, value);
