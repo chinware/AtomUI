@@ -18,10 +18,10 @@ public class SegmentedItem : ContentControl, ISelectable
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<SegmentedItem>();
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<SegmentedItem, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<SegmentedItem, PathIcon?>(nameof(Icon));
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
