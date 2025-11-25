@@ -40,7 +40,7 @@ internal class PopupConfirmContainer : TemplatedControl,
     public static readonly StyledProperty<IDataTemplate?> ConfirmContentTemplateProperty =
         PopupConfirm.ConfirmContentTemplateProperty.AddOwner<PopupConfirmContainer>();
 
-    public static readonly StyledProperty<Icon?> IconProperty =
+    public static readonly StyledProperty<PathIcon?> IconProperty =
         PopupConfirm.IconProperty.AddOwner<PopupConfirmContainer>();
 
     public static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty =
@@ -89,7 +89,7 @@ internal class PopupConfirmContainer : TemplatedControl,
         set => SetValue(ConfirmContentTemplateProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

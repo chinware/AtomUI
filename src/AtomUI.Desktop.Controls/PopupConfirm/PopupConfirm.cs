@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls;
-using AtomUI.Theme;
+﻿using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -42,8 +41,8 @@ public class PopupConfirm : FlyoutHost,
     public static readonly StyledProperty<IDataTemplate?> ConfirmContentTemplateProperty =
         AvaloniaProperty.Register<PopupConfirm, IDataTemplate?>(nameof(ConfirmContentTemplate));
 
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<PopupConfirm, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<PopupConfirm, PathIcon?>(nameof(Icon));
 
     public static readonly StyledProperty<PopupConfirmStatus> ConfirmStatusProperty =
         AvaloniaProperty.Register<PopupConfirm, PopupConfirmStatus>(nameof(ConfirmStatus),
@@ -101,7 +100,7 @@ public class PopupConfirm : FlyoutHost,
         set => SetValue(ConfirmContentTemplateProperty, value);
     }
 
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

@@ -78,11 +78,11 @@ public abstract class AbstractProgressBar : RangeBase,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractProgressBar>();
     
-    public static readonly StyledProperty<Icon?> ExceptionCompletedIconProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, Icon?>(nameof(ExceptionCompletedIcon));
+    public static readonly StyledProperty<PathIcon?> ExceptionCompletedIconProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, PathIcon?>(nameof(ExceptionCompletedIcon));
     
-    public static readonly StyledProperty<Icon?> SuccessCompletedIconProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, Icon?>(nameof(SuccessCompletedIcon));
+    public static readonly StyledProperty<PathIcon?> SuccessCompletedIconProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, PathIcon?>(nameof(SuccessCompletedIcon));
 
     /// <summary>
     /// Gets or sets a value indicating whether the progress bar shows the actual value or a generic,
@@ -181,13 +181,13 @@ public abstract class AbstractProgressBar : RangeBase,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public Icon? ExceptionCompletedIcon
+    public PathIcon? ExceptionCompletedIcon
     {
         get => GetValue(ExceptionCompletedIconProperty);
         set => SetValue(ExceptionCompletedIconProperty, value);
     }
 
-    public Icon? SuccessCompletedIcon
+    public PathIcon? SuccessCompletedIcon
     {
         get => GetValue(SuccessCompletedIconProperty);
         set => SetValue(SuccessCompletedIconProperty, value);

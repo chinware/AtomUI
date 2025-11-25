@@ -85,7 +85,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     }
     
     private protected Rectangle? RangePickerIndicator;
-    private protected Icon? RangePickerArrow;
+    private protected PathIcon? RangePickerArrow;
     private protected TextBox? SecondaryInfoInputBox;
     private TopLevel? _topLevel;
 
@@ -100,7 +100,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         base.OnApplyTemplate(e);
         SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
         RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
-        RangePickerArrow = e.NameScope.Get<Icon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
+        RangePickerArrow = e.NameScope.Get<PathIcon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
+﻿using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -13,8 +12,8 @@ internal class PickerClearUpButton : TemplatedControl
     public static readonly StyledProperty<bool> IsInClearModeProperty =
         AvaloniaProperty.Register<PickerClearUpButton, bool>(nameof(IsInClearMode));
     
-    public static readonly StyledProperty<Icon?> IconProperty =
-        AvaloniaProperty.Register<PickerClearUpButton, Icon?>(nameof(Icon));
+    public static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<PickerClearUpButton, PathIcon?>(nameof(Icon));
 
     public bool IsInClearMode
     {
@@ -22,7 +21,7 @@ internal class PickerClearUpButton : TemplatedControl
         set => SetValue(IsInClearModeProperty, value);
     }
     
-    public Icon? Icon
+    public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);

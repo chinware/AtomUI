@@ -58,8 +58,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     public static readonly StyledProperty<string?> WatermarkProperty =
         AvaloniaProperty.Register<InfoPickerInput, string?>(nameof(Watermark));
     
-    public static readonly StyledProperty<Icon?> InfoIconProperty =
-        AvaloniaProperty.Register<InfoPickerInput, Icon?>(nameof(InfoIcon));
+    public static readonly StyledProperty<PathIcon?> InfoIconProperty =
+        AvaloniaProperty.Register<InfoPickerInput, PathIcon?>(nameof(InfoIcon));
 
     public static readonly StyledProperty<PlacementMode> PickerPlacementProperty =
         AvaloniaProperty.Register<InfoPickerInput, PlacementMode>(nameof(PickerPlacement),
@@ -159,7 +159,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         set => SetValue(WatermarkProperty, value);
     }
     
-    public Icon? InfoIcon
+    public PathIcon? InfoIcon
     {
         get => GetValue(InfoIconProperty);
         set => SetValue(InfoIconProperty, value);
