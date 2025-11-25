@@ -28,7 +28,7 @@
                           PrivateAssets="all"/>
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <ProjectReference Include="../../src/AtomUI.Core/AtomUI.Core.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Icons.Generator/AtomUI.Icons.Generator.csproj"
                           OutputItemType="Analyzer"

@@ -21,17 +21,17 @@ internal class RangeCalendarItem : CalendarItem
                 childButton.IsSelected = DateTimeHelper.InRange(dateToAdd, rangeStart.Value, rangeEnd.Value);
                 if (childButton.IsSelected)
                 {
-                    if (dateToAdd != rangeStart && dateToAdd != rangeEnd)
-                    {
-                        childButton.IsRangeMiddle = true;
-                    }
-                    else if (DateTimeHelper.CompareDays(dateToAdd, rangeStart.Value) == 0)
+                    if (DateTimeHelper.CompareDays(dateToAdd, rangeStart.Value) == 0)
                     {
                         childButton.IsRangeStart  = true;
                     }
                     else if (DateTimeHelper.CompareDays(dateToAdd, rangeEnd.Value) == 0)
                     {
                         childButton.IsRangeEnd    = true;
+                    }
+                    else
+                    {
+                        childButton.IsRangeMiddle = true;
                     }
                 }
             }

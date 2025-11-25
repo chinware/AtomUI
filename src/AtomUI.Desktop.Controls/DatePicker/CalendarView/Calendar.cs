@@ -1456,10 +1456,9 @@ internal class Calendar : TemplatedControl
             {
                 if (monthView.Children[i] is CalendarDayButton b)
                 {
-                    var d = b.DataContext as DateTime?;
-                    if (d.HasValue)
+                    if (b.DataContext is DateTime d)
                     {
-                        b.IsSelected = SelectedDate.HasValue && DateTimeHelper.CompareDays(SelectedDate.Value, d.Value) == 0;
+                        b.IsSelected = SelectedDate.HasValue && DateTimeHelper.CompareDays(SelectedDate.Value, d) == 0;
 
                         if (b.IsSelected)
                         {
@@ -1501,4 +1500,5 @@ internal class Calendar : TemplatedControl
             }
         }
     }
+    
 }

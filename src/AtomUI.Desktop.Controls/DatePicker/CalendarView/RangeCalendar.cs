@@ -83,31 +83,30 @@ internal class RangeCalendar : Calendar
         {
             if (targetMonthView.Children[i] is CalendarDayButton dayButton)
             {
-                var d = dayButton.DataContext as DateTime?;
-                if (d.HasValue)
+                if (dayButton.DataContext is DateTime d)
                 {
                     if (rangeStart is not null && rangeEnd is not null)
                     {
-                        dayButton.IsSelected    = DateTimeHelper.InRange(d.Value, rangeStart.Value, rangeEnd.Value);
+                        dayButton.IsSelected    = DateTimeHelper.InRange(d, rangeStart.Value, rangeEnd.Value);
                         if (dayButton.IsSelected)
                         {
-                            if (d.Value != rangeStart && d.Value != rangeEnd)
-                            {
-                                dayButton.IsRangeMiddle = true;
-                                dayButton.IsRangeStart  = false;
-                                dayButton.IsRangeEnd    = false;
-                            }
-                            else if (DateTimeHelper.CompareDays(d.Value, rangeStart.Value) == 0)
+                            if (DateTimeHelper.CompareDays(d, rangeStart.Value) == 0)
                             {
                                 dayButton.IsRangeStart  = true;
                                 dayButton.IsRangeMiddle = false;
                                 dayButton.IsRangeEnd    = false;
                             }
-                            else if (DateTimeHelper.CompareDays(d.Value, rangeEnd.Value) == 0)
+                            else if (DateTimeHelper.CompareDays(d, rangeEnd.Value) == 0)
                             {
                                 dayButton.IsRangeEnd    = true;
                                 dayButton.IsRangeStart  = false;
                                 dayButton.IsRangeMiddle = false;
+                            }
+                            else
+                            {
+                                dayButton.IsRangeMiddle = true;
+                                dayButton.IsRangeStart  = false;
+                                dayButton.IsRangeEnd    = false;
                             }
                         }
                         else
@@ -118,11 +117,11 @@ internal class RangeCalendar : Calendar
                         }
                     } else if (SelectedDate is not null)
                     {
-                        dayButton.IsSelected = DateTimeHelper.CompareDays(SelectedDate.Value, d.Value) == 0;
+                        dayButton.IsSelected = DateTimeHelper.CompareDays(SelectedDate.Value, d) == 0;
                     }
                     else if (SecondarySelectedDate is not null)
                     {
-                        dayButton.IsSelected = DateTimeHelper.CompareDays(SecondarySelectedDate.Value, d.Value) == 0;
+                        dayButton.IsSelected = DateTimeHelper.CompareDays(SecondarySelectedDate.Value, d) == 0;
                     }
                     else
                     {

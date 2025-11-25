@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -116,11 +115,7 @@ internal sealed class CalendarDayButton : AvaloniaButton
     private bool _isSelected;
     private bool _isToday;
     
-    /// <summary>
-    /// Initializes a new instance of the
-    /// <see cref="T:Avalonia.Controls.Primitives.CalendarDayButton" />
-    /// class.
-    /// </summary>
+    
     public CalendarDayButton()
     {
         //Focusable = false;

@@ -29,6 +29,18 @@
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0-beta1.24219.2"/>
     </ItemGroup>
 
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PackageVersion Include="AtomUI.Core" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Fonts.AlibabaSans" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Controls.Shared" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Generator" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Icons.Generator" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Icons.AntDesign" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Desktop.Controls" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Desktop.Controls.ColorPicker" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Desktop.Controls.DataGrid" Version="$(AtomUIVersion)"/>
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageVersion Include="AtomUI.Native" Version="$(AtomUINativeVersion)"/>
     </ItemGroup>

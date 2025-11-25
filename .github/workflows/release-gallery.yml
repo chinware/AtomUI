@@ -73,7 +73,7 @@ jobs:
          -  name: Build DMG for osx-x64
             shell: pwsh
             run: |
-               $galleryScriptsPath = "${{ env.SourceDir }}/srccontrolgallery/AtomUIGallery.Desktop/scripts"
+               $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/osx-x64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
@@ -148,7 +148,7 @@ jobs:
          -  name: Build DMG for osx-arm64
             shell: pwsh
             run: |
-               $galleryScriptsPath = "${{ env.SourceDir }}/src/controlgallery/AtomUIGallery.Desktop/scripts"
+               $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/osx-arm64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
@@ -227,7 +227,7 @@ jobs:
          -  name: Build AppImage for linux-x64
             shell: pwsh
             run: |
-               $galleryScriptsPath = "${{ env.SourceDir }}/src/controlgallery/AtomUIGallery.Desktop/scripts"
+               $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/linux-x64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
@@ -307,7 +307,7 @@ jobs:
          -  name: Build AppImage for linux-arm64
             shell: pwsh
             run: |
-               $galleryScriptsPath = "${{ env.SourceDir }}/src/controlgallery/AtomUIGallery.Desktop/scripts"
+               $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/linux-arm64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
@@ -365,7 +365,7 @@ jobs:
          -  name: Build Zip package for win-x64
             shell: pwsh
             run: |
-               $galleryScriptsPath = "${{ env.SourceDir }}/src/controlgallery/AtomUIGallery.Desktop/scripts"
+               $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/win-x64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
@@ -419,7 +419,7 @@ jobs:
          -  name: Build Zip package for win-arm64
             shell: pwsh
             run: |
-               $galleryScriptsPath = "${{ env.SourceDir }}/src/controlgallery/AtomUIGallery.Desktop/scripts"
+               $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/win-arm64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
