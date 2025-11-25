@@ -525,12 +525,16 @@ public class ToggleSwitch : ToggleButton,
                 _offBindingDisposables = null;
             }
         }
-        if (newContent is Icon newIcon)
+        if (newContent is PathIcon newPathIcon)
         {
             var disposables = new CompositeDisposable(3);
-            disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newIcon, Icon.WidthProperty));
-            disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newIcon, Icon.HeightProperty));
-            disposables.Add(BindUtils.RelayBind(this, ForegroundProperty, newIcon, Icon.NormalFilledBrushProperty));
+            disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newPathIcon, WidthProperty));
+            disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newPathIcon, HeightProperty));
+            disposables.Add(BindUtils.RelayBind(this, ForegroundProperty, newPathIcon, ForegroundProperty));
+            if (newPathIcon is Icon icon)
+            {
+                disposables.Add(BindUtils.RelayBind(this, ForegroundProperty, newPathIcon, Icon.NormalFilledBrushProperty));
+            }
             if (isOnContent)
             {
                 _onBindingDisposables = disposables;
