@@ -29,18 +29,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         IconControl.LoadingAnimationDurationProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
-        IconControl.NormalFilledBrushProperty.AddOwner<IconPresenter>();
-    
-    public static readonly StyledProperty<IBrush?> ActiveFilledBrushProperty =
-        IconControl.ActiveFilledBrushProperty.AddOwner<IconPresenter>();
-    
-    public static readonly StyledProperty<IBrush?> SelectedFilledBrushProperty =
-        IconControl.SelectedFilledBrushProperty.AddOwner<IconPresenter>();
-    
-    public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
-        IconControl.DisabledFilledBrushProperty.AddOwner<IconPresenter>();
-    
     public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
         IconControl.PrimaryFilledBrushProperty.AddOwner<IconPresenter>();
 
@@ -67,30 +55,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     {
         get => GetValue(LoadingAnimationDurationProperty);
         set => SetValue(LoadingAnimationDurationProperty, value);
-    }
-    
-    public IBrush? NormalFilledBrush
-    {
-        get => GetValue(NormalFilledBrushProperty);
-        set => SetValue(NormalFilledBrushProperty, value);
-    }
-
-    public IBrush? ActiveFilledBrush
-    {
-        get => GetValue(ActiveFilledBrushProperty);
-        set => SetValue(ActiveFilledBrushProperty, value);
-    }
-
-    public IBrush? SelectedFilledBrush
-    {
-        get => GetValue(SelectedFilledBrushProperty);
-        set => SetValue(SelectedFilledBrushProperty, value);
-    }
-
-    public IBrush? DisabledFilledBrush
-    {
-        get => GetValue(DisabledFilledBrushProperty);
-        set => SetValue(DisabledFilledBrushProperty, value);
     }
     
     public IBrush? PrimaryFilledBrush

@@ -1,7 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -504,28 +503,59 @@ internal class AddOnDecoratedBox : ContentControl,
                 x.PropertyEquals(StatusProperty, AddOnDecoratedStatus.Warning));
             
             var iconStyle = new Style(x => Selectors.Or(
-                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
                  .OfType<Icon>(),
-                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<Icon>()));
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
+                 .OfType<PathIcon>()));
             
-            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorWarning);
+            iconStyle.Add(ForegroundProperty, SharedTokenKey.ColorWarning);
             warningStyle.Add(iconStyle);
             Styles.Add(warningStyle);
         }
         {
             var errorStyle = new Style(x =>
                 x.PropertyEquals(StatusProperty, AddOnDecoratedStatus.Error));
-            
+               
             var iconStyle = new Style(x => Selectors.Or(
                 x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
                  .OfType<Icon>(),
-                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<Icon>()));
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
+                 .OfType<PathIcon>()));
             
-            iconStyle.Add(Icon.NormalFilledBrushProperty, SharedTokenKey.ColorError);
+            iconStyle.Add(ForegroundProperty, SharedTokenKey.ColorError);
             errorStyle.Add(iconStyle);
             Styles.Add(errorStyle);
+        }
+        {
+            var disabledStyle = new Style(x => x.Class(StdPseudoClass.Disabled));
+            var iconStyle = new Style(x => Selectors.Or(
+                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.LeftAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.LeftAddOnPart).Descendant()
+                 .OfType<PathIcon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.RightAddOnPart).Descendant()
+                 .OfType<Icon>(),
+                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.RightAddOnPart).Descendant()
+                 .OfType<PathIcon>()));
+            iconStyle.Add(ForegroundProperty, SharedTokenKey.ColorTextDisabled);
+            disabledStyle.Add(iconStyle);
+            Styles.Add(disabledStyle);
         }
     }
 }

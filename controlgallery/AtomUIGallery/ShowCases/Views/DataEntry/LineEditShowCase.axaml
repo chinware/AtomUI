@@ -288,10 +288,13 @@
                                  IsEnableClearButton="True"
                                  SizeType="Large" IsEnabled="False">
                     <atom:SearchEdit.InnerRightContent>
-                        <antdicons:AudioOutlined Width="16"
-                                                 Height="16"
-                                                 NormalFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"
-                                                 DisabledFilledBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+                        <antdicons:AudioOutlined Width="16" Height="16" Name="AudioOutlined">
+                            <antdicons:AudioOutlined.Styles>
+                                <Style Selector="atom|Icon#AudioOutlined">
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>
+                                </Style>
+                            </antdicons:AudioOutlined.Styles>
+                        </antdicons:AudioOutlined>
                     </atom:SearchEdit.InnerRightContent>
                 </atom:SearchEdit>
             </StackPanel>

@@ -25,18 +25,6 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         IconControl.LoadingAnimationDurationProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
-        IconControl.NormalFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
-    
-    public static readonly StyledProperty<IBrush?> ActiveFilledBrushProperty =
-        IconControl.ActiveFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
-    
-    public static readonly StyledProperty<IBrush?> SelectedFilledBrushProperty =
-        IconControl.SelectedFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
-    
-    public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
-        IconControl.DisabledFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
-    
     public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
         IconControl.PrimaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
 
@@ -84,30 +72,6 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     {
         get => GetValue(IconHeightProperty);
         set => SetValue(IconHeightProperty, value);
-    }
-    
-    public IBrush? NormalFilledBrush
-    {
-        get => GetValue(NormalFilledBrushProperty);
-        set => SetValue(NormalFilledBrushProperty, value);
-    }
-
-    public IBrush? ActiveFilledBrush
-    {
-        get => GetValue(ActiveFilledBrushProperty);
-        set => SetValue(ActiveFilledBrushProperty, value);
-    }
-
-    public IBrush? SelectedFilledBrush
-    {
-        get => GetValue(SelectedFilledBrushProperty);
-        set => SetValue(SelectedFilledBrushProperty, value);
-    }
-
-    public IBrush? DisabledFilledBrush
-    {
-        get => GetValue(DisabledFilledBrushProperty);
-        set => SetValue(DisabledFilledBrushProperty, value);
     }
     
     public IBrush? PrimaryFilledBrush

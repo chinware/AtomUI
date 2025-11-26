@@ -531,10 +531,6 @@ public class ToggleSwitch : ToggleButton,
             disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newPathIcon, WidthProperty));
             disposables.Add(BindUtils.RelayBind(this, IconSizeProperty, newPathIcon, HeightProperty));
             disposables.Add(BindUtils.RelayBind(this, ForegroundProperty, newPathIcon, ForegroundProperty));
-            if (newPathIcon is Icon icon)
-            {
-                disposables.Add(BindUtils.RelayBind(this, ForegroundProperty, newPathIcon, Icon.NormalFilledBrushProperty));
-            }
             if (isOnContent)
             {
                 _onBindingDisposables = disposables;

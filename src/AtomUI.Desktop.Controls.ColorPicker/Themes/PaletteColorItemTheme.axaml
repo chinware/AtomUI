@@ -59,13 +59,13 @@
         
         <Style Selector="^[IsLightColor=True]">
             <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
-                <Setter Property="NormalFilledBrush" Value="rgba(0, 0, 0, 0.45)" />
+                <Setter Property="Foreground" Value="rgba(0, 0, 0, 0.45)" />
             </Style>
         </Style>
         
         <Style Selector="^[IsLightColor=False]">
             <Style Selector="^ /template/ atom|Icon#PART_CheckedMark">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWhite}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWhite}}" />
             </Style>
         </Style>
 

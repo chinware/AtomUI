@@ -24,23 +24,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         AvaloniaProperty.Register<Icon, IconAnimation>(
             nameof(LoadingAnimation), IconAnimation.None);
 
-    // Fill 和 Outline 支持的颜色
-    public static readonly StyledProperty<IBrush?> NormalFilledBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(NormalFilledBrush));
-
-    public static readonly StyledProperty<IBrush?> ActiveFilledBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(ActiveFilledBrush));
-
-    public static readonly StyledProperty<IBrush?> SelectedFilledBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(SelectedFilledBrush));
-
-    public static readonly StyledProperty<IBrush?> DisabledFilledBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(DisabledFilledBrush));
-
     // TwoTone 类型的颜色
     public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
         AvaloniaProperty.Register<Icon, IBrush?>(
@@ -66,31 +49,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         get => GetValue(IconInfoProperty);
         set => SetValue(IconInfoProperty, value);
     }
-
-    public IBrush? NormalFilledBrush
-    {
-        get => GetValue(NormalFilledBrushProperty);
-        set => SetValue(NormalFilledBrushProperty, value);
-    }
-
-    public IBrush? ActiveFilledBrush
-    {
-        get => GetValue(ActiveFilledBrushProperty);
-        set => SetValue(ActiveFilledBrushProperty, value);
-    }
-
-    public IBrush? SelectedFilledBrush
-    {
-        get => GetValue(SelectedFilledBrushProperty);
-        set => SetValue(SelectedFilledBrushProperty, value);
-    }
-
-    public IBrush? DisabledFilledBrush
-    {
-        get => GetValue(DisabledFilledBrushProperty);
-        set => SetValue(DisabledFilledBrushProperty, value);
-    }
-
+    
     public IBrush? PrimaryFilledBrush
     {
         get => GetValue(PrimaryFilledBrushProperty);

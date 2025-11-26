@@ -51,7 +51,7 @@
                     <atom:SkeletonImage IsActive="{Binding IsSkeletonActive}"/>
                     <atom:SkeletonNode IsActive="{Binding IsSkeletonActive}" Width="160"/>
                     <atom:SkeletonNode IsActive="{Binding IsSkeletonActive}">
-                        <antdicons:DotChartOutlined NormalFilledBrush="#bfbfbf" Width="40" Height="40"/>
+                        <antdicons:DotChartOutlined Foreground="#bfbfbf" Width="40" Height="40"/>
                     </atom:SkeletonNode>
                 </StackPanel>
         

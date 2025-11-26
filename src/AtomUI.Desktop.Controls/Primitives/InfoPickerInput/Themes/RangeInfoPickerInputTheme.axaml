@@ -124,7 +124,7 @@
                     Value="{DynamicResource {x:Static atom:InfoPickerInputTokenKey.RangePickerArrowMargin}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="NormalFilledBrush"
+            <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
         </Style>
 

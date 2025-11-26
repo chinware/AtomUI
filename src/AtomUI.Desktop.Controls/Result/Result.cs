@@ -219,7 +219,6 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
-            iconStyle.Add(IconControl.NormalFilledBrushProperty, ResultTokenKey.ResultInfoIconColor);
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultInfoIconColor);
             infoStyle.Add(iconStyle);
         }
@@ -230,7 +229,6 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
-            iconStyle.Add(IconControl.NormalFilledBrushProperty, ResultTokenKey.ResultSuccessIconColor);
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultSuccessIconColor);
             successStyle.Add(iconStyle);
         }
@@ -241,7 +239,6 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
-            iconStyle.Add(IconControl.NormalFilledBrushProperty, ResultTokenKey.ResultWarningIconColor);
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultWarningIconColor);
             warningStyle.Add(iconStyle);
         }
@@ -252,7 +249,6 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
-            iconStyle.Add(IconControl.NormalFilledBrushProperty, ResultTokenKey.ResultErrorIconColor);
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultErrorIconColor);
             errorStyle.Add(iconStyle);
         }
