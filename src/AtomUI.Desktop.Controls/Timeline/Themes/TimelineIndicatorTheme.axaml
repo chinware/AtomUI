@@ -9,7 +9,7 @@
                 <atom:IconPresenter
                     Name="{x:Static atom:TimelineIndicatorThemeConstants.IconPresenterPart}"
                     Icon="{TemplateBinding IndicatorIcon}"
-                    NormalFilledBrush="{TemplateBinding IndicatorColor}"/>
+                    Foreground="{TemplateBinding IndicatorColor}"/>
             </ControlTemplate>
         </Setter>
         
