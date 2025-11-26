@@ -12,7 +12,7 @@
 
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel Name="RootLayout" LastChildFill="True">
+                <DockPanel Name="RootLayout" LastChildFill="True" ClipToBounds="False">
                     <ContentPresenter
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                         VerticalAlignment="Stretch"
@@ -77,6 +77,7 @@
             </ControlTemplate>
         </Setter>
 
+        <Setter Property="ClipToBounds" Value="False" />
         <Style Selector="^ /template/ Border#PART_ContentFrame">
             <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
         </Style>

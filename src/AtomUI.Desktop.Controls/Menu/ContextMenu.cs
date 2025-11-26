@@ -12,6 +12,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
@@ -36,6 +37,9 @@ public class ContextMenu : AvaloniaContextMenu,
     
     public static readonly StyledProperty<bool> IsUseOverlayLayerProperty = 
         Menu.IsUseOverlayLayerProperty.AddOwner<ContextMenu>();
+    
+    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
+        Popup.MaskShadowsProperty.AddOwner<ContextMenu>();
 
     public SizeType SizeType
     {
@@ -59,6 +63,12 @@ public class ContextMenu : AvaloniaContextMenu,
     {
         get => GetValue(IsUseOverlayLayerProperty);
         set => SetValue(IsUseOverlayLayerProperty, value);
+    }
+    
+    public BoxShadows MaskShadows
+    {
+        get => GetValue(MaskShadowsProperty);
+        set => SetValue(MaskShadowsProperty, value);
     }
     #endregion
 
@@ -111,7 +121,8 @@ public class ContextMenu : AvaloniaContextMenu,
         _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
         _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
 
-        BindUtils.RelayBind(this, IsUseOverlayLayerProperty, _popup, Popup.ShouldUseOverlayLayerProperty);
+        BindUtils.RelayBind(this, IsUseOverlayLayerProperty, _popup, Popup.MaskShadowsProperty);
+        BindUtils.RelayBind(this, MaskShadowsProperty, _popup, Popup.MaskShadowsProperty);
         
         if (_popup is IPopupHostProvider popupHostProvider)
         {

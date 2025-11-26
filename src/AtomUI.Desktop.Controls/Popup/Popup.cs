@@ -693,7 +693,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             opened?.Invoke();
             _openAnimating     = false;
             _motionAwareOpened = true;
-
+        
             if (RequestCloseWhereAnimationCompleted)
             {
                 RequestCloseWhereAnimationCompleted = false;
@@ -730,7 +730,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 _motionAwareOpened  = true;
                 completedFuncCalled = true;
             }
-      
+        
         }, motion.Duration * 1.2);
         
         motion.Run(MotionActor, null, () =>
@@ -742,7 +742,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 opened?.Invoke();
                 _openAnimating     = false;
                 _motionAwareOpened = true;
-
+        
                 if (RequestCloseWhereAnimationCompleted)
                 {
                     RequestCloseWhereAnimationCompleted = false;

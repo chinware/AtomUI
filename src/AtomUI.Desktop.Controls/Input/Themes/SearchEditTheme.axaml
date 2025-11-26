@@ -2,7 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
-    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SearchEdit}" TargetType="atom:SearchEdit">
@@ -90,5 +89,7 @@
                 </atom:SearchEditDecoratedBox>
             </ControlTemplate>
         </Setter>
+        <Setter Property="ClipToBounds" Value="False"/>
+  
     </ControlTheme>
 </ResourceDictionary>

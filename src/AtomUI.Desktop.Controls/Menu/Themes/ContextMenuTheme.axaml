@@ -29,6 +29,7 @@
         <Setter Property="MinWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMinWidth}}" />
         <Setter Property="MaxWidth" Value="{DynamicResource {x:Static atom:MenuTokenKey.MenuPopupMaxWidth}}" />
         <Setter Property="ItemHeight" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemHeight}}" />
+        <Setter Property="MaskShadows" Value="{DynamicResource {x:Static atom:SharedTokenKey.BoxShadowsSecondary}}" />
 
     </ControlTheme>
 </ResourceDictionary>
