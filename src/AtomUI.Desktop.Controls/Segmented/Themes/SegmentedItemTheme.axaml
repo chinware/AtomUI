@@ -29,7 +29,8 @@
         <Style Selector="^[IsEnabled=True]">
             <Setter Property="Cursor" Value="Hand" />
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconMode" Value="Normal" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemColor}}" />
             </Style>
 
             <Style Selector="^:selected">
@@ -39,7 +40,8 @@
                         Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedBg}}" />
 
                 <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                    <Setter Property="IconMode" Value="Selected" />
+                    <Setter Property="Foreground"
+                            Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
                 </Style>
             </Style>
 
@@ -53,7 +55,8 @@
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverBg}}" />
                     <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                        <Setter Property="IconMode" Value="Active" />
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverColor}}" />
                     </Style>
                 </Style>
 
@@ -61,7 +64,8 @@
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemActiveBg}}" />
                     <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                        <Setter Property="IconMode" Value="Selected" />
+                        <Setter Property="Foreground"
+                                Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
                     </Style>
                 </Style>
             </Style>
@@ -106,17 +110,6 @@
                         Value="{DynamicResource {x:Static atom:SegmentedTokenKey.SegmentedItemContentMargin}}" />
             </Style>
         </Style>
-
-        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-            <Setter Property="NormalFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemColor}}" />
-            <Setter Property="ActiveFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverColor}}" />
-            <Setter Property="SelectedFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
-            <Setter Property="DisabledFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-        </Style>
         
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
@@ -148,9 +141,6 @@
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="IconMode" Value="Disabled"/>
-            </Style>
         </Style>
 
     </ControlTheme>
