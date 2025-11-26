@@ -35,34 +35,26 @@
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.CloseIconMargin}}" />
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
-            <Setter Property="DisabledIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemIconMargin}}" />
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
-            <Setter Property="ActiveFilledBrush"
-                    Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
-            <Setter Property="SelectedFilledBrush"
-                    Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
-            <Setter Property="DisabledFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
         </Style>
 
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="IconMode" Value="Active" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
             </Style>
         </Style>
         
         <Style Selector="^:selected">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="IconMode" Value="Selected" />
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
             </Style>
         </Style>
         

@@ -68,18 +68,19 @@
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         
         <Style Selector="^ /template/ atom|IconButton#PART_AddTabButton">
-            <Setter Property="NormalIconBrush"
+            <Setter Property="IconBrush"
                     Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
-            <Setter Property="ActiveIconBrush"
-                    Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
-            <Setter Property="DisabledIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             <Setter Property="IconWidth"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             <Setter Property="IconHeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
             <Setter Property="BorderBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBorderSecondary}}" />
+        </Style>
+                
+        <Style Selector="^ /template/ atom|IconButton#PART_AddTabButton:pointerover">
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
         </Style>
 
         <Style Selector="^[TabStripPlacement=Top]">
