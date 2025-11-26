@@ -29,7 +29,7 @@
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
                     <atom:Button ButtonType="Primary">Primary</atom:Button>
                     <atom:Button>Default</atom:Button>
-              
+
                     <atom:Button ButtonType="Text">Text</atom:Button>
                     <atom:Button ButtonType="Link">Link</atom:Button>
                 </WrapPanel>
@@ -51,8 +51,7 @@
 
         <gallerycontrols:ShowCaseItem
             Title="Size"
-            Description="AtomUI supports three sizes of buttons: small, default and large.
-If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
+            Description="AtomUI supports three sizes of buttons: small, default and large.If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                     <atom:TextBlock VerticalAlignment="Center">Expand direction:</atom:TextBlock>
@@ -104,33 +103,41 @@ If a large or small button is desired, set the size property to either large or 
             Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary" Shape="Circle" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
+                    <atom:Button ButtonType="Primary" Shape="Circle"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Primary" Shape="Round"
                                  Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Default" Shape="Circle" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
-                    <atom:Button ButtonType="Default" Shape="Round" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Default" Shape="Circle"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
+                    <atom:Button ButtonType="Default" Shape="Round"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Text" Shape="Default" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Text" Shape="Default"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
-                    <atom:Button ButtonType="Link" Shape="Default" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Link" Shape="Default"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-                    
-                    <atom:Button ButtonType="Dashed" Shape="Circle" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
-                    <atom:Button ButtonType="Link" Shape="Default" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+
+                    <atom:Button ButtonType="Dashed" Shape="Circle"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
+                    <atom:Button ButtonType="Link" Shape="Default"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary" IsDanger="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                    <atom:Button ButtonType="Primary" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
 
@@ -148,9 +155,11 @@ If a large or small button is desired, set the size property to either large or 
                                  Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
-                    
-                    <atom:Button ButtonType="Dashed" Shape="Circle" IsDanger="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
-                    <atom:Button ButtonType="Dashed" Shape="Default" IsDanger="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+
+                    <atom:Button ButtonType="Dashed" Shape="Circle" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
+                    <atom:Button ButtonType="Dashed" Shape="Default" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Search
                     </atom:Button>
                 </WrapPanel>
@@ -165,7 +174,8 @@ If a large or small button is desired, set the size property to either large or 
                 <WrapPanel>
                     <atom:Button ButtonType="Primary" IsLoading="True">Loading</atom:Button>
                     <atom:Button ButtonType="Primary" SizeType="Small" IsLoading="True">Loading</atom:Button>
-                    <atom:Button ButtonType="Primary" IsLoading="True" Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}" />
+                    <atom:Button ButtonType="Primary" IsLoading="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}" />
                 </WrapPanel>
                 <WrapPanel>
                     <atom:Button ButtonType="Primary" Click="HandleLoadingBtnClick">Click me!</atom:Button>
@@ -254,16 +264,20 @@ If a large or small button is desired, set the size property to either large or 
                         </atom:Button>
                     </WrapPanel>
                     <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                        <atom:Button ButtonType="Primary" IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                        <atom:Button ButtonType="Primary" IsGhost="True"
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                             Primary
                         </atom:Button>
-                        <atom:Button ButtonType="Default" IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                        <atom:Button ButtonType="Default" IsGhost="True"
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                             Default
                         </atom:Button>
-                        <atom:Button ButtonType="Text" IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                        <atom:Button ButtonType="Text" IsGhost="True"
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                             Text
                         </atom:Button>
-                        <atom:Button ButtonType="Link" IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                        <atom:Button ButtonType="Link" IsGhost="True"
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                             Link
                         </atom:Button>
                         <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True"
@@ -280,90 +294,103 @@ If a large or small button is desired, set the size property to either large or 
             Description="To mark a button as disabled, add the disabled property to the Button.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary">
+                    <atom:Button ButtonType="Primary" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Primary
                     </atom:Button>
-                    <atom:Button ButtonType="Primary" IsEnabled="False">
+                    <atom:Button ButtonType="Primary" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Primary(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Default">
+                    <atom:Button ButtonType="Default" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Default
                     </atom:Button>
-                    <atom:Button ButtonType="Default" IsEnabled="False">
+                    <atom:Button ButtonType="Default" IsEnabled="False" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Default(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Dashed">
+                    <atom:Button ButtonType="Dashed" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Dashed
                     </atom:Button>
-                    <atom:Button ButtonType="Dashed" IsEnabled="False">
+                    <atom:Button ButtonType="Dashed" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Dashed(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Text">
+                    <atom:Button ButtonType="Text" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Text
                     </atom:Button>
-                    <atom:Button ButtonType="Text" IsEnabled="False">
+                    <atom:Button ButtonType="Text" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Text(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Link">
+                    <atom:Button ButtonType="Link" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Link
                     </atom:Button>
-                    <atom:Button ButtonType="Link" IsEnabled="False">
+                    <atom:Button ButtonType="Link" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Link(disabled)
                     </atom:Button>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary" IsDanger="True">
+                    <atom:Button ButtonType="Primary" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Primary
                     </atom:Button>
-                    <atom:Button ButtonType="Primary" IsDanger="True" IsEnabled="False">
+                    <atom:Button ButtonType="Primary" IsDanger="True" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Primary(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Default" IsDanger="True">
+                    <atom:Button ButtonType="Default" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Default
                     </atom:Button>
-                    <atom:Button ButtonType="Default" IsDanger="True" IsEnabled="False">
+                    <atom:Button ButtonType="Default" IsDanger="True" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Default(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Text" IsDanger="True">
+                    <atom:Button ButtonType="Text" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Text
                     </atom:Button>
-                    <atom:Button ButtonType="Text" IsDanger="True" IsEnabled="False">
+                    <atom:Button ButtonType="Text" IsDanger="True" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Text(disabled)
                     </atom:Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Link" IsDanger="True">
+                    <atom:Button ButtonType="Link" IsDanger="True"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Link
                     </atom:Button>
-                    <atom:Button ButtonType="Link" IsDanger="True" IsEnabled="False">
+                    <atom:Button ButtonType="Link" IsDanger="True" IsEnabled="False"
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
                         Danger Link(disabled)
                     </atom:Button>
                 </StackPanel>
-                
+
                 <Border Background="rgb(190, 200, 200)">
-                <StackPanel Orientation="Horizontal">
-                    <atom:Button IsGhost="True">
-                        Ghost
-                    </atom:Button>
-                    <atom:Button IsGhost="True" IsEnabled="False">
-                        Ghost(disabled)
-                    </atom:Button>
-                </StackPanel>
-            </Border>
-                
+                    <StackPanel Orientation="Horizontal">
+                        <atom:Button IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                            Ghost
+                        </atom:Button>
+                        <atom:Button IsGhost="True" IsEnabled="False"
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
+                            Ghost(disabled)
+                        </atom:Button>
+                    </StackPanel>
+                </Border>
+
             </WrapPanel>
         </gallerycontrols:ShowCaseItem>
     </gallerycontrols:ShowCasePanel>

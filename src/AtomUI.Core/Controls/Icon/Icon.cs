@@ -58,9 +58,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         AvaloniaProperty.Register<Icon, TimeSpan>(
             nameof(FillAnimationDuration), TimeSpan.FromMilliseconds(200));
 
-    public static readonly StyledProperty<IconMode> IconModeProperty =
-        AvaloniaProperty.Register<Icon, IconMode>(nameof(IconMode));
-
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
 
@@ -117,16 +114,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         get => GetValue(FillAnimationDurationProperty);
         set => SetValue(FillAnimationDurationProperty, value);
     }
-
-    /// <summary>
-    /// Icon 的模式，只对 Outlined 和 Filled 类型有效
-    /// </summary>
-    public IconMode IconMode
-    {
-        get => GetValue(IconModeProperty);
-        set => SetValue(IconModeProperty, value);
-    }
-
+    
     public IconThemeType ThemeType => IconInfo?.ThemeType ?? IconThemeType.Filled;
 
     public IconAnimation LoadingAnimation

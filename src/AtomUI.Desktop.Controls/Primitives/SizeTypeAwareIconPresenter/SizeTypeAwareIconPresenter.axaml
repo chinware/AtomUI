@@ -17,8 +17,7 @@
                     PrimaryFilledBrush="{TemplateBinding PrimaryFilledBrush}"
                     SecondaryFilledBrush="{TemplateBinding SecondaryFilledBrush}"
                     Width="{TemplateBinding IconWidth}"
-                    Height="{TemplateBinding IconHeight}"
-                    IconMode="{TemplateBinding IconMode}" />
+                    Height="{TemplateBinding IconHeight}"/>
             </ControlTemplate>
         </Setter>
 

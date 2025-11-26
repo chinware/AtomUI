@@ -195,10 +195,6 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
-
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="IconMode" Value="Disabled" />
-            </Style>
         </Style>
     </Style>
 </ControlTheme>

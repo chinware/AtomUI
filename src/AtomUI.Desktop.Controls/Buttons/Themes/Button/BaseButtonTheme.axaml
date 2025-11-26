@@ -138,6 +138,15 @@
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
             </Style>
         </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            </Style>
+        </Style>
 
         <!--  text 和 icon 都存在的情况 -->
         <Style Selector="^[SizeType=Large]">

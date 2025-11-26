@@ -49,9 +49,6 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<double> IconHeightProperty =
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, double>(nameof(IconHeight), double.NaN);
     
-    public static readonly StyledProperty<IconMode> IconModeProperty =
-        IconControl.IconModeProperty.AddOwner<SizeTypeAwareIconPresenter>();
-    
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -123,12 +120,6 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     {
         get => GetValue(SecondaryFilledBrushProperty);
         set => SetValue(SecondaryFilledBrushProperty, value);
-    }
-    
-    public IconMode IconMode
-    {
-        get => GetValue(IconModeProperty);
-        set => SetValue(IconModeProperty, value);
     }
 
     #endregion

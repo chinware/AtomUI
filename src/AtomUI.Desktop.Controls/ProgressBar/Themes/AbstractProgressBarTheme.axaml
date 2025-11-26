@@ -118,10 +118,6 @@
             <Setter Property="StrokeBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-        
-            <Style Selector="^ /template/ atom|IconPresenter">
-                <Setter Property="IconMode" Value="Disabled" />
-            </Style>
         </Style>
     </Style>
 </ControlTheme>

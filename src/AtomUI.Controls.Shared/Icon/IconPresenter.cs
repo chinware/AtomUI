@@ -47,9 +47,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
         IconControl.SecondaryFilledBrushProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IconMode> IconModeProperty =
-        IconControl.IconModeProperty.AddOwner<IconPresenter>();
-    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconPresenter>();
     
@@ -106,12 +103,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     {
         get => GetValue(SecondaryFilledBrushProperty);
         set => SetValue(SecondaryFilledBrushProperty, value);
-    }
-    
-    public IconMode IconMode
-    {
-        get => GetValue(IconModeProperty);
-        set => SetValue(IconModeProperty, value);
     }
     
     public bool IsMotionEnabled
