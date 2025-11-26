@@ -1,36 +1,61 @@
-<ResourceDictionary
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:atom="https://atomui.net"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type atom:ToggleIconButton}" TargetType="atom:ToggleIconButton">
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel Name="{x:Static atom:ToggleIconButtonThemeConstants.RootLayoutPart}">
-                    <atom:IconPresenter
-                        Name="{x:Static atom:ToggleIconButtonThemeConstants.CheckedIconPresenterPart}"
-                        Icon="{TemplateBinding CheckedIcon}"
-                        IsVisible="{TemplateBinding IsChecked}"
-                        Width="{TemplateBinding IconWidth}"
-                        Height="{TemplateBinding IconHeight}"
-                        Foreground="{TemplateBinding IconBrush}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
-                    <atom:IconPresenter
-                        Name="{x:Static atom:ToggleIconButtonThemeConstants.UnCheckedIconPresenterPart}"
-                        Icon="{TemplateBinding UnCheckedIcon}"
-                        Width="{TemplateBinding IconWidth}"
-                        Height="{TemplateBinding IconHeight}"
-                        IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
-                        Foreground="{TemplateBinding IconBrush}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
-                </Panel>
-            </ControlTemplate>
-        </Setter>
-        
+<ControlTheme TargetType="atom:ToggleIconButton"
+              xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Desktop.Controls.Themes.ToggleIconButtonTheme"
+              x:ClassModifier="internal">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:ToggleIconButton">
+            <Panel Name="{x:Static atom:ToggleIconButtonThemeConstants.RootLayoutPart}">
+                <atom:IconPresenter
+                    Name="{x:Static atom:ToggleIconButtonThemeConstants.CheckedIconPresenterPart}"
+                    Icon="{TemplateBinding CheckedIcon}"
+                    IsVisible="{TemplateBinding IsChecked}"
+                    Width="{TemplateBinding IconWidth}"
+                    Height="{TemplateBinding IconHeight}"
+                    Foreground="{TemplateBinding IconBrush}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                <atom:IconPresenter
+                    Name="{x:Static atom:ToggleIconButtonThemeConstants.UnCheckedIconPresenterPart}"
+                    Icon="{TemplateBinding UnCheckedIcon}"
+                    Width="{TemplateBinding IconWidth}"
+                    Height="{TemplateBinding IconHeight}"
+                    IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
+                    Foreground="{TemplateBinding IconBrush}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+    
+    <Style Selector="^:is(atom|ToggleIconButton)">
+        <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Cursor" Value="Hand"/>
-    </ControlTheme>
-</ResourceDictionary>
+        
+        <Setter Property="IconBrush"
+                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="IconBrush"
+                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+    </Style>
+</ControlTheme>

@@ -89,8 +89,6 @@
         <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="DisabledIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
         </Style>
 
         <Style Selector="^[IsExpanded=True]">

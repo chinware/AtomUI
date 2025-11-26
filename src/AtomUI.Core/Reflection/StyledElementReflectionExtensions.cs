@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Reflection;
 
@@ -46,5 +47,20 @@ internal static class StyledElementReflectionExtensions
     public static void SetTemplatedParent(this StyledElement styledElement, AvaloniaObject? templateParent)
     {
         TemplatedParentPropertyInfo.Value.SetValue(styledElement, templateParent);
+    }
+    
+    public static void SetTemplatedParentRecursive(this StyledElement styledElement, AvaloniaObject? templateParent)
+    {
+        SetTemplatedParent(styledElement, templateParent);
+        if (styledElement is Visual visual)
+        {
+            foreach (var child in visual.GetVisualChildren())
+            {
+                if (child is StyledElement styledChild)
+                {
+                    SetTemplatedParentRecursive(styledChild, templateParent);
+                }
+            }
+        }
     }
 }

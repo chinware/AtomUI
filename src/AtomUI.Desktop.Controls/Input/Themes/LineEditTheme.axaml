@@ -1,7 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:antdicons="https://atomui.net/icons/antdesign"
               xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
               TargetType="atom:LineEdit"
               x:Class="AtomUI.Desktop.Controls.Themes.LineEditTheme"
@@ -27,26 +26,13 @@
                 <atom:AddOnDecoratedBox.ContentRightAddOn>
                     <StackPanel Orientation="Horizontal"
                                 Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
-                        <atom:IconButton
+                        <atom:InputClearIconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                            Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
-                            IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                            IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                            NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
-                            ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
-                            SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
                             IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
                             IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}" />
                         <!-- 新增显示密码按钮 -->
-                        <atom:ToggleIconButton
+                        <atom:RevealButton
                             Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider EyeOutlined}"
-                            UnCheckedIcon="{antdicons:AntDesignIconProvider EyeInvisibleOutlined}"
-                            IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                            IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                            NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
-                            ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
-                            SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
                             IsChecked="{Binding RevealPassword, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Mode=TwoWay}"
                             IsVisible="{Binding IsEnableRevealButton, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}" />
                         <ContentPresenter

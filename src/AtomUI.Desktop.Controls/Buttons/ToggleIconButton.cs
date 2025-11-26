@@ -1,4 +1,5 @@
-﻿using AtomUI.Theme;
+﻿using AtomUI.Controls;
+using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +8,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
-public class ToggleIconButton : ToggleButton, IControlSharedTokenResourcesHost
+public class ToggleIconButton : ToggleButton, IControlSharedTokenResourcesHost, IMotionAwareControl
 {
     #region 公共属性定义
 
@@ -42,6 +43,9 @@ public class ToggleIconButton : ToggleButton, IControlSharedTokenResourcesHost
     public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(DisabledIconBrush));
+    
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToggleIconButton>();
 
     public PathIcon? CheckedIcon
     {
@@ -97,10 +101,16 @@ public class ToggleIconButton : ToggleButton, IControlSharedTokenResourcesHost
         set => SetValue(DisabledIconBrushProperty, value);
     }
     
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+    
     #endregion
     
     #region 内部属性定义
-    
+    Control IMotionAwareControl.PropertyBindTarget => this;
     Control IControlSharedTokenResourcesHost.HostControl => this;
     string IControlSharedTokenResourcesHost.TokenId => ButtonToken.ID;
     
@@ -108,9 +118,8 @@ public class ToggleIconButton : ToggleButton, IControlSharedTokenResourcesHost
 
     static ToggleIconButton()
     {
-        AffectsMeasure<ToggleIconButton>(CheckedIconProperty);
-        AffectsMeasure<ToggleIconButton>(UnCheckedIconProperty);
-        AffectsMeasure<ToggleIconButton>(IsCheckedProperty);
+        AffectsMeasure<ToggleIconButton>(CheckedIconProperty, UnCheckedIconProperty, IsCheckedProperty, IconWidthProperty, IconHeightProperty);
+        AffectsRender<ToggleIconButton>(IconBrushProperty);
     }
 
     public ToggleIconButton()

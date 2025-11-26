@@ -1,7 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:antdicons="https://atomui.net/icons/antdesign"
               x:Class="AtomUI.Desktop.Controls.Themes.TextAreaTheme"
               x:ClassModifier="internal"
               TargetType="atom:TextArea">
@@ -35,14 +34,8 @@
                         <atom:TextAreaDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
-                                <atom:IconButton
+                                <atom:InputClearIconButton
                                     Name="{x:Static atom:TextAreaThemeConstants.ClearButtonPart}"
-                                    Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
-                                    IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                    IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                    NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
-                                    ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
-                                    SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
                                     IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
                                     IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:TextArea}}" />
                                 <ContentPresenter
@@ -173,16 +166,6 @@
         <Style Selector="^ /template/ StackPanel#PART_LeftAddOnLayout, ^ /template/ StackPanel#PART_RightAddOnLayout">
             <Setter Property="Spacing"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}" />
-        </Style>
-
-        <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="NormalIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
-            <Setter Property="ActiveIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|TextBlock#TextCountIndicator">

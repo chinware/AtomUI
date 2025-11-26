@@ -187,6 +187,7 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
         _bindingDisposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty, BindingMode.Default, BindingPriority.Template));
         _bindingDisposables.Add(BindUtils.RelayBind(this, WidthProperty, pathIcon, WidthProperty, BindingMode.Default, BindingPriority.Template));
         _bindingDisposables.Add(BindUtils.RelayBind(this, ForegroundProperty, pathIcon, ForegroundProperty, BindingMode.Default, BindingPriority.Template));
+        
         if (pathIcon is Icon icon)
         {
             _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationProperty, icon, IconControl.LoadingAnimationProperty, BindingMode.Default, BindingPriority.Template));

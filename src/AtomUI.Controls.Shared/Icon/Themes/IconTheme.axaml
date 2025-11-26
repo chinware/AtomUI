@@ -21,5 +21,9 @@
         <Setter Property="PrimaryFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
         <Setter Property="SecondaryFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
         <Setter Property="FillAnimationDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />
+        
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

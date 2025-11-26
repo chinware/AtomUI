@@ -30,26 +30,13 @@
                     <atom:SearchEditDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
-                            <atom:IconButton
+                            <atom:InputClearIconButton
                                 Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                                Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
-                                IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
-                                ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
-                                SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
                                 IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}"
                                 IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}" />
                             <!-- 新增显示密码按钮 -->
-                            <atom:ToggleIconButton
+                            <atom:RevealButton
                                 Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                                CheckedIcon="{antdicons:AntDesignIconProvider EyeOutlined}"
-                                UnCheckedIcon="{antdicons:AntDesignIconProvider EyeInvisibleOutlined}"
-                                IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
-                                ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
-                                SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
                                 IsChecked="{Binding RevealPassword, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}, Mode=TwoWay}"
                                 IsVisible="{Binding IsEnableRevealButton, RelativeSource={RelativeSource AncestorType=atom:SearchEdit}}" />
                             <ContentPresenter

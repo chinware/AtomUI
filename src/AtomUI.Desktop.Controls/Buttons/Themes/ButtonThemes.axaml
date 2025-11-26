@@ -7,8 +7,8 @@
         <ResourceInclude Source="Button/ButtonTheme.axaml"/>
         <ResourceInclude Source="DropdownButton/DropdownButtonThemes.axaml"/>
         <ResourceInclude Source="SplitButtonTheme.axaml"/>
-        <ResourceInclude Source="ToggleIconButtonTheme.axaml"/>
         <ResourceInclude Source="HyperLinkButtonTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
     <themes:IconButtonTheme x:Key="{x:Type atom:IconButton}" TargetType="atom:IconButton"/>
+    <themes:ToggleIconButtonTheme x:Key="{x:Type atom:ToggleIconButton}" TargetType="atom:ToggleIconButton"/>
 </ResourceDictionary>

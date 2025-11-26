@@ -5,6 +5,8 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="SearchEditDecoratedBoxTheme.axaml" />
+        <ResourceInclude Source="InputClearIconButtonTheme.axaml" />
+        <ResourceInclude Source="RevealButtonTheme.axaml" />
         <ResourceInclude Source="TextAreaDecoratedBoxTheme.axaml" />
         <ResourceInclude Source="SearchEditTheme.axaml" />
         <ResourceInclude Source="ResizeHandleTheme.axaml" />

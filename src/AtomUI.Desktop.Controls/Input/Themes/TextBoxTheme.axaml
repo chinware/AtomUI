@@ -32,17 +32,16 @@
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnLayoutPart}"
                         Orientation="Horizontal"
                         DockPanel.Dock="Right">
-                        <atom:IconButton
+                        <atom:InputClearIconButton
                             Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                            Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
-                            IsVisible="{TemplateBinding IsEffectiveShowClearButton}" />
+                            IsVisible="{TemplateBinding IsEffectiveShowClearButton}" 
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                         <!-- 新增显示密码按钮 -->
-                        <atom:ToggleIconButton
+                        <atom:RevealButton
                             Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                            CheckedIcon="{antdicons:AntDesignIconProvider EyeOutlined}"
-                            UnCheckedIcon="{antdicons:AntDesignIconProvider EyeInvisibleOutlined}"
                             IsChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
-                            IsVisible="{TemplateBinding IsEnableRevealButton}" />
+                            IsVisible="{TemplateBinding IsEnableRevealButton}" 
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                         <ContentPresenter
                             Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                             VerticalAlignment="Stretch"
@@ -109,15 +108,6 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
     
-        <Style Selector="^ /template/ atom|ToggleIconButton#PART_RevealButton">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="NormalIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-        </Style>
-    
         <Style Selector="^[SizeType=Large]">
             <Setter Property="LineHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.FontHeightLG}}" />
         </Style>
@@ -153,16 +143,6 @@
         <Style Selector="^ /template/ StackPanel#PART_LeftAddOnLayout, ^ /template/ StackPanel#PART_RightAddOnLayout">
             <Setter Property="Spacing"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}" />
-        </Style>
-    
-        <Style Selector="^ /template/ atom|IconButton#PART_ClearButton">
-            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}" />
-            <Setter Property="NormalIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}" />
-            <Setter Property="ActiveIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
         
         <Style Selector="^ /template/ atom|TextBlock#TextCountIndicator">

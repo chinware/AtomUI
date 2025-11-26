@@ -184,7 +184,7 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             if (force || Transitions == null)
             {
                 Transitions = [
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty, TimeSpan.FromMilliseconds(100))
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty, FillAnimationDuration)
                 ];
             }
         }
@@ -220,6 +220,11 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             {
                 ConfigureTransitions(true);
             }
+        }
+
+        if (change.Property == FillAnimationDurationProperty)
+        {
+            ConfigureTransitions(true);
         }
     }
 

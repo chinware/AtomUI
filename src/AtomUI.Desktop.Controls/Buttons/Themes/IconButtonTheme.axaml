@@ -24,7 +24,8 @@
                     LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
                     Width="{TemplateBinding IconWidth}"
                     Height="{TemplateBinding IconHeight}"
-                    Foreground="{TemplateBinding IconBrush}" />
+                    Foreground="{TemplateBinding IconBrush}" 
+                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
             </Border>
         </ControlTemplate>
     </Setter>
