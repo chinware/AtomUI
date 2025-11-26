@@ -7,8 +7,7 @@ using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
-public class ToggleIconButton : ToggleButton,
-                                IControlSharedTokenResourcesHost
+public class ToggleIconButton : ToggleButton, IControlSharedTokenResourcesHost
 {
     #region 公共属性定义
 
@@ -24,6 +23,10 @@ public class ToggleIconButton : ToggleButton,
     public static readonly StyledProperty<double> IconHeightProperty =
         AvaloniaProperty.Register<ToggleIconButton, double>(nameof(IconHeight));
         
+    public static readonly StyledProperty<IBrush?> IconBrushProperty =
+        AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
+            nameof(IconBrush));
+    
     public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
         AvaloniaProperty.Register<ToggleIconButton, IBrush?>(
             nameof(NormalIconBrush));
@@ -64,6 +67,12 @@ public class ToggleIconButton : ToggleButton,
         set => SetValue(IconHeightProperty, value);
     }
 
+    public IBrush? IconBrush
+    {
+        get => GetValue(IconBrushProperty);
+        set => SetValue(IconBrushProperty, value);
+    }
+    
     public IBrush? NormalIconBrush
     {
         get => GetValue(NormalIconBrushProperty);

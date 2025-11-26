@@ -13,10 +13,7 @@
                         IsVisible="{TemplateBinding IsChecked}"
                         Width="{TemplateBinding IconWidth}"
                         Height="{TemplateBinding IconHeight}"
-                        NormalFilledBrush="{TemplateBinding NormalIconBrush}"
-                        ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
-                        SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"
-                        DisabledFilledBrush="{TemplateBinding DisabledIconBrush}"
+                        Foreground="{TemplateBinding IconBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
                     <atom:IconPresenter
@@ -25,10 +22,7 @@
                         Width="{TemplateBinding IconWidth}"
                         Height="{TemplateBinding IconHeight}"
                         IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
-                        NormalFilledBrush="{TemplateBinding NormalIconBrush}"
-                        ActiveFilledBrush="{TemplateBinding ActiveIconBrush}"
-                        SelectedFilledBrush="{TemplateBinding SelectedIconBrush}"
-                        DisabledFilledBrush="{TemplateBinding DisabledIconBrush}"
+                        Foreground="{TemplateBinding IconBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
                 </Panel>
@@ -38,26 +32,5 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Cursor" Value="Hand"/>
-        <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="IconMode" Value="Normal"/>
-        </Style>
-        
-        <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconPresenter">
-                <Setter Property="IconMode" Value="Active"/>
-            </Style>
-        </Style>
-        
-        <Style Selector="^:selected">
-            <Style Selector="^ /template/ atom|IconPresenter">
-                <Setter Property="IconMode" Value="Selected"/>
-            </Style>
-        </Style>
-        
-        <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter">
-                <Setter Property="IconMode" Value="Disabled"/>
-            </Style>
-        </Style>
     </ControlTheme>
 </ResourceDictionary>

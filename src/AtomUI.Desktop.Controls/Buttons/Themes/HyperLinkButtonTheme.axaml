@@ -69,32 +69,59 @@
                 <Setter Property="Padding" Value="{DynamicResource {x:Static atom:ButtonTokenKey.IconOnyPaddingSM}}" />
             </Style>
         </Style>
-
+        
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-            <Setter Property="IconMode" Value="Normal" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
         </Style>
 
         <Style Selector="^:pointerover">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconMode" Value="Active" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
             </Style>
         </Style>
 
         <Style Selector="^:pressed">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconMode" Value="Selected" />
-            </Style>
-        </Style>
-
-        <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconMode" Value="Disabled" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
             </Style>
             <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="IconMode" Value="Disabled" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
             </Style>
         </Style>
 
+        <Style Selector="^:danger">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorHover}}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorHover}}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
+                </Style>
+            </Style>
+        </Style>
+        
         <!--  text 和 icon 都存在的情况 -->
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
@@ -181,28 +208,6 @@
             </Style>
         </Style>
 
-        <!-- icon 的各种颜色 -->
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-            <Setter Property="NormalFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
-            <Setter Property="ActiveFilledBrush"
-                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
-            <Setter Property="SelectedFilledBrush"
-                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
-            <Setter Property="DisabledFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-        </Style>
-        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="NormalFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
-            <Setter Property="ActiveFilledBrush"
-                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
-            <Setter Property="SelectedFilledBrush"
-                    Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
-            <Setter Property="DisabledFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
-        </Style>
-
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
             <Setter Property="IsVisible" Value="True" />
         </Style>
@@ -264,27 +269,6 @@
 
             <Style Selector="^/template/ Border#Frame">
                 <Setter Property="Background" Value="Transparent" />
-            </Style>
-        </Style>
-
-        <!-- icon 的各种颜色 -->
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="atom:Icon.NormalFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLink}}" />
-            <Setter Property="atom:Icon.ActiveFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkHover}}" />
-            <Setter Property="atom:Icon.SelectedFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorLinkActive}}" />
-        </Style>
-
-        <Style Selector="^:danger">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="atom:Icon.NormalFilledBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-                <Setter Property="atom:Icon.ActiveFilledBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorBorderHover}}" />
-                <Setter Property="atom:Icon.SelectedFilledBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorErrorActive}}" />
             </Style>
         </Style>
 
