@@ -13,10 +13,7 @@
                     Padding="{TemplateBinding Padding}"
                     LoadingAnimation="{TemplateBinding LoadingAnimation}"
                     LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
-                    NormalFilledBrush="{TemplateBinding NormalFilledBrush}"
-                    ActiveFilledBrush="{TemplateBinding ActiveFilledBrush}"
-                    SelectedFilledBrush="{TemplateBinding SelectedFilledBrush}"
-                    DisabledFilledBrush="{TemplateBinding DisabledFilledBrush}"
+                    Foreground="{TemplateBinding Foreground}"
                     PrimaryFilledBrush="{TemplateBinding PrimaryFilledBrush}"
                     SecondaryFilledBrush="{TemplateBinding SecondaryFilledBrush}"
                     Width="{TemplateBinding IconWidth}"
@@ -50,7 +47,7 @@
             </Style>
         </Style>
 
-        <Setter Property="NormalFilledBrush"
+        <Setter Property="Foreground"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
         <Setter Property="PrimaryFilledBrush"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />

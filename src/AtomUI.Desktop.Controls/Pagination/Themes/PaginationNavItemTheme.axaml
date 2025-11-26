@@ -37,8 +37,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTransparent}}" />
         <Setter Property="BorderThickness" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderThickness}}" />
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-            <Setter Property="DisabledFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
         
         <Style Selector="^[PaginationItemType=PageIndicator]">
@@ -138,9 +137,6 @@
                         Value="{DynamicResource {x:Static atom:PaginationTokenKey.ItemActiveBgDisabled}}" />
             </Style>
             
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconMode" Value="Disabled" />
-            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>
