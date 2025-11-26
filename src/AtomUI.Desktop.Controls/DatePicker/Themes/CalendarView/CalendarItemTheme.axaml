@@ -121,12 +121,16 @@
         <Style Selector="^ /template/ atom|IconButton">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-            <Setter Property="NormalIconBrush"
+            <Setter Property="IconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDescription}}" />
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-            <Setter Property="SelectedIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
-            <Setter Property="DisabledIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton:pointerover">
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton:pressed">
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
         </Style>
 
         <Style Selector="^ /template/ Grid#PART_MonthView">
