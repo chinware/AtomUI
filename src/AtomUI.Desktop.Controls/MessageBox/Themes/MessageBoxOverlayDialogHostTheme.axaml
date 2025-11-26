@@ -65,7 +65,7 @@
               
         <Style Selector="^[Style=Confirm]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
         
@@ -76,25 +76,25 @@
 
         <Style Selector="^[Style=Information]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfo}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfo}}" />
             </Style>
         </Style>
         
         <Style Selector="^[Style=Success]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
             </Style>
         </Style>
         
         <Style Selector="^[Style=Error]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
             </Style>
         </Style>
         
         <Style Selector="^[Style=Warning]">
             <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
-                <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorWarning}}" />
             </Style>
         </Style>
     </ControlTheme>
