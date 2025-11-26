@@ -17,7 +17,7 @@
                     <atom:IconPresenter Name="IconPresenter"
                                         DockPanel.Dock="Left"
                                         Icon="{TemplateBinding Icon}"
-                                        NormalFilledBrush="{TemplateBinding Foreground}" 
+                                        Foreground="{TemplateBinding Foreground}" 
                                         IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
                                      DockPanel.Dock="Right"
@@ -58,13 +58,13 @@
         </Style>
         <Style Selector="^[IsColorSet=True]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="NormalFilledBrush"
+                <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
         </Style>
         <Style Selector="^[IsPresetColorTag=True]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="NormalFilledBrush"
+                <Setter Property="Foreground"
                         Value="{TemplateBinding Foreground}" />
             </Style>
         </Style>
@@ -74,21 +74,11 @@
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
             <Setter Property="IconHeight"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeXS}}" />
-            <Setter Property="NormalIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-            <Setter Property="ActiveIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
         </Style>
         <Style Selector="^[IsColorSet=True][IsPresetColorTag=False]">
             <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
-                <Setter Property="NormalIconBrush"
+                <Setter Property="Foreground"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
-                <Setter Property="ActiveIconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
-                <Setter Property="SelectedIconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
-                <Setter Property="DisabledIconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>
         </Style>
 
