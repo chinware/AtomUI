@@ -28,7 +28,7 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
                 text = initializer.Value.ToString();
             }
 
-            LanguageInfo.Items.Add(identifier.ToString(), text);
+            LanguageInfo.Items.Add(identifier.ToString()!, text);
         }
     }
 

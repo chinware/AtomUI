@@ -1,7 +1,6 @@
-using System.Text.RegularExpressions;
 using System.Xml;
 
-namespace AtomUI.Icons.Generators;
+namespace AtomUI.Icons.Generator;
 
 internal record PathInfo
 {

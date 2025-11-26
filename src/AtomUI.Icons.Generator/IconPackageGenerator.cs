@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 using System.Text.RegularExpressions;
+using AtomUI.Icons.Generator;
 using Microsoft.CodeAnalysis;
 
 namespace AtomUI.Icons.Generators;
@@ -13,13 +14,13 @@ public class IconPackageGenerator : IIncrementalGenerator
 {
     private readonly SvgParser _svgParser;
     private List<string> _twoToneTplPrimaryColors;
-    private readonly List<string> _twotoneTplSecondaryColors;
+    private readonly List<string> _twoToneTplSecondaryColors;
 
     public IconPackageGenerator()
     {
         _svgParser                 = new SvgParser();
         _twoToneTplPrimaryColors   = ["#333"];
-        _twotoneTplSecondaryColors = [
+        _twoToneTplSecondaryColors = [
             "#E6E6E6",
             "#D9D9D9",
             "#D8D8D8"
@@ -115,7 +116,7 @@ public class IconPackageGenerator : IIncrementalGenerator
                 {
                     var pathInfo = svgParsedInfo.PathInfos[i];
                     var isPrimary = !(pathInfo.FillColor != null &&
-                                      _twotoneTplSecondaryColors.Contains(pathInfo.FillColor));
+                                      _twoToneTplSecondaryColors.Contains(pathInfo.FillColor));
 
                     sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", \"{pathInfo.Transform}\", {isPrimary.ToString().ToLower()})");
                     if (i != svgParsedInfo.PathInfos.Count - 1)

@@ -1,4 +1,4 @@
-namespace AtomUI.Icons.Generators;
+namespace AtomUI.Icons.Generator;
 
 internal record SvgFileInfo
 {
