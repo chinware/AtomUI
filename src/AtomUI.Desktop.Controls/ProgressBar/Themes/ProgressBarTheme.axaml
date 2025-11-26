@@ -13,8 +13,7 @@
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLabel}}" />
         <Setter Property="ColorTextLightSolid"
                 Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
-
-        <!-- BuildPercentPositionStyle begin -->
+        
         <Style Selector="^[ShowProgressInfo=True]">
             <Style Selector="^[Orientation=Horizontal]">
                 <Style Selector="^:labelinner-start">

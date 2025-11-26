@@ -29,14 +29,12 @@
             <Setter Property="GrooveBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.RemainingColor}}" />
             <Setter Property="SuccessStrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
         </Style>
-
-        <!-- BuildInfoLabelStyle begin -->
+        
         <Style Selector="^[IsCompleted=True]">
             <Style Selector="^ /template/ LayoutTransformControl#PART_LayoutTransformControl">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
-        <!-- BuildInfoLabelStyle end -->
         
         <Style Selector="^[Status=Normal]">
             <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.DefaultColor}}" />

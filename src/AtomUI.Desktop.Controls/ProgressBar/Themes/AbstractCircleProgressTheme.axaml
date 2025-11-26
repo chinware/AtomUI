@@ -45,14 +45,15 @@
                 Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.CircleMinimumIconSize}}" />
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_ExceptionCompletedIconPresenter">
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
-            <Setter Property="DisabledFilledBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_SuccessCompletedIconPresenter">
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
-            <Setter Property="DisabledFilledBrush"
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter:disabled">
+            <Setter Property="Foreground"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
         </Style>
 
