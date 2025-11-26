@@ -134,12 +134,6 @@
         <Style Selector="^ /template/ ContentPresenter#InfoFooter">
             <Setter Property="Padding" Value="{DynamicResource {x:Static atom:DrawerTokenKey.FooterPadding}}" />
         </Style>
-
-        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
-            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-            <Setter Property="ActiveIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
-            <Setter Property="SelectedIconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
-        </Style>
+        
     </ControlTheme>
 </ResourceDictionary>
