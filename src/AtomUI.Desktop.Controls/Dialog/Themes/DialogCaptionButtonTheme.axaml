@@ -37,23 +37,25 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadiusSM}}" />
         
         <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="NormalFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-            <Setter Property="ActiveFilledBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
         </Style>
-       
-        <Setter Property="Background" Value="Transparent" />
+        
         <Style Selector="^:pointerover">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextHover}}" />
             <Style Selector="^ /template/ atom|IconPresenter">
-                <Setter Property="IconMode" Value="Active" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
             </Style>
         </Style>
         
         <Style Selector="^:pressed">
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgTextActive}}" />
+            <Style Selector="^ /template/ atom|IconPresenter">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIconHover}}" />
+            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>
