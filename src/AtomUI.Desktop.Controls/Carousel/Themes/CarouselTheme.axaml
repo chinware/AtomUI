@@ -49,8 +49,7 @@
             <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
             <Setter Property="Opacity" Value="0.2"/>
         </Style>
-
-
+        
         <Style Selector="^ /template/ atom|CarouselNavButton">
             <Style Selector="^:pointerover">
                 <Setter Property="Opacity" Value="1.0" />
