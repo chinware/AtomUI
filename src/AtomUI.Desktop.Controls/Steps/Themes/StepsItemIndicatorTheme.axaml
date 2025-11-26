@@ -136,7 +136,7 @@
                     <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitIconColor}}" />
 
                     <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="NormalFilledBrush"
+                        <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.WaitDotColor}}" />
                     </Style>
                 </Style>
@@ -150,7 +150,7 @@
                             Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconColor}}" />
 
                     <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="NormalFilledBrush"
+                        <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessDotColor}}" />
                     </Style>
                 </Style>
@@ -164,12 +164,12 @@
                             Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
 
                     <Style Selector="^ /template/ atom|Icon#FinishedMark">
-                        <Setter Property="NormalFilledBrush"
+                        <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishIconColor}}" />
                     </Style>
 
                     <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="NormalFilledBrush"
+                        <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.FinishDotColor}}" />
                     </Style>
                 </Style>
@@ -182,12 +182,12 @@
                     <Setter Property="Foreground"
                             Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
                     <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                        <Setter Property="NormalFilledBrush"
+                        <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorIconColor}}" />
                     </Style>
 
                     <Style Selector="^ /template/ atom|IconPresenter#CustomIconPresenter">
-                        <Setter Property="NormalFilledBrush"
+                        <Setter Property="Foreground"
                                 Value="{DynamicResource {x:Static atom:StepsTokenKey.ErrorDotColor}}" />
                     </Style>
                 </Style>
@@ -204,7 +204,7 @@
 
                             <Style Selector="^:not(^[Status=Process])">
                                 <Style Selector="^ /template/ atom|Icon#ErrorMark">
-                                    <Setter Property="NormalFilledBrush"
+                                    <Setter Property="Foreground"
                                             Value="{DynamicResource {x:Static atom:StepsTokenKey.ProcessIconBorderColor}}" />
                                 </Style>
                             </Style>
