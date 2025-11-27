@@ -25,6 +25,33 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
         IconControl.LoadingAnimationProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> StrokeBrushProperty =
+        IconControl.StrokeBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> FillBrushProperty =
+        IconControl.FillBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> SecondaryStrokeBrushProperty =
+        IconControl.SecondaryStrokeBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> SecondaryFillBrushProperty =
+        IconControl.SecondaryFillBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> FallbackBrushProperty =
+        IconControl.FallbackBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<double> StrokeWidthProperty =
+        AvaloniaProperty.Register<IconPresenter, double>(
+            nameof(StrokeWidth), 4);
+
+    public static readonly StyledProperty<PenLineCap> StrokeLineCapProperty =
+        AvaloniaProperty.Register<IconPresenter, PenLineCap>(
+            nameof(StrokeLineCap), PenLineCap.Round);
+
+    public static readonly StyledProperty<PenLineJoin> StrokeLineJoinProperty =
+        AvaloniaProperty.Register<IconPresenter, PenLineJoin>(
+            nameof(StrokeLineJoin), PenLineJoin.Round);
 
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         IconControl.LoadingAnimationDurationProperty.AddOwner<IconPresenter>();
@@ -49,6 +76,54 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     {
         get => GetValue(LoadingAnimationProperty);
         set => SetValue(LoadingAnimationProperty, value);
+    }
+    
+    public IBrush? StrokeBrush
+    {
+        get => GetValue(StrokeBrushProperty);
+        set => SetValue(StrokeBrushProperty, value);
+    }
+    
+    public IBrush? FillBrush
+    {
+        get => GetValue(FillBrushProperty);
+        set => SetValue(FillBrushProperty, value);
+    }
+    
+    public IBrush? SecondaryStrokeBrush
+    {
+        get => GetValue(SecondaryStrokeBrushProperty);
+        set => SetValue(SecondaryStrokeBrushProperty, value);
+    }
+    
+    public IBrush? SecondaryFillBrush
+    {
+        get => GetValue(SecondaryFillBrushProperty);
+        set => SetValue(SecondaryFillBrushProperty, value);
+    }
+    
+    public IBrush? FallbackBrush
+    {
+        get => GetValue(FallbackBrushProperty);
+        set => SetValue(FallbackBrushProperty, value);
+    }
+    
+    public double StrokeWidth
+    {
+        get => GetValue(StrokeWidthProperty);
+        set => SetValue(StrokeWidthProperty, value);
+    }
+
+    public PenLineCap StrokeLineCap
+    {
+        get => GetValue(StrokeLineCapProperty);
+        set => SetValue(StrokeLineCapProperty, value);
+    }
+
+    public PenLineJoin StrokeLineJoin
+    {
+        get => GetValue(StrokeLineJoinProperty);
+        set => SetValue(StrokeLineJoinProperty, value);
     }
 
     public TimeSpan LoadingAnimationDuration
@@ -83,8 +158,12 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     
     static IconPresenter()
     {
-        AffectsMeasure<IconPresenter>(IconProperty, PaddingProperty);
-        AffectsRender<IconPresenter>(ForegroundProperty,
+        AffectsMeasure<IconPresenter>(IconProperty);
+        AffectsRender<IconPresenter>(StrokeBrushProperty,
+            FillBrushProperty,
+            SecondaryStrokeBrushProperty,
+            SecondaryFillBrushProperty,
+            FallbackBrushProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
         IconProperty.Changed.AddClassHandler<IconPresenter>((x, e) => x.ChildChanged(e));
@@ -141,8 +220,11 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
         
         _bindingDisposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty, BindingMode.Default, BindingPriority.Template));
         _bindingDisposables.Add(BindUtils.RelayBind(this, WidthProperty, pathIcon, WidthProperty, BindingMode.Default, BindingPriority.Template));
-        _bindingDisposables.Add(BindUtils.RelayBind(this, ForegroundProperty, pathIcon, ForegroundProperty, BindingMode.Default, BindingPriority.Template));
-        
+        _bindingDisposables.Add(BindUtils.RelayBind(this, StrokeBrushProperty, pathIcon, StrokeBrushProperty, BindingMode.Default, BindingPriority.Template));
+        _bindingDisposables.Add(BindUtils.RelayBind(this, FillBrushProperty, pathIcon, FillBrushProperty, BindingMode.Default, BindingPriority.Template));
+        _bindingDisposables.Add(BindUtils.RelayBind(this, SecondaryFillBrushProperty, pathIcon, SecondaryFillBrushProperty, BindingMode.Default, BindingPriority.Template));
+        _bindingDisposables.Add(BindUtils.RelayBind(this, SecondaryStrokeBrushProperty, pathIcon, SecondaryStrokeBrushProperty, BindingMode.Default, BindingPriority.Template));
+        _bindingDisposables.Add(BindUtils.RelayBind(this, FallbackBrushProperty, pathIcon, FallbackBrushProperty, BindingMode.Default, BindingPriority.Template));
         if (pathIcon is Icon icon)
         {
             _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationProperty, icon, IconControl.LoadingAnimationProperty, BindingMode.Default, BindingPriority.Template));
@@ -150,7 +232,7 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
                 IconControl.LoadingAnimationDurationProperty, BindingMode.Default, BindingPriority.Template));
             _bindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, IsMotionEnabledProperty));
         
-            if (icon.ThemeType == IconThemeType.TwoTone)
+            if (icon.IconTheme == IconThemeType.TwoTone)
             {
                 _bindingDisposables.Add(BindUtils.RelayBind(this, PrimaryFilledBrushProperty, icon, IconControl.PrimaryFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
                 _bindingDisposables.Add(BindUtils.RelayBind(this, SecondaryFilledBrushProperty, icon, IconControl.SecondaryFilledBrushProperty, BindingMode.Default, BindingPriority.Template));

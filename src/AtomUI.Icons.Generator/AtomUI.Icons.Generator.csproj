@@ -21,4 +21,5 @@
               PackagePath="analyzers/dotnet/cs" 
               Visible="false"/>
     </ItemGroup>
+
 </Project>

@@ -11,5 +11,17 @@ public enum IconThemeType
 {
     Filled,
     Outlined,
-    TwoTone
+    Rounded,
+    Sharp,
+    TwoTone,
+    MultiColor
+}
+
+public enum IconBrushType
+{
+    Stroke,
+    Fill,
+    SecondaryStroke,
+    SecondaryFill,
+    Fallback
 }

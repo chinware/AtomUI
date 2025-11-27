@@ -19,11 +19,13 @@ public record GeometryData
 
 public class IconInfo
 {
-    public IList<GeometryData> Data { get; }
+    public IList<GeometryData> Data { get; init; }
+    public IList<DrawingInstruction>? Instructions { get; init; }
+    
     public bool IsTwoTone => ThemeType == IconThemeType.TwoTone;
-    public IconThemeType ThemeType { get; }
+    public IconThemeType ThemeType { get; init; }
 
-    public string Name { get; }
+    public string Name { get; init; }
     public Rect ViewBox { get; init; }
 
     internal IconInfo()
@@ -31,7 +33,7 @@ public class IconInfo
             string.Empty,
             IconThemeType.Filled,
             new Rect(),
-            new List<GeometryData> { new(string.Empty) })
+            Array.Empty<GeometryData>())
     {
     }
 
@@ -48,6 +50,21 @@ public class IconInfo
         ThemeType = themeType;
         ViewBox   = viewBox;
     }
+    
+    public IconInfo(string name, IconThemeType themeType,
+                    Rect viewBox, IList<DrawingInstruction> instructions)
+    {
+        if (themeType == IconThemeType.TwoTone)
+        {
+            throw new InvalidEnumArgumentException("ColorInfo does not support IconThemeType.TwoTone.");
+        }
+
+        Name         = name;
+        Data         = Array.Empty<GeometryData>();
+        ThemeType    = themeType;
+        Instructions = instructions;
+        ViewBox      = viewBox;
+    }
 
     public IconInfo(string name, Rect viewBox, IList<GeometryData> data)
     {
@@ -55,5 +72,14 @@ public class IconInfo
         Data             = data;
         ThemeType        = IconThemeType.TwoTone;
         ViewBox          = viewBox;
+    }
+    
+    public IconInfo(string name, Rect viewBox, IList<DrawingInstruction> instructions)
+    {
+        Name         = name;
+        Data         = Array.Empty<GeometryData>();
+        Instructions = instructions;
+        ThemeType    = IconThemeType.TwoTone;
+        ViewBox      = viewBox;
     }
 }

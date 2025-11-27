@@ -33,6 +33,9 @@
                     <Run Text="让数字世界建设者更高效" />
                 </atom:TextBlock>
             </StackPanel>
+            
+            <antdicons:WechatFilled Width="48" Height="48" FillBrush="Red"/>
+            <atom:Button>xxxx</atom:Button>
 
             <Image Source="/Assets/AtomUIOSS-release-banner.png"
                    HorizontalAlignment="Center"

@@ -93,7 +93,9 @@ public class IconPackageGenerator : IIncrementalGenerator
         sourceText.AppendLine("///");
         sourceText.AppendLine("using Avalonia;");
         sourceText.AppendLine("using System;");
+        sourceText.AppendLine("using Avalonia.Media;");
         sourceText.AppendLine("using AtomUI.Controls;");
+        sourceText.AppendLine("using AtomUI.Media;");
         sourceText.AppendLine($"namespace {ns};");
         
         foreach (var info in fileInfos)
@@ -102,48 +104,60 @@ public class IconPackageGenerator : IIncrementalGenerator
             var viewBox   = svgParsedInfo.ViewBox;
             var className = $"{info.Name}{info.ThemeType}";
             sourceText.AppendLine($"public class {className} : Icon");
-            sourceText.AppendLine("{");
+            sourceText.AppendLine(@"{");
             sourceText.AppendLine($"    public {className}()");
-            sourceText.AppendLine("    {");
-            sourceText.Append("        IconInfo = new IconInfo(");
-            sourceText.Append($"\"{info.Name}{info.ThemeType}\", ");
-            if (info.ThemeType == "TwoTone")
+            sourceText.AppendLine(@"    {");
+            sourceText.AppendLine($"        IconTheme = IconThemeType.{info.ThemeType};");
+            sourceText.AppendLine($"        ViewBox = new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height});");
+            sourceText.AppendLine(@"    }");
+            sourceText.AppendLine(@"");
+            sourceText.AppendLine(@"    private static readonly DrawingInstruction[] StaticInstructions = [");
+            var isOutline = info.ThemeType == "Outlined";
+            var isFilled = info.ThemeType == "Filled";
+            var isTwoTone = info.ThemeType == "TwoTone";
+            for (var i = 0; i < svgParsedInfo.PathInfos.Count; i++)
             {
-                sourceText.Append($"new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height}), ");
-                sourceText.Append("new List<GeometryData>{");
-                // 需要判断主要颜色和次要颜色
-                for (var i = 0; i < svgParsedInfo.PathInfos.Count; i++)
+                var pathInfo  = svgParsedInfo.PathInfos[i];
+                sourceText.AppendLine(@"        new PathDrawingInstruction()");
+                sourceText.AppendLine(@"        {");
+                sourceText.AppendLine($"            Data = StreamGeometry.Parse(\"{pathInfo.Data}\"),");
+                if (isFilled)
                 {
-                    var pathInfo = svgParsedInfo.PathInfos[i];
+                    sourceText.AppendLine($"            FillBrush = IconBrushType.Fill,");
+                }
+                else if (isOutline)
+                {
+                    sourceText.AppendLine($"            FillBrush = IconBrushType.Stroke,");
+                }
+                else if (isTwoTone)
+                {
                     var isPrimary = !(pathInfo.FillColor != null &&
                                       _twoToneTplSecondaryColors.Contains(pathInfo.FillColor));
-
-                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", \"{pathInfo.Transform}\", {isPrimary.ToString().ToLower()})");
-                    if (i != svgParsedInfo.PathInfos.Count - 1)
+                    if (isPrimary)
                     {
-                        sourceText.Append(", ");
+                        sourceText.AppendLine($"            FillBrush = IconBrushType.Stroke,");
+                    }
+                    else
+                    {
+                        sourceText.AppendLine($"            FillBrush = IconBrushType.Fill,");
                     }
                 }
-            }
-            else
-            {
-                sourceText.Append($"IconThemeType.{info.ThemeType}, ");
-                sourceText.Append($"new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height}), ");
-                sourceText.Append("new List<GeometryData>{");
-                for (var i = 0; i < svgParsedInfo.PathInfos.Count; i++)
+               
+                if (!string.IsNullOrEmpty(pathInfo.Transform))
                 {
-                    var pathInfo = svgParsedInfo.PathInfos[i];
-                    sourceText.Append($"new GeometryData(\"{pathInfo.Data}\", \"{pathInfo.Transform}\", true)");
-                    if (i != svgParsedInfo.PathInfos.Count - 1)
-                    {
-                        sourceText.Append(", ");
-                    }
+                    sourceText.AppendLine($"            Transform = TransformParser.Parse(\"{pathInfo.Transform}\").Value");
+                }
+                sourceText.AppendLine(@"        }");
+                if (i != svgParsedInfo.PathInfos.Count - 1)
+                {
+                    sourceText.Append(", ");
                 }
             }
-
-            sourceText.Append("});\n");
-            sourceText.AppendLine("    }\n");
-            sourceText.AppendLine("}\n");
+            sourceText.AppendLine(@"    ];");
+            sourceText.AppendLine(@"");
+            sourceText.AppendLine(@"    protected override IList<DrawingInstruction> DrawingInstructions => StaticInstructions;");
+            sourceText.AppendLine("}");
+            sourceText.AppendLine("");
         }
 
         ctx.AddSource($"{packageName}IconPackage.g.cs", sourceText.ToString());

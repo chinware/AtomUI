@@ -5,7 +5,7 @@ using Avalonia.Utilities;
 
 namespace AtomUI.Media;
 
-internal static class TransformParser
+public static class TransformParser
 {
     private static readonly (string, TransformFunction)[] s_functionMapping =
     {

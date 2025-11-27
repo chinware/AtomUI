@@ -3,7 +3,11 @@
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
         <RootNamespace>AtomUI.Icons.AntDesign</RootNamespace>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <OutputType>library</OutputType>
     </PropertyGroup>
 
     <ItemGroup>

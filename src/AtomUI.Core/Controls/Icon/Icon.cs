@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿// Reimplementation reference: https://github.com/irihitech/Irihi.Iconica.IconPark
+
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using AtomUI.Animations;
-using AtomUI.Media;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -13,17 +15,50 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
+public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 {
     protected override Type StyleKeyOverride { get; } = typeof(Icon);
-    
-    public static readonly StyledProperty<IconInfo?> IconInfoProperty =
-        AvaloniaProperty.Register<Icon, IconInfo?>(nameof(IconInfo));
 
     public static readonly StyledProperty<IconAnimation> LoadingAnimationProperty =
         AvaloniaProperty.Register<Icon, IconAnimation>(
             nameof(LoadingAnimation), IconAnimation.None);
+    
+    public static readonly StyledProperty<IBrush?> StrokeBrushProperty =
+        AvaloniaProperty.Register<Icon, IBrush?>(
+            nameof(StrokeBrush));
+    
+    public static readonly StyledProperty<IBrush?> FillBrushProperty =
+        AvaloniaProperty.Register<Icon, IBrush?>(
+            nameof(FillBrush));
+    
+    public static readonly StyledProperty<IBrush?> SecondaryStrokeBrushProperty =
+        AvaloniaProperty.Register<Icon, IBrush?>(
+            nameof(SecondaryStrokeBrush));
+    
+    public static readonly StyledProperty<IBrush?> SecondaryFillBrushProperty =
+        AvaloniaProperty.Register<Icon, IBrush?>(
+            nameof(SecondaryFillBrush));
+    
+    public static readonly StyledProperty<IBrush?> FallbackBrushProperty =
+        AvaloniaProperty.Register<Icon, IBrush?>(
+            nameof(Icon), defaultValue: Brushes.White);
+    
+    public static readonly StyledProperty<IconThemeType> IconThemeProperty =
+        AvaloniaProperty.Register<Icon, IconThemeType>(
+            nameof(IconTheme), IconThemeType.Filled);
+    
+    public static readonly StyledProperty<double> StrokeWidthProperty =
+        AvaloniaProperty.Register<Icon, double>(
+            nameof(StrokeWidth), 4);
 
+    public static readonly StyledProperty<PenLineCap> StrokeLineCapProperty =
+        AvaloniaProperty.Register<Icon, PenLineCap>(
+            nameof(StrokeLineCap), PenLineCap.Round);
+
+    public static readonly StyledProperty<PenLineJoin> StrokeLineJoinProperty =
+        AvaloniaProperty.Register<Icon, PenLineJoin>(
+            nameof(StrokeLineJoin), PenLineJoin.Round);
+    
     // TwoTone 类型的颜色
     public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
         AvaloniaProperty.Register<Icon, IBrush?>(
@@ -43,11 +78,53 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
-
-    public IconInfo? IconInfo
+    
+    public IBrush? StrokeBrush
     {
-        get => GetValue(IconInfoProperty);
-        set => SetValue(IconInfoProperty, value);
+        get => GetValue(StrokeBrushProperty);
+        set => SetValue(StrokeBrushProperty, value);
+    }
+    
+    public IBrush? FillBrush
+    {
+        get => GetValue(FillBrushProperty);
+        set => SetValue(FillBrushProperty, value);
+    }
+    
+    public IBrush? SecondaryStrokeBrush
+    {
+        get => GetValue(SecondaryStrokeBrushProperty);
+        set => SetValue(SecondaryStrokeBrushProperty, value);
+    }
+    
+    public IBrush? SecondaryFillBrush
+    {
+        get => GetValue(SecondaryFillBrushProperty);
+        set => SetValue(SecondaryFillBrushProperty, value);
+    }
+    
+    public IBrush? FallbackBrush
+    {
+        get => GetValue(FallbackBrushProperty);
+        set => SetValue(FallbackBrushProperty, value);
+    }
+    
+    public double StrokeWidth
+    {
+        get => GetValue(StrokeWidthProperty);
+        set => SetValue(StrokeWidthProperty, value);
+    }
+
+    public PenLineCap StrokeLineCap
+    {
+        get => GetValue(StrokeLineCapProperty);
+        set => SetValue(StrokeLineCapProperty, value);
+    }
+
+    public PenLineJoin StrokeLineJoin
+    {
+        get => GetValue(StrokeLineJoinProperty);
+        set => SetValue(StrokeLineJoinProperty, value);
     }
     
     public IBrush? PrimaryFilledBrush
@@ -61,6 +138,12 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         get => GetValue(SecondaryFilledBrushProperty);
         set => SetValue(SecondaryFilledBrushProperty, value);
     }
+    
+    public IconThemeType IconTheme
+    {
+        get => GetValue(IconThemeProperty);
+        set => SetValue(IconThemeProperty, value);
+    }
 
     public TimeSpan LoadingAnimationDuration
     {
@@ -73,8 +156,6 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         get => GetValue(FillAnimationDurationProperty);
         set => SetValue(FillAnimationDurationProperty, value);
     }
-    
-    public IconThemeType ThemeType => IconInfo?.ThemeType ?? IconThemeType.Filled;
 
     public IconAnimation LoadingAnimation
     {
@@ -101,27 +182,54 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     }
 
     #endregion
+    
+    protected virtual IList<DrawingInstruction> DrawingInstructions { get; } = Array.Empty<DrawingInstruction>();
+    protected Rect ViewBox;
 
     Control IMotionAwareControl.PropertyBindTarget => this;
 
     private Animation? _animation;
     private CancellationTokenSource? _animationCancellationTokenSource;
-    private readonly List<Matrix> _transforms;
-    private readonly List<Geometry> _sourceGeometriesData;
-    private Rect _viewBox;
+    private readonly IBrush?[] _brushes = new IBrush[5];
+    private readonly Pen?[] _pens = new Pen?[5];
 
     static Icon()
     {
-        AffectsMeasure<Icon>(HeightProperty, WidthProperty, IconInfoProperty);
-        AffectsRender<Icon>(ForegroundProperty,
+        AffectsMeasure<Icon>(HeightProperty, WidthProperty);
+        AffectsRender<Icon>(
+            StrokeBrushProperty,
+            FillBrushProperty,
+            SecondaryStrokeBrushProperty,
+            SecondaryFillBrushProperty,
+            FallbackBrushProperty,
+            StrokeLineCapProperty,
+            StrokeLineJoinProperty,
+            StrokeWidthProperty,
+            ForegroundProperty,
             PrimaryFilledBrushProperty,
             SecondaryFilledBrushProperty);
     }
 
-    public Icon()
+    protected override void OnInitialized()
     {
-        _sourceGeometriesData = new List<Geometry>();
-        _transforms           = new List<Matrix>();
+        base.OnInitialized();
+        var strokeIndex          = (int)IconBrushType.Fallback;
+        var fillIndex            = (int)IconBrushType.Fill;
+        var secondaryStrokeIndex = (int)IconBrushType.SecondaryStroke;
+        var secondaryFillIndex   = (int)IconBrushType.SecondaryFill;
+        var fallbackIndex        = (int)IconBrushType.Fallback;
+
+        _brushes[strokeIndex]          = StrokeBrush;
+        _brushes[fillIndex]            = FillBrush;
+        _brushes[secondaryStrokeIndex] = SecondaryStrokeBrush;
+        _brushes[secondaryFillIndex]   = SecondaryFillBrush;
+        _brushes[fallbackIndex]        = FallbackBrush;
+        
+        _pens[strokeIndex]          = new Pen(StrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        _pens[fillIndex]            = new Pen(FillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        _pens[secondaryStrokeIndex] = new Pen(SecondaryStrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        _pens[secondaryFillIndex]   = new Pen(SecondaryFillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        _pens[fallbackIndex]        = new Pen(FallbackBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
     }
 
     private void ConfigureTransitions(bool force)
@@ -144,16 +252,13 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IconInfoProperty)
-        {
-            BuildSourceRenderData();
-        }
-        else if (change.Property == AngleAnimationRotateProperty)
+        
+        if (change.Property == AngleAnimationRotateProperty)
         {
             SetCurrentValue(RenderTransformProperty, new RotateTransform(AngleAnimationRotate));
         }
 
-        if (change.Property == LoadingAnimationProperty)
+        else if (change.Property == LoadingAnimationProperty)
         {
             SetupRotateAnimation();
             if (_animation != null)
@@ -161,6 +266,44 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
                 StartLoadingAnimation();
             }
         }
+        else if (change.Property == FillAnimationDurationProperty)
+        {
+            ConfigureTransitions(true);
+        }
+
+        if (change.Property == StrokeBrushProperty)
+        {
+            HandleBrushChanged(IconBrushType.Stroke, StrokeBrush);
+        }
+        else if (change.Property == FillBrushProperty)
+        {
+            HandleBrushChanged(IconBrushType.Fill, FillBrush);
+        }
+        else if (change.Property == SecondaryStrokeBrushProperty)
+        {
+            HandleBrushChanged(IconBrushType.SecondaryStroke, SecondaryStrokeBrush);
+        }
+        else if (change.Property == SecondaryFillBrushProperty)
+        {
+            HandleBrushChanged(IconBrushType.SecondaryFill, SecondaryFillBrush);
+        }
+        else if (change.Property == FallbackBrushProperty)
+        {
+            HandleBrushChanged(IconBrushType.Fallback, FallbackBrush);
+        }
+        else if (change.Property == StrokeWidthProperty)
+        {
+            HandleStrokeWidthChanged(StrokeWidth);
+        }
+        else if (change.Property == StrokeLineCapProperty)
+        {
+            HandleLineCapChanged(StrokeLineCap);
+        }
+        else if (change.Property == StrokeLineJoinProperty)
+        {
+            HandleLineJoinChanged(StrokeLineJoin);
+        }
+        
         if (IsLoaded)
         {
             if (change.Property == IsMotionEnabledProperty)
@@ -168,13 +311,48 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
                 ConfigureTransitions(true);
             }
         }
-
-        if (change.Property == FillAnimationDurationProperty)
-        {
-            ConfigureTransitions(true);
-        }
     }
 
+    private void HandleBrushChanged(IconBrushType brushType, IBrush? brush)
+    {
+        var brushIndex = (int)brushType;
+        _brushes[brushIndex] = brush;
+        _pens[brushIndex]    = new Pen(_brushes[brushIndex], StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+    }
+
+    private void HandleStrokeWidthChanged(double strokeWidth)
+    {
+        foreach (var pen in _pens)
+        {
+            if (pen != null)
+            {
+                pen.Thickness = strokeWidth;
+            }
+        }
+    }
+    
+    private void HandleLineCapChanged(PenLineCap lineCap)
+    {
+        foreach (var pen in _pens)
+        {
+            if (pen != null)
+            {
+                pen.LineCap = lineCap;
+            }
+        }
+    }
+    
+    private void HandleLineJoinChanged(PenLineJoin lineJoin)
+    {
+        foreach (var pen in _pens)
+        {
+            if (pen != null)
+            {
+                pen.LineJoin = lineJoin;
+            }
+        }
+    }
+    
     private void SetupRotateAnimation()
     {
         if (_animation is not null)
@@ -209,96 +387,11 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             }
         }
     }
-
-    private void BuildSourceRenderData()
-    {
-        if (_sourceGeometriesData.Count > 0)
-        {
-            return;
-        }
-
-        if (IconInfo is null)
-        {
-            return;
-        }
-        
-        foreach (var geometryData in IconInfo.Data)
-        {
-            _sourceGeometriesData.Add(Geometry.Parse(geometryData.PathData));
-        }
-
-        _viewBox = IconInfo!.ViewBox;
-        // 先求最大的 bounds
-        // 裁剪边距算法，暂时先注释掉
-        Geometry? combined = null;
-
-        for (var i = 0; i < _sourceGeometriesData.Count; i++)
-        {
-            var geometry  = _sourceGeometriesData[i];
-            if (combined is null)
-            {
-                combined = geometry;
-            }
-            else
-            {
-                combined = new CombinedGeometry(combined, geometry);
-            }
-        }
-
-        var combinedBounds = combined!.Bounds;
-
-        var marginHorizontal = Math.Min(IconInfo.ViewBox.Right - combinedBounds.Right, combinedBounds.X);
-        var marginVertical   = Math.Min(IconInfo.ViewBox.Bottom - combinedBounds.Bottom, combinedBounds.Y);
-        var margin           = Math.Min(marginHorizontal, marginVertical);
-
-        var scaleX = 1 - margin / _viewBox.Width;
-        var scaleY = 1 - margin / _viewBox.Height;
-        
-        if (margin > 0)
-        {
-            _viewBox = combined.Bounds;
-            for (var i = 0; i < _sourceGeometriesData.Count; i++)
-            {
-                var geometry = _sourceGeometriesData[i];
-                var cloned   = geometry.Clone();
-                var offsetX  = -margin / 2;
-                var offsetY  = -margin / 2;
-                var matrix   = BuildGeometryItemMatrix(i);
-                matrix                   *= Matrix.CreateTranslation(offsetX, offsetY);
-                matrix                   *= Matrix.CreateScale(scaleX, scaleY);
-                cloned.Transform         =  new MatrixTransform(matrix);
-                _sourceGeometriesData[i] =  cloned;
-            }
-        }
-        else
-        {
-            for (var i = 0; i < _sourceGeometriesData.Count; i++)
-            {
-                var geometry = _sourceGeometriesData[i];
-                var cloned   = geometry.Clone();
-                cloned.Transform         = new MatrixTransform(BuildGeometryItemMatrix(i));
-                _sourceGeometriesData[i] = cloned;
-            }
-        }
-    }
-
-    private Matrix BuildGeometryItemMatrix(int index)
-    {
-        Debug.Assert(IconInfo != null);
-        var data = IconInfo.Data[index];
-        if (string.IsNullOrEmpty(data.Transform))
-        {
-            return Matrix.Identity;
-        }
-
-        return TransformParser.Parse(data.Transform).Value;
-    }
-
+    
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
         SetupRotateAnimation();
-        BuildSourceRenderData();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -347,148 +440,39 @@ public class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         Dispatcher.UIThread.InvokeAsync(StartLoadingAnimationAsync);
     }
 
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        base.MeasureOverride(availableSize);
-        if (_sourceGeometriesData.Count == 0)
-        {
-            return default;
-        }
-
-        Size targetSize = default;
-        for (var i = 0; i < _sourceGeometriesData.Count; i++)
-        {
-            var sourceGeometry = _sourceGeometriesData[i];
-            var currentSize    = CalculateSizeAndTransform(availableSize, sourceGeometry.Bounds).size;
-            targetSize = new Size(Math.Max(targetSize.Width, currentSize.Width),
-                Math.Min(targetSize.Height, currentSize.Height));
-        }
-
-        return targetSize;
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        _transforms.Clear();
-        // This should probably use GetRenderBounds(strokeThickness) but then the calculations
-        // will multiply the stroke thickness as well, which isn't correct.
-        for (var i = 0; i < _sourceGeometriesData.Count; i++)
-        {
-            var sourceGeometry = _sourceGeometriesData[i];
-            var (_, transform) = CalculateSizeAndTransform(finalSize, sourceGeometry.Bounds);
-            
-            _transforms.Insert(i, transform);
-        }
-
-        return finalSize;
-    }
-
     public override void Render(DrawingContext context)
     {
-        if (IsVisible && _transforms.Count == _sourceGeometriesData.Count && _sourceGeometriesData.Count > 0 && DesiredSize != default)
+        base.Render(context);
+        context.FillRectangle(Background ?? Brushes.Transparent, Bounds);
+        if (DrawingInstructions.Count == 0)
         {
-            for (var i = 0; i < _sourceGeometriesData.Count; i++)
+            return;
+        }
+        
+        var scale = new Vector(Bounds.Width / ViewBox.Width, Bounds.Height / ViewBox.Height);
+        using (context.PushTransform(Matrix.CreateScale(scale)))
+        {
+            foreach (var instruction in DrawingInstructions)
             {
-                var     renderedGeometry = _sourceGeometriesData[i];
-                var     geometryData     = IconInfo!.Data[i];
-                IBrush? fillBrush        = null;
-                if (IconInfo.ThemeType == IconThemeType.TwoTone)
-                {
-                    if (geometryData.IsPrimary)
-                    {
-                        fillBrush = PrimaryFilledBrush;
-                    }
-                    else
-                    {
-                        fillBrush = SecondaryFilledBrush;
-                    }
-                }
-                else
-                {
-                    fillBrush = Foreground;
-                }
-                using var state = context.PushTransform(_transforms[i]);
-                context.DrawGeometry(fillBrush, null, renderedGeometry);
+                instruction.Draw(context, this);
             }
         }
     }
 
-    private (Size size, Matrix transform) CalculateSizeAndTransform(Size availableSize, Rect shapeBounds)
+    protected virtual void ValidateThemeChange()
     {
-        var shapeSize     = new Size(shapeBounds.Width, shapeBounds.Height);
-        var desiredX      = availableSize.Width;
-        var desiredY      = availableSize.Height;
-        var sx            = 0.0;
-        var sy            = 0.0;
-        var viewBoxWidth  = _viewBox.Width;
-        var viewBoxHeight = _viewBox.Height;
-
-        // 计算大小的比例因子
-        var shapeWidthScale  = shapeBounds.Width / viewBoxWidth;
-        var shapeHeightScale = shapeBounds.Height / viewBoxHeight;
-
-        // 计算位移的比例因子
-        var offsetXScale = Math.Floor(availableSize.Width / viewBoxWidth);
-        var offsetYScale = Math.Floor(availableSize.Height / viewBoxHeight);
-        
-        offsetXScale = offsetXScale > 1 ? 1 / offsetXScale : offsetXScale;
-        offsetYScale = offsetYScale > 1 ? 1 / offsetYScale : offsetYScale;
-
-        var offsetX = shapeBounds.X;
-        var offsetY = shapeBounds.Y;
-
-        shapeSize = shapeBounds.Size;
-
-        if (double.IsInfinity(availableSize.Width))
-        {
-            desiredX = shapeSize.Width;
-        }
-        else
-        {
-            desiredX =  availableSize.Width * shapeWidthScale;
-            offsetX  *= offsetXScale;
-        }
-
-        if (double.IsInfinity(availableSize.Height))
-        {
-            desiredY = shapeSize.Height;
-        }
-        else
-        {
-            desiredY =  availableSize.Height * shapeHeightScale;
-            offsetY  *= offsetYScale;
-        }
-
-        var translate = Matrix.CreateTranslation(-offsetX, -offsetY);
-        if (shapeBounds.Width > 0)
-        {
-            sx = desiredX / shapeSize.Width;
-        }
-
-        if (shapeBounds.Height > 0)
-        {
-            sy = desiredY / shapeSize.Height;
-        }
-        
-        if (double.IsInfinity(availableSize.Width))
-        {
-            sx = sy;
-        }
-
-        if (double.IsInfinity(availableSize.Height))
-        {
-            sy = sx;
-        }
-
-        sx = sy = Math.Min(sx, sy);
-
-        translate *= Matrix.CreateScale(sx, sy);
-        var size = new Size(shapeSize.Width * sx, shapeSize.Height * sy);
-        return (size, translate);
+        throw new InvalidOleVariantTypeException("Icon theme type switching is not supported.");
     }
 
     public bool HitTest(Point point)
     {
         return true;
+    }
+
+    internal IBrush? GetIconBrush(IconBrushType brushType)
+    {
+        var index = (int)brushType;
+        Debug.Assert(index >= 0 && index < _brushes.Length);
+        return _brushes[index];
     }
 }
