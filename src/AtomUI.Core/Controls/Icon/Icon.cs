@@ -58,15 +58,6 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     public static readonly StyledProperty<PenLineJoin> StrokeLineJoinProperty =
         AvaloniaProperty.Register<Icon, PenLineJoin>(
             nameof(StrokeLineJoin), PenLineJoin.Round);
-    
-    // TwoTone 类型的颜色
-    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(PrimaryFilledBrush));
-
-    public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
-        AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(SecondaryFilledBrush));
 
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         AvaloniaProperty.Register<Icon, TimeSpan>(
@@ -125,18 +116,6 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     {
         get => GetValue(StrokeLineJoinProperty);
         set => SetValue(StrokeLineJoinProperty, value);
-    }
-    
-    public IBrush? PrimaryFilledBrush
-    {
-        get => GetValue(PrimaryFilledBrushProperty);
-        set => SetValue(PrimaryFilledBrushProperty, value);
-    }
-
-    public IBrush? SecondaryFilledBrush
-    {
-        get => GetValue(SecondaryFilledBrushProperty);
-        set => SetValue(SecondaryFilledBrushProperty, value);
     }
     
     public IconThemeType IconTheme
@@ -204,10 +183,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             FallbackBrushProperty,
             StrokeLineCapProperty,
             StrokeLineJoinProperty,
-            StrokeWidthProperty,
-            ForegroundProperty,
-            PrimaryFilledBrushProperty,
-            SecondaryFilledBrushProperty);
+            StrokeWidthProperty);
     }
 
     protected override void OnInitialized()

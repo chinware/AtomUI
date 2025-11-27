@@ -145,13 +145,13 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter:disabled">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">

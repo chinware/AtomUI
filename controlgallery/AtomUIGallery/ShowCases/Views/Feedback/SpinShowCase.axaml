@@ -27,13 +27,13 @@
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:SpinIndicator SizeType="Small"
                                     VerticalAlignment="Center"
-                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, Foreground=#1677ff}" />
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, FillBrush=#1677ff}" />
                 <atom:SpinIndicator SizeType="Middle"
                                     VerticalAlignment="Center"
-                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, Foreground=#1677ff}" />
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, FillBrush=#1677ff}" />
                 <atom:SpinIndicator SizeType="Large"
                                     VerticalAlignment="Center"
-                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, Foreground=#1677ff}" />
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, FillBrush=#1677ff}" />
             </StackPanel>
         </gallerycontrols:ShowCaseItem>
 

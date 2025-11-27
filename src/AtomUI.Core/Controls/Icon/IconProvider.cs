@@ -8,13 +8,11 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
     where TIconKind : Enum
 {
     public TIconKind? Kind { get; set; }
-
-    // Filled 和 Outlined
-    public IBrush? Foreground { get; set; }
-
-    // TwoTone
-    public IBrush? PrimaryFilledColor { get; set; }
-    public IBrush? SecondaryFilledColor { get; set; }
+    
+    public IBrush? StrokeBrush { get; set; }
+    public IBrush? FillBrush { get; set; }
+    public IBrush? SecondaryStrokeBrush { get; set; }
+    public IBrush? SecondaryFillBrush { get; set; }
 
     public double Width { get; set; } = double.NaN;
     public double Height { get; set; } = double.NaN;
@@ -39,18 +37,24 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
             icon.SetCurrentValue(Icon.LoadingAnimationProperty, Animation);
         }
         
-        if (Foreground != null)
+        if (StrokeBrush != null)
         {
-            icon.Foreground = Foreground;
+            icon.StrokeBrush = StrokeBrush;
         }
         
-        if (PrimaryFilledColor != null)
+        if (FillBrush != null)
         {
-            icon.PrimaryFilledBrush = PrimaryFilledColor;
+            icon.FillBrush = FillBrush;
         }
-        if (SecondaryFilledColor != null)
+        
+        if (SecondaryFillBrush != null)
         {
-            icon.SecondaryFilledBrush = SecondaryFilledColor;
+            icon.SecondaryFillBrush = SecondaryFillBrush;
+        }
+        
+        if (SecondaryStrokeBrush != null)
+        {
+            icon.SecondaryStrokeBrush = SecondaryStrokeBrush;
         }
         
         if (!double.IsNaN(Width))

@@ -13,9 +13,10 @@
                     Padding="{TemplateBinding Padding}"
                     LoadingAnimation="{TemplateBinding LoadingAnimation}"
                     LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
-                    Foreground="{TemplateBinding Foreground}"
-                    PrimaryFilledBrush="{TemplateBinding PrimaryFilledBrush}"
-                    SecondaryFilledBrush="{TemplateBinding SecondaryFilledBrush}"
+                    StrokeBrush="{TemplateBinding StrokeBrush}"
+                    FillBrush="{TemplateBinding FillBrush}"
+                    SecondaryFillBrush="{TemplateBinding SecondaryFillBrush}"
+                    SecondaryStrokeBrush="{TemplateBinding SecondaryStrokeBrush}"
                     Width="{TemplateBinding IconWidth}"
                     Height="{TemplateBinding IconHeight}"/>
             </ControlTemplate>
@@ -45,12 +46,11 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>
-
-        <Setter Property="Foreground"
-                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}" />
-        <Setter Property="PrimaryFilledBrush"
-                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-        <Setter Property="SecondaryFilledBrush"
-                Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
+        
+        <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+        <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+        
+        <Setter Property="SecondaryFillBrush" Value="{DynamicResource {x:Static atom:IconTokenKey.SecondaryFillColor}}" />
+        <Setter Property="SecondaryStrokeBrush" Value="{DynamicResource {x:Static atom:IconTokenKey.SecondaryStrokeColor}}" />
     </ControlTheme>
 </ResourceDictionary>

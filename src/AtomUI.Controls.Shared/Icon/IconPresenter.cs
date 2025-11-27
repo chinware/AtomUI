@@ -56,12 +56,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         IconControl.LoadingAnimationDurationProperty.AddOwner<IconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
-        IconControl.PrimaryFilledBrushProperty.AddOwner<IconPresenter>();
-
-    public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
-        IconControl.SecondaryFilledBrushProperty.AddOwner<IconPresenter>();
-    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconPresenter>();
     
@@ -132,18 +126,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
         set => SetValue(LoadingAnimationDurationProperty, value);
     }
     
-    public IBrush? PrimaryFilledBrush
-    {
-        get => GetValue(PrimaryFilledBrushProperty);
-        set => SetValue(PrimaryFilledBrushProperty, value);
-    }
-
-    public IBrush? SecondaryFilledBrush
-    {
-        get => GetValue(SecondaryFilledBrushProperty);
-        set => SetValue(SecondaryFilledBrushProperty, value);
-    }
-    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -163,9 +145,7 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
             FillBrushProperty,
             SecondaryStrokeBrushProperty,
             SecondaryFillBrushProperty,
-            FallbackBrushProperty,
-            PrimaryFilledBrushProperty,
-            SecondaryFilledBrushProperty);
+            FallbackBrushProperty);
         IconProperty.Changed.AddClassHandler<IconPresenter>((x, e) => x.ChildChanged(e));
     }
     
@@ -231,12 +211,6 @@ public class IconPresenter : TemplatedControl, IMotionAwareControl
             _bindingDisposables.Add(BindUtils.RelayBind(this, LoadingAnimationDurationProperty, icon,
                 IconControl.LoadingAnimationDurationProperty, BindingMode.Default, BindingPriority.Template));
             _bindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, IsMotionEnabledProperty));
-        
-            if (icon.IconTheme == IconThemeType.TwoTone)
-            {
-                _bindingDisposables.Add(BindUtils.RelayBind(this, PrimaryFilledBrushProperty, icon, IconControl.PrimaryFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
-                _bindingDisposables.Add(BindUtils.RelayBind(this, SecondaryFilledBrushProperty, icon, IconControl.SecondaryFilledBrushProperty, BindingMode.Default, BindingPriority.Template));
-            }
         }
     }
     

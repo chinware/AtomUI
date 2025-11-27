@@ -115,36 +115,36 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
         </Style>
         <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}" />
         </Style>
 
         <Style Selector="^:pointerover">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
+                <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
             </Style>
             <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
+                <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultHoverColor}}" />
             </Style>
         </Style>
 
         <Style Selector="^:pressed">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
+                <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
             </Style>
             <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
+                <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:ButtonTokenKey.DefaultActiveColor}}" />
             </Style>
         </Style>
         
         <Style Selector="^:disabled">
             <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+                <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>
             <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
+                <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextDisabled}}" />
             </Style>
         </Style>
 

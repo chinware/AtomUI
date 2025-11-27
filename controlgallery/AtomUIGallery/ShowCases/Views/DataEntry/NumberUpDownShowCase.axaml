@@ -78,8 +78,8 @@
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:NumericUpDown Watermark="Enter your value"
-                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, Foreground=#D7D7D7}"
-                                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, Foreground=#8C8C8C}" />
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
+                                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}" />
                 <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
                 <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
             </StackPanel>

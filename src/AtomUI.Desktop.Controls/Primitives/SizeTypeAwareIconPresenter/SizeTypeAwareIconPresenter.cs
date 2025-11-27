@@ -25,11 +25,17 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         IconControl.LoadingAnimationDurationProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
-    public static readonly StyledProperty<IBrush?> PrimaryFilledBrushProperty =
-        IconControl.PrimaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
-
-    public static readonly StyledProperty<IBrush?> SecondaryFilledBrushProperty =
-        IconControl.SecondaryFilledBrushProperty.AddOwner<SizeTypeAwareIconPresenter>();
+    public static readonly StyledProperty<IBrush?> StrokeBrushProperty =
+        IconControl.StrokeBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> FillBrushProperty =
+        IconControl.FillBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> SecondaryStrokeBrushProperty =
+        IconControl.SecondaryStrokeBrushProperty.AddOwner<IconPresenter>();
+    
+    public static readonly StyledProperty<IBrush?> SecondaryFillBrushProperty =
+        IconControl.SecondaryFillBrushProperty.AddOwner<IconPresenter>();
 
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, double>(nameof(IconWidth), double.NaN);
@@ -61,6 +67,30 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
         get => GetValue(LoadingAnimationDurationProperty);
         set => SetValue(LoadingAnimationDurationProperty, value);
     }
+    
+    public IBrush? StrokeBrush
+    {
+        get => GetValue(StrokeBrushProperty);
+        set => SetValue(StrokeBrushProperty, value);
+    }
+    
+    public IBrush? FillBrush
+    {
+        get => GetValue(FillBrushProperty);
+        set => SetValue(FillBrushProperty, value);
+    }
+    
+    public IBrush? SecondaryStrokeBrush
+    {
+        get => GetValue(SecondaryStrokeBrushProperty);
+        set => SetValue(SecondaryStrokeBrushProperty, value);
+    }
+    
+    public IBrush? SecondaryFillBrush
+    {
+        get => GetValue(SecondaryFillBrushProperty);
+        set => SetValue(SecondaryFillBrushProperty, value);
+    }
 
     public double IconWidth
     {
@@ -72,18 +102,6 @@ internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
     {
         get => GetValue(IconHeightProperty);
         set => SetValue(IconHeightProperty, value);
-    }
-    
-    public IBrush? PrimaryFilledBrush
-    {
-        get => GetValue(PrimaryFilledBrushProperty);
-        set => SetValue(PrimaryFilledBrushProperty, value);
-    }
-
-    public IBrush? SecondaryFilledBrush
-    {
-        get => GetValue(SecondaryFilledBrushProperty);
-        set => SetValue(SecondaryFilledBrushProperty, value);
     }
 
     #endregion
