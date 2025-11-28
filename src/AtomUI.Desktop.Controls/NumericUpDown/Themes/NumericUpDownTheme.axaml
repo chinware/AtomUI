@@ -27,14 +27,9 @@
                     <atom:ButtonSpinner.InnerRightContent>
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{DynamicResource {x:Static atom:SharedTokenKey.UniformlyPaddingXXS}}">
-                            <atom:IconButton
+                            <atom:InputClearIconButton
                                 Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
                                 Icon="{antdicons:AntDesignIconProvider CloseCircleFilled}"
-                                IconWidth="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                IconHeight="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"
-                                NormalIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextQuaternary}}"
-                                ActiveIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextTertiary}}"
-                                SelectedIconBrush="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}"
                                 IsPassthroughMouseEvent="False"
                                 IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}" 
                                 IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"/>

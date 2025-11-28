@@ -55,7 +55,7 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#PART_HeaderIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:GroupBoxTokenKey.HeaderIconMargin}}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorText}}" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeLG}}" />
             <Setter Property="VerticalAlignment" Value="Center" />

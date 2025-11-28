@@ -215,7 +215,14 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             if (force || Transitions == null)
             {
                 Transitions = [
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(ForegroundProperty, FillAnimationDuration)
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(StrokeBrushProperty,
+                        FillAnimationDuration),
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FillBrushProperty,
+                        FillAnimationDuration),
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(SecondaryFillBrushProperty,
+                        FillAnimationDuration),
+                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(SecondaryStrokeBrushProperty,
+                        FillAnimationDuration)
                 ];
             }
         }
@@ -424,9 +431,24 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         {
             return;
         }
-        
-        var scale = new Vector(Bounds.Width / ViewBox.Width, Bounds.Height / ViewBox.Height);
-        using (context.PushTransform(Matrix.CreateScale(scale)))
+
+        var realSize   = DesiredSize.Deflate(Margin);
+        var scale      = new Vector(realSize.Width / ViewBox.Width, realSize.Height / ViewBox.Height);
+        var translateX = 0.0d;
+        var translateY = 0.0d;
+        if (Bounds.Width > realSize.Width)
+        {
+            translateX = (Bounds.Width - realSize.Width) / 2;
+        }
+
+        if (Bounds.Height > realSize.Height)
+        {
+            translateY = (Bounds.Height - realSize.Height) / 2;
+        }
+        var translate = new Vector(translateX, translateY);
+        var matrix = Matrix.CreateScale(scale);
+        matrix *= Matrix.CreateTranslation(translate);
+        using (context.PushTransform(matrix))
         {
             foreach (var instruction in DrawingInstructions)
             {
@@ -445,7 +467,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         return true;
     }
 
-    internal IBrush? GetIconBrush(IconBrushType brushType)
+    internal IBrush? FindIconBrush(IconBrushType brushType)
     {
         var index = (int)brushType;
         Debug.Assert(index >= 0 && index < _brushes.Length);

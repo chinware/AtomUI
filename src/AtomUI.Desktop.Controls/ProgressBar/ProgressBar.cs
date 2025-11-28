@@ -57,7 +57,7 @@ public class ProgressBar : AbstractLineProgress
 
     #endregion
 
-    private IDisposable? _percentageLabelBindingDisposable;
+    private IDisposable? PercentageLabelBindingDisposable;
     
     static ProgressBar()
     {
@@ -121,22 +121,22 @@ public class ProgressBar : AbstractLineProgress
         if (ShowProgressInfo)
         {
             var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
-            if (_layoutTransformLabel is not null)
+            if (LayoutTransformLabel is not null)
             {
-                Canvas.SetTop(_layoutTransformLabel, extraInfoRect.Top);
-                Canvas.SetLeft(_layoutTransformLabel, extraInfoRect.Left);
+                Canvas.SetTop(LayoutTransformLabel, extraInfoRect.Top);
+                Canvas.SetLeft(LayoutTransformLabel, extraInfoRect.Left);
             }
 
-            if (_successCompletedIconPresenter is not null)
+            if (SuccessCompletedIconPresenter is not null)
             {
-                Canvas.SetLeft(_successCompletedIconPresenter, extraInfoRect.Left);
-                Canvas.SetTop(_successCompletedIconPresenter, extraInfoRect.Top);
+                Canvas.SetLeft(SuccessCompletedIconPresenter, extraInfoRect.Left);
+                Canvas.SetTop(SuccessCompletedIconPresenter, extraInfoRect.Top);
             }
 
-            if (_exceptionCompletedIconPresenter is not null)
+            if (ExceptionCompletedIconPresenter is not null)
             {
-                Canvas.SetLeft(_exceptionCompletedIconPresenter, extraInfoRect.Left);
-                Canvas.SetTop(_exceptionCompletedIconPresenter, extraInfoRect.Top);
+                Canvas.SetLeft(ExceptionCompletedIconPresenter, extraInfoRect.Left);
+                Canvas.SetTop(ExceptionCompletedIconPresenter, extraInfoRect.Top);
             }
         }
 
@@ -615,8 +615,8 @@ public class ProgressBar : AbstractLineProgress
     {
         if (!PercentPosition.IsInner)
         {
-            _percentageLabelBindingDisposable?.Dispose();
-            _percentageLabelBindingDisposable = BindUtils.RelayBind(this, ForegroundProperty, _percentageLabel!, ForegroundProperty);
+            PercentageLabelBindingDisposable?.Dispose();
+            PercentageLabelBindingDisposable = BindUtils.RelayBind(this, ForegroundProperty, PercentageLabel!, ForegroundProperty);
         }
         else
         {
@@ -634,7 +634,7 @@ public class ProgressBar : AbstractLineProgress
                         var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
                         if (mostReadable.HasValue)
                         {
-                            _percentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
+                            PercentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
                         }
                     }
                 }
@@ -645,7 +645,7 @@ public class ProgressBar : AbstractLineProgress
                         var mostReadable = ColorUtils.MostReadable(solidColorBrush.Color, colors);
                         if (mostReadable.HasValue)
                         {
-                            _percentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
+                            PercentageLabel?.SetValue(ForegroundProperty, new SolidColorBrush(mostReadable.Value), BindingPriority.Template);
                         }
                     }
                 }

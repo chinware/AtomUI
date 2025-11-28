@@ -29,24 +29,24 @@
         <Style Selector="^ /template/ atom|Icon">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:DataGridTokenKey.SortIconSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:DataGridTokenKey.SortIconSize}}" />
-            <Setter Property="Foreground"
+            <Setter Property="StrokeBrush"
                     Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
         </Style>
         
         <Style Selector="^[CurrentSortDirection=Ascending]">
             <Style Selector="^ /template/ atom|Icon#PART_Ascending">
-                <Setter Property="Foreground"
+                <Setter Property="StrokeBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
         <Style Selector="^:not(^[CurrentSortDirection=Ascending])">
             <Style Selector="^ /template/ atom|Icon#PART_Ascending">
-                <Setter Property="Foreground"
+                <Setter Property="StrokeBrush"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
             </Style>
             <Style Selector="^[IsHoverMode=True]">
                 <Style Selector="^ /template/ atom|Icon#PART_Ascending">
-                    <Setter Property="Foreground"
+                    <Setter Property="StrokeBrush"
                             Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
                 </Style>
             </Style>
@@ -54,18 +54,18 @@
 
         <Style Selector="^[CurrentSortDirection=Descending]">
             <Style Selector="^ /template/ atom|Icon#PART_Descending">
-                <Setter Property="Foreground"
+                <Setter Property="StrokeBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
             </Style>
         </Style>
         <Style Selector="^:not(^[CurrentSortDirection=Descending])">
             <Style Selector="^ /template/ atom|Icon#PART_Descending">
-                <Setter Property="Foreground"
+                <Setter Property="StrokeBrush"
                         Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
             </Style>
             <Style Selector="^[IsHoverMode=True]">
                 <Style Selector="^ /template/ atom|Icon#PART_Descending">
-                    <Setter Property="Foreground"
+                    <Setter Property="StrokeBrush"
                             Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
                 </Style>
             </Style>

@@ -37,23 +37,28 @@
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
         </Style>
 
-        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter atom|Icon">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemIconMargin}}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
         </Style>
 
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="Foreground"
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter atom|Icon">
+                <Setter Property="FillBrush"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
+                <Setter Property="StrokeBrush"
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
             </Style>
         </Style>
         
         <Style Selector="^:selected">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="Foreground"
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter atom|Icon">
+                <Setter Property="FillBrush"
+                        Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
+                <Setter Property="StrokeBrush"
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
             </Style>
         </Style>

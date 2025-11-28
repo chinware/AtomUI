@@ -12,8 +12,8 @@
                             Background="{TemplateBinding Background}">
                         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource {x:Static atom:SharedTokenKey.SpacingXXS}}">
                             <atom:IconPresenter Name="IconPresenter"
-                                                Icon="{TemplateBinding Icon}"
-                                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                                 Icon="{TemplateBinding Icon}"
+                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <ContentPresenter Name="Content"
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
@@ -51,14 +51,14 @@
                         Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
                 
                 <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                    <Setter Property="Foreground"
+                    <Setter Property="IconBrush"
                             Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.LinkHoverColor}}" />
                 </Style>
             </Style>
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-            <Setter Property="Foreground"
+            <Setter Property="IconBrush"
                     Value="{DynamicResource {x:Static atom:BreadcrumbTokenKey.ItemColor}}" />
             <Setter Property="Width"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />

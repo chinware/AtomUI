@@ -264,10 +264,10 @@ public abstract class AbstractProgressBar : RangeBase,
 
     #endregion
 
-    protected LayoutTransformControl? _layoutTransformLabel;
-    protected Label? _percentageLabel;
-    protected IconPresenter? _successCompletedIconPresenter;
-    protected IconPresenter? _exceptionCompletedIconPresenter;
+    protected LayoutTransformControl? LayoutTransformLabel;
+    protected Label? PercentageLabel;
+    protected IconPresenter? SuccessCompletedIconPresenter;
+    protected IconPresenter? ExceptionCompletedIconPresenter;
 
     static AbstractProgressBar()
     {
@@ -335,10 +335,10 @@ public abstract class AbstractProgressBar : RangeBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _layoutTransformLabel = e.NameScope.Find<LayoutTransformControl>(ProgressBarThemeConstants.LayoutTransformControlPart);
-        _percentageLabel = e.NameScope.Find<Label>(ProgressBarThemeConstants.PercentageLabelPart);
-        _exceptionCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.ExceptionCompletedIconPresenterPart);
-        _successCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.SuccessCompletedIconPresenterPart);
+        LayoutTransformLabel = e.NameScope.Find<LayoutTransformControl>(ProgressBarThemeConstants.LayoutTransformControlPart);
+        PercentageLabel = e.NameScope.Find<Label>(ProgressBarThemeConstants.PercentageLabelPart);
+        ExceptionCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.ExceptionCompletedIconPresenterPart);
+        SuccessCompletedIconPresenter = e.NameScope.Find<IconPresenter>(ProgressBarThemeConstants.SuccessCompletedIconPresenterPart);
         NotifySetupUI();
         NotifyUiStructureReady();
     }
@@ -372,11 +372,11 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected virtual void NotifyUpdateProgress()
     {
-        if (ShowProgressInfo && _percentageLabel != null)
+        if (ShowProgressInfo && PercentageLabel != null)
         {
             if (Status != ProgressStatus.Exception)
             {
-                _percentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
+                PercentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
             }
 
             NotifyHandleExtraInfoVisibility();

@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -6,6 +5,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class MessageBoxDialogHost : DialogHost
 {
+    protected override Type StyleKeyOverride { get; } = typeof(MessageBoxDialogHost);
+    
     public static readonly StyledProperty<PathIcon?> StyleIconProperty =
         AvaloniaProperty.Register<MessageBoxDialogHost, PathIcon?>(nameof (StyleIcon));
     

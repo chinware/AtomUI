@@ -10,15 +10,9 @@
                 <atom:IconPresenter
                     Name="PART_IconPresenter"
                     Icon="{TemplateBinding Icon}"
-                    Padding="{TemplateBinding Padding}"
-                    LoadingAnimation="{TemplateBinding LoadingAnimation}"
-                    LoadingAnimationDuration="{TemplateBinding LoadingAnimationDuration}"
-                    StrokeBrush="{TemplateBinding StrokeBrush}"
-                    FillBrush="{TemplateBinding FillBrush}"
-                    SecondaryFillBrush="{TemplateBinding SecondaryFillBrush}"
-                    SecondaryStrokeBrush="{TemplateBinding SecondaryStrokeBrush}"
-                    Width="{TemplateBinding IconWidth}"
-                    Height="{TemplateBinding IconHeight}"/>
+                    Width="{TemplateBinding Width}"
+                    Height="{TemplateBinding Height}"
+                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
             </ControlTemplate>
         </Setter>
 
@@ -46,11 +40,5 @@
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
             </Style>
         </Style>
-        
-        <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-        <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
-        
-        <Setter Property="SecondaryFillBrush" Value="{DynamicResource {x:Static atom:IconTokenKey.SecondaryFillColor}}" />
-        <Setter Property="SecondaryStrokeBrush" Value="{DynamicResource {x:Static atom:IconTokenKey.SecondaryStrokeColor}}" />
     </ControlTheme>
 </ResourceDictionary>

@@ -17,7 +17,6 @@
                     <atom:IconPresenter Name="IconPresenter"
                                         DockPanel.Dock="Left"
                                         Icon="{TemplateBinding Icon}"
-                                        Foreground="{TemplateBinding Foreground}" 
                                         IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     <atom:IconButton Name="{x:Static atom:TagThemeConstants.CloseButtonPart}"
                                      DockPanel.Dock="Right"
@@ -58,13 +57,13 @@
         </Style>
         <Style Selector="^[IsColorSet=True]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
         </Style>
         <Style Selector="^[IsPresetColorTag=True]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{TemplateBinding Foreground}" />
             </Style>
         </Style>
@@ -77,7 +76,7 @@
         </Style>
         <Style Selector="^[IsColorSet=True][IsPresetColorTag=False]">
             <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextLightSolid}}" />
             </Style>
         </Style>

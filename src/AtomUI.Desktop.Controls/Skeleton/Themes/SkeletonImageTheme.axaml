@@ -25,7 +25,7 @@
                     <antdicons:ImageFilled Name="Image"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
-                                           Foreground="#bfbfbf" />
+                                           FillBrush="#bfbfbf" />
                 </Border>
             </Panel>
         </ControlTemplate>

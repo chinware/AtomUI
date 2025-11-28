@@ -161,7 +161,7 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
     internal bool IsColorSet
     {
         get => _isColorSet;
-        set => SetAndRaise(IsPresetColorTagProperty, ref _isColorSet, value);
+        set => SetAndRaise(IsColorSetProperty, ref _isColorSet, value);
     }
 
     Control IControlSharedTokenResourcesHost.HostControl => this;
@@ -394,9 +394,9 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
 
         if (Color.TryParse(colorStr, out var color))
         {
-            Bordered    = false;
+            Bordered   = false;
             IsColorSet = true;
-            Background  = new SolidColorBrush(color);
+            Background = new SolidColorBrush(color);
             PseudoClasses.Set(TagPseudoClass.PresetColor, false);
             PseudoClasses.Set(TagPseudoClass.StatusColor, false);
             PseudoClasses.Set(TagPseudoClass.CustomColor, true);

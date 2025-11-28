@@ -45,7 +45,7 @@
         <Style Selector="^ /template/ atom|IconButton#PART_ScrollMenuIndicator">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSize}}"/>
-            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
         </Style>
         
         <Style Selector="^[TabStripPlacement=Top]">

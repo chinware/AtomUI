@@ -46,7 +46,7 @@
         <Style Selector="^ /template/ atom|CarouselNavButton">
             <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:CarouselTokenKey.ArrowSize}}"/>
             <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:CarouselTokenKey.ArrowSize}}"/>
-            <Setter Property="NormalIconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}"/>
             <Setter Property="Opacity" Value="0.2"/>
         </Style>
         

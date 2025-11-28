@@ -189,7 +189,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         var extraInfo     = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontSize, FontFamily);
 
         // 这三个是不可能同时满足的
-        if (_layoutTransformLabel is not null)
+        if (LayoutTransformLabel is not null)
         {
             if (extraInfo.Width > extraInfoSize || extraInfo.Height > extraInfoSize)
             {
@@ -201,10 +201,10 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             }
         }
 
-        if (_exceptionCompletedIconPresenter is not null)
+        if (ExceptionCompletedIconPresenter is not null)
         {
-            var exceptionIconWidth  = _exceptionCompletedIconPresenter.Width;
-            var exceptionIconHeight = _exceptionCompletedIconPresenter.Height;
+            var exceptionIconWidth  = ExceptionCompletedIconPresenter.Width;
+            var exceptionIconHeight = ExceptionCompletedIconPresenter.Height;
             if (exceptionIconWidth > extraInfoSize || exceptionIconHeight > extraInfoSize)
             {
                 StatusIconVisible = false;
@@ -215,10 +215,10 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             }
         }
 
-        if (_successCompletedIconPresenter is not null)
+        if (SuccessCompletedIconPresenter is not null)
         {
-            var successIconWidth  = _successCompletedIconPresenter.Width;
-            var successIconHeight = _successCompletedIconPresenter.Height;
+            var successIconWidth  = SuccessCompletedIconPresenter.Width;
+            var successIconHeight = SuccessCompletedIconPresenter.Height;
             if (successIconWidth > extraInfoSize || successIconHeight > extraInfoSize)
             {
                 StatusIconVisible = false;
@@ -261,11 +261,11 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     {
         var circleSize     = CalculateCircleSize();
         var calculatedSize = Math.Max(circleSize / 4.5, CircleMinimumIconSize);
-        _exceptionCompletedIconPresenter!.Width  = calculatedSize;
-        _exceptionCompletedIconPresenter!.Height = calculatedSize;
+        ExceptionCompletedIconPresenter!.Width  = calculatedSize;
+        ExceptionCompletedIconPresenter!.Height = calculatedSize;
 
-        _successCompletedIconPresenter!.Width  = calculatedSize;
-        _successCompletedIconPresenter!.Height = calculatedSize;
+        SuccessCompletedIconPresenter!.Width  = calculatedSize;
+        SuccessCompletedIconPresenter!.Height = calculatedSize;
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -274,31 +274,31 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         {
             var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
             var extraInfoPos  = extraInfoRect.Position;
-            if (_layoutTransformLabel is not null)
+            if (LayoutTransformLabel is not null)
             {
-                var labelSize = _layoutTransformLabel.DesiredSize;
+                var labelSize = LayoutTransformLabel.DesiredSize;
                 var offsetX   = (extraInfoRect.Width - labelSize.Width) / 2;
                 var offsetY   = (extraInfoRect.Height - labelSize.Height) / 2;
-                Canvas.SetLeft(_layoutTransformLabel, extraInfoPos.X + offsetX);
-                Canvas.SetTop(_layoutTransformLabel, extraInfoPos.Y + offsetY);
+                Canvas.SetLeft(LayoutTransformLabel, extraInfoPos.X + offsetX);
+                Canvas.SetTop(LayoutTransformLabel, extraInfoPos.Y + offsetY);
             }
 
-            if (_successCompletedIconPresenter is not null)
+            if (SuccessCompletedIconPresenter is not null)
             {
-                var size    = _successCompletedIconPresenter.DesiredSize;
+                var size    = SuccessCompletedIconPresenter.DesiredSize;
                 var offsetX = (extraInfoRect.Width - size.Width) / 2;
                 var offsetY = (extraInfoRect.Height - size.Height) / 2;
-                Canvas.SetLeft(_successCompletedIconPresenter, extraInfoPos.X + offsetX);
-                Canvas.SetTop(_successCompletedIconPresenter, extraInfoPos.Y + offsetY);
+                Canvas.SetLeft(SuccessCompletedIconPresenter, extraInfoPos.X + offsetX);
+                Canvas.SetTop(SuccessCompletedIconPresenter, extraInfoPos.Y + offsetY);
             }
 
-            if (_exceptionCompletedIconPresenter is not null)
+            if (ExceptionCompletedIconPresenter is not null)
             {
-                var size    = _exceptionCompletedIconPresenter.DesiredSize;
+                var size    = ExceptionCompletedIconPresenter.DesiredSize;
                 var offsetX = (extraInfoRect.Width - size.Width) / 2;
                 var offsetY = (extraInfoRect.Height - size.Height) / 2;
-                Canvas.SetLeft(_exceptionCompletedIconPresenter, extraInfoPos.X + offsetX);
-                Canvas.SetTop(_exceptionCompletedIconPresenter, extraInfoPos.Y + offsetY);
+                Canvas.SetLeft(ExceptionCompletedIconPresenter, extraInfoPos.X + offsetX);
+                Canvas.SetTop(ExceptionCompletedIconPresenter, extraInfoPos.Y + offsetY);
             }
         }
 

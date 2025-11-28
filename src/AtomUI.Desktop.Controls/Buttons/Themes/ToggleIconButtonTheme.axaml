@@ -13,7 +13,7 @@
                     IsVisible="{TemplateBinding IsChecked}"
                     Width="{TemplateBinding IconWidth}"
                     Height="{TemplateBinding IconHeight}"
-                    Foreground="{TemplateBinding IconBrush}"
+                    IconBrush="{TemplateBinding IconBrush}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
@@ -23,7 +23,7 @@
                     Width="{TemplateBinding IconWidth}"
                     Height="{TemplateBinding IconHeight}"
                     IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
-                    Foreground="{TemplateBinding IconBrush}"
+                    IconBrush="{TemplateBinding IconBrush}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>

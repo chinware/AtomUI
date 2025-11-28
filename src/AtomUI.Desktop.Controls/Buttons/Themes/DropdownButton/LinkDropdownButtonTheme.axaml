@@ -23,7 +23,8 @@
                     <antdicons:DownOutlined Name="{x:Static atom:DropdownButtonThemeConstants.DropdownIndicatorPart}"
                                             DockPanel.Dock="Right"
                                             VerticalAlignment="Center"
-                                            Foreground="{TemplateBinding Foreground}"/>
+                                            StrokeBrush="{TemplateBinding Foreground}"
+                                            IsMotionEnabled="False"/>
                     <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"

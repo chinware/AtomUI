@@ -1,0 +1,25 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CardActionButton}" TargetType="atom:CardActionButton">
+        <ControlTheme.BasedOn>
+            <themes:IconButtonTheme TargetType="atom:CardActionButton" />
+        </ControlTheme.BasedOn>
+        
+       <Style Selector="^:is(atom|CardActionButton)">
+           <Setter Property="HorizontalAlignment" Value="Stretch"/>
+           <Setter Property="VerticalAlignment" Value="Stretch"/>
+           <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:CardTokenKey.CardActionsIconSize}}"/>
+           <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:CardTokenKey.CardActionsIconSize}}"/>
+           <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}"/>
+        
+           <Style Selector="^:pointerover">
+               <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}"/>
+           </Style>
+       </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

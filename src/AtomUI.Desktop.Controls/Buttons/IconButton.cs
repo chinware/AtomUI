@@ -35,22 +35,6 @@ public class IconButton : AvaloniaButton,
     public static readonly StyledProperty<IBrush?> IconBrushProperty =
         AvaloniaProperty.Register<IconButton, IBrush?>(
             nameof(IconBrush));
-    
-    public static readonly StyledProperty<IBrush?> NormalIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(NormalIconBrush));
-
-    public static readonly StyledProperty<IBrush?> ActiveIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(ActiveIconBrush));
-
-    public static readonly StyledProperty<IBrush?> SelectedIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(SelectedIconBrush));
-
-    public static readonly StyledProperty<IBrush?> DisabledIconBrushProperty =
-        AvaloniaProperty.Register<IconButton, IBrush?>(
-            nameof(DisabledIconBrush));
 
     public static readonly StyledProperty<double> IconWidthProperty =
         AvaloniaProperty.Register<IconButton, double>(nameof(IconWidth));
@@ -110,30 +94,6 @@ public class IconButton : AvaloniaButton,
     {
         get => GetValue(IconBrushProperty);
         set => SetValue(IconBrushProperty, value);
-    }
-    
-    public IBrush? NormalIconBrush
-    {
-        get => GetValue(NormalIconBrushProperty);
-        set => SetValue(NormalIconBrushProperty, value);
-    }
-
-    public IBrush? ActiveIconBrush
-    {
-        get => GetValue(ActiveIconBrushProperty);
-        set => SetValue(ActiveIconBrushProperty, value);
-    }
-
-    public IBrush? SelectedIconBrush
-    {
-        get => GetValue(SelectedIconBrushProperty);
-        set => SetValue(SelectedIconBrushProperty, value);
-    }
-
-    public IBrush? DisabledIconBrush
-    {
-        get => GetValue(DisabledIconBrushProperty);
-        set => SetValue(DisabledIconBrushProperty, value);
     }
     
     #endregion

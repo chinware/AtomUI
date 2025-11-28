@@ -46,12 +46,12 @@
                         </Panel>
 
                         <atom:IconPresenter Name="ItemIconPresenter"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Icon="{TemplateBinding Icon}"
-                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                            Grid.Column="1" />
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Icon="{TemplateBinding Icon}"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                             Grid.Column="1" />
                         <ContentPresenter Name="ItemTextPresenter"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
@@ -145,13 +145,13 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemMargin}}" />
-            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemColor}}" />
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemIconSize}}" />
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter:disabled">
-            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:MenuTokenKey.ItemDisabledColor}}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">

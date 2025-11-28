@@ -40,7 +40,7 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveColor}}" />
         
         <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveColor}}" />
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveColor}}" />
         </Style>
         
         <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.ActiveBgColor}}" />
@@ -55,7 +55,7 @@
         
         <Style Selector="^[IsWindowActive=False]">
             <Style Selector="^ /template/ atom|IconPresenter">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:ChromeTokenKey.InactiveColor}}" />
             </Style>
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:ChromeTokenKey.InactiveBgColor}}" />

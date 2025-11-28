@@ -117,8 +117,8 @@
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit Watermark="Enter your username"
-                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
-                               InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}" />
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, StrokeBrush=#D7D7D7}"
+                               InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, StrokeBrush=#8C8C8C}" />
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
             </StackPanel>
@@ -230,7 +230,7 @@
                                  HorizontalAlignment="Left"
                                  SearchButtonStyle="Primary"
                                  SearchButtonText="搜索一下"
-                                 InnerRightContent="{antdicons:AntDesignIconProvider Kind=AudioOutlined, FillBrush=#1677ff, Width=16, Height=16}"
+                                 InnerRightContent="{antdicons:AntDesignIconProvider Kind=AudioOutlined, StrokeBrush=#1677ff, Width=16, Height=16}"
                                  IsEnableClearButton="True"
                                  SizeType="Large" />
                 <atom:Separator Title="Filled" />

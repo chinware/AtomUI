@@ -15,7 +15,7 @@
                                LastChildFill="True">
                         <atom:IconPresenter Name="IconPresenter"
                                             DockPanel.Dock="Left"
-                                            Foreground="{TemplateBinding Foreground}"
+                                            IconBrush="{TemplateBinding Foreground}"
                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                             IsMotionEnabled="False"
                                             Icon="{TemplateBinding Icon}" />

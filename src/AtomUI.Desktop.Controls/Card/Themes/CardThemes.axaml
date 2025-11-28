@@ -8,5 +8,6 @@
         <ResourceInclude Source="CardMetaContentTheme.axaml" />
         <ResourceInclude Source="CardGridItemTheme.axaml" />
         <ResourceInclude Source="CardGridContentTheme.axaml" />
+        <ResourceInclude Source="CardActionButtonTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

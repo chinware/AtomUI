@@ -19,15 +19,15 @@
                         Padding="{TemplateBinding Padding}">
                     <StackPanel Orientation="Horizontal">
                         <atom:IconPresenter Name="ItemIconPresenter"
-                                            Icon="{TemplateBinding Icon}"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                             Icon="{TemplateBinding Icon}"
+                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter Name="ContentPresenter"
                                           Content="{TemplateBinding Header}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static atom:BaseTabItemTheme.StringToTextBlockConverter}}" />
                         <atom:IconButton Name="{x:Static atom:TabItemThemeConstants.ItemCloseButtonPart}"
-                                         Icon="{TemplateBinding CloseIcon}" 
+                                         Icon="{TemplateBinding CloseIcon}"
                                          Opacity="{TemplateBinding CloseButtonOpacity}"
-                                         VerticalAlignment="Center"/>
+                                         VerticalAlignment="Center" />
                     </StackPanel>
                 </Border>
             </ControlTemplate>
@@ -72,7 +72,7 @@
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}" />
             </Style>
         </Style>
-        
+
         <!-- 分为上、右、下、左 -->
         <Style Selector="^[TabStripPlacement=Top]">
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">

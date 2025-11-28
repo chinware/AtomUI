@@ -19,7 +19,8 @@
                             <antdicons:CheckBoldOutlined Name="CheckedMark"
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center" 
-                                                         Foreground="{TemplateBinding CheckedMarkBrush}"
+                                                         StrokeBrush="{TemplateBinding CheckedMarkBrush}"
+                                                         IsMotionEnabled="False"
                                                          RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
                                                          RenderTransformOrigin="{x:Static RelativePoint.Center}"
                                                          IsVisible="False"/>

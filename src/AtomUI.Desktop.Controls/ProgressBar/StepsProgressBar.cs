@@ -362,22 +362,22 @@ public class StepsProgressBar : AbstractLineProgress
         if (ShowProgressInfo)
         {
             var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
-            if (_layoutTransformLabel is not null)
+            if (LayoutTransformLabel is not null)
             {
-                Canvas.SetTop(_layoutTransformLabel, extraInfoRect.Top);
-                Canvas.SetLeft(_layoutTransformLabel, extraInfoRect.Left);
+                Canvas.SetTop(LayoutTransformLabel, extraInfoRect.Top);
+                Canvas.SetLeft(LayoutTransformLabel, extraInfoRect.Left);
             }
 
-            if (_successCompletedIconPresenter is not null)
+            if (SuccessCompletedIconPresenter is not null)
             {
-                Canvas.SetLeft(_successCompletedIconPresenter, extraInfoRect.Left);
-                Canvas.SetTop(_successCompletedIconPresenter, extraInfoRect.Top);
+                Canvas.SetLeft(SuccessCompletedIconPresenter, extraInfoRect.Left);
+                Canvas.SetTop(SuccessCompletedIconPresenter, extraInfoRect.Top);
             }
 
-            if (_exceptionCompletedIconPresenter is not null)
+            if (ExceptionCompletedIconPresenter is not null)
             {
-                Canvas.SetLeft(_exceptionCompletedIconPresenter, extraInfoRect.Left);
-                Canvas.SetTop(_exceptionCompletedIconPresenter, extraInfoRect.Top);
+                Canvas.SetLeft(ExceptionCompletedIconPresenter, extraInfoRect.Left);
+                Canvas.SetTop(ExceptionCompletedIconPresenter, extraInfoRect.Top);
             }
         }
 

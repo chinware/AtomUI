@@ -53,7 +53,7 @@
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         VerticalAlignment="Center" Spacing="5">
-                                <antdicons:CloseCircleFilled Foreground="Red" Width="16" Height="16" />
+                                <antdicons:CloseCircleFilled FillBrush="Red" Width="16" Height="16" />
                                 <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">二维码过期</atom:TextBlock>
                             </StackPanel>
                             <atom:Button HorizontalAlignment="Center"
@@ -68,7 +68,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Spacing="5">
-                            <antdicons:CheckCircleFilled Foreground="Green" Width="16" Height="16" />
+                            <antdicons:CheckCircleFilled FillBrush="Green" Width="16" Height="16" />
                             <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">已扫描</atom:TextBlock>
                         </StackPanel>
                     </atom:QRCode.ScannedContent>

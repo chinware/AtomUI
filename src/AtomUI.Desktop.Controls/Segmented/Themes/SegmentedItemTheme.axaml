@@ -13,8 +13,8 @@
                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True">
                         <atom:IconPresenter Name="{x:Static atom:SegmentedItemThemeConstants.IconPresenterPart}"
-                                            Icon="{TemplateBinding Icon}"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                             Icon="{TemplateBinding Icon}"
+                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter Name="{x:Static atom:SegmentedItemThemeConstants.ContentPart}"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
@@ -29,7 +29,7 @@
         <Style Selector="^[IsEnabled=True]">
             <Setter Property="Cursor" Value="Hand" />
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemColor}}" />
             </Style>
 
@@ -40,7 +40,7 @@
                         Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedBg}}" />
 
                 <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                    <Setter Property="Foreground"
+                    <Setter Property="IconBrush"
                             Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
                 </Style>
             </Style>
@@ -55,7 +55,7 @@
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverBg}}" />
                     <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                        <Setter Property="Foreground"
+                        <Setter Property="IconBrush"
                                 Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemHoverColor}}" />
                     </Style>
                 </Style>
@@ -64,7 +64,7 @@
                     <Setter Property="Background"
                             Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemActiveBg}}" />
                     <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
-                        <Setter Property="Foreground"
+                        <Setter Property="IconBrush"
                                 Value="{DynamicResource {x:Static atom:SegmentedTokenKey.ItemSelectedColor}}" />
                     </Style>
                 </Style>

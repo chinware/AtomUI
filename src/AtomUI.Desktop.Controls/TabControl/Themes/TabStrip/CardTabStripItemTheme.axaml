@@ -19,15 +19,15 @@
                         Margin="{TemplateBinding Margin}">
                     <StackPanel Name="ContentLayout" Orientation="Horizontal">
                         <atom:IconPresenter Name="ItemIconPresenter"
-                                            Icon="{TemplateBinding Icon}"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                             Icon="{TemplateBinding Icon}"
+                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter Name="ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
                         <atom:IconButton Name="{x:Static atom:TabStripItemThemeConstants.ItemCloseButtonPart}"
                                          Icon="{TemplateBinding CloseIcon}"
-                                         Opacity="{TemplateBinding CloseButtonOpacity}" 
-                                         VerticalAlignment="Center"/>
+                                         Opacity="{TemplateBinding CloseButtonOpacity}"
+                                         VerticalAlignment="Center" />
                     </StackPanel>
                 </Border>
             </ControlTemplate>
@@ -72,8 +72,7 @@
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.VerticalItemPadding}}" />
             </Style>
         </Style>
-
-        <!-- BuildPlacementStyle begin -->
+        
         <!-- 设置 items presenter 面板样式 -->
         <!-- 分为上、右、下、左 -->
         <Style Selector="^[TabStripPlacement=Top]">
@@ -99,7 +98,6 @@
                 <Setter Property="HorizontalAlignment" Value="Center" />
             </Style>
         </Style>
-        <!-- BuildPlacementStyle end -->
 
         <Style Selector="^:disabled">
             <Setter Property="Background"

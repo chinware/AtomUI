@@ -512,7 +512,9 @@ internal class AddOnDecoratedBox : ContentControl,
                 x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
                  .OfType<PathIcon>()));
             
-            iconStyle.Add(ForegroundProperty, SharedTokenKey.ColorWarning);
+            iconStyle.Add(Icon.FillBrushProperty, SharedTokenKey.ColorWarning);
+            iconStyle.Add(Icon.StrokeBrushProperty, SharedTokenKey.ColorWarning);
+            iconStyle.Add(Icon.ForegroundProperty, SharedTokenKey.ColorWarning);
             warningStyle.Add(iconStyle);
             Styles.Add(warningStyle);
         }
@@ -530,7 +532,9 @@ internal class AddOnDecoratedBox : ContentControl,
                 x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
                  .OfType<PathIcon>()));
             
-            iconStyle.Add(ForegroundProperty, SharedTokenKey.ColorError);
+            iconStyle.Add(Icon.FillBrushProperty, SharedTokenKey.ColorError);
+            iconStyle.Add(Icon.StrokeBrushProperty, SharedTokenKey.ColorError);
+            iconStyle.Add(Icon.ForegroundProperty, SharedTokenKey.ColorError);
             errorStyle.Add(iconStyle);
             Styles.Add(errorStyle);
         }
@@ -553,7 +557,10 @@ internal class AddOnDecoratedBox : ContentControl,
                  .OfType<Icon>(),
                 x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.RightAddOnPart).Descendant()
                  .OfType<PathIcon>()));
-            iconStyle.Add(ForegroundProperty, SharedTokenKey.ColorTextDisabled);
+      
+            iconStyle.Add(Icon.FillBrushProperty, SharedTokenKey.ColorTextDisabled);
+            iconStyle.Add(Icon.StrokeBrushProperty, SharedTokenKey.ColorTextDisabled);
+            iconStyle.Add(Icon.ForegroundProperty, SharedTokenKey.ColorTextDisabled);
             disabledStyle.Add(iconStyle);
             Styles.Add(disabledStyle);
         }

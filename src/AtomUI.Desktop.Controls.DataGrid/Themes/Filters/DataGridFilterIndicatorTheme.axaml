@@ -9,40 +9,42 @@
             <themes:IconButtonTheme TargetType="atom:DataGridFilterIndicator" />
         </ControlTheme.BasedOn>
 
-        <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-        <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
-        <Setter Property="Padding"
-                Value="{DynamicResource {x:Static atom:DataGridTokenKey.FilterIndicatorPadding}}" />
-        <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
+        <Style Selector="^:is(atom|DataGridFilterIndicator)">
+            <Setter Property="IconWidth" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="IconHeight" Value="{DynamicResource {x:Static atom:SharedTokenKey.IconSizeSM}}" />
+            <Setter Property="Padding"
+                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.FilterIndicatorPadding}}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}" />
 
-        <Style Selector="^[IsFilterActivated=True]">
-            <Setter Property="IconBrush"
-                    Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-
-            <Style Selector="^:pointerover">
+            <Style Selector="^[IsFilterActivated=True]">
                 <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+
+                <Style Selector="^:pointerover">
+                    <Setter Property="IconBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="IconBrush"
+                            Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+                </Style>
+
             </Style>
 
-            <Style Selector="^:pressed">
+            <Style Selector="^[IsFilterActivated=False]">
                 <Setter Property="IconBrush"
-                        Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
-            </Style>
+                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
 
-        </Style>
+                <Style Selector="^:pointerover">
+                    <Setter Property="IconBrush"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
+                </Style>
 
-        <Style Selector="^[IsFilterActivated=False]">
-            <Setter Property="IconBrush"
-                    Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconColor}}" />
-
-            <Style Selector="^:pointerover">
-                <Setter Property="IconBrush"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
-            </Style>
-
-            <Style Selector="^:pressed">
-                <Setter Property="IconBrush"
-                        Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
+                <Style Selector="^:pressed">
+                    <Setter Property="IconBrush"
+                            Value="{DynamicResource {x:Static atom:DataGridTokenKey.HeaderIconHoverColor}}" />
+                </Style>
             </Style>
         </Style>
 

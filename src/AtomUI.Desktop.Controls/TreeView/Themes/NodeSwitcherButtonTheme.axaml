@@ -57,8 +57,9 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="CornerRadius" Value="{DynamicResource {x:Static atom:SharedTokenKey.BorderRadius}}"/>
 
-        <Style Selector="^ /template/ atom|IconPresenter">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+        <Style Selector="^ /template/ atom|IconPresenter atom|Icon">
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorTextSecondary}}"/>
         </Style>
         
         <Style Selector="^:pointerover">

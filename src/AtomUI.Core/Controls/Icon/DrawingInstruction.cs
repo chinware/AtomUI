@@ -26,7 +26,7 @@ public abstract class DrawingInstruction
             return null;
         }
 
-        var pen = new Pen(icon.GetIconBrush(StrokeBrush.Value));
+        var pen = new Pen(icon.FindIconBrush(StrokeBrush.Value));
         if (IsStrokeWidthCustomizable)
         {
             pen.Thickness = icon.StrokeWidth;
@@ -56,7 +56,7 @@ public class RectDrawingInstruction : DrawingInstruction
         IBrush? fillBrush = null;
         if (FillBrush != null)
         {
-            fillBrush = icon.GetIconBrush(FillBrush.Value);
+            fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
         var       pen       = BuildPen(icon);
         var       transform = Transform ?? Matrix.Identity;
@@ -75,7 +75,7 @@ public class CircleDrawingInstruction : DrawingInstruction
         IBrush? fillBrush = null;
         if (FillBrush != null)
         {
-            fillBrush = icon.GetIconBrush(FillBrush.Value);
+            fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
         var       pen       = BuildPen(icon);
         var       transform = Transform ?? Matrix.Identity;
@@ -95,7 +95,7 @@ public class EllipseDrawingInstruction : DrawingInstruction
         IBrush? fillBrush = null;
         if (FillBrush != null)
         {
-            fillBrush = icon.GetIconBrush(FillBrush.Value);
+            fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
         var       pen       = BuildPen(icon);
         var       transform = Transform ?? Matrix.Identity;
@@ -146,7 +146,7 @@ public class PolygonDrawingInstruction : DrawingInstruction
         IBrush? fillBrush = null;
         if (FillBrush != null)
         {
-            fillBrush = icon.GetIconBrush(FillBrush.Value);
+            fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
         var       pen       = BuildPen(icon);
         var       transform = Transform ?? Matrix.Identity;
@@ -172,7 +172,7 @@ public class PathDrawingInstruction : DrawingInstruction
         IBrush? fillBrush = null;
         if (FillBrush != null)
         {
-            fillBrush = icon.GetIconBrush(FillBrush.Value);
+            fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
         var       pen       = BuildPen(icon);
         var       transform = Transform ?? Matrix.Identity;

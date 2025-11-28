@@ -220,6 +220,8 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultInfoIconColor);
+            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKey.ResultInfoIconColor);
+            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKey.ResultInfoIconColor);
             infoStyle.Add(iconStyle);
         }
         
@@ -230,6 +232,8 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultSuccessIconColor);
+            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKey.ResultSuccessIconColor);
+            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKey.ResultSuccessIconColor);
             successStyle.Add(iconStyle);
         }
         
@@ -240,6 +244,8 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultWarningIconColor);
+            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKey.ResultWarningIconColor);
+            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKey.ResultWarningIconColor);
             warningStyle.Add(iconStyle);
         }
         
@@ -250,6 +256,8 @@ public class Result : ContentControl, IControlSharedTokenResourcesHost
         {
             var iconStyle = new Style(x => x.Nesting().Descendant().Name(ResultThemeConstants.StatusIconPresenterPart).Child());
             iconStyle.Add(ForegroundProperty, ResultTokenKey.ResultErrorIconColor);
+            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKey.ResultErrorIconColor);
+            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKey.ResultErrorIconColor);
             errorStyle.Add(iconStyle);
         }
         

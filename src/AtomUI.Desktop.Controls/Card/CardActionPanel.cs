@@ -1,11 +1,7 @@
 using System.Collections.Specialized;
-using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -28,7 +24,6 @@ internal class CardActionPanel : TemplatedControl
     public Avalonia.Controls.Controls Actions { get; } = new ();
 
     private UniformGrid? _uniformGrid;
-    private readonly Dictionary<object, CompositeDisposable> _itemsBindingDisposables = new();
     
     static CardActionPanel()
     {
@@ -49,10 +44,6 @@ internal class CardActionPanel : TemplatedControl
             _uniformGrid.SetCurrentValue(UniformGrid.ColumnsProperty, Actions.Count);
             foreach (var action in Actions)
             {
-                if (action is IconButton iconButton)
-                {
-                    ConfigureIconButtonBindings(iconButton);
-                }
                 _uniformGrid.Children.Add(action);
             }
         }
@@ -80,36 +71,17 @@ internal class CardActionPanel : TemplatedControl
                 case NotifyCollectionChangedAction.Add:
                     var newItems = e.NewItems!.OfType<Control>().ToList();
                     _uniformGrid.Children.InsertRange(e.NewStartingIndex, newItems);
-                    foreach (var item in newItems)
-                    {
-                        if (item is IconButton iconButton)
-                        {
-                            ConfigureIconButtonBindings(iconButton);
-                        }
-                    }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     var oldItems = e.OldItems!.OfType<Control>().ToList();
                     _uniformGrid.Children.RemoveAll(oldItems);
-                    foreach (var item in oldItems)
-                    {
-                        DisposeIconButtonBindings(item);
-                    }
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     for (int index1 = 0; index1 < e.OldItems!.Count; ++index1)
                     {
                         var oldItem = e.OldItems![index1];
-                        if (oldItem is not null)
-                        {
-                            DisposeIconButtonBindings(oldItem);
-                        }
                         int     index2  = index1 + e.OldStartingIndex;
                         Control newItem = (Control) e.NewItems![index1]!;
-                        if (newItem is IconButton newIconButton)
-                        {
-                            ConfigureIconButtonBindings(newIconButton);
-                        }
                         _uniformGrid.Children[index2] = newItem;
                     }
                     break;
@@ -119,32 +91,6 @@ internal class CardActionPanel : TemplatedControl
                 case NotifyCollectionChangedAction.Reset:
                     throw new NotSupportedException();
             }
-        }
-    }
-
-    private void ConfigureIconButtonBindings(IconButton iconButton)
-    {
-        var disposables = new CompositeDisposable(4);
-        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, iconButton, IsMotionEnabledProperty));
-        disposables.Add(TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.IconWidthProperty, CardTokenKey.CardActionsIconSize));
-        disposables.Add(TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.IconHeightProperty, CardTokenKey.CardActionsIconSize));
-        disposables.Add(TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.NormalIconBrushProperty, SharedTokenKey.ColorIcon));
-        disposables.Add(TokenResourceBinder.CreateTokenBinding(iconButton, IconButton.ActiveIconBrushProperty, SharedTokenKey.ColorPrimary));
-        
-        if (_itemsBindingDisposables.TryGetValue(iconButton, out var oldDisposables))
-        {
-            oldDisposables.Dispose();
-            _itemsBindingDisposables.Remove(iconButton);
-        }
-        _itemsBindingDisposables.Add(iconButton, disposables);
-    }
-
-    private void DisposeIconButtonBindings(object iconButton)
-    {
-        if (_itemsBindingDisposables.TryGetValue(iconButton, out var disposable))
-        {
-            disposable.Dispose();
-            _itemsBindingDisposables.Remove(iconButton);
         }
     }
     

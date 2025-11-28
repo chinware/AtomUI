@@ -6,21 +6,16 @@
     x:CompileBindings="True">
 
     <ControlTheme x:Key="{x:Type gallerycontrols:IconInfoItem}" TargetType="gallerycontrols:IconInfoItem">
-        <Setter Property="Height" Value="150" />
-        <Setter Property="Width" Value="150" />
-        <Setter Property="Margin" Value="10" />
         <Setter Property="Template">
             <ControlTemplate TargetType="gallerycontrols:IconInfoItem">
                 <Border
                     Width="{TemplateBinding Width}"
                     Height="{TemplateBinding Height}"
                     Background="{TemplateBinding Background}">
-                    <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                         <atom:IconPresenter
                             HorizontalAlignment="Center"
-                            Icon="{TemplateBinding Icon}"
-                            Width="48"
-                            Height="48"/>
+                            Icon="{TemplateBinding Icon}"/>
                         <atom:TextBlock
                             Margin="0,20, 0, 0"
                             Padding="8"
@@ -32,5 +27,13 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        <Setter Property="Height" Value="150" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="Margin" Value="10" />
+        
+        <Style Selector="^ /template/ atom|IconPresenter">
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Width" Value="48" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

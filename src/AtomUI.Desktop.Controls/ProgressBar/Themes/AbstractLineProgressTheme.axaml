@@ -37,16 +37,16 @@
         <Setter Property="LineProgressPadding" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineProgressPadding}}" />
         <Setter Property="LineExtraInfoMargin" Value="{DynamicResource {x:Static atom:ProgressBarTokenKey.LineExtraInfoMargin}}" />
         
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ExceptionCompletedIconPresenter">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
+        <Style Selector="^ /template/ atom|IconPresenter#PARTExceptionCompletedIconPresenter">
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorError}}" />
         </Style>
         
-        <Style Selector="^ /template/ atom|IconPresenter#PART_SuccessCompletedIconPresenter">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
+        <Style Selector="^ /template/ atom|IconPresenter#PARTSuccessCompletedIconPresenter">
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorSuccess}}" />
         </Style>
         
         <Style Selector="^ /template/ atom|IconPresenter:disabled">
-            <Setter Property="Foreground"
+            <Setter Property="IconBrush"
                     Value="{DynamicResource {x:Static atom:SharedTokenKey.ControlItemBgActiveDisabled}}" />
         </Style>
         

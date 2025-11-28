@@ -39,13 +39,13 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemIconMargin}}" />
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
+            <Setter Property="IconBrush" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemColor}}" />
         </Style>
 
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemHoverColor}}" />
             </Style>
         </Style>
@@ -53,7 +53,7 @@
         <Style Selector="^:selected">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
             <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="Foreground"
+                <Setter Property="IconBrush"
                         Value="{DynamicResource {x:Static atom:TabControlTokenKey.ItemSelectedColor}}" />
             </Style>
         </Style>

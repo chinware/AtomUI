@@ -8,8 +8,7 @@
             <ControlTemplate>
                 <atom:IconPresenter
                     Name="{x:Static atom:TimelineIndicatorThemeConstants.IconPresenterPart}"
-                    Icon="{TemplateBinding IndicatorIcon}"
-                    Foreground="{TemplateBinding IndicatorColor}"/>
+                    Icon="{TemplateBinding IndicatorIcon}"/> 
             </ControlTemplate>
         </Setter>
         
@@ -23,6 +22,11 @@
         <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
             <Setter Property="Width" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
             <Setter Property="Height" Value="{DynamicResource {x:Static atom:TimelineTokenKey.IndicatorSize}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter atom|Icon">
+            <Setter Property="FillBrush" Value="{TemplateBinding IndicatorColor}"/>
+            <Setter Property="StrokeBrush" Value="{TemplateBinding IndicatorColor}"/>
         </Style>
         
     </ControlTheme>
