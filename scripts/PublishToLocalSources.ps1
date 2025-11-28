@@ -46,7 +46,7 @@ dotnet build -v diag --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
-dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.Generator/AtomUI.Icons.Shared.csproj
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
 
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Core/AtomUI.Core.csproj
@@ -54,7 +54,7 @@ dotnet pack --no-build --configuration $buildType ../src/AtomUI.Fonts.AlibabaSan
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
-dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.Generator/AtomUI.Icons.Shared.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
 
 Push-NuGetPackages -Source $localSourcesDir

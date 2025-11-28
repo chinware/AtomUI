@@ -35,6 +35,7 @@
         <PackageVersion Include="AtomUI.Controls.Shared" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Generator" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Icons.AntDesign" Version="$(AtomUIVersion)"/>
+        <PackageVersion Include="AtomUI.Icons.Shared" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Desktop.Controls" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Desktop.Controls.ColorPicker" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Desktop.Controls.DataGrid" Version="$(AtomUIVersion)"/>

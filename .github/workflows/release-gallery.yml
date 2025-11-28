@@ -70,6 +70,10 @@ jobs:
                brew install create-dmg
                Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-x64
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
+            with:
+               dotnet-version: '10.0.x'
          -  name: Build DMG for osx-x64
             shell: pwsh
             run: |
@@ -97,7 +101,7 @@ jobs:
             with:
                name: dmg-packages-osx-x64
                path: ${{ env.GalleryArtifactsOutputDir }}/dmg/x64/*.dmg
-               
+   
    BuildAtomUIGalleryDmgArm64Installers:
       name: Build macOS arm64 DMG Installer
       runs-on: macos-latest
@@ -127,6 +131,10 @@ jobs:
 
                Write-Host "Installed certificates:"
                security find-identity -v -p codesigning
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
+            with:
+               dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v4.2.2
             with:
@@ -173,7 +181,7 @@ jobs:
             with:
                name: dmg-packages-osx-arm64
                path: ${{ env.GalleryArtifactsOutputDir }}/dmg/arm64/*.dmg
-            
+   
    BuildAtomUIGalleryAppImageX64Installers:
       name: Build Linux X64 AppImage Installer
       runs-on: qinware-ubuntu-latest
@@ -205,12 +213,10 @@ jobs:
                
                linuxdeploy --version
                appimagetool --version
-               
-         -  name: Setup .NET 9
-            uses: actions/setup-dotnet@v4
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
             with:
-               dotnet-version: '9.0.x'
-               
+               dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v4.2.2
             with:
@@ -223,7 +229,7 @@ jobs:
             run: |
                Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
                ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime linux-x64
-               
+
          -  name: Build AppImage for linux-x64
             shell: pwsh
             run: |
@@ -253,7 +259,7 @@ jobs:
             with:
                name: linux-appimage-x86_64
                path: ${{ env.GalleryArtifactsOutputDir }}/appimage/x64/*.AppImage
-               
+   
    BuildAtomUIGalleryAppImageArm64Installers:
       name: Build Linux Arm64 AppImage Installer
       runs-on: qinware-ubuntu-arm64-latest
@@ -285,12 +291,10 @@ jobs:
 
                linuxdeploy --version
                appimagetool --version
-
-         -  name: Setup .NET 9
-            uses: actions/setup-dotnet@v4
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
             with:
-               dotnet-version: '9.0.x'
-
+               dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v4.2.2
             with:
@@ -333,7 +337,7 @@ jobs:
             with:
                name: linux-appimage-arm64
                path: ${{ env.GalleryArtifactsOutputDir }}/appimage/arm64/*.AppImage
-               
+   
    BuildAtomUIGalleryWindowsX64Zip:
       name: Build Windows X86_64 Zip Package
       runs-on: windows-latest
@@ -350,6 +354,10 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/zip/x64" -Force
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
+            with:
+               dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v4.2.2
             with:
@@ -404,6 +412,11 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/zip/arm64" -Force
+
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
+            with:
+               dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v4.2.2
             with:

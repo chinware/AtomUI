@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <AtomUIDevelopTargetFramework>net9.0</AtomUIDevelopTargetFramework>
+        <AtomUIDevelopTargetFramework>net10.0</AtomUIDevelopTargetFramework>
         <AtomUIProductionTargetFramework>net8.0</AtomUIProductionTargetFramework>
         <OutputType>Library</OutputType>
         <TrimMode>copyused</TrimMode>
