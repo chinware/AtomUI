@@ -1,4 +1,5 @@
 using System.Xml;
+using Avalonia;
 
 namespace AtomUI.Icons;
 
@@ -23,6 +24,7 @@ public class SvgParser
     private const string YAttrName = "y";
     private const string WidthAttrName = "width";
     private const string HeightAttrName = "height";
+    private const string RadiusAttrName = "r";
     private const string RXAttrName = "rx";
     private const string RYAttrName = "ry";
     private const string CXAttrName = "cx";
@@ -32,6 +34,7 @@ public class SvgParser
     private const string Y1AttrName = "y1";
     private const string X2AttrName = "x2";
     private const string Y2AttrName = "y2";
+    private const string OpacityAttrName = "opacity";
     
     private List<SvgGraphicElement>? _graphicElements;
     private ViewBox _viewBox = new ();
@@ -73,7 +76,7 @@ public class SvgParser
             return new SvgParsedInfo
             {
                 GraphicElements = _graphicElements,
-                ViewBox   = _viewBox
+                ViewBox         = _viewBox
             };
         }
         finally
@@ -106,6 +109,31 @@ public class SvgParser
             return HandleStartRectElement(reader);
         }
 
+        if (name == CircleElementName)
+        {
+            return HandleStartCircleElement(reader);
+        }
+
+        if (name == EllipseElementName)
+        {
+            return HandleStartEllipseElement(reader);
+        }
+
+        if (name == LineElementName)
+        {
+            return HandleLineElement(reader);
+        }
+
+        if (name == PolylineElementName)
+        {
+            return HandlePolylineElement(reader);
+        }
+
+        if (name == PolygonElementName)
+        {
+            return HandlePolygonElement(reader);
+        }
+        
         return false;
     }
 
@@ -137,21 +165,11 @@ public class SvgParser
 
     private bool HandleStartPathElement(XmlReader reader)
     {
-        var data      = reader.GetAttribute(DataAttrName);
-        var fillColor = reader.GetAttribute(FillAttrName);
-        var pathElement  = new PathElement(data!, fillColor);
-        if (_groupInfoStack?.Count > 0)
-        {
-            var groupInfo = _groupInfoStack.Peek();
-            pathElement.Transform = groupInfo.Transform;
-        }
-        // 暂时自己的优先级大
-        var transform = reader.GetAttribute(TransformAttrName);
-        if (!string.IsNullOrEmpty(transform))
-        {
-            pathElement.Transform = transform;
-        }
-        _graphicElements!.Add(pathElement);
+        var data        = reader.GetAttribute(DataAttrName);
+        var pathElement = new PathElement();
+        pathElement.Data = data;
+        ParseElementCommonAttributes(pathElement, reader);
+        _graphicElements?.Add(pathElement);
         return false;
     }
     
@@ -168,21 +186,216 @@ public class SvgParser
     private bool HandleStartRectElement(XmlReader reader)
     {
         var rectElement = new RectElement();
+        ParseElementCommonAttributes(rectElement, reader);
+        var widthStr  = reader.GetAttribute(WidthAttrName);
+        var heightStr = reader.GetAttribute(HeightAttrName);
+        if (!string.IsNullOrEmpty(widthStr) && double.TryParse(widthStr, out var width))
+        {
+            rectElement.Width = width;
+        }
+
+        if (!string.IsNullOrEmpty(heightStr) && double.TryParse(heightStr, out var height))
+        {
+            rectElement.Height = height;
+        }
+        var xStr =  reader.GetAttribute(XAttrName);
+        var yStr =  reader.GetAttribute(YAttrName);
+        if (!string.IsNullOrEmpty(xStr) && double.TryParse(xStr, out var x))
+        {
+            rectElement.X = x;
+        }
+
+        if (!string.IsNullOrEmpty(yStr) && double.TryParse(yStr, out var y))
+        {
+            rectElement.Y = y;
+        }
+        
+        var rxStr = reader.GetAttribute(RXAttrName);
+        var ryStr = reader.GetAttribute(RYAttrName);
+        if (!string.IsNullOrEmpty(rxStr) && double.TryParse(rxStr, out var rx))
+        {
+            rectElement.RadiusX = rx;
+        }
+
+        if (!string.IsNullOrEmpty(ryStr) && double.TryParse(ryStr, out var ry))
+        {
+            rectElement.RadiusY = ry;
+        }
+
+        _graphicElements?.Add(rectElement);
+        return false;
+    }
+
+    private bool HandleStartCircleElement(XmlReader reader)
+    {
+        var circleElement = new CircleElement();
+        ParseElementCommonAttributes(circleElement, reader);
+
+        var radiusStr = reader.GetAttribute(RadiusAttrName);
+        if (!string.IsNullOrEmpty(radiusStr) && double.TryParse(radiusStr, out var radius))
+        {
+            circleElement.Radius = radius;
+        }
+        
+        var cxStr = reader.GetAttribute(CXAttrName);
+        var cyStr = reader.GetAttribute(CYAttrName);
+        if (!string.IsNullOrEmpty(cxStr) && double.TryParse(cxStr, out var cx))
+        {
+            circleElement.CenterX = cx;
+        }
+
+        if (!string.IsNullOrEmpty(cyStr) && double.TryParse(cyStr, out var cy))
+        {
+            circleElement.CenterY = cy;
+        }
+        
+        _graphicElements?.Add(circleElement);
+        return false;
+    }
+    
+    private bool HandleStartEllipseElement(XmlReader reader)
+    {
+        var ellipseElement = new EllipseElement();
+        ParseElementCommonAttributes(ellipseElement, reader);
+
+        var rxStr = reader.GetAttribute(RXAttrName);
+        if (!string.IsNullOrEmpty(rxStr) && double.TryParse(rxStr, out var rx))
+        {
+            ellipseElement.RadiusX = rx;
+        }
+        
+        var ryStr = reader.GetAttribute(RYAttrName);
+        if (!string.IsNullOrEmpty(ryStr) && double.TryParse(ryStr, out var ry))
+        {
+            ellipseElement.RadiusY = ry;
+        }
+        
+        var cxStr = reader.GetAttribute(CXAttrName);
+        var cyStr = reader.GetAttribute(CYAttrName);
+        if (!string.IsNullOrEmpty(cxStr) && double.TryParse(cxStr, out var cx))
+        {
+            ellipseElement.CenterX = cx;
+        }
+
+        if (!string.IsNullOrEmpty(cyStr) && double.TryParse(cyStr, out var cy))
+        {
+            ellipseElement.CenterY = cy;
+        }
+        
+        _graphicElements?.Add(ellipseElement);
+        return false;
+    }
+
+    private bool HandleLineElement(XmlReader reader)
+    {
+        var lineElement = new LineElement();
+        ParseElementCommonAttributes(lineElement, reader);
+        var x1Str = reader.GetAttribute(X1AttrName);
+        if (!string.IsNullOrEmpty(x1Str) && double.TryParse(x1Str, out var x1))
+        {
+            lineElement.X1 = x1;
+        }
+        var y1Str = reader.GetAttribute(Y1AttrName);
+        if (!string.IsNullOrEmpty(y1Str) && double.TryParse(y1Str, out var y1))
+        {
+            lineElement.Y1 = y1;
+        }
+        
+        var x2Str = reader.GetAttribute(X2AttrName);
+        if (!string.IsNullOrEmpty(x2Str) && double.TryParse(x2Str, out var x2))
+        {
+            lineElement.X2 = x2;
+        }
+        var y2Str = reader.GetAttribute(Y2AttrName);
+        if (!string.IsNullOrEmpty(y2Str) && double.TryParse(y2Str, out var y2))
+        {
+            lineElement.Y2 = y2;
+        }
+        _graphicElements?.Add(lineElement);
+        return false;
+    }
+    
+    private bool HandlePolylineElement(XmlReader reader)
+    {
+        var polylineElement = new PolylineElement();
+        ParseElementCommonAttributes(polylineElement, reader);
+        
+        var pointsStr = reader.GetAttribute(PointsAttrName);
+
+        if (!string.IsNullOrEmpty(pointsStr))
+        {
+            polylineElement.Points =  pointsStr.Split(' ')
+                                               .Select(coord => 
+                                               {
+                                                   var parts = coord.Split(',');
+                                                   if (parts.Length == 2 && 
+                                                       int.TryParse(parts[0], out int x) && 
+                                                       int.TryParse(parts[1], out int y))
+                                                   {
+                                                       return new Point(x, y);
+                                                   }
+                                                   throw new FormatException($"Invalid coordinate format: {coord}");
+                                               })
+                                               .ToList();
+        }
+        _graphicElements?.Add(polylineElement);
+        return false;
+    }
+    
+    private bool HandlePolygonElement(XmlReader reader)
+    {
+        var polygonElement = new PolygonElement();
+        ParseElementCommonAttributes(polygonElement, reader);
+        
+        var pointsStr = reader.GetAttribute(PointsAttrName);
+
+        if (!string.IsNullOrEmpty(pointsStr))
+        {
+            polygonElement.Points =  pointsStr.Split(' ')
+                                              .Select(coord => 
+                                              {
+                                                  var parts = coord.Split(',');
+                                                  if (parts.Length == 2 && 
+                                                      int.TryParse(parts[0], out int x) && 
+                                                      int.TryParse(parts[1], out int y))
+                                                  {
+                                                      return new Point(x, y);
+                                                  }
+                                                  throw new FormatException($"Invalid coordinate format: {coord}");
+                                              })
+                                              .ToList();
+        }
+        _graphicElements?.Add(polygonElement);
+        return false;
+    }
+
+    private void ParseElementCommonAttributes(SvgGraphicElement element, XmlReader reader)
+    {
         if (_groupInfoStack?.Count > 0)
         {
             var groupInfo = _groupInfoStack.Peek();
-            rectElement.Transform = groupInfo.Transform;
+            element.Transform = groupInfo.Transform;
         }
         // 暂时自己的优先级大
         var transform = reader.GetAttribute(TransformAttrName);
         if (!string.IsNullOrEmpty(transform))
         {
-            rectElement.Transform = transform;
+            element.Transform = transform;
         }
-        _graphicElements!.Add(rectElement);
-        return false;
+        
+        var fillColor   = reader.GetAttribute(FillAttrName);
+        if (!string.IsNullOrEmpty(fillColor))
+        {
+            element.FillColor = fillColor;
+        }
+        
+        var opacityStr = reader.GetAttribute(OpacityAttrName);
+        if (!string.IsNullOrEmpty(opacityStr) && double.TryParse(opacityStr, out var opacity))
+        {
+            element.Opacity = opacity;
+        }
     }
-
+    
     private void HandleEndGroupElement()
     {
         _groupInfoStack?.Pop();
