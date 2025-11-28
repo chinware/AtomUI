@@ -1,6 +1,0 @@
-<?xml version="1.0" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" version="1.1" fill="currentColor">
-    <path d="M17.4,6.6C17,6.2,16.5,6,16,6H4C3.5,6,3,6.2,2.6,6.6S2,7.5,2,8v12c0,0.5,0.2,1,0.6,1.4S3.5,22,4,22h12	c0.5,0,1-0.2,1.4-0.6S18,20.5,18,20V8C18,7.5,17.8,7,17.4,6.6z M16,18H4V8h12V18z"/>
-    <path d="M20,2c0.6,0,1,0.2,1.4,0.6S22,3.4,22,4v14h-2V4H6V2H20z"/>
-    <path d="M16,20V8V20z"/>
-</svg>

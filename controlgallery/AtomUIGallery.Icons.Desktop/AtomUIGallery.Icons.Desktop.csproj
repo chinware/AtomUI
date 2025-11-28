@@ -6,34 +6,17 @@
         <Nullable>enable</Nullable>
         <PublishTrimmed>false</PublishTrimmed>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
-    </ItemGroup>
-
+    
     <ItemGroup>
         <AdditionalFiles Include="Assets/Svg/**/*.svg"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <PackageReference Include="AtomUI.Core"/>
-        <PackageReference Include="AtomUI.Icons.Generator"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"
-                          PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <ProjectReference Include="../../src/AtomUI.Core/AtomUI.Core.csproj"/>
-        <ProjectReference Include="../../src/AtomUI.Icons.Generator/AtomUI.Icons.Generator.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"
-                          PrivateAssets="all"/>
     </ItemGroup>
 
 </Project>

@@ -3,13 +3,9 @@
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
-        <RootNamespace>AtomUI.Icons.AntDesign</RootNamespace>
-        <OutputType>library</OutputType>
+        <RootNamespace>AtomUI.Icons</RootNamespace>
     </PropertyGroup>
-    
     <ItemGroup>
-        <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
+      <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
     </ItemGroup>
-
 </Project>

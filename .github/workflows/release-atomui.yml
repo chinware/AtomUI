@@ -49,7 +49,7 @@ jobs:
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Generator/AtomUI.Generator.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.Generator/AtomUI.Icons.Generator.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
          -  name: Create AtomUI NuGet packages
             shell: pwsh
@@ -60,7 +60,7 @@ jobs:
                   "./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj",
                   "./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj",
                   "./src/AtomUI.Generator/AtomUI.Generator.csproj",
-                  "./src/AtomUI.Icons.Generator/AtomUI.Icons.Generator.csproj",
+                  "./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj",
                   "./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj"
                )
                foreach ($project in $projects) {
