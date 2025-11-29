@@ -1,5 +1,5 @@
 <Application
-    x:Class="AtomUIGallery.BaseGalleryAtomApplication"
+    x:Class="AtomUIGallery.BaseGalleryApplication"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Styles>

@@ -329,8 +329,8 @@ public class SvgParser
                                                {
                                                    var parts = coord.Split(',');
                                                    if (parts.Length == 2 && 
-                                                       int.TryParse(parts[0], out int x) && 
-                                                       int.TryParse(parts[1], out int y))
+                                                       double.TryParse(parts[0], out var x) && 
+                                                       double.TryParse(parts[1], out var y))
                                                    {
                                                        return new Point(x, y);
                                                    }
@@ -356,8 +356,8 @@ public class SvgParser
                                               {
                                                   var parts = coord.Split(',');
                                                   if (parts.Length == 2 && 
-                                                      int.TryParse(parts[0], out int x) && 
-                                                      int.TryParse(parts[1], out int y))
+                                                      double.TryParse(parts[0], out var x) && 
+                                                      double.TryParse(parts[1], out var y))
                                                   {
                                                       return new Point(x, y);
                                                   }

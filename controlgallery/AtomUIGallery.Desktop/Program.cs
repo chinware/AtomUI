@@ -1,5 +1,4 @@
-﻿using AtomUI.Fonts.AlibabaSans;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Media;
 using ReactiveUI.Avalonia;
 
@@ -48,7 +47,7 @@ internal class Program
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<GalleryAtomApplication>()
+        return AppBuilder.Configure<GalleryApplication>()
                          .UseReactiveUI()
                          .UsePlatformDetect()
                          // .WithAlibabaSansFont()

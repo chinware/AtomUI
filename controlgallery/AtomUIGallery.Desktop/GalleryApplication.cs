@@ -5,7 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 namespace AtomUIGallery.Desktop;
 
-public class GalleryAtomApplication : BaseGalleryAtomApplication
+public class GalleryApplication : BaseGalleryApplication
 {
     public override void Initialize()
     {
@@ -22,7 +22,7 @@ public class GalleryAtomApplication : BaseGalleryAtomApplication
         });
     }
 
-    public GalleryAtomApplication()
+    public GalleryApplication()
     {
         Name = "AtomUI Desktop Gallery";
     }

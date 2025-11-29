@@ -39,32 +39,7 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <AvaloniaResource Include="Assets/ATOMUI-LOGO.png"/>
-        <AvaloniaResource Include="Assets/avalonia-logo.ico"/>
-        <AvaloniaResource Include="Assets/EmptyShowCase/empty.svg"/>
-        <AvaloniaResource Include="Assets/AvatarShowCase/AntDesign.svg"/>
-        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar1.svg"/>
-        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar2.svg"/>
-        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar3.svg"/>
-        <AvaloniaResource Include="Assets/AvatarShowCase/PeopleAvatar4.png"/>
-        <AvaloniaResource Include="Assets/CardShowCase/Cover1.png"/>
-        <AvaloniaResource Include="Assets/CardShowCase/Cover2.png"/>
-        <AvaloniaResource Include="Assets/watermark-sample.png"/>
-        <AvaloniaResource Include="Assets/qinware-logo.png"/>
-        <AvaloniaResource Include="Assets/qinware-logo-white.png"/>
-        <AvaloniaResource Include="Assets/qinware-wechatpress.png"/>
-        <AvaloniaResource Include="Assets/atomui-qq.png"/>
-        <AvaloniaResource Include="Assets/atomui-wechat.png"/>
-        <AvaloniaResource Include="Assets/gallery-logo.png"/>
-        <AvaloniaResource Include="Assets/OSLogos/Deepin.svg"/>
-        <AvaloniaResource Include="Assets/OSLogos/Linux.svg"/>
-        <AvaloniaResource Include="Assets/OSLogos/Ubuntu.svg"/>
-        <AvaloniaResource Include="Assets/OSLogos/Windows.svg"/>
-        <AvaloniaResource Include="Assets/OSLogos/MacOS.svg"/>
-    </ItemGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="../AtomUIGallery.Icons.Desktop/AtomUIGallery.Icons.Desktop.csproj" />
     </ItemGroup>

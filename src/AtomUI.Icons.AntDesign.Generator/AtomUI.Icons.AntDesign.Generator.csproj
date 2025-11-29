@@ -8,8 +8,5 @@
     <ItemGroup>
       <ProjectReference Include="../AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="Assets/Svg/**/*.svg"/>
-    </ItemGroup>
+    
 </Project>
