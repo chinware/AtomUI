@@ -123,6 +123,9 @@ public class List : TemplatedControl,
     public static readonly StyledProperty<bool> AutoScrollToSelectedItemProperty =
         SelectingItemsControl.AutoScrollToSelectedItemProperty.AddOwner<List>();
     
+    public static readonly StyledProperty<ITemplate<Panel?>> ItemsPanelProperty = 
+        ItemsControl.ItemsPanelProperty.AddOwner<List>();
+    
     public IEnumerable? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
@@ -328,6 +331,12 @@ public class List : TemplatedControl,
             }
             return null;
         }
+    }
+    
+    public ITemplate<Panel?> ItemsPanel
+    {
+        get => GetValue(ItemsPanelProperty);
+        set => SetValue(ItemsPanelProperty, value);
     }
     
     #endregion

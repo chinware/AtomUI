@@ -1,6 +1,6 @@
 using AtomUI.Theme;
 
-namespace AtomUIGallery.Controls;
+namespace AtomUI.Desktop.Controls;
 
 internal class DesktopControlThemesProvider : ControlThemesProvider
 {
