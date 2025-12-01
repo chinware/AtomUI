@@ -2,6 +2,7 @@ using AtomUI.Controls;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
+using AtomUIGallery.Controls;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Media.Transformation;

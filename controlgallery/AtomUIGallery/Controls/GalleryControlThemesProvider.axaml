@@ -1,0 +1,14 @@
+<atom:ControlThemesProvider xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:atom="https://atomui.net"
+                            x:Class="AtomUIGallery.Controls.GalleryControlThemesProvider"
+                            Id="AtomUIGallery.Controls">
+    <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="ShowCaseItem.axaml" />
+        <ResourceInclude Source="ShowCasePanel.axaml" />
+        <ResourceInclude Source="ColorItemControl.axaml" />
+        <ResourceInclude Source="ColorListControl.axaml" />
+        <ResourceInclude Source="IconGallery.axaml" />
+        <ResourceInclude Source="IconInfoItem.axaml" />
+    </atom:ControlThemesProvider.ControlThemes>
+</atom:ControlThemesProvider>

@@ -2,15 +2,4 @@
     x:Class="AtomUIGallery.BaseGalleryApplication"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Application.Styles>
-        <Styles>
-            <Styles.Resources>
-                <ResourceDictionary>
-                    <ResourceDictionary.MergedDictionaries>
-                        <ResourceInclude Source="Controls/Controls.axaml" />
-                    </ResourceDictionary.MergedDictionaries>
-                </ResourceDictionary>
-            </Styles.Resources>
-        </Styles>
-    </Application.Styles>
 </Application>
