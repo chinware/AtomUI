@@ -14,9 +14,6 @@ public class SvgParser
     private const string PolygonElementName = "polygon";
     private const string PolylineElementName = "polyline";
     private const string GroupElementName = "g";
-    private const string FillAttrName = "fill";
-    private const string DataAttrName = "d";
-    private const string TransformAttrName = "transform";
     private const string ViewBoxAttrName = "viewBox";
     
     // svg 图形元素的属性名称
@@ -35,6 +32,13 @@ public class SvgParser
     private const string X2AttrName = "x2";
     private const string Y2AttrName = "y2";
     private const string OpacityAttrName = "opacity";
+    private const string FillAttrName = "fill";
+    private const string StrokeAttrName = "stroke";
+    private const string StrokeWidthAttrName = "stroke-width";
+    private const string StrokeLineCapAttrName = "stroke-linecap";
+    private const string StrokeLineJoinAttrName = "stroke-linejoin";
+    private const string DataAttrName = "d";
+    private const string TransformAttrName = "transform";
     
     private List<SvgGraphicElement>? _graphicElements;
     private ViewBox _viewBox = new ();
@@ -387,6 +391,30 @@ public class SvgParser
         if (!string.IsNullOrEmpty(fillColor))
         {
             element.FillColor = fillColor;
+        }
+        
+        var strokeColor   = reader.GetAttribute(StrokeAttrName);
+        if (!string.IsNullOrEmpty(strokeColor))
+        {
+            element.StrokeColor = strokeColor;
+        }
+        
+        var strokeWidth   = reader.GetAttribute(StrokeWidthAttrName);
+        if (!string.IsNullOrEmpty(strokeWidth))
+        {
+            element.StrokeWidth = strokeWidth;
+        }
+        
+        var strokeLineCap   = reader.GetAttribute(StrokeLineCapAttrName);
+        if (!string.IsNullOrEmpty(strokeLineCap))
+        {
+            element.StrokeLineCap = strokeLineCap;
+        }
+        
+        var strokeLineJoin   = reader.GetAttribute(StrokeLineJoinAttrName);
+        if (!string.IsNullOrEmpty(strokeLineJoin))
+        {
+            element.StrokeLineJoin = strokeLineJoin;
         }
         
         var opacityStr = reader.GetAttribute(OpacityAttrName);

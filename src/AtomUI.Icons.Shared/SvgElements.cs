@@ -6,6 +6,10 @@ public class SvgGraphicElement
 {
     public string? Transform { get; set; }
     public string? FillColor { get; set; }
+    public string? StrokeColor { get; set; }
+    public string? StrokeWidth { get; set; }
+    public string? StrokeLineCap { get; set; }
+    public string? StrokeLineJoin { get; set; }
     public double Opacity { get; set; } = 1.0;
 }
 
