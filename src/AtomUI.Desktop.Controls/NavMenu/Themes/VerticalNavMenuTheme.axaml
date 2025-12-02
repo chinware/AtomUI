@@ -38,8 +38,6 @@
         <Style Selector="^[Mode=Vertical]">
             <Setter Property="Padding"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalMenuContentPadding}}" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkMenuBg}}" />
@@ -53,8 +51,6 @@
         <Style Selector="^[Mode=Inline]">
             <Setter Property="Padding"
                     Value="{DynamicResource {x:Static atom:NavMenuTokenKey.VerticalMenuContentPadding}}" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgContainer}}" />
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{DynamicResource {x:Static atom:NavMenuTokenKey.DarkMenuBg}}" />

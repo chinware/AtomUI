@@ -719,7 +719,7 @@ public class NavMenu : ItemsControl,
             throw new InvalidOperationException("The selected item cannot have a submenu.");
         }
         pathNodes = new List<INavMenuItemData>();
-        var current = SelectedItem;
+        var current = targetItem;
         while (current != null)
         {
             pathNodes.Add(current);

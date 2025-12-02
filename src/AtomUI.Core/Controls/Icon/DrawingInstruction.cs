@@ -58,9 +58,10 @@ public class RectDrawingInstruction : DrawingInstruction
         {
             fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
-        var       pen       = BuildPen(icon);
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
+        var       pen            = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
         drawingContext.DrawRectangle(fillBrush, pen, Rect, RadiusX, RadiusY);
     }
 }
@@ -77,9 +78,10 @@ public class CircleDrawingInstruction : DrawingInstruction
         {
             fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
-        var       pen       = BuildPen(icon);
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
+        var       pen            = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
         drawingContext.DrawEllipse(fillBrush, pen, Center, Radius, Radius);
     }
 }
@@ -97,9 +99,10 @@ public class EllipseDrawingInstruction : DrawingInstruction
         {
             fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
-        var       pen       = BuildPen(icon);
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
+        var       pen            = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
         drawingContext.DrawEllipse(fillBrush, pen, Center, RadiusX, RadiusY);
     }
 }
@@ -111,9 +114,10 @@ public class LineDrawingInstruction : DrawingInstruction
 
     public override void Draw(DrawingContext drawingContext, Icon icon)
     {
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
-        var pen = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
+        var       pen            = BuildPen(icon);
         Debug.Assert(pen != null);
         drawingContext.DrawLine(pen, StartPoint, EndPoint);
     }
@@ -125,9 +129,10 @@ public class PolylineDrawingInstruction : DrawingInstruction
     
     public override void Draw(DrawingContext drawingContext, Icon icon)
     {
-        var       pen       = BuildPen(icon);
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
+        var       pen            = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
         var geometry = new PolylineGeometry()
         {
             Points = Points,
@@ -148,9 +153,10 @@ public class PolygonDrawingInstruction : DrawingInstruction
         {
             fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
-        var       pen       = BuildPen(icon);
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
+        var       pen            = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
         var geometry = new PolylineGeometry()
         {
             Points   = Points,
@@ -174,9 +180,10 @@ public class PathDrawingInstruction : DrawingInstruction
         {
             fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
-        var       pen       = BuildPen(icon);
-        var       transform = Transform ?? Matrix.Identity;
-        using var state     = drawingContext.PushTransform(transform);
+        var       pen            = BuildPen(icon);
+        var       transform      = Transform ?? Matrix.Identity;
+        using var transformState = drawingContext.PushTransform(transform);
+        using var opacityState   = drawingContext.PushOpacity(Opacity);
         drawingContext.DrawGeometry(fillBrush, pen, Data);
     }
 }

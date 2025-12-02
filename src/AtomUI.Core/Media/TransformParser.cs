@@ -99,7 +99,7 @@ public static class TransformParser
             {
                 char c = part[i];
 
-                if (char.IsDigit(c) || c == '-' || c == '.')
+                if (char.IsDigit(c) || c == '-' || c == '.' || c == 'e' || c == 'E')
                 {
                     continue;
                 }

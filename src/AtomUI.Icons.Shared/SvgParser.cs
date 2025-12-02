@@ -32,6 +32,7 @@ public class SvgParser
     private const string X2AttrName = "x2";
     private const string Y2AttrName = "y2";
     private const string OpacityAttrName = "opacity";
+    private const string FillOpacityAttrName = "fill-opacity";
     private const string FillAttrName = "fill";
     private const string StrokeAttrName = "stroke";
     private const string StrokeWidthAttrName = "stroke-width";
@@ -181,6 +182,7 @@ public class SvgParser
     {
         _groupInfoStack ??= new Stack<GroupElement>();
         var groupInfo = new GroupElement();
+        ParseElementCommonAttributes(groupInfo, reader);
         var transform = reader.GetAttribute(TransformAttrName);
         groupInfo.Transform = transform;
         _groupInfoStack.Push(groupInfo);
@@ -378,7 +380,13 @@ public class SvgParser
         if (_groupInfoStack?.Count > 0)
         {
             var groupInfo = _groupInfoStack.Peek();
-            element.Transform = groupInfo.Transform;
+            element.Transform      = groupInfo.Transform;
+            element.FillColor      = groupInfo.FillColor;
+            element.StrokeColor    = groupInfo.StrokeColor;
+            element.StrokeLineCap  = groupInfo.StrokeLineCap;
+            element.StrokeLineJoin = groupInfo.StrokeLineJoin;
+            element.StrokeWidth    = groupInfo.StrokeWidth;
+            element.Opacity    = groupInfo.Opacity;
         }
         // 暂时自己的优先级大
         var transform = reader.GetAttribute(TransformAttrName);
@@ -421,6 +429,12 @@ public class SvgParser
         if (!string.IsNullOrEmpty(opacityStr) && double.TryParse(opacityStr, out var opacity))
         {
             element.Opacity = opacity;
+        }
+        
+        var fillOpacityStr = reader.GetAttribute(FillOpacityAttrName);
+        if (!string.IsNullOrEmpty(fillOpacityStr) && double.TryParse(fillOpacityStr, out var fillOpacity))
+        {
+            element.Opacity = fillOpacity;
         }
     }
     
