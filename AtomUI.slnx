@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Gallery/">
+    <Project Path="controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj" />
+    <Project Path="controlgallery/AtomUIGallery.Icons.Desktop/AtomUIGallery.Icons.Desktop.csproj" />
+    <Project Path="controlgallery/AtomUIGallery/AtomUIGallery.csproj" />
+  </Folder>
+  <Project Path="src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj" />
+  <Project Path="src/AtomUI.Core/AtomUI.Core.csproj" />
+  <Project Path="src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
+  <Project Path="src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj" />
+  <Project Path="src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
+  <Project Path="src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj" />
+  <Project Path="src/AtomUI.Generator/AtomUI.Generator.csproj" />
+  <Project Path="src/AtomUI.Icons.AntDesign.Generator/AtomUI.Icons.AntDesign.Generator.csproj" />
+  <Project Path="src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj" />
+  <Project Path="src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj" />
+</Solution>
