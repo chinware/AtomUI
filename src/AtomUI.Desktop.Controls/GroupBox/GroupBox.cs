@@ -1,5 +1,4 @@
-﻿using AtomUI.Controls;
-using AtomUI.Controls.Utils;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -118,14 +117,14 @@ public class GroupBox : ContentControl, IControlSharedTokenResourcesHost
         _frame                  = e.NameScope.Find<Border>(GroupBoxThemeConstants.FramePart);
     }
 
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        return LayoutHelper.MeasureChild(_frame, availableSize, default, BorderThickness);
-    }
+    // protected override Size MeasureOverride(Size availableSize)
+    // {
+    //     return LayoutHelper.MeasureChild(_frame, availableSize, default, BorderThickness);
+    // }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size = LayoutHelper.ArrangeChild(_frame, finalSize, Padding, BorderThickness);
+        var size = LayoutHelper.ArrangeChild(_frame, finalSize, default, BorderThickness);
         if (_headerContentContainer is not null)
         {
             var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
