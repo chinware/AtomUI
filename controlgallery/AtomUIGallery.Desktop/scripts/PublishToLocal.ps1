@@ -1,7 +1,7 @@
 param (
     [string]$publishRootPath = "D:/publish",
     [string]$buildType = "Release",
-    [string]$framework = "net9.0",
+    [string]$framework = "net10.0",
     [string]$runtime = "osx-arm64",
     [string]$buildTimestamp
 )

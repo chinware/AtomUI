@@ -59,6 +59,10 @@ jobs:
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
+         -  name: Setup .NET 10
+            uses: actions/setup-dotnet@v5
+            with:
+               dotnet-version: '10.0.x'
          -  name: Prepare build environment
             shell: pwsh
             run: |
@@ -70,10 +74,6 @@ jobs:
                brew install create-dmg
                Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-x64
-         -  name: Setup .NET 10
-            uses: actions/setup-dotnet@v5
-            with:
-               dotnet-version: '10.0.x'
          -  name: Build DMG for osx-x64
             shell: pwsh
             run: |
