@@ -91,7 +91,7 @@ public static class TransformParser
         TransformFunction function,
         in TransformOperations.Builder builder)
     {
-        static UnitValue ParseValue(ReadOnlySpan<char> part, TransformFunction function)
+        static UnitValue ParseValue(ReadOnlySpan<char> part, int index, TransformFunction function)
         {
             int unitIndex = -1;
 
@@ -138,7 +138,21 @@ public static class TransformParser
             {
                 if (unit == Unit.None)
                 {
-                    unit = Unit.Radian;
+                    if (function == TransformFunction.Rotate)
+                    {
+                        if (index == 0)
+                        {
+                            unit = Unit.Degree;
+                        }
+                        else
+                        {
+                            unit = Unit.Pixel;
+                        }
+                    }
+                    else
+                    {
+                        unit = Unit.Degree;
+                    }
                 }
             }
             return new UnitValue(unit, value);
@@ -160,13 +174,13 @@ public static class TransformParser
                 var leftPart  = part.Slice(0, separatorIndex).Trim();
                 var rightPart = part.Slice(separatorIndex + 1, part.Length - separatorIndex - 1).Trim();
 
-                leftValue  = ParseValue(leftPart, function);
-                rightValue = ParseValue(rightPart, function);
+                leftValue  = ParseValue(leftPart, 0, function);
+                rightValue = ParseValue(rightPart, 1, function);
 
                 return 2;
             }
 
-            leftValue = ParseValue(part, function);
+            leftValue = ParseValue(part, 0, function);
 
             return 1;
         }
@@ -174,7 +188,7 @@ public static class TransformParser
         static int ParseCommaDelimitedValues(ReadOnlySpan<char> part, in Span<UnitValue> outValues, TransformFunction function)
         {
             int valueIndex = 0;
-
+            int paramPos = 0;
             while (true)
             {
                 if (valueIndex >= outValues.Length)
@@ -182,6 +196,7 @@ public static class TransformParser
                     throw new FormatException("Too many provided values.");
                 }
 
+                part = part.Trim();
                 var separatorIndex = part.IndexOf(',');
                 if (separatorIndex == -1)
                 {
@@ -192,7 +207,7 @@ public static class TransformParser
                 {
                     if (!part.IsWhiteSpace())
                     {
-                        outValues[valueIndex++] = ParseValue(part, function);
+                        outValues[valueIndex++] = ParseValue(part, paramPos++, function);
                     }
 
                     break;
@@ -200,7 +215,7 @@ public static class TransformParser
 
                 var valuePart = part.Slice(0, separatorIndex).Trim();
 
-                outValues[valueIndex++] = ParseValue(valuePart, function);
+                outValues[valueIndex++] = ParseValue(valuePart, paramPos++, function);
 
                 part = part.Slice(separatorIndex + 1, part.Length - separatorIndex - 1);
             }
@@ -270,20 +285,54 @@ public static class TransformParser
             }
             case TransformFunction.Rotate:
             {
-                var       angle = UnitValue.Zero;
-                UnitValue _     = default;
+                Span<UnitValue> values = stackalloc UnitValue[3];
+                int count = ParseCommaDelimitedValues(functionPart, in values, function);
 
-                int count = ParseValuePair(functionPart, function, ref angle, ref _);
-
-                if (count != 1)
+                if (count != 1 && count != 3)
                 {
-                    ThrowFormatInvalidValueCount(function, 1);
+                    ThrowFormatInvalidValueCount(function, 1, 3);
                 }
+                
+                VerifyZeroOrAngle(function, in values[0]);
 
-                VerifyZeroOrAngle(function, in angle);
-
-                builder.AppendRotate(ToRadians(in angle));
-
+                if (count == 1)
+                {
+                    builder.AppendRotate(ToRadians(in values[0]));
+                }
+                else if (count == 3)
+                {
+                    var angle = values[0];
+                    var centerX = values[1];
+                    var centerY = values[2];
+                    
+                    // 验证中心坐标是否有单位
+                    if (centerX.Unit != Unit.None && centerX.Unit != Unit.Pixel)
+                    {
+                        ThrowFormatInvalidValue(function, in centerX);
+                    }
+                    if (centerY.Unit != Unit.None && centerY.Unit != Unit.Pixel)
+                    {
+                        ThrowFormatInvalidValue(function, in centerY);
+                    }
+                    
+                    double angleRad = ToRadians(in angle);
+                    
+                    // 计算旋转矩阵（绕指定点旋转）
+                    // M = T(cx, cy) × R(angle) × T(-cx, -cy)
+                    double cos = Math.Cos(angleRad);
+                    double sin = Math.Sin(angleRad);
+                    
+                    double dx = centerX.Value * (1 - cos) + centerY.Value * sin;
+                    double dy = centerY.Value * (1 - cos) - centerX.Value * sin;
+                    
+                    var matrix = new Matrix(
+                        cos, -sin,  // M11, M12
+                        sin, cos,   // M21, M22
+                        dx, dy      // OffsetX, OffsetY
+                    );
+                    
+                    builder.AppendMatrix(matrix);
+                }
                 break;
             }
             case TransformFunction.Translate:
@@ -385,9 +434,14 @@ public static class TransformParser
         throw new FormatException($"Invalid value {value.Value} {unitString} for {function}");
     }
 
-    private static void ThrowFormatInvalidValueCount(TransformFunction function, int count)
+    private static void ThrowFormatInvalidValueCount(TransformFunction function, int expectedCount)
     {
-        throw new FormatException($"Invalid format. {function} expects {count} value(s).");
+        throw new FormatException($"Invalid format. {function} expects {expectedCount} value(s).");
+    }
+    
+    private static void ThrowFormatInvalidValueCount(TransformFunction function, int minCount, int maxCount)
+    {
+        throw new FormatException($"Invalid format. {function} expects between {minCount} and {maxCount} values.");
     }
 
     private static Unit ParseUnit(in ReadOnlySpan<char> part)

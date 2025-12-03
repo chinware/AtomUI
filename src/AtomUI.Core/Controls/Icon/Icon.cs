@@ -169,8 +169,8 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 
     private Animation? _animation;
     private CancellationTokenSource? _animationCancellationTokenSource;
-    private readonly IBrush?[] _brushes = new IBrush[5];
-    private readonly Pen?[] _pens = new Pen?[5];
+    protected readonly IBrush?[] DrawBrushes = new IBrush[5];
+    protected readonly Pen?[] DrawPens = new Pen?[5];
 
     static Icon()
     {
@@ -195,17 +195,28 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         var secondaryFillIndex   = (int)IconBrushType.SecondaryFill;
         var fallbackIndex        = (int)IconBrushType.Fallback;
 
-        _brushes[strokeIndex]          = StrokeBrush;
-        _brushes[fillIndex]            = FillBrush;
-        _brushes[secondaryStrokeIndex] = SecondaryStrokeBrush;
-        _brushes[secondaryFillIndex]   = SecondaryFillBrush;
-        _brushes[fallbackIndex]        = FallbackBrush;
+        var strokeBrush          = ProcessBrush(StrokeBrush);
+        var fillBrush            = ProcessBrush(FillBrush);
+        var secondaryStrokeBrush = ProcessBrush(SecondaryStrokeBrush);
+        var secondaryFillBrush   = ProcessBrush(SecondaryFillBrush);
+        var fallbackBrush        = ProcessBrush(FallbackBrush);
         
-        _pens[strokeIndex]          = new Pen(StrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        _pens[fillIndex]            = new Pen(FillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        _pens[secondaryStrokeIndex] = new Pen(SecondaryStrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        _pens[secondaryFillIndex]   = new Pen(SecondaryFillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        _pens[fallbackIndex]        = new Pen(FallbackBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        DrawBrushes[strokeIndex]          = strokeBrush;
+        DrawBrushes[fillIndex]            = fillBrush;
+        DrawBrushes[secondaryStrokeIndex] = secondaryStrokeBrush;
+        DrawBrushes[secondaryFillIndex]   = secondaryFillBrush;
+        DrawBrushes[fallbackIndex]        = fallbackBrush;
+        
+        DrawPens[strokeIndex]          = new Pen(strokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        DrawPens[fillIndex]            = new Pen(fillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        DrawPens[secondaryStrokeIndex] = new Pen(secondaryStrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        DrawPens[secondaryFillIndex]   = new Pen(secondaryFillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        DrawPens[fallbackIndex]        = new Pen(fallbackBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+    }
+
+    protected virtual IBrush? ProcessBrush(IBrush? brush)
+    {
+        return brush;
     }
 
     private void ConfigureTransitions(bool force)
@@ -298,14 +309,18 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
 
     private void HandleBrushChanged(IconBrushType brushType, IBrush? brush)
     {
+        if (brushType == IconBrushType.None)
+        {
+            return;
+        }
         var brushIndex = (int)brushType;
-        _brushes[brushIndex] = brush;
-        _pens[brushIndex]    = new Pen(_brushes[brushIndex], StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+        DrawBrushes[brushIndex] = ProcessBrush(brush);
+        DrawPens[brushIndex]    = new Pen(DrawBrushes[brushIndex], StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
     }
 
     private void HandleStrokeWidthChanged(double strokeWidth)
     {
-        foreach (var pen in _pens)
+        foreach (var pen in DrawPens)
         {
             if (pen != null)
             {
@@ -316,7 +331,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     
     private void HandleLineCapChanged(PenLineCap lineCap)
     {
-        foreach (var pen in _pens)
+        foreach (var pen in DrawPens)
         {
             if (pen != null)
             {
@@ -327,7 +342,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     
     private void HandleLineJoinChanged(PenLineJoin lineJoin)
     {
-        foreach (var pen in _pens)
+        foreach (var pen in DrawPens)
         {
             if (pen != null)
             {
@@ -467,10 +482,14 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         return true;
     }
 
-    internal IBrush? FindIconBrush(IconBrushType brushType)
+    public virtual IBrush? FindIconBrush(IconBrushType brushType)
     {
+        if (brushType == IconBrushType.None)
+        {
+            return null;
+        }
         var index = (int)brushType;
-        Debug.Assert(index >= 0 && index < _brushes.Length);
-        return _brushes[index];
+        Debug.Assert(index >= 0 && index < DrawBrushes.Length);
+        return DrawBrushes[index];
     }
 }

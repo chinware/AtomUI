@@ -28,6 +28,11 @@
             <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoBg}}" />
         </Style>
         
+        <Style Selector="^[IconTheme=MultiColor]">
+            <Setter Property="StrokeBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorIcon}}" />
+            <Setter Property="FillBrush" Value="{DynamicResource {x:Static atom:SharedTokenKey.ColorPrimary}}" />
+        </Style>
+        
         <Setter Property="SecondaryFillBrush" Value="{DynamicResource {x:Static atom:IconTokenKey.SecondaryFillColor}}" />
         <Setter Property="SecondaryStrokeBrush" Value="{DynamicResource {x:Static atom:IconTokenKey.SecondaryStrokeColor}}" />
         <Setter Property="FillAnimationDuration" Value="{DynamicResource {x:Static atom:SharedTokenKey.MotionDurationMid}}" />

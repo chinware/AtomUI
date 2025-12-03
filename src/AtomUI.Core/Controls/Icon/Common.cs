@@ -23,5 +23,6 @@ public enum IconBrushType
     Fill,
     SecondaryStroke,
     SecondaryFill,
-    Fallback
+    Fallback,
+    None
 }

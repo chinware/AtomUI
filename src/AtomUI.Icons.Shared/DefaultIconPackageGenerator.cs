@@ -16,10 +16,7 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
     {
         foreach (var svgFilePath in Directory.EnumerateFiles(sourcePath,  "*.svg"))
         {
-            var name = Path.GetFileNameWithoutExtension(svgFilePath);
-            name = Regex.Replace(name, @"-([a-zA-Z0-9])",
-                match => match.Groups[1].ToString().ToUpper());
-            name = name[0].ToString().ToUpper() + name.Substring(1);
+            var name = NormalizeClassName(Path.GetFileNameWithoutExtension(svgFilePath));
             var parentDir = Path.GetFileName(Path.GetDirectoryName(svgFilePath));
             Debug.Assert(!string.IsNullOrEmpty(parentDir));
             var iconTheme = IconThemeType.Filled;
@@ -42,6 +39,14 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
                 yield return svgFilePath;
             }
         }
+    }
+
+    private static string NormalizeClassName(string name)
+    {
+        name = Regex.Replace(name, @"-([a-zA-Z0-9])",
+            match => match.Groups[1].ToString().ToUpper());
+        name = name[0].ToString().ToUpper() + name.Substring(1);
+        return name;
     }
 
     protected override async Task GenerateIconPackageKindAsync()

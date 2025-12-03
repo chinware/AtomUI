@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reflection;
 using AtomUI.Controls;
 
@@ -14,27 +13,17 @@ public class GalleryDesktopIconProvider : IconProvider<DesktopIconKind>
         : base(kind)
     {
     }
-
-    protected override Icon GetIcon(DesktopIconKind kind)
+    
+    protected override Type GetTypeForKind(DesktopIconKind kind)
     {
-        try
+        var typeName =  $"AtomUIGallery.Icons.Desktop.{kind.ToString()}";
+        
+        var type = Type.GetType(typeName) 
+                   ?? Assembly.GetExecutingAssembly().GetType(typeName);
+        if (type == null)
         {
-            var fullTypeName = $"AtomUIGallery.Icons.Desktop.{kind.ToString()}";
-            var type = Type.GetType(fullTypeName)
-                       ?? Assembly.GetExecutingAssembly().GetType(fullTypeName);
-
-            if (type == null)
-            {
-                throw new InvalidOperationException($"{fullTypeName} not exist");
-            }
-
-            var icon = (Icon?)Activator.CreateInstance(type);
-            Debug.Assert(icon != null);
-            return icon;
+            throw new InvalidOperationException($"Type {typeName} does not exist");
         }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException($"create icon {kind.ToString()} failed", ex);
-        }
+        return type;
     }
 }

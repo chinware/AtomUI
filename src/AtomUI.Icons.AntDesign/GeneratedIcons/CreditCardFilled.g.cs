@@ -1,5 +1,5 @@
 // This code is auto generated. Do not modify.
-// Generated Date: 2025-11-28
+// Generated Date: 2025-12-02
 
 using Avalonia;
 using System;
