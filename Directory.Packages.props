@@ -1,4 +1,5 @@
 <Project>
+    <Import Project="$(MSBuildThisFileDirectory)/build/Version.props"/>
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
@@ -8,13 +9,10 @@
         <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
-        
         <PackageVersion Include="ReactiveUI.Avalonia" Version="11.3.8"/>
-        
         <PackageVersion Include="Svg.Controls.Avalonia" Version="11.3.6.2"/>
         <PackageVersion Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1"/>
-        <PackageVersion Include="SkiaSharp.QrCode" Version="0.7.0" />
-
+        <PackageVersion Include="SkiaSharp.QrCode" Version="0.7.0"/>
         <PackageVersion Include="System.Reactive" Version="6.1.0"/>
         <!-- 测试相关依赖 -->
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0-release-24177-07"/>
@@ -28,7 +26,6 @@
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0-3.final"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0-beta1.24219.2"/>
     </ItemGroup>
-
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <PackageVersion Include="AtomUI.Core" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Fonts.AlibabaSans" Version="$(AtomUIVersion)"/>
@@ -39,9 +36,6 @@
         <PackageVersion Include="AtomUI.Desktop.Controls" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Desktop.Controls.ColorPicker" Version="$(AtomUIVersion)"/>
         <PackageVersion Include="AtomUI.Desktop.Controls.DataGrid" Version="$(AtomUIVersion)"/>
-    </ItemGroup>
-    
-    <ItemGroup>
-        <PackageVersion Include="AtomUI.Native" Version="$(AtomUINativeVersion)"/>
+        <PackageVersion Include="AtomUI.Native" Version="$(AtomUIVersion)"/>
     </ItemGroup>
 </Project>

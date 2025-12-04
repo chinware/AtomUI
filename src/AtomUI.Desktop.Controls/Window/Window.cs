@@ -1,6 +1,7 @@
 // Referenced from https://github.com/kikipoulet/SukiUI project
 
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Native;
@@ -151,18 +152,22 @@ public class Window : AvaloniaWindow,
 
     #region macOS 特有属性
 
+    [SupportedOSPlatform("macos")]
     public static readonly StyledProperty<Point> MacOSCaptionGroupOffsetProperty =
         AvaloniaProperty.Register<Window, Point>(nameof(MacOSCaptionGroupOffset), defaultValue: new Point(10, 0));
     
+    [SupportedOSPlatform("macos")]
     public static readonly StyledProperty<double> MacOSCaptionGroupSpacingProperty =
         AvaloniaProperty.Register<Window, double>(nameof(MacOSCaptionGroupSpacing), 10.0);
     
+    [SupportedOSPlatform("macos")]
     public Point MacOSCaptionGroupOffset
     {
         get => GetValue(MacOSCaptionGroupOffsetProperty);
         set => SetValue(MacOSCaptionGroupOffsetProperty, value);
     }
 
+    [SupportedOSPlatform("macos")]
     public double MacOSCaptionGroupSpacing
     {
         get => GetValue(MacOSCaptionGroupSpacingProperty);
@@ -254,7 +259,7 @@ public class Window : AvaloniaWindow,
             HandleWindowStateChanged(oldWindowState, newWindowState);
         }
 
-        if (OsType == OsType.macOS)
+        if (OperatingSystem.IsMacOS())
         {
             if (this.IsAttachedToVisualTree())
             {
@@ -313,7 +318,7 @@ public class Window : AvaloniaWindow,
             mediaQueryIndicator.OwnerWindow = this;
         }
 
-        if (OsType == OsType.macOS)
+        if (OperatingSystem.IsMacOS())
         {
             this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
         }
@@ -340,7 +345,7 @@ public class Window : AvaloniaWindow,
             Icon ??= window.Icon;
         }
 
-        if (OsType == OsType.macOS)
+        if (OperatingSystem.IsMacOS())
         {
             this.SetMacOSWindowClosable(IsCloseCaptionButtonEnabled);
         }
@@ -435,7 +440,7 @@ public class Window : AvaloniaWindow,
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
-        if (OsType == OsType.macOS)
+        if (OperatingSystem.IsMacOS())
         {
             ConfigureMacOSCaptionGroupOffset();
         }
@@ -443,6 +448,7 @@ public class Window : AvaloniaWindow,
 
     #region macOS 特有方法
 
+    [SupportedOSPlatform("macos")]
     private void ConfigureMacOSCaptionGroupOffset()
     {
         this.SetMacOSOptionButtonsPosition(MacOSCaptionGroupOffset.X, MacOSCaptionGroupOffset.Y, MacOSCaptionGroupSpacing);
