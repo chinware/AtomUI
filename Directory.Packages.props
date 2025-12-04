@@ -1,5 +1,4 @@
 <Project>
-    <Import Project="$(MSBuildThisFileDirectory)/build/Version.props"/>
     <PropertyGroup>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     </PropertyGroup>
