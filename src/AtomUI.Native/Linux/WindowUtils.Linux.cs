@@ -7,7 +7,7 @@ namespace AtomUI.Native;
 internal static partial class WindowExtensions
 {
     [SupportedOSPlatform("linux")]
-    public static void SetWindowIgnoreMouseEventsLinux(IntPtr handle, bool flag)
+    private static void SetWindowIgnoreMouseEventsLinux(IntPtr handle, bool flag)
     {
         if (handle == IntPtr.Zero)
         {
@@ -120,7 +120,7 @@ internal static partial class WindowExtensions
     }
 
     [SupportedOSPlatform("linux")]
-    public static bool IsWindowIgnoreMouseEventsLinux(IntPtr handle)
+    private static bool IsWindowIgnoreMouseEventsLinux(IntPtr handle)
     {
         if (handle == IntPtr.Zero)
         {
