@@ -48,6 +48,7 @@ jobs:
             shell: pwsh
             run: |
                # Build AtomUI project
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Native/AtomUI.Native.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Core/AtomUI.Core.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
@@ -59,6 +60,7 @@ jobs:
             shell: pwsh
             run: |
                $projects = @(
+                  "./src/AtomUI.Native/AtomUI.Native.csproj",
                   "./src/AtomUI.Core/AtomUI.Core.csproj",
                   "./src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj",
                   "./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj",

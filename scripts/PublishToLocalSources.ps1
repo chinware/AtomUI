@@ -41,6 +41,7 @@ function Push-NuGetPackages {
     }
 }
 
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Core/AtomUI.Core.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
@@ -49,6 +50,7 @@ dotnet build -v diag --configuration $buildType ../src/AtomUI.Generator/AtomUI.G
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
 
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Native/AtomUI.Native.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Core/AtomUI.Core.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
