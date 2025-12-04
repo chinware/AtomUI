@@ -87,7 +87,9 @@ public static class SystemInfoProvider
     private static string GetOSName()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
             return "Windows";
+        }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
@@ -119,10 +121,14 @@ public static class SystemInfoProvider
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
             return "macOS";
+        }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
             return "FreeBSD";
+        }
 
         return RuntimeInformation.OSDescription;
     }

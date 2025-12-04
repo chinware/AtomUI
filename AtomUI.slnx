@@ -14,4 +14,5 @@
   <Project Path="src/AtomUI.Icons.AntDesign.Generator/AtomUI.Icons.AntDesign.Generator.csproj" />
   <Project Path="src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj" />
   <Project Path="src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj" />
+  <Project Path="src/AtomUI.Native/AtomUI.Native.csproj" />
 </Solution>

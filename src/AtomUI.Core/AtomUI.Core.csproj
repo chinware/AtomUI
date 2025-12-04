@@ -16,6 +16,7 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all"/>
+        <ProjectReference Include="../AtomUI.Native/AtomUI.Native.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,7 +27,6 @@
         <PackageReference Include="Avalonia"/>
         <PackageReference Include="ReactiveUI.Avalonia"/>
         <PackageReference Include="System.Reactive"/>
-        <PackageReference Include="AtomUI.Native"/>
     </ItemGroup>
 
     <ItemGroup>
