@@ -3,7 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![Nuget Download](https://img.shields.io/nuget/dt/AtomUI?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI)
+[![Nuget Download](https://img.shields.io/nuget/dt/AtomUI?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
 [更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
