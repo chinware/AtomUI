@@ -569,18 +569,18 @@ public class ProgressBar : AbstractLineProgress
         CalculateMinBarThickness();
     }
 
-    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.NotifyPropertyChanged(e);
+        base.NotifyPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == StrokeBrushProperty)
+            if (change.Property == StrokeBrushProperty)
             {
                 SetupPercentLabelForegroundBrush();
             }
         }
 
-        if (e.Property == PercentPositionProperty)
+        if (change.Property == PercentPositionProperty)
         {
             UpdatePseudoClasses();
         }

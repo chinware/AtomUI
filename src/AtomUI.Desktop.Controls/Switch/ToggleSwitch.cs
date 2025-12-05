@@ -430,24 +430,24 @@ public class ToggleSwitch : ToggleButton,
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsLoadingProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsLoadingProperty)
         {
             HandleLoadingState(IsLoading);
         }
-        else if ((e.Property == IsPointerOverProperty && !IsLoading) ||
-                 e.Property == IsCheckedProperty ||
-                 e.Property == IsEnabledProperty)
+        else if ((change.Property == IsPointerOverProperty && !IsLoading) ||
+                 change.Property == IsCheckedProperty ||
+                 change.Property == IsEnabledProperty)
         {
-            if (e.Property == IsCheckedProperty && IsMotionEnabled)
+            if (change.Property == IsCheckedProperty && IsMotionEnabled)
             {
                 CalculateElementsOffset(GrooveRect().Size);
                 _waveSpiritDecorator?.Play();
             }
         }
-        else if (e.Property == KnobSizeProperty)
+        else if (change.Property == KnobSizeProperty)
         {
             if (_switchKnob is not null)
             {
@@ -455,19 +455,19 @@ public class ToggleSwitch : ToggleButton,
             }
         }
 
-        if (e.Property == OffContentProperty ||
-            e.Property == OnContentProperty)
+        if (change.Property == OffContentProperty ||
+            change.Property == OnContentProperty)
         {
-            SetupContent(e.OldValue, e.NewValue, e.Property == OnContentProperty);
+            SetupContent(change.OldValue, change.NewValue, change.Property == OnContentProperty);
         }
-        else if (e.Property == IsCheckedProperty)
+        else if (change.Property == IsCheckedProperty)
         {
             _isCheckedChanged = true;
         }
 
         if (IsLoaded)
         {
-            if (e.Property == IsMotionEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }

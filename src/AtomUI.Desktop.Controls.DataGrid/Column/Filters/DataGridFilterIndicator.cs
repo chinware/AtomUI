@@ -297,16 +297,16 @@ internal class DataGridFilterIndicator : IconButton
         }
     }
 
-    private void HandleOwningPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void HandleOwningPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Property == DataGrid.CollectionViewProperty)
+        if (change.Property == DataGrid.CollectionViewProperty)
         {
-            if (e.OldValue is DataGridCollectionView oldCollectionView)
+            if (change.OldValue is DataGridCollectionView oldCollectionView)
             {
                 oldCollectionView.FilterDescriptions.CollectionChanged -= HandleFilterDescriptionsChanged;
             }
 
-            if (e.NewValue is DataGridCollectionView newCollectionView)
+            if (change.NewValue is DataGridCollectionView newCollectionView)
             {
                 newCollectionView.FilterDescriptions.CollectionChanged += HandleFilterDescriptionsChanged;
             }

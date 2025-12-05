@@ -142,11 +142,11 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
         }
     }
 
-    private void HandleOwningGridItemsSourceChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void HandleOwningGridItemsSourceChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Property == DataGrid.ItemsSourceProperty)
+        if (change.Property == DataGrid.ItemsSourceProperty)
         {
-            if (e.NewValue != null && e.NewValue is not IList)
+            if (change.NewValue != null && change.NewValue is not IList)
             {
                 throw DataGridError.DataGridRow.DataSourceTypeNotSupportRowReorderException();
             }

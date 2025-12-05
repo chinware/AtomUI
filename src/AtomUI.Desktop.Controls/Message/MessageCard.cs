@@ -156,20 +156,20 @@ public class MessageCard : TemplatedControl,
         IsClosing = true;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == MessageTypeProperty)
+            if (change.Property == MessageTypeProperty)
             {
                 SetupDefaultMessageIcon();
                 UpdatePseudoClasses();
             }
         }
 
-        if (e.Property == IconProperty)
+        if (change.Property == IconProperty)
         {
             if (Icon is null)
             {
@@ -177,7 +177,7 @@ public class MessageCard : TemplatedControl,
             }
         }
 
-        if (e.Property == IsClosedProperty)
+        if (change.Property == IsClosedProperty)
         {
             if (!IsClosing && !IsClosed)
             {
@@ -186,7 +186,7 @@ public class MessageCard : TemplatedControl,
 
             RaiseEvent(new RoutedEventArgs(MessageClosedEvent));
         } 
-        else if (e.Property == IsClosingProperty)
+        else if (change.Property == IsClosingProperty)
         {
             if (IsClosing)
             {

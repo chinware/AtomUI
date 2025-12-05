@@ -498,12 +498,12 @@ public class SplitButton : ContentControl,
         _flyoutHelperBindingDisposables?.Dispose();
     }
     
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Property == CommandProperty)
+        if (change.Property == CommandProperty)
         {
             // Must unregister events here while a reference to the old command still exists
-            var (oldValue, newValue) = e.GetOldAndNewValue<ICommand?>();
+            var (oldValue, newValue) = change.GetOldAndNewValue<ICommand?>();
 
             if (this.IsAttachedToLogicalTree())
             {
@@ -520,13 +520,13 @@ public class SplitButton : ContentControl,
 
             CanExecuteChanged(newValue, CommandParameter);
         }
-        else if (e.Property == CommandParameterProperty && IsLoaded)
+        else if (change.Property == CommandParameterProperty && IsLoaded)
         {
-            CanExecuteChanged(Command, e.NewValue);
+            CanExecuteChanged(Command, change.NewValue);
         }
-        else if (e.Property == FlyoutProperty)
+        else if (change.Property == FlyoutProperty)
         {
-            var (oldFlyout, newFlyout) = e.GetOldAndNewValue<Flyout?>();
+            var (oldFlyout, newFlyout) = change.GetOldAndNewValue<Flyout?>();
 
             // If flyout is changed while one is already open, make sure we 
             // close the old one first
@@ -541,20 +541,20 @@ public class SplitButton : ContentControl,
             RegisterFlyoutEvents(newFlyout);
             UpdatePseudoClasses();
         }
-        else if (e.Property == IsPrimaryButtonTypeProperty)
+        else if (change.Property == IsPrimaryButtonTypeProperty)
         {
             SetupEffectiveButtonType();
         }
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == CornerRadiusProperty)
+            if (change.Property == CornerRadiusProperty)
             {
                 SetupButtonCornerRadius();
             }
         }
 
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
     }
 
     private void SetupEffectiveButtonType()
@@ -691,7 +691,7 @@ public class SplitButton : ContentControl,
     /// <summary>
     /// Called when the <see cref="PopupFlyoutBase.Placement" /> property changes.
     /// </summary>
-    private void HandleFlyoutPlacementPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleFlyoutPlacementPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         UpdatePseudoClasses();
     }

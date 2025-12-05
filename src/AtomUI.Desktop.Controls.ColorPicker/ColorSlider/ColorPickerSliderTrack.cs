@@ -101,10 +101,10 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
         return arrangeSize;
     }
     
-    private void ThumbChanged(AvaloniaPropertyChangedEventArgs e)
+    private void ThumbChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldThumb = (Thumb?)e.OldValue;
-        var newThumb = (Thumb?)e.NewValue;
+        var oldThumb = (Thumb?)change.OldValue;
+        var newThumb = (Thumb?)change.NewValue;
 
         if (oldThumb != null)
         {
@@ -123,10 +123,10 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
         }
     }
 
-    private void ButtonChanged(AvaloniaPropertyChangedEventArgs e)
+    private void ButtonChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldButton = (AvaloniaButton?)e.OldValue;
-        var newButton = (AvaloniaButton?)e.NewValue;
+        var oldButton = (AvaloniaButton?)change.OldValue;
+        var newButton = (AvaloniaButton?)change.NewValue;
 
         if (oldButton != null)
         {

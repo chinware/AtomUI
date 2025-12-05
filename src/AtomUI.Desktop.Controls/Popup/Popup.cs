@@ -272,12 +272,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
     }
 
-    private void HandleOverlayPopupHostPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void HandleOverlayPopupHostPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
         if (Host is OverlayPopupHost overlayPopupHost)
         {
-            if (e.Property == Canvas.LeftProperty ||
-                e.Property == Canvas.TopProperty)
+            if (change.Property == Canvas.LeftProperty ||
+                change.Property == Canvas.TopProperty)
             {
                 var left = Canvas.GetLeft(overlayPopupHost);
                 var top = Canvas.GetTop(overlayPopupHost);

@@ -135,11 +135,11 @@ public sealed class DataGridSelectionColumn : DataGridColumn
         }
     }
 
-    private void HandleDataGridPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void HandleDataGridPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
         if (_owningGrid != null)
         {
-            if (e.Property == DataGrid.SelectionModeProperty)
+            if (change.Property == DataGrid.SelectionModeProperty)
             {
                 foreach (var row in _owningGrid.GetAllRows())
                 {

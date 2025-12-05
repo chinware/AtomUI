@@ -133,13 +133,13 @@ public class IconButton : AvaloniaButton,
         this.RegisterResources();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
 
         if (IsLoaded)
         {
-            if (e.Property == IsMotionEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }

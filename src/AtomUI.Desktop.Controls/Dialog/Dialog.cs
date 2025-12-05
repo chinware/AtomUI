@@ -866,16 +866,16 @@ public partial class Dialog : TemplatedControl,
         return Disposable.Create((unsubscribe, target, handler), state => state.unsubscribe(state.target, state.handler));
     }
     
-    private void HandleChildChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleChildChanged(AvaloniaPropertyChangedEventArgs change)
     {
         LogicalChildren.Clear();
 
-        ((ISetLogicalParent?)e.OldValue)?.SetParent(null);
+        ((ISetLogicalParent?)change.OldValue)?.SetParent(null);
 
-        if (e.NewValue != null)
+        if (change.NewValue != null)
         {
-            ((ISetLogicalParent)e.NewValue).SetParent(this);
-            LogicalChildren.Add((ILogical)e.NewValue);
+            ((ISetLogicalParent)change.NewValue).SetParent(this);
+            LogicalChildren.Add((ILogical)change.NewValue);
         }
     }
     

@@ -131,15 +131,15 @@ internal class CheckBoxIndicator : TemplatedControl
         PseudoClasses.Set(StdPseudoClass.Indeterminate, State == CheckBoxIndicatorState.Indeterminate);
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsPointerOverProperty ||
-            e.Property == StateProperty ||
-            e.Property == IsEnabledProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsPointerOverProperty ||
+            change.Property == StateProperty ||
+            change.Property == IsEnabledProperty)
         {
             UpdatePseudoClasses();
-            if (e.Property == StateProperty &&
+            if (change.Property == StateProperty &&
                 IsWaveSpiritEnabled &&
                 IsEnabled &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
@@ -150,7 +150,7 @@ internal class CheckBoxIndicator : TemplatedControl
         
         if (IsLoaded)
         {
-            if (e.Property == IsMotionEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }

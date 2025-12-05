@@ -685,15 +685,15 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// Called when the <see cref="Command"/> property changes.
     /// </summary>
     /// <param name="e">The event args.</param>
-    private static void CommandChanged(AvaloniaPropertyChangedEventArgs e)
+    private static void CommandChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newCommand = e.NewValue as ICommand;
-        if (e.Sender is NavMenuItem menuItem)
+        var newCommand = change.NewValue as ICommand;
+        if (change.Sender is NavMenuItem menuItem)
 
         {
             if (((ILogical)menuItem).IsAttachedToLogicalTree)
             {
-                if (e.OldValue is ICommand oldCommand)
+                if (change.OldValue is ICommand oldCommand)
                 {
                     oldCommand.CanExecuteChanged -= menuItem.CanExecuteChangedHandler;
                 }
@@ -712,11 +712,11 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// Called when the <see cref="CommandParameter"/> property changes.
     /// </summary>
     /// <param name="e">The event args.</param>
-    private static void CommandParameterChanged(AvaloniaPropertyChangedEventArgs e)
+    private static void CommandParameterChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Sender is NavMenuItem menuItem)
+        if (change.Sender is NavMenuItem menuItem)
         {
-            (var command, var parameter) = (menuItem.Command, e.NewValue);
+            (var command, var parameter) = (menuItem.Command, change.NewValue);
             menuItem.TryUpdateCanExecute(command, parameter);
         }
     }
@@ -850,9 +850,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// Called when the <see cref="HeaderedSelectingItemsControl.Header"/> property changes.
     /// </summary>
     /// <param name="e">The property change event.</param>
-    private void HeaderChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HeaderChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var (oldValue, newValue) = e.GetOldAndNewValue<object?>();
+        var (oldValue, newValue) = change.GetOldAndNewValue<object?>();
         if (Equals(newValue, "-"))
         {
             PseudoClasses.Add(NavMenuItemPseudoClass.Separator);
@@ -874,10 +874,10 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// Called when the <see cref="IsSelected"/> property changes.
     /// </summary>
     /// <param name="e">The property change event.</param>
-    private void IsSelectedChanged(AvaloniaPropertyChangedEventArgs e)
+    private void IsSelectedChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var parentMenu = Parent as NavMenu;
-        var isSelected = e.GetNewValue<bool>();
+        var isSelected = change.GetNewValue<bool>();
         if (isSelected && (parentMenu is null || parentMenu.IsOpen))
         {
             Focus();
@@ -888,9 +888,9 @@ public class NavMenuItem : HeaderedSelectingItemsControl,
     /// Called when the <see cref="IsSubMenuOpen"/> property changes.
     /// </summary>
     /// <param name="e">The property change event.</param>
-    private void SubMenuOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    private void SubMenuOpenChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var value = (bool)e.NewValue!;
+        var value = (bool)change.NewValue!;
 
         if (Mode == NavMenuMode.Inline)
         {

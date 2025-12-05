@@ -132,23 +132,23 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         PseudoClasses.Set(ProgressBarPseudoClass.Horizontal, Orientation == Orientation.Horizontal);
     }
 
-    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.NotifyPropertyChanged(e);
+        base.NotifyPropertyChanged(change);
 
         if (this.IsAttachedToVisualTree())
         {
-            if ((e.Property == WidthProperty && Orientation == Orientation.Vertical) ||
-                (e.Property == HeightProperty && Orientation == Orientation.Horizontal))
+            if ((change.Property == WidthProperty && Orientation == Orientation.Vertical) ||
+                (change.Property == HeightProperty && Orientation == Orientation.Horizontal))
             {
-                EffectiveSizeType = CalculateEffectiveSizeType(e.GetNewValue<double>());
+                EffectiveSizeType = CalculateEffectiveSizeType(change.GetNewValue<double>());
                 CalculateStrokeThickness();
             }
-            else if (e.Property == EffectiveSizeTypeProperty)
+            else if (change.Property == EffectiveSizeTypeProperty)
             {
                 _extraInfoSize = CalculateExtraInfoSize(FontSize);
             }
-            else if (e.Property == OrientationProperty)
+            else if (change.Property == OrientationProperty)
             {
                 NotifyOrientationChanged();
             }

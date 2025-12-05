@@ -508,13 +508,13 @@ public class List : TemplatedControl,
         PseudoClasses.Set(ListPseudoClass.SingleItem, ItemCount == 1);
     }
 
-    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
             var oldCollectionView = _listCollectionView;
             
-            var newItemsSource = (IEnumerable?)e.NewValue;
+            var newItemsSource = (IEnumerable?)change.NewValue;
 
             _listCollectionView = null;
             IListCollectionView? newCollectionView;

@@ -230,13 +230,13 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         }
     }
 
-    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.NotifyPropertyChanged(e);
+        base.NotifyPropertyChanged(change);
         
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == WidthProperty || e.Property == HeightProperty)
+            if (change.Property == WidthProperty || change.Property == HeightProperty)
             {
                 CalculateStrokeThickness();
                 SetupExtraInfoFontSize();

@@ -1336,7 +1336,7 @@ public partial class DataGrid
     /// ItemsSourceProperty property changed handler.
     /// </summary>
     /// <param name="e">The event arguments.</param>
-    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
@@ -1344,8 +1344,8 @@ public partial class DataGrid
 
             var oldCollectionView = DataConnection.CollectionView;
 
-            var oldValue       = (IEnumerable?)e.OldValue;
-            var newItemsSource = (IEnumerable?)e.NewValue;
+            var oldValue       = (IEnumerable?)change.OldValue;
+            var newItemsSource = (IEnumerable?)change.NewValue;
 
             if (LoadingOrUnloadingRow)
             {
@@ -2073,7 +2073,7 @@ public partial class DataGrid
         InvalidateMeasure();
     }
 
-    private void HandleCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleCanUserResizeColumnsChanged(AvaloniaPropertyChangedEventArgs change)
     {
         EnsureHorizontalLayout();
     }
@@ -2223,11 +2223,11 @@ public partial class DataGrid
     }
 
     //TODO: Check
-    private void HandleIsEnabledChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsEnabledChanged(AvaloniaPropertyChangedEventArgs change)
     {
     }
 
-    private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleFrozenColumnCountChanged(AvaloniaPropertyChangedEventArgs change)
     {
         ProcessFrozenColumnCount();
     }
@@ -2241,9 +2241,9 @@ public partial class DataGrid
         }
     }
 
-    private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleColumnWidthChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var value = (DataGridLength)(e.NewValue ?? DataGridLength.Auto);
+        var value = (DataGridLength)(change.NewValue ?? DataGridLength.Auto);
 
         foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
         {
@@ -2256,7 +2256,7 @@ public partial class DataGrid
         EnsureHorizontalLayout();
     }
 
-    private void HandleGridLinesVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleGridLinesVisibilityChanged(AvaloniaPropertyChangedEventArgs change)
     {
         foreach (DataGridRow row in GetAllRows())
         {
@@ -2265,11 +2265,11 @@ public partial class DataGrid
         }
     }
 
-    private void HandleHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleHeadersVisibilityChanged(AvaloniaPropertyChangedEventArgs change)
     {
         // TODO 需要审查
-        var oldValue = (DataGridHeadersVisibility)(e.OldValue ?? DataGridHeadersVisibility.All);
-        var newValue = (DataGridHeadersVisibility)(e.NewValue ?? DataGridHeadersVisibility.All);
+        var oldValue = (DataGridHeadersVisibility)(change.OldValue ?? DataGridHeadersVisibility.All);
+        var newValue = (DataGridHeadersVisibility)(change.NewValue ?? DataGridHeadersVisibility.All);
         bool HasFlags(DataGridHeadersVisibility value, DataGridHeadersVisibility flags) => ((value & flags) == flags);
 
         bool newValueCols = HasFlags(newValue, DataGridHeadersVisibility.Column);
@@ -2356,7 +2356,7 @@ public partial class DataGrid
         }
     }
 
-    private void HandleHorizontalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleHorizontalGridLinesBrushChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended && _rowsPresenter != null)
         {
@@ -2367,11 +2367,11 @@ public partial class DataGrid
         }
     }
 
-    private void HandleIsReadOnlyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsReadOnlyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
-            var value = (bool)(e.NewValue ?? false);
+            var value = (bool)(change.NewValue ?? false);
             if (value && !CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
             {
                 CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
@@ -2379,11 +2379,11 @@ public partial class DataGrid
         }
     }
 
-    private void HandleMaxColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleMaxColumnWidthChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
-            var oldValue = (double)(e.OldValue ?? 0);
+            var oldValue = (double)(change.OldValue ?? 0);
             foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
             {
                 HandleColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
@@ -2391,11 +2391,11 @@ public partial class DataGrid
         }
     }
 
-    private void HandleMinColumnWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleMinColumnWidthChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
-            double oldValue = (double)(e.OldValue ?? 0);
+            double oldValue = (double)(change.OldValue ?? 0);
             foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
             {
                 HandleColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
@@ -2403,7 +2403,7 @@ public partial class DataGrid
         }
     }
 
-    private void HandleRowHeightChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowHeightChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
@@ -2415,7 +2415,7 @@ public partial class DataGrid
         }
     }
 
-    private void HandleRowHeaderWidthChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowHeaderWidthChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
@@ -4520,7 +4520,7 @@ public partial class DataGrid
         return false;
     }
 
-    private void HandleSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSelectionModeChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
@@ -4528,11 +4528,11 @@ public partial class DataGrid
         }
     }
 
-    private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSelectedIndexChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
-            int index = (int)(e.NewValue ?? 0);
+            int index = (int)(change.NewValue ?? 0);
 
             // GetDataItem returns null if index is >= Count, we do not check newValue
             // against Count here to avoid enumerating through an Enumerable twice
@@ -4541,23 +4541,23 @@ public partial class DataGrid
             SelectedItem = newSelectedItem;
             if (SelectedItem != newSelectedItem)
             {
-                SetValueNoCallback(SelectedIndexProperty, (int)(e.OldValue ?? 0));
+                SetValueNoCallback(SelectedIndexProperty, (int)(change.OldValue ?? 0));
             }
         }
     }
 
-    private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
-            int rowIndex = (e.NewValue == null) ? -1 : DataConnection.IndexOf(e.NewValue);
+            int rowIndex = (change.NewValue == null) ? -1 : DataConnection.IndexOf(change.NewValue);
             if (rowIndex == -1)
             {
                 // If the Item is null or it's not found, clear the Selection
                 if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
                 {
                     // Edited value couldn't be committed or aborted
-                    SetValueNoCallback(SelectedItemProperty, e.OldValue);
+                    SetValueNoCallback(SelectedItemProperty, change.OldValue);
                     return;
                 }
 
@@ -4577,7 +4577,7 @@ public partial class DataGrid
                     if (!CommitEdit(DataGridEditingUnit.Row, exitEditingMode: true))
                     {
                         // Edited value couldn't be committed or aborted
-                        SetValueNoCallback(SelectedItemProperty, e.OldValue);
+                        SetValueNoCallback(SelectedItemProperty, change.OldValue);
                         return;
                     }
 
@@ -4619,15 +4619,15 @@ public partial class DataGrid
                 if (!_successfullyUpdatedSelection)
                 {
                     SetValueNoCallback(SelectedIndexProperty, oldSelectedIndex);
-                    SetValueNoCallback(SelectedItemProperty, e.OldValue);
+                    SetValueNoCallback(SelectedItemProperty, change.OldValue);
                 }
             }
         }
     }
 
-    private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleAutoGenerateColumnsChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var value = (bool)(e.NewValue ?? false);
+        var value = (bool)(change.NewValue ?? false);
         if (value)
         {
             InitializeElements(recycleRows: false);

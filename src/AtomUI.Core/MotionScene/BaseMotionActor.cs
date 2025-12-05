@@ -116,9 +116,9 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
         InvalidateVisual();
     }
 
-    private void HandleLayoutTransformChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleLayoutTransformChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newTransform = e.NewValue as Transform;
+        var newTransform = change.NewValue as Transform;
 
         _transformChangedEventDisposable?.Dispose();
         _transformChangedEventDisposable = null;
@@ -133,9 +133,9 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
         ApplyMotionTransform();
     }
 
-    private void HandleLayoutTransformOperationsChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleLayoutTransformOperationsChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newTransform = e.NewValue as Transform;
+        var newTransform = change.NewValue as Transform;
 
         _transformChangedEventDisposable?.Dispose();
         _transformChangedEventDisposable = null;

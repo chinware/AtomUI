@@ -103,12 +103,12 @@ public class MarqueeLabel : TextBlock, IControlSharedTokenResourcesHost
         _pivotOffsetStartValue = 0;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IsPointerOverProperty)
+            if (change.Property == IsPointerOverProperty)
             {
                 if (IsPointerOver)
                 {
@@ -126,7 +126,7 @@ public class MarqueeLabel : TextBlock, IControlSharedTokenResourcesHost
                 }
                 // 这里处理暂停事件
             }
-            else if (e.Property == CycleSpaceProperty || e.Property == MoveSpeedProperty)
+            else if (change.Property == CycleSpaceProperty || change.Property == MoveSpeedProperty)
             {
                 var originRunning = _animationRunning;
                 ReConfigureAnimation();

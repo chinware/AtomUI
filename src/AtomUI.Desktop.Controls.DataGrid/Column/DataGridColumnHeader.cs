@@ -422,11 +422,11 @@ internal partial class DataGridColumnHeader : ContentControl
         SetDragCursor(mousePosition);
     }
     
-    private void HandleIsSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsSeparatorsVisibleChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
-            _desiredSeparatorVisibility = (bool)(e.NewValue ?? false);
+            _desiredSeparatorVisibility = (bool)(change.NewValue ?? false);
             if (OwningGrid != null)
             {
                 UpdateSeparatorVisibility(OwningGrid.ColumnsInternal.LastVisibleColumn);

@@ -140,18 +140,18 @@ public class Alert : TemplatedControl, IControlSharedTokenResourcesHost
         this.RegisterResources();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IsClosableProperty)
+            if (change.Property == IsClosableProperty)
             {
                 SetupCloseButton();
             }
         }
         
-        if (e.Property == DescriptionProperty)
+        if (change.Property == DescriptionProperty)
         {
             UpdatePseudoClasses();
         }

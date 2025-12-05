@@ -147,12 +147,12 @@ internal class RibbonBadgeAdorner : TemplatedControl
         return finalSize;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == PlacementProperty || e.Property == BadgeRibbonOffsetProperty)
+            if (change.Property == PlacementProperty || change.Property == BadgeRibbonOffsetProperty)
             {
                 BuildCornerGeometry(true);
             }

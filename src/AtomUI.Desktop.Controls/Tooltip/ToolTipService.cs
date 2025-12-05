@@ -154,13 +154,13 @@ internal sealed class ToolTipService : IDisposable
     /// called when the <see cref="ToolTip.TipProperty" /> property changes on a control.
     /// </summary>
     /// <param name="e">The event args.</param>
-    private void HandleTipChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleTipChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var control = (Control)e.Sender;
+        var control = (Control)change.Sender;
 
-        if (ToolTip.GetIsOpen(control) && e.NewValue != e.OldValue && !(e.NewValue is ToolTip))
+        if (ToolTip.GetIsOpen(control) && change.NewValue != change.OldValue && !(change.NewValue is ToolTip))
         {
-            if (e.NewValue is null)
+            if (change.NewValue is null)
             {
                 Close(control);
             }
@@ -168,7 +168,7 @@ internal sealed class ToolTipService : IDisposable
             {
                 if (control.GetValue(ToolTip.ToolTipProperty) is { } tip)
                 {
-                    tip.Content = e.NewValue;
+                    tip.Content = change.NewValue;
                 }
             }
         }

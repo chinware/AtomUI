@@ -1082,9 +1082,9 @@ public class Select : TemplatedControl,
         }
     }
     
-    private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newItemsSource = (IEnumerable<SelectOption>?)e.NewValue;
+        var newItemsSource = (IEnumerable<SelectOption>?)change.NewValue;
         if (newItemsSource != null)
         {
             Options.Clear();

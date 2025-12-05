@@ -123,10 +123,10 @@ internal class TransformTrackingHelper : IDisposable
         Dispatcher.UIThread.Post(UpdateMatrix, priority.Value);
     }
 
-    private void PropertyChangedHandler(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void PropertyChangedHandler(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
-        e.TryGetProperty<bool>("IsEffectiveValueChange", out var isEffectiveValueChange);
-        if (isEffectiveValueChange && e.Property == Visual.BoundsProperty)
+        change.TryGetProperty<bool>("IsEffectiveValueChange", out var isEffectiveValueChange);
+        if (isEffectiveValueChange && change.Property == Visual.BoundsProperty)
         {
             EnqueueForUpdate();
         }

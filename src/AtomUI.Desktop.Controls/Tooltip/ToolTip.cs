@@ -542,10 +542,10 @@ public class ToolTip : ContentControl,
         }
     }
 
-    private static void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    private static void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var control  = (Control)e.Sender;
-        var newValue = (bool)e.NewValue!;
+        var control  = (Control)change.Sender;
+        var newValue = (bool)change.NewValue!;
 
         if (newValue)
         {

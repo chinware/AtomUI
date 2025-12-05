@@ -255,16 +255,16 @@ public class QRCode : TemplatedControl, IControlSharedTokenResourcesHost
         Bitmap = new Bitmap(data.AsStream());
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == ValueProperty || 
-                e.Property == ColorProperty || 
-                e.Property == BackgroundProperty || 
-                e.Property == EccLevelProperty || 
-                e.Property == SizeProperty)
+            if (change.Property == ValueProperty || 
+                change.Property == ColorProperty || 
+                change.Property == BackgroundProperty || 
+                change.Property == EccLevelProperty || 
+                change.Property == SizeProperty)
             {
                 SetupQRCode();
             }

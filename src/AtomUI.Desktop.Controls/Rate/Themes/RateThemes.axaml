@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="CharacterRateItemTheme.axaml" />
-        <ResourceInclude Source="IconRateItemTheme.axaml" />
+        <ResourceInclude Source="RateItemTheme.axaml" />
         <ResourceInclude Source="RateTheme.axaml" />
+        <ResourceInclude Source="RateItemsControlTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

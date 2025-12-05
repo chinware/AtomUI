@@ -251,10 +251,10 @@ public class CountBadge : Control,
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == BadgeIsVisibleProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == BadgeIsVisibleProperty)
         {
             if (BadgeIsVisible)
             {
@@ -269,19 +269,19 @@ public class CountBadge : Control,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == DecoratedTargetProperty)
+            if (change.Property == DecoratedTargetProperty)
             {
                 HandleDecoratedTargetChanged();
             }
 
-            if (e.Property == BadgeColorProperty)
+            if (change.Property == BadgeColorProperty)
             {
-                SetupBadgeColor(e.GetNewValue<string>());
+                SetupBadgeColor(change.GetNewValue<string>());
             }
         }
 
-        if (e.Property == CountProperty ||
-            e.Property == ShowZeroProperty)
+        if (change.Property == CountProperty ||
+            change.Property == ShowZeroProperty)
         {
             SetupShowZero();
         }

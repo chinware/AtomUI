@@ -3,8 +3,12 @@
              x:Class="AtomUIGallery.ShowCases.Views.RateShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery"
-             xmlns:showCase="clr-namespace:AtomUIGallery.ShowCases.Views">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="Basic"
+            Description="The simplest usage.">
+            <atom:Rate Value="3.5" IsAllowHalf="True"/>
+        </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

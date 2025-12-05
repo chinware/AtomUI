@@ -1,0 +1,51 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:RateItem}" TargetType="atom:RateItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <Panel RenderTransform="{TemplateBinding HoverScaleTransform}"
+                           RenderTransformOrigin="{x:Static RelativePoint.Center}">
+                        <Rectangle Fill="{TemplateBinding CharacterBgBrush}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"/>
+                        <Rectangle Name="ActiveItem"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Clip="{TemplateBinding StarClip}"/>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent"/>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:RateTokenKey.StarSizeLG}}"/>
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:RateTokenKey.StarSizeLG}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:RateTokenKey.StarSize}}"/>
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:RateTokenKey.StarSize}}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Width" Value="{DynamicResource {x:Static atom:RateTokenKey.StarSizeSM}}"/>
+            <Setter Property="Height" Value="{DynamicResource {x:Static atom:RateTokenKey.StarSizeSM}}"/>
+        </Style>
+        <Style Selector="^:not(^[SelectedState=None])">
+            <Style Selector="^ /template/ Rectangle#ActiveItem">
+                <Setter Property="Fill" Value="{TemplateBinding CharacterBrush}"/>
+            </Style>
+        </Style>
+        
+        <Setter Property="HoverScale" Value="1.0"/>
+        <Style Selector="^:pointerover">
+            <Setter Property="HoverScale" Value="{DynamicResource {x:Static atom:RateTokenKey.StarHoverScale}}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

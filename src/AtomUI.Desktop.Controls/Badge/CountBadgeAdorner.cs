@@ -197,18 +197,18 @@ internal class CountBadgeAdorner : TemplatedControl
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == BadgeShadowSizeProperty ||
-                e.Property == BadgeShadowColorProperty)
+            if (change.Property == BadgeShadowSizeProperty ||
+                change.Property == BadgeShadowColorProperty)
             {
                 BuildBoxShadow();
             }
 
-            if (e.Property == CountProperty || e.Property == OverflowCountProperty)
+            if (change.Property == CountProperty || change.Property == OverflowCountProperty)
             {
                 BuildCountText();
             }

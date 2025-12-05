@@ -49,11 +49,11 @@ internal class DotBadgeIndicator : Control
         BuildBoxShadow();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == BadgeShadowSizeProperty ||
-            e.Property == BadgeShadowColorProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == BadgeShadowSizeProperty ||
+            change.Property == BadgeShadowColorProperty)
         {
             BuildBoxShadow(true);
         }

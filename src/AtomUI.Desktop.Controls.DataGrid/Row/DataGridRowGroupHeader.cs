@@ -147,11 +147,11 @@ public class DataGridRowGroupHeader : TemplatedControl
         IsTabStopProperty.OverrideDefaultValue<DataGridRowGroupHeader>(false);
     }
     
-    private void HandleSublevelIndentChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleSublevelIndentChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (OwningGrid != null)
         {
-            OwningGrid.OnSublevelIndentUpdated(this, (double)(e.NewValue ?? 0));
+            OwningGrid.OnSublevelIndentUpdated(this, (double)(change.NewValue ?? 0));
         }
     }
     

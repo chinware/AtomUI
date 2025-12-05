@@ -57,10 +57,10 @@ internal class RangeDatePickerFlyout : DatePickerFlyout
         DatePickerPresenter     = presenter;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsShowTimeProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsShowTimeProperty)
         {
             if (_flyoutPresenter != null)
             {

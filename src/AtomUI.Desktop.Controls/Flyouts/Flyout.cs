@@ -230,19 +230,19 @@ public class Flyout : PopupFlyoutBase
     }
 
     // 因为在某些 placement 下箭头是不能显示的
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsShowArrowProperty ||
-            e.Property == PlacementProperty ||
-            e.Property == PlacementAnchorProperty ||
-            e.Property == PlacementGravityProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsShowArrowProperty ||
+            change.Property == PlacementProperty ||
+            change.Property == PlacementAnchorProperty ||
+            change.Property == PlacementGravityProperty)
         {
             ConfigureShowArrowEffective();
         }
 
-        if (e.Property == PlacementProperty ||
-            e.Property == IsPopupFlippedProperty)
+        if (change.Property == PlacementProperty ||
+            change.Property == IsPopupFlippedProperty)
         {
             ConfigureArrowPosition();
         }

@@ -158,13 +158,13 @@ public class RibbonBadge : Control,
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsVisibleProperty ||
-            e.Property == BadgeIsVisibleProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsVisibleProperty ||
+            change.Property == BadgeIsVisibleProperty)
         {
-            var badgeIsVisible = e.GetNewValue<bool>();
+            var badgeIsVisible = change.GetNewValue<bool>();
             if (badgeIsVisible)
             {
                 if (_adornerLayer is not null)
@@ -182,14 +182,14 @@ public class RibbonBadge : Control,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == DecoratedTargetProperty)
+            if (change.Property == DecoratedTargetProperty)
             {
                 HandleDecoratedTargetChanged();
             }
 
-            if (e.Property == RibbonColorProperty)
+            if (change.Property == RibbonColorProperty)
             {
-                SetupRibbonColor(e.GetNewValue<string>());
+                SetupRibbonColor(change.GetNewValue<string>());
             }
         }
     }

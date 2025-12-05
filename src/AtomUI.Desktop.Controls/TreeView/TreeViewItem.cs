@@ -356,23 +356,23 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeViewItemData
         }
     }
 
-    private void HandleGroupNameChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleGroupNameChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnGroupOrTypeChanged(this, e.GetOldValue<string>());
+        (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnGroupOrTypeChanged(this, change.GetOldValue<string>());
     }
     
-    private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newValue = e.GetNewValue<ItemToggleType>();
+        var newValue = change.GetNewValue<ItemToggleType>();
         PseudoClasses.Set(TreeViewPseudoClass.NodeToggleTypeRadio, newValue == ItemToggleType.Radio);
         PseudoClasses.Set(TreeViewPseudoClass.NodeToggleTypeCheckBox, newValue == ItemToggleType.CheckBox);
 
         (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnGroupOrTypeChanged(this, GroupName);
     }
     
-    private void HandleIsCheckedChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsCheckedChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newValue = e.GetNewValue<bool?>();
+        var newValue = change.GetNewValue<bool?>();
         PseudoClasses.Set(StdPseudoClass.Checked, newValue == true);
 
         (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnCheckedChanged(this);

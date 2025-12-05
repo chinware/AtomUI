@@ -229,14 +229,14 @@ public class Button : AvaloniaButton,
         return new Size(targetWidth, targetHeight);
     }
     
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsPressedProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsPressedProperty)
         {
             if (!IsLoading &&
                 IsWaveSpiritEnabled &&
-                (e.OldValue as bool? == true) &&
+                (change.OldValue as bool? == true) &&
                 (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default || ButtonType == ButtonType.Dashed))
             {
                 Debug.Assert(_waveSpiritDecorator != null);
@@ -268,34 +268,34 @@ public class Button : AvaloniaButton,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == ButtonTypeProperty)
+            if (change.Property == ButtonTypeProperty)
             {
                 ConfigureWaveSpiritType();
             }
         }
 
-        if (e.Property == ContentProperty ||
-            e.Property == IsLoadingProperty)
+        if (change.Property == ContentProperty ||
+            change.Property == IsLoadingProperty)
         {
             UpdatePseudoClasses();
         }
-        else if (e.Property == BorderBrushProperty ||
-                 e.Property == ButtonTypeProperty ||
-                 e.Property == IsEnabledProperty ||
-                 e.Property == BorderThicknessProperty)
+        else if (change.Property == BorderBrushProperty ||
+                 change.Property == ButtonTypeProperty ||
+                 change.Property == IsEnabledProperty ||
+                 change.Property == BorderThicknessProperty)
         {
             SetupEffectiveBorderThickness();
         }
 
         if (IsLoaded)
         {
-            if (e.Property == IsMotionEnabledProperty ||
-                e.Property == IsWaveSpiritEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty ||
+                change.Property == IsWaveSpiritEnabledProperty)
             {
                 ConfigureTransitions(true);
             }
         }
-        if (e.Property == ButtonTypeProperty)
+        if (change.Property == ButtonTypeProperty)
         {
             ConfigureControlThemeBindings(true);
         }

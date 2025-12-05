@@ -767,10 +767,10 @@ public class SliderTrack : TemplatedControl
         Density = range / remainingTrackLength;
     }
 
-    private void ThumbChanged(AvaloniaPropertyChangedEventArgs e)
+    private void ThumbChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldThumb = (SliderThumb?)e.OldValue;
-        var newThumb = (SliderThumb?)e.NewValue;
+        var oldThumb = (SliderThumb?)change.OldValue;
+        var newThumb = (SliderThumb?)change.NewValue;
 
         if (oldThumb != null)
         {

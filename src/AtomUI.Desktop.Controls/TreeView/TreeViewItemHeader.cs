@@ -362,9 +362,9 @@ internal class TreeViewItemHeader : ContentControl
         }
     }
     
-    private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var newValue = e.GetNewValue<ItemToggleType>();
+        var newValue = change.GetNewValue<ItemToggleType>();
         PseudoClasses.Set(TreeViewPseudoClass.NodeToggleTypeRadio, newValue == ItemToggleType.Radio);
         PseudoClasses.Set(TreeViewPseudoClass.NodeToggleTypeCheckBox, newValue == ItemToggleType.CheckBox);
     }

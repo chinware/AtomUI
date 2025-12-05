@@ -231,13 +231,13 @@ public class DotBadge : Control,
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsVisibleProperty ||
-            e.Property == BadgeIsVisibleProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsVisibleProperty ||
+            change.Property == BadgeIsVisibleProperty)
         {
-            var badgeIsVisible = e.GetNewValue<bool>();
+            var badgeIsVisible = change.GetNewValue<bool>();
             if (badgeIsVisible)
             {
                 PrepareAdorner();
@@ -250,14 +250,14 @@ public class DotBadge : Control,
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == DecoratedTargetProperty)
+            if (change.Property == DecoratedTargetProperty)
             {
                 HandleDecoratedTargetChanged();
             }
 
-            if (e.Property == DotColorProperty)
+            if (change.Property == DotColorProperty)
             {
-                SetupDotColor(e.GetNewValue<string>());
+                SetupDotColor(change.GetNewValue<string>());
             }
         }
     }

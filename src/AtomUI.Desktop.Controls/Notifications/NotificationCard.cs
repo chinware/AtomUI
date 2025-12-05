@@ -272,19 +272,19 @@ public class NotificationCard : ContentControl,
         Close();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == NotificationTypeProperty)
+            if (change.Property == NotificationTypeProperty)
             {
                 SetupNotificationTypePseudoClasses();
             }
         }
         
-        if (e.Property == IsClosedProperty)
+        if (change.Property == IsClosedProperty)
         {
             if (!IsClosing && !IsClosed)
             {
@@ -293,18 +293,18 @@ public class NotificationCard : ContentControl,
 
             RaiseEvent(new RoutedEventArgs(NotificationClosedEvent));
         }
-        else if (e.Property == PositionProperty)
+        else if (change.Property == PositionProperty)
         {
-            SetupPositionPseudoClasses(e.GetNewValue<NotificationPosition>());
+            SetupPositionPseudoClasses(change.GetNewValue<NotificationPosition>());
         } 
-        else if (e.Property == IsClosingProperty)
+        else if (change.Property == IsClosingProperty)
         {
             if (IsClosing)
             {
                 ApplyHideMotion();
             }
         } 
-        else if (e.Property == IconProperty)
+        else if (change.Property == IconProperty)
         {
             if (Icon is null)
             {

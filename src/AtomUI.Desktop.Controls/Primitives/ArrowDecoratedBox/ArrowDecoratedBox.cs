@@ -233,18 +233,18 @@ public class ArrowDecoratedBox : ContentControl,
         };
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == ArrowPositionProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == ArrowPositionProperty)
         {
             ArrowDirection = GetDirection(ArrowPosition);
         }
-        else if (e.Property == ArrowDirectionProperty)
+        else if (change.Property == ArrowDirectionProperty)
         {
             // 因为属性更新比布局更新快，我们计算 GetMaskBounds 时候等不及布局更新就要计算坐标了
-            var oldDirection = e.GetOldValue<Direction>();
-            var newDirection = e.GetNewValue<Direction>();
+            var oldDirection = change.GetOldValue<Direction>();
+            var newDirection = change.GetNewValue<Direction>();
             if ((oldDirection == Direction.Left && newDirection == Direction.Right) ||
                 (oldDirection == Direction.Right && newDirection == Direction.Left) ||
                 (oldDirection == Direction.Top && newDirection == Direction.Bottom) ||

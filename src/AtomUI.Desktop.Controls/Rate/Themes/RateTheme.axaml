@@ -6,7 +6,24 @@
     <ControlTheme x:Key="{x:Type atom:Rate}" TargetType="atom:Rate">
         <Setter Property="Template">
             <ControlTemplate>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderBrush}">
+                    <atom:RateItemsControl Name="{x:Static atom:RateThemeConstants.RateItemsPart}"
+                                           Character="{TemplateBinding Character}"
+                                           StarColor="{TemplateBinding StarColor}"
+                                           StarBgColor="{TemplateBinding StarBgColor}"
+                                           IsAllowClear="{TemplateBinding IsAllowClear}"
+                                           IsAllowHalf="{TemplateBinding IsAllowHalf}"
+                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                </Border>
             </ControlTemplate>
         </Setter>
+        <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
+        <Setter Property="StarColor" Value="{DynamicResource {x:Static atom:RateTokenKey.StarColor}}" />
+        <Setter Property="StarBgColor" Value="{DynamicResource {x:Static atom:RateTokenKey.StarBg}}" />
+        
     </ControlTheme>
 </ResourceDictionary>

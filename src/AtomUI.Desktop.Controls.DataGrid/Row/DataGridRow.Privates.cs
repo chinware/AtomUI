@@ -290,18 +290,18 @@ public partial class DataGridRow
         _cellsElement?.Children.Remove(e.Cell);
     }
     
-    private void HandleHeaderChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleHeaderChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (_headerElement != null)
         {
-            _headerElement.Content = e.NewValue;
+            _headerElement.Content = change.NewValue;
         }
     }
 
-    private void HandleDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldValue = (IDataTemplate?)e.OldValue;
-        var newValue = (IDataTemplate?)e.NewValue;
+        var oldValue = (IDataTemplate?)change.OldValue;
+        var newValue = (IDataTemplate?)change.NewValue;
 
         if (!_areHandlersSuspended && OwningGrid != null)
         {
@@ -383,10 +383,10 @@ public partial class DataGridRow
         }
     }
     
-    private void HandleHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldValue = (IDataTemplate?)e.OldValue;
-        var newValue = (IDataTemplate?)e.NewValue;
+        var oldValue = (IDataTemplate?)change.OldValue;
+        var newValue = (IDataTemplate?)change.NewValue;
 
         if (!_areHandlersSuspended && OwningGrid != null)
         {
@@ -438,7 +438,7 @@ public partial class DataGridRow
         }
     }
      
-    private void HandleIsDetailsVisibleChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsDetailsVisibleChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_areHandlersSuspended)
         {
@@ -451,7 +451,7 @@ public partial class DataGridRow
                 throw DataGridError.DataGridRow.InvalidRowIndexCannotCompleteOperation();
             }
 
-            var newValue = (bool)(e.NewValue ?? false);
+            var newValue = (bool)(change.NewValue ?? false);
             OwningGrid.NotifyRowDetailsVisibilityPropertyChanged(Index, newValue);
             SetDetailsVisibilityInternal(newValue, raiseNotification: true, animate: true);
         }

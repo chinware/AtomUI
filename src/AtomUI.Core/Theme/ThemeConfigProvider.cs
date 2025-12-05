@@ -88,10 +88,10 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         ThemeVariant            = new ThemeVariant($"ThemeConfigProvider-{_idSeed++}", null);
     }
 
-    private void ContentChanged(AvaloniaPropertyChangedEventArgs e)
+    private void ContentChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldChild = (Control?)e.OldValue;
-        var newChild = (Control?)e.NewValue;
+        var oldChild = (Control?)change.OldValue;
+        var newChild = (Control?)change.NewValue;
 
         if (oldChild != null)
         {

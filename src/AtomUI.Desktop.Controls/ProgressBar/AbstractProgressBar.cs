@@ -304,32 +304,32 @@ public abstract class AbstractProgressBar : RangeBase,
         Transitions = null;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
 
-        if (e.Property == ValueProperty ||
-            e.Property == MinimumProperty ||
-            e.Property == MaximumProperty ||
-            e.Property == IsIndeterminateProperty ||
-            e.Property == ProgressTextFormatProperty)
+        if (change.Property == ValueProperty ||
+            change.Property == MinimumProperty ||
+            change.Property == MaximumProperty ||
+            change.Property == IsIndeterminateProperty ||
+            change.Property == ProgressTextFormatProperty)
         {
             UpdateProgress();
         }
-        else if (e.Property == IsIndeterminateProperty)
+        else if (change.Property == IsIndeterminateProperty)
         {
             UpdatePseudoClasses();
         }
 
         if (IsLoaded)
         { 
-            if (e.Property == IsMotionEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }
         }
 
-        HandlePropertyChangedForStyle(e);
+        HandlePropertyChangedForStyle(change);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -420,34 +420,34 @@ public abstract class AbstractProgressBar : RangeBase,
         }
     }
 
-    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs e)
+    private void HandlePropertyChangedForStyle(AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Property == SizeTypeProperty)
+        if (change.Property == SizeTypeProperty)
         {
-            EffectiveSizeType = e.GetNewValue<SizeType>();
+            EffectiveSizeType = change.GetNewValue<SizeType>();
         }
-        else if (e.Property == ValueProperty)
+        else if (change.Property == ValueProperty)
         {
             IsCompleted = MathUtils.AreClose(Value, Maximum);
             UpdatePseudoClasses();
         }
-        else if (e.Property == IsCompletedProperty)
+        else if (change.Property == IsCompletedProperty)
         {
             InvalidateMeasure();
         }
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == WidthProperty || e.Property == HeightProperty)
+            if (change.Property == WidthProperty || change.Property == HeightProperty)
             {
                 NotifyHandleExtraInfoVisibility();
             }
-            else if (e.Property == EffectiveSizeTypeProperty)
+            else if (change.Property == EffectiveSizeTypeProperty)
             {
                 NotifyEffectSizeTypeChanged();
             }
         }
-        NotifyPropertyChanged(e);
+        NotifyPropertyChanged(change);
     }
 
     protected virtual void NotifyConfigureTransitions(ref Transitions transitions)
@@ -464,9 +464,9 @@ public abstract class AbstractProgressBar : RangeBase,
     {
     }
 
-    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected virtual void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Property == TrailColorProperty)
+        if (change.Property == TrailColorProperty)
         {
             if (TrailColor.HasValue)
             {

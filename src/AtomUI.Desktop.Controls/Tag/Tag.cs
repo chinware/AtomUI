@@ -239,25 +239,25 @@ public class Tag : TemplatedControl, IControlSharedTokenResourcesHost
         ConfigureBorderThickness();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
+        base.OnPropertyChanged(change);
 
-        if (e.Property == CloseIconProperty)
+        if (change.Property == CloseIconProperty)
         {
             SetupDefaultCloseIcon();
         }
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == TagColorProperty)
+            if (change.Property == TagColorProperty)
             {
                 if (TagColor is not null)
                 {
                     SetupTagColorInfo(TagColor); 
                 }
             }
-            else if (e.Property == BorderedProperty)
+            else if (change.Property == BorderedProperty)
             {
                 ConfigureBorderThickness();
             }

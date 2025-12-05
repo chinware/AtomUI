@@ -3274,9 +3274,9 @@ public partial class DataGrid
     }
 #endif
     
-    private void HandleIsRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIsRowGroupHeadersFrozenChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var value = (bool)(e.NewValue ?? false);
+        var value = (bool)(change.NewValue ?? false);
         ProcessFrozenColumnCount();
 
         // Update elements in the RowGroupHeader that were previously frozen
@@ -3295,7 +3295,7 @@ public partial class DataGrid
         }
     }
     
-    private void HandleRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowDetailsTemplateChanged(AvaloniaPropertyChangedEventArgs change)
     {
         // Update the RowDetails templates if necessary
         if (_rowsPresenter != null)
@@ -3314,7 +3314,7 @@ public partial class DataGrid
         InvalidateMeasure();
     }
 
-    private void HandleRowHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (_rowsPresenter != null)
         {
@@ -3329,9 +3329,9 @@ public partial class DataGrid
         InvalidateMeasure();
     }
     
-    private void HandleRowDetailsVisibilityModeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleRowDetailsVisibilityModeChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        UpdateRowDetailsVisibilityMode((DataGridRowDetailsVisibilityMode)(e.NewValue ?? DataGridRowDetailsVisibilityMode.Collapsed));
+        UpdateRowDetailsVisibilityMode((DataGridRowDetailsVisibilityMode)(change.NewValue ?? DataGridRowDetailsVisibilityMode.Collapsed));
     }
 
     private void UpdateRowDetailsVisibilityMode(DataGridRowDetailsVisibilityMode newDetailsMode)

@@ -210,7 +210,7 @@ public class AtomLayer : Canvas
 
         return;
 
-        void ParentHostOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        void ParentHostOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
         {
             Host.PropertyChanged -= ParentHostOnPropertyChanged;
             UpdateLocationCore(target, adorner);
@@ -295,9 +295,9 @@ public class AtomLayer : Canvas
 
         return;
 
-        void TargetBoundsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        void TargetBoundsOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
         {
-            if (e.Property != BoundsProperty)
+            if (change.Property != BoundsProperty)
             {
                 return;
             }

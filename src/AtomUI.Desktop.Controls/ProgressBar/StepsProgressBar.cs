@@ -296,16 +296,16 @@ public class StepsProgressBar : AbstractLineProgress
         CalculateMinBarThickness();
     }
 
-    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void NotifyPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.NotifyPropertyChanged(e);
-        if (e.Property == ChunkHeightProperty)
+        base.NotifyPropertyChanged(change);
+        if (change.Property == ChunkHeightProperty)
         {
-            IndicatorThickness = e.GetNewValue<double>();
+            IndicatorThickness = change.GetNewValue<double>();
         }
-        else if (e.Property == IndicatorThicknessProperty)
+        else if (change.Property == IndicatorThicknessProperty)
         {
-            ChunkHeight = e.GetNewValue<double>();
+            ChunkHeight = change.GetNewValue<double>();
         }
     }
 

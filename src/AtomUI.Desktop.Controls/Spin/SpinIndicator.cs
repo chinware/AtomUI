@@ -148,10 +148,10 @@ public class SpinIndicator : TemplatedControl,
         _cancellationTokenSource?.Cancel();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IndicatorAngleProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IndicatorAngleProperty)
         {
             HandleIndicatorAngleChanged();
         }

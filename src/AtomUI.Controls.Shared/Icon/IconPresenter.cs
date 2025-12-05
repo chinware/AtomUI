@@ -67,10 +67,10 @@ public class IconPresenter : Control, IMotionAwareControl
         return LayoutHelper.ArrangeChild(Icon, finalSize, new Thickness(0));
     }
     
-    private void HandleIconChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleIconChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var oldChild = (Control?)e.OldValue;
-        var newChild = (Control?)e.NewValue;
+        var oldChild = (Control?)change.OldValue;
+        var newChild = (Control?)change.NewValue;
 
         if (oldChild != null)
         {

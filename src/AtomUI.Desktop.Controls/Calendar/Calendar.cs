@@ -693,15 +693,15 @@ public class Calendar : TemplatedControl,
     /// FirstDayOfWeekProperty property changed handler.
     /// </summary>
     /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
-    private void OnFirstDayOfWeekChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnFirstDayOfWeekChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (IsValidFirstDayOfWeek(e.NewValue!))
+        if (IsValidFirstDayOfWeek(change.NewValue!))
         {
             UpdateMonths();
         }
         else
         {
-            throw new ArgumentOutOfRangeException(nameof(e), "Invalid DayOfWeek");
+            throw new ArgumentOutOfRangeException(nameof(change), "Invalid DayOfWeek");
         }
     }
 
@@ -727,7 +727,7 @@ public class Calendar : TemplatedControl,
     /// IsTodayHighlightedProperty property changed handler.
     /// </summary>
     /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
-    private void OnIsTodayHighlightedChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnIsTodayHighlightedChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var i = DateTimeHelper.CompareYearMonth(DisplayDateInternal, DateTime.Today);
 
@@ -741,10 +741,10 @@ public class Calendar : TemplatedControl,
     /// DisplayModeProperty property changed handler.
     /// </summary>
     /// <param name="e">The DependencyPropertyChangedEventArgs.</param>
-    private void OnDisplayModePropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnDisplayModePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var mode         = (CalendarMode)e.NewValue!;
-        var oldMode      = (CalendarMode)e.OldValue!;
+        var mode         = (CalendarMode)change.NewValue!;
+        var oldMode      = (CalendarMode)change.OldValue!;
         var monthControl = MonthControl;
 
         if (monthControl != null)
@@ -787,7 +787,7 @@ public class Calendar : TemplatedControl,
             }
         }
 
-        OnDisplayModeChanged(new CalendarModeChangedEventArgs((CalendarMode)e.OldValue, mode));
+        OnDisplayModeChanged(new CalendarModeChangedEventArgs((CalendarMode)change.OldValue, mode));
     }
 
     private static bool IsValidDisplayMode(CalendarMode mode)
@@ -802,9 +802,9 @@ public class Calendar : TemplatedControl,
         DisplayModeChanged?.Invoke(this, args);
     }
 
-    private void OnSelectionModeChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnSelectionModeChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (IsValidSelectionMode(e.NewValue!))
+        if (IsValidSelectionMode(change.NewValue!))
         {
             _displayDateIsChanging = true;
             SetCurrentValue(SelectedDateProperty, null);
@@ -813,7 +813,7 @@ public class Calendar : TemplatedControl,
         }
         else
         {
-            throw new ArgumentOutOfRangeException(nameof(e), "Invalid SelectionMode");
+            throw new ArgumentOutOfRangeException(nameof(change), "Invalid SelectionMode");
         }
     }
 
@@ -832,7 +832,7 @@ public class Calendar : TemplatedControl,
                || mode == CalendarSelectionMode.None;
     }
 
-    private void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_displayDateIsChanging)
         {
@@ -840,7 +840,7 @@ public class Calendar : TemplatedControl,
             {
                 DateTime? addedDate;
 
-                addedDate = (DateTime?)e.NewValue;
+                addedDate = (DateTime?)change.NewValue;
 
                 if (IsValidDateSelection(this, addedDate))
                 {
@@ -875,7 +875,7 @@ public class Calendar : TemplatedControl,
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException(nameof(e), "SelectedDate value is not valid.");
+                    throw new ArgumentOutOfRangeException(nameof(change), "SelectedDate value is not valid.");
                 }
             }
             else
@@ -914,9 +914,9 @@ public class Calendar : TemplatedControl,
         }
     }
 
-    protected virtual void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs e)
+    protected virtual void OnDisplayDateChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        UpdateDisplayDate(this, (DateTime)e.NewValue!, (DateTime)e.OldValue!);
+        UpdateDisplayDate(this, (DateTime)change.NewValue!, (DateTime)change.OldValue!);
     }
 
     private static void UpdateDisplayDate(Calendar c, DateTime addedDate, DateTime removedDate)
@@ -947,11 +947,11 @@ public class Calendar : TemplatedControl,
         DisplayDateChanged?.Invoke(this, e);
     }
 
-    private void OnDisplayDateStartChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnDisplayDateStartChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_displayDateIsChanging)
         {
-            var newValue = e.NewValue as DateTime?;
+            var newValue = change.NewValue as DateTime?;
 
             if (newValue.HasValue)
             {
@@ -1010,11 +1010,11 @@ public class Calendar : TemplatedControl,
         return selectedDateMin;
     }
 
-    private void OnDisplayDateEndChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnDisplayDateEndChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (!_displayDateIsChanging)
         {
-            var newValue = e.NewValue as DateTime?;
+            var newValue = change.NewValue as DateTime?;
 
             if (newValue.HasValue)
             {
@@ -2202,10 +2202,10 @@ public class Calendar : TemplatedControl,
     /// Called when the IsEnabled property changes.
     /// </summary>
     /// <param name="e">Property changed args.</param>
-    private void OnIsEnabledChanged(AvaloniaPropertyChangedEventArgs e)
+    private void OnIsEnabledChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        Debug.Assert(e.NewValue is bool, "NewValue should be a boolean!");
-        var isEnabled = (bool)e.NewValue;
+        Debug.Assert(change.NewValue is bool, "NewValue should be a boolean!");
+        var isEnabled = (bool)change.NewValue;
 
         MonthControl?.UpdateDisabled(isEnabled);
     }

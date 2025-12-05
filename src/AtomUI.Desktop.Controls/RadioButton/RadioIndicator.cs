@@ -186,16 +186,16 @@ internal class RadioIndicator : TemplatedControl
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsPointerOverProperty ||
-            e.Property == IsCheckedProperty ||
-            e.Property == IsEnabledProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsPointerOverProperty ||
+            change.Property == IsCheckedProperty ||
+            change.Property == IsEnabledProperty)
         {
             UpdatePseudoClasses();
 
-            if (e.Property == IsCheckedProperty &&
+            if (change.Property == IsCheckedProperty &&
                 IsWaveAnimationEnabled &&
                 !PseudoClasses.Contains(StdPseudoClass.Disabled) &&
                 PseudoClasses.Contains(StdPseudoClass.Checked))
@@ -206,9 +206,9 @@ internal class RadioIndicator : TemplatedControl
 
         if (this.IsAttachedToVisualTree())
         {
-            if (e.Property == IsPointerOverProperty ||
-                e.Property == IsCheckedProperty ||
-                e.Property == IsEnabledProperty)
+            if (change.Property == IsPointerOverProperty ||
+                change.Property == IsCheckedProperty ||
+                change.Property == IsEnabledProperty)
             {
                 RadioDotEffectSize = CalculateDotSize(IsEnabled, IsChecked.HasValue && IsChecked.Value);
             }
@@ -216,7 +216,7 @@ internal class RadioIndicator : TemplatedControl
 
         if (IsLoaded)
         {
-            if (e.Property == IsMotionEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }

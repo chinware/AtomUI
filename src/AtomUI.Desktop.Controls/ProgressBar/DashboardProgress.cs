@@ -187,10 +187,10 @@ public class DashboardProgress : AbstractCircleProgress
         return (startAngle, spanAngle);
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == GapDegreeProperty || e.Property == DashboardGapPositionProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == GapDegreeProperty || change.Property == DashboardGapPositionProperty)
         {
             _anglePair = CalculateAngle(DashboardGapPosition, GapDegree);
         }

@@ -427,12 +427,12 @@ public class ButtonSpinner : Spinner,
         SetButtonUsage();
     }
     
-    private static void AllowSpinChanged(AvaloniaPropertyChangedEventArgs e)
+    private static void AllowSpinChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (e.Sender is ButtonSpinner spinner)
+        if (change.Sender is ButtonSpinner spinner)
         {
-            var oldValue = (bool)e.OldValue!;
-            var newValue = (bool)e.NewValue!;
+            var oldValue = (bool)change.OldValue!;
+            var newValue = (bool)change.NewValue!;
             spinner.OnAllowSpinChanged(oldValue, newValue);
         }
     }

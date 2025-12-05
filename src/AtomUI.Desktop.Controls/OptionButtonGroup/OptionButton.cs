@@ -148,20 +148,20 @@ public class OptionButton : AvaloniaRadioButton
         HandleSizeTypeChanged();
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnPropertyChanged(e);
-        if (e.Property == IsPointerOverProperty ||
-            e.Property == IsPressedProperty ||
-            e.Property == IsCheckedProperty)
+        base.OnPropertyChanged(change);
+        if (change.Property == IsPointerOverProperty ||
+            change.Property == IsPressedProperty ||
+            change.Property == IsCheckedProperty)
         {
-            if (e.Property == IsPressedProperty && e.OldValue as bool? == true && IsWaveSpiritEnabled)
+            if (change.Property == IsPressedProperty && change.OldValue as bool? == true && IsWaveSpiritEnabled)
             {
                 _waveSpiritDecorator?.Play();
             }
         }
 
-        if (e.Property == GroupPositionTraitProperty)
+        if (change.Property == GroupPositionTraitProperty)
         {
             if (_originCornerRadius.HasValue)
             {
@@ -171,7 +171,7 @@ public class OptionButton : AvaloniaRadioButton
 
         if (IsLoaded)
         {
-            if (e.Property == IsMotionEnabledProperty)
+            if (change.Property == IsMotionEnabledProperty)
             {
                 ConfigureTransitions(true);
             }
