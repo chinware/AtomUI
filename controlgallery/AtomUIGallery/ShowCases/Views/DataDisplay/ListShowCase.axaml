@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.ListShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
-    <gallerycontrols:ShowCasePanel>
+    <gallery:ShowCasePanel>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Basic usage"
             Description="Basic usage example.">
             <atom:List ItemsSource="{Binding ListItems}"
@@ -18,9 +18,9 @@
                     </DataTemplate>
                 </atom:List.ItemTemplate>
             </atom:List>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Selection"
             Description="You can set single selection, multiple selection or no selection.">
             <StackPanel Spacing="20">
@@ -43,9 +43,9 @@
                     </atom:List.ItemTemplate>
                 </atom:List>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Hover effect"
             Description="Disabled item hover effect.">
             <atom:List DisabledItemHoverEffect="True"
@@ -57,9 +57,9 @@
                     </DataTemplate>
                 </atom:List.ItemTemplate>
             </atom:List>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Group"
             Description="You can group the data based on conditions.">
             <atom:List x:DataType="viewModels:ListViewModel"
@@ -72,9 +72,9 @@
                     </DataTemplate>
                 </atom:List.ItemTemplate>
             </atom:List>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Item disabled"
             Description="Disabled item.">
             <atom:List x:DataType="viewModels:ListViewModel"
@@ -85,9 +85,9 @@
                     </DataTemplate>
                 </atom:List.ItemTemplate>
             </atom:List>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Empty"
             Description="show empty indicator when no data.">
             <StackPanel Spacing="12">
@@ -109,9 +109,9 @@
                     </atom:List.ItemTemplate>
                 </atom:List>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Filter"
             Description="You can filter the data based on criteria; here we've filtered for items containing 'a'.">
             <atom:List Name="FilteredList"
@@ -124,9 +124,9 @@
                     </DataTemplate>
                 </atom:List.ItemTemplate>
             </atom:List>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Ordered"
             Description="We can sort according to specified attributes.">
             <atom:List Name="OrderedList" 
@@ -139,7 +139,7 @@
                     </DataTemplate>
                 </atom:List.ItemTemplate>
             </atom:List>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

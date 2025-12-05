@@ -1,11 +1,11 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:gallerycontrols="using:AtomUIGallery.Controls"
+                    xmlns:gallery="https://atomui.net/oss-controls/gallery"
                     xmlns:models="using:AtomUIGallery.Models"
                     x:CompileBindings="True">
-    <ControlTheme x:Key="{x:Type gallerycontrols:ColorListControl}" TargetType="gallerycontrols:ColorListControl">
+    <ControlTheme x:Key="{x:Type gallery:ColorListControl}" TargetType="gallery:ColorListControl">
         <Setter Property="Template">
-            <ControlTemplate TargetType="gallerycontrols:ColorListControl">
+            <ControlTemplate TargetType="gallery:ColorListControl">
                 <ItemsControl ItemsSource="{TemplateBinding ColorInfos}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -14,7 +14,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:PaletteColorInfo">
-                            <gallerycontrols:ColorItemControl Background="{Binding Brush}"
+                            <gallery:ColorItemControl Background="{Binding Brush}"
                                                               ColorName="{Binding DisplayName}"
                                                               Foreground="{Binding TextBrush}"
                                                               Hex="{Binding Hex}" />

@@ -2,30 +2,30 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.WatermarkShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
 
-        <gallerycontrols:ShowCaseItem Title="Basic" Description="The most basic usage.">
+        <gallery:ShowCaseItem Title="Basic" Description="The most basic usage.">
             <Border Height="300" HorizontalAlignment="Stretch" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Multi-line watermark"
+        <gallery:ShowCaseItem Title="Multi-line watermark"
                                       Description="Use line-break to specify multi-line text watermark content.">
             <Border Height="200"
                     HorizontalAlignment="Stretch"
                     atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Image watermark"
+        <gallery:ShowCaseItem Title="Image watermark"
                                       Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
             <Border Height="400">
                 <atom:Watermark.Glyph>
                     <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png" />
                 </atom:Watermark.Glyph>
             </Border>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Custom configuration"
+        <gallery:ShowCaseItem Title="Custom configuration"
                                       Description="Preview the watermark effect by configuring custom parameters.">
             <StackPanel atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}">
                 <atom:TextBlock TextWrapping="Wrap">
@@ -37,7 +37,7 @@
                 </atom:TextBlock>
                 <Image Source="/Assets/watermark-sample.png" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

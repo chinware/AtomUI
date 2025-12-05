@@ -3,10 +3,10 @@
              x:Class="AtomUIGallery.ShowCases.Views.BreadcrumbShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic Usage"
             Description="The simplest use.">
             <StackPanel>
@@ -17,9 +17,9 @@
                     <atom:BreadcrumbItem>An Application</atom:BreadcrumbItem>
                 </atom:Breadcrumb>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="With an Icon"
             Description="The icon should be placed in front of the text.">
             <StackPanel>
@@ -29,9 +29,9 @@
                     <atom:BreadcrumbItem>Application</atom:BreadcrumbItem>
                 </atom:Breadcrumb>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="With Params"
             Description="With route params.">
             <StackPanel>
@@ -40,9 +40,9 @@
                     <atom:BreadcrumbItem NavigateContext="Param(1)">Param</atom:BreadcrumbItem>
                 </atom:Breadcrumb>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Configuring the Separator"
             Description="The separator can be customized by setting the separator property: separator equals >">
             <StackPanel>
@@ -53,9 +53,9 @@
                     <atom:BreadcrumbItem>An Application</atom:BreadcrumbItem>
                 </atom:Breadcrumb>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Configuring the Separator Independently"
             Description="Customize separator for each other.">
             <StackPanel>
@@ -66,9 +66,9 @@
                     <atom:BreadcrumbItem>An Application</atom:BreadcrumbItem>
                 </atom:Breadcrumb>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Generate BreadcrumbItem by template"
             Description="Generate BreadcrumbItem by template.">
             <StackPanel>
@@ -81,7 +81,7 @@
                     </atom:Breadcrumb.ItemTemplate>
                 </atom:Breadcrumb>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

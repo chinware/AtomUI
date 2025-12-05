@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.CalendarShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem Description="The simplest usage for Calendar." Title="Basic">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Description="The simplest usage for Calendar." Title="Basic">
             <atom:Calendar />
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

@@ -3,10 +3,10 @@
              x:Class="AtomUIGallery.ShowCases.Views.ComboBoxShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Basic button spinner.">
             <atom:ComboBox PlaceholderText="Please select" Width="300">
@@ -51,9 +51,9 @@
                 <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
                 <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
             </atom:ComboBox>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Generate ComboBoxItem by ItemsSource"
             Description="Generate structure based on ItemsSource and template.">
             <atom:ComboBox PlaceholderText="Please select" Width="300"
@@ -65,9 +65,9 @@
                     </DataTemplate>
                 </atom:ComboBox.ItemTemplate>
             </atom:ComboBox>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Disabled button spinner.">
             <atom:ComboBox PlaceholderText="Please select" Width="300" IsEnabled="False">
@@ -76,9 +76,9 @@
                 <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
                 <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
             </atom:ComboBox>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Three sizes of Input"
             Description="There are three sizes of an ComboBox: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -101,9 +101,9 @@
                     <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
                 </atom:ComboBox>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Variants"
             Description="Variants of Input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -128,9 +128,9 @@
                     <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
                 </atom:ComboBox>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -161,10 +161,10 @@
                 </atom:ComboBox>
 
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="prefix and suffix"
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -196,9 +196,9 @@
                 </atom:ComboBox>
 
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status"
             Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -277,7 +277,7 @@
                 </atom:ComboBox>
 
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

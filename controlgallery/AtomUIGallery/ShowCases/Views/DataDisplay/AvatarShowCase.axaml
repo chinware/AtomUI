@@ -3,14 +3,14 @@
              x:Class="AtomUIGallery.ShowCases.Views.AvatarShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCasePanel.Styles>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
             <Style Selector="atom|Avatar">
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
-        </gallerycontrols:ShowCasePanel.Styles>
-        <gallerycontrols:ShowCaseItem Title="Basic"
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem Title="Basic"
                                       Description="Three sizes and two shapes are available.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -29,9 +29,9 @@
                     <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="14" />
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Type"
+        <gallery:ShowCaseItem Title="Type"
                                       Description="Image, Icon and letter are supported, and the latter two kinds of avatar can have custom colors and background colors.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -43,9 +43,9 @@
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="With Badge"
+        <gallery:ShowCaseItem Title="With Badge"
                                       Description="Usually used for reminders and notifications.">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
@@ -55,9 +55,9 @@
                     <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 </atom:DotBadge>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Autoset Font Size"
+        <gallery:ShowCaseItem Title="Autoset Font Size"
                                       Description="For letter type Avatar, when the letters are too long to display, the font size can be automatically adjusted according to the width of the Avatar. You can also use gap to set the unit distance between left and right sides.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:Avatar Background="{Binding AvatarBackground}"
@@ -77,9 +77,9 @@
                     ChangeGap
                 </atom:Button>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Avatar.Group"
+        <gallery:ShowCaseItem Title="Avatar.Group"
                                       Description="Avatar group display.">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:AvatarGroup>
@@ -126,6 +126,6 @@
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

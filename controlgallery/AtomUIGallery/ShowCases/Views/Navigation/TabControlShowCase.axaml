@@ -3,12 +3,12 @@
              x:Class="AtomUIGallery.ShowCases.Views.TabControlShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:views="clr-namespace:AtomUIGallery.ShowCases.Views">
     <atom:TabControl SizeType="Large">
         <atom:TabItem Header="TabControl">
-            <gallerycontrols:ShowCasePanel>
-                <gallerycontrols:ShowCaseItem
+            <gallery:ShowCasePanel>
+                <gallery:ShowCaseItem
                     Title="Basic"
                     Description="Default activate first tab.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -18,9 +18,9 @@
                             <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
                         </atom:TabControl>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Items from ItemSource datasource"
                     Description="Add TabItem based on data source and item template.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -34,9 +34,9 @@
                             </atom:TabControl.ItemTemplate>
                         </atom:TabControl>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Disabled"
                     Description="Disabled a tab.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -52,9 +52,9 @@
                             <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
                         </atom:TabControl>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Centered"
                     Description="Centered tabs.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -71,9 +71,9 @@
                         </atom:CardTabControl>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Icon"
                     Description="The Tab with Icon.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -84,9 +84,9 @@
                         </atom:TabControl>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Slide"
                     Description="In order to fit in more tabs, they can slide left and right (or up and down).">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -136,9 +136,9 @@
                             <atom:TabItem Header="Tab 20">Content of Tab Pane 20</atom:TabItem>
                         </atom:CardTabControl>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Card type tab"
                     Description="Another type of Tabs, which doesn't support vertical mode.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -150,9 +150,9 @@
                         </atom:CardTabControl>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Closable Tab"
                     Description="We support closable tab settings.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -186,9 +186,9 @@
                             </atom:TabItem>
                         </atom:TabControl>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Position"
                     Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -216,9 +216,9 @@
                         </atom:TabControl>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Card Shape Position"
                     Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
                     Margin="0, 0, 10, 0">
@@ -252,9 +252,9 @@
                         </atom:CardTabControl>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Size"
                     Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -282,9 +282,9 @@
                         </atom:CardTabControl>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Add and close tab"
                     Description="Hide default plus icon, and bind event for customized trigger." Margin="0, 0, 30, 0">
                     <atom:CardTabControl IsShowAddTabButton="True" Name="AddTabDemoTabControl">
@@ -293,9 +293,9 @@
                         <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
                         <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
                     </atom:CardTabControl>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Extra content"
                     Description="You can add extra actions to the right or left or even both side of Tabs."
                     IsOccupyEntireRow="True">
@@ -313,14 +313,14 @@
                             <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
                         </atom:TabControl>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-            </gallerycontrols:ShowCasePanel>
+            </gallery:ShowCasePanel>
 
         </atom:TabItem>
         <atom:TabItem Header="TabStrip">
-            <gallerycontrols:ShowCasePanel>
-                <gallerycontrols:ShowCaseItem
+            <gallery:ShowCasePanel>
+                <gallery:ShowCaseItem
                     Title="Basic"
                     Description="Default activate first tab.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -330,9 +330,9 @@
                             <atom:TabStripItem IsClosable="True">Tab 3</atom:TabStripItem>
                         </atom:TabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Items from ItemSource datasource"
                     Description="Add TabStripItem based on data source and item template.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -344,9 +344,9 @@
                             </atom:TabStrip.ItemTemplate>
                         </atom:TabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Disabled"
                     Description="Disabled a tab.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -362,9 +362,9 @@
                             <atom:TabStripItem>Tab 3</atom:TabStripItem>
                         </atom:TabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Centered"
                     Description="Centered tabs.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -381,9 +381,9 @@
                         </atom:CardTabStrip>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Icon"
                     Description="The Tab with Icon.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -393,9 +393,9 @@
                             <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
                         </atom:TabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Slide"
                     Description="In order to fit in more tabs, they can slide left and right (or up and down).">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -425,9 +425,9 @@
                             <atom:TabStripItem>Tab 23</atom:TabStripItem>
                         </atom:TabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Card type tab"
                     Description="Another type of Tabs, which doesn't support vertical mode.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -439,9 +439,9 @@
                         </atom:CardTabStrip>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Closable Tab"
                     Description="We support closable tab settings.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -459,9 +459,9 @@
                             <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 2</atom:TabStripItem>
                         </atom:TabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Position"
                     Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -501,9 +501,9 @@
                         </DockPanel>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Card Shape Position"
                     Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
                     Margin="0, 0, 10, 0">
@@ -535,9 +535,9 @@
                         </DockPanel>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Size"
                     Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -565,9 +565,9 @@
                         </atom:CardTabStrip>
 
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-                <gallerycontrols:ShowCaseItem
+                <gallery:ShowCaseItem
                     Title="Add and close tab"
                     Description="Hide default plus icon, and bind event for customized trigger." Margin="0, 0, 30, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -578,9 +578,9 @@
                             <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
                         </atom:CardTabStrip>
                     </StackPanel>
-                </gallerycontrols:ShowCaseItem>
+                </gallery:ShowCaseItem>
 
-            </gallerycontrols:ShowCasePanel>
+            </gallery:ShowCasePanel>
         </atom:TabItem>
     </atom:TabControl>
 </UserControl>

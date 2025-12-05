@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.DrawerShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:utils="clr-namespace:AtomUIGallery.Utils"
              xmlns:views="clr-namespace:AtomUIGallery.ShowCases.Views">
     <UserControl.Styles>
@@ -48,10 +48,10 @@
         </Style>
     </UserControl.Styles>
 
-    <gallerycontrols:ShowCasePanel>
+    <gallery:ShowCasePanel>
 
         <!-- Basic -->
-        <gallerycontrols:ShowCaseItem Title="Basic" Description="Basic drawer.">
+        <gallery:ShowCaseItem Title="Basic" Description="Basic drawer.">
             <Panel>
                 <atom:ToggleSwitch />
                 <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
@@ -64,10 +64,10 @@
                     </StackPanel>
                 </atom:Drawer>
             </Panel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
         <!-- Multi-level drawer -->
-        <gallerycontrols:ShowCaseItem Title="Multi-level drawer"
+        <gallery:ShowCaseItem Title="Multi-level drawer"
                                       Description="Open a new drawer on top of an existing drawer to handle multi branch tasks.">
             <Panel>
                 <StackPanel Height="120" Classes="ControllerPanel">
@@ -99,9 +99,9 @@
                     </StackPanel>
                 </atom:Drawer>
             </Panel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Extra and Footer" Description="Set the header extra area and footer area.">
+        <gallery:ShowCaseItem Title="Extra and Footer" Description="Set the header extra area and footer area.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
                     <ListBox Classes="PlacementList"
@@ -135,10 +135,10 @@
                 </atom:Drawer>
             </Panel>
         
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
         <!-- No Mask -->
-        <gallerycontrols:ShowCaseItem Title="No Mask" Description="Without a mask.">
+        <gallery:ShowCaseItem Title="No Mask" Description="Without a mask.">
             <Panel>
                 <atom:ToggleSwitch Content="Open" />
                 <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
@@ -151,9 +151,9 @@
                     </StackPanel>
                 </atom:Drawer>
             </Panel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Custom Placement"
+        <gallery:ShowCaseItem Title="Custom Placement"
                                       Description="The Drawer can appear from any edge of the screen.">
             <Panel>
                 <StackPanel Classes="ControllerPanel">
@@ -175,10 +175,10 @@
                     </StackPanel>
                 </atom:Drawer>
             </Panel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
         <!-- Render in current area -->
-        <gallerycontrols:ShowCaseItem Title="Render in current area" Description="Render in current area."
+        <gallery:ShowCaseItem Title="Render in current area" Description="Render in current area."
                                       Height="300">
             <Panel>
                 <StackPanel Orientation="Vertical" Spacing="10">
@@ -188,7 +188,7 @@
         
                 <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
                               Title="Basic Drawer"
-                              OpenOn="{Binding $parent[gallerycontrols:ShowCaseItem]}">
+                              OpenOn="{Binding $parent[gallery:ShowCaseItem]}">
                     <StackPanel Orientation="Vertical" Spacing="5">
                         <atom:TextBlock Text="Some contents..." />
                         <atom:TextBlock Text="Some contents..." />
@@ -196,9 +196,9 @@
                     </StackPanel>
                 </atom:Drawer>
             </Panel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Preset size"
+        <gallery:ShowCaseItem Title="Preset size"
                                       Description="The default width (or height) of Drawer is 378px, and there is a preset large size 736px.">
             <Panel>
                 <WrapPanel>
@@ -236,7 +236,7 @@
                     </StackPanel>
                 </atom:Drawer>
             </Panel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

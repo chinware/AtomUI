@@ -4,14 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AtomUIGallery.ShowCases.Views.QRCodeShowCase"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
              x:DataType="viewModels:QRCodeViewModel"
              x:CompileBindings="True">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem Title="Basic usage"
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="Basic usage"
                                       Description="Basic usage example.">
             <StackPanel Orientation="Vertical">
                 <atom:QRCode Value="{Binding QRCodeInput}" />
@@ -20,24 +20,24 @@
                     <ListBox.ItemTemplate></ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-        <gallerycontrols:ShowCaseItem Title="带 Icon 的例子"
+        </gallery:ShowCaseItem>
+        <gallery:ShowCaseItem Title="带 Icon 的例子"
                                       Description="带 Icon 的二维码。">
             <StackPanel Orientation="Vertical">
                 <atom:QRCode Value="https://atomui.net" Icon="avares://AtomUIGallery/Assets/ATOMUI-LOGO.png" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="不同的状态"
+        <gallery:ShowCaseItem Title="不同的状态"
                                       Description="可以通过 Status 的值控制二维码的状态，提供了 Active、Expired、Loading、Scanned 四个值。">
             <WrapPanel ItemSpacing="20" LineSpacing="20" Orientation="Horizontal">
                 <atom:QRCode Value="https://atomui.net" Status="Loading"/>
                 <atom:QRCode Value="https://atomui.net" Status="Expired"/>
                 <atom:QRCode Value="https://atomui.net" Status="Scanned"/>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="自定义状态渲染器"
+        <gallery:ShowCaseItem Title="自定义状态渲染器"
                                       Description="可以通过 LoadingTemplate、ExpiredTemplate、ScannedTemplate 的值控制二维码不同状态的渲染逻辑。">
             <WrapPanel ItemSpacing="20" LineSpacing="20" Orientation="Horizontal">
                 <atom:QRCode Value="https://atomui.net" Status="Loading">
@@ -74,8 +74,8 @@
                     </atom:QRCode.ScannedContent>
                 </atom:QRCode>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
-        <gallerycontrols:ShowCaseItem Title="自定义尺寸"
+        </gallery:ShowCaseItem>
+        <gallery:ShowCaseItem Title="自定义尺寸"
                                       Description="自定义尺寸">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,16">
@@ -85,8 +85,8 @@
                 <atom:QRCode Value="https://atomui.net" Icon="avares://AtomUIGallery/Assets/ATOMUI-LOGO.png"
                              Size="{Binding Size}" IconSize="{Binding IconSize}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-        <gallerycontrols:ShowCaseItem Title="自定义颜色"
+        </gallery:ShowCaseItem>
+        <gallery:ShowCaseItem Title="自定义颜色"
                                       Description="自定义颜色">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:QRCode Value="https://atomui.net"
@@ -95,16 +95,16 @@
                              Color="{DynamicResource {x:Static atom:SharedTokenKey.ColorInfoText}}"
                              Background="{DynamicResource {x:Static atom:SharedTokenKey.ColorBgLayout}}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-        <gallerycontrols:ShowCaseItem Title="纠错比例"
+        </gallery:ShowCaseItem>
+        <gallery:ShowCaseItem Title="纠错比例"
                                       Description="通过设置 errorLevel 调整不同的容错等级。">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:QRCode Value="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
                              EccLevel="{Binding #EccLevel.SelectedItem}" />
                 <atom:Segmented Name="EccLevel" ItemsSource="{Binding EccLevels}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-        <gallerycontrols:ShowCaseItem Title="高级用法"
+        </gallery:ShowCaseItem>
+        <gallery:ShowCaseItem Title="高级用法"
                                       Description="带气泡卡片的例子。">
             <atom:FlyoutHost Trigger="Hover">
                 <atom:FlyoutHost.Flyout>
@@ -114,6 +114,6 @@
                 </atom:FlyoutHost.Flyout>
                 <atom:Button ButtonType="Primary">Hover me</atom:Button>
             </atom:FlyoutHost>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.PopupConfirmShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic usage"
             Description="The basic example supports the title and description props of confirmation.">
             <atom:PopupConfirm
@@ -17,9 +17,9 @@
                 IsShowArrow="True">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Locale text"
             Description="Set okText and cancelText props to customize the button's labels.">
             <atom:PopupConfirm
@@ -27,9 +27,9 @@
                 ConfirmContent="Are you sure to delete this task?">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -163,9 +163,9 @@
                 </atom:PopupConfirm>
 
             </Grid>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Customize icon"
             Description="Set icon props to customize the icon.">
             <atom:PopupConfirm
@@ -177,6 +177,6 @@
                 CancelText="Cancel">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

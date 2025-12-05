@@ -2,22 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.CheckBoxShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCasePanel.Styles>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
             <Style Selector="atom|CheckBox">
                 <Setter Property="Margin" Value="0, 0, 5, 5" />
             </Style>
-        </gallerycontrols:ShowCasePanel.Styles>
-        <gallerycontrols:ShowCaseItem
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The simplest use.">
             <StackPanel HorizontalAlignment="Left" Spacing="10">
                 <atom:CheckBox>Checkbox</atom:CheckBox>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Disabled checkbox.">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
@@ -25,9 +25,9 @@
                 <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False">Indeterminate</atom:CheckBox>
                 <atom:CheckBox IsChecked="True" IsEnabled="False">Checked</atom:CheckBox>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Controlled Checkbox"
             Description="Communicated with other components.">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
@@ -48,9 +48,9 @@
                                  Content="{Binding EnableStatusBtnText}" />
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Checkbox Group"
             Description="Generate a group of checkboxes from an array.">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
@@ -70,9 +70,9 @@
                     <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Check all"
             Description="The indeterminate property can help you to achieve a 'check all' effect.">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10">
@@ -100,9 +100,9 @@
                     </atom:CheckBox>
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Use with Grid"
             Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
@@ -112,6 +112,6 @@
                 <atom:CheckBox Grid.Row="1" Grid.Column="0">D</atom:CheckBox>
                 <atom:CheckBox Grid.Row="1" Grid.Column="1">D</atom:CheckBox>
             </Grid>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

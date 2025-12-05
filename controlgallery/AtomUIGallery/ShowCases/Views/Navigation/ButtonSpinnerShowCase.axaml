@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.ButtonSpinnerShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Basic button spinner.">
             <atom:ButtonSpinner>
@@ -14,9 +14,9 @@
                     VerticalAlignment="Center"
                     Text="床前明月光" />
             </atom:ButtonSpinner>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Three sizes of Input"
             Description="There are three sizes of an button spinner: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -39,9 +39,9 @@
                         Text="床前明月光" />
                 </atom:ButtonSpinner>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Variants"
             Description="Variants of Input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -64,9 +64,9 @@
                         Text="床前明月光" />
                 </atom:ButtonSpinner>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Variants of disabled Input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -89,9 +89,9 @@
                         Text="床前明月光" />
                 </atom:ButtonSpinner>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -128,9 +128,9 @@
                 </atom:ButtonSpinner>
                 
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="prefix and suffix"
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -168,9 +168,9 @@
                 </atom:ButtonSpinner>
         
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status"
             Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -264,6 +264,6 @@
                 </atom:ButtonSpinner>
         
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

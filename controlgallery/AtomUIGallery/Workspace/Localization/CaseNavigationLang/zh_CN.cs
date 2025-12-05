@@ -35,6 +35,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry_LineEdit = "LineEdit 输入框";
     public const string DataEntry_NumberUpDown = "NumberUpDown 数字输入框";
     public const string DataEntry_RadioButton = "RadioButton 单选框";
+    public const string DataEntry_Rate = "Rate 评分";
     public const string DataEntry_ToggleSwitch = "ToggleSwitch 开关";
     public const string DataEntry_Select = "Select 选择器";
     public const string DataEntry_Slider = "Slider 滑动输入条";

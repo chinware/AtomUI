@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.ProgressBarShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCasePanel.Styles>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
             <Style Selector="atom|CircleProgress">
                 <Setter Property="Margin" Value="5" />
             </Style>
@@ -14,8 +14,8 @@
             <Style Selector="#CircleWithStep atom|StepsProgressBar">
                 <Setter Property="Margin" Value="5" />
             </Style>
-        </gallerycontrols:ShowCasePanel.Styles>
-        <gallerycontrols:ShowCaseItem
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
             Title="Progress bar"
             Description="A standard progress bar.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -25,9 +25,9 @@
                 <atom:ProgressBar Value="100" Minimum="0" Maximum="100" />
                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" ShowProgressInfo="False" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Circular progress bar"
             Description="A circular progress bar.">
             <WrapPanel Orientation="Horizontal">
@@ -35,9 +35,9 @@
                 <atom:CircleProgress Value="70" Minimum="0" Maximum="100" Status="Exception" />
                 <atom:CircleProgress Value="100" Minimum="0" Maximum="100" />
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Mini size progress bar"
             Description="Appropriate for a narrow area.">
             <WrapPanel Orientation="Horizontal" Width="180" HorizontalAlignment="Left">
@@ -47,9 +47,9 @@
                 <atom:ProgressBar Value="100" Minimum="0" Maximum="100" SizeType="Middle" />
                 <atom:ProgressBar Value="50" Minimum="0" Maximum="100" ShowProgressInfo="False" SizeType="Middle" />
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="A smaller circular progress bar."
             Description="A smaller circular progress bar.">
             <WrapPanel Orientation="Horizontal">
@@ -57,9 +57,9 @@
                 <atom:CircleProgress Value="70" Minimum="0" Maximum="100" Status="Exception" SizeType="Middle" />
                 <atom:CircleProgress Value="100" Minimum="0" Maximum="100" SizeType="Middle" />
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Dynamic"
             Description="A dynamic progress bar is better.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -70,18 +70,18 @@
                     <atom:Button SizeType="Small" Command="{Binding AddProgressValue}">Add</atom:Button>
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom text format"
             Description="You can set a custom text by setting the format prop.">
             <WrapPanel Orientation="Horizontal">
                 <atom:CircleProgress Value="75" Minimum="0" Maximum="100" ProgressTextFormat="\{0\} Days" />
                 <atom:CircleProgress Value="100" Minimum="0" Maximum="100" />
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Dashboard"
             Description="By setting type=dashboard, you can get a dashboard style of progress easily. Modify gapDegree to set the degree of gap.">
             <WrapPanel Orientation="Horizontal">
@@ -92,9 +92,9 @@
                 <atom:DashboardProgress Value="100" Minimum="0" Maximum="100" DashboardGapPosition="Bottom"
                                         GapDegree="40" />
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Progress bar with success segment"
             Description="Show several parts of progress with different status.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -105,10 +105,10 @@
                                             SuccessStrokeBrush="Chocolate" />
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Stroke Linecap"
             Description="By setting strokeLinecap='butt', you can change the linecaps from round to butt, see stroke-linecap for more information.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -118,9 +118,9 @@
                     <atom:DashboardProgress Value="75" Minimum="0" Maximum="100" StrokeLineCap="Square" />
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom line gradient"
             Description="Gradient encapsulation, circle and dashboard will ignore strokeLinecap when setting gradient.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -145,9 +145,9 @@
                                             StrokeBrush="{Binding ThreeStopsGradientStrokeColor}" />
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Progress bar with steps"
             Description="A progress bar with steps.">
             <StackPanel Orientation="Vertical" Spacing="5">
@@ -158,9 +158,9 @@
                 <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="5"
                                        StepsStrokeBrush="{Binding StepsChunkBrushes}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Circular progress bar whit steps"
             Description="A circular progress bar that support steps and color segments, default gap is 2px.">
             <StackPanel Orientation="Vertical" Spacing="5">
@@ -187,9 +187,9 @@
                                             SuccessThreshold="30" />
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Circular progress bar whit steps"
             Description="A circular progress bar that support steps and color segments, default gap is 2px.">
             <StackPanel Orientation="Vertical" Spacing="5" x:Name="CircleWithStep">
@@ -224,9 +224,9 @@
                     </WrapPanel>
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Change progress value position"
             Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -249,9 +249,9 @@
                 <atom:ProgressBar Value="55" Minimum="0" Maximum="100"
                                   PercentPosition="{Binding OutterStartPercentPosition}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Change progress value position for StepsProgressBar"
             Description="Change the position of the progress value, you can use percentPosition to adjust it so that the progress bar value is inside, outside or at the bottom of the progress bar.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -267,9 +267,9 @@
                                        Status="Exception" />
                 <atom:StepsProgressBar Value="99" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Vertical progress bar"
             Description="Ordinary linear progress bar, supports position specification of additional areas">
             <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
@@ -292,9 +292,9 @@
                 <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Orientation="Vertical"
                                   PercentPosition="{Binding InnerEndPercentPosition}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Vertical progress bar"
             Description="Ordinary step progress bar, supports position specification of additional areas">
             <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
@@ -310,9 +310,9 @@
                 <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
                                        PercentPosition="Start" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Vertical progress bar"
             Description="Ordinary step progress bar, supports position specification of additional areas">
             <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
@@ -328,9 +328,9 @@
                 <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
                                        PercentPosition="Start" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="toggle disabled status"
             Description="The progress bar is in the disabled state and uses the disabled style.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -371,7 +371,7 @@
                              Content="{Binding ToggleDisabledText}"
                              Command="{Binding ToggleEnabledStatus}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

@@ -2,12 +2,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:gallerycontrols="using:AtomUIGallery.Controls">
+    xmlns:gallery="https://atomui.net/oss-controls/gallery">
 
-    <ControlTheme x:Key="{x:Type gallerycontrols:ShowCaseItem}"
-                  TargetType="{x:Type gallerycontrols:ShowCaseItem}">
+    <ControlTheme x:Key="{x:Type gallery:ShowCaseItem}"
+                  TargetType="{x:Type gallery:ShowCaseItem}">
         <Setter Property="Template">
-            <ControlTemplate TargetType="{x:Type gallerycontrols:ShowCaseItem}">
+            <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
                 <Border x:Name="PART_RootBorder"
                         Padding="20"
                         CornerRadius="8">

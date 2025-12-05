@@ -3,14 +3,14 @@
              x:Class="AtomUIGallery.ShowCases.Views.TagShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCasePanel.Styles>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
             <Style Selector="atom|Tag">
                 <Setter Property="Margin" Value="5" />
             </Style>
-        </gallerycontrols:ShowCasePanel.Styles>
-        <gallerycontrols:ShowCaseItem
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -22,9 +22,9 @@
                     Tag 2
                 </atom:Tag>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Colorful Tag"
             Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
             <StackPanel Orientation="Vertical">
@@ -52,9 +52,9 @@
                 </WrapPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status Tag"
             Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
             <StackPanel Orientation="Vertical">
@@ -96,9 +96,9 @@
                 </WrapPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Icon"
             Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag.
 If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
@@ -126,9 +126,9 @@ If you want specific control over the positioning and placement of the Icon, the
                     Material icon
                 </atom:Tag>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="borderless"
             Description="borderless">
             <StackPanel Orientation="Vertical">
@@ -160,7 +160,7 @@ If you want specific control over the positioning and placement of the Icon, the
                 </WrapPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

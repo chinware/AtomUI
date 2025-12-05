@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.SegmentedShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The most basic usage.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
@@ -17,9 +17,9 @@
                     <atom:SegmentedItem>Yearly</atom:SegmentedItem>
                 </atom:Segmented>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Block Segmented"
             Description="block property will make the Segmented fit to its parent width.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
@@ -29,9 +29,9 @@
                     <atom:SegmentedItem>longtext-longtext-longtext-longtext</atom:SegmentedItem>
                 </atom:Segmented>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Disabled Segmented.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
@@ -48,9 +48,9 @@
                     <atom:SegmentedItem>Yearly</atom:SegmentedItem>
                 </atom:Segmented>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Three sizes of Segmented"
             Description="There are three sizes of an Segmented: large (40px), default (32px) and small (24px).">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
@@ -78,9 +78,9 @@
                     <atom:SegmentedItem>Yearly</atom:SegmentedItem>
                 </atom:Segmented>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="With Icon only"
             Description="Set icon without label for Segmented Item.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
@@ -89,9 +89,9 @@
                     <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
                 </atom:Segmented>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="With Icon"
             Description="Set icon for Segmented Item.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
@@ -125,6 +125,6 @@
                 </atom:Segmented>
 
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

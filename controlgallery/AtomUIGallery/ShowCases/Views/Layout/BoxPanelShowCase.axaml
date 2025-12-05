@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.BoxPanelShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
 
-    <gallerycontrols:ShowCasePanel>
+    <gallery:ShowCasePanel>
         <!-- 1. Basic Usage -->
-        <gallerycontrols:ShowCaseItem Description="The basic usage." Title="Basic">
+        <gallery:ShowCaseItem Description="The basic usage." Title="Basic">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <atom:BoxPanel Margin="0,0,0,20" Orientation="Horizontal" Spacing="10">
                     <atom:RadioButton IsChecked="True" x:Name="Vertical">Vertical</atom:RadioButton>
@@ -25,10 +25,10 @@
                     </atom:BoxPanel>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 2. Flex Ratio -->
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Description="Use the flex property to control the width ratio of the child controls." Title="Flex Ratio">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <atom:BoxPanel Margin="0,0,0,20" Orientation="Horizontal" Spacing="10">
@@ -52,10 +52,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 3. AlignSelf (替换原来的 child alignment) -->
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Description="Use AlignSelf property to control child control position on cross axis." Title="AlignSelf">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <atom:BoxPanel
@@ -80,10 +80,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 4. Dynamic Spacing -->
-        <gallerycontrols:ShowCaseItem Description="Dynamically modify spacing and add/remove fixed space."
+        <gallery:ShowCaseItem Description="Dynamically modify spacing and add/remove fixed space."
                                       Title="Dynamic Spacing">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Vertical" Spacing="10">
@@ -124,10 +124,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
         <!-- 5. Add Flex Placeholder -->
-        <gallerycontrols:ShowCaseItem Description="Add/remove flexible placeholders dynamically."
+        <gallery:ShowCaseItem Description="Add/remove flexible placeholders dynamically."
                                       Title="Add Flex Placeholder">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <WrapPanel>
@@ -155,10 +155,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 6. JustifyContent -->
-        <gallerycontrols:ShowCaseItem Description="Use JustifyContent to control main axis alignment."
+        <gallery:ShowCaseItem Description="Use JustifyContent to control main axis alignment."
                                       Title="JustifyContent">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <TextBlock FontWeight="Black">JustifyContent:</TextBlock>
@@ -188,10 +188,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 7. AlignItems -->
-        <gallerycontrols:ShowCaseItem Description="Use AlignItems to control cross axis alignment for all items."
+        <gallery:ShowCaseItem Description="Use AlignItems to control cross axis alignment for all items."
                                       Title="AlignItems">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <TextBlock FontWeight="Black">AlignItems:</TextBlock>
@@ -223,10 +223,10 @@
                     Notes: Stretch only applies to items without explicit Height
                 </TextBlock>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 8. FlexWrap -->
-        <gallerycontrols:ShowCaseItem Description="Use Wrap to enable wrapping when items exceed container size."
+        <gallery:ShowCaseItem Description="Use Wrap to enable wrapping when items exceed container size."
                                       Title="FlexWrap">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <TextBlock FontWeight="Black">FlexWrap:</TextBlock>
@@ -264,10 +264,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 9. AlignContent -->
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Description="Use AlignContent to control multi-line cross axis alignment (only works with Wrap)."
             Title="AlignContent">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
@@ -308,10 +308,10 @@
                     </Panel>
                 </atom:BoxPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
         <!-- 10. Order -->
-        <gallerycontrols:ShowCaseItem Description="Use Order to reorder items without changing DOM structure."
+        <gallery:ShowCaseItem Description="Use Order to reorder items without changing DOM structure."
                                       Title="Order">
             <StackPanel Margin="20" Orientation="Vertical" Spacing="20">
                 <atom:BoxPanel
@@ -347,7 +347,7 @@
                     Visual order: 0 → 1 → 2 → 3 (different from DOM order)
                 </TextBlock>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

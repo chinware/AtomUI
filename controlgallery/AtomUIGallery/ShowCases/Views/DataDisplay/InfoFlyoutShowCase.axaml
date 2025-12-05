@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.InfoFlyoutShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The most basic example. The size of the floating layer depends on the contents region.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -17,9 +17,9 @@
                     <atom:Button ButtonType="Primary">Hover me</atom:Button>
                 </atom:FlyoutHost>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Three ways to trigger"
             Description="Mouse to click, focus and move in.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -48,9 +48,9 @@
                     <atom:Button>Click me</atom:Button>
                 </atom:FlyoutHost>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -184,9 +184,9 @@
                 </atom:FlyoutHost>
 
             </Grid>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Arrow"
             Description="Support show, hide or keep arrow in the center.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -375,7 +375,7 @@
 
                 </Grid>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

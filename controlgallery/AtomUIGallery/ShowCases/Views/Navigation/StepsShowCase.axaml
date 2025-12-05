@@ -3,10 +3,10 @@
              x:Class="AtomUIGallery.ShowCases.Views.StepsShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              x:Name="StepsShowCaseName">
-    <gallerycontrols:ShowCasePanel>
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+    <gallery:ShowCaseItem
         Title="Basic"
         Description="The most basic step bar."
         IsOccupyEntireRow="True"
@@ -16,9 +16,9 @@
             <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
             <atom:StepsItem Header="Waiting" Description="This is a description." />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Mini version"
         Description="By setting like this: SizeType to Small, you can get a mini version."
         IsOccupyEntireRow="True"
@@ -28,9 +28,9 @@
             <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
             <atom:StepsItem Header="Waiting" Description="This is a description." />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="With icon"
         Description="You can use your own custom icons by setting the property icon for items."
         IsOccupyEntireRow="True"
@@ -42,9 +42,9 @@
                             Icon="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, Animation=Spin}" />
             <atom:StepsItem Header="Done" Status="Wait" Icon="{antdicons:AntDesignIconProvider Kind=SmileOutlined}" />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Switch Step"
         Description="Cooperate with the content and buttons, to represent the progress of a process."
         IsOccupyEntireRow="True"
@@ -73,9 +73,9 @@
                              IsVisible="{Binding PreviousButtonVisible}" />
             </StackPanel>
         </StackPanel>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Vertical"
         Description="A simple step bar in the vertical direction."
         IsOccupyEntireRow="True"
@@ -85,9 +85,9 @@
             <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
             <atom:StepsItem Header="Waiting" Description="This is a description." />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Vertical mini version"
         Description="A simple mini version step bar in the vertical direction."
         IsOccupyEntireRow="True"
@@ -97,9 +97,9 @@
             <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
             <atom:StepsItem Header="Waiting" Description="This is a description." />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Error status"
         Description="By using status of Steps, you can specify the state for current step."
         IsOccupyEntireRow="True"
@@ -109,9 +109,9 @@
             <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
             <atom:StepsItem Header="Waiting" Description="This is a description." />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Dot Style"
         Description="Steps with progress dot style."
         IsOccupyEntireRow="True"
@@ -121,9 +121,9 @@
             <atom:StepsItem Header="In Progress" Description="This is a description." SubHeader="Left 00:00:08" />
             <atom:StepsItem Header="Waiting" Description="This is a description." />
         </atom:Steps>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Dot Style Vertical"
         Description="Steps with progress dot style vertical."
         IsOccupyEntireRow="True"
@@ -141,9 +141,9 @@
                 <atom:StepsItem Header="Waiting" Description="This is a description." />
             </atom:Steps>
         </StackPanel>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Clickable"
         Description="Setting IsItemClickable=true makes Steps clickable."
         IsOccupyEntireRow="True"
@@ -175,9 +175,9 @@
                 <atom:StepsItem Header="Step 4" Description="This is a description." />
             </atom:Steps>
         </StackPanel>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Navigation Steps"
         Description="Navigation steps."
         IsOccupyEntireRow="True"
@@ -245,9 +245,9 @@
                 <atom:StepsItem Header="Step 4" Description="This is a description." SubHeader="10:01:02"/>
             </atom:Steps>
         </StackPanel>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Steps with progress"
         Description="Steps with progress."
         IsOccupyEntireRow="True"
@@ -265,9 +265,9 @@
                 <atom:StepsItem Header="Waiting" Description="This is a description." />
             </atom:Steps>
         </StackPanel>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
     
-    <gallerycontrols:ShowCaseItem
+    <gallery:ShowCaseItem
         Title="Label Placement"
         Description="Set labelPlacement to vertical."
         IsOccupyEntireRow="True"
@@ -305,9 +305,9 @@
                 <atom:StepsItem Header="Step 4" Description="This is a description."/>
             </atom:Steps>
         </StackPanel>
-    </gallerycontrols:ShowCaseItem>
+    </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Inline Steps"
             Description="Inline type steps, suitable for displaying the process and current state of the object in the list content scene."
             IsOccupyEntireRow="True"
@@ -369,6 +369,6 @@
                     </StackPanel>
                 </DockPanel>
             </ItemsControl>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

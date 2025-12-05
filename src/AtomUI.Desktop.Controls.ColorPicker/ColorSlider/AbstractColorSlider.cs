@@ -70,7 +70,6 @@ internal abstract class AbstractColorSlider : RangeBase
     #endregion
     
     protected internal bool IsDragging;
-    protected internal bool IsFocusEngaged;
     protected bool IgnorePropertyChanged = false;
     internal const double Tolerance = 0.0001;
     private IDisposable? _pointerMovedDispose;

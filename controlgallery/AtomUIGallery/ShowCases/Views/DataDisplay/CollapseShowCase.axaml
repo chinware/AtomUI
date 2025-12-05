@@ -3,10 +3,10 @@
              x:Class="AtomUIGallery.ShowCases.Views.CollapseShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
 
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Collapse"
             Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
             <atom:Collapse>
@@ -26,9 +26,9 @@
                     </atom:TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Size"
             Description="Ant Design supports a default collapse size as well as a large and small size.
 If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
@@ -58,9 +58,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Accordion"
             Description="In accordion mode, only one panel can be expanded at a time.">
             <atom:Collapse IsAccordion="True">
@@ -80,9 +80,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Nested panel"
             Description="Collapse is nested inside the Collapse." >
             <atom:Collapse>
@@ -106,9 +106,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Borderless"
             Description="A borderless style of Collapse." >
             <atom:Collapse IsBorderless="True">
@@ -128,9 +128,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="No Arrow"
             Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
             >
@@ -146,9 +146,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Expand icon location"
             Description="The expand icon can be placed in front or in the back." >
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -182,9 +182,9 @@ If a large or small collapse is desired, set the size property to either large o
                 </StackPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Ghost Collapse"
             Description="Making collapse's background to transparent." >
             <atom:Collapse IsGhostStyle="True">
@@ -204,9 +204,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:CollapseItem>
             </atom:Collapse>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Collapsible"
             Description="Specify the trigger area of collapsible by collapsible." >
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -241,9 +241,9 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom Header And Content Padding"
             Description="Please set custom header margins and content spacing.">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -283,7 +283,7 @@ If a large or small collapse is desired, set the size property to either large o
                     </atom:CollapseItem>
                 </atom:Collapse>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

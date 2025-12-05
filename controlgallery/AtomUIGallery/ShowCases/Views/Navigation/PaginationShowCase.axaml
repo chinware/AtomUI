@@ -2,17 +2,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.PaginationShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Basic pagination."
             IsOccupyEntireRow="True"
             MinHeight="200">
             <atom:Pagination Total="50" CurrentPage="1" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Align"
             Description="Support three alignment modes: left alignment, center alignment, right alignment."
             IsOccupyEntireRow="True"
@@ -22,17 +22,17 @@
                 <atom:Pagination Total="50" CurrentPage="1" Align="Center" />
                 <atom:Pagination Total="50" CurrentPage="1" Align="End" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="More"
             Description="More pages."
             IsOccupyEntireRow="True"
             MinHeight="300">
             <atom:Pagination Total="500" CurrentPage="6" IsShowSizeChanger="True" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="More"
             Description="More pages."
             IsOccupyEntireRow="True"
@@ -42,9 +42,9 @@
                 <atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsEnabled="False"
                                  IsShowQuickJumper="True" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Mini size"
             Description="Mini size pagination."
             IsOccupyEntireRow="True"
@@ -58,9 +58,9 @@
                 <atom:Pagination Total="50" IsShowTotalInfo="True" CurrentPage="1" SizeType="Small"
                                  IsShowSizeChanger="True" IsShowQuickJumper="True" IsEnabled="False" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Total number"
             Description="You can show the total number of data by setting showTotal."
             IsOccupyEntireRow="True"
@@ -74,9 +74,9 @@
                                  IsShowTotalInfo="True"
                                  TotalInfoTemplate="${RangeStart}-${RangeEnd} of ${Total} items" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Simple mode"
             Description="Simple mode."
             IsOccupyEntireRow="False"
@@ -91,7 +91,7 @@
                 <atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" SizeType="Small"/>
                 <atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" IsEnabled="False" SizeType="Small"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

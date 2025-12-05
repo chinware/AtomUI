@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.ExpanderShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Expander"
             Description="By default, The simplest usage is to expand downward.">
             <atom:Expander Header="This is panel header 1">
@@ -13,9 +13,9 @@
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </atom:TextBlock>
             </atom:Expander>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Size"
             Description="Ant Design supports a default Expander size as well as a large and small size.
 If a large or small Expander is desired, set the size property to either large or small respectively. Omit the size property for a Expander with the default size.">
@@ -39,9 +39,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:Expander>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Expanding Direction"
             Description="The content area supports expansion in four directions.">
             <DockPanel Margin="0, 0, 0, 0" Height="300">
@@ -64,9 +64,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:Expander>
                 </Panel>
             </DockPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Nested panel"
             Description="Expander is nested inside the Collapse." Margin="0, 0, 10, 0">
             <atom:Expander Header="This is panel header 1">
@@ -76,9 +76,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:Expander>
             </atom:Expander>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Borderless"
             Description="A borderless style of Expander." Margin="0, 0, 10, 0">
             <atom:Expander IsBorderless="True" Header="This is panel header 1">
@@ -86,9 +86,9 @@ If a large or small Expander is desired, set the size property to either large o
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </atom:TextBlock>
             </atom:Expander>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="No Arrow"
             Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
             Margin="0, 0, 10, 0">
@@ -97,9 +97,9 @@ If a large or small Expander is desired, set the size property to either large o
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </atom:TextBlock>
             </atom:Expander>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Expand icon location"
             Description="The expand icon can be placed in front or in the back." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -120,9 +120,9 @@ If a large or small Expander is desired, set the size property to either large o
                 </StackPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Ghost Collapse"
             Description="Making collapse's background to transparent." Margin="0, 0, 10, 0">
             <atom:Expander IsGhostStyle="True" Header="This is panel header 1">
@@ -130,9 +130,9 @@ If a large or small Expander is desired, set the size property to either large o
                     A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
                 </atom:TextBlock>
             </atom:Expander>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Collapsible"
             Description="Specify the trigger area of collapsible by collapsible." Margin="0, 0, 10, 0">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -159,9 +159,9 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:Expander>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-          <gallerycontrols:ShowCaseItem
+          <gallery:ShowCaseItem
             Title="Custom Header And Content Padding"
             Description="Please set custom header margins and content spacing.">
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -177,6 +177,6 @@ If a large or small Expander is desired, set the size property to either large o
                     </atom:TextBlock>
                 </atom:Expander>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

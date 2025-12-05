@@ -2,23 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.TimePickerShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
 
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Click TimePicker, and then we could select or input a time in panel.">
             <atom:TimePicker Watermark="Select time" IsNeedConfirm="False" IsShowNow="True" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="12-hour and 24-hour formats"
             Description="TimePicker supports two time types, 12-hour and 24-hour.">
             <atom:TimePicker Watermark="Select time" IsNeedConfirm="True" IsShowNow="True"
                              ClockIdentifier="HourClock24" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Three Sizes"
             Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -26,17 +26,17 @@
                 <atom:TimePicker Watermark="Select time" SizeType="Middle" DefaultTime="12:08:23" />
                 <atom:TimePicker Watermark="Select time" SizeType="Small" DefaultTime="12:08:23" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="A disabled state of the TimePicker.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker Watermark="Select time" IsEnabled="False" DefaultTime="12:08:23" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Interval option"
             Description="Show stepped options by MinuteIncrement SecondIncrement.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -45,9 +45,9 @@
                                  MinuteIncrement="15"
                                  SecondIncrement="10" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="12 hours"
             Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -58,9 +58,9 @@
                                  DefaultTime="12:08:23"
                                  ClockIdentifier="HourClock24" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Variants"
             Description="Bordered-less style component.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -83,9 +83,9 @@
                                           Watermark="Borderless" />
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status"
             Description="Add status to TimePicker with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -120,9 +120,9 @@
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Time Range Picker"
             Description="Use time range picker with RangeTimePicker.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -132,6 +132,6 @@
                                       RangeStartDefaultTime="10:09:20"
                                       RangeEndDefaultTime="12:12:20" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

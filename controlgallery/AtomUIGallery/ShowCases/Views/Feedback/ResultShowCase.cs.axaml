@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.ResultShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Success"
             Description="Show successful results."
             IsOccupyEntireRow="True">
@@ -19,9 +19,9 @@
                     </StackPanel>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Info"
             Description="Show processing results."
             IsOccupyEntireRow="True">
@@ -31,9 +31,9 @@
                     <atom:Button ButtonType="Primary">Go Console</atom:Button>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Warning"
             Description="The result of the warning."
             IsOccupyEntireRow="True">
@@ -43,9 +43,9 @@
                     <atom:Button ButtonType="Primary">Go Console</atom:Button>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="403"
             Description="you are not authorized to access this page."
             IsOccupyEntireRow="True">
@@ -56,9 +56,9 @@
                     <atom:Button ButtonType="Primary">Back Home</atom:Button>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="404"
             Description="The page you visited does not exist."
             IsOccupyEntireRow="True">
@@ -69,9 +69,9 @@
                     <atom:Button ButtonType="Primary">Back Home</atom:Button>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="500"
             Description="Something went wrong on server."
             IsOccupyEntireRow="True">
@@ -82,9 +82,9 @@
                     <atom:Button ButtonType="Primary">Back Home</atom:Button>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="error"
             Description="Something went wrong on server."
             IsOccupyEntireRow="True">
@@ -115,9 +115,9 @@
                     </StackPanel>
                 </StackPanel>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom icon"
             Description="Custom icon."
             IsOccupyEntireRow="True">
@@ -128,6 +128,6 @@
                     <atom:Button ButtonType="Primary">Next</atom:Button>
                 </atom:Result.Extra>
             </atom:Result>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

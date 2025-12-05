@@ -68,6 +68,8 @@
                               ItemKey="{x:Static viewmodels:NumberUpDownViewModel.ID}" />
             <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_RadioButton}}"
                               ItemKey="{x:Static viewmodels:RadioButtonViewModel.ID}" />
+            <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_Rate}}"
+                              ItemKey="{x:Static viewmodels:RateViewModel.ID}" />
             <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_Select}}"
                               ItemKey="{x:Static viewmodels:SelectViewModel.ID}" />
             <atom:NavMenuItem Header="{DynamicResource {x:Static lang:CaseNavigationLangResourceKey.DataEntry_Slider}}"

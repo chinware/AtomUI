@@ -3,14 +3,14 @@
              x:Class="AtomUIGallery.ShowCases.Views.ButtonShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCasePanel.Styles>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
             <Style Selector="atom|Button">
                 <Setter Property="Margin" Value="5" />
             </Style>
-        </gallerycontrols:ShowCasePanel.Styles>
-        <gallerycontrols:ShowCaseItem
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
             Title="Type"
             Description="There are primary button, default button, dashed button, text button and link button in antd.">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -20,9 +20,9 @@
                 <atom:Button ButtonType="Text">Text Button</atom:Button>
                 <atom:Button ButtonType="Link">Link Button</atom:Button>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Button Shape"
             Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
             <StackPanel Orientation="Vertical">
@@ -47,9 +47,9 @@
                 </StackPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Size"
             Description="AtomUI supports three sizes of buttons: small, default and large.If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
             <DockPanel Margin="0, 0, 0, 0">
@@ -96,9 +96,9 @@
                     </WrapPanel>
                 </StackPanel>
             </DockPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Icon"
             Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
             <StackPanel Orientation="Vertical">
@@ -165,9 +165,9 @@
                 </WrapPanel>
             </StackPanel>
 
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Loading"
             Description="A loading indicator can be added to a button by setting the loading property on the Button.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
@@ -190,9 +190,9 @@
                 </WrapPanel>
 
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Block Button"
             Description="block property will make the button fit to its parent width.">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
@@ -212,9 +212,9 @@
                     Link
                 </atom:Button>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Danger Buttons"
             Description="danger is a property of button after antd 4.0.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
@@ -234,9 +234,9 @@
                     Link
                 </atom:Button>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Ghost Button"
             Description="ghost property will make button's background transparent, it is commonly used in colored background.">
             <Border Background="rgb(190, 200, 200)"
@@ -287,9 +287,9 @@
                     </WrapPanel>
                 </StackPanel>
             </Border>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="To mark a button as disabled, add the disabled property to the Button.">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
@@ -392,6 +392,6 @@
                 </Border>
 
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

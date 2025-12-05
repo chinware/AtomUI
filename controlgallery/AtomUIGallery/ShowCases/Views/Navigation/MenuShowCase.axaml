@@ -3,11 +3,11 @@
              x:Class="AtomUIGallery.ShowCases.Views.MenuShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
              x:DataType="viewModels:MenuViewModel">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Simplest Usage.">
             <atom:Menu>
@@ -23,9 +23,9 @@
                 </atom:MenuItem>
                 <atom:MenuItem Header="Disabled Item" IsEnabled="False" />
             </atom:Menu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Generate MenuItem by ItemsSource"
             Description="Generate structure based on ItemsSource and template.">
             <atom:Menu ItemsSource="{Binding MenuItems}"
@@ -37,7 +37,7 @@
                 </atom:Menu.ItemTemplate>
             </atom:Menu>
         
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
         <atom:NavMenu Mode="Inline" ItemsSource="{Binding NavMenuItems}"
                       x:DataType="viewModels:MenuViewModel">
@@ -48,7 +48,7 @@
             </atom:NavMenu.ItemTemplate>
         </atom:NavMenu>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Icon and submenu"
             Description="With icon and submenu.">
             <atom:Menu>
@@ -76,9 +76,9 @@
                     </atom:MenuItem>
                 </atom:MenuItem>
             </atom:Menu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="menu item with ToggleType"
             Description="Renders a checkbox or radio button on a menu.">
             <atom:Menu>
@@ -98,9 +98,9 @@
                     <atom:MenuItem Header="Disabled" IsEnabled="False" Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}"/>
                 </atom:MenuItem>
             </atom:Menu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Scrollable menu"
             Description="When there are too many menu items, up and down scroll buttons will appear.">
             <atom:Menu>
@@ -143,12 +143,12 @@
                     <atom:MenuItem Header="Menu Item" />
                 </atom:MenuItem>
             </atom:Menu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Context menu"
             Description="Right click to bring up the context menu.">
-            <gallerycontrols:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.Styles>
                 <Style Selector="Border#ContextMenuContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
@@ -156,7 +156,7 @@
                     <Setter Property="Padding" Value="10" />
                     <Setter Property="Margin" Value="10" />
                 </Style>
-            </gallerycontrols:ShowCaseItem.Styles>
+            </gallery:ShowCaseItem.Styles>
             <Border Name="ContextMenuContainer">
                 <Border.ContextMenu>
                     <atom:ContextMenu>
@@ -174,12 +174,12 @@
                 </Border.ContextMenu>
                 <atom:TextBlock Text="Right Click to show Context Menu" />
             </Border>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Context menu, Generate MenuItem by ItemsSource"
             Description="Right click to bring up the context menu.">
-            <gallerycontrols:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.Styles>
                 <Style Selector="Border#ItemSourcesContextMenuContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
@@ -187,7 +187,7 @@
                     <Setter Property="Padding" Value="10" />
                     <Setter Property="Margin" Value="10" />
                 </Style>
-            </gallerycontrols:ShowCaseItem.Styles>
+            </gallery:ShowCaseItem.Styles>
             <Border Name="ItemSourcesContextMenuContainer">
                 <Border.ContextMenu>
                     <atom:ContextMenu ItemsSource="{Binding MenuItems}"
@@ -201,12 +201,12 @@
                 </Border.ContextMenu>
                 <atom:TextBlock Text="Right Click to show Context Menu" />
             </Border>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Menu Flyout"
             Description="Right Click to show Context Flyout">
-            <gallerycontrols:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.Styles>
                 <Style Selector="Border.ContextFlyoutContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
                     <Setter Property="BorderThickness" Value="1" />
@@ -214,7 +214,7 @@
                     <Setter Property="Padding" Value="10" />
                     <Setter Property="Margin" Value="10" />
                 </Style>
-            </gallerycontrols:ShowCaseItem.Styles>
+            </gallery:ShowCaseItem.Styles>
         
             <StackPanel>
                 <atom:Separator Title="Normal"/>
@@ -253,9 +253,9 @@
                 </Border>
             </StackPanel>
         
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Vertical nav menu"
             Description="Submenus open as pop-ups.">
             <atom:NavMenu Mode="Vertical" Width="300" Margin="0, 0, 0, 20">
@@ -275,9 +275,9 @@
                 </atom:NavMenuItem>
                 <atom:NavMenuItem Header="Navigation Four" />
             </atom:NavMenu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Inline menu"
             Description="Vertical menu with inline submenus.">
             <atom:NavMenu Mode="Inline" Width="300" Margin="0, 0, 0, 20">
@@ -297,9 +297,9 @@
                 </atom:NavMenuItem>
                 <atom:NavMenuItem Header="Navigation Four" />
             </atom:NavMenu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Top Navigation"
             Description="Horizontal top navigation menu."
             IsOccupyEntireRow="True">
@@ -342,9 +342,9 @@
                     <atom:NavMenuItem Header="Navigation Four" />
                 </atom:NavMenu>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Switch the menu type"
             Description="Show the dynamic switching mode (between inline and vertical).">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -374,9 +374,9 @@
                 </atom:NavMenu>
             </StackPanel>
         
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Default Opened paths"
             Description="You can open or select the path by default.">
             <atom:NavMenu Mode="Inline" Margin="0, 0, 0, 20"
@@ -400,9 +400,9 @@
                 </atom:NavMenuItem>
                 <atom:NavMenuItem Header="Navigation Four" ItemKey="4" />
             </atom:NavMenu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Generate NavMenuItem by ItemsSource"
             Description="Generate structure based on ItemsSource and template">
             <atom:NavMenu Name="ItemsSourceDemoNavMenu"
@@ -414,7 +414,7 @@
                     </TreeDataTemplate>
                 </atom:NavMenu.ItemTemplate>
             </atom:NavMenu>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

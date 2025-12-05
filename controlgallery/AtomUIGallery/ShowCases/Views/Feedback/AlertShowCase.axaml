@@ -3,17 +3,17 @@
              x:Class="AtomUIGallery.ShowCases.Views.AlertShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The simplest usage for short messages.">
             <StackPanel Orientation="Vertical">
                 <atom:Alert Type="Success">Success Text</atom:Alert>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="More types"
             Description="There are 4 types of Alert: success, info, warning, error.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -22,9 +22,9 @@
                 <atom:Alert Type="Warning">Warning Text</atom:Alert>
                 <atom:Alert Type="Error">Error Text</atom:Alert>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Closable"
             Description="To show close button.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -41,9 +41,9 @@
                     Error Text
                 </atom:Alert>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Description"
             Description="Additional description for alert message.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -60,10 +60,10 @@
                             Message="Error Text"
                             Description="Error Description Error Description Error Description Error Description" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Description"
             Description="Additional description for alert message.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -99,9 +99,9 @@
                             IsShowIcon="True"
                             Description="This is an error message about copywriting." />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom action"
             Description="Custom action.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -144,14 +144,14 @@
                     Info Text
                 </atom:Alert>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Loop Banner"
             Description="Show a loop banner.">
             <atom:Alert Type="Warning" IsShowIcon="True" IsMessageMarqueEnabled="True">
                 I can be a React component, multiple React components, or just some text, Info Description Info Description Info Description Info Description
             </atom:Alert>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

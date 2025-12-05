@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.DescriptionsShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem Title="Basic" Description="Simplest Usage." IsOccupyEntireRow="True">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="Basic" Description="Simplest Usage." IsOccupyEntireRow="True">
             <atom:Descriptions Header="User Info">
                 <atom:DescriptionItem Label="UserName" Content="Zhou Maomao" />
                 <atom:DescriptionItem Label="Telephone" Content="1810000000" />
@@ -14,9 +14,9 @@
                 <atom:DescriptionItem Label="Address"
                                       Content="No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China" />
             </atom:Descriptions>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="border" Description="Descriptions with border and background color."
+        <gallery:ShowCaseItem Title="border" Description="Descriptions with border and background color."
                                       IsOccupyEntireRow="True">
             <atom:Descriptions IsBordered="True">
                 <atom:DescriptionItem Label="Product" Content="Cloud Database" />
@@ -41,9 +41,9 @@
                     </atom:DescriptionItem.Content>
                 </atom:DescriptionItem>
             </atom:Descriptions>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Custom size" Description="Custom sizes to fit in a variety of containers."
+        <gallery:ShowCaseItem Title="Custom size" Description="Custom sizes to fit in a variety of containers."
                                       IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="30">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -94,9 +94,9 @@
                                           Content="No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China" />
                 </atom:Descriptions>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="responsive"
+        <gallery:ShowCaseItem Title="responsive"
                                       Description="Responsive configuration enables perfect presentation on small screen devices."
                                       IsOccupyEntireRow="True">
             <atom:Descriptions IsBordered="True" SizeType="{Binding DescriptionsSizeType}"
@@ -128,9 +128,9 @@
                     </atom:DescriptionItem.Content>
                 </atom:DescriptionItem>
             </atom:Descriptions>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Vertical" Description="Simplest Usage." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="Vertical" Description="Simplest Usage." IsOccupyEntireRow="True">
             <atom:Descriptions Header="User Info" Layout="Vertical">
                 <atom:DescriptionItem Label="UserName" Content="Zhou Maomao" />
                 <atom:DescriptionItem Label="Telephone" Content="1810000000" />
@@ -139,9 +139,9 @@
                 <atom:DescriptionItem Label="Address"
                                       Content="No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China" />
             </atom:Descriptions>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Vertical border"
+        <gallery:ShowCaseItem Title="Vertical border"
                                       Description="Descriptions with border and background color."
                                       IsOccupyEntireRow="True">
             <atom:Descriptions IsBordered="True" Layout="Vertical">
@@ -167,9 +167,9 @@
                     </atom:DescriptionItem.Content>
                 </atom:DescriptionItem>
             </atom:Descriptions>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem Title="Row" Description="Display of the entire line." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="Row" Description="Display of the entire line." IsOccupyEntireRow="True">
             <atom:Descriptions Header="User Info" IsBordered="True">
                 <atom:DescriptionItem Label="UserName" Content="Zhou Maomao" />
                 <atom:DescriptionItem Label="Live" Content="Hangzhou, Zhejiang" IsFilled="True" />
@@ -177,7 +177,7 @@
                 <atom:DescriptionItem Label="Address"
                                       Content="No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China" />
             </atom:Descriptions>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

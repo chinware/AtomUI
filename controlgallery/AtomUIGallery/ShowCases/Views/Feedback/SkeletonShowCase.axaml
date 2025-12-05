@@ -3,30 +3,30 @@
              x:Class="AtomUIGallery.ShowCases.Views.SkeletonShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Simplest Skeleton usage."
             IsOccupyEntireRow="True">
             <atom:Skeleton IsLoading="True"/>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Complex combination"
             Description="Complex combination with avatar and multiple paragraphs."
             IsOccupyEntireRow="True">
             <atom:Skeleton IsShowAvatar="True" ParagraphRows="4" IsLoading="True"/>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Active Animation"
             Description="Display active animation."
             IsOccupyEntireRow="True">
             <atom:Skeleton IsActive="True" IsLoading="True"/>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Button/Avatar/Input/Image/Node"
             Description="Skeleton Button, Avatar, Input, Image and Node."
             IsOccupyEntireRow="True">
@@ -93,9 +93,9 @@
                     </StackPanel>
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Contains sub component"
             Description="Skeleton contains sub component."
             IsOccupyEntireRow="True">
@@ -109,6 +109,6 @@
                 <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
                              Click="HandleLoadingButtonClicked">Show Skeleton</atom:Button>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

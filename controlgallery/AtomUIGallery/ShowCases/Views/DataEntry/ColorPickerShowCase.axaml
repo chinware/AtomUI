@@ -2,15 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.ColorPickerShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Basic Usage.">
             <atom:ColorPicker DefaultValue="#1677ff"/>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Trigger size"
             Description="Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -29,18 +29,18 @@
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsShowText="True"/>
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="controlled mode"
             Description="Set the component to controlled mode. Will lock the display color if controlled by.">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:ColorPicker DefaultValue="#1677ff" />
                 <atom:ColorPicker DefaultValue="#1677ff" ValueSyncStrategy="OnCompleted"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Line Gradient"
             Description="Set the color to a single or a gradient color via mode.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -53,33 +53,33 @@
                     </atom:GradientColorPicker.DefaultValue>
                 </atom:GradientColorPicker>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Rendering Trigger Text"
             Description="Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ColorPicker DefaultValue="#1677ff" IsShowText="True" IsClearEnabled="True"/>
                 <atom:ColorPicker Name="CustomRenderText" DefaultValue="#1677ff" IsShowText="True" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Set to disabled state.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ColorPicker DefaultValue="#1677ff" IsShowText="True" IsEnabled="False"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-        <gallerycontrols:ShowCaseItem
+        </gallery:ShowCaseItem>
+        <gallery:ShowCaseItem
             Title="Disabled Alpha"
             Description="Disabled color alpha.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ColorPicker DefaultValue="#1677ff" IsAlphaEnabled="False"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Clear Color"
             Description="Clear Color.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -93,18 +93,18 @@
                     </atom:GradientColorPicker.DefaultValue>
                 </atom:GradientColorPicker>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="controlled mode"
             Description="Set the component to controlled mode. Will lock the display color if controlled by.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Hover"/>
                 <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Click"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Color Format"
             Description="Encoding formats, support HEX, HSB, RGB.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -112,9 +112,9 @@
                 <atom:ColorPicker DefaultValue="#1677ff" Format="Hsva" IsShowText="True"/>
                 <atom:ColorPicker DefaultValue="#1677ff" Format="Rgba" IsShowText="True"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Preset Colors"
             Description="Set the presets color of the color picker."
             IsOccupyEntireRow="True">
@@ -129,6 +129,6 @@
                     </atom:GradientColorPicker.DefaultValue>
                 </atom:GradientColorPicker>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

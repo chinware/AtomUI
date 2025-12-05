@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.PaletteShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -20,9 +20,9 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="viewModels:PresetPaletteInfoPair">
                             <UniformGrid Rows="1" Columns="2">
-                                <gallerycontrols:ColorListControl Margin="0,0,10,10"
+                                <gallery:ColorListControl Margin="0,0,10,10"
                                                                   PaletteMetaInfo="{Binding Left}" />
-                                <gallerycontrols:ColorListControl Margin="0,0,0,10" 
+                                <gallery:ColorListControl Margin="0,0,0,10" 
                                                                   PaletteMetaInfo="{Binding Right}" />
                             </UniformGrid>
                         </DataTemplate>
@@ -42,11 +42,11 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="viewModels:PresetPaletteInfoPair">
                                 <UniformGrid Rows="1" Columns="2">
-                                    <gallerycontrols:ColorListControl Margin="0,0,10,10" 
+                                    <gallery:ColorListControl Margin="0,0,10,10" 
                                                                       PaletteMetaInfo="{Binding Left}"
                                                                       IsDark="True"
                                                                       />
-                                    <gallerycontrols:ColorListControl Margin="0,0,0,10"
+                                    <gallery:ColorListControl Margin="0,0,0,10"
                                                                       PaletteMetaInfo="{Binding Right}"
                                                                       IsDark="True"
                                                                       />

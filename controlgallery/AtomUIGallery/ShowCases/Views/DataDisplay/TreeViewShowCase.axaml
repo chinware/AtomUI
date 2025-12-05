@@ -3,10 +3,10 @@
              x:Class="AtomUIGallery.ShowCases.Views.TreeViewShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
             <atom:TreeView ToggleType="CheckBox"
@@ -29,9 +29,9 @@
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>
             </atom:TreeView>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Generate by template"
             Description="You can use the Template mechanism to generate tree nodes">
             <atom:TreeView ToggleType="CheckBox"
@@ -46,9 +46,9 @@
                     </TreeDataTemplate>
                 </atom:TreeView.ItemTemplate>
             </atom:TreeView>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Block Node"
             Description="Block Node.">
             <atom:TreeView ToggleType="CheckBox" IsDefaultExpandAll="True" NodeHoverMode="Block">
@@ -57,9 +57,9 @@
                     <atom:TreeViewItem Header="child 2" IsIndicatorEnabled="False"/>
                 </atom:TreeViewItem>
             </atom:TreeView>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Tree with line"
             Description="Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -114,9 +114,9 @@
                     </atom:TreeViewItem>
                 </atom:TreeView>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="draggable"
             Description="Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode."
             Margin="0, 0, 10, 0">
@@ -149,7 +149,7 @@
                 </atom:TreeViewItem>
                 <atom:TreeViewItem Header="0-2" />
             </atom:TreeView>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

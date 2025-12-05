@@ -3,15 +3,15 @@
              x:Class="AtomUIGallery.ShowCases.Views.LineEditShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic usage"
             Description="Basic usage example.">
             <atom:LineEdit Watermark="Basic usage" />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Three sizes of Input"
             Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -22,9 +22,9 @@
                 <atom:LineEdit Watermark="Small" SizeType="Small"
                                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Variants"
             Description="Variants of Input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -40,9 +40,9 @@
                 <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="mysite" StyleVariant="Borderless" />
                 <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="mysite" StyleVariant="Underlined" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Variants of Input disabled style.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -66,9 +66,9 @@
                 <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="mysite" StyleVariant="Underlined"
                                Status="Error" IsEnabled="False" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Pre / Post tab"
             Description="Using pre and post tabs example.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -80,18 +80,18 @@
                 <atom:LineEdit LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
                                Text="mysite" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="With clear icon"
             Description="Input box with the remove icon, click the icon to delete everything.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:LineEdit Watermark="input with clear icon" IsEnableClearButton="True" />
                 <atom:TextArea Watermark="textarea with clear icon" IsEnableClearButton="True" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Password box"
             Description="Input type of password.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -110,9 +110,9 @@
                                IsEnableRevealButton="True"
                                IsEnableClearButton="True" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="prefix and suffix"
             Description="Add a prefix or suffix icons inside input.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -122,9 +122,9 @@
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
                 <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status"
             Description="Add status to Input with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -203,9 +203,9 @@
                                  SearchButtonStyle="Primary"
                                  SearchButtonText="Search" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Search box"
             Description="Example of creating a search box by grouping a standard input with a search button.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -258,9 +258,9 @@
                                  LeftAddOn="https://"
                                  StyleVariant="Underlined" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled search box"
             Description="Example of creating a search box by grouping a standard input with a search button.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -298,9 +298,9 @@
                     </atom:SearchEdit.InnerRightContent>
                 </atom:SearchEdit>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Search box with loading"
             Description="Search loading when onSearch.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -321,9 +321,9 @@
                                  SearchButtonText="Search"
                                  SizeType="Large" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="TextArea"
             Description="For multi-line input.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -332,9 +332,9 @@
                 <atom:TextArea Lines="4" Watermark="maxLength is 6" MaxLength="6" StyleVariant="Filled" />
                 <atom:TextArea Lines="4" Watermark="disabled" MaxLength="6" IsEnabled="False" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Autosizing the height to fit the content"
             Description="autoSize prop for a textarea type of Input makes the height to automatically adjust based on the content. An option object can be provided to autoSize to specify the minimum and maximum number of lines the textarea will automatically adjust.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -342,9 +342,9 @@
                 <atom:TextArea Watermark="Autosize height with minimum and maximum number of lines" MinLines="3"
                                MaxLines="6" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="With character counting"
             Description="Show character counting.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
@@ -353,15 +353,15 @@
                 <atom:TextArea IsShowCount="True" MaxLength="100" Watermark="disable resize" Height="120"
                                IsResizable="True" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status"
             Description="Add status to TextArea with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:TextArea IsShowCount="True" MaxLength="100" Watermark="Error" IsResizable="True" Status="Error" />
                 <atom:TextArea IsShowCount="True" MaxLength="100" Watermark="Warning" IsResizable="True" Status="Warning"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

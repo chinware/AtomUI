@@ -697,6 +697,16 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         public static readonly TokenResourceKey TextMargin = new TokenResourceKey("AtomUI.Desktop.Controls.RadioButton.TextMargin");
     }
 
+    public static class RateTokenKey
+    {
+        public static readonly TokenResourceKey StarBg = new TokenResourceKey("AtomUI.Desktop.Controls.Rate.StarBg");
+        public static readonly TokenResourceKey StarColor = new TokenResourceKey("AtomUI.Desktop.Controls.Rate.StarColor");
+        public static readonly TokenResourceKey StarHoverScale = new TokenResourceKey("AtomUI.Desktop.Controls.Rate.StarHoverScale");
+        public static readonly TokenResourceKey StarSize = new TokenResourceKey("AtomUI.Desktop.Controls.Rate.StarSize");
+        public static readonly TokenResourceKey StarSizeLG = new TokenResourceKey("AtomUI.Desktop.Controls.Rate.StarSizeLG");
+        public static readonly TokenResourceKey StarSizeSM = new TokenResourceKey("AtomUI.Desktop.Controls.Rate.StarSizeSM");
+    }
+
     public static class ResultTokenKey
     {
         public static readonly TokenResourceKey ContentMargin = new TokenResourceKey("AtomUI.Desktop.Controls.Result.ContentMargin");

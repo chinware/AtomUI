@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.ModalShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Basic modal.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -59,9 +59,9 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Asynchronously close"
             Description="Asynchronously close a modal dialog when the OK button is pressed. For example, you can use this pattern when you submit a form.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -89,9 +89,9 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="MessageBox Style"
             Description="MessageBox supports Confirm, Information, Warning, and Error">
 
@@ -167,9 +167,9 @@
                     </Panel>
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Loading"
             Description="Set the loading status of Modal.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -201,9 +201,9 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom Footer Buttons"
             Description="You can use standard buttons along with custom buttons.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -254,9 +254,9 @@
                     </atom:MessageBox>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Open Draggable Modal"
             Description="Custom modal content render and enable implements draggable.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -282,9 +282,9 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Manual to update destroy"
             Description="Manually updating and destroying a modal through instance.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -308,9 +308,9 @@
                     </atom:MessageBox>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Customize footer buttons props"
             Description="Change dialog button properties by specifying a callback function.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -338,9 +338,9 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Static Dialog API"
             Description="Creating a Dialog using the static method of Dialog.">
             <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
@@ -356,6 +356,6 @@
                     Open CustomView Dialog
                 </atom:Button>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

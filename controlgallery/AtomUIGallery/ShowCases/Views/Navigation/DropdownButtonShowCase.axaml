@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.DropdownButtonShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The most basic dropdown menu.">
             <atom:DropdownButton ButtonType="Link" TriggerType="Hover" x:Name="Test">
@@ -25,9 +25,9 @@
                     </atom:MenuFlyout>
                 </atom:DropdownButton.DropdownFlyout>
             </atom:DropdownButton>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Button Types"
             Description="Support centralized button type.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -92,16 +92,16 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Arrow"
             Description="You could display an arrow.">
-            <gallerycontrols:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|DropdownButton">
                     <Setter Property="Margin" Value="5" />
                 </Style>
-            </gallerycontrols:ShowCaseItem.Styles>
+            </gallery:ShowCaseItem.Styles>
             <WrapPanel>
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
                                      Placement="BottomEdgeAlignedLeft">
@@ -193,16 +193,16 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Placement"
             Description="Support 6 placements.">
-            <gallerycontrols:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|DropdownButton">
                     <Setter Property="Margin" Value="5" />
                 </Style>
-            </gallerycontrols:ShowCaseItem.Styles>
+            </gallery:ShowCaseItem.Styles>
             <WrapPanel>
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
                                      Placement="BottomEdgeAlignedLeft">
@@ -294,7 +294,7 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

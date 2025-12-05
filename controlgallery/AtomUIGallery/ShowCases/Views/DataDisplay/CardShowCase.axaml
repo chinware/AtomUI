@@ -3,9 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.CardShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem Title="Basic"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="Basic"
                                       Description="A basic card containing a title, content and an extra corner content. Supports two sizes: default and small."
                                       IsOccupyEntireRow="True">
             <WrapPanel ItemSpacing="20" LineSpacing="20">
@@ -43,9 +43,9 @@
                 </atom:Card>
             </WrapPanel>
         
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="No border"
+        <gallery:ShowCaseItem Title="No border"
                                       Description="A borderless card on a gray background."
                                       IsOccupyEntireRow="True">
             <Border Padding="20" Background="{Binding BorderlessFrameBg}">
@@ -60,9 +60,9 @@
                     </StackPanel>
                 </atom:Card>
             </Border>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Simple card"
+        <gallery:ShowCaseItem Title="Simple card"
                                       Description="A simple card only containing a content area."
                                       IsOccupyEntireRow="True">
             <atom:Card Width="300">
@@ -72,9 +72,9 @@
                     <atom:TextBlock>Card content</atom:TextBlock>
                 </StackPanel>
             </atom:Card>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Customized content"
+        <gallery:ShowCaseItem Title="Customized content"
                                       Description="You can use Card.Meta to support more flexible content."
                                       IsOccupyEntireRow="True">
             <atom:Card Width="240" IsHoverable="True">
@@ -84,9 +84,9 @@
                 <atom:CardMetaContent Header="Europe Street beat"
                                       Content="www.instagram.com"/>
             </atom:Card>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Card in column"
+        <gallery:ShowCaseItem Title="Card in column"
                                       Description="Cards usually cooperate with grid column layout in overview page."
                                       IsOccupyEntireRow="True">
             <Border Padding="20" Background="{Binding BorderlessFrameBg}">
@@ -114,9 +114,9 @@
                     </atom:Card>
                 </Grid>
             </Border>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Loading card"
+        <gallery:ShowCaseItem Title="Loading card"
                                       Description="Shows a loading indicator while the contents of the card is being fetched."
                                       IsOccupyEntireRow="True">
            <StackPanel Orientation="Vertical" Spacing="20">
@@ -155,9 +155,9 @@
                    </atom:Card.Actions>
                </atom:Card>
            </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Grid card"
+        <gallery:ShowCaseItem Title="Grid card"
                                       Description="Grid style card content.."
                                       IsOccupyEntireRow="True">
             <atom:Card HorizontalAlignment="Stretch" Header="Card Title" SizeType="Large">
@@ -172,9 +172,9 @@
                     <atom:CardGridItem Row="1" Column="2">Content</atom:CardGridItem>
                 </atom:CardGridContent>
             </atom:Card>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Inner card"
+        <gallery:ShowCaseItem Title="Inner card"
                                       Description="It can be placed inside the ordinary card to display the information of the multilevel structure."
                                       IsOccupyEntireRow="True">
             <atom:Card Header="Card title" HorizontalAlignment="Stretch" SizeType="Large">
@@ -202,9 +202,9 @@
                     </atom:Card>
                 </StackPanel>
             </atom:Card>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="With tabs"
+        <gallery:ShowCaseItem Title="With tabs"
                                       Description="More content can be hosted.."
                                       IsOccupyEntireRow="True">
            <StackPanel Orientation="Vertical" Spacing="20">
@@ -229,9 +229,9 @@
                    </atom:CardTabsContent>
                </atom:Card>
            </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem Title="Support more content configuration"
+        <gallery:ShowCaseItem Title="Support more content configuration"
                                       Description="A Card that supports cover, avatar, title and description."
                                       IsOccupyEntireRow="True">
             <atom:Card Width="300">
@@ -251,6 +251,6 @@
                     <atom:CardActionButton Icon="{antdicons:AntDesignIconProvider Kind=EllipsisOutlined}"/>
                 </atom:Card.Actions>
             </atom:Card>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

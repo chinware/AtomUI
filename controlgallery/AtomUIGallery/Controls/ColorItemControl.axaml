@@ -1,13 +1,13 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:gallerycontrols="using:AtomUIGallery.Controls"
+                    xmlns:gallery="https://atomui.net/oss-controls/gallery"
                     xmlns:atom="https://atomui.net"
                     x:CompileBindings="True">
 
-    <ControlTheme x:Key="{x:Type gallerycontrols:ColorItemControl}" TargetType="gallerycontrols:ColorItemControl">
-        <Setter Property="gallerycontrols:ColorItemControl.Height" Value="35" />
-        <Setter Property="gallerycontrols:ColorItemControl.Template">
-            <ControlTemplate TargetType="gallerycontrols:ColorItemControl">
+    <ControlTheme x:Key="{x:Type gallery:ColorItemControl}" TargetType="gallery:ColorItemControl">
+        <Setter Property="gallery:ColorItemControl.Height" Value="35" />
+        <Setter Property="gallery:ColorItemControl.Template">
+            <ControlTemplate TargetType="gallery:ColorItemControl">
                 <Border Width="{TemplateBinding Width}"
                         Height="{TemplateBinding Height}"
                         Background="{TemplateBinding Background}">

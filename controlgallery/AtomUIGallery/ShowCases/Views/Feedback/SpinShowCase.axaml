@@ -3,15 +3,15 @@
              x:Class="AtomUIGallery.ShowCases.Views.SpinShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic Usage"
             Description="A simple loading status.">
             <atom:SpinIndicator />
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Size"
             Description="A small SpinIndicator is used for loading text, default sized SpinIndicator for loading a card-level block, and large SpinIndicator used for loading a page.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -19,9 +19,9 @@
                 <atom:SpinIndicator SizeType="Middle" VerticalAlignment="Center" />
                 <atom:SpinIndicator SizeType="Large" VerticalAlignment="Center" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom spinning indicator"
             Description="Use custom loading indicator.">
             <StackPanel Orientation="Horizontal" Spacing="10">
@@ -35,9 +35,9 @@
                                     VerticalAlignment="Center"
                                     CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Customized description"
             Description="Customized description" IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -66,9 +66,9 @@
                                 Type="Info" />
                 </atom:Spin>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Embedded mode"
             Description="Embedding content into Spin will set it into loading state."
             IsOccupyEntireRow="True">
@@ -94,6 +94,6 @@
                     <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>

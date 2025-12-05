@@ -3,23 +3,23 @@
              x:Class="AtomUIGallery.ShowCases.Views.RadioButtonShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:showCase="clr-namespace:AtomUIGallery.ShowCases.Views">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCasePanel.Styles>
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
             <Style Selector="atom|RadioButton">
                 <Setter Property="Margin" Value="0, 0, 5, 10" />
             </Style>
-        </gallerycontrols:ShowCasePanel.Styles>
-        <gallerycontrols:ShowCaseItem
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The simplest use.">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
                 <atom:RadioButton>Radio</atom:RadioButton>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Disabled"
             Description="Disabled state of RadioButton.">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
@@ -35,9 +35,9 @@
                     toggle disabled
                 </atom:Button>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Radio Group"
             Description="A group of radio components.">
             <WrapPanel Orientation="Horizontal" ItemSpacing="10">
@@ -66,9 +66,9 @@
                     </StackPanel>
                 </atom:RadioButton>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Vertical Radio Group"
             Description="Vertical Radio Group.">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
@@ -77,9 +77,9 @@
                 <atom:RadioButton>Option C</atom:RadioButton>
                 <atom:RadioButton>Option D</atom:RadioButton>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Option Button"
             Description="OptionButton Group.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -105,9 +105,9 @@
                     <atom:OptionButton IsEnabled="False">Orange</atom:OptionButton>
                 </atom:OptionButtonGroup>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Option Button with icon"
             Description="OptionButton Group with icon.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -151,9 +151,9 @@
                     <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">Windows</atom:OptionButton>
                 </atom:OptionButtonGroup>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="option style"
             Description="The combination of option button style.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -179,9 +179,9 @@
                 </atom:OptionButtonGroup>
         
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Solid option button"
             Description="Solid option button style.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -208,9 +208,9 @@
                 </atom:OptionButtonGroup>
         
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Size type"
             Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -236,7 +236,7 @@
                 </atom:OptionButtonGroup>
         
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

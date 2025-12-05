@@ -3,11 +3,11 @@
              x:Class="AtomUIGallery.ShowCases.Views.SelectShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
              xmlns:views="clr-namespace:AtomUIGallery.ShowCases.Views">
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="Basic Usage." IsOccupyEntireRow="False">
             <WrapPanel ItemSpacing="10" LineSpacing="10">
@@ -33,9 +33,9 @@
                     <atom:SelectOption Header="Lucy" Value="lucy" />
                 </atom:Select>
             </WrapPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Select with search field"
             Description="Search the options while expanded.">
             <atom:Select Mode="Single" PlaceholderText="Please select" IsSearchEnabled="True">
@@ -43,9 +43,9 @@
                 <atom:SelectOption Header="Lucy" Value="lucy" />
                 <atom:SelectOption Header="Tom" Value="tom" />
             </atom:Select>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom Search"
             Description="Customize search using filterOption, Case-sensitive search for Header.">
             <atom:Select Name="CustomSearchSelect"
@@ -57,9 +57,9 @@
                 <atom:SelectOption Header="Lucy" Value="lucy" />
                 <atom:SelectOption Header="Tom" Value="tom" />
             </atom:Select>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="multiple selection"
             Description="Multiple selection, selecting from existing items.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -80,9 +80,9 @@
                              DefaultValues="a10, c12"
                              IsEnabled="False" />
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Tags"
             Description="Allow user to select tags from list or input custom tag.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -93,9 +93,9 @@
                              x:DataType="viewModels:SelectViewModel"
                              OptionsSource="{Binding RandomOptions}"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Sizes"
             Description="The height of the input field for the select defaults to 32px. If size is set to large, the height will be 40px, and if set to small, 24px.">
         
@@ -126,9 +126,9 @@
                              DefaultValues="a10, c12" />
             </StackPanel>
         
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Custom dropdown options"
             Description="Use optionRender to customize the rendering dropdown options">
             <atom:Select Mode="Multiple" PlaceholderText="Please select" IsSearchEnabled="True"
@@ -146,9 +146,9 @@
                     </DataTemplate>
                 </atom:Select.OptionTemplate>
             </atom:Select>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Option Group"
             Description="Using OptGroup to group the options.">
             <atom:Select Mode="Single" PlaceholderText="Please select" DefaultValues="lucy" Width="200"
@@ -158,9 +158,9 @@
                 <atom:SelectOption Header="Chloe" Value="chloe" Group="engineer" />
                 <atom:SelectOption Header="Lucas" Value="lucas" Group="engineer" />
             </atom:Select>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Variants"
             Description="Variants of Select, there are four variants: outlined filled borderless and underlined.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -222,9 +222,9 @@
                     </atom:Select>
                 </UniformGrid>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Hide Already Selected"
             Description="Hide already selected options in the dropdown.">
             <atom:Select Mode="Multiple"
@@ -236,18 +236,18 @@
                 <atom:SelectOption Header="Bananas" Value="Bananas" />
                 <atom:SelectOption Header="Helicopters" Value="Helicopters" />
             </atom:Select>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Status"
             Description="Add status to Select with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Error"/>
                 <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Warning"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Max Count"
             Description="You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -267,9 +267,9 @@
                     <atom:SelectOption Header="Elle Blair" Value="Elle Blair" />
                 </atom:Select>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Responsive maxTagCount"
             Description="Auto collapse to tag with responsive case. Not recommend use in large form case since responsive calculation has a perf cost.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -298,9 +298,9 @@
                              IsSearchEnabled="True"
                              MaxTagCount="5"/>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Prefix and Suffix"
             Description="Custom prefix and suffixIcon." IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -374,7 +374,7 @@
                     </atom:Select>
                 </StackPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
         
-    </gallerycontrols:ShowCasePanel>
+    </gallery:ShowCasePanel>
 </UserControl>

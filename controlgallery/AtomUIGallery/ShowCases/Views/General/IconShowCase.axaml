@@ -2,21 +2,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.IconShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <atom:TabControl>
         <atom:TabItem Header="Outlined">
             <ScrollViewer>
-                <gallerycontrols:IconGallery IconThemeType="Outlined" />
+                <gallery:IconGallery IconThemeType="Outlined" />
             </ScrollViewer>
         </atom:TabItem>
         <atom:TabItem Header="Filled">
             <ScrollViewer>
-                <gallerycontrols:IconGallery IconThemeType="Filled" />
+                <gallery:IconGallery IconThemeType="Filled" />
             </ScrollViewer>
         </atom:TabItem>
         <atom:TabItem Header="Two Tone">
             <ScrollViewer>
-                <gallerycontrols:IconGallery IconThemeType="TwoTone" />
+                <gallery:IconGallery IconThemeType="TwoTone" />
             </ScrollViewer>
         </atom:TabItem>
     </atom:TabControl>

@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.TooltipShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallerycontrols="clr-namespace:AtomUIGallery.Controls">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
 
-    <gallerycontrols:ShowCasePanel>
-        <gallerycontrols:ShowCaseItem
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
             Title="Basic"
             Description="The simplest usage.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -15,9 +15,9 @@
                     Tooltip will show on mouse enter.
                 </atom:TextBlock>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Placement"
             Description="There are 12 placement options available.">
             <Grid>
@@ -95,9 +95,9 @@
                 </atom:Button>
 
             </Grid>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Arrow"
             Description="Support show, hide or keep arrow in the center.">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -210,16 +210,16 @@
 
                 </Grid>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
+        </gallery:ShowCaseItem>
 
-        <gallerycontrols:ShowCaseItem
+        <gallery:ShowCaseItem
             Title="Colorful Tooltip"
             Description="We preset a series of colorful Tooltip styles for use in different situations.">
-            <gallerycontrols:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|Button">
                     <Setter Property="Margin" Value="5" />
                 </Style>
-            </gallerycontrols:ShowCaseItem.Styles>
+            </gallery:ShowCaseItem.Styles>
             <StackPanel Orientation="Vertical">
                 <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
@@ -316,6 +316,6 @@
                     </atom:Button>
                 </WrapPanel>
             </StackPanel>
-        </gallerycontrols:ShowCaseItem>
-    </gallerycontrols:ShowCasePanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
 </UserControl>
