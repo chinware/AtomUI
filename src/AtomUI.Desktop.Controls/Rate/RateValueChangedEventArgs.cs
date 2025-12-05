@@ -2,9 +2,9 @@ namespace AtomUI.Desktop.Controls;
 
 public class RateValueChangedEventArgs : EventArgs
 {
-    public int Value { get; set; }
+    public double Value { get; set; }
 
-    public RateValueChangedEventArgs(int value)
+    public RateValueChangedEventArgs(double value)
     {
         Value = value;
     }

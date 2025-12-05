@@ -57,7 +57,7 @@ internal class RateToken : AbstractControlDesignToken
         StarSize       = SharedToken.ControlHeight * 0.625;
         StarSizeSM     = SharedToken.ControlHeightSM * 0.625;
         StarSizeLG     = SharedToken.ControlHeightLG * 0.625;
-        StarHoverScale = 1.5;
+        StarHoverScale = 1.2;
         StarBg         = SharedToken.ColorFillContent;
     }
 }

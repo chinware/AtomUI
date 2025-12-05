@@ -7,8 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Background="{TemplateBinding Background}">
-                    <Panel RenderTransform="{TemplateBinding HoverScaleTransform}"
-                           RenderTransformOrigin="{x:Static RelativePoint.Center}">
+                    <Panel>
                         <Rectangle Fill="{TemplateBinding CharacterBgBrush}"
                                    HorizontalAlignment="Stretch"
                                    VerticalAlignment="Stretch"/>
@@ -42,6 +41,7 @@
             </Style>
         </Style>
         
+        <Setter Property="RenderTransformOrigin" Value="{x:Static RelativePoint.Center}"/>
         <Setter Property="HoverScale" Value="1.0"/>
         <Style Selector="^:pointerover">
             <Setter Property="HoverScale" Value="{DynamicResource {x:Static atom:RateTokenKey.StarHoverScale}}"/>

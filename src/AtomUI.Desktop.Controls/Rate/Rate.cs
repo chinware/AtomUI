@@ -150,7 +150,8 @@ public class Rate : TemplatedControl,
     #endregion
     
     private ItemsControl? _itemsControl;
-    private IDisposable? _pointerPositionDisposable;
+    private IDisposable? _pointerEventHandleDisposable;
+    private double? _pressedEffectiveValue;
     
     static Rate()
     {
@@ -186,10 +187,11 @@ public class Rate : TemplatedControl,
         if (change.Property == ValueProperty)
         {
             SetCurrentValue(EffectiveValueProperty, Value);
+            ValueChanged?.Invoke(this, new RateValueChangedEventArgs(Value));
         }
         else if (change.Property == EffectiveValueProperty)
         {
-            HandleValueChanged();
+            HandleEffectiveValueChanged();
         }
     }
 
@@ -197,29 +199,74 @@ public class Rate : TemplatedControl,
     {
         base.OnAttachedToVisualTree(e);
         var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
+        _pointerEventHandleDisposable = inputManager.Process.Subscribe(HandleGlobalPointerEvent);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _pointerEventHandleDisposable?.Dispose();
     }
     
-    private void DetectPointerPosition(RawInputEventArgs args)
+    private void HandleGlobalPointerEvent(RawInputEventArgs args)
     {
         if (args is RawPointerEventArgs pointerEventArgs)
         {
-            var pos = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!) ?? default;
-            var bounds =  new Rect(pos, DesiredSize);
-            if (!bounds.Contains(pointerEventArgs.Position))
+            var pos      = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!) ?? default;
+            var bounds   =  new Rect(pos, DesiredSize);
+            var position = pointerEventArgs.Position;
+            if (pointerEventArgs.Type == RawPointerEventType.Move)
             {
-                SetCurrentValue(EffectiveValueProperty, Value);
+                if (!bounds.Contains(position))
+                {
+                    SetCurrentValue(EffectiveValueProperty, Value);
+                }
+            }
+            else if (pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
+            {
+                if (bounds.Contains(position))
+                {
+                    _pressedEffectiveValue = EffectiveValue;
+                }
+            }
+            else if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
+            {
+                if (bounds.Contains(position))
+                {
+                    if (_pressedEffectiveValue != null && MathUtils.AreClose(Math.Round(_pressedEffectiveValue.Value, MidpointRounding.AwayFromZero), Math.Round(EffectiveValue, MidpointRounding.AwayFromZero)))
+                    {
+                        if (IsAllowClear)
+                        {
+                            if (Value != 0d)
+                            {
+                                SetCurrentValue(ValueProperty, 0d);
+                                SetCurrentValue(EffectiveValueProperty, 0d);
+                            }
+                            else
+                            {
+                                var localPoint = TopLevel.GetTopLevel(this)?.TranslatePoint(position, this) ?? default;
+                                CalculateEffectiveValue(localPoint);
+                                SetCurrentValue(ValueProperty, EffectiveValue);
+                            }
+                        }
+                        else
+                        {
+                            SetCurrentValue(ValueProperty, EffectiveValue);
+                        }
+                        
+                    }
+                    _pressedEffectiveValue = null;
+                }
             }
         }
     }
-
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _itemsControl = e.NameScope.Find<ItemsControl>(RateThemeConstants.RateItemsPart);
         HandleCountChanged();
-        HandleValueChanged();
+        HandleEffectiveValueChanged();
     }
 
     private void HandleCountChanged()
@@ -234,10 +281,10 @@ public class Rate : TemplatedControl,
             }
         }
 
-        HandleValueChanged();
+        HandleEffectiveValueChanged();
     }
 
-    private void HandleValueChanged()
+    private void HandleEffectiveValueChanged()
     {
         if (_itemsControl != null)
         {
@@ -271,19 +318,25 @@ public class Rate : TemplatedControl,
                 }
             }
         }
+        HoverValueChanged?.Invoke(this, new RateValueChangedEventArgs(EffectiveValue));
     }
 
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
+        var point = e.GetPosition(_itemsControl);
+        CalculateEffectiveValue(point);
+    }
+    
+    private void CalculateEffectiveValue(Point point)
+    {
         if (_itemsControl != null)
         {
-            var point   = e.GetPosition(_itemsControl);
             var offsetX = point.X;
             if (Count > 0)
             {
                 var firstItem = _itemsControl.ContainerFromIndex(0) as RateItem;
-                var lastItem = _itemsControl.ContainerFromItem(Count - 1) as RateItem;
+                var lastItem  = _itemsControl.ContainerFromItem(Count - 1) as RateItem;
                 if (firstItem != null)
                 {
                     if (offsetX < firstItem.Bounds.Left)
@@ -308,13 +361,23 @@ public class Rate : TemplatedControl,
                     var left   = bounds.Left;
                     var right  = bounds.Right;
                     var middle = bounds.Center.X;
-                    if (MathUtils.GreaterThanOrClose(offsetX, left) && MathUtils.LessThanOrClose(offsetX, middle))
+                    if (IsAllowHalf)
                     {
-                        SetCurrentValue(EffectiveValueProperty, i + 0.5);
+                        if (MathUtils.GreaterThanOrClose(offsetX, left) && MathUtils.LessThanOrClose(offsetX, middle))
+                        {
+                            SetCurrentValue(EffectiveValueProperty, i + 0.5);
+                        }
+                        else if (MathUtils.GreaterThan(offsetX, middle) && MathUtils.LessThan(offsetX, right))
+                        {
+                            SetCurrentValue(EffectiveValueProperty, i + 1);
+                        }
                     }
-                    else if (MathUtils.GreaterThan(offsetX, middle) && MathUtils.LessThan(offsetX, right))
+                    else
                     {
-                        SetCurrentValue(EffectiveValueProperty, i + 1);
+                        if (MathUtils.GreaterThanOrClose(offsetX, left) && MathUtils.LessThan(offsetX, right))
+                        {
+                            SetCurrentValue(EffectiveValueProperty, i + 1);
+                        }
                     }
                 }
             }

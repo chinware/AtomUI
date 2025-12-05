@@ -8,7 +8,7 @@
         <gallery:ShowCaseItem
             Title="Basic"
             Description="The simplest usage.">
-            <atom:Rate Value="3.5" IsAllowHalf="True"/>
+            <atom:Rate/>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

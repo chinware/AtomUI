@@ -118,9 +118,6 @@ internal class RateItem : TemplatedControl
     internal static readonly StyledProperty<double> HoverScaleProperty =
         AvaloniaProperty.Register<RateItem, double>(nameof(HoverScale));
     
-    internal static readonly StyledProperty<ITransform?> HoverScaleTransformProperty =
-        AvaloniaProperty.Register<RateItem, ITransform?>(nameof (HoverScaleTransform));
-    
     private VisualBrush? _characterBgBrush;
 
     internal VisualBrush? CharacterBgBrush
@@ -151,17 +148,12 @@ internal class RateItem : TemplatedControl
         set => SetValue(HoverScaleProperty, value);
     }
     
-    internal ITransform? HoverScaleTransform
-    {
-        get => GetValue(HoverScaleTransformProperty);
-        set => SetValue(HoverScaleTransformProperty, value);
-    }
     #endregion
 
     static RateItem()
     {
         AffectsMeasure<RateItem>(SizeTypeProperty);
-        AffectsRender<RateItem>(CharacterProperty, StarColorProperty, StarBgColorProperty, HoverScaleTransformProperty);
+        AffectsRender<RateItem>(CharacterProperty, StarColorProperty, StarBgColorProperty);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -187,10 +179,7 @@ internal class RateItem : TemplatedControl
         }
         else if (change.Property == HoverScaleProperty)
         {
-            Console.WriteLine(HoverScale);
-            var builder = new TransformOperations.Builder(1);
-            builder.AppendScale(HoverScale, HoverScale);
-            SetCurrentValue(HoverScaleTransformProperty, builder.Build());
+            SetCurrentValue(RenderTransformProperty, new ScaleTransform(HoverScale, HoverScale));
         }
         if (IsLoaded)
         {
@@ -277,9 +266,8 @@ internal class RateItem : TemplatedControl
         {
             if (force || Transitions == null)
             {
-                Console.WriteLine("xxxxxxxxxxxxxxxxx");
                 Transitions = [
-                    TransitionUtils.CreateTransition<TransformOperationsTransition>(HoverScaleTransformProperty)
+                    TransitionUtils.CreateTransition<DoubleTransition>(HoverScaleProperty)
                 ];
             }
         }
