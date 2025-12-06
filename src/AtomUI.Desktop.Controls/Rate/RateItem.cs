@@ -164,7 +164,8 @@ internal class RateItem : TemplatedControl
             if (change.Property == CharacterProperty ||
                 change.Property == StarColorProperty ||
                 change.Property == StarBgColorProperty ||
-                change.Property == SizeTypeProperty)
+                change.Property == SizeTypeProperty ||
+                change.Property == FontSizeProperty)
             {
                 ConfigureCharacterBrushes();
             }
@@ -173,7 +174,8 @@ internal class RateItem : TemplatedControl
         if (change.Property == IsAllowHalfProperty ||
             change.Property == SelectedStateProperty ||
             change.Property == WidthProperty ||
-            change.Property == HeightProperty)
+            change.Property == HeightProperty ||
+            change.Property == FontSizeProperty)
         {
             ConfigureStarClip();
         }
@@ -206,19 +208,24 @@ internal class RateItem : TemplatedControl
             Debug.Assert(newIcon != null);
             charControl       = newIcon;
             newIcon.FillBrush = brush;
+            newIcon.StrokeBrush = brush;
         }
         else if (Character is char character)
         {
             charControl = new RateCharacter()
             {
                 Character = character,
+                Foreground = brush,
+                FontSize = double.IsNaN(Height) ? FontSize : Height,
             };
         }
-        else if (Character is string str && str.Length > 1)
+        else if (Character is string str && str.Length >= 1)
         {
             charControl = new RateCharacter()
             {
-                Character = str.First(),
+                Character  = str.First(),
+                Foreground = brush,
+                FontSize   = double.IsNaN(Height) ? FontSize : Height,
             };
         }
 

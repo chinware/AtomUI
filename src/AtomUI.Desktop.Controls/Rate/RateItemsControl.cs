@@ -128,6 +128,7 @@ internal class RateItemsControl : ItemsControl, ISizeTypeAware
             disposables.Add(BindUtils.RelayBind(this, StarBgColorProperty, rateItem, RateItem.StarBgColorProperty));
             disposables.Add(BindUtils.RelayBind(this, IsAllowClearProperty, rateItem, RateItem.IsAllowClearProperty));
             disposables.Add(BindUtils.RelayBind(this, IsAllowHalfProperty, rateItem, RateItem.IsAllowHalfProperty));
+            disposables.Add(BindUtils.RelayBind(this, FontSizeProperty, rateItem, RateItem.FontSizeProperty));
             
             if (_itemsBindingDisposables.TryGetValue(rateItem, out var oldDisposables))
             {

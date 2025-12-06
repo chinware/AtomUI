@@ -17,13 +17,14 @@
                                            StarBgColor="{TemplateBinding StarBgColor}"
                                            IsAllowClear="{TemplateBinding IsAllowClear}"
                                            IsAllowHalf="{TemplateBinding IsAllowHalf}"
-                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                           FontSize="{TemplateBinding FontSize}"/>
                 </Border>
             </ControlTemplate>
         </Setter>
         <Setter Property="IsMotionEnabled" Value="{DynamicResource {x:Static atom:SharedTokenKey.EnableMotion}}" />
         <Setter Property="StarColor" Value="{DynamicResource {x:Static atom:RateTokenKey.StarColor}}" />
         <Setter Property="StarBgColor" Value="{DynamicResource {x:Static atom:RateTokenKey.StarBg}}" />
-        
+       
     </ControlTheme>
 </ResourceDictionary>

@@ -39,13 +39,16 @@ public class Rate : TemplatedControl,
         AvaloniaProperty.Register<Rate, int>(nameof(Count), 5);
     
     public static readonly StyledProperty<double> ValueProperty =
-        AvaloniaProperty.Register<Rate, double>(nameof(Value));
+        AvaloniaProperty.Register<Rate, double>(nameof(Value), double.NaN);
     
     public static readonly StyledProperty<double> DefaultValueProperty =
         AvaloniaProperty.Register<Rate, double>(nameof(DefaultValue), 0);
     
     public static readonly StyledProperty<bool> IsKeyboardEnabledProperty =
         AvaloniaProperty.Register<Rate, bool>(nameof(IsKeyboardEnabled), true);
+    
+    public static readonly StyledProperty<IList<string>?> ToolTipsProperty =
+        AvaloniaProperty.Register<Rate, IList<string>?>(nameof(ToolTips));
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<Rate>();
@@ -105,6 +108,12 @@ public class Rate : TemplatedControl,
     {
         get => GetValue(IsKeyboardEnabledProperty);
         set => SetValue(IsKeyboardEnabledProperty, value);
+    }
+    
+    public IList<string>? ToolTips
+    {
+        get => GetValue(ToolTipsProperty);
+        set => SetValue(ToolTipsProperty, value);
     }
     
     public SizeType SizeType
@@ -171,6 +180,11 @@ public class Rate : TemplatedControl,
         {
             SetCurrentValue(CharacterProperty, new StarFilled());
         }
+
+        if (double.IsNaN(Value))
+        {
+            SetCurrentValue(ValueProperty, DefaultValue);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -187,11 +201,18 @@ public class Rate : TemplatedControl,
         if (change.Property == ValueProperty)
         {
             SetCurrentValue(EffectiveValueProperty, Value);
-            ValueChanged?.Invoke(this, new RateValueChangedEventArgs(Value));
+            ValueChanged?.Invoke(this, new RateValueChangedEventArgs(change.GetOldValue<double>(), change.GetNewValue<double>()));
         }
         else if (change.Property == EffectiveValueProperty)
         {
             HandleEffectiveValueChanged();
+            var oldEffectiveValue = (int)(Math.Round(change.GetOldValue<double>(), MidpointRounding.AwayFromZero) - 1);
+            var newEffectiveValue = (int)(Math.Round(change.GetNewValue<double>(), MidpointRounding.AwayFromZero) - 1);
+            HoverValueChanged?.Invoke(this, new RateValueChangedEventArgs(oldEffectiveValue, newEffectiveValue));
+        }
+        else if (change.Property == ToolTipsProperty)
+        {
+            ConfigureToolTips();
         }
     }
 
@@ -210,6 +231,10 @@ public class Rate : TemplatedControl,
     
     private void HandleGlobalPointerEvent(RawInputEventArgs args)
     {
+        if (!IsEnabled)
+        {
+            return;
+        }
         if (args is RawPointerEventArgs pointerEventArgs)
         {
             var pos      = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!) ?? default;
@@ -237,16 +262,20 @@ public class Rate : TemplatedControl,
                     {
                         if (IsAllowClear)
                         {
-                            if (Value != 0d)
+                            var localPoint = TopLevel.GetTopLevel(this)?.TranslatePoint(position, this) ?? default;
+                            var value      = CalculateEffectiveValue(localPoint);
+                            if (value != null)
                             {
-                                SetCurrentValue(ValueProperty, 0d);
-                                SetCurrentValue(EffectiveValueProperty, 0d);
-                            }
-                            else
-                            {
-                                var localPoint = TopLevel.GetTopLevel(this)?.TranslatePoint(position, this) ?? default;
-                                CalculateEffectiveValue(localPoint);
-                                SetCurrentValue(ValueProperty, EffectiveValue);
+                                if ((IsAllowHalf && MathUtils.AreClose(Value, value.Value)) ||
+                                    (!IsAllowHalf && MathUtils.AreClose(Math.Round(Value, MidpointRounding.AwayFromZero), 
+                                        Math.Round(value.Value, MidpointRounding.AwayFromZero))))
+                                {
+                                    SetCurrentValue(ValueProperty, 0d);
+                                }
+                                else
+                                {
+                                    SetCurrentValue(ValueProperty, value);
+                                }
                             }
                         }
                         else
@@ -282,6 +311,7 @@ public class Rate : TemplatedControl,
         }
 
         HandleEffectiveValueChanged();
+        ConfigureToolTips();
     }
 
     private void HandleEffectiveValueChanged()
@@ -318,18 +348,22 @@ public class Rate : TemplatedControl,
                 }
             }
         }
-        HoverValueChanged?.Invoke(this, new RateValueChangedEventArgs(EffectiveValue));
     }
 
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
         var point = e.GetPosition(_itemsControl);
-        CalculateEffectiveValue(point);
+        var value = CalculateEffectiveValue(point);
+        if (value != null)
+        {
+            SetCurrentValue(EffectiveValueProperty, value);
+        }
     }
     
-    private void CalculateEffectiveValue(Point point)
+    private double? CalculateEffectiveValue(Point point)
     {
+        double? value = null;
         if (_itemsControl != null)
         {
             var offsetX = point.X;
@@ -341,7 +375,7 @@ public class Rate : TemplatedControl,
                 {
                     if (offsetX < firstItem.Bounds.Left)
                     {
-                        SetCurrentValue(EffectiveValueProperty, 0);
+                        value = 0;
                     }
                 }
 
@@ -349,7 +383,7 @@ public class Rate : TemplatedControl,
                 {
                     if (offsetX > lastItem.Bounds.Right)
                     {
-                        SetCurrentValue(EffectiveValueProperty, Count);
+                        value = Count;
                     }
                 }
             }
@@ -365,20 +399,36 @@ public class Rate : TemplatedControl,
                     {
                         if (MathUtils.GreaterThanOrClose(offsetX, left) && MathUtils.LessThanOrClose(offsetX, middle))
                         {
-                            SetCurrentValue(EffectiveValueProperty, i + 0.5);
+                            value = i + 0.5;
                         }
                         else if (MathUtils.GreaterThan(offsetX, middle) && MathUtils.LessThan(offsetX, right))
                         {
-                            SetCurrentValue(EffectiveValueProperty, i + 1);
+                  
+                            value = i + 1;
                         }
                     }
                     else
                     {
                         if (MathUtils.GreaterThanOrClose(offsetX, left) && MathUtils.LessThan(offsetX, right))
                         {
-                            SetCurrentValue(EffectiveValueProperty, i + 1);
+                            value = i + 1;
                         }
                     }
+                }
+            }
+        }
+        return value;
+    }
+
+    private void ConfigureToolTips()
+    {
+        if (_itemsControl != null && ToolTips?.Count > 0)
+        {
+            for (var i = 0; i < Count; i++)
+            {
+                if (_itemsControl.Items[i] is RateItem rateItem && i < ToolTips.Count)
+                {
+                    ToolTip.SetTip(rateItem, ToolTips[i]);
                 }
             }
         }
