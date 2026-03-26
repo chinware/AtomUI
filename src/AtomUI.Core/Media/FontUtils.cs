@@ -12,6 +12,6 @@ public static class FontUtils
    public static double ConvertEmToPixel(double value, double fontSize, double renderScaling = 1.0)
     {
         var fontSizePx = fontSize * value * renderScaling;
-        return fontSizePx * value;
+        return fontSizePx;
     }
 }
