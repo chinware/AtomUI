@@ -242,6 +242,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     private void HandleClosed(object? sender, EventArgs? args)
     {
         _selfLightDismissDisposable?.Dispose();
+        _selfLightDismissDisposable = null;
         if (IgnoreFirstDetected)
         {
             _firstDetected = true;

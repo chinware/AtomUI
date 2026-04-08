@@ -77,9 +77,9 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
         }
 
         _inputManagerSubscription?.Dispose();
-
-        TreeView  = null;
-        _root = null;
+        _inputManagerSubscription = null;
+        TreeView                  = null;
+        _root                     = null;
     }
 
     internal static TreeViewItem? GetTreeViewItemCore(StyledElement? item)

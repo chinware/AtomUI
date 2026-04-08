@@ -240,7 +240,20 @@ public class NavMenu : ItemsControl,
         Close();
         ConfigureInteractionHandler(true);
     }
-    
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureInteractionHandler(true);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        InteractionHandler?.Detach(this);
+        InteractionHandler = null;
+    }
+
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
         return NeedsContainer<NavMenuItem>(item, out recycleKey);
@@ -329,12 +342,6 @@ public class NavMenu : ItemsControl,
         PseudoClasses.Set(NavMenuPseudoClass.InlineMode, Mode == NavMenuMode.Inline);
         PseudoClasses.Set(NavMenuPseudoClass.DarkStyle, IsDarkStyle);
         PseudoClasses.Set(NavMenuPseudoClass.LightStyle, !IsDarkStyle);
-    }
-    
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        HandleModeChanged();
     }
     
     protected virtual void NotifySubmenuOpened(RoutedEventArgs e)

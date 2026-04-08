@@ -202,6 +202,7 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     {
         base.OnDetachedFromVisualTree(e);
         _mouseMoveDisposable?.Dispose();
+        _mouseMoveDisposable = null;
     }
 
     private void ConfigureMoveProcessor()

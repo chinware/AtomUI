@@ -100,6 +100,8 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
                 {
                     menuItem.Close();
                 }
+
+                _currentCloseDelayRunDisposable = null;
             }, MenuShowDelay);
         }
     }
@@ -316,12 +318,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         _inputManagerSubscription?.Dispose();
+        _inputManagerSubscription = null;
 
         Menu            = null;
         _root           = null;
         _attachedWindow = null;
     }
-
+    
     internal void Click(INavMenuItem item)
     {
         (item as IClickableControl)?.RaiseClick();

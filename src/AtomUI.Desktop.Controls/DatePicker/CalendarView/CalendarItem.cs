@@ -1196,6 +1196,7 @@ internal class CalendarItem : TemplatedControl
     {
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
+        _pointerPositionDisposable = null;
     }
 
     protected virtual bool IsPointerInMonthView(Point position)

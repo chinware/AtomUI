@@ -64,6 +64,7 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
     {
         base.OnDetachedFromVisualTree(e);
         _clickSubscription?.Dispose();
+        _clickSubscription = null;
     }
 
     private void ConfigureInputManager()

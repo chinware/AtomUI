@@ -33,11 +33,11 @@ public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
 
     private void InitLinuxDistroLogos()
     {
-        LinuxDistroLogos["linux"]   = "/Assets/OSLogos/Linux.svg";
-        LinuxDistroLogos["ubuntu"]  = "/Assets/OSLogos/Ubuntu.svg";
-        LinuxDistroLogos["deepin"]  = "/Assets/OSLogos/Deepin.svg";
-        LinuxDistroLogos["macOS"]   = "/Assets/OSLogos/MacOS.svg";
-        LinuxDistroLogos["windows"] = "/Assets/OSLogos/Windows.svg";
+        LinuxDistroLogos["linux"]         = "/Assets/OSLogos/Linux.svg";
+        LinuxDistroLogos["ubuntu"]        = "/Assets/OSLogos/Ubuntu.svg";
+        LinuxDistroLogos["deepin"]        = "/Assets/OSLogos/Deepin.svg";
+        LinuxDistroLogos["macOS"]         = "/Assets/OSLogos/MacOS.svg";
+        LinuxDistroLogos["windows"]       = "/Assets/OSLogos/Windows.svg";
         LinuxDistroLogos["opensuse-leap"] = "/Assets/OSLogos/OpenSUSE.svg";
     }
     
