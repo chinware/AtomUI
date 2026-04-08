@@ -11,10 +11,10 @@
             HorizontalAlignment="Left"
             Margin="100 0 0 40" />
 
-        <atom:DataGrid Name="OsInfoTable" Margin="10" ItemsSource="{Binding SystemInfoRecords}" SizeType="Small">
+        <atom:DataGrid Name="OsInfoTable" Margin="10" SizeType="Small">
             <atom:DataGrid.Columns>
                 <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                <atom:DataGridTextColumn Header="Value" Binding="{Binding Values}"/>
+                <atom:DataGridTextColumn Header="Value" Binding="{Binding Value}"/>
             </atom:DataGrid.Columns>
         </atom:DataGrid>
     </StackPanel>

@@ -21,7 +21,8 @@
                         <atom:UploadList Name="{x:Static atom:UploadThemeConstants.UploadListPart}"
                                          ListType="{TemplateBinding ListType}"
                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                         IsVisible="{TemplateBinding IsShowUploadList}" />
+                                         IsVisible="{TemplateBinding IsShowUploadList}" 
+                                         ItemsSource="{TemplateBinding CurrentTaskList}"/>
                     </DockPanel>
                 </ControlTemplate>
             </Setter>
@@ -37,7 +38,7 @@
                                                  IsShowUploadList="{TemplateBinding IsShowUploadList}"
                                                  TriggerContent="{TemplateBinding Content}"
                                                  TriggerContentTemplate="{TemplateBinding ContentTemplate}"
-                                                 ItemsSource="{Binding TaskInfoList, RelativeSource={RelativeSource TemplatedParent}}" />
+                                                 ItemsSource="{TemplateBinding CurrentTaskList}"/>
                 </ControlTemplate>
             </Setter>
         </Style>

@@ -1,6 +1,7 @@
+using System.Collections;
+using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
@@ -155,7 +156,7 @@ public class Upload : ContentControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public AvaloniaList<UploadTaskInfo> TaskInfoList { get; } = new ();
+    public AvaloniaList<UploadTaskInfo> TaskInfoList { get; private set; } = new ();
     
     #endregion
     
@@ -175,6 +176,23 @@ public class Upload : ContentControl,
 
     #region 公共回调函数定义
     public Func<UploadFileInfo, bool>? IsImageFilePredicate { get; set; }
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<Upload, IEnumerable?> CurrentTaskListProperty =
+        AvaloniaProperty.RegisterDirect<Upload, IEnumerable?>(
+            nameof(CurrentTaskList),
+            o => o.CurrentTaskList,
+            (o, v) => o.CurrentTaskList = v);
+
+    private IEnumerable? _currentTaskList;
+
+    internal IEnumerable? CurrentTaskList
+    {
+        get => _currentTaskList;
+        set => SetAndRaise(CurrentTaskListProperty, ref _currentTaskList, value);
+    }
     #endregion
     
     private FileUploadScheduler _uploadScheduler;
@@ -208,7 +226,20 @@ public class Upload : ContentControl,
     public Upload()
     {
         this.RegisterTokenResourceScope(UploadToken.ScopeProvider);
-        _uploadScheduler = new FileUploadScheduler();
+        _uploadScheduler               =  new FileUploadScheduler();
+        TaskInfoList.CollectionChanged += HandleTaskListChanged;
+    }
+
+    private void HandleTaskListChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (TaskInfoList.Count == 0)
+        {
+            CurrentTaskList = null;
+        }
+        else
+        {
+            CurrentTaskList = TaskInfoList.ToArray();
+        }
     }
 
     protected virtual void OpenFileDialog()
@@ -483,6 +514,20 @@ public class Upload : ContentControl,
                 });
             }
         }
+    }
+
+    public async Task ResetAsync()
+    {
+        await CancelAllUploadTaskAsync();
+        TaskInfoList = new();
+    }
+
+    public void Reset()
+    {
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await CancelAllUploadTaskAsync();
+        });
     }
     
     private async Task CancelAllUploadTaskAsync()

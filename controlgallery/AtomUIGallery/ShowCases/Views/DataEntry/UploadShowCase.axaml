@@ -40,7 +40,7 @@
             Title="Default Files"
             Description="Use defaultFileList for uploaded files when page init."
             IsOccupyEntireRow="True">
-            <atom:Upload Name="DefaultFileList" DefaultTaskList="{Binding DefaultTaskList}">
+            <atom:Upload Name="DefaultFileList">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Click to Upload</atom:Button>
             </atom:Upload>
         </gallery:ShowCaseItem>
@@ -49,7 +49,7 @@
             Title="Pictures Wall"
             Description="After users upload picture, the thumbnail will be shown in list. The upload button will disappear when count meets limitation."
             IsOccupyEntireRow="True">
-            <atom:Upload Name="PicturesWallUpload" DefaultTaskList="{Binding PicturesWallDefaultTaskList}" ListType="PictureCard">
+            <atom:Upload Name="PicturesWallUpload" ListType="PictureCard">
                 <StackPanel Orientation="Vertical">
                     <antdicons:PlusOutlined/>
                     <TextBlock Margin="0, 8, 0, 0">Upload</TextBlock>
@@ -61,7 +61,7 @@
             Title="Pictures with picture-circle type"
             Description="Alternative display for picture-card."
             IsOccupyEntireRow="True">
-            <atom:Upload Name="PicturesCircleWallUpload" DefaultTaskList="{Binding PicturesWallDefaultTaskList}" ListType="PictureCircle">
+            <atom:Upload Name="PicturesCircleWallUpload" ListType="PictureCircle">
                 <StackPanel Orientation="Vertical">
                     <antdicons:PlusOutlined/>
                     <TextBlock Margin="0, 8, 0, 0">Upload</TextBlock>
@@ -81,7 +81,7 @@
         <gallery:ShowCaseItem
             Title="Pictures with list style"
             Description="If uploaded file is a picture, the thumbnail can be shown. ">
-            <atom:Upload Name="PictureListUpload" DefaultTaskList="{Binding PictureListStyleDefaultTaskList}" ListType="Picture">
+            <atom:Upload Name="PictureListUpload" ListType="Picture">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" ButtonType="Primary">Click to Upload</atom:Button>
             </atom:Upload>
         </gallery:ShowCaseItem>

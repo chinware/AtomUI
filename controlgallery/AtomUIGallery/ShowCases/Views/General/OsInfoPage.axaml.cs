@@ -1,3 +1,5 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUIGallery.ShowCases.ViewModels;
 using AtomUIGallery.Utils;
 using ReactiveUI;
@@ -18,6 +20,12 @@ public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
                 InitInfoRecords(viewModel);
                 InitLinuxDistroLogos();
                 ConfigureOsLogoPath();
+                this.OneWayBind(viewModel, vm => vm.SystemInfoRecords, v => v.OsInfoTable.ItemsSource).DisposeWith(disposables);
+                
+                Disposable.Create(() =>
+                {
+                    viewModel.SystemInfoRecords = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();
@@ -36,69 +44,71 @@ public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
     private void InitInfoRecords(OsInfoViewModel viewModel)
     {
         var systemInfo = SystemInfoProvider.GetSystemInfo();
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        var systemInfoRecords = new List<SystemInfoRecord>();
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.OSName),
             Value = systemInfo.OSName,
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.OSVersion),
             Value = systemInfo.OSVersion,
         });
         
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.AvaloniaVersion),
             Value = systemInfo.AvaloniaVersion
         });
         
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.AtomUIVersion),
             Value = systemInfo.AtomUIVersion,
         });
         
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.Architecture),
             Value = systemInfo.Architecture,
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.RuntimeVersion),
             Value = systemInfo.RuntimeVersion,
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.CPUName),
             Value = systemInfo.CPUName,
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.CPUCores),
             Value = systemInfo.CPUCores.ToString(),
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.MemoryInfo),
             Value = systemInfo.MemoryInfo
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.SystemUptime),
             Value = systemInfo.SystemUptime.ToString()
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.CurrentCulture),
             Value = systemInfo.CurrentCulture
         });
-        viewModel.SystemInfoRecords.Add(new SystemInfoRecord()
+        systemInfoRecords.Add(new SystemInfoRecord()
         {
             Name  = nameof(systemInfo.TimeZone),
             Value = systemInfo.TimeZone
         });
+        viewModel.SystemInfoRecords = systemInfoRecords;
     }
 
     private void ConfigureOsLogoPath()
