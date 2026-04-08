@@ -1,4 +1,3 @@
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -32,8 +31,10 @@ public class SubmitButton : Button
     }
     #endregion
     
-    private Form? _form;
-    private IDisposable? _subscription;
+    static SubmitButton()
+    {
+        Form.IsFormValidProperty.Changed.AddClassHandler<SubmitButton>((button, args) => button.HandleFormValidChanged(args.GetNewValue<bool>()));
+    }
 
     protected override void OnClick()
     {
@@ -41,35 +42,15 @@ public class SubmitButton : Button
         RaiseEvent(new RoutedEventArgs(SubmitEvent));
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    private void HandleFormValidChanged(bool newValue)
     {
-        base.OnApplyTemplate(e);
-        _form = this.FindAncestorOfType<Form>();
-        ConfigureWatchValidate();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsWatchValidateResultProperty)
-        {
-            ConfigureWatchValidate();
-        }
-    }
-    
-    private void ConfigureWatchValidate()
-    {
-        _subscription?.Dispose();
         if (IsWatchValidateResult)
         {
-            if (_form != null)
-            {
-                _subscription = Form.IsFormValidProperty.Changed.Subscribe((args) =>
-                {
-                    IsEnabled = args.NewValue == true;
-                });
-                IsEnabled = _form.IsFormValid == true;
-            }
+            SetValue(IsEnabledProperty, newValue);
+        }
+        else
+        {
+            SetValue(IsEnabledProperty, false);
         }
     }
 }

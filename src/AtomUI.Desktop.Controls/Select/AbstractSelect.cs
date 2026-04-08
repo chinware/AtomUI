@@ -541,6 +541,8 @@ public class AbstractSelect : TemplatedControl,
     private protected bool IgnorePropertyChange;
     private AddOnDecoratedBox? _addOnDecoratedBox;
 
+    private Window? _attachedWindow;
+
     static AbstractSelect()
     {
         AffectsArrange<AbstractSelect>(CompactSpaceItemPositionProperty, CompactSpaceOrientationProperty);
@@ -645,6 +647,7 @@ public class AbstractSelect : TemplatedControl,
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel is Window window)
         {
+            _attachedWindow    =  window;
             window.Deactivated += HandleWindowDeactivated;
         }
     }
@@ -652,11 +655,13 @@ public class AbstractSelect : TemplatedControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
+        
+        if (_attachedWindow != null)
         {
-            window.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
         }
+
+        _attachedWindow = null;
     }
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -673,8 +678,8 @@ public class AbstractSelect : TemplatedControl,
             Popup.Opened -= PopupOpened;
             Popup.Closed -= PopupClosed;
         }
-        
-        Popup                     =  e.NameScope.Find<Popup>(SelectThemeConstants.PopupPart);
+
+        Popup = e.NameScope.Find<Popup>(SelectThemeConstants.PopupPart);
 
         if (Popup != null)
         {

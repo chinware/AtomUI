@@ -136,6 +136,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     private Grid? _gridLayout;
     private MediaBreakPoint? _breakPoint;
     private int _effectiveColumns;
+    private Window? _attachedWindow;
 
     static Descriptions()
     {
@@ -147,13 +148,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         this.RegisterTokenResourceScope(DescriptionsToken.ScopeProvider);
         Items.CollectionChanged += HandleCollectionChanged;
     }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        
-    }
-
+    
     protected virtual void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (_gridLayout != null && this.IsAttachedToVisualTree())
@@ -190,6 +185,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         base.OnAttachedToVisualTree(e);
         if (TopLevel.GetTopLevel(this) is Window window)
         {
+            _attachedWindow               =  window;
             window.MediaBreakPointChanged += HandleMediaBreakChanged;
         }
     }
@@ -197,10 +193,12 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (TopLevel.GetTopLevel(this) is Window window)
+        if (_attachedWindow != null)
         {
-            window.MediaBreakPointChanged -= HandleMediaBreakChanged;
+            _attachedWindow.MediaBreakPointChanged -= HandleMediaBreakChanged;
         }
+
+        _attachedWindow = null;
     }
 
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)

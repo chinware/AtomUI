@@ -449,4 +449,11 @@ public class DataGridRowGroupHeader : TemplatedControl
             _itemCountElement.Text = string.Format(formatString, RowGroupInfo.CollectionViewGroup.ItemCount);
         }
     }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _expanderButtonSubscription?.Dispose();
+        _expanderButtonSubscription = null;
+    }
 }

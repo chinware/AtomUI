@@ -13,7 +13,6 @@ using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Input;
 using AtomUI.Theme;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -523,6 +522,7 @@ public class Mentions : TemplatedControl,
     private bool _ignorePropertyChange;
     private IDisposable? _collectionChangeSubscription;
     private CancellationTokenSource? _populationCancellationTokenSource;
+    private Window? _attachedWindow;
     
     static Mentions()
     {
@@ -534,7 +534,7 @@ public class Mentions : TemplatedControl,
         PlacementProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.ConfigurePopupPlacement());
         OptionsSourceProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleItemsSourceChanged((IEnumerable?)e.NewValue));
         OptionFilterValueProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleOptionFilterValueChanged());
-        ValueProperty.Changed.AddClassHandler<Mentions>(((mentions, args) => mentions.HandleValueChanged()));
+        ValueProperty.Changed.AddClassHandler<Mentions>((mentions, args) => mentions.HandleValueChanged());
     }
     
     public Mentions()
@@ -973,6 +973,7 @@ public class Mentions : TemplatedControl,
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel is Window window)
         {
+            _attachedWindow    =  window;
             window.Deactivated += HandleWindowDeactivated;
         }
     }
@@ -980,11 +981,12 @@ public class Mentions : TemplatedControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
+        if (_attachedWindow != null)
         {
-            window.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
         }
+
+        _attachedWindow = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)

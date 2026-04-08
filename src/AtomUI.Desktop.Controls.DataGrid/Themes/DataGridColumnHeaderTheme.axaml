@@ -109,7 +109,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
         </Style>
-        
+
         <Style Selector="^[IsSeparatorFullHeight=True] /template/ Rectangle#VerticalSeparator">
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Height" Value="NaN" />
@@ -118,7 +118,7 @@
         <Style Selector="^ /template/ StackPanel#IndicatorsLayout">
             <Setter Property="Spacing" Value="{atom:SharedTokenResource UniformlyMarginXXS}" />
         </Style>
-        
+
         <Style Selector="^ /template/ DockPanel#ContentLayout">
             <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource UniformlyMarginXS}" />
         </Style>
@@ -147,7 +147,7 @@
             <Style Selector="^ /template/ Border#Frame">
                 <Setter Property="Cursor" Value="Hand" />
             </Style>
-        
+
             <Style Selector="^:pointerover">
                 <Setter Property="Background"
                         Value="{atom:DataGridTokenResource HeaderSortHoverBg}" />
@@ -183,5 +183,18 @@
                 <Setter Property="ZIndex" Value="1" />
             </Style>
         </Style>
+
+        <Style Selector="^[SortTooltipType=Cancel]">
+            <Setter Property="atom:ToolTip.Tip" Value="{atom:DataGridLangResource CancelTooltip}" />
+        </Style>
+
+        <Style Selector="^[SortTooltipType=Ascending]">
+            <Setter Property="atom:ToolTip.Tip" Value="{atom:DataGridLangResource AscendTooltip}" />
+        </Style>
+
+        <Style Selector="^[SortTooltipType=Descending]">
+            <Setter Property="atom:ToolTip.Tip" Value="{atom:DataGridLangResource DescendTooltip}" />
+        </Style>
+
     </Style>
 </ControlTheme>

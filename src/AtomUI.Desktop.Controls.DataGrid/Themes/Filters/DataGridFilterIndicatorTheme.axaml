@@ -10,6 +10,7 @@
         </ControlTheme.BasedOn>
 
         <Style Selector="^:is(atom|DataGridFilterIndicator)">
+            <Setter Property="SelectedAllText" Value="{atom:DataGridLangResource SelectAllFilterItems}" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="Padding"

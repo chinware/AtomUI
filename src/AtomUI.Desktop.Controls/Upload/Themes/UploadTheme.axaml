@@ -4,7 +4,7 @@
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Upload}" TargetType="atom:Upload">
-        
+
         <Style Selector="^[ListType=Text], ^[ListType=Picture]">
             <Setter Property="Template">
                 <ControlTemplate>
@@ -17,46 +17,47 @@
                                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                    ListType="{TemplateBinding ListType}"
-                                                   IsVisible="{TemplateBinding IsShowUploadTrigger}"/>
-                        <atom:UploadList Name="{x:Static atom:UploadThemeConstants.UploadListPart}" 
+                                                   IsVisible="{TemplateBinding IsShowUploadTrigger}" />
+                        <atom:UploadList Name="{x:Static atom:UploadThemeConstants.UploadListPart}"
                                          ListType="{TemplateBinding ListType}"
                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                         IsVisible="{TemplateBinding IsShowUploadList}"/>
+                                         IsVisible="{TemplateBinding IsShowUploadList}" />
                     </DockPanel>
                 </ControlTemplate>
             </Setter>
         </Style>
-        
+
         <Style Selector="^[ListType=PictureCard], ^[ListType=PictureCircle]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <atom:UploadPictureShapeList Name="{x:Static atom:UploadThemeConstants.UploadListPart}" 
-                                          ListType="{TemplateBinding ListType}"
-                                          IsShowUploadTrigger="{TemplateBinding IsShowUploadTrigger}"
-                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                          IsShowUploadList="{TemplateBinding IsShowUploadList}"
-                                          TriggerContent="{TemplateBinding Content}"
-                                          TriggerContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    <atom:UploadPictureShapeList Name="{x:Static atom:UploadThemeConstants.UploadListPart}"
+                                                 ListType="{TemplateBinding ListType}"
+                                                 IsShowUploadTrigger="{TemplateBinding IsShowUploadTrigger}"
+                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                 IsShowUploadList="{TemplateBinding IsShowUploadList}"
+                                                 TriggerContent="{TemplateBinding Content}"
+                                                 TriggerContentTemplate="{TemplateBinding ContentTemplate}"
+                                                 ItemsSource="{Binding TaskInfoList, RelativeSource={RelativeSource TemplatedParent}}" />
                 </ControlTemplate>
             </Setter>
         </Style>
-        
-        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
+
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="ClipToBounds" Value="False" />
-        
+
         <Style Selector="^[ListType=PictureCard]">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        
+
         <Style Selector="^[ListType=PictureCircle]">
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        
+
         <Style Selector="^:disabled">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}"/>
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

@@ -52,6 +52,23 @@ internal class DataGridFilterIndicator : IconButton
         set => SetValue(FilterMultipleProperty, value);
     }
     #endregion
+
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<DataGridFilterIndicator, string?> SelectedAllTextProperty =
+        AvaloniaProperty.RegisterDirect<DataGridFilterIndicator, string?>(
+            nameof(SelectedAllText),
+            o => o.SelectedAllText,
+            (o, v) => o.SelectedAllText = v);
+    
+    internal string? SelectedAllText
+    {
+        get => _selectedAllText;
+        set => SetAndRaise(SelectedAllTextProperty, ref _selectedAllText, value);
+    }
+    private string? _selectedAllText;
+
+    #endregion
     
     private DataGridColumn? _owningColumn;
     private static int _indicatorSeed = 0;
@@ -167,9 +184,7 @@ internal class DataGridFilterIndicator : IconButton
             if (FilterMultiple)
             {
                 var selectAllTreeItem = new DataGridFilterTreeViewItem();
-                LanguageResourceBinder.CreateBinding(selectAllTreeItem, DataGridFilterTreeViewItem.HeaderProperty,
-                    DataGridLangResourceKind.SelectAllFilterItems);
-              
+                selectAllTreeItem[!DataGridFilterTreeViewItem.HeaderProperty] = this[!SelectedAllTextProperty];
                 foreach (var treeItem in treeItems)
                 {
                     selectAllTreeItem.Items.Add(treeItem);
@@ -224,7 +239,7 @@ internal class DataGridFilterIndicator : IconButton
         var treeItems = new List<DataGridFilterTreeViewItem>();
         foreach (var item in filterItems)
         {
-            var treeItem = new DataGridFilterTreeViewItem()
+            var treeItem = new DataGridFilterTreeViewItem
             {
                 Header      = item.Text,
                 FilterValue = item.Value,

@@ -7,15 +7,22 @@ using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.Data;
-using AtomUI.Desktop.Controls.Localization;
 using Avalonia;
 using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 
+internal enum DataGridSortTooltipType
+{
+    Cancel,
+    Ascending,
+    Descending,
+}
+
 internal partial class DataGridColumnHeader
 {
+    #region 内部属性定义
+
     internal static readonly DirectProperty<DataGridColumnHeader, bool> CanUserSortProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
             nameof(CanUserSort),
@@ -36,6 +43,9 @@ internal partial class DataGridColumnHeader
             nameof(ShowSorterTooltip),
             o => o.ShowSorterTooltip,
             (o, v) => o.ShowSorterTooltip = v);
+
+    public static readonly StyledProperty<DataGridSortTooltipType> SortTooltipTypeProperty =
+        AvaloniaProperty.Register<DataGridColumnHeader, DataGridSortTooltipType>(nameof(SortTooltipType));
 
     private bool _canUserSort = false;
 
@@ -67,7 +77,13 @@ internal partial class DataGridColumnHeader
         set => SetAndRaise(ShowSorterTooltipProperty, ref _showSorterTooltip, value);
     }
 
-    private IDisposable? _showSorterTooltipDisposable;
+    internal DataGridSortTooltipType SortTooltipType
+    {
+        get => GetValue(SortTooltipTypeProperty);
+        set => SetValue(SortTooltipTypeProperty, value);
+    }
+
+    #endregion
 
     private void NotifyPropertyChangedForSorting(AvaloniaPropertyChangedEventArgs change)
     {
@@ -125,21 +141,17 @@ internal partial class DataGridColumnHeader
             }
         }
 
-        _showSorterTooltipDisposable?.Dispose();
         if (nextDirection == null)
         {
-            _showSorterTooltipDisposable =
-                LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKind.CancelTooltip);
+            SortTooltipType = DataGridSortTooltipType.Cancel;
         }
         else if (nextDirection == ListSortDirection.Ascending)
         {
-            _showSorterTooltipDisposable =
-                LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKind.AscendTooltip);
+            SortTooltipType = DataGridSortTooltipType.Ascending;
         }
         else if (nextDirection == ListSortDirection.Descending)
         {
-            _showSorterTooltipDisposable =
-                LanguageResourceBinder.CreateBinding(this, ToolTip.TipProperty, DataGridLangResourceKind.DescendTooltip);
+            SortTooltipType = DataGridSortTooltipType.Descending;
         }
     }
 
@@ -264,7 +276,7 @@ internal partial class DataGridColumnHeader
                             }
                         }
                     }
-                    
+
                     if (nextDirection != null)
                     {
                         newSort = BuildSortDescription(nextDirection);

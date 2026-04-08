@@ -628,7 +628,7 @@ public class AbstractAutoComplete : TemplatedControl,
     private bool _ignoreTextSelectionChange;
     private bool _skipSelectedOptionTextUpdate;
     private bool _isFocused;
-    
+    private Window? _attachedWindow;
     static AbstractAutoComplete()
     {
         IsTabStopProperty.OverrideDefaultValue<AbstractAutoComplete>(false);
@@ -1311,6 +1311,7 @@ public class AbstractAutoComplete : TemplatedControl,
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel is Window window)
         {
+            _attachedWindow    =  window;
             window.Deactivated += HandleWindowDeactivated;
         }
     }
@@ -1318,11 +1319,12 @@ public class AbstractAutoComplete : TemplatedControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
+        if (_attachedWindow != null)
         {
-            window.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
         }
+
+        _attachedWindow = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)

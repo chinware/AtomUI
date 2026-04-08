@@ -1,9 +1,10 @@
 using System.ComponentModel;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.ViewModels;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -17,62 +18,111 @@ public partial class DataGridShowCase : ReactiveUserControl<DataGridViewModel>
         {
             if (DataContext is DataGridViewModel viewModel)
             {
-                Dispatcher.UIThread.Post(() => BasicCaseGrid.ItemsSource         = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => SelectionDataGrid.ItemsSource     = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => FilterAndSortGrid.ItemsSource     = viewModel.FilterAndSorterDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => FilterInTreeGrid.ItemsSource      = viewModel.FilterAndSorterDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => MultiSorterDataGrid.ItemsSource   = viewModel.MultiSorterDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => ResetFilterAndSortGrid.ItemsSource = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => DragResizeColumn.ItemsSource = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => LargeSizeDataGrid.ItemsSource              = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => MiddleSizeDataGrid.ItemsSource             = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => SmallSizeDataGrid.ItemsSource              = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => CustomHeaderAndFooterDataGrid.ItemsSource  = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => ExpandableDataGrid.ItemsSource             = viewModel.ExpandableRowDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => OrderSpecificColumnDataGrid.ItemsSource    = viewModel.ExpandableRowDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => RowAndColumnHeaderDataGrid.ItemsSource     = viewModel.ExpandableRowDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => GroupHeaderDataGrid.ItemsSource            = viewModel.GroupHeaderDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => HideColumnDataGrid.ItemsSource             = viewModel.BasicCaseDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => FixedHeaderDataGrid.ItemsSource            = viewModel.FixedHeaderDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => FixedColumnsDataGrid1.ItemsSource = viewModel.FixedColumnsDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => FixedColumnsDataGrid2.ItemsSource = viewModel.FixedColumnsDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => FixedColumnsAndHeadersDataGrid.ItemsSource = viewModel.FixedColumnsAndHeadersDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => DragColumnDataGrid1.ItemsSource = viewModel.DragColumnDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => DragColumnDataGrid2.ItemsSource = viewModel.DragColumnDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => DragColumnDataGrid3.ItemsSource = viewModel.DragColumnDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => DragRowDataGrid1.ItemsSource = viewModel.DragRowDataSource,
-                    DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => DragRowDataGrid2.ItemsSource = viewModel.DragRowManyDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => CustomEmptyDataGrid.ItemsSource            = viewModel.CustomEmptyDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => EditableCellsDataGrid.ItemsSource          = viewModel.EditableCellsDataSource, DispatcherPriority.Background);
-                Dispatcher.UIThread.Post(() => BasicPagingCaseGrid.ItemsSource = viewModel.PagingGridDataSource, DispatcherPriority.Background);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.BasicCaseGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.SelectionDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.FilterAndSorterDataSource, v => v.FilterAndSortGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.FilterAndSorterDataSource, v => v.FilterInTreeGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.MultiSorterDataSource, v => v.MultiSorterDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.ResetFilterAndSortGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.DragResizeColumn.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.LargeSizeDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.MiddleSizeDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.SmallSizeDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.CustomHeaderAndFooterDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.ExpandableRowDataSource, v => v.ExpandableDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.ExpandableRowDataSource, v => v.OrderSpecificColumnDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.ExpandableRowDataSource, v => v.RowAndColumnHeaderDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.GroupHeaderDataSource, v => v.GroupHeaderDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicCaseDataSource, v => v.HideColumnDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.FixedHeaderDataSource, v => v.FixedHeaderDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.FixedColumnsDataSource, v => v.FixedColumnsDataGrid1.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.FixedColumnsDataSource, v => v.FixedColumnsDataGrid2.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.FixedColumnsAndHeadersDataSource, v => v.FixedColumnsAndHeadersDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.DragColumnDataSource, v => v.DragColumnDataGrid1.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.DragColumnDataSource, v => v.DragColumnDataGrid2.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.DragColumnDataSource, v => v.DragColumnDataGrid3.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.DragRowDataSource, v => v.DragRowDataGrid1.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.DragRowManyDataSource, v => v.DragRowDataGrid2.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.CustomEmptyDataSource, v => v.CustomEmptyDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.EditableCellsDataSource, v => v.EditableCellsDataGrid.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.PagingGridDataSource, v => v.BasicPagingCaseGrid.ItemsSource).DisposeWith(disposables);
+                ExtendedSelection.IsCheckedChanged += SelectionModeCheckedChanged;
+                SingleSelection.IsCheckedChanged   += SelectionModeCheckedChanged;
+            
+                SortAgeBtn.Click                += HandleSortAgeBtnClick;
+                ClearFiltersBtn.Click           += HandleClearFiltersBtnClick;
+                ClearFiltersAndSortersBtn.Click += HandleClearFiltersAndSortersBtnClick;
+                ColumnCheckBox1.IsChecked       =  true;
+                ColumnCheckBox2.IsChecked       =  true;
+                ColumnCheckBox3.IsChecked       =  true;
+                ColumnCheckBox4.IsChecked       =  true;
+                ColumnCheckBox5.IsChecked       =  true;
+                ColumnCheckBox6.IsChecked       =  true;
+            
+                ColumnCheckBox1.IsCheckedChanged += HandleColumnVisibleChanged;
+                ColumnCheckBox2.IsCheckedChanged += HandleColumnVisibleChanged;
+                ColumnCheckBox3.IsCheckedChanged += HandleColumnVisibleChanged;
+                ColumnCheckBox4.IsCheckedChanged += HandleColumnVisibleChanged;
+                ColumnCheckBox5.IsCheckedChanged += HandleColumnVisibleChanged;
+                ColumnCheckBox6.IsCheckedChanged += HandleColumnVisibleChanged;
+            
+                ShowTopPaginationCheckBox.IsCheckedChanged       += HandleShowTopPaginationCheckBoxChanged;
+                ShowBottomPaginationCheckBox.IsCheckedChanged    += HandleShowBottomPaginationCheckBoxChanged;
+                TopPaginationOptionGroup.OptionCheckedChanged    += HandleTopPaginationAlignChanged;
+                BottomPaginationOptionGroup.OptionCheckedChanged += HandleBottomPaginationAlignChanged;
+                
+                Disposable.Create(() =>
+                          {
+                              BasicCaseGrid.ItemsSource                  = null;
+                              SelectionDataGrid.ItemsSource              = null;
+                              FilterAndSortGrid.ItemsSource              = null;
+                              FilterInTreeGrid.ItemsSource               = null;
+                              MultiSorterDataGrid.ItemsSource            = null;
+                              ResetFilterAndSortGrid.ItemsSource         = null;
+                              DragResizeColumn.ItemsSource               = null;
+                              LargeSizeDataGrid.ItemsSource              = null;
+                              MiddleSizeDataGrid.ItemsSource             = null;
+                              SmallSizeDataGrid.ItemsSource              = null;
+                              CustomHeaderAndFooterDataGrid.ItemsSource  = null;
+                              ExpandableDataGrid.ItemsSource             = null;
+                              OrderSpecificColumnDataGrid.ItemsSource    = null;
+                              RowAndColumnHeaderDataGrid.ItemsSource     = null;
+                              GroupHeaderDataGrid.ItemsSource            = null;
+                              HideColumnDataGrid.ItemsSource             = null;
+                              FixedHeaderDataGrid.ItemsSource            = null;
+                              FixedColumnsDataGrid1.ItemsSource          = null;
+                              FixedColumnsDataGrid2.ItemsSource          = null;
+                              FixedColumnsAndHeadersDataGrid.ItemsSource = null;
+                              DragColumnDataGrid1.ItemsSource            = null;
+                              DragColumnDataGrid2.ItemsSource            = null;
+                              DragColumnDataGrid3.ItemsSource            = null;
+                              DragRowDataGrid1.ItemsSource               = null;
+                              DragRowDataGrid2.ItemsSource               = null;
+                              CustomEmptyDataGrid.ItemsSource            = null;
+                              EditableCellsDataGrid.ItemsSource          = null;
+                              BasicPagingCaseGrid.ItemsSource            = null;
+                              
+                              ExtendedSelection.IsCheckedChanged -= SelectionModeCheckedChanged;
+                              SingleSelection.IsCheckedChanged   -= SelectionModeCheckedChanged;
+            
+                              SortAgeBtn.Click                -= HandleSortAgeBtnClick;
+                              ClearFiltersBtn.Click           -= HandleClearFiltersBtnClick;
+                              ClearFiltersAndSortersBtn.Click -= HandleClearFiltersAndSortersBtnClick;
+                              
+                              ColumnCheckBox1.IsCheckedChanged -= HandleColumnVisibleChanged;
+                              ColumnCheckBox2.IsCheckedChanged -= HandleColumnVisibleChanged;
+                              ColumnCheckBox3.IsCheckedChanged -= HandleColumnVisibleChanged;
+                              ColumnCheckBox4.IsCheckedChanged -= HandleColumnVisibleChanged;
+                              ColumnCheckBox5.IsCheckedChanged -= HandleColumnVisibleChanged;
+                              ColumnCheckBox6.IsCheckedChanged -= HandleColumnVisibleChanged;
+            
+                              ShowTopPaginationCheckBox.IsCheckedChanged       -= HandleShowTopPaginationCheckBoxChanged;
+                              ShowBottomPaginationCheckBox.IsCheckedChanged    -= HandleShowBottomPaginationCheckBoxChanged;
+                              TopPaginationOptionGroup.OptionCheckedChanged    -= HandleTopPaginationAlignChanged;
+                              BottomPaginationOptionGroup.OptionCheckedChanged -= HandleBottomPaginationAlignChanged;
+                          })
+                          .DisposeWith(disposables);
             }
-
-            ExtendedSelection.IsCheckedChanged += SelectionModeCheckedChanged;
-            SingleSelection.IsCheckedChanged   += SelectionModeCheckedChanged;
-            
-            SortAgeBtn.Click                += HandleSortAgeBtnClick;
-            ClearFiltersBtn.Click           += HandleClearFiltersBtnClick;
-            ClearFiltersAndSortersBtn.Click += HandleClearFiltersAndSortersBtnClick;
-            ColumnCheckBox1.IsChecked       =  true;
-            ColumnCheckBox2.IsChecked       =  true;
-            ColumnCheckBox3.IsChecked       =  true;
-            ColumnCheckBox4.IsChecked       =  true;
-            ColumnCheckBox5.IsChecked       =  true;
-            ColumnCheckBox6.IsChecked       =  true;
-            
-            ColumnCheckBox1.IsCheckedChanged += HandleColumnVisibleChanged;
-            ColumnCheckBox2.IsCheckedChanged += HandleColumnVisibleChanged;
-            ColumnCheckBox3.IsCheckedChanged += HandleColumnVisibleChanged;
-            ColumnCheckBox4.IsCheckedChanged += HandleColumnVisibleChanged;
-            ColumnCheckBox5.IsCheckedChanged += HandleColumnVisibleChanged;
-            ColumnCheckBox6.IsCheckedChanged += HandleColumnVisibleChanged;
-            
-            ShowTopPaginationCheckBox.IsCheckedChanged       += HandleShowTopPaginationCheckBoxChanged;
-            ShowBottomPaginationCheckBox.IsCheckedChanged    += HandleShowBottomPaginationCheckBoxChanged;
-            TopPaginationOptionGroup.OptionCheckedChanged    += HandleTopPaginationAlignChanged;
-            BottomPaginationOptionGroup.OptionCheckedChanged += HandleBottomPaginationAlignChanged;
-            
         });
         InitializeComponent();
     }

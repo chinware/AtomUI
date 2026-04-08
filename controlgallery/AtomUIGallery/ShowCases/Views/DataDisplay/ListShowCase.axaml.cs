@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.ViewModels;
@@ -47,6 +49,18 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
                 InitializeBasicListBoxItems(viewModel);
                 InitializePaginationListBoxItems(viewModel);
                 viewModel.SelectionMode = SelectionMode.Single;
+
+                Disposable.Create(() =>
+                {
+                    viewModel.ListItems              = null;
+                    viewModel.SelectionListItems     = null;
+                    viewModel.GroupListItems         = null;
+                    viewModel.ListItemsWidthDisabled = null;
+                    viewModel.EmptyDemoItems         = null;
+                    viewModel.FilteredGroupListItems = null;
+                    viewModel.OrderedGroupListItems  = null;
+                    viewModel.PaginationListItems    = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

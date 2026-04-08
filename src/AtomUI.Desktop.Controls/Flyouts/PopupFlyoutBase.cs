@@ -202,6 +202,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
     private PixelRect? _enlargePopupRectScreenPixelRect;
     private IDisposable? _transientDisposable;
     private Action<IPopupHost?>? _popupHostChangedHandler;
+    private WindowBase? _attachedWindow;
 
     static PopupFlyoutBase()
     {
@@ -581,12 +582,15 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         {
             if (popupRoot.ParentTopLevel is WindowBase window)
             {
-                window.Deactivated += (sender, args) =>
-                {
-                    Hide();
-                };
+                _attachedWindow = window;
+                window.Deactivated += HandleWindowDeactivated;
             }
         }
+    }
+
+    private void HandleWindowDeactivated(object? sender, EventArgs e)
+    {
+        Hide();
     }
 
     protected virtual void NotifyPopupOpened(object? sender, EventArgs e)
@@ -609,6 +613,11 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         HideCore(false);
 
         _popupHostChangedHandler?.Invoke(null);
+        if (_attachedWindow != null)
+        {
+            _attachedWindow.Deactivated += HandleWindowDeactivated;
+        }
+        _attachedWindow = null;
     }
 
     // This method is handling both popup logical tree and target logical tree.

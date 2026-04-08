@@ -177,7 +177,6 @@ public class Upload : ContentControl,
     public Func<UploadFileInfo, bool>? IsImageFilePredicate { get; set; }
     #endregion
     
-    private ItemsControl? _uploadListControl;
     private FileUploadScheduler _uploadScheduler;
     private static readonly Regex ImageExtensionRegex = 
         new (@"\.(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico|heic|heif)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -420,11 +419,6 @@ public class Upload : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _uploadListControl = e.NameScope.Find<ItemsControl>(UploadThemeConstants.UploadListPart);
-        if (_uploadListControl != null)
-        {
-            _uploadListControl.ItemsSource = TaskInfoList;
-        }
         ConfigurePictureTriggerTask();
     }
 

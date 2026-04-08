@@ -398,7 +398,7 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
         ((ItemCollection)ItemsView).AddSourceChangedEvent(OnItemsViewSourceChanged);
         var items = this.GetItems();
         items.CollectionChanged += HandleItemsViewCollectionChanged;
-        Items.CollectionChanged           += HandleItemCollectionChanged;
+        Items.CollectionChanged += HandleItemCollectionChanged;
     }
     
     private void HandleItemsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)

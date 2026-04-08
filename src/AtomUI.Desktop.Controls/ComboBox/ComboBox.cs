@@ -29,7 +29,7 @@ public class ComboBox : AvaloniaComboBox,
         AddOnDecoratedBox.LeftAddOnProperty.AddOwner<ComboBox>();
     
     public static readonly StyledProperty<IDataTemplate?> LeftAddOnTemplateProperty =
-       AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ComboBox>();
+        AddOnDecoratedBox.LeftAddOnTemplateProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<object?> RightAddOnProperty =
         AddOnDecoratedBox.RightAddOnProperty.AddOwner<ComboBox>();
@@ -208,6 +208,7 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
     
     private Popup? _popup;
+    private Window? _attachedWindow;
 
     public ComboBox()
     {
@@ -287,6 +288,7 @@ public class ComboBox : AvaloniaComboBox,
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel is Window window)
         {
+            _attachedWindow    =  window;
             window.Deactivated += HandleWindowDeactivated;
         }
     }
@@ -294,11 +296,12 @@ public class ComboBox : AvaloniaComboBox,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
+        if (_attachedWindow != null)
         {
-            window.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
         }
+
+        _attachedWindow = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)

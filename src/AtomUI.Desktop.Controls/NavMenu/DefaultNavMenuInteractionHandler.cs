@@ -17,9 +17,10 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private IRenderRoot? _root;
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
-    private bool _currentPressedIsValid = false;
-    private NavMenuItem? _latestSelectedItem = null;
-    private NavMenuItem? _latestClickedItem = null;
+    private bool _currentPressedIsValid;
+    private NavMenuItem? _latestSelectedItem;
+    private NavMenuItem? _latestClickedItem;
+    private WindowBase? _attachedWindow;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -272,6 +273,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         
         if (_root is WindowBase window)
         {
+            _attachedWindow    =  window;
             window.Deactivated += WindowDeactivated;
         }
         
@@ -303,9 +305,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             inputRoot.RemoveHandler(InputElement.PointerPressedEvent, RootPointerPressed);
         }
 
-        if (_root is WindowBase root)
+        if (_attachedWindow != null)
         {
-            root.Deactivated -= WindowDeactivated;
+            _attachedWindow.Deactivated -= WindowDeactivated;
         }
 
         if (_root is TopLevel tl && tl.PlatformImpl != null)
@@ -315,8 +317,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         _inputManagerSubscription?.Dispose();
 
-        Menu               = null;
-        _root              = null;
+        Menu            = null;
+        _root           = null;
+        _attachedWindow = null;
     }
 
     internal void Click(INavMenuItem item)

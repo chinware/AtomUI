@@ -1,8 +1,6 @@
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
-using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
 

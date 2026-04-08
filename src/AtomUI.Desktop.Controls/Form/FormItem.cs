@@ -627,6 +627,7 @@ public class FormItem : TemplatedControl, IFormItem
     private IDisposable? _feedbackDisposable;
     private CancellationTokenSource? _validationTokenSource;
     internal Form? OwnerForm;
+    private Window? _attachedWindow;
     
     static FormItem()
     {
@@ -1110,6 +1111,7 @@ public class FormItem : TemplatedControl, IFormItem
         base.OnAttachedToVisualTree(e);
         if (TopLevel.GetTopLevel(this) is Window window)
         {
+            _attachedWindow               =  window;
             window.MediaBreakPointChanged += HandleMediaBreakChanged;
         }
     }
@@ -1117,10 +1119,12 @@ public class FormItem : TemplatedControl, IFormItem
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (TopLevel.GetTopLevel(this) is Window window)
+        if (_attachedWindow != null)
         {
-            window.MediaBreakPointChanged -= HandleMediaBreakChanged;
+            _attachedWindow.MediaBreakPointChanged -= HandleMediaBreakChanged;
         }
+
+        _attachedWindow = null;
     }
     
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)

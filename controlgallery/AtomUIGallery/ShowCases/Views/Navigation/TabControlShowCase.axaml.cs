@@ -1,4 +1,6 @@
-﻿using AtomUI.Desktop.Controls;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.ShowCases.ViewModels;
 using Avalonia.Interactivity;
@@ -20,16 +22,6 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
         {
             if (DataContext is TabControlViewModel viewModel)
             {
-                PositionTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripPlacementOptionCheckedChanged;
-                PositionCardTabStripOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
-                SizeTypeTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
-                AddTabDemoStrip.AddTabRequest                        += HandleTabStripAddTabRequest;
-                
-                PositionTabControlOptionGroup.OptionCheckedChanged     += viewModel.HandleTabControlPlacementOptionCheckedChanged;
-                PositionCardTabControlOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabControlPlacementOptionCheckedChanged;
-                SizeTypeTabControlOptionGroup.OptionCheckedChanged     += viewModel.HandleTabControlSizeTypeOptionCheckedChanged;
-                AddTabDemoTabControl.AddTabRequest                     += HandleTabControlAddTabRequest;
-                
                 viewModel.TabItemDataSource.Add(new MyTabItemData()
                 {
                     Header  = "Tab 1",
@@ -39,10 +31,10 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
                 
                 viewModel.TabItemDataSource.Add(new MyTabItemData()
                 {
-                    Header  = "Tab 2",
-                    Content = "Tab Content 2",
+                    Header     = "Tab 2",
+                    Content    = "Tab Content 2",
                     IsClosable = true,
-                    Icon = new LinuxOutlined()
+                    Icon       = new LinuxOutlined()
                 });
                 
                 viewModel.TabStripItemDataSource.Add(new TabItemData()
@@ -53,6 +45,32 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
                 {
                     Header = "Tab 2"
                 });
+                
+                PositionTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripPlacementOptionCheckedChanged;
+                PositionCardTabStripOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
+                SizeTypeTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
+                AddTabDemoStrip.AddTabRequest                        += HandleTabStripAddTabRequest;
+                
+                PositionTabControlOptionGroup.OptionCheckedChanged     += viewModel.HandleTabControlPlacementOptionCheckedChanged;
+                PositionCardTabControlOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabControlPlacementOptionCheckedChanged;
+                SizeTypeTabControlOptionGroup.OptionCheckedChanged     += viewModel.HandleTabControlSizeTypeOptionCheckedChanged;
+                AddTabDemoTabControl.AddTabRequest                     += HandleTabControlAddTabRequest;
+                
+                Disposable.Create(() =>
+                {
+                    PositionTabStripOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabStripPlacementOptionCheckedChanged;
+                    PositionCardTabStripOptionGroup.OptionCheckedChanged -= viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
+                    SizeTypeTabStripOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
+                    AddTabDemoStrip.AddTabRequest                        -= HandleTabStripAddTabRequest;
+                
+                    PositionTabControlOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabControlPlacementOptionCheckedChanged;
+                    PositionCardTabControlOptionGroup.OptionCheckedChanged -= viewModel.HandleCardTabControlPlacementOptionCheckedChanged;
+                    SizeTypeTabControlOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabControlSizeTypeOptionCheckedChanged;
+                    AddTabDemoTabControl.AddTabRequest                     -= HandleTabControlAddTabRequest;
+                    
+                    viewModel.TabItemDataSource      = new();
+                    viewModel.TabStripItemDataSource = new();
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

@@ -1400,7 +1400,8 @@ public partial class DataGrid
                     newDataGridCollectionView.PageChanging += HandlePageChanging;
                     newDataGridCollectionView.PageChanged  += HandlePageChanged;
                 }
-                IsEmptyDataSource                   =  newCollectionView.IsEmpty;
+
+                IsEmptyDataSource = newCollectionView.IsEmpty;
                 if (newCollectionView.Filter == null)
                 {
                     // TODO 不知道这样循环会不会有内存泄露的风险
