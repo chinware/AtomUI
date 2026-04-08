@@ -69,8 +69,7 @@
                     <atom:CheckBox IsEnabled="False">Pear</atom:CheckBox>
                     <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
                 </atom:CheckBoxGroup>
-                <atom:CheckBoxGroup ItemsSource="{Binding CheckBoxOptions}"
-                                    CheckedItems="{Binding DefaultCheckBoxOptions}"/>
+                <atom:CheckBoxGroup Name="BasicCheckBoxGroup"/>
             </StackPanel>
         </gallery:ShowCaseItem>
         

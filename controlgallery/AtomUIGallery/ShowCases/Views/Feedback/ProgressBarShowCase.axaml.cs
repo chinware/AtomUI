@@ -10,7 +10,6 @@ public partial class ProgressBarShowCase : ReactiveUserControl<ProgressBarViewMo
     {
         this.WhenActivated(disposables =>
         {
-            
         });
         InitializeComponent();
     }

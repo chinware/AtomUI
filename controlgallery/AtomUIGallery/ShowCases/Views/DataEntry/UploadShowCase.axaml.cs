@@ -111,6 +111,19 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
 
                 Disposable.Create(() =>
                 {
+                    BasicUpload.UploadTransport                   = null;
+                    AvatarDemoPictureCardUpload.UploadTransport   = null;
+                    AvatarDemoPictureCircleUpload.UploadTransport = null;
+                    DefaultFileList.UploadTransport               = null;
+                    PicturesWallUpload.UploadTransport            = null;
+                    PicturesCircleWallUpload.UploadTransport      = null;
+                    DragAndDropUpload.UploadTransport             = null;
+                    PictureListUpload.UploadTransport             = null;
+                    MaxCount1Upload.UploadTransport               = null;
+                    MaxCount3Upload.UploadTransport               = null;
+                    DirectoryUpload.UploadTransport               = null;
+                    PngOnlyUpload.UploadTransport                 = null;
+                    
                     BasicUpload.UploadTaskFailed    -= HandleUploadFailed;
                     BasicUpload.UploadTaskCompleted -= HandleUploadCompleted;
                     BasicUpload.Reset();

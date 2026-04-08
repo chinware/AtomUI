@@ -21,8 +21,7 @@
             Title="Show copywriting"
             Description="Add copywriting in rate components.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Rate Name="ToolTipRate" ToolTips="{Binding Tooltips}"
-                           ValueChanged="HandleValueChanged"/>
+                <atom:Rate Name="ToolTipRate" ValueChanged="HandleValueChanged"/>
                 <TextBlock Text="{Binding ActiveTooltip}"/>
             </StackPanel>
         </gallery:ShowCaseItem>

@@ -35,8 +35,8 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             DraggableDialogOpenButton.Click          += HandleDraggableMsgBoxOpenButtonClick;
             DelayedCloseMsgBoxOpenButton.Click       += HandleDelayedCloseMsgBoxOpenButtonClick;
             ConfigureButtonsDialogOpenButton.Click   += HandleConfigureButtonsDialogButtonClick;
-            
-            disposables.Add(Disposable.Create(() => BasicOpenModalButton.Click       -= HandleBasicModalButtonClick));
+
+            disposables.Add(Disposable.Create(() => BasicOpenModalButton.Click -= HandleBasicModalButtonClick));
             disposables.Add(Disposable.Create(() => BasicWindowOpenModalButton.Click -= HandleBasicWindowModalButtonClick));
             disposables.Add(Disposable.Create(() => ConfirmMsgBoxBtn.Click -= HandleConfirmMsgBoxBtnClick));
             disposables.Add(Disposable.Create(() => InformationMsgBoxBtn.Click -= HandleInformationMsgBoxBtnClick));
@@ -429,5 +429,4 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
         });
         return stackPanel;
     }
-
 }

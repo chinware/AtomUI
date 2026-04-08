@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -14,6 +16,14 @@ public partial class RadioButtonShowCase : ReactiveUserControl<RadioButtonViewMo
             if (DataContext is RadioButtonViewModel viewModel)
             {
                 ConfigureRadioOptions(viewModel);
+                
+                this.OneWayBind(ViewModel, vm => vm.RadioOptions, v => v.RadioButtonGroup.ItemsSource)
+                    .DisposeWith(disposables);
+                
+                Disposable.Create(() =>
+                {
+                    viewModel.RadioOptions = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

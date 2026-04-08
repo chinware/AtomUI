@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.ShowCases.ViewModels;
@@ -23,12 +25,19 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     
     public NotificationShowCase()
     {
-        this.WhenActivated(disposables => { });
+        this.WhenActivated(disposables =>
+        {
+            HoverOptionGroup.OptionCheckedChanged += HandleHoverOptionGroupCheckedChanged;
+            Disposable.Create(() =>
+            {
+                HoverOptionGroup.OptionCheckedChanged -= HandleHoverOptionGroupCheckedChanged;
+            }).DisposeWith(disposables);
+        });
         InitializeComponent();
-        HoverOptionGroup.OptionCheckedChanged += HandleHoverOptionGroupCheckedChanged;
+        
     }
     
-        private void HandleHoverOptionGroupCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    private void HandleHoverOptionGroupCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (_basicManager is not null)
         {

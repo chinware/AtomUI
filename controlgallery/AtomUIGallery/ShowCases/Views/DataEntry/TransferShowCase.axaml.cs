@@ -1,3 +1,5 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls;
@@ -14,14 +16,14 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
     {
         this.WhenActivated(disposables =>
         {
-            if (DataContext is TransferViewModel vm)
+            if (DataContext is TransferViewModel viewModel)
             {
-                InitBasicTransferItems(vm);
-                InitOneWayTransferItems(vm);
-                InitSearchTransferItems(vm);
-                InitPaginationTransferItems(vm);
-                InitDataGridTransferItems(vm);
-                vm.TransferFilterValueSelector = record =>
+                InitBasicTransferItems(viewModel);
+                InitOneWayTransferItems(viewModel);
+                InitSearchTransferItems(viewModel);
+                InitPaginationTransferItems(viewModel);
+                InitDataGridTransferItems(viewModel);
+                viewModel.TransferFilterValueSelector = record =>
                 {
                     if (record is ListItemData listItemData)
                     {
@@ -29,8 +31,37 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
                     }
                     return record.ToString();
                 };
-                InitAdvanceTransferItems(vm);
-                InitTreeViewTransferItems(vm);
+                InitAdvanceTransferItems(viewModel);
+                InitTreeViewTransferItems(viewModel);
+
+                this.OneWayBind(viewModel, vm => vm.BasicTransferItems, v => v.BasicListTransfer.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.OneWayTransferItems, v => v.OneWayTransferList.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.SearchTransferItems, v => v.SearchTransferList.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.AdvanceTransferItems, v => v.AdvanceTransfer.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.AdvanceTransferDefaultTargetKeys, v => v.AdvanceTransfer.TargetKeys)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.PaginationTransferItems, v => v.PaginationTransferList.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.TransferTreeNodes, v => v.TreeTransfer.ItemsSource)
+                    .DisposeWith(disposables);
+
+                Disposable.Create(() =>
+                {
+                    viewModel.BasicTransferItems                  = null;
+                    viewModel.OneWayTransferItems                 = null;
+                    viewModel.SearchTransferItems                 = null;
+                    viewModel.PaginationTransferItems             = null;
+                    viewModel.PaginationTransferDefaultTargetKeys = null;
+                    viewModel.GridDataTransformItems              = null;
+                    viewModel.AdvanceTransferItems                = null;
+                    viewModel.AdvanceTransferDefaultTargetKeys    = null;
+                    viewModel.TransferTreeNodes                   = null;
+        
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

@@ -1,3 +1,5 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
@@ -13,20 +15,61 @@ public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewMode
     {
         this.WhenActivated(disposables =>
         {
-            if (DataContext is TreeSelectViewModel vm)
+            if (DataContext is TreeSelectViewModel viewModel)
             {
-                InitBasicTreeNodes(vm);
-                InitMultiTreeNodes(vm);
-                InitItemsSourceTreeNodes(vm);
-                InitCheckableTreeNodes(vm);
-                InitAsyncLoadTreeNodes(vm);
-                InitShowLineTreeNodes(vm);
-                InitLeftAddOnTreeNodes(vm);
-                InitContentLeftAddOnTreeNodes(vm);
-                InitPlacementTreeNodes(vm);
-                InitMaxSelectedTreeNodes(vm);
-                InitMaxCheckedTreeNodes(vm);
-                vm.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
+                InitBasicTreeNodes(viewModel);
+                InitMultiTreeNodes(viewModel);
+                InitItemsSourceTreeNodes(viewModel);
+                InitCheckableTreeNodes(viewModel);
+                InitAsyncLoadTreeNodes(viewModel);
+                InitShowLineTreeNodes(viewModel);
+                InitLeftAddOnTreeNodes(viewModel);
+                InitContentLeftAddOnTreeNodes(viewModel);
+                InitPlacementTreeNodes(viewModel);
+                InitMaxSelectedTreeNodes(viewModel);
+                InitMaxCheckedTreeNodes(viewModel);
+                viewModel.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
+                
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeNodes, v => v.BasicTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.MultiSelectionTreeNodes, v => v.MultiSelectionTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.ItemsSourceTreeNodes, v => v.ItemsSourceTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.CheckableTreeNodes, v => v.CheckableTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodes, v => v.AsyncLoadTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodeLoader, v => v.AsyncLoadTreeSelect.DataLoader)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.PlacementTreeNodes, v => v.PlacementTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.ShowTreeLineTreeNodes, v => v.ShowTreeLineTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.LeftAddTreeNodes, v => v.LeftAddTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.ContentLeftAddTreeNodes, v => v.ContentLeftAddTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.MaxSelectedTreeNodes, v => v.MaxSelectedTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.MaxCheckedTreeNodes, v => v.MaxCheckedTreeSelect.ItemsSource)
+                    .DisposeWith(disposables);
+                
+                Disposable.Create(() =>
+                {
+                    viewModel.AsyncLoadTreeNodeLoader = null;
+                    viewModel.BasicTreeNodes          = null;
+                    viewModel.MultiSelectionTreeNodes = null;
+                    viewModel.ItemsSourceTreeNodes    = null;
+                    viewModel.CheckableTreeNodes      = null;
+                    viewModel.AsyncLoadTreeNodes      = null;
+                    viewModel.ShowTreeLineTreeNodes   = null;
+                    viewModel.LeftAddTreeNodes        = null;
+                    viewModel.ContentLeftAddTreeNodes = null;
+                    viewModel.PlacementTreeNodes      = null;
+                    viewModel.MaxSelectedTreeNodes    = null;
+                    viewModel.MaxCheckedTreeNodes     = null;
+                }).DisposeWith(disposables);
             }
         });
 

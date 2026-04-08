@@ -77,7 +77,7 @@
         <gallery:ShowCaseItem
             Title="Radio Group by Items source"
             Description="Radio Group.">
-            <atom:RadioButtonGroup HorizontalAlignment="Left" ItemsSource="{Binding RadioOptions}"/>
+            <atom:RadioButtonGroup Name="RadioButtonGroup" HorizontalAlignment="Left"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem

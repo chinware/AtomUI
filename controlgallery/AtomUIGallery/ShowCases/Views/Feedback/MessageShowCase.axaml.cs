@@ -11,6 +11,7 @@ namespace AtomUIGallery.ShowCases.Views;
 public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 {
     private WindowMessageManager? _messageManager;
+    
     public MessageShowCase()
     {
         this.WhenActivated(disposables => { });

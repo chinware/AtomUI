@@ -1,6 +1,7 @@
-﻿using AtomUI.Controls.Primitives;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
-using AtomUI.Desktop.Controls.Primitives;
 using AtomUIGallery.ShowCases.ViewModels;
 using Avalonia.Interactivity;
 using ReactiveUI;
@@ -23,6 +24,41 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
                 InitAsyncLoadTreeNodes(viewModel);
                 InitFilterTreeNodes(viewModel);
                 viewModel.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
+                
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultExpandedPaths, v => v.BasicTree.DefaultExpandedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultSelectedPaths, v => v.BasicTree.DefaultSelectedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultCheckedPaths, v => v.BasicTree.DefaultCheckedPaths)
+                    .DisposeWith(disposables);
+                
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultExpandedPaths, v => v.BasicTplTree.DefaultExpandedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultSelectedPaths, v => v.BasicTplTree.DefaultSelectedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultCheckedPaths, v => v.BasicTplTree.DefaultCheckedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeNodes, v => v.BasicTplTree.ItemsSource)
+                    .DisposeWith(disposables);
+                
+                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodes, v => v.AsyncLoadTree.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodeLoader, v => v.AsyncLoadTree.DataLoader)
+                    .DisposeWith(disposables);
+                
+                this.OneWayBind(ViewModel, vm => vm.FilterTreeNodes, v => v.SearchTreeViewByItemsSource.ItemsSource)
+                    .DisposeWith(disposables);
+
+                Disposable.Create(() =>
+                {
+                    viewModel.BasicTreeViewDefaultExpandedPaths = null;
+                    viewModel.BasicTreeViewDefaultSelectedPaths = null;
+                    viewModel.BasicTreeViewDefaultCheckedPaths  = null;
+                    viewModel.BasicTreeNodes                    = null;
+                    viewModel.AsyncLoadTreeNodes                = null;
+                    viewModel.AsyncLoadTreeNodeLoader           = null;
+                    viewModel.FilterTreeNodes                   = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

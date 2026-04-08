@@ -20,8 +20,8 @@ namespace AtomUI.Desktop.Controls;
 public class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<IList<string>?> SourcesProperty =
-        AvaloniaProperty.Register<AbstractImagePreviewer, IList<string>?>(nameof(Sources));
+    public static readonly StyledProperty<IList<string>?> ItemsSourceProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, IList<string>?>(nameof(ItemsSource));
     
     public static readonly StyledProperty<string?> FallbackImageSrcProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, string?>(nameof(FallbackImageSrc));
@@ -41,10 +41,10 @@ public class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
     public static readonly StyledProperty<int> CurrentIndexProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, int>(nameof(CurrentIndex), 0);
     
-    public IList<string>? Sources
+    public IList<string>? ItemsSource
     {
-        get => GetValue(SourcesProperty);
-        set => SetValue(SourcesProperty, value);
+        get => GetValue(ItemsSourceProperty);
+        set => SetValue(ItemsSourceProperty, value);
     }
     
     public string? FallbackImageSrc
@@ -263,7 +263,7 @@ public class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == SourcesProperty)
+        if (change.Property == ItemsSourceProperty)
         {
             HandleSourceChanged();
         }
@@ -281,10 +281,10 @@ public class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
 
     private void HandleSourceChanged()
     {
-        if (Sources != null && Sources.Count > 0)
+        if (ItemsSource != null && ItemsSource.Count > 0)
         {
             var effectiveSources = new List<PreviewImageSource>();
-            foreach (var source in Sources)
+            foreach (var source in ItemsSource)
             {
                 try
                 {
@@ -502,7 +502,7 @@ public class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
         disposables.Add(BindUtils.RelayBind(this, ImageScaleStepProperty, dialogHost, ImagePreviewerDialog.ScaleStepProperty));
         disposables.Add(BindUtils.RelayBind(this, ImageMinScaleProperty, dialogHost, ImagePreviewerDialog.MinScaleProperty));
         disposables.Add(BindUtils.RelayBind(this, ImageMaxScaleProperty, dialogHost, ImagePreviewerDialog.MaxScaleProperty));
-        disposables.Add(BindUtils.RelayBind(this, EffectiveSourcesProperty, dialogHost, ImagePreviewerDialog.SourcesProperty));
+        disposables.Add(BindUtils.RelayBind(this, EffectiveSourcesProperty, dialogHost, ImagePreviewerDialog.ItemsSourceProperty));
         disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, dialogHost, ImagePreviewerDialog.IsMotionEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, IsDialogModalProperty, dialogHost, ImagePreviewerDialog.IsModalProperty));
         disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, dialogHost, ImagePreviewerDialog.CurrentIndexProperty));

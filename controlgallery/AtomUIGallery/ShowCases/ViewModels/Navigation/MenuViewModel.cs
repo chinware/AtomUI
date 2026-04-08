@@ -16,25 +16,25 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel
 
     public string UrlPathSegment { get; } = ID.ToString();
     
-    private List<IMenuItemData> _menuItems = [];
+    private List<IMenuItemData>? _menuItems;
     
-    public List<IMenuItemData> MenuItems
+    public List<IMenuItemData>? MenuItems
     {
         get => _menuItems;
         set => this.RaiseAndSetIfChanged(ref _menuItems, value);
     }
     
-    private List<IMenuItemData> _menuFlyoutItems = [];
+    private List<IMenuItemData>? _menuFlyoutItems;
     
-    public List<IMenuItemData> MenuFlyoutItems
+    public List<IMenuItemData>? MenuFlyoutItems
     {
         get => _menuFlyoutItems;
         set => this.RaiseAndSetIfChanged(ref _menuFlyoutItems, value);
     }
         
-    private List<IMenuItemData> _contextMenuItems = [];
+    private List<IMenuItemData>? _contextMenuItems;
     
-    public List<IMenuItemData> ContextMenuItems
+    public List<IMenuItemData>? ContextMenuItems
     {
         get => _contextMenuItems;
         set => this.RaiseAndSetIfChanged(ref _contextMenuItems, value);
@@ -80,12 +80,12 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _defaultSelectedNode, value);
     }
 
-    private List<INavMenuNode> _navMenuItems = [];
+    private List<INavMenuNode>? _inlineNavMenuNodes;
     
-    public List<INavMenuNode> NavMenuItems
+    public List<INavMenuNode>? InlineNavMenuNodes
     {
-        get => _navMenuItems;
-        set => this.RaiseAndSetIfChanged(ref _navMenuItems, value);
+        get => _inlineNavMenuNodes;
+        set => this.RaiseAndSetIfChanged(ref _inlineNavMenuNodes, value);
     }
 
     public ReactiveCommand<string, Unit> NavigateCommand { get; set; }

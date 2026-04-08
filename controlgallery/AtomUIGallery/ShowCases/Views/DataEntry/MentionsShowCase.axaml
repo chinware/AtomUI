@@ -7,8 +7,8 @@
         <gallery:ShowCaseItem
             Title="Basic"
             Description="The simplest use.">
-            <atom:Mentions HorizontalAlignment="Stretch"
-                           OptionsSource="{Binding BasicMentionOptions}"
+            <atom:Mentions Name="BasicMentions"
+                           HorizontalAlignment="Stretch"
                            DefaultValue="@afc163"/>
         </gallery:ShowCaseItem>
         
@@ -42,12 +42,12 @@
             Title="disabled or readOnly"
             Description="Configure disabled and readOnly.">
            <StackPanel Orientation="Vertical" Spacing="10">
-               <atom:Mentions HorizontalAlignment="Stretch"
+               <atom:Mentions Name="DisabledMentions"
+                              HorizontalAlignment="Stretch"
                               IsEnabled="False"
-                              OptionsSource="{Binding BasicMentionOptions}"
                               PlaceholderText="this is disabled Mentions"/>
-               <atom:Mentions HorizontalAlignment="Stretch"
-                              OptionsSource="{Binding BasicMentionOptions}"
+               <atom:Mentions Name="ReadonlyMentions"
+                              HorizontalAlignment="Stretch"
                               PlaceholderText="this is readOnly Mentions"
                               IsReadOnly="True"/>
            </StackPanel>
@@ -56,8 +56,8 @@
         <gallery:ShowCaseItem
             Title="Placement"
             Description="Change the suggestions placement.">
-            <atom:Mentions HorizontalAlignment="Stretch"
-                           OptionsSource="{Binding BasicMentionOptions}"
+            <atom:Mentions Name="PlacementMentions"
+                           HorizontalAlignment="Stretch"
                            Placement="Top"/>
         </gallery:ShowCaseItem>
         
@@ -65,12 +65,12 @@
             Title="Status"
             Description="Add status to Mentions with status, which could be error or warning.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
+                <atom:Mentions Name="ErrorMentions"
+                               HorizontalAlignment="Stretch"
                                Status="Error"
                                DefaultValue="@afc163"/>
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
+                <atom:Mentions Name="WarningMentions"
+                               HorizontalAlignment="Stretch"
                                DefaultValue="@afc163"
                                Status="Warning"/>
             </StackPanel>
@@ -79,8 +79,8 @@
         <gallery:ShowCaseItem
             Title="autoSize"
             Description="Height autoSize.">
-            <atom:Mentions HorizontalAlignment="Stretch"
-                           OptionsSource="{Binding BasicMentionOptions}"
+            <atom:Mentions Name="AutoSizeMentions" 
+                           HorizontalAlignment="Stretch"
                            IsAutoSize="True"/>
         </gallery:ShowCaseItem>
         
@@ -88,11 +88,11 @@
             Title="With clear icon"
             Description="Customize clear button.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
+                <atom:Mentions Name="ClearableMentions1"
+                               HorizontalAlignment="Stretch"
                                IsAllowClear="True"/>
                 <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
+                               Name="ClearableMentions2"
                                IsAllowClear="True"
                                Lines="3"/>
             </StackPanel>

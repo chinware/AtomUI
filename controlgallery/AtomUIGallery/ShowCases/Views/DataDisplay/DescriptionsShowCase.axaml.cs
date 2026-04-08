@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.ViewModels;
@@ -12,13 +13,20 @@ public partial class DescriptionsShowCase : ReactiveUserControl<DescriptionsView
     {
         if (DataContext is DescriptionsViewModel viewModel)
         {
-            viewModel.DescriptionsSizeType = SizeType.Large;
+            viewModel.DescriptionsSizeType          =  SizeType.Large;
+            MiddleSizeRadioButton.IsCheckedChanged  += SizeTypeCheckChanged;
+            DefaultSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
+            SmallSizeRadioButton.IsCheckedChanged   += SizeTypeCheckChanged;
+            
+            Disposable.Create(() =>
+            {
+                MiddleSizeRadioButton.IsCheckedChanged  -= SizeTypeCheckChanged;
+                DefaultSizeRadioButton.IsCheckedChanged -= SizeTypeCheckChanged;
+                SmallSizeRadioButton.IsCheckedChanged   -= SizeTypeCheckChanged;
+            });
         }
 
         InitializeComponent();
-        MiddleSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
-        DefaultSizeRadioButton.IsCheckedChanged += SizeTypeCheckChanged;
-        SmallSizeRadioButton.IsCheckedChanged   += SizeTypeCheckChanged;
     }
     
     private void SizeTypeCheckChanged(object? sender, RoutedEventArgs e)

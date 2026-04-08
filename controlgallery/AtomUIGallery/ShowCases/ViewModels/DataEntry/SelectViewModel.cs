@@ -21,9 +21,9 @@ public class SelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _randomOptions, value);
     }
     
-    private List<ISelectOption> _basicSelectedOptions = [];
+    private List<ISelectOption>? _basicSelectedOptions = [];
 
-    public List<ISelectOption> BasicSelectedOptions
+    public List<ISelectOption>? BasicSelectedOptions
     {
         get => _basicSelectedOptions;
         set => this.RaiseAndSetIfChanged(ref _basicSelectedOptions, value);

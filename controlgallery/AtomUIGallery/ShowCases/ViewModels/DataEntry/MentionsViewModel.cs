@@ -14,9 +14,9 @@ public class MentionsViewModel : ReactiveObject, IRoutableViewModel
     public string UrlPathSegment { get; } = ID.ToString();
     
         
-    private List<IMentionOption> _basicMentionOptions = [];
+    private List<IMentionOption>? _basicMentionOptions = [];
     
-    public List<IMentionOption> BasicMentionOptions
+    public List<IMentionOption>? BasicMentionOptions
     {
         get => _basicMentionOptions;
         set => this.RaiseAndSetIfChanged(ref _basicMentionOptions, value);
@@ -30,9 +30,9 @@ public class MentionsViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _mentionOptionAsyncLoader, value);
     }
     
-    private List<string> _mentionTriggers = [];
+    private List<string>? _mentionTriggers = [];
     
-    public List<string> MentionTriggers
+    public List<string>? MentionTriggers
     {
         get => _mentionTriggers;
         set => this.RaiseAndSetIfChanged(ref _mentionTriggers, value);

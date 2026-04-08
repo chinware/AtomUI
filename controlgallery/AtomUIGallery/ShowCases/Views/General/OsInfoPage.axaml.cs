@@ -10,28 +10,8 @@ namespace AtomUIGallery.ShowCases.Views;
 public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
 {
     internal static Dictionary<string, string> LinuxDistroLogos = new();
-    
-    public OsInfoPage()
-    {
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is OsInfoViewModel viewModel)
-            {
-                InitInfoRecords(viewModel);
-                InitLinuxDistroLogos();
-                ConfigureOsLogoPath();
-                this.OneWayBind(viewModel, vm => vm.SystemInfoRecords, v => v.OsInfoTable.ItemsSource).DisposeWith(disposables);
-                
-                Disposable.Create(() =>
-                {
-                    viewModel.SystemInfoRecords = null;
-                }).DisposeWith(disposables);
-            }
-        });
-        InitializeComponent();
-    }
 
-    private void InitLinuxDistroLogos()
+    static OsInfoPage()
     {
         LinuxDistroLogos["linux"]         = "/Assets/OSLogos/Linux.svg";
         LinuxDistroLogos["ubuntu"]        = "/Assets/OSLogos/Ubuntu.svg";
@@ -41,9 +21,30 @@ public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
         LinuxDistroLogos["opensuse-leap"] = "/Assets/OSLogos/OpenSUSE.svg";
     }
     
+    public OsInfoPage()
+    {
+        this.WhenActivated(disposables =>
+        {
+            if (DataContext is OsInfoViewModel viewModel)
+            {
+                InitInfoRecords(viewModel);
+                ConfigureOsLogoPath();
+                this.OneWayBind(viewModel, vm => vm.SystemInfoRecords, 
+                        v => v.OsInfoTable.ItemsSource)
+                    .DisposeWith(disposables);
+                
+                Disposable.Create(() =>
+                {
+                    viewModel.SystemInfoRecords = null;
+                }).DisposeWith(disposables);
+            }
+        });
+        InitializeComponent();
+    }
+    
     private void InitInfoRecords(OsInfoViewModel viewModel)
     {
-        var systemInfo = SystemInfoProvider.GetSystemInfo();
+        var systemInfo        = SystemInfoProvider.GetSystemInfo();
         var systemInfoRecords = new List<SystemInfoRecord>();
         systemInfoRecords.Add(new SystemInfoRecord()
         {
@@ -128,8 +129,7 @@ public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
                     viewModel.LogoPath =  LinuxDistroLogos["linux"];
                 }
 
-                if (id == "ubuntu" ||
-                    id == "deepin")
+                if (id == "ubuntu" || id == "deepin")
                 {
                     OsLogo.Width = 240;
                 }
@@ -140,13 +140,13 @@ public partial class OsInfoPage : ReactiveUserControl<OsInfoViewModel>
             }
             else if (OperatingSystem.IsMacOS())
             {
-                viewModel.LogoPath         = LinuxDistroLogos["macOS"];
-                OsLogo.Height              = 130;
+                viewModel.LogoPath = LinuxDistroLogos["macOS"];
+                OsLogo.Height      = 130;
             }
             else if (OperatingSystem.IsWindows())
             {
-                viewModel.LogoPath         = LinuxDistroLogos["windows"];
-                OsLogo.Height              = 130;
+                viewModel.LogoPath = LinuxDistroLogos["windows"];
+                OsLogo.Height      = 130;
             }
         }
     }

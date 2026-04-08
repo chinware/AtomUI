@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -11,9 +13,20 @@ public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
     {
         this.WhenActivated(disposables =>
         {
-            if (DataContext is CheckBoxViewModel vm)
+            if (DataContext is CheckBoxViewModel viewModel)
             {
-                ConfigureCheckBoxOptions(vm);
+                ConfigureCheckBoxOptions(viewModel);
+                
+                this.OneWayBind(viewModel, vm => vm.CheckBoxOptions, v => v.BasicCheckBoxGroup.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.DefaultCheckBoxOptions, v => v.BasicCheckBoxGroup.CheckedItems)
+                    .DisposeWith(disposables);
+                
+                Disposable.Create(() =>
+                {
+                    viewModel.CheckBoxOptions        = null;
+                    viewModel.DefaultCheckBoxOptions = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

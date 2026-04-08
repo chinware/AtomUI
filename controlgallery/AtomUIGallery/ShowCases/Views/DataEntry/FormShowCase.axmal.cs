@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
@@ -20,21 +22,31 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
     {
         this.WhenActivated(disposables =>
         {
-            if (DataContext is FormViewModel vm)
+            if (DataContext is FormViewModel viewModel)
             {
-                ConfigureSliderMarks(vm);
+                ConfigureSliderMarks(viewModel);
+                ConfigureBasicForm(viewModel);
+                ConfigureLayoutForm();
+                this.OneWayBind(viewModel, vm => vm.SliderMarks,
+                    v => v.FormSliderItem.Marks).DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicFormInitialValues,
+                    v => v.BasicForm.InitialValues).DisposeWith(disposables);
+
+                Disposable.Create(() =>
+                {
+                    viewModel.BasicFormInitialValues = null;
+                    viewModel.SliderMarks            = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();
-        ConfigureBasicForm();
-        ConfigureLayoutForm();
     }
 
-    private void ConfigureBasicForm()
+    private void ConfigureBasicForm(FormViewModel viewModel)
     {
         var values = new FormValues();
         values.Add("remember", true);
-        BasicForm.InitialValues = values;
+        viewModel.BasicFormInitialValues = values;
     }
     
     private void ConfigureLayoutForm()

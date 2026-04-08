@@ -1,4 +1,6 @@
-﻿using AtomUIGallery.ShowCases.ViewModels;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -13,6 +15,10 @@ public partial class InfoFlyoutShowCase : ReactiveUserControl<InfoFlyoutViewMode
             if (DataContext is InfoFlyoutViewModel viewModel)
             {
                 ArrowSegmented.SelectionChanged += viewModel.HandleSelectionChanged;
+                Disposable.Create(() =>
+                {
+                    ArrowSegmented.SelectionChanged -= viewModel.HandleSelectionChanged;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

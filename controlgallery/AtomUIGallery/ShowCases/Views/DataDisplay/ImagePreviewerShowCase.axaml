@@ -7,32 +7,32 @@
         <gallery:ShowCaseItem
             Title="Basic Usage"
             Description="Click the image to zoom in.">
-            <atom:ImagePreviewer Width="200" Sources="{Binding DefaultImages}"/>
+            <atom:ImagePreviewer Name="BasicPreviewer" Width="200"/>
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
             Title="Fault tolerant"
             Description="Load failed to display image placeholder.">
-            <atom:ImagePreviewer Width="200" FallbackImageSrc="{Binding FallbackImage}"/>
+            <atom:ImagePreviewer Name="FaultTolerantPreviewer" Width="200"/>
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
             Title="Preview from one image"
             Description="Preview a collection from one image.">
-            <atom:ImagePreviewer Width="200" Sources="{Binding ThreeImages}"/>
+            <atom:ImagePreviewer Name="FromOnImagePreviewer" Width="200"/>
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
             Title="Custom preview image"
             Description="You can set different preview image.">
-            <atom:ImagePreviewer Width="200" Sources="{Binding DefaultImages}" CoverImageSrc="{Binding BlurImage}"/>
+            <atom:ImagePreviewer Name="CustomImagePreviewer" Width="200"/>
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
             Title="Multiple image preview"
             Description="Click the left and right switch buttons to preview multiple images."
             IsOccupyEntireRow="True">
-            <atom:ImageGroupPreviewer Sources="{Binding TwoImages}" CoverWidth="200" CoverHeight="200"/>
+            <atom:ImageGroupPreviewer Name="MultiImagesPreviewer" CoverWidth="200" CoverHeight="200"/>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

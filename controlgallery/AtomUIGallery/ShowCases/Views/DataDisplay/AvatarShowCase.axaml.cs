@@ -1,3 +1,5 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -15,6 +17,11 @@ public partial class AvatarShowCase : ReactiveUserControl<AvatarViewModel>
             {
                 ChangeUserButton.Click += viewModel.HandleChangeUserClicked;
                 ChangeGapButton.Click  += viewModel.HandleChangeGapClicked;
+                Disposable.Create(() =>
+                {
+                    ChangeUserButton.Click -= viewModel.HandleChangeUserClicked;
+                    ChangeGapButton.Click  -= viewModel.HandleChangeGapClicked;
+                }).DisposeWith(disposables);
             }
         });
     }

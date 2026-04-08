@@ -1,4 +1,6 @@
-﻿using AtomUIGallery.ShowCases.ViewModels;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -14,6 +16,11 @@ public partial class ExpanderShowCase : ReactiveUserControl<ExpanderViewModel>
             {
                 ExpandButtonPosGroup.OptionCheckedChanged       += viewModel.HandleExpandButtonPosOptionCheckedChanged;
                 ExpandDirectionOptionGroup.OptionCheckedChanged += viewModel.HandleExpandDirectionOptionCheckedChanged;
+                Disposable.Create(() =>
+                {
+                    ExpandButtonPosGroup.OptionCheckedChanged       -= viewModel.HandleExpandButtonPosOptionCheckedChanged;
+                    ExpandDirectionOptionGroup.OptionCheckedChanged -= viewModel.HandleExpandDirectionOptionCheckedChanged;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

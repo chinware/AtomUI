@@ -1,4 +1,6 @@
-﻿using AtomUIGallery.ShowCases.ViewModels;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -13,6 +15,10 @@ public partial class CollapseShowCase : ReactiveUserControl<CollapseViewModel>
             if (DataContext is CollapseViewModel viewModel)
             {
                 ExpandButtonPosGroup.OptionCheckedChanged += viewModel.HandleExpandButtonPosOptionCheckedChanged;
+                Disposable.Create(() =>
+                {
+                    ExpandButtonPosGroup.OptionCheckedChanged -= viewModel.HandleExpandButtonPosOptionCheckedChanged;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

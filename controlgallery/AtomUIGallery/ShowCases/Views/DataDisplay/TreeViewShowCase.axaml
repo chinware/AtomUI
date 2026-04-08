@@ -9,11 +9,7 @@
         <gallery:ShowCaseItem
             Title="Basic"
             Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
-            <atom:TreeView ToggleType="CheckBox"
-                           x:DataType="viewModels:TreeViewViewModel"
-                           DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
-                           DefaultSelectedPaths="{Binding BasicTreeViewDefaultSelectedPaths}"
-                           DefaultCheckedPaths="{Binding BasicTreeViewDefaultCheckedPaths}">
+            <atom:TreeView Name="BasicTree" ToggleType="CheckBox">
                 <atom:TreeViewItem Header="parent 1" ItemKey="0-0">
                     <atom:TreeViewItem Header="parent 1-0" ItemKey="0-0-0">
                         <atom:TreeViewItem Header="leaf" ItemKey="0-0-0-0" IsEnabled="False"/>
@@ -34,12 +30,7 @@
         <gallery:ShowCaseItem
             Title="Generate by template"
             Description="You can use the Template mechanism to generate tree nodes">
-            <atom:TreeView ToggleType="CheckBox"
-                           x:DataType="viewModels:TreeViewViewModel"
-                           DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
-                           DefaultSelectedPaths="{Binding BasicTreeViewDefaultSelectedPaths}"
-                           DefaultCheckedPaths="{Binding BasicTreeViewDefaultCheckedPaths}"
-                           ItemsSource="{Binding BasicTreeNodes}">
+            <atom:TreeView Name="BasicTplTree" ToggleType="CheckBox">
                 <atom:TreeView.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}">
                         <atom:TextBlock Text="{Binding Header}" />
@@ -180,9 +171,7 @@
         <gallery:ShowCaseItem
             Title="load data asynchronously"
             Description="To load data asynchronously when click to expand a treeNode.">
-            <atom:TreeView x:DataType="viewModels:TreeViewViewModel"
-                           ItemsSource="{Binding AsyncLoadTreeNodes}"
-                           DataLoader="{Binding AsyncLoadTreeNodeLoader}">
+            <atom:TreeView Name="AsyncLoadTree">
                 <atom:TreeView.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}">
                         <atom:TextBlock Text="{Binding Header}" />
@@ -197,11 +186,9 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterItemsSourceTreeClicked"/>
-                <atom:TreeView Name="SearchTreeViewByItemsSource"
-                               x:DataType="viewModels:TreeViewViewModel"
-                               ItemsSource="{Binding FilterTreeNodes}">
+                <atom:TreeView Name="SearchTreeViewByItemsSource">
                     <atom:TreeView.ItemTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}">
+                        <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="atom:ITreeItemNode">
                             <atom:TextBlock Text="{Binding Header}" />
                         </TreeDataTemplate>
                     </atom:TreeView.ItemTemplate>

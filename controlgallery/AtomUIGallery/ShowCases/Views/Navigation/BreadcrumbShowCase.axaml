@@ -72,16 +72,14 @@
             Title="Generate BreadcrumbItem by template"
             Description="Generate BreadcrumbItem by template.">
             <StackPanel>
-                <atom:Breadcrumb ItemsSource="{Binding BreadcrumbItems}"
-                                 x:DataType="viewModels:BreadcrumbViewModel">
+                <atom:Breadcrumb Name="TplBreadcrumb">
                     <atom:Breadcrumb.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="atom:BreadcrumbItemData">
                             <TextBlock Text="{Binding Content}"/>
                         </DataTemplate>
                     </atom:Breadcrumb.ItemTemplate>
                 </atom:Breadcrumb>
             </StackPanel>
         </gallery:ShowCaseItem>
-
     </gallery:ShowCasePanel>
 </UserControl>

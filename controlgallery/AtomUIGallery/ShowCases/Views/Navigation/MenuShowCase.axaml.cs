@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls.Primitives;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.ShowCases.ViewModels;
@@ -25,10 +27,24 @@ public partial class
                 defaultOpenPaths.Add(new TreeNodePath("/3/SubGroup2"));
                 viewModel.DefaultOpenPaths    = defaultOpenPaths;
                 viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
-                InitNavMenuTreeNodes(viewModel);
+                InitInlineNavMenuNodes(viewModel);
                 InitMenuTreeNodes(viewModel);
                 InitContextMenuItems(viewModel);
                 InitMenuFlyoutMenuItems(viewModel);
+                
+                this.OneWayBind(ViewModel, vm => vm.MenuItems, v => v.BasicItemsSourceMenu.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.InlineNavMenuNodes, v => v.InlineModeMenu.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.MenuItems, v => v.BasicContextMenu.ItemsSource).DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.InlineNavMenuNodes, v => v.ItemsSourceDemoNavMenu.ItemsSource).DisposeWith(disposables);
+                Disposable.Create(() =>
+                {
+                    viewModel.MenuItems           = null;
+                    viewModel.InlineNavMenuNodes  = null;
+                    viewModel.MenuFlyoutItems     = null;
+                    viewModel.DefaultOpenPaths    = null;
+                    viewModel.DefaultSelectedPath = null;
+                    viewModel.DefaultSelectedNode = null;
+                }).DisposeWith(disposables);
             }
         });
    
@@ -123,7 +139,7 @@ public partial class
         viewModel.MenuItems = nodes;
     }
 
-    private void InitNavMenuTreeNodes(MenuViewModel viewModel)
+    private void InitInlineNavMenuNodes(MenuViewModel viewModel)
     {
         _navMenuDefaultSelectedItem = new NavMenuNode()
         {
@@ -180,14 +196,13 @@ public partial class
             Header  = "Navigation Four",
             ItemKey = "4"
         });
-        viewModel.NavMenuItems        = nodes;
-        viewModel.DefaultSelectedNode = _navMenuDefaultSelectedItem;
+        viewModel.InlineNavMenuNodes        = nodes;
+        viewModel.DefaultSelectedNode       = _navMenuDefaultSelectedItem;
         ItemsSourceDemoNavMenu.SelectedItem = _navMenuDefaultSelectedItem;
     }
 
     private void InitMenuFlyoutMenuItems(MenuViewModel viewModel)
     {
-
         var nodes = new List<IMenuItemData>();
         nodes.Add(new MenuItemData()
         {

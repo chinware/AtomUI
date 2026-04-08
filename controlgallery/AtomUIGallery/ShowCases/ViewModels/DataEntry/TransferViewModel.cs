@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
@@ -102,11 +101,10 @@ public class TransferViewModel : ReactiveObject, IRoutableViewModel
         get => _gridDataTransformItems;
         set => this.RaiseAndSetIfChanged(ref _gridDataTransformItems, value);
     }
-    
         
-    private List<ITreeItemNode> _transferTreeNodes = [];
+    private List<ITreeItemNode>? _transferTreeNodes = [];
     
-    public List<ITreeItemNode> TransferTreeNodes
+    public List<ITreeItemNode>? TransferTreeNodes
     {
         get => _transferTreeNodes;
         set => this.RaiseAndSetIfChanged(ref _transferTreeNodes, value);

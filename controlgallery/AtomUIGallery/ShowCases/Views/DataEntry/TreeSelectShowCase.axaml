@@ -9,7 +9,7 @@
         <gallery:ShowCaseItem
             Title="Basic"
             Description="The most basic usage.">
-            <atom:TreeSelect ItemsSource="{Binding BasicTreeNodes}"
+            <atom:TreeSelect Name="BasicTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
                              IsAllowClear="True"
@@ -20,7 +20,7 @@
         <gallery:ShowCaseItem
             Title="Multiple Selection"
             Description="Multiple selection usage.">
-            <atom:TreeSelect ItemsSource="{Binding MultiSelectionTreeNodes}"
+            <atom:TreeSelect Name="MultiSelectionTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
                              IsAllowClear="True"
@@ -32,7 +32,7 @@
         <gallery:ShowCaseItem
             Title="Generate from tree data"
             Description="The tree structure can be populated using treeData property. This is a quick and easy way to provide the tree content.">
-            <atom:TreeSelect ItemsSource="{Binding ItemsSourceTreeNodes}"
+            <atom:TreeSelect Name="ItemsSourceTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
                              IsAllowClear="True"
@@ -43,7 +43,7 @@
         <gallery:ShowCaseItem
             Title="Checkable"
             Description="Multiple and checkable.">
-            <atom:TreeSelect ItemsSource="{Binding CheckableTreeNodes}"
+            <atom:TreeSelect Name="CheckableTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
                              IsAllowClear="True"
@@ -56,8 +56,7 @@
         <gallery:ShowCaseItem
             Title="Asynchronous loading"
             Description="Asynchronous loading tree node.">
-            <atom:TreeSelect ItemsSource="{Binding AsyncLoadTreeNodes}"
-                             DataLoader="{Binding AsyncLoadTreeNodeLoader}"
+            <atom:TreeSelect Name="AsyncLoadTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsAllowClear="True"
                              PlaceholderText="Please select" />
@@ -74,8 +73,8 @@
                     <atom:OptionButton>BottomLeft</atom:OptionButton>
                     <atom:OptionButton>BottomRight</atom:OptionButton>
                 </atom:OptionButtonGroup>
-                <atom:TreeSelect IsAllowClear="True"
-                                 ItemsSource="{Binding PlacementTreeNodes}"
+                <atom:TreeSelect Name="PlacementTreeSelect" 
+                                 IsAllowClear="True"
                                  PlaceholderText="Please select"
                                  IsDefaultExpandAll="True"
                                  IsFilterEnabled="True"
@@ -92,7 +91,7 @@
                 <atom:ToggleSwitch OnContent="TreeLine" OffContent="TreeLine" IsChecked="True"
                                    Name="ShowTreeLineSwitch" />
                 <atom:ToggleSwitch OnContent="ShowLeafIcon" OffContent="ShowLeafIcon" Name="ShowLeafIconSwitch" />
-                <atom:TreeSelect ItemsSource="{Binding ShowTreeLineTreeNodes}"
+                <atom:TreeSelect Name="ShowTreeLineTreeSelect" 
                                  HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
                                  PlaceholderText="Please select"
@@ -145,15 +144,15 @@
             Title="Prefix and Suffix"
             Description="Custom prefix and suffixIcon.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 ItemsSource="{Binding LeftAddTreeNodes}"
+                <atom:TreeSelect Name="LeftAddTreeSelect"
+                                 HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
                                  PlaceholderText="Please select"
                                  IsDefaultExpandAll="True" 
                                  LeftAddOn="Prefix"
                                  IsFilterEnabled="True"/>
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 ItemsSource="{Binding ContentLeftAddTreeNodes}"
+                <atom:TreeSelect Name="ContentLeftAddTreeSelect"
+                                 HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
                                  PlaceholderText="Please select"
                                  IsDefaultExpandAll="True"
@@ -166,7 +165,7 @@
             Title="Max Count"
             Description="You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TreeSelect ItemsSource="{Binding MaxSelectedTreeNodes}"
+                <atom:TreeSelect Name="MaxSelectedTreeSelect"
                                  HorizontalAlignment="Stretch"
                                  IsDefaultExpandAll="True"
                                  IsMultiple="True"
@@ -175,7 +174,7 @@
                                  PlaceholderText="Please select"
                                  IsShowMaxCountIndicator="True"
                                  MaxCount="3"/>
-                <atom:TreeSelect ItemsSource="{Binding MaxCheckedTreeNodes}"
+                <atom:TreeSelect Name="MaxCheckedTreeSelect"
                                  HorizontalAlignment="Stretch"
                                  IsDefaultExpandAll="True"
                                  IsMultiple="True"

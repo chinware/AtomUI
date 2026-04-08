@@ -23,12 +23,12 @@
                     IsEnabled="{Binding NormalEnabled}"
                     RangeValue="20, 80" />
                 <atom:Slider
+                    Name="Slider1"
                     Maximum="100"
                     Minimum="0"
                     IsEnabled="{Binding NormalEnabled}"
                     IsRangeMode="True"
                     TickFrequency="5"
-                    Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
 
                 <StackPanel Orientation="Horizontal" Spacing="2">
@@ -73,20 +73,20 @@
                     Value="20" />
         
                 <atom:Slider
+                    Name="Slider2"
                     Maximum="100"
                     Minimum="0"
                     Orientation="Vertical"
                     TickFrequency="1"
-                    Marks="{Binding SliderMarks}"
                     Value="20" />
         
                 <atom:Slider
+                    Name="Slider3"
                     Maximum="100"
                     Minimum="0"
                     IsRangeMode="True"
                     Orientation="Vertical"
                     TickFrequency="5"
-                    Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
         
             </StackPanel>
@@ -99,36 +99,36 @@
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:TextBlock FontWeight="Bold">included=true</atom:TextBlock>
                 <atom:Slider
+                    Name="Slider4"
                     Maximum="100"
                     Minimum="0"
                     TickFrequency="1"
-                    Marks="{Binding SliderMarks}"
                     Value="20" />
         
                 <atom:Slider
+                    Name="Slider5"
                     Maximum="100"
                     Minimum="0"
                     IsRangeMode="True"
                     TickFrequency="5"
-                    Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
         
                 <atom:TextBlock FontWeight="Bold">included=false</atom:TextBlock>
                 <atom:Slider
+                    Name="Slider6"
                     Maximum="100"
                     Minimum="0"
                     TickFrequency="1"
-                    Marks="{Binding SliderMarks}"
                     Included="False"
                     Value="20" />
         
                 <atom:Slider
+                    Name="Slider7"
                     Maximum="100"
                     Minimum="0"
                     IsRangeMode="True"
                     TickFrequency="5"
                     Included="False"
-                    Marks="{Binding SliderMarks}"
                     RangeValue="20, 80" />
         
             </StackPanel>

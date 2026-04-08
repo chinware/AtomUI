@@ -8,23 +8,20 @@
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem Title="Basic Usage"
                               Description="Basic Usage, set data source of autocomplete with options property.">
-            <atom:AutoComplete PlaceholderText="input here"
-                               OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+            <atom:AutoComplete Name="BasicAutoComplete" PlaceholderText="input here"
                                Width="200" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="Customized"
                               Description="You could set custom Option label">
-            <atom:AutoComplete PlaceholderText="input here"
-                               OptionsAsyncLoader="{Binding CustomLabelOptionsAsyncLoader}"
+            <atom:AutoComplete Name="CustomizedAutoComplete" PlaceholderText="input here"
                                Width="200" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="Lookup-Patterns - Uncertain Category"
                               Description="Demonstration of Lookup Patterns: Uncertain Category.">
-            <atom:AutoCompleteSearchEdit PlaceholderText="input here" Width="300"
+            <atom:AutoCompleteSearchEdit Name="SearchAutoComplete" PlaceholderText="input here" Width="300"
                                          SizeType="Large"
-                                         OptionsAsyncLoader="{Binding SearchEditOptionsAsyncLoader}"
                                          SearchButtonStyle="Primary">
                 <atom:AutoCompleteSearchEdit.OptionTemplate>
                     <DataTemplate x:DataType="viewModels:CustomAutoCompleteOption">
@@ -45,8 +42,8 @@
 
         <gallery:ShowCaseItem Title="TextArea type auto-completion"
                               Description="You can use the TextArea type for autocomplete.">
-            <atom:AutoCompleteTextArea PlaceholderText="input here"
-                                       OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+            <atom:AutoCompleteTextArea Name="TextAreaAutoComplete" 
+                                       PlaceholderText="input here"
                                        Width="300"
                                        Lines="5"
                                        IsAllowClear="True" />
@@ -54,8 +51,8 @@
 
         <gallery:ShowCaseItem Title="Non-case-sensitive AutoComplete"
                               Description="A non-case-sensitive AutoComplete.">
-            <atom:AutoComplete PlaceholderText="try to type `b`"
-                               OptionsSource="{Binding FilterCaseOptions}"
+            <atom:AutoComplete Name="FilterAutoComplete" 
+                               PlaceholderText="try to type `b`"
                                Width="300"
                                IsAllowClear="True"
                                Filter="{atom:ValueFilterProvider Contains}" />
@@ -64,11 +61,11 @@
         <gallery:ShowCaseItem Title="Status"
                               Description="Add status to AutoComplete with status, which could be error or warning.">
             <StackPanel Spacing="10">
-                <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                <atom:AutoComplete Name="ErrorAutoComplete"
+                                   Width="200"
                                    Status="Error" />
                 <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="WarningAutoComplete"
                                    Status="Warning" />
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -77,19 +74,19 @@
                               Description="There are outlined, filled, borderless, and underlined variants to choose from.">
             <StackPanel Spacing="10">
                 <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="OutlineAutoComplete"
                                    StyleVariant="Outline"
                                    PlaceholderText="Outline"/>
                 <atom:AutoComplete Width="200"  
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="FilledAutoComplete"
                                    StyleVariant="Filled"
                                    PlaceholderText="Filled"/>
                 <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="BorderlessAutoComplete"
                                    StyleVariant="Borderless"
                                    PlaceholderText="Borderless"/>
                 <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="UnderlinedAutoComplete"
                                    StyleVariant="Underlined"
                                    PlaceholderText="Underlined"/>
             </StackPanel>
@@ -99,10 +96,10 @@
                               Description="Customize clear button.">
             <StackPanel Spacing="10">
                 <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="UnClearableAutoComplete"
                                    PlaceholderText="UnClearable"/>
                 <atom:AutoComplete Width="200"
-                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   Name="ClearableAutoComplete"
                                    IsAllowClear="True"
                                    PlaceholderText="Customized clear icon"
                                    ClearIcon="{antdicons:AntDesignIconProvider CloseSquareFilled}"/>

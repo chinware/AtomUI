@@ -1443,8 +1443,7 @@
                 </atom:FormItem>
                 
                 <atom:FormItem LabelText="Slider" FieldName="slider">
-                    <atom:Slider Minimum="0" Maximum="100"
-                                 Marks="{Binding SliderMarks}"/>
+                    <atom:Slider Name="FormSliderItem" Minimum="0" Maximum="100"/>
                 </atom:FormItem>
                 
                 <atom:FormItem LabelText="radio-group" FieldName="radioGroup">

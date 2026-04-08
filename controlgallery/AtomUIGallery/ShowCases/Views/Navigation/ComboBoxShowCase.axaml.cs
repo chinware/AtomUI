@@ -1,4 +1,6 @@
-﻿using AtomUIGallery.ShowCases.ViewModels;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -13,6 +15,12 @@ public partial class ComboBoxShowCase : ReactiveUserControl<ComboBoxViewModel>
             if (DataContext is ComboBoxViewModel viewModel)
             {
                 InitComboBoxItems(viewModel);
+                this.OneWayBind(viewModel, vm => vm.ComboBoxItems, v => v.TplComboBox.ItemsSource)
+                    .DisposeWith(disposables);
+                Disposable.Create(() =>
+                {
+                    viewModel.ComboBoxItems = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

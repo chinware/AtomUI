@@ -62,6 +62,14 @@ public class FormViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _sliderMarks, value);
     }
     
+    private IFormValues? _basicFormInitialValues;
+
+    public IFormValues? BasicFormInitialValues
+    {
+        get => _basicFormInitialValues;
+        set => this.RaiseAndSetIfChanged(ref _basicFormInitialValues, value);
+    }
+    
     public FormViewModel(IScreen screen)
     {
         HostScreen = screen;

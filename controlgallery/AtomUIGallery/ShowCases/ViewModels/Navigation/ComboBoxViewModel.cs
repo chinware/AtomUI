@@ -12,9 +12,9 @@ public class ComboBoxViewModel : ReactiveObject, IRoutableViewModel
     public string UrlPathSegment { get; } = ID.ToString();
     
         
-    private List<ComboBoxItemData> _comboBoxItems = [];
+    private List<ComboBoxItemData>? _comboBoxItems = [];
     
-    public List<ComboBoxItemData> ComboBoxItems
+    public List<ComboBoxItemData>? ComboBoxItems
     {
         get => _comboBoxItems;
         set => this.RaiseAndSetIfChanged(ref _comboBoxItems, value);

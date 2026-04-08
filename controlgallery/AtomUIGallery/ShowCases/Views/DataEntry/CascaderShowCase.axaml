@@ -10,9 +10,8 @@
             Title="Basic"
             Description="Cascade selection box for selecting province/city/district.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="BasicCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding BasicCascaderViewNodes}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -27,11 +26,9 @@
             Title="Default value"
             Description="Specifies default value by an array.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="DefaultValueCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding BasicCascaderViewNodes}"
-                IsAllowClear="True"
-                DefaultSelectOptionPath="{Binding DefaultSelectOptionPath}">
+                IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
                                       x:DataType="atom:ICascaderOption">
@@ -45,9 +42,8 @@
             Title="Hover"
             Description="Hover to expand sub menu, click to select option.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="HoverCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding HoverCascaderNodes}"
                 IsAllowClear="True"
                 ExpandTrigger="Hover">
                 <atom:Cascader.OptionTemplate>
@@ -63,9 +59,8 @@
             Title="Disabled option"
             Description="Disable option by specifying the disabled property in options.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="DisabledCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding DisabledCascaderNodes}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -80,9 +75,8 @@
             Title="Change on select"
             Description="Allows the selection of only parent options.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="SelectParentCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding SelectParentCascaderNodes}"
                 IsAllowClear="True"
                 IsAllowSelectParent="True">
                 <atom:Cascader.OptionTemplate>
@@ -98,9 +92,8 @@
             Title="Multiple"
             Description="Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="MultiSelectCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding MultipleSelectCascaderNodes}"
                 HorizontalAlignment="Stretch"
                 ShowCheckedStrategy="ShowParent"
                 IsAllowClear="True"
@@ -120,9 +113,8 @@
             <StackPanel Spacing="15">
                 <atom:Separator Title="ShowCheckedStrategy=All"/>
                 <atom:Cascader
-                    x:DataType="viewModels:CascaderViewModel"
+                    Name="CheckStrategyAllCascader"
                     PlaceholderText="Please select"
-                    OptionsSource="{Binding CheckStrategyShowAllCascaderNodes}"
                     HorizontalAlignment="Stretch"
                     ShowCheckedStrategy="All"
                     IsAllowClear="True"
@@ -137,9 +129,8 @@
                 </atom:Cascader>
                 <atom:Separator Title="ShowCheckedStrategy=ShowParent"/>
                 <atom:Cascader
-                    x:DataType="viewModels:CascaderViewModel"
+                    Name="CheckStrategyShowParentCascader"
                     PlaceholderText="Please select"
-                    OptionsSource="{Binding CheckStrategyShowParentCascaderNodes}"
                     HorizontalAlignment="Stretch"
                     ShowCheckedStrategy="ShowParent"
                     IsAllowClear="True"
@@ -159,9 +150,8 @@
             Title="Search"
             Description="Search and select options directly.">
             <atom:Cascader
-                x:DataType="viewModels:CascaderViewModel"
+                Name="SearchCascader"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding SearchCascaderNodes}"
                 IsAllowClear="True"
                 IsFilterEnabled="True">
                 <atom:Cascader.OptionTemplate>
@@ -177,10 +167,9 @@
             Title="Load Options Lazily"
             Description="Load options lazily with loadData.">
             <atom:Cascader
+                Name="AsyncLoadCascader"
                 x:DataType="viewModels:CascaderViewModel"
                 PlaceholderText="Please select"
-                OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
-                DataLoader="{Binding AsyncCascaderNodeLoader}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -196,9 +185,8 @@
             Description="Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.">
             <StackPanel Spacing="10">
                 <atom:Cascader
-                    x:DataType="viewModels:CascaderViewModel"
+                    Name="PrefixAndSuffixCascader1"
                     PlaceholderText="Please select"
-                    OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
                     IsAllowClear="True"
                     SuffixIcon="{antdicons:AntDesignIconProvider SmileOutlined}">
                     <atom:Cascader.OptionTemplate>
@@ -210,9 +198,8 @@
                 </atom:Cascader>
         
                 <atom:Cascader
-                    x:DataType="viewModels:CascaderViewModel"
+                    Name="PrefixAndSuffixCascader2"
                     PlaceholderText="Please select"
-                    OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
                     IsAllowClear="True">
                     <atom:Cascader.ExpandIcon>
                         <atom:IconTemplate>
@@ -228,9 +215,8 @@
                 </atom:Cascader>
         
                 <atom:Cascader
-                    x:DataType="viewModels:CascaderViewModel"
+                    Name="PrefixAndSuffixCascader3"
                     PlaceholderText="Please select"
-                    OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
                     IsAllowClear="True">
                     <atom:Cascader.ContentLeftAddOn>
                         <antdicons:SmileOutlined/>
@@ -316,9 +302,9 @@
                     <atom:OptionButton>BottomRight</atom:OptionButton>
                 </atom:OptionButtonGroup>
                 <atom:Cascader
+                    Name="PlacementCascader"
                     x:DataType="viewModels:CascaderViewModel"
                     PlaceholderText="Please select"
-                    OptionsSource="{Binding PlacementCascaderNodes}"
                     IsAllowClear="True"
                     Placement="{Binding Placement}">
                     <atom:Cascader.OptionTemplate>
@@ -370,6 +356,7 @@
             Description="Cascade selection box of different sizes.">
             <StackPanel Spacing="15">
                 <atom:Cascader
+                    Name="SizeCascader1"
                     x:DataType="viewModels:CascaderViewModel"
                     PlaceholderText="Please select"
                     OptionsSource="{Binding SizeCascaderNodes}"
@@ -384,6 +371,7 @@
                 </atom:Cascader>
         
                 <atom:Cascader
+                    Name="SizeCascader2"
                     x:DataType="viewModels:CascaderViewModel"
                     PlaceholderText="Please select"
                     IsAllowClear="True"
@@ -398,6 +386,7 @@
                 </atom:Cascader>
         
                 <atom:Cascader
+                    Name="SizeCascader3"
                     x:DataType="viewModels:CascaderViewModel"
                     PlaceholderText="Please select"
                     IsAllowClear="True"
@@ -455,8 +444,7 @@
             Description="You can use the Template mechanism to generate tree nodes">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:CascaderView
-                    x:DataType="viewModels:CascaderViewModel"
-                    OptionsSource="{Binding BasicCascaderViewNodes}">
+                    Name="BasicCascaderView">
                     <atom:CascaderView.OptionTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}"
                                           x:DataType="atom:ICascaderOption">
@@ -466,9 +454,8 @@
                 </atom:CascaderView>
         
                 <atom:CascaderView
-                    IsCheckable="True"
-                    x:DataType="viewModels:CascaderViewModel"
-                    OptionsSource="{Binding BasicCheckableCascaderViewNodes}">
+                    Name="BasicCheckableCascaderView"
+                    IsCheckable="True">
                     <atom:CascaderView.OptionTemplate>
                         <TreeDataTemplate x:DataType="atom:ICascaderOption"
                                           ItemsSource="{Binding Children}">
@@ -482,10 +469,7 @@
         <gallery:ShowCaseItem
             Title="Load Options Lazily"
             Description="Load options lazily with loadData.">
-            <atom:CascaderView
-                x:DataType="viewModels:CascaderViewModel"
-                OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
-                DataLoader="{Binding AsyncCascaderNodeLoader}">
+            <atom:CascaderView Name="AsyncLoadCascaderView">
                 <atom:CascaderView.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
                                       x:DataType="atom:ICascaderOption">
@@ -524,9 +508,7 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
-                <atom:CascaderView Name="SearchCascaderViewItemsSource"
-                                   x:DataType="viewModels:CascaderViewModel"
-                                   OptionsSource="{Binding SearchCascaderViewNodes}">
+                <atom:CascaderView Name="SearchCascaderViewItemsSource">
                     <atom:CascaderView.OptionTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}"
                                           x:DataType="atom:ICascaderOption">
@@ -556,9 +538,7 @@
                     </atom:CascaderOption>
                 </atom:CascaderView>
                 <atom:Separator Title="By template"/>
-                <atom:CascaderView x:DataType="viewModels:CascaderViewModel"
-                                   OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
-                                   DefaultExpandedPath="{Binding DefaultExpandPath}">
+                <atom:CascaderView Name="DefaultExpandCascaderView">
                     <atom:CascaderView.OptionTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}"
                                           x:DataType="atom:ICascaderOption">

@@ -28,10 +28,10 @@
         <gallery:ShowCaseItem
             Title="Generate MenuItem by ItemsSource"
             Description="Generate structure based on ItemsSource and template.">
-            <atom:Menu ItemsSource="{Binding MenuItems}"
-                       x:DataType="viewModels:MenuViewModel">
+            <atom:Menu Name="BasicItemsSourceMenu">
                 <atom:Menu.ItemTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}">
+                    <TreeDataTemplate ItemsSource="{Binding Children}" 
+                                      x:DataType="atom:IMenuItemData">
                         <atom:TextBlock Text="{Binding Header}" />
                     </TreeDataTemplate>
                 </atom:Menu.ItemTemplate>
@@ -39,10 +39,10 @@
         
         </gallery:ShowCaseItem>
         
-        <atom:NavMenu Mode="Inline" ItemsSource="{Binding NavMenuItems}"
-                      x:DataType="viewModels:MenuViewModel">
+        <atom:NavMenu Mode="Inline" Name="InlineModeMenu">
             <atom:NavMenu.ItemTemplate>
-                <TreeDataTemplate ItemsSource="{Binding Children}">
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:IMenuItemData">
                     <atom:TextBlock Text="{Binding Header}" />
                 </TreeDataTemplate>
             </atom:NavMenu.ItemTemplate>
@@ -190,10 +190,9 @@
             </gallery:ShowCaseItem.Styles>
             <Border Name="ItemSourcesContextMenuContainer">
                 <Border.ContextMenu>
-                    <atom:ContextMenu ItemsSource="{Binding MenuItems}"
-                                      x:DataType="viewModels:MenuViewModel">
+                    <atom:ContextMenu Name="BasicContextMenu">
                         <atom:ContextMenu.ItemTemplate>
-                            <TreeDataTemplate ItemsSource="{Binding Children}">
+                            <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="atom:IMenuItemData">
                                 <atom:TextBlock Text="{Binding Header}" />
                             </TreeDataTemplate>
                         </atom:ContextMenu.ItemTemplate>
@@ -247,7 +246,7 @@
                                          atom:Flyout.HorizontalOffset="10"
                                          atom:Flyout.VerticalOffset="15">
                             <atom:MenuFlyout.ItemTemplate>
-                                <TreeDataTemplate ItemsSource="{Binding Children}">
+                                <TreeDataTemplate ItemsSource="{Binding Children}"  x:DataType="atom:IMenuItemData">
                                     <atom:TextBlock Text="{Binding Header}" />
                                 </TreeDataTemplate>
                             </atom:MenuFlyout.ItemTemplate>
@@ -386,6 +385,7 @@
             Title="Default Opened paths"
             Description="You can open or select the path by default.">
             <atom:NavMenu Mode="Inline" Margin="0, 0, 0, 20"
+                          x:DataType="viewModels:MenuViewModel"
                            DefaultOpenPaths="{Binding DefaultOpenPaths}"
                            DefaultSelectedPath="{Binding DefaultSelectedPath}">
                 <atom:NavMenuNode Header="Navigation One" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" ItemKey="1" />
@@ -415,7 +415,6 @@
                           Mode="Inline"
                           SelectedItem="{Binding DefaultSelectedNode}"
                           DefaultSelectedPath="{Binding DefaultSelectedPath}"
-                          ItemsSource="{Binding NavMenuItems}"
                           x:DataType="viewModels:MenuViewModel"/>
         </gallery:ShowCaseItem>
 

@@ -56,7 +56,8 @@
         <gallery:ShowCaseItem
             Title="Generate ComboBoxItem by ItemsSource"
             Description="Generate structure based on ItemsSource and template.">
-            <atom:ComboBox PlaceholderText="Please select" Width="300"
+            <atom:ComboBox Name="TplComboBox"
+                           PlaceholderText="Please select" Width="300"
                            x:DataType="viewModels:ComboBoxViewModel"
                            ItemsSource="{Binding ComboBoxItems}">
                 <atom:ComboBox.ItemTemplate>

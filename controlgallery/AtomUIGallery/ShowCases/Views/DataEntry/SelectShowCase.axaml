@@ -4,7 +4,6 @@
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
-             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
              xmlns:views="clr-namespace:AtomUIGallery.ShowCases.Views">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
@@ -24,11 +23,11 @@
                     <atom:SelectOption Header="Lucy" Content="lucy" />
                 </atom:Select>
         
-                <atom:Select Mode="Single"
+                <atom:Select Name="AsyncLoadSelect"
+                             Mode="Single"
                              PlaceholderText="Please select"
                              Width="120"
-                             DefaultValues="lucy"
-                             OptionsLoader="{Binding SelectOptionsAsyncLoader}">
+                             DefaultValues="lucy">
                     <atom:SelectOption Header="Lucy" Content="lucy" />
                 </atom:Select>
         
@@ -36,9 +35,11 @@
                     <atom:SelectOption Header="Lucy" Content="lucy" />
                 </atom:Select>
         
-                <atom:Select Mode="Single" PlaceholderText="Please select" IsAllowClear="True" Width="120"
-                             OptionsSource="{Binding BasicSelectedOptions}"
-                             SelectedOptions="{Binding DefaultSelectedOptions}" />
+                <atom:Select Name="DefaultSelectedSelect"
+                             Mode="Single" 
+                             PlaceholderText="Please select" 
+                             IsAllowClear="True"
+                             Width="120"/>
         
             </WrapPanel>
         </gallery:ShowCaseItem>
@@ -71,20 +72,18 @@
             Title="multiple selection"
             Description="Multiple selection, selecting from existing items.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Select Mode="Multiple"
+                <atom:Select Name="MultiSelect1"
+                             Mode="Multiple"
                              PlaceholderText="Select a person"
                              IsAllowClear="True"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding RandomOptions}"
                              DefaultValues="a10, c12" />
-                <atom:Select Mode="Multiple"
+                <atom:Select Name="MultiSelect2"
+                             Mode="Multiple"
                              PlaceholderText="Select a person"
                              IsAllowClear="True"
                              HorizontalAlignment="Stretch"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding RandomOptions}"
                              DefaultValues="a10, c12"
                              IsEnabled="False" />
             </StackPanel>
@@ -94,12 +93,11 @@
             Title="Tags"
             Description="Allow user to select tags from list or input custom tag.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Select Mode="Tags"
+                <atom:Select Name="TagsModeSelect"
+                             Mode="Tags"
                              PlaceholderText="Tags Mode"
                              HorizontalAlignment="Stretch"
-                             IsFilterEnabled="False"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding RandomOptions}" />
+                             IsFilterEnabled="False"/>
             </StackPanel>
         </gallery:ShowCaseItem>
         
@@ -114,23 +112,21 @@
                     <atom:OptionButton Tag="{x:Static atom:SizeType.Small}">Small</atom:OptionButton>
                 </atom:OptionButtonGroup>
         
-                <atom:Select Mode="Single"
+                <atom:Select Name="SizeSelect1"
+                             Mode="Single"
                              SizeType="{Binding SelectSizeType}"
                              PlaceholderText="Select a person"
                              IsFilterEnabled="False"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding RandomOptions}"
                              DefaultValues="a10"
                              Width="200" />
         
                 <atom:Select Mode="Multiple"
+                             Name="SizeSelect2"
                              SizeType="{Binding SelectSizeType}"
                              PlaceholderText="Select a person"
                              IsAllowClear="True"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="False"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding RandomOptions}"
                              DefaultValues="a10, c12" />
             </StackPanel>
         
@@ -287,26 +283,23 @@
             Title="Responsive maxTagCount"
             Description="Auto collapse to tag with responsive case. Not recommend use in large form case since responsive calculation has a perf cost.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Select Mode="Multiple"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding MaxTagCountOptions}"
+                <atom:Select Name="MaxTagSelect1"
+                             Mode="Multiple"
                              PlaceholderText="Select Item..."
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
                              IsResponsiveTagMode="True" />
         
-                <atom:Select Mode="Multiple"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding MaxTagCountOptions}"
+                <atom:Select Name="MaxTagSelect2"
+                             Mode="Multiple"
                              PlaceholderText="Select Item..."
                              IsEnabled="False"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
                              IsResponsiveTagMode="True" />
         
-                <atom:Select Mode="Multiple"
-                             x:DataType="viewModels:SelectViewModel"
-                             OptionsSource="{Binding MaxTagCountOptions}"
+                <atom:Select Name="MaxTagSelect3"
+                             Mode="Multiple"
                              PlaceholderText="Select Item..."
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"

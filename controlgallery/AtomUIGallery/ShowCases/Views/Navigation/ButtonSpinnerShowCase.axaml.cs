@@ -1,4 +1,6 @@
-﻿using AtomUIGallery.ShowCases.ViewModels;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUIGallery.ShowCases.ViewModels;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using ReactiveUI;
@@ -14,6 +16,8 @@ public partial class ButtonSpinnerShowCase : ReactiveUserControl<ButtonSpinnerVi
         this.WhenActivated(disposables =>
         {
             BindSpinHandleRecursively(this);
+            Disposable.Create(() => UnBindSpinHandleRecursively(this))
+                      .DisposeWith(disposables);
         });
         InitializeComponent();
     }
@@ -25,6 +29,27 @@ public partial class ButtonSpinnerShowCase : ReactiveUserControl<ButtonSpinnerVi
             if (DataContext is ButtonSpinnerViewModel viewModel)
             {
                 spinner.Spin += viewModel.HandleSpin;
+            }
+        }
+        else
+        {
+            foreach (var item in control.GetVisualChildren())
+            {
+                if (item is Control childControl)
+                {
+                    BindSpinHandleRecursively(childControl);
+                }
+            }
+        }
+    }
+    
+    private void UnBindSpinHandleRecursively(Control control)
+    {
+        if (control is ButtonSpinner spinner)
+        {
+            if (DataContext is ButtonSpinnerViewModel viewModel)
+            {
+                spinner.Spin -= viewModel.HandleSpin;
             }
         }
         else

@@ -1,3 +1,5 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
@@ -11,11 +13,36 @@ public partial class MentionsShowCase : ReactiveUserControl<MentionsViewModel>
     {
         this.WhenActivated(disposables =>
         {
-            if (DataContext is MentionsViewModel vm)
+            if (DataContext is MentionsViewModel viewModel)
             {
-                InitBasicMentionOptions(vm);
-                vm.MentionTriggers          = ["@", "#"];
-                vm.MentionOptionAsyncLoader = new MentionOptionsAsyncLoader();
+                InitBasicMentionOptions(viewModel);
+                viewModel.MentionTriggers          = ["@", "#"];
+                viewModel.MentionOptionAsyncLoader = new MentionOptionsAsyncLoader();
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.BasicMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.DisabledMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.ReadonlyMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.PlacementMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.ErrorMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.WarningMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.AutoSizeMentions.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.ClearableMentions1.OptionsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v=> v.ClearableMentions2.OptionsSource)
+                    .DisposeWith(disposables);
+                
+                Disposable.Create(() =>
+                {
+                    viewModel.BasicMentionOptions      = null;
+                    viewModel.MentionTriggers          = null;
+                    viewModel.MentionOptionAsyncLoader = null;
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();
