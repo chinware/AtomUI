@@ -1,4 +1,5 @@
-﻿using AtomUIGallery.ShowCases.ViewModels;
+﻿using System.Reactive.Disposables.Fluent;
+using AtomUIGallery.ShowCases.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -8,7 +9,16 @@ public partial class QRCodeShowCase : ReactiveUserControl<QRCodeViewModel>
 {
     public QRCodeShowCase()
     {
-        this.WhenActivated(disposables => { });
+        this.WhenActivated(disposables =>
+        {
+            if (DataContext is QRCodeViewModel viewModel)
+            {
+                this.BindCommand(viewModel, vm => vm.SmallerCommand, v => v.SmallerBtn)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.LargerCommand, v => v.LargerBtn)
+                    .DisposeWith(disposables);
+            }
+        });
         InitializeComponent();
     }
 }

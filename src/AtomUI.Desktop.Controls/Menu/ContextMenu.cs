@@ -89,6 +89,7 @@ public class ContextMenu : AvaloniaContextMenu,
     #endregion
     
     private Popup? _popup;
+    private WindowBase? _attachedWindow;
 
     public ContextMenu()
     {
@@ -136,12 +137,15 @@ public class ContextMenu : AvaloniaContextMenu,
         {
             if (popupRoot.ParentTopLevel is WindowBase window)
             {
-                window.Deactivated += (sender, args) =>
-                {
-                    Close();
-                };
+                _attachedWindow    =  window;
+                window.Deactivated += HandleWindowDeactivated;
             }
         }
+    }
+    
+    private void HandleWindowDeactivated(object? sender, EventArgs e)
+    {
+        Close();
     }
     
     private bool MenuPopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
@@ -282,6 +286,11 @@ public class ContextMenu : AvaloniaContextMenu,
                 }
             }
             _popup.IsMotionAwareOpen = false;
+        }
+
+        if (_attachedWindow != null)
+        {
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
         }
     }
 

@@ -209,6 +209,7 @@ public class ComboBox : AvaloniaComboBox,
     
     private Popup? _popup;
     private Window? _attachedWindow;
+    private AddOnDecoratedBox? _addOnDecoratedBox;
 
     public ComboBox()
     {
@@ -223,20 +224,30 @@ public class ComboBox : AvaloniaComboBox,
 
         if (_popup != null)
         {
-            _popup.ClickHidePredicate  =  PopupClosePredicate;
+            _popup.ClickHidePredicate = PopupClosePredicate;
         }
         
         _popup = e.NameScope.Find<Popup>(ComboBoxThemeConstants.PopupPart);
         
         if (_popup != null)
         {
-            _popup.ClickHidePredicate  =  PopupClosePredicate;
+            _popup.ClickHidePredicate = PopupClosePredicate;
         }
-
-        var addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        if (addOnDecoratedBox != null)
+        if (_addOnDecoratedBox != null)
         {
-            if (addOnDecoratedBox.ContentRightAddOn is Control rightAddOn)
+            if (_addOnDecoratedBox.ContentRightAddOn is Control rightAddOn)
+            {
+                var handle = rightAddOn.FindDescendantOfType<ComboBoxHandle>();
+                if (handle != null)
+                {
+                    handle.HandleClick -= HandleOpenPopupClicked;
+                }
+            }
+        }
+        _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (_addOnDecoratedBox != null)
+        {
+            if (_addOnDecoratedBox.ContentRightAddOn is Control rightAddOn)
             {
                 var handle = rightAddOn.FindDescendantOfType<ComboBoxHandle>();
                 if (handle != null)

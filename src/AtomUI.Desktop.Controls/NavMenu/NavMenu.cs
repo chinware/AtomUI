@@ -278,8 +278,6 @@ public class NavMenu : ItemsControl,
                     BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon), menuItem, NavMenuItem.IconProperty);
                     BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled), menuItem,
                         NavMenuItem.IsEnabledProperty);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Command), menuItem, NavMenuItem.CommandProperty);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.CommandParameter), menuItem, NavMenuItem.CommandParameterProperty);
                     menuItem.ItemKey = menuNode.ItemKey;
                 }
             }

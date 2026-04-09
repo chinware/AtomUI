@@ -320,9 +320,11 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         _inputManagerSubscription?.Dispose();
         _inputManagerSubscription = null;
 
-        Menu            = null;
-        _root           = null;
-        _attachedWindow = null;
+        Menu                = null;
+        _root               = null;
+        _attachedWindow     = null;
+        _latestClickedItem  = null;
+        _latestSelectedItem = null;
     }
     
     internal void Click(INavMenuItem item)

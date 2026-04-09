@@ -176,9 +176,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     
     protected virtual IList<DrawingInstruction> DrawingInstructions { get; } = Array.Empty<DrawingInstruction>();
     protected Rect ViewBox;
-
-    // private Animation? _animation;
-    // private CancellationTokenSource? _animationCancellationTokenSource;
+    
     protected readonly IBrush?[] DrawBrushes = new IBrush[5];
     protected readonly Pen?[] DrawPens = new Pen?[5];
     private Style? _animationStyle;
@@ -433,7 +431,6 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     {
         base.OnLoaded(e);
         ConfigureTransitions(false);
-        SetupRotateAnimation(false);
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
@@ -444,6 +441,23 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         {
             Styles.Remove(_animationStyle);  
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupRotateAnimation(false);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (_animationStyle != null)
+        {
+            Styles.Remove(_animationStyle);  
+        }
+
+        _animationStyle = null;
     }
 
     public override void Render(DrawingContext context)

@@ -65,11 +65,14 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     }
     
     #endregion
+    
+    private TopLevel? _topLevel;
 
     public WindowNotificationManager(TopLevel? host) : this()
     {
         if (host is not null)
         {
+            _topLevel = host;
             InstallFromTopLevel(host);
         }
     }
@@ -213,6 +216,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     {
         base.OnAttachedToVisualTree(e);
         ConfigureExpiredTimer();
+        if (_topLevel is not null)
+        {
+            _topLevel.TemplateApplied += TopLevelOnTemplateApplied;
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -221,6 +228,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         _items?.Clear();
         _cardExpiredTimer.Stop();
         _cleanupTimer.Stop();
+        if (_topLevel is not null)
+        {
+            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+        }
     }
     
     private void InstallFromTopLevel(TopLevel topLevel)

@@ -21,6 +21,20 @@ public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
                     .DisposeWith(disposables);
                 this.OneWayBind(viewModel, vm => vm.DefaultCheckBoxOptions, v => v.BasicCheckBoxGroup.CheckedItems)
                     .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.CheckStatusCommand, v => v.CheckStatusBtn)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.EnableStatusCommand, v => v.EnableStatusBtn)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.CheckBoxCommand, v => v.ControlledCheckbox)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.CheckedAllStatusCommand, v => v.CheckAllCheckbox)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand1, v => v.AppleCheckBox)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand2, v => v.PearCheckBox)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand3, v => v.OrangeCheckBox)
+                    .DisposeWith(disposables);
                 
                 Disposable.Create(() =>
                 {

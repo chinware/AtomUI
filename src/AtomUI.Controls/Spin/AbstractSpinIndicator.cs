@@ -138,6 +138,7 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
     {
         base.OnDetachedFromVisualTree(e);
         _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

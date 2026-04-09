@@ -13,9 +13,9 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     public void Attach(NavMenu navMenu) => AttachCore(navMenu);
     public void Detach(NavMenu navMenu) => DetachCore(navMenu);
 
-    private bool _currentPressedIsValid = false;
-    private NavMenuItem? _latestSelectedItem = null;
-    private NavMenuItem? _latestClickedItem = null;
+    private bool _currentPressedIsValid;
+    private NavMenuItem? _latestSelectedItem;
+    private NavMenuItem? _latestClickedItem;
 
     internal void AttachCore(INavMenu navMenu)
     {
@@ -37,6 +37,8 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
         Menu                 =  null;
+        _latestSelectedItem  =  null;
+        _latestClickedItem   =  null;
     }
     
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)

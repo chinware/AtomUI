@@ -74,6 +74,7 @@ internal class FlyoutStateHelper : AvaloniaObject
     private DispatcherTimer? _mouseLeaveDelayTimer;
     private IDisposable? _flyoutCloseDetectDisposable;
     private CompositeDisposable? _subscriptions;
+    private PopupRoot? _popupRoot;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -105,22 +106,25 @@ internal class FlyoutStateHelper : AvaloniaObject
             var host = popupHostProvider.PopupHost;
             if (host is PopupRoot popupRoot)
             {
+                _popupRoot = popupRoot;
                 // 这里 PopupRoot 关闭的时候会被关闭，所以这里的事件处理器是不是不需要删除
                 if (TriggerType == FlyoutTriggerType.Hover)
                 {
-                    popupRoot.PointerMoved += (o, args) =>
-                    {
-                        StopMouseLeaveTimer();
-                        if (_flyoutCloseDetectDisposable is null)
-                        {
-                            var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
-                            _flyoutCloseDetectDisposable = inputManager?.Process.Subscribe(DetectWhenToClosePopup);
-                        }
-                    };
+                    popupRoot.PointerMoved += HandlePopupRootPointerMoved;
                 }
             }
         }
         FlyoutOpened?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void HandlePopupRootPointerMoved(object? sender, PointerEventArgs e)
+    {
+        StopMouseLeaveTimer();
+        if (_flyoutCloseDetectDisposable is null)
+        {
+            var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
+            _flyoutCloseDetectDisposable = inputManager?.Process.Subscribe(DetectWhenToClosePopup);
+        }
     }
 
     private void HandleFlyoutClosed(object? sender, EventArgs e)
@@ -130,6 +134,11 @@ internal class FlyoutStateHelper : AvaloniaObject
         _flyoutCloseDetectDisposable?.Dispose();
         _flyoutCloseDetectDisposable = null;
         StopMouseEnterTimer();
+        if (_popupRoot != null)
+        {
+            _popupRoot.PointerMoved -= HandlePopupRootPointerMoved;
+            _popupRoot              =  null;
+        }
     }
 
     private void StartMouseEnterTimer()
@@ -196,6 +205,15 @@ internal class FlyoutStateHelper : AvaloniaObject
         StopMouseLeaveTimer();
         StopMouseEnterTimer();
         _subscriptions?.Dispose();
+        _subscriptions = null;
+        
+        _flyoutCloseDetectDisposable?.Dispose();
+        _flyoutCloseDetectDisposable = null;
+        if (_popupRoot != null)
+        {
+            _popupRoot.PointerMoved -= HandlePopupRootPointerMoved;
+            _popupRoot              =  null;
+        }
     }
 
     private void SetupTriggerHandler()

@@ -79,12 +79,12 @@
                               Description="自定义尺寸">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,16">
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
-                                 Command="{Binding SmallerCommand}">
+                    <atom:Button Name="SmallerBtn" 
+                                 Icon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}">
                         Smaller
                     </atom:Button>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider Kind=PlusOutlined}"
-                                 Command="{Binding LargerCommand}">
+                    <atom:Button Name="LargerBtn" 
+                                 Icon="{antdicons:AntDesignIconProvider Kind=PlusOutlined}">
                         Larger
                     </atom:Button>
                 </StackPanel>

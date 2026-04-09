@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -12,9 +13,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 [TemplatePart("PART_Items", typeof(Panel))]
-public class WindowMessageManager : TemplatedControl,
-                                    IMessageManager,
-                                    IMotionAwareControl
+public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAwareControl, IDisposable
 {
     #region 公共属性定义
 
@@ -25,8 +24,8 @@ public class WindowMessageManager : TemplatedControl,
         AvaloniaProperty.Register<WindowMessageManager, NotificationPosition>(
             nameof(Position), NotificationPosition.TopRight);
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty
-        = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowMessageManager>();
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<WindowMessageManager>();
 
     /// <summary>
     /// Defines which corner of the screen notifications can be displayed in.
@@ -42,7 +41,7 @@ public class WindowMessageManager : TemplatedControl,
     /// Defines the <see cref="MaxItems" /> property.
     /// </summary>
     public static readonly StyledProperty<int> MaxItemsProperty =
-        AvaloniaProperty.Register<WindowNotificationManager, int>(nameof(MaxItems), 5);
+        AvaloniaProperty.Register<WindowMessageManager, int>(nameof(MaxItems), 5);
 
     /// <summary>
     /// Defines the maximum number of notifications visible at once.
@@ -62,6 +61,9 @@ public class WindowMessageManager : TemplatedControl,
     #endregion
 
     private IList? _items;
+    private TopLevel? _topLevel;
+    private bool _isDisposed;
+    private AdornerLayer? _adornerLayer;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
@@ -73,6 +75,7 @@ public class WindowMessageManager : TemplatedControl,
 
         if (host is not null)
         {
+            _topLevel = host;
             InstallFromTopLevel(host);
         }
     }
@@ -140,31 +143,85 @@ public class WindowMessageManager : TemplatedControl,
             return;
         }
 
-        DispatcherTimer.RunOnce(() => messageControl.Close(), expiration);
+        DispatcherTimer.RunOnce(messageControl.Close, expiration);
     }
     
     private void InstallFromTopLevel(TopLevel topLevel)
     {
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
-        var adorner = topLevel.FindDescendantOfType<VisualLayerManager>()?.AdornerLayer;
-        if (adorner is not null)
+        _adornerLayer = topLevel.FindDescendantOfType<VisualLayerManager>()?.AdornerLayer;
+        if (_adornerLayer is not null)
         {
-            adorner.Children.Add(this);
-            AdornerLayer.SetAdornedElement(this, adorner);
+            _adornerLayer.Children.Add(this);
+            AdornerLayer.SetAdornedElement(this, _adornerLayer);
+        }
+    }
+
+    private void UninstallFromTopLevel()
+    {
+        if (_topLevel is null || _isDisposed)
+        {
+            return;
+        }
+
+        try
+        {
+            // 卸载事件订阅
+            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+
+            // 从 AdornerLayer 中移除
+            if (_adornerLayer is not null)
+            {
+                _adornerLayer.Children.Remove(this);
+                AdornerLayer.SetAdornedElement(this, null);
+                _adornerLayer = null;
+            }
+
+            _topLevel   = null;
+            _items      = null;
+            _isDisposed = true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error uninstalling from TopLevel: {ex.Message}");
         }
     }
 
     private void TopLevelOnTemplateApplied(object? sender, TemplateAppliedEventArgs e)
     {
-        if (Parent is AdornerLayer adornerLayer)
+        if (_adornerLayer is not null)
         {
-            adornerLayer.Children.Remove(this);
+            _adornerLayer.Children.Remove(this);
             AdornerLayer.SetAdornedElement(this, null);
         }
-
+        _adornerLayer = null;
         // Reinstall notification manager on template reapplied.
         var topLevel = (TopLevel)sender!;
         topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         InstallFromTopLevel(topLevel);
     }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        UninstallFromTopLevel();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+       
+        if (_topLevel is not null && !_isDisposed)
+        {
+            _topLevel.TemplateApplied += TopLevelOnTemplateApplied;
+        }
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+        UninstallFromTopLevel();
+    }
+
+    public void Dispose() => UninstallFromTopLevel();
 }

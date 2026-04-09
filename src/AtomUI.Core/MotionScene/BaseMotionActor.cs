@@ -174,7 +174,14 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
 
         ApplyMotionTransform();
     }
-    
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _transformChangedEventDisposable?.Dispose();
+        _transformChangedEventDisposable = null;
+    }
+
     public virtual void NotifyMotionPreStart()
     {
         RaiseEvent(new RoutedEventArgs(PreStartEvent, this));
@@ -216,6 +223,6 @@ public abstract class BaseMotionActor : ContentControl, IMotionActor
 
     public void UnFollow()
     {
-        _followTarget      = this;
+        _followTarget = this;
     }
 }

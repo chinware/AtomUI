@@ -615,7 +615,7 @@ public abstract class PopupFlyoutBase : FlyoutBase, IPopupHostProvider
         _popupHostChangedHandler?.Invoke(null);
         if (_attachedWindow != null)
         {
-            _attachedWindow.Deactivated += HandleWindowDeactivated;
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
         }
         _attachedWindow = null;
     }
