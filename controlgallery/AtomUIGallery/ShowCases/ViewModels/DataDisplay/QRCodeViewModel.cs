@@ -1,4 +1,5 @@
-﻿using System.Reactive;
+﻿using System.Collections;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using ReactiveUI;
@@ -35,9 +36,9 @@ public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
 
     public int IconSize => _iconSize.Value;
 
-    private List<QRCodeEccLevel> _eccLevels = [];
+    private IList? _eccLevels;
 
-    public List<QRCodeEccLevel> EccLevels
+    public IList? EccLevels
     {
         get => _eccLevels;
         set => this.RaiseAndSetIfChanged(ref _eccLevels, value);
@@ -53,13 +54,6 @@ public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
         var largerCanExecute  = this.WhenAnyValue(x => x.Size, size => size < MaxSize);
         SmallerCommand = ReactiveCommand.Create<Button>(_ => { Size -= 10; }, smallerCanExecute);
         LargerCommand  = ReactiveCommand.Create<Button>(_ => { Size += 10; }, largerCanExecute);
-        EccLevels =
-        [
-            QRCodeEccLevel.L,
-            QRCodeEccLevel.M,
-            QRCodeEccLevel.Q,
-            QRCodeEccLevel.H
-        ];
         _iconSize = this.WhenAnyValue(x => x.Size, size => size / 4).ToProperty(this, x => x.IconSize);
     }
 }

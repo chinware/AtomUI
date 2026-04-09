@@ -47,5 +47,11 @@
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="SelectedThumbCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
         </Style>
+        
+        <Setter Property="ItemTemplate">
+            <DataTemplate>
+                <atom:TextBlock Text="{Binding}" />
+            </DataTemplate>
+        </Setter>
     </ControlTheme>
 </ResourceDictionary>

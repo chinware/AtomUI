@@ -153,7 +153,7 @@ public class CaseNavigationViewModel : ReactiveObject
         }
 
         var viewModel = viewModelFactory();
-        HostScreen.Router.Navigate.Execute(viewModel);
+        HostScreen.Router.NavigateAndReset.Execute(viewModel);
     }
     
     private static int _currentShowCaseIdx = 0;

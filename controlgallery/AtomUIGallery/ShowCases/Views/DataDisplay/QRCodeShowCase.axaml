@@ -106,8 +106,8 @@
                               Description="通过设置 errorLevel 调整不同的容错等级。">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:QRCode Value="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-                             EccLevel="{Binding #EccLevel.SelectedItem}" />
-                <atom:Segmented Name="EccLevel" ItemsSource="{Binding EccLevels}" />
+                             EccLevel="{Binding #EccLevelSegmented.SelectedItem}" />
+                <atom:Segmented Name="EccLevelSegmented" />
             </StackPanel>
         </gallery:ShowCaseItem>
         <gallery:ShowCaseItem Title="高级用法"

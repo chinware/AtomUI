@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:SegmentedItem}" TargetType="atom:SegmentedItem">
         <Setter Property="Template">
             <ControlTemplate>
@@ -18,7 +17,7 @@
                         <ContentPresenter Name="Content"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
-                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                          Content="{TemplateBinding Content}"
                                           IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </DockPanel>
