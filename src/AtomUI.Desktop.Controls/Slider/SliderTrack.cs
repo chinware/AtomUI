@@ -400,6 +400,7 @@ public class SliderTrack : TemplatedControl
     {
         base.OnDetachedFromVisualTree(e);
         _focusProcessDisposable?.Dispose();
+        _focusProcessDisposable = null;
     }
 
     private void HandleGlobalMousePressed(Point point)

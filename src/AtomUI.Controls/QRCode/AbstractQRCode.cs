@@ -7,7 +7,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
-using Avalonia.VisualTree;
 using SkiaSharp;
 using SkiaSharp.QrCode;
 using static System.Enum;
@@ -235,16 +234,13 @@ public class AbstractQRCode : TemplatedControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == ValueProperty || 
+            change.Property == ColorProperty || 
+            change.Property == BackgroundProperty || 
+            change.Property == EccLevelProperty || 
+            change.Property == SizeProperty)
         {
-            if (change.Property == ValueProperty || 
-                change.Property == ColorProperty || 
-                change.Property == BackgroundProperty || 
-                change.Property == EccLevelProperty || 
-                change.Property == SizeProperty)
-            {
-                SetupQRCode();
-            }
+            SetupQRCode();
         }
     }
 }

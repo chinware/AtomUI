@@ -7,7 +7,7 @@
     <ControlTheme x:Key="{x:Type atom:WindowNotificationManager}" TargetType="atom:WindowNotificationManager">
         <Setter Property="Template">
             <ControlTemplate>
-                <ReversibleStackPanel Name="{x:Static atom:WindowNotificationManagerThemeConstants.ItemsPart}"/>
+                <ReversibleStackPanel Name="PART_Items"/>
             </ControlTemplate>
         </Setter>
         

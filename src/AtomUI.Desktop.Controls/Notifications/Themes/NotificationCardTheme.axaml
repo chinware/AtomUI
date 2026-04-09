@@ -15,22 +15,22 @@
                         <Grid ColumnDefinitions="Auto, *"
                               RowDefinitions="Auto, *, Auto">
                             <atom:IconPresenter
-                                Name="{x:Static atom:NotificationCardThemeConstants.IconPresenterPart}"
+                                Name="IconPresenter"
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                 Icon="{TemplateBinding Icon}" />
                             <DockPanel
-                                Name="{x:Static atom:NotificationCardThemeConstants.HeaderContainerPart}"
+                                Name="HeaderContainer"
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 LastChildFill="True">
                                 <atom:IconButton
-                                    Name="{x:Static atom:NotificationCardThemeConstants.CloseButtonPart}"
+                                    Name="PART_CloseButton"
                                     Icon="{antdicons:AntDesignIconProvider Kind=CloseOutlined}"
                                     DockPanel.Dock="Right" />
                                 <atom:SelectableTextBlock
-                                    Name="{x:Static atom:NotificationCardThemeConstants.HeaderTitlePart}"
+                                    Name="HeaderTitle"
                                     Text="{TemplateBinding Title}" />
                             </DockPanel>
 
@@ -128,7 +128,7 @@
             <Setter Property="Margin" Value="0" />
         </Style>
         
-        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="Width"
                     Value="{atom:NotificationTokenResource NotificationIconSize}" />
             <Setter Property="Height"
@@ -136,34 +136,34 @@
         </Style>
 
         <Style Selector="^[NotificationType=Information]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
         <Style Selector="^[NotificationType=Error]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         </Style>
 
         <Style Selector="^[NotificationType=Success]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorSuccess}" />
             </Style>
         </Style>
 
         <Style Selector="^[NotificationType=Warning]">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorWarning}" />
             </Style>
         </Style>
         
-        <Style Selector="^ /template/ atom|SelectableTextBlock#PART_HeaderTitle">
+        <Style Selector="^ /template/ atom|SelectableTextBlock#HeaderTitle">
             <Setter Property="LineHeight"
                     Value="{atom:SharedTokenResource FontHeightLG}" />
             <Setter Property="FontSize"
@@ -171,12 +171,12 @@
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorTextHeading}" />
         </Style>
-        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="Margin"
                     Value="{atom:NotificationTokenResource NotificationIconMargin}" />
         </Style>
 
-        <Style Selector="^ /template/ DockPanel#PART_HeaderContainer">
+        <Style Selector="^ /template/ DockPanel#HeaderContainer">
             <Setter Property="Margin"
                     Value="{atom:NotificationTokenResource HeaderMargin}" />
         </Style>

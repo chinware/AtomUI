@@ -265,6 +265,8 @@ internal class TimeView : TemplatedControl
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
         _spacerWidthDisposable?.Dispose();
+        _pointerPositionDisposable = null;
+        _spacerWidthDisposable     = null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

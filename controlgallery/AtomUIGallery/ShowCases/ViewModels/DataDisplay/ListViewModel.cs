@@ -1,6 +1,5 @@
 ﻿using AtomUI.Controls;
 using AtomUI.Controls.Data;
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using ReactiveUI;
 

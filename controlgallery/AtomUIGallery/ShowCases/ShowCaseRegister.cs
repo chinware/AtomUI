@@ -3,7 +3,6 @@ using AtomUIGallery.ShowCases.Views;
 using ReactiveUI;
 using Splat;
 
-
 namespace AtomUIGallery.ShowCases;
 
 internal static class ShowCaseRegister

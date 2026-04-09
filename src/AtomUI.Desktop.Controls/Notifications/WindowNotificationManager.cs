@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,16 +11,14 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-[TemplatePart(WindowNotificationManagerThemeConstants.ItemsPart, typeof(Panel))]
+[TemplatePart("PART_Items", typeof(Panel))]
 [PseudoClasses(NotificationPseudoClass.TopLeft, 
     NotificationPseudoClass.TopRight,
     NotificationPseudoClass.BottomLeft,
     NotificationPseudoClass.BottomRight, 
     NotificationPseudoClass.TopCenter,
     NotificationPseudoClass.BottomCenter)]
-public class WindowNotificationManager : TemplatedControl, 
-                                         INotificationManager,
-                                         IMotionAwareControl
+public class WindowNotificationManager : TemplatedControl, INotificationManager, IMotionAwareControl
 {
     private IList? _items;
     private readonly Queue<NotificationCard> _cleanupQueue;
@@ -91,18 +87,14 @@ public class WindowNotificationManager : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-
-        var itemsControl = e.NameScope.Find<Panel>(WindowNotificationManagerThemeConstants.ItemsPart);
+        var itemsControl = e.NameScope.Find<Panel>("PART_Items");
         _items = itemsControl?.Children;
-        if (itemsControl is not null)
-        {
-            itemsControl.Children.CollectionChanged += HandleCollectionChanged;
-        }
+        UpdatePseudoClasses(Position);
     }
 
     private void HandleCardExpiredTimer(object? sender, EventArgs eventArgs)
     {
-        if (_items is not null)
+        if (_items != null)
         {
             foreach (var item in _items)
             {
@@ -144,18 +136,15 @@ public class WindowNotificationManager : TemplatedControl,
         }
     }
 
-    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    private void ConfigureExpiredTimer()
     {
-        if (_items is not null)
+        if (_items?.Count > 0)
         {
-            if (_items.Count > 0)
-            {
-                _cardExpiredTimer.Start();
-            }
-            else
-            {
-                _cardExpiredTimer.Stop();
-            }
+            _cardExpiredTimer.Start();
+        }
+        else
+        {
+            _cardExpiredTimer.Stop();
         }
     }
 
@@ -188,18 +177,21 @@ public class WindowNotificationManager : TemplatedControl,
         }
 
         notificationControl.PointerPressed += (sender, args) => { onClick?.Invoke(); };
-
         notificationControl.NotificationClosed += (sender, args) =>
         {
             onClose?.Invoke();
             _bindingDisposable?.Dispose();
-            _items?.Remove(sender);
+            if (sender is NotificationCard card)
+            {
+                _items?.Remove(card);
+                ConfigureExpiredTimer();
+            }
         };
 
         Dispatcher.UIThread.Post(() =>
         {
             _items?.Add(notificationControl);
-
+            ConfigureExpiredTimer();
             if (_items?.OfType<NotificationCard>().Count(i => !i.IsClosing) > MaxItems)
             {
                 _items.OfType<NotificationCard>().First(i => !i.IsClosing).Close();
@@ -220,9 +212,17 @@ public class WindowNotificationManager : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        UpdatePseudoClasses(Position);
+        ConfigureExpiredTimer();
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _items?.Clear();
+        _cardExpiredTimer.Stop();
+        _cleanupTimer.Stop();
+    }
+    
     private void InstallFromTopLevel(TopLevel topLevel)
     {
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;

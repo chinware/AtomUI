@@ -223,6 +223,7 @@ public class AbstractRate : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
         _pointerEventHandleDisposable?.Dispose();
+        _pointerEventHandleDisposable = null;
     }
     
     private void HandleGlobalPointerEvent(RawInputEventArgs args)
