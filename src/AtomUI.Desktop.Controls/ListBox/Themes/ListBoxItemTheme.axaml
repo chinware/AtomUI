@@ -11,7 +11,7 @@
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Padding="{TemplateBinding Padding}">
                 <DockPanel LastChildFill="True">
-                    <atom:IconPresenter
+                    <atom:IconTemplatePresenter
                         Name="SelectedIndicator"
                         IconTemplate="{TemplateBinding SelectedIndicator}"
                         IsVisible="{TemplateBinding IsSelectedIndicatorVisible}"

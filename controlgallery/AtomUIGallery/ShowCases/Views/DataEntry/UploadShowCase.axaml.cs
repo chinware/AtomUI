@@ -192,14 +192,18 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (_messageManager == null)
+        var topLevel = TopLevel.GetTopLevel(this);
+        _messageManager = new WindowMessageManager(topLevel)
         {
-            var topLevel = TopLevel.GetTopLevel(this);
-            _messageManager = new WindowMessageManager(topLevel)
-            {
-                MaxItems = 10
-            };
-        }
+            MaxItems = 10
+        };
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _messageManager?.Dispose();
+        _messageManager = null;
     }
 
     private void HandleAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)

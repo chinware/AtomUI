@@ -62,6 +62,13 @@ public partial class BreadcrumbShowCase : ReactiveUserControl<BreadcrumbViewMode
         };
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _messageManager?.Dispose();
+        _messageManager = null;
+    }
+
     private void HandleNavigateRequest(object? sender, BreadcrumbNavigateEventArgs eventArgs)
     {
         _messageManager?.Show(new Message(

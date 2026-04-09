@@ -28,6 +28,13 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
         };
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _messageManager?.Dispose();
+        _messageManager = null;
+    }
+
     private void ShowSimpleMessage(object? sender, RoutedEventArgs e)
     {
         _messageManager?.Show(new Message(

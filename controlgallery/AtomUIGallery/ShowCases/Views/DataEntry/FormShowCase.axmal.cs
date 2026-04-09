@@ -141,6 +141,7 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _messageManager?.Dispose();
         _messageManager = null;
     }
 

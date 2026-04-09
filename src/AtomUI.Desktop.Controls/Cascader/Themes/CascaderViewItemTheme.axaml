@@ -47,7 +47,7 @@
                                       VerticalContentAlignment="Center"
                                       Content="{TemplateBinding Header}"
                                       ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                    <atom:IconPresenter Name="ExpandIconPresenter" Grid.Column="3"
+                    <atom:IconTemplatePresenter Name="ExpandIconPresenter" Grid.Column="3"
                                         IconTemplate="{TemplateBinding ExpandIcon}"
                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <atom:IconPresenter.IsVisible>
@@ -58,10 +58,10 @@
                                          Path="IsLoading" />
                             </MultiBinding>
                         </atom:IconPresenter.IsVisible>
-                    </atom:IconPresenter>
-                    <atom:IconPresenter Name="LoadingIconPresenter" Grid.Column="3"
-                                        IsVisible="{TemplateBinding IsLoading}"
-                                        IconTemplate="{TemplateBinding LoadingIcon}" />
+                    </atom:IconTemplatePresenter>
+                    <atom:IconTemplatePresenter Name="LoadingIconPresenter" Grid.Column="3"
+                                                IsVisible="{TemplateBinding IsLoading}"
+                                                IconTemplate="{TemplateBinding LoadingIcon}" />
                 </Grid>
             </Border>
         </ControlTemplate>

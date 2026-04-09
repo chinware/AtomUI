@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,14 +17,8 @@ namespace AtomUI.Desktop.Controls;
     NotificationPseudoClass.BottomRight, 
     NotificationPseudoClass.TopCenter,
     NotificationPseudoClass.BottomCenter)]
-public class WindowNotificationManager : TemplatedControl, INotificationManager, IMotionAwareControl
+public class WindowNotificationManager : TemplatedControl, INotificationManager, IMotionAwareControl, IDisposable
 {
-    private IList? _items;
-    private readonly Queue<NotificationCard> _cleanupQueue;
-    private readonly DispatcherTimer _cardExpiredTimer;
-    private readonly DispatcherTimer _cleanupTimer;
-    private IDisposable? _bindingDisposable;
-
     #region 公共属性定义
     public static readonly StyledProperty<NotificationPosition> PositionProperty =
         AvaloniaProperty.Register<WindowNotificationManager, NotificationPosition>(
@@ -67,6 +60,12 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     #endregion
     
     private TopLevel? _topLevel;
+    private bool _isDisposed;
+    private AdornerLayer? _adornerLayer;
+    private IList? _items;
+    private readonly Queue<NotificationCard> _cleanupQueue;
+    private readonly DispatcherTimer _cardExpiredTimer;
+    private readonly DispatcherTimer _cleanupTimer;
 
     public WindowNotificationManager(TopLevel? host) : this()
     {
@@ -153,6 +152,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
 
     public void Show(INotification notification, string[]? classes = null)
     {
+        if (_items is null)
+        {
+            return;
+        }
         var expiration = notification.Expiration;
         var onClick    = notification.OnClick;
         var onClose    = notification.OnClose;
@@ -167,11 +170,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             Expiration       = expiration == TimeSpan.Zero ? null : expiration,
             IsShowProgress   = notification.ShowProgress
         };
-        _bindingDisposable?.Dispose();
-        _bindingDisposable = BindUtils.RelayBind(this, PositionProperty, notificationControl, NotificationCard.PositionProperty);
-
+        notificationControl[!NotificationCard.PositionProperty] = this[!PositionProperty];
+        
         // Add style classes if any
-        if (classes != null)
+        if (classes?.Length > 0)
         {
             foreach (var cls in classes)
             {
@@ -179,11 +181,10 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             }
         }
 
-        notificationControl.PointerPressed += (sender, args) => { onClick?.Invoke(); };
-        notificationControl.NotificationClosed += (sender, args) =>
+        notificationControl.PointerPressed += (_, _) => { onClick?.Invoke(); };
+        notificationControl.NotificationClosed += (sender, _) =>
         {
             onClose?.Invoke();
-            _bindingDisposable?.Dispose();
             if (sender is NotificationCard card)
             {
                 _items?.Remove(card);
@@ -195,11 +196,26 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         {
             _items?.Add(notificationControl);
             ConfigureExpiredTimer();
-            if (_items?.OfType<NotificationCard>().Count(i => !i.IsClosing) > MaxItems)
-            {
-                _items.OfType<NotificationCard>().First(i => !i.IsClosing).Close();
-            }
+            RemoveExcessNotifications();
         });
+    }
+    
+    /// <summary>
+    /// Removes excess notifications when the count exceeds MaxItems.
+    /// </summary>
+    private void RemoveExcessNotifications()
+    {
+        var visibleNotifications = _items!.OfType<NotificationCard>().Where(n => !n.IsClosing).ToList();
+        var excessCount          = visibleNotifications.Count - MaxItems;
+
+        if (excessCount > 0)
+        {
+            // 支持关闭多个超限的通知，而不仅仅是一个
+            for (int i = 0; i < excessCount; i++)
+            {
+                visibleNotifications[i].Close();
+            }
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -211,52 +227,71 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             UpdatePseudoClasses(change.GetNewValue<NotificationPosition>());
         }
     }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        ConfigureExpiredTimer();
-        if (_topLevel is not null)
-        {
-            _topLevel.TemplateApplied += TopLevelOnTemplateApplied;
-        }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _items?.Clear();
-        _cardExpiredTimer.Stop();
-        _cleanupTimer.Stop();
-        if (_topLevel is not null)
-        {
-            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
-        }
-    }
     
     private void InstallFromTopLevel(TopLevel topLevel)
     {
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
-        var adorner = topLevel.FindDescendantOfType<VisualLayerManager>()?.AdornerLayer;
-        if (adorner is not null)
+        _adornerLayer            =  topLevel.FindDescendantOfType<VisualLayerManager>()?.AdornerLayer;
+        if (_adornerLayer is not null)
         {
-            adorner.Children.Add(this);
-            AdornerLayer.SetAdornedElement(this, adorner);
+            _adornerLayer.Children.Add(this);
+            AdornerLayer.SetAdornedElement(this, _adornerLayer);
         }
     }
 
     private void TopLevelOnTemplateApplied(object? sender, TemplateAppliedEventArgs e)
     {
-        if (Parent is AdornerLayer adornerLayer)
-        {
-            adornerLayer.Children.Remove(this);
-            AdornerLayer.SetAdornedElement(this, null);
-        }
+        RemoveFromAdornerLayer();
 
         // Reinstall notification manager on template reapplied.
         var topLevel = (TopLevel)sender!;
         topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         InstallFromTopLevel(topLevel);
+    }
+    
+    private void RemoveFromAdornerLayer()
+    {
+        if (_adornerLayer is not null)
+        {
+            _adornerLayer.Children.Remove(this);
+            AdornerLayer.SetAdornedElement(this, null);
+            _adornerLayer = null;
+        }
+    }
+    
+    public void Dispose()
+    {
+        if (_topLevel is null || _isDisposed)
+        {
+            return;
+        }
+
+        try
+        {
+            _cleanupTimer.Stop();
+            _cardExpiredTimer.Stop();
+            _items?.Clear();
+            _cleanupQueue.Clear();
+            // 卸载事件订阅
+            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+
+            // 从 AdornerLayer 中移除
+            if (_adornerLayer is not null)
+            {
+                _adornerLayer.Children.Remove(this);
+                AdornerLayer.SetAdornedElement(this, null);
+                _adornerLayer = null;
+            }
+            
+            _topLevel     = null;
+            _items        = null;
+            _isDisposed   = true;
+          
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error uninstalling from TopLevel: {ex.Message}");
+        }
     }
 
     private void UpdatePseudoClasses(NotificationPosition position)
@@ -278,4 +313,5 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     {
         _cardExpiredTimer.Start();
     }
+    
 }

@@ -13,9 +13,6 @@ using IconControl = Icon;
 public class IconPresenter : Control, IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<IconTemplate?> IconTemplateProperty =
-        AvaloniaProperty.Register<IconPresenter, IconTemplate?>(nameof(IconTemplate));
-
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<IconPresenter, PathIcon?>(nameof(Icon));
     
@@ -24,12 +21,6 @@ public class IconPresenter : Control, IMotionAwareControl
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconPresenter>();
-    
-    public IconTemplate? IconTemplate
-    {
-        get => GetValue(IconTemplateProperty);
-        set => SetValue(IconTemplateProperty, value);
-    }
     
     [Content]
     public PathIcon? Icon
@@ -56,10 +47,9 @@ public class IconPresenter : Control, IMotionAwareControl
     
     static IconPresenter()
     {
-        AffectsMeasure<IconPresenter>(IconProperty, IconTemplateProperty);
+        AffectsMeasure<IconPresenter>(IconProperty);
         AffectsRender<IconPresenter>(IconBrushProperty);
         IconProperty.Changed.AddClassHandler<IconPresenter>((x, e) => x.HandleIconChanged(e));
-        IconTemplateProperty.Changed.AddClassHandler<IconPresenter>((x, e) => x.HandleIconTemplateChanged(e));
     }
     
     private void HandleIconChanged(AvaloniaPropertyChangedEventArgs change)
@@ -77,34 +67,33 @@ public class IconPresenter : Control, IMotionAwareControl
 
         if (newChild is PathIcon pathIcon)
         {
-            ConfigureIcon(pathIcon);
+            AddIcon(pathIcon);
         }
     }
 
-    private void HandleIconTemplateChanged(AvaloniaPropertyChangedEventArgs change)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        var oldIconTemplate = (IconTemplate?)change.OldValue;
-        var newIconTemplate = (IconTemplate?)change.NewValue;
-        if (oldIconTemplate != null)
+        base.OnAttachedToVisualTree(e);
+        if (Icon != null)
         {
-            _disposables?.Dispose();
-            _disposables = null;
-            if (Icon != null)
-            {
-                ((ISetLogicalParent)Icon).SetParent(null);
-            }
-            LogicalChildren.Clear();
-            VisualChildren.Clear();
+            ConfigureIcon(Icon);
         }
+    }
 
-        if (newIconTemplate != null)
-        {
-            var pathIcon = newIconTemplate.Build();
-            if (pathIcon != null)
-            {
-                ConfigureIcon(pathIcon);
-            }
-        }
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _disposables?.Dispose();
+        _disposables = null;
+    }
+
+    private void AddIcon(PathIcon pathIcon)
+    {
+        ConfigureIcon(pathIcon);
+        ((ISetLogicalParent)pathIcon).SetParent(null);
+        pathIcon.SetVisualParent(null);
+        VisualChildren.Add(pathIcon);
+        LogicalChildren.Add(pathIcon);
     }
 
     private void ConfigureIcon(PathIcon pathIcon)
@@ -123,9 +112,5 @@ public class IconPresenter : Control, IMotionAwareControl
         {
             _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, pathIcon, PathIcon.ForegroundProperty, BindingMode.Default, BindingPriority.Template));
         }
-        ((ISetLogicalParent)pathIcon).SetParent(null);
-        pathIcon.SetVisualParent(null);
-        VisualChildren.Add(pathIcon);
-        LogicalChildren.Add(pathIcon);
     }
 }

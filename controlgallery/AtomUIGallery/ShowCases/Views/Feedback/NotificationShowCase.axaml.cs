@@ -98,6 +98,18 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
         };
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _basicManager?.Dispose();
+        _topLeftManager?.Dispose();
+        _topManager?.Dispose();
+        _topRightManager?.Dispose();
+        _bottomLeftManager?.Dispose();
+        _bottomManager?.Dispose();
+        _bottomRightManager?.Dispose();
+    }
+
     private void ShowSimpleNotification(object? sender, RoutedEventArgs e)
     {
         _basicManager?.Show(new Notification(
