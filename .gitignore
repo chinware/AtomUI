@@ -198,3 +198,4 @@ output/
 cmake-build-*/
 
 controlgallery/AtomUIGallery/GeneratedFiles/Avalonia.Generators/
+.referenceprojects/
