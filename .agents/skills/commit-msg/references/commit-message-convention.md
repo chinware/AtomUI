@@ -180,7 +180,7 @@ The subject is a succinct description of the change.
 
 ---
 
-## 4. Body (Optional)
+## 4. Body (Recommended)
 
 Provides additional context when the subject line alone is insufficient.
 
