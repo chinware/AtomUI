@@ -435,7 +435,7 @@ public abstract class AbstractTag : TemplatedControl
 }
 ```
 
-模板部件名称遵循 `PART_` 前缀约定，并在 `ThemeConstants` 中定义为常量（参见 [04-ThemeFileStructure](./04-ThemeFileStructure.md)）。
+模板部件名称遵循 `PART_` 前缀约定，并在 `ThemeConstants` 中定义为常量（参见 [ThemeFileStructure](./ThemeFileStructure.md)）。
 
 ---
 

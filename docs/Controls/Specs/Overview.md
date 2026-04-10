@@ -10,12 +10,12 @@
 
 | 文档 | 内容 |
 |---|---|
-| [属性定义规范](./01-PropertyDefinitionStandards.md) | StyledProperty、DirectProperty、AttachedProperty 的选型规则、注册方式、命名约定与 CLR 包装器规范 |
-| [控件类结构规范](./02-ControlClassStructure.md) | 控件的层次继承模型、接口实现、构造函数、代码区域组织与命名空间约定 |
-| [Design Token 集成规范](./03-TokenSystemIntegration.md) | 组件 Token 定义、CalculateTokenValues 派生规则、Token 资源引用方式 |
-| [主题文件结构规范](./04-ThemeFileStructure.md) | Theme 文件夹布局、ControlTheme AXAML 结构、ThemeConstants、Themes.axaml 注册 |
-| [伪类定义规范](./05-PseudoClassConventions.md) | 伪类常量定义、StdPseudoClass 复用规则、`[PseudoClasses]` 注解与运行时设置 |
-| [事件与生命周期规范](./06-EventsAndLifecycle.md) | RoutedEvent 定义、OnApplyTemplate 模板部件获取、OnPropertyChanged 响应、Transition 配置与生命周期管理 |
+| [属性定义规范](./PropertyDefinitionStandards.md) | StyledProperty、DirectProperty、AttachedProperty 的选型规则、注册方式、命名约定与 CLR 包装器规范 |
+| [控件类结构规范](./ControlClassStructure.md) | 控件的层次继承模型、接口实现、构造函数、代码区域组织与命名空间约定 |
+| [Design Token 集成规范](./TokenSystemIntegration.md) | 组件 Token 定义、CalculateTokenValues 派生规则、Token 资源引用方式 |
+| [主题文件结构规范](./ThemeFileStructure.md) | Theme 文件夹布局、ControlTheme AXAML 结构、ThemeConstants、Themes.axaml 注册 |
+| [伪类定义规范](./PseudoClassConventions.md) | 伪类常量定义、StdPseudoClass 复用规则、`[PseudoClasses]` 注解与运行时设置 |
+| [事件与生命周期规范](./EventsAndLifecycle.md) | RoutedEvent 定义、OnApplyTemplate 模板部件获取、OnPropertyChanged 响应、Transition 配置与生命周期管理 |
 
 ---
 
@@ -84,12 +84,12 @@ AtomUI.Desktop.Controls/                 ← Platform 层
 
 新建控件时，逐项核对以下要求：
 
-- [ ] 属性使用正确的 Avalonia 属性类型（参见 [01-PropertyDefinitionStandards](./01-PropertyDefinitionStandards.md)）
-- [ ] 控件继承正确的基类，实现所有必要接口（参见 [02-ControlClassStructure](./02-ControlClassStructure.md)）
-- [ ] Token 从 SharedToken 派生，无硬编码值（参见 [03-TokenSystemIntegration](./03-TokenSystemIntegration.md)）
-- [ ] Theme 文件夹结构完整，使用 Token 资源引用（参见 [04-ThemeFileStructure](./04-ThemeFileStructure.md)）
-- [ ] 伪类正确定义并使用 `[PseudoClasses]` 注解（参见 [05-PseudoClassConventions](./05-PseudoClassConventions.md)）
-- [ ] 事件与生命周期管理正确（参见 [06-EventsAndLifecycle](./06-EventsAndLifecycle.md)）
+- [ ] 属性使用正确的 Avalonia 属性类型（参见 [PropertyDefinitionStandards](./PropertyDefinitionStandards.md)）
+- [ ] 控件继承正确的基类，实现所有必要接口（参见 [ControlClassStructure](./ControlClassStructure.md)）
+- [ ] Token 从 SharedToken 派生，无硬编码值（参见 [TokenSystemIntegration](./TokenSystemIntegration.md)）
+- [ ] Theme 文件夹结构完整，使用 Token 资源引用（参见 [ThemeFileStructure](./ThemeFileStructure.md)）
+- [ ] 伪类正确定义并使用 `[PseudoClasses]` 注解（参见 [PseudoClassConventions](./PseudoClassConventions.md)）
+- [ ] 事件与生命周期管理正确（参见 [EventsAndLifecycle](./EventsAndLifecycle.md)）
 - [ ] 所有公共 API 成员有 XML 文档注释
 - [ ] 用户可见文本通过 `LanguageProvider` 本地化
 - [ ] 在 Gallery ShowCase 中添加示例
