@@ -1,8 +1,8 @@
 # AtomUI 控件 API 定义规范
 
 > 本规范是 AtomUI 控件库所有控件必须强制遵守的 API 定义标准。  
-> 适用版本：AtomUI v1.x，基于 Avalonia v11.3.x  
-> 最后更新：2026-04-10
+> 适用版本：AtomUI v5.0+，基于 Avalonia v11  
+> 最后更新：2026-04-11
 
 ---
 
