@@ -6,7 +6,7 @@
 
 ## 1. Token 系统概述
 
-AtomUI 的 Design Token 系统忠实实现了 [Ant Design 5.0 Token 架构](https://ant.design/docs/react/customize-theme)。Token 分为三个全局层级和一个组件层级：
+AtomUI 的 Design Token 系统严格实现了 [Ant Design 5.0 Token 架构](https://ant.design/docs/react/customize-theme)。Token 分为三个全局层级和一个组件层级：
 
 ```
 Seed Token ──(算法)──► Map Token ──(别名计算)──► Alias Token

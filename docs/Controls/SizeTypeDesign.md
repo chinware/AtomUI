@@ -2,7 +2,7 @@
 
 ## 1. 概述
 
-AtomUI 的组件尺寸系统是对 [Ant Design 5.0 三级尺寸规范](https://ant.design/docs/react/customize-theme#sizetype) 的忠实 C# 实现。通过 `ISizeTypeAware` 接口和 `SizeType` 枚举，所有支持尺寸变化的控件共享统一的尺寸语义，并与 Design Token 系统深度集成，实现从全局到组件的尺寸一致性。
+AtomUI 的组件尺寸系统是对 [Ant Design 5.0 三级尺寸规范](https://ant.design/docs/react/customize-theme#sizetype) 的严格 C# 实现。通过 `ISizeTypeAware` 接口和 `SizeType` 枚举，所有支持尺寸变化的控件共享统一的尺寸语义，并与 Design Token 系统深度集成，实现从全局到组件的尺寸一致性。
 
 ### 核心理念
 

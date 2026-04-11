@@ -15,7 +15,7 @@
 
 ## 概述
 
-AtomUI 的媒体查询系统是一套 **基于容器宽度的响应式断点机制**，忠实复现了 [Ant Design 5.0 栅格系统](https://ant.design/components/grid-cn) 的六级响应式断点策略。它构建在 Avalonia 的 [Container Query](https://docs.avaloniaui.net/docs/styling/container-queries) 机制之上，为 AtomUI 控件提供统一的窗口级响应式能力。
+AtomUI 的媒体查询系统是一套 **基于容器宽度的响应式断点机制**，完整复现了 [Ant Design 5.0 栅格系统](https://ant.design/components/grid-cn) 的六级响应式断点策略。它构建在 Avalonia 的 [Container Query](https://docs.avaloniaui.net/docs/styling/container-queries) 机制之上，为 AtomUI 控件提供统一的窗口级响应式能力。
 
 ### 设计目标
 

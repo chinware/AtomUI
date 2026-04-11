@@ -8,7 +8,7 @@
 
 ### 1.1 问题背景
 
-AtomUI 的目标是在 Avalonia 之上忠实复现 Ant Design 5.0 的全部组件。这要求对 Avalonia 内置控件进行 **深度定制**，而 Avalonia 框架出于封装性考虑，将部分关键能力标记为 `private`、`internal` 或 `protected`，不对外暴露。
+AtomUI 的目标是在 Avalonia 之上完整复现 Ant Design 5.0 的全部组件。这要求对 Avalonia 内置控件进行 **深度定制**，而 Avalonia 框架出于封装性考虑，将部分关键能力标记为 `private`、`internal` 或 `protected`，不对外暴露。
 
 典型场景包括：
 

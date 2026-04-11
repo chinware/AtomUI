@@ -2,7 +2,7 @@
 
 ## 1. 概述
 
-AtomUI 的 Form 系统是对 [Ant Design 5.0 Form 组件](https://ant.design/components/form) 的忠实 C# / Avalonia 实现。它提供了一套完整的表单数据收集、验证与提交机制，并通过接口契约系统使任意控件（包括自定义控件和第三方控件）都能无缝接入 Form 工作流。
+AtomUI 的 Form 系统是对 [Ant Design 5.0 Form 组件](https://ant.design/components/form) 的完整 C# / Avalonia 实现。它提供了一套完整的表单数据收集、验证与提交机制，并通过接口契约系统使任意控件（包括自定义控件和第三方控件）都能无缝接入 Form 工作流。
 
 ### 核心设计理念
 

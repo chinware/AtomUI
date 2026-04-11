@@ -27,7 +27,7 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 
 > **核心原则：AtomUI 的 MAJOR 版本号严格锚定 Ant Design 的 MAJOR 版本号，两者保持一致。**
 
-AtomUI 是 Ant Design 设计规范在 .NET / Avalonia 平台上的忠实实现。为了让使用者一眼就能识别 AtomUI 实现的是哪个版本的 Ant Design 设计语言，AtomUI 的主版本号 **直接采用** 对应 Ant Design 的主版本号。
+AtomUI 是 Ant Design 设计规范在 .NET / Avalonia 平台上的完整实现。为了让使用者一眼就能识别 AtomUI 实现的是哪个版本的 Ant Design 设计语言，AtomUI 的主版本号 **直接采用** 对应 Ant Design 的主版本号。
 
 #### Ant Design 发版节奏（参考 [antd Release Schedule](https://ant.design/changelog#release-schedule)）
 

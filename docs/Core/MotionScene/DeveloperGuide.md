@@ -440,7 +440,7 @@ Transitions = new Transitions
 
 ## 5. WaveSpirit 点击涟漪效果
 
-> Ant Design 标志性的点击涟漪源自"树叶飘浮在水面"的设计隐喻 — 按下时叶子下沉，释放时反弹，产生涟漪扩散。这是 Ant Design **自然** 原则的标杆实现。原版使用 `box-shadow: 0 0 0 6px currentcolor` + opacity 0.2→0 的 CSS 过渡实现（见 `components/_util/wave/style.ts`，使用 `motionEaseOutCirc` 缓动），AtomUI 使用独立的尺寸 + 不透明度双动画管线忠实复刻。
+> Ant Design 标志性的点击涟漪源自"树叶飘浮在水面"的设计隐喻 — 按下时叶子下沉，释放时反弹，产生涟漪扩散。这是 Ant Design **自然** 原则的标杆实现。原版使用 `box-shadow: 0 0 0 6px currentcolor` + opacity 0.2→0 的 CSS 过渡实现（见 `components/_util/wave/style.ts`，使用 `motionEaseOutCirc` 缓动），AtomUI 使用独立的尺寸 + 不透明度双动画管线精确复刻。
 
 ### 5.1 在 ControlTheme 中添加涟漪
 
