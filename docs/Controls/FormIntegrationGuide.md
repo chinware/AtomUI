@@ -366,7 +366,7 @@ public class SimpleInput : TemplatedControl, IFormItemAware
 
 ### 4.2 完整功能的复合输入控件
 
-一个包含完整 Form 集成的复合控件（参考 Gallery 中的 PriceInput）：
+一个包含完整 Form 集成的复合输入控件：
 
 ```csharp
 using AtomUI;
