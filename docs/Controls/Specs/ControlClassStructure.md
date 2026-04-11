@@ -349,7 +349,6 @@ public Button()
 | 内部 CLR 属性 | `internal` | Theme 绑定和内部逻辑 |
 | Token 类 | `internal` | Token 是实现细节 |
 | Theme 代码后台 | 视需求 | `ButtonTheme` 为 `public`（因 AXAML 引用），`TagTheme` 为 `internal` |
-| ThemeConstants | `internal` | 模板部件名称是实现细节 |
 | PseudoClass 常量类 | `public static` | 可被外部用于样式选择器 |
 
 ---
@@ -435,7 +434,7 @@ public abstract class AbstractTag : TemplatedControl
 }
 ```
 
-模板部件名称遵循 `PART_` 前缀约定，并在 `ThemeConstants` 中定义为常量（参见 [ThemeFileStructure](./ThemeFileStructure.md)）。
+模板部件名称遵循 `PART_` 前缀约定（参见 [ThemeFileStructure](./ThemeFileStructure.md)）。
 
 ---
 

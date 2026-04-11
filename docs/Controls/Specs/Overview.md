@@ -13,7 +13,7 @@
 | [属性定义规范](./PropertyDefinitionStandards.md) | StyledProperty、DirectProperty、AttachedProperty 的选型规则、注册方式、命名约定与 CLR 包装器规范 |
 | [控件类结构规范](./ControlClassStructure.md) | 控件的层次继承模型、接口实现、构造函数、代码区域组织与命名空间约定 |
 | [Design Token 集成规范](./TokenSystemIntegration.md) | 组件 Token 定义、CalculateTokenValues 派生规则、Token 资源引用方式 |
-| [主题文件结构规范](./ThemeFileStructure.md) | Theme 文件夹布局、ControlTheme AXAML 结构、ThemeConstants、Themes.axaml 注册 |
+| [主题文件结构规范](./ThemeFileStructure.md) | Theme 文件夹布局、ControlTheme AXAML 结构、Themes.axaml 注册 |
 | [伪类定义规范](./PseudoClassConventions.md) | 伪类常量定义、StdPseudoClass 复用规则、`[PseudoClasses]` 注解与运行时设置 |
 | [事件与生命周期规范](./EventsAndLifecycle.md) | RoutedEvent 定义、OnApplyTemplate 模板部件获取、OnPropertyChanged 响应、Transition 配置与生命周期管理 |
 
@@ -72,8 +72,7 @@ AtomUI.Desktop.Controls/                 ← Platform 层
     └── Themes/
         ├── ControlNameTheme.axaml       ← ControlTheme XAML 模板
         ├── ControlNameTheme.cs          ← Theme 代码后台
-        ├── ControlNameThemes.axaml      ← ResourceDictionary 注册
-        └── ControlNameThemeConstants.cs ← 模板部件名称常量
+        └── ControlNameThemes.axaml      ← ResourceDictionary 注册
 ```
 
 > **判断依据**：编写代码时始终自问 *"未来的 Mobile 版本是否会共享这段行为？"* 如果是 → 放入 `AtomUI.Controls` 基类；如果否 → 放入 `AtomUI.Desktop.Controls` 具体类。

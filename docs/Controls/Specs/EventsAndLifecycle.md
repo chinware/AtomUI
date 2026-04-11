@@ -167,8 +167,7 @@ protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
 
     // 2. 获取新模板部件
     CloseButton = e.NameScope.Find<AbstractIconButton>("PART_CloseButton");
-    _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(
-        ButtonThemeConstants.WaveSpiritPart);
+    _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
 
     // 3. 为新模板部件订阅事件
     if (CloseButton != null)
@@ -189,7 +188,7 @@ protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
 | **始终先调用 `base.OnApplyTemplate(e)`** | 确保基类正确处理模板应用 |
 | 先清理旧订阅，再获取新部件 | 防止内存泄漏和重复订阅 |
 | 使用 `e.NameScope.Find<T>()` | 类型安全的模板部件查找 |
-| 部件名使用 `ThemeConstants` 常量 | 如 `ButtonThemeConstants.WaveSpiritPart` |
+| 部件名使用 `PART_` 前缀 | 如 `"PART_WaveSpirit"` |
 | 部件引用可为 `null` | 如果模板中未定义该部件 |
 
 ### 3.3 模板部件字段定义
