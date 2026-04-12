@@ -138,6 +138,8 @@ CSS-in-JS token injection                  ResourceDictionary + MarkupExtension
 | [ThemeAlgorithm.md](ThemeAlgorithm.md) | 主题算法（Default/Dark/Compact）与调色板生成 |
 | [ThemeManagement.md](ThemeManagement.md) | 主题管理器、主题生命周期、运行时切换 |
 | [TokenResourceBinding.md](TokenResourceBinding.md) | Token 资源绑定、XAML MarkupExtension、Source Generator |
+| [ThemeCustomizationPrinciples.md](ThemeCustomizationPrinciples.md) | 主题自定义原理说明（加载机制、作用域实现、组件级覆盖） |
+| [ThemeCustomizationGuide.md](ThemeCustomizationGuide.md) | 主题定制开发者指南（完整步骤、API 参考、Gallery 示例解读） |
 
 ---
 
