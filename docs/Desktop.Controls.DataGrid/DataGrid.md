@@ -172,3 +172,4 @@ PageChangingEventArgs
 | 编辑展开示例 | [Usage/EditAndExpandUsage.md](Usage/EditAndExpandUsage.md) | 编辑与展开行示例 |
 | 分页示例 | [Usage/PaginationUsage.md](Usage/PaginationUsage.md) | 分页示例 |
 | 高级示例 | [Usage/AdvancedUsage.md](Usage/AdvancedUsage.md) | 分组表头、空状态等 |
+| 架构深度分析 | [Architecture.md](Architecture.md) | 虚拟化、数据管理、固定列等核心架构 |
