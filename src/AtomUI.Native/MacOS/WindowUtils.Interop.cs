@@ -206,6 +206,10 @@ internal static class WindowUtilsInterop
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern NSRectFull objc_msgSend_rect(IntPtr receiver, IntPtr selector);
 
+    // On macOS x64, large struct returns use objc_msgSend_stret.
+    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend_stret")]
+    public static extern void objc_msgSend_stret_rect(out NSRectFull rect, IntPtr receiver, IntPtr selector);
+
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern ulong objc_msgSend_ulong(IntPtr receiver, IntPtr selector);
 
@@ -232,11 +236,26 @@ internal static class WindowUtilsInterop
     
     public static NSRectFull GetFrame(IntPtr view)
     {
+        if (view == IntPtr.Zero)
+        {
+            throw new ArgumentException("Invalid view handle");
+        }
+
+        if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+        {
+            objc_msgSend_stret_rect(out var frame, view, FrameSelector);
+            return frame;
+        }
+
         return objc_msgSend_rect(view, FrameSelector);
     }
 
     public static void SetFrame(IntPtr view, NSRectFull frame)
     {
+        if (view == IntPtr.Zero)
+        {
+            throw new ArgumentException("Invalid view handle");
+        }
         objc_msgSend_void_rect(view, SetFrameSelector, frame);
     }
     
