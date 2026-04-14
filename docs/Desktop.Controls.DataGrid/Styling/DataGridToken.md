@@ -114,7 +114,7 @@ var headerBg = tokenResourceProvider.GetTokenValue<Color>("DataGrid", "HeaderBg"
 
 ## 3. 内部 Token
 
-以下 Token 标记为 `internal`，仅供控件内部使用，不建议外部直接引用。
+以下 Token 标记为 `internal`，仅供控件内部使用。
 
 ### 展开图标相关
 
@@ -153,9 +153,7 @@ var headerBg = tokenResourceProvider.GetTokenValue<Color>("DataGrid", "HeaderBg"
 
 ---
 
-## 4. 内部别名 Token
-
-以下 Token 为公共 Token 的别名，提供与 Ant Design Table 规范一致的命名：
+## 4. 别名 Token（Ant Design 命名风格）
 
 | 别名 Token | 对应公共 Token | 说明 |
 |------------|---------------|------|
@@ -224,8 +222,6 @@ var headerBg = tokenResourceProvider.GetTokenValue<Color>("DataGrid", "HeaderBg"
 | `footerColor` | `FooterColor` / `TableFooterTextColor` | 表尾文字颜色 |
 | `cellFontSize` | `CellFontSize` / `TableFontSize` | 单元格字体大小 |
 | `headerSplitColor` | `HeaderSplitColor` / `TableHeaderCellSplitColor` | 表头分割线颜色 |
-| `fixedHeaderSortActiveBg` | `FixedHeaderSortActiveBg` / `TableFixedHeaderSortActiveBg` | 固定表头排序背景 |
-| `headerFilterHoverBg` | `HeaderFilterHoverBg` / `TableHeaderFilterActiveBg` | 过滤按钮悬浮背景 |
 | `filterDropdownMenuBg` | `FilterDropdownMenuBg` | 过滤菜单选项背景 |
 | `filterDropdownBg` | `FilterDropdownBg` / `TableFilterDropdownBg` | 过滤下拉菜单背景 |
 | `expandIconBg` | `ExpandIconBg` / `TableExpandIconBg` | 展开图标背景 |
@@ -237,20 +233,19 @@ var headerBg = tokenResourceProvider.GetTokenValue<Color>("DataGrid", "HeaderBg"
 
 ### 颜色计算
 
-DataGrid Token 中的颜色值使用了 `ColorUtils.OnBackground()` 方法进行计算。该方法确保颜色在不同背景上具有正确的视觉效果：
+DataGrid Token 中的颜色值使用了 `ColorUtils.OnBackground()` 方法进行计算：
 
 ```csharp
-// 将半透明颜色合成到容器背景上
 var colorFillSecondarySolid = ColorUtils.OnBackground(
     SharedToken.ColorFillSecondary,    // 前景色（可能半透明）
     SharedToken.ColorBgContainer       // 背景色
 );
 ```
 
-这种计算方式确保了：
-- 在亮色模式下，半透明颜色正确合成到白色背景上
-- 在暗色模式下，半透明颜色正确合成到深色背景上
-- Token 值始终是不透明的，可以直接用于 `Background` 等属性
+这确保了：
+- 亮色模式下，半透明颜色正确合成到白色背景上
+- 暗色模式下，半透明颜色正确合成到深色背景上
+- Token 值始终是不透明的，可直接用于 `Background` 等属性
 
 ### 图标颜色计算
 
@@ -258,7 +253,7 @@ var colorFillSecondarySolid = ColorUtils.OnBackground(
 
 ```csharp
 HeaderIconColor = ColorUtils.FromRgbF(
-    baseColorAction.GetAlphaF() * SharedToken.OpacityLoading,  // 降低透明度
+    baseColorAction.GetAlphaF() * SharedToken.OpacityLoading,
     baseColorAction.GetRedF(),
     baseColorAction.GetGreenF(),
     baseColorAction.GetBlueF()

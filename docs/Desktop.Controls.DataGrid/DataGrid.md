@@ -1,160 +1,174 @@
-# DataGrid 控件设计文档
+# DataGrid 控件概述与设计原理
 
-## 1. 概述
+## 1. 控件简介
 
-`DataGrid` 是 AtomUI 中最复杂的数据展示控件之一，用于以表格形式显示和编辑结构化数据集合。该控件对齐 Ant Design 的 [Table](https://ant.design/components/table/) 组件规范，在 Avalonia 原生 `DataGrid` 的基础上进行了深度定制和功能扩展。
+DataGrid 是 AtomUI 中功能最丰富的数据展示控件，用于以表格形式展示和操作结构化数据集合。它对齐 Ant Design 的 [Table](https://ant.design/components/table/) 组件规范，在 Avalonia 原生 DataGrid 的基础上进行了深度重构和功能扩展。
 
-### 设计意图
+### 核心定位
 
-- **Ant Design 规范对齐**：视觉风格、交互模式与 Ant Design Table 保持一致，包括表头排序、行悬浮/选中态、固定列阴影、可展开行等。
-- **企业级数据展示**：支持排序、过滤、分页、行选择、可展开行、分组表头、列拖拽排序、行拖拽排序等企业级功能。
-- **主题系统集成**：通过 Design Token 体系实现完整的主题定制能力，支持亮色/暗色模式自动切换。
-- **尺寸自适应**：支持 `Large`、`Middle`、`Small` 三种尺寸，影响单元格内边距和字体大小。
+- **数据展示**：以行列结构展示结构化数据
+- **数据操作**：支持排序、过滤、选择、编辑、拖拽排序等交互
+- **视觉规范**：严格遵循 Ant Design Table 的视觉规范和交互模式
+- **主题适配**：通过 Design Token 体系实现亮色/暗色模式自动切换
 
-### 功能范围
+---
 
-| 功能 | 说明 | Ant Design 对齐程度 |
-|------|------|---------------------|
-| 基础表格 | 数据绑定、列定义、表头/表尾 | ✅ 完全对齐 |
-| 排序 | 单列排序、多列排序、自定义排序 | ✅ 完全对齐 |
-| 过滤 | 列头过滤、自定义过滤 UI | ✅ 完全对齐 |
-| 行选择 | 单选/多选、Checkbox 列 | ✅ 完全对齐 |
-| 可展开行 | 行详情展开/折叠 | ✅ 完全对齐 |
-| 固定列 | 左/右固定列、固定表头 | ✅ 完全对齐 |
-| 列拖拽排序 | 拖拽列头重排列顺序 | ✅ 完全对齐 |
-| 行拖拽排序 | 拖拽行重排数据顺序 | ✅ 完全对齐 |
-| 分页 | 内置分页器、上下分页 | ✅ 完全对齐 |
-| 分组表头 | 多级表头嵌套 | ✅ 完全对齐 |
-| 单元格编辑 | 文本/数值/模板列编辑 | ✅ 完全对齐 |
-| 自定义空状态 | 空数据和加载状态 | ✅ 完全对齐 |
-| 列隐藏 | 动态显示/隐藏列 | ✅ 完全对齐 |
-| 行头 | 可选行头显示 | ⚠️ 部分对齐（Avalonia 扩展） |
-| 列宽调整 | 拖拽调整列宽 | ✅ 完全对齐 |
+## 2. 与 Ant Design Table 的对齐程度
 
-## 2. 架构设计
+| 功能 | Ant Design Table | AtomUI DataGrid | 对齐状态 |
+|------|-----------------|-----------------|---------|
+| 基础表格 | ✅ | ✅ | 完全对齐 |
+| 固定表头 | ✅ | ✅ | 完全对齐 |
+| 固定列 | ✅ | ✅ | 完全对齐 |
+| 排序 | ✅ | ✅ | 完全对齐 |
+| 过滤 | ✅ | ✅ | 完全对齐 |
+| 行选择 | ✅ | ✅ | 完全对齐 |
+| 可展开行 | ✅ | ✅ | 完全对齐 |
+| 分页 | ✅ | ✅ | 完全对齐 |
+| 树形数据 | ✅ | ✅ | 完全对齐 |
+| 分组表头 | ✅ | ✅ | 完全对齐 |
+| 拖拽排序（行） | ✅（社区） | ✅ | 原生支持 |
+| 拖拽排序（列） | ✅（社区） | ✅ | 原生支持 |
+| 可编辑单元格 | ✅（社区） | ✅ | 原生支持 |
+| 尺寸变体 | ✅ | ✅ | 完全对齐 |
+| 空状态 | ✅ | ✅ | 完全对齐 |
+| 加载状态 | ✅ | ✅ | 完全对齐 |
+| 自定义表头/表尾 | ✅ | ✅ | 完全对齐 |
+| 圆角边框 | ✅ | ✅ | 完全对齐 |
+| 暗色模式 | ✅ | ✅ | 完全对齐 |
+
+---
+
+## 3. 与 Avalonia DataGrid 的关系
 
 ### 继承关系
 
-```
-AvaloniaObject
-└── Avalonia.Controls.Control
-    └── AtomUI.Desktop.Controls.DataGrid
-        (继承自 Avalonia Control，组合使用内部子元素)
-```
-
-`DataGrid` 继承自 Avalonia 的 `Control` 基类，而非 Avalonia 原生的 `DataGrid`。AtomUI 对 DataGrid 进行了完全重写，以实现 Ant Design 风格的视觉效果和交互体验。
-
-### 核心组合关系
-
-DataGrid 内部由以下关键子组件组成：
-
-| 子组件 | 类型 | 说明 |
-|--------|------|------|
-| `DataGridRow` | 行控件 | 表示数据行，包含单元格集合 |
-| `DataGridCell` | 单元格控件 | 表示单个数据单元格 |
-| `DataGridColumnHeader` | 列头控件 | 表示列标题头 |
-| `DataGridRowHeader` | 行头控件 | 表示行标题头 |
-| `DataGridRowGroupHeader` | 分组行头 | 用于分组数据的行头 |
-| `DataGridDetailsPanel` | 行详情面板 | 展开行时显示的详情内容 |
-| `DataGridColumnGroupItem` | 列分组项 | 用于分组表头的嵌套结构 |
-
-### 列类型体系
+AtomUI DataGrid **不继承**自 Avalonia 的 `DataGrid`，而是完全独立实现，继承自 `Avalonia.Controls.Control`：
 
 ```
-DataGridColumn (抽象基类)
-├── DataGridBoundColumn (抽象，支持数据绑定的列)
-│   ├── DataGridTextColumn     - 文本列
-│   ├── DataGridNumericColumn  - 数值列
-│   └── DataGridCheckBoxColumn - 复选框列
-├── DataGridTemplateColumn     - 模板列（自定义 CellTemplate/CellEditingTemplate）
-├── DataGridSelectionColumn    - 行选择列（Checkbox）
-├── DataGridDetailExpanderColumn - 行展开/折叠控制列
-├── DataGridRowReorderColumn   - 行拖拽排序手柄列
-└── DataGridColumnGroupItem    - 列分组项（用于分组表头）
+Avalonia.Controls.Control
+└── AtomUI.Desktop.Controls.DataGrid
 ```
 
-### 设备无关层
+### 重构原因
 
-DataGrid 控件完全位于设备相关层（`AtomUI.Desktop.Controls`），没有设备无关的基类定义。所有代码位于 `src/AtomUI.Desktop.Controls.DataGrid` 项目中。
+1. **视觉规范对齐**：Avalonia DataGrid 的视觉风格与 Ant Design 差异较大，无法通过简单样式覆盖实现
+2. **功能扩展**：需要原生支持分组表头、行拖拽、列拖拽、内置过滤、内置分页等 Ant Design 特性
+3. **Token 体系**：需要深度集成 AtomUI 的 Design Token 体系，实现主题自动适配
+4. **圆角边框**：Ant Design Table 使用圆角边框，Avalonia DataGrid 的矩形结构无法直接支持
 
-## 3. 源码组织
+### 主要差异
 
-DataGrid 源码位于 `src/AtomUI.Desktop.Controls.DataGrid` 目录，结构如下：
-
-```
-src/AtomUI.Desktop.Controls.DataGrid/
-├── DataGrid.cs                    # 主控件实现
-├── DataGridToken.cs               # Design Token 定义
-├── Column/                        # 列相关类型
-│   ├── DataGridColumn.cs          # 列抽象基类
-│   ├── DataGridBoundColumn.cs     # 绑定列基类
-│   ├── DataGridTextColumn.cs      # 文本列
-│   ├── DataGridNumericColumn.cs   # 数值列
-│   ├── DataGridCheckBoxColumn.cs  # 复选框列
-│   ├── DataGridTemplateColumn.cs  # 模板列
-│   ├── DataGridSelectionColumn.cs # 选择列
-│   ├── DataGridDetailExpanderColumn.cs # 展开列
-│   ├── DataGridRowReorderColumn.cs     # 行拖拽列
-│   └── DataGridColumnGroupItem.cs      # 列分组项
-├── Row/                           # 行相关类型
-│   ├── DataGridRow.cs             # 行控件
-│   ├── DataGridRowHeader.cs       # 行头控件
-│   ├── DataGridRowGroupHeader.cs  # 分组行头
-│   └── DataGridCell.cs            # 单元格控件
-├── Header/                        # 表头相关类型
-│   ├── DataGridColumnHeader.cs    # 列头控件
-│   └── DataGridColumnGroupHeader.cs # 分组列头
-├── Events/                        # 事件参数类型
-├── Utils/                         # 工具类
-├── Themes/                        # 主题/样式定义
-│   └── DataGrid.axaml             # 控件默认样式
-└── GeneratedFiles/                # 代码生成文件
-```
-
-## 4. 与 Avalonia 原生 DataGrid 的差异
-
-AtomUI 的 DataGrid 相对于 Avalonia 原生 DataGrid 有以下主要差异：
-
-| 特性 | Avalonia 原生 | AtomUI |
-|------|--------------|--------|
-| 视觉风格 | 默认 Fluent 风格 | Ant Design 风格 |
-| 主题系统 | ControlTheme | Design Token 体系 |
-| 排序指示器 | 简单箭头 | Ant Design 风格排序图标 + Tooltip |
-| 过滤功能 | 无内置 | 内置列头过滤下拉 |
-| 行选择列 | 无内置 | `DataGridSelectionColumn` |
-| 展开行控制列 | 无内置 | `DataGridDetailExpanderColumn` |
-| 行拖拽排序 | 无内置 | `DataGridRowReorderColumn` + `CanUserReorderRows` |
-| 分组表头 | 不支持 | `DataGridColumnGroupItem` 支持 |
+| 方面 | Avalonia DataGrid | AtomUI DataGrid |
+|------|-------------------|-----------------|
+| 基类 | `Control` | `Control`（独立实现） |
+| 视觉规范 | 默认 Avalonia 风格 | Ant Design Table 规范 |
+| 主题系统 | `ControlTheme` | `ControlTheme` + Design Token |
+| 分组表头 | 不支持 | `DataGridColumnGroupItem` |
+| 行拖拽 | 不支持 | `CanUserReorderRows` + `DataGridRowReorderColumn` |
+| 列拖拽 | 不支持 | `CanUserReorderColumns` |
+| 内置过滤 | 不支持 | `CanUserFilter` + `FilterMode` |
 | 内置分页 | 不支持 | `PaginationVisibility` + `PageSize` |
-| 固定列阴影 | 无 | `LeftFrozenShadows` / `RightFrozenShadows` Token |
-| 空状态/加载 | 无内置 | `IsOperating` + `EmptyContentTemplate` |
-| 尺寸变体 | 无 | `SizeType` (Large/Middle/Small) |
+| 尺寸变体 | 不支持 | `SizeType`（Large/Middle/Small） |
+| 圆角边框 | 不支持 | `CornerRadius` |
+| 固定列阴影 | 不支持 | `LeftFrozenShadows` / `RightFrozenShadows` |
+| 空状态模板 | 不支持 | `EmptyContentTemplate` |
+| 加载状态 | 不支持 | `IsOperating` |
+| 自定义表头/表尾 | 不支持 | `HeaderTemplate` / `FooterTemplate` |
 
-## 5. Gallery 示例参考
+---
 
-DataGrid 的完整示例位于：
+## 4. 控件架构
 
-- **AXAML**: `controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataGridShowCase.axaml`
-- **Code-behind**: `controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataGridShowCase.axaml.cs`
-- **ViewModel**: `controlgallery/AtomUIGallery/ShowCases/ViewModels/DataDisplay/DataGridViewModel.cs`
+### 核心类型
 
-Gallery 中展示了以下场景：
-1. 基础用法
-2. 行选择（单选/多选）
-3. 排序与过滤
-4. 多列排序
-5. 可展开行
-6. 展开列/选择列顺序控制
-7. 行头显示
-8. 分组表头
-9. 列隐藏
-10. 固定表头
-11. 固定列
-12. 固定列+固定表头
-13. 列拖拽排序
-14. 行拖拽排序
-15. 自定义空状态/加载
-16. 可编辑单元格
-17. 分页
-18. 尺寸变体（大/中/小）
-19. 自定义表头/表尾
+```
+AtomUI.Desktop.Controls.DataGrid          — 主控件
+├── DataGridColumn (abstract)             — 列基类
+│   ├── DataGridBoundColumn (abstract)    — 绑定列基类
+│   │   ├── DataGridTextColumn            — 文本列
+│   │   ├── DataGridNumericColumn         — 数值列
+│   │   └── DataGridCheckBoxColumn        — 复选框列
+│   ├── DataGridTemplateColumn            — 模板列
+│   ├── DataGridSelectionColumn           — 选择列
+│   ├── DataGridDetailExpanderColumn      — 展开列
+│   ├── DataGridRowReorderColumn          — 行拖拽列
+│   └── DataGridColumnGroupItem           — 列分组项
+├── DataGridRow                           — 数据行
+├── DataGridCell                          — 数据单元格
+├── DataGridColumnHeader                  — 列头
+├── DataGridRowHeader                     — 行头
+├── DataGridRowGroupHeader                — 分组行头
+└── DataGridColumnGroupHeader             — 分组列头
+```
+
+### 辅助类型
+
+```
+AtomUI.Desktop.Controls.DataGridToken              — Design Token 定义
+AtomUI.Desktop.Controls.DataGridLength              — 列宽类型
+AtomUI.Desktop.Controls.DataGridSortDescription     — 排序描述
+AtomUI.Desktop.Controls.DataGridRowClipboardContent — 剪贴板内容
+```
+
+### 事件参数类型
+
+```
+DataGridAutoGeneratingColumnEventArgs
+DataGridBeginningEditEventArgs
+DataGridCellEditEndedEventArgs
+DataGridCellEditEndingEventArgs
+DataGridCellPointerPressedEventArgs
+DataGridColumnEventArgs
+DataGridColumnReorderingEventArgs
+DataGridColumnDraggingOverEventArgs
+DataGridRowEventArgs
+DataGridRowReorderingEventArgs
+DataGridRowEditEndedEventArgs
+DataGridRowEditEndingEventArgs
+DataGridPreparingCellForEditEventArgs
+DataGridRowDetailsEventArgs
+DataGridRowGroupHeaderEventArgs
+DataGridRowClipboardEventArgs
+PageChangedEventArgs
+PageChangingEventArgs
+```
+
+---
+
+## 5. 源码位置
+
+| 模块 | 路径 |
+|------|------|
+| 控件实现 | `src/AtomUI.Desktop.Controls.DataGrid/` |
+| Design Token | `src/AtomUI.Desktop.Controls.DataGrid/DataGridToken.cs` |
+| 主题样式 | `src/AtomUI.Desktop.Controls.DataGrid/Themes/DataGrid.axaml` |
+| Gallery 示例 | `controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataGridShowCase.axaml` |
+
+---
+
+## 6. 文档导航
+
+| 文档 | 路径 | 说明 |
+|------|------|------|
+| 主控件 API | [API/DataGridAPI.md](API/DataGridAPI.md) | DataGrid 属性、事件、方法 |
+| 列类型 API | [API/DataGridColumnAPI.md](API/DataGridColumnAPI.md) | 所有列类型的属性 |
+| 枚举类型 | [API/DataGridEnums.md](API/DataGridEnums.md) | 枚举值汇总 |
+| 排序功能 | [Features/Sorting.md](Features/Sorting.md) | 排序功能详解 |
+| 过滤功能 | [Features/Filtering.md](Features/Filtering.md) | 过滤功能详解 |
+| 行选择功能 | [Features/Selection.md](Features/Selection.md) | 选择功能详解 |
+| 固定列 | [Features/FixedColumns.md](Features/FixedColumns.md) | 固定列与固定表头 |
+| 拖拽功能 | [Features/DragDrop.md](Features/DragDrop.md) | 列拖拽与行拖拽 |
+| 编辑功能 | [Features/Editing.md](Features/Editing.md) | 单元格编辑 |
+| 可展开行 | [Features/ExpandableRows.md](Features/ExpandableRows.md) | 行展开/折叠 |
+| 分页功能 | [Features/Pagination.md](Features/Pagination.md) | 内置分页 |
+| 分组表头 | [Features/GroupHeaders.md](Features/GroupHeaders.md) | 多级嵌套表头 |
+| 样式指南 | [Styling/DataGridStyling.md](Styling/DataGridStyling.md) | 自定义样式 |
+| Token 参考 | [Styling/DataGridToken.md](Styling/DataGridToken.md) | Design Token |
+| 基础用法 | [Usage/BasicUsage.md](Usage/BasicUsage.md) | 基础用法与尺寸 |
+| 选择示例 | [Usage/SelectionUsage.md](Usage/SelectionUsage.md) | 选择功能示例 |
+| 排序过滤示例 | [Usage/SortAndFilterUsage.md](Usage/SortAndFilterUsage.md) | 排序与过滤示例 |
+| 固定拖拽示例 | [Usage/FixedAndDragUsage.md](Usage/FixedAndDragUsage.md) | 固定列与拖拽示例 |
+| 编辑展开示例 | [Usage/EditAndExpandUsage.md](Usage/EditAndExpandUsage.md) | 编辑与展开行示例 |
+| 分页示例 | [Usage/PaginationUsage.md](Usage/PaginationUsage.md) | 分页示例 |
+| 高级示例 | [Usage/AdvancedUsage.md](Usage/AdvancedUsage.md) | 分组表头、空状态等 |
