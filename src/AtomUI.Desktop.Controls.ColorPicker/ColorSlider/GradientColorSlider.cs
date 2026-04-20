@@ -115,6 +115,17 @@ internal class GradientColorSlider : AbstractColorSlider
         _activatedThumbDispose = null;
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (Track is GradientColorPickerTrack track)
+        {
+            _activatedThumbDispose?.Dispose();
+            _activatedThumbDispose = track.GetObservable(GradientColorPickerTrack.ActivatedThumbProperty)
+                .Subscribe(_ => HandleActivatedThumbChanged());
+        }
+    }
+
     private void HandleActivatedThumbChanged()
     {
         if (Track is GradientColorPickerTrack track && track.ActivatedThumb != null)
