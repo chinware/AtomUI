@@ -497,7 +497,7 @@ public void Dispose()
 
 - [x] FlyoutStateHelper: `IsPointerOverProperty.Changed.Subscribe` → 改用 `AnchorTarget.GetObservable` ✅ 已修复
 - [x] FlyoutStateHelper: `IsFocusedProperty.Changed.Subscribe` → 改用 `AnchorTarget.GetObservable` ✅ 已修复
-- [ ] DatePickerPresenter: 添加 `_pointerDisposables?.Dispose()` + 改用实例级 `GetObservable`
+- [x] DatePickerPresenter: 添加 `_pointerDisposables?.Dispose()` + 改用实例级 `GetObservable` ✅ 已修复
 - [ ] TimePickerPresenter: 添加 `_choosingStateDisposable?.Dispose()` + 改用实例级 `GetObservable`
 - [ ] GradientColorSlider: 去除冗余订阅 + 改用实例级 `GetObservable`
 - [ ] 运行内存分析工具验证 `LightweightSubject` 观察者数量不再增长

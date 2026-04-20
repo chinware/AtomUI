@@ -131,27 +131,25 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _pointerDisposables?.Dispose();
         _pointerDisposables = new CompositeDisposable(2);
-        _pointerDisposables.Add(PickerCalendar.IsPointerInMonthViewProperty.Changed.Subscribe(args =>
+        if (CalendarView is not null)
         {
-            if (CalendarView is not null)
-            {
-                EmitChoosingStatueChanged(args.GetNewValue<bool>());
-            }
-        }));
-        _pointerDisposables.Add(TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
+            _pointerDisposables.Add(CalendarView.GetObservable(PickerCalendar.IsPointerInMonthViewProperty)
+                .Subscribe(EmitChoosingStatueChanged));
+        }
+        if (TimeView is not null)
         {
-            if (TimeView is not null)
-            {
-                EmitChoosingStatueChanged(args.GetNewValue<bool>());
-            }
-        }));
+            _pointerDisposables.Add(TimeView.GetObservable(TimeView.IsPointerInSelectorProperty)
+                .Subscribe(EmitChoosingStatueChanged));
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _pointerDisposables?.Dispose();
+        _pointerDisposables = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
