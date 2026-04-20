@@ -296,12 +296,14 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _choosingStateDisposable?.Dispose();
         if (_timeView is not null)
         {
-            _choosingStateDisposable = TimeView.IsPointerInSelectorProperty.Changed.Subscribe(args =>
-            {
-                ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(args.GetNewValue<bool>()));
-            });
+            _choosingStateDisposable = _timeView.GetObservable(TimeView.IsPointerInSelectorProperty)
+                .Subscribe(isPointer =>
+                {
+                    ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(isPointer));
+                });
         }
     }
 
