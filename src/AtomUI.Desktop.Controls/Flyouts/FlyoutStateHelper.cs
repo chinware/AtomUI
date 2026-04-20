@@ -234,50 +234,46 @@ internal class FlyoutStateHelper : AvaloniaObject
 
     private void SetupTriggerHandler()
     {
+        _subscriptions?.Dispose();
+        _subscriptions?.Clear();
+        _subscriptions = new CompositeDisposable();
         if (AnchorTarget is null)
         {
             return;
         }
-        _subscriptions?.Dispose();
-        _subscriptions = new CompositeDisposable();
         if (TriggerType == FlyoutTriggerType.Hover)
         {
-            _subscriptions.Add(InputElement.IsPointerOverProperty.Changed.Subscribe(args =>
+            _subscriptions.Add(AnchorTarget.GetObservable(InputElement.IsPointerOverProperty).Subscribe(isPointerOver =>
             {
-                if (args.Sender == AnchorTarget && 
-                    AnchorTarget.IsEnabled &&
-                    AnchorTarget.IsVisible)
+                if (AnchorTarget.IsEnabled && AnchorTarget.IsVisible)
                 {
-                    HandleAnchorTargetHover(args);
+                    HandleAnchorTargetHover(isPointerOver);
                 }
             }));
         }
-        else if (TriggerType == FlyoutTriggerType.Click ||
-                 TriggerType == FlyoutTriggerType.Focus)
+        else if (TriggerType == FlyoutTriggerType.Click || TriggerType == FlyoutTriggerType.Focus)
         {
             var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
             Debug.Assert(inputManager != null);
             _subscriptions.Add(inputManager.Process.Subscribe(HandleAnchorTargetClick));
             if (TriggerType == FlyoutTriggerType.Focus)
             {
-                _subscriptions.Add(InputElement.IsFocusedProperty.Changed.Subscribe(args =>
+                _subscriptions.Add(AnchorTarget.GetObservable(InputElement.IsFocusedProperty).Subscribe(isFocused =>
                 {
-                    if (args.Sender == AnchorTarget &&
-                        AnchorTarget.IsEnabled &&
-                        AnchorTarget.IsVisible)
+                    if (AnchorTarget.IsEnabled && AnchorTarget.IsVisible)
                     {
-                        HandleAnchorTargetFocus(args);
+                        HandleAnchorTargetFocus(isFocused);
                     }
                 }));
             }
         }
     }
 
-    private void HandleAnchorTargetHover(AvaloniaPropertyChangedEventArgs<bool> e)
+    private void HandleAnchorTargetHover(bool isPointerOver)
     {
         if (Flyout is not null)
         {
-            if (e.GetNewValue<bool>())
+            if (isPointerOver)
             {
                 ShowFlyout();
             }
@@ -437,14 +433,14 @@ internal class FlyoutStateHelper : AvaloniaObject
         }
     }
 
-    private void HandleAnchorTargetFocus(AvaloniaPropertyChangedEventArgs<bool> e)
+    private void HandleAnchorTargetFocus(bool isFocused)
     {
         if (Flyout is null)
         {
             return;
         }
 
-        if (e.GetNewValue<bool>())
+        if (isFocused)
         {
             ShowFlyout(true);
         }
@@ -528,4 +524,5 @@ internal class FlyoutStateHelper : AvaloniaObject
 
         return false;
     }
+    
 }
