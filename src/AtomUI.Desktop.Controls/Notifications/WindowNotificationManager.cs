@@ -254,15 +254,30 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     /// </summary>
     private void RemoveExcessNotifications()
     {
-        var visibleNotifications = _items!.OfType<NotificationCard>().Where(n => !n.IsClosing).ToList();
-        var excessCount          = visibleNotifications.Count - MaxItems;
-
-        if (excessCount > 0)
+        int visibleCount = 0;
+        foreach (var item in _items!)
         {
-            // 支持关闭多个超限的通知，而不仅仅是一个
-            for (int i = 0; i < excessCount; i++)
+            if (item is NotificationCard { IsClosing: false })
             {
-                visibleNotifications[i].Close();
+                visibleCount++;
+            }
+        }
+
+        var closeNeed = visibleCount - MaxItems;
+        if (closeNeed <= 0)
+        {
+            return;
+        }
+
+        foreach (var item in _items!)
+        {
+            if (item is NotificationCard { IsClosing: false } card)
+            {
+                card.Close();
+                if (--closeNeed == 0)
+                {
+                    break;
+                }
             }
         }
     }
