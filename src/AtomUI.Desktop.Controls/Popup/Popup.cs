@@ -186,6 +186,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public Popup()
     {
         this.ConfigureMotionBindingStyle();
+        Bind(MaskShadowsProperty, this.GetResourceObservable(SharedTokenKind.BoxShadowsSecondary));
+        Bind(MotionDurationProperty, this.GetResourceObservable(SharedTokenKind.MotionDurationMid));
         Closed += HandleClosed;
         Opened += HandleOpened;
         if (this is IPopupHostProvider popupHostProvider)
@@ -199,17 +201,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
             }
         }
-
-        ConfigureInstanceStyles();
     }
 
-    private void ConfigureInstanceStyles()
-    {
-        var style = new Style();
-        style.Add(MaskShadowsProperty, SharedTokenKind.BoxShadowsSecondary);
-        style.Add(MotionDurationProperty, SharedTokenKind.MotionDurationMid);
-    }
-    
     private void HandlePopupHostChanged(IPopupHost? popupHost)
     {
         _placementAwareDecorator = null;
