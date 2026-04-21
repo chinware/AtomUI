@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
@@ -72,8 +71,7 @@ internal class DialogLayer : Canvas
     {
         if (TopLevel.GetTopLevel(visual) is {} tl)
         {
-            var layers = tl.GetVisualDescendants().OfType<DialogLayerManager>().FirstOrDefault();
-            return layers?.DialogLayer;
+            return DialogLayerManager.GetInstance(tl)?.DialogLayer;
         }
 
         return null;
