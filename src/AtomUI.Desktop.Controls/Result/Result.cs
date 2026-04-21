@@ -1,9 +1,10 @@
-using AtomUI.Controls;
 using AtomUI.Controls.Commons;
-using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
-using Avalonia.Styling;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -11,67 +12,90 @@ using IconControl = AtomUI.Controls.Icon;
 
 public class Result : AbstractResult
 {
+    internal static readonly StyledProperty<double> StatusIconSizeProperty =
+        AvaloniaProperty.Register<Result, double>(nameof(StatusIconSize), double.NaN);
+
+    internal static readonly StyledProperty<IBrush?> StatusIconBrushProperty =
+        AvaloniaProperty.Register<Result, IBrush?>(nameof(StatusIconBrush));
+
+    internal double StatusIconSize
+    {
+        get => GetValue(StatusIconSizeProperty);
+        set => SetValue(StatusIconSizeProperty, value);
+    }
+
+    internal IBrush? StatusIconBrush
+    {
+        get => GetValue(StatusIconBrushProperty);
+        set => SetValue(StatusIconBrushProperty, value);
+    }
+
+    private ContentPresenter? _statusIconPresenter;
+
     public Result()
     {
         this.RegisterTokenResourceScope(ResultToken.ScopeProvider);
-        ConfigureInstanceStyle();
     }
-    
-    private void ConfigureInstanceStyle()
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        base.OnApplyTemplate(e);
+
+        if (_statusIconPresenter != null)
         {
-            var iconStyle = new Style(x => x.Is<AbstractResult>().Descendant().Name("PART_StatusIconPresenter").Child());
-            iconStyle.Add(WidthProperty, ResultTokenKind.IconSize);
-            iconStyle.Add(HeightProperty, ResultTokenKind.IconSize);
-            Styles.Add(iconStyle);
+            _statusIconPresenter.PropertyChanged -= HandleStatusIconPresenterPropertyChanged;
         }
-        
-        var infoStyle = new Style(x => x.PropertyEquals(StatusProperty, ResultStatus.Info));
-        
+
+        _statusIconPresenter = e.NameScope.Find<ContentPresenter>("PART_StatusIconPresenter");
+
+        if (_statusIconPresenter != null)
         {
-            var iconStyle = new Style(x => x.Nesting().Descendant().Name("PART_StatusIconPresenter").Child());
-            iconStyle.Add(ForegroundProperty, ResultTokenKind.ResultInfoIconColor);
-            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKind.ResultInfoIconColor);
-            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKind.ResultInfoIconColor);
-            infoStyle.Add(iconStyle);
+            _statusIconPresenter.PropertyChanged += HandleStatusIconPresenterPropertyChanged;
+            UpdateStatusIcon();
         }
-        
-        Styles.Add(infoStyle);
-        
-        var successStyle = new Style(x => x.PropertyEquals(StatusProperty, ResultStatus.Success));
-        
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == StatusIconSizeProperty ||
+            change.Property == StatusIconBrushProperty)
         {
-            var iconStyle = new Style(x => x.Nesting().Descendant().Name("PART_StatusIconPresenter").Child());
-            iconStyle.Add(ForegroundProperty, ResultTokenKind.ResultSuccessIconColor);
-            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKind.ResultSuccessIconColor);
-            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKind.ResultSuccessIconColor);
-            successStyle.Add(iconStyle);
+            UpdateStatusIcon();
         }
-        
-        Styles.Add(successStyle);
-        
-        var warningStyle = new Style(x => x.PropertyEquals(StatusProperty, ResultStatus.Warning));
-        
+    }
+
+    private void HandleStatusIconPresenterPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ContentPresenter.ChildProperty)
         {
-            var iconStyle = new Style(x => x.Nesting().Descendant().Name("PART_StatusIconPresenter").Child());
-            iconStyle.Add(ForegroundProperty, ResultTokenKind.ResultWarningIconColor);
-            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKind.ResultWarningIconColor);
-            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKind.ResultWarningIconColor);
-            warningStyle.Add(iconStyle);
+            UpdateStatusIcon();
         }
-        
-        Styles.Add(warningStyle);
-        
-        var errorStyle = new Style(x => x.PropertyEquals(StatusProperty, ResultStatus.Error));
-        
+    }
+
+    private void UpdateStatusIcon()
+    {
+        if (_statusIconPresenter?.Child is not Control child)
         {
-            var iconStyle = new Style(x => x.Nesting().Descendant().Name("PART_StatusIconPresenter").Child());
-            iconStyle.Add(ForegroundProperty, ResultTokenKind.ResultErrorIconColor);
-            iconStyle.Add(IconControl.FillBrushProperty, ResultTokenKind.ResultErrorIconColor);
-            iconStyle.Add(IconControl.StrokeBrushProperty, ResultTokenKind.ResultErrorIconColor);
-            errorStyle.Add(iconStyle);
+            return;
         }
-        
-        Styles.Add(errorStyle);
+
+        var size = StatusIconSize;
+        if (!double.IsNaN(size))
+        {
+            child.SetCurrentValue(WidthProperty, size);
+            child.SetCurrentValue(HeightProperty, size);
+        }
+
+        var brush = StatusIconBrush;
+        if (brush != null)
+        {
+            child.SetCurrentValue(ForegroundProperty, brush);
+            if (child is IconControl icon)
+            {
+                icon.SetCurrentValue(IconControl.FillBrushProperty, brush);
+                icon.SetCurrentValue(IconControl.StrokeBrushProperty, brush);
+            }
+        }
     }
 }
