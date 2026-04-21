@@ -222,6 +222,7 @@ protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e
 ### 已修复案例
 
 - `WindowTitleBar.cs` — `OnAttachedToVisualTree` 中覆盖 `_disposables` 未先 Dispose
+- `OverlayDialogHeader.cs` — 同 WindowTitleBar
 
 ---
 
