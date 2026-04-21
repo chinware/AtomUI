@@ -170,27 +170,13 @@
         
         <!-- status 不同的时候左右附加区域的主体色设置 -->
         <Style Selector="^[Status=Error]">
-            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorErrorText}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorErrorText}" />
-            </Style>
+            <Setter Property="AddOnStatusForeground" Value="{atom:SharedTokenResource ColorErrorText}" />
+            <Setter Property="AddOnStatusIconBrush" Value="{atom:SharedTokenResource ColorError}" />
         </Style>
 
         <Style Selector="^[Status=Warning]">
-            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorWarningText}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorWarningText}" />
-            </Style>
+            <Setter Property="AddOnStatusForeground" Value="{atom:SharedTokenResource ColorWarningText}" />
+            <Setter Property="AddOnStatusIconBrush" Value="{atom:SharedTokenResource ColorWarning}" />
         </Style>
 
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -451,15 +437,8 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
-
-            <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
+            <Setter Property="AddOnStatusForeground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="AddOnStatusIconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
 
             <Style Selector="^:outline">
                 <Setter Property="Background"

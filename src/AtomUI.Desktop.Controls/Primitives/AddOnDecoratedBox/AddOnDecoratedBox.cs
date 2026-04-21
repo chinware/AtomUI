@@ -1,7 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives.Themes;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -10,8 +9,8 @@ using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -141,6 +140,24 @@ internal class AddOnDecoratedBox : ContentControl,
     #endregion
     
     #region 内部属性定义
+    internal static readonly StyledProperty<IBrush?> AddOnStatusForegroundProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(AddOnStatusForeground));
+
+    internal static readonly StyledProperty<IBrush?> AddOnStatusIconBrushProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(AddOnStatusIconBrush));
+
+    internal IBrush? AddOnStatusForeground
+    {
+        get => GetValue(AddOnStatusForegroundProperty);
+        set => SetValue(AddOnStatusForegroundProperty, value);
+    }
+
+    internal IBrush? AddOnStatusIconBrush
+    {
+        get => GetValue(AddOnStatusIconBrushProperty);
+        set => SetValue(AddOnStatusIconBrushProperty, value);
+    }
+
     internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> InnerBoxBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(nameof(InnerBoxBorderThickness),
             o => o.InnerBoxBorderThickness,
@@ -276,6 +293,8 @@ internal class AddOnDecoratedBox : ContentControl,
     
     private protected Control? _leftAddOn;
     private protected Control? _rightAddOn;
+    private ContentPresenter? _contentLeftAddOn;
+    private ContentPresenter? _contentRightAddOn;
 
     internal Border? ContentFrame;
     
@@ -294,7 +313,6 @@ internal class AddOnDecoratedBox : ContentControl,
 
     public AddOnDecoratedBox()
     {
-        ConfigureInstanceStyles();
     }
     
     protected virtual void UpdatePseudoClasses()
@@ -320,8 +338,8 @@ internal class AddOnDecoratedBox : ContentControl,
             {
                 ConfigureInnerBoxBorderThickness();
             }
-    
-            if (change.Property == LeftAddOnProperty || 
+
+            if (change.Property == LeftAddOnProperty ||
                 change.Property == RightAddOnProperty ||
                 change.Property == CornerRadiusProperty ||
                 change.Property == StyleVariantProperty ||
@@ -330,19 +348,29 @@ internal class AddOnDecoratedBox : ContentControl,
             {
                 ConfigureInnerBoxCornerRadius();
             }
-    
+
             if (change.Property == BorderThicknessProperty)
             {
                 ConfigureInnerBoxBorderThickness();
             }
-        
-            if (change.Property == CornerRadiusProperty || 
+
+            if (change.Property == CornerRadiusProperty ||
                 change.Property == BorderThicknessProperty ||
                 change.Property == StyleVariantProperty ||
                 change.Property == CompactSpaceItemPositionProperty ||
                 change.Property == CompactSpaceOrientationProperty)
             {
                 ConfigureAddOnBorderInfo();
+            }
+
+            if (change.Property == StatusProperty ||
+                change.Property == IsEnabledProperty ||
+                change.Property == ContentLeftAddOnProperty ||
+                change.Property == ContentRightAddOnProperty ||
+                change.Property == AddOnStatusForegroundProperty ||
+                change.Property == AddOnStatusIconBrushProperty)
+            {
+                UpdateIconStatusColors();
             }
         }
     }
@@ -458,8 +486,52 @@ internal class AddOnDecoratedBox : ContentControl,
         base.OnApplyTemplate(e);
         UpdatePseudoClasses();
 
+        // 取消旧的 ContentPresenter 订阅
+        if (_contentLeftAddOn != null)
+        {
+            _contentLeftAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+        }
+
+        if (_contentRightAddOn != null)
+        {
+            _contentRightAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+        }
+
+        if (_leftAddOn is ContentPresenter oldLeftAddOn)
+        {
+            oldLeftAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+        }
+
+        if (_rightAddOn is ContentPresenter oldRightAddOn)
+        {
+            oldRightAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+        }
+
         _leftAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
         _rightAddOn  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+        _contentLeftAddOn  = e.NameScope.Find<ContentPresenter>(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart);
+        _contentRightAddOn = e.NameScope.Find<ContentPresenter>(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart);
+
+        // 订阅新的 ContentPresenter Child 变化
+        if (_contentLeftAddOn != null)
+        {
+            _contentLeftAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+        }
+
+        if (_contentRightAddOn != null)
+        {
+            _contentRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+        }
+
+        if (_leftAddOn is ContentPresenter newLeftAddOn)
+        {
+            newLeftAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+        }
+
+        if (_rightAddOn is ContentPresenter newRightAddOn)
+        {
+            newRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+        }
         
         if (ContentFrame != null)
         {
@@ -481,6 +553,7 @@ internal class AddOnDecoratedBox : ContentControl,
         ConfigureInnerBoxCornerRadius();
         ConfigureAddOnBorderInfo();
         ConfigureInnerBoxBorderThickness();
+        UpdateIconStatusColors();
     }
 
     private void HandleContentFramePointerEnter(object? sender, PointerEventArgs args)
@@ -503,6 +576,93 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         IsInnerBoxPressed = false;
         IsInnerBoxHover   = true;
+    }
+
+    private void HandleContentPresenterChildChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ContentPresenter.ChildProperty)
+        {
+            if (e.OldValue is Control oldChild)
+            {
+                oldChild.AttachedToVisualTree -= HandleAddOnChildAttachedToVisualTree;
+            }
+
+            if (e.NewValue is Control newChild)
+            {
+                if (newChild.IsAttachedToVisualTree())
+                {
+                    UpdateIconStatusColors();
+                }
+                else
+                {
+                    newChild.AttachedToVisualTree += HandleAddOnChildAttachedToVisualTree;
+                }
+            }
+        }
+    }
+
+    private void HandleAddOnChildAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is Control child)
+        {
+            child.AttachedToVisualTree -= HandleAddOnChildAttachedToVisualTree;
+        }
+        UpdateIconStatusColors();
+    }
+
+    private void UpdateIconStatusColors()
+    {
+        var foreground = AddOnStatusForeground;
+        var iconBrush = AddOnStatusIconBrush;
+
+        // 应用 Foreground 到 addon 区域的 ContentPresenter
+        ApplyAddOnForeground(_contentLeftAddOn, foreground);
+        ApplyAddOnForeground(_contentRightAddOn, foreground);
+        ApplyAddOnForeground(_leftAddOn as ContentPresenter, foreground);
+        ApplyAddOnForeground(_rightAddOn as ContentPresenter, foreground);
+
+        // 应用 Icon 染色
+        ApplyIconBrush(_contentLeftAddOn, iconBrush);
+        ApplyIconBrush(_contentRightAddOn, iconBrush);
+        ApplyIconBrush(_leftAddOn, iconBrush);
+        ApplyIconBrush(_rightAddOn, iconBrush);
+    }
+
+    private static void ApplyAddOnForeground(ContentPresenter? presenter, IBrush? brush)
+    {
+        if (presenter == null) return;
+        if (brush != null)
+        {
+            presenter.SetCurrentValue(ForegroundProperty, brush);
+        }
+        else
+        {
+            presenter.ClearValue(ForegroundProperty);
+        }
+    }
+
+    private static void ApplyIconBrush(Control? container, IBrush? brush)
+    {
+        if (container == null)
+        {
+            return;
+        }
+        foreach (var icon in container.GetVisualDescendants().OfType<Icon>())
+        {
+            if (icon.Classes.Contains("skip-status")) continue;
+            if (brush != null)
+            {
+                icon.SetCurrentValue(Icon.FillBrushProperty, brush);
+                icon.SetCurrentValue(Icon.StrokeBrushProperty, brush);
+                icon.SetCurrentValue(Icon.ForegroundProperty, brush);
+            }
+            else
+            {
+                icon.ClearValue(Icon.FillBrushProperty);
+                icon.ClearValue(Icon.StrokeBrushProperty);
+                icon.ClearValue(Icon.ForegroundProperty);
+            }
+        }
     }
     
     protected virtual void NotifyAddOnBorderInfoCalculated()
@@ -595,75 +755,6 @@ internal class AddOnDecoratedBox : ContentControl,
         }
     }
     
-    private void ConfigureInstanceStyles()
-    {
-        {
-            var warningStyle = new Style(x =>
-                x.PropertyEquals(StatusProperty, InputControlStatus.Warning));
-            
-            var iconStyle = new Style(x => Selectors.Or(
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status"))));
-            
-            iconStyle.Add(Icon.FillBrushProperty, SharedTokenKind.ColorWarning);
-            iconStyle.Add(Icon.StrokeBrushProperty, SharedTokenKind.ColorWarning);
-            iconStyle.Add(Icon.ForegroundProperty, SharedTokenKind.ColorWarning);
-            warningStyle.Add(iconStyle);
-            Styles.Add(warningStyle);
-        }
-        {
-            var errorStyle = new Style(x =>
-                x.PropertyEquals(StatusProperty, InputControlStatus.Error));
-               
-            var iconStyle = new Style(x => Selectors.Or(
-                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status"))));
-            
-            iconStyle.Add(Icon.FillBrushProperty, SharedTokenKind.ColorError);
-            iconStyle.Add(Icon.StrokeBrushProperty, SharedTokenKind.ColorError);
-            iconStyle.Add(Icon.ForegroundProperty, SharedTokenKind.ColorError);
-            errorStyle.Add(iconStyle);
-            Styles.Add(errorStyle);
-        }
-        {
-            var disabledStyle = new Style(x => x.Class(StdPseudoClass.Disabled));
-            var iconStyle = new Style(x => Selectors.Or(
-                x.Nesting().Descendant().OfType<ContentPresenter>().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<Icon>(),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.LeftAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.LeftAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.RightAddOnPart).Descendant()
-                 .OfType<Icon>().Not(p => p.Class("skip-status")),
-                x.Nesting().Descendant().Name(AddOnDecoratedBoxThemeConstants.RightAddOnPart).Descendant()
-                 .OfType<PathIcon>().Not(p => p.Class("skip-status"))));
-      
-            iconStyle.Add(Icon.FillBrushProperty, SharedTokenKind.ColorTextDisabled);
-            iconStyle.Add(Icon.StrokeBrushProperty, SharedTokenKind.ColorTextDisabled);
-            iconStyle.Add(Icon.ForegroundProperty, SharedTokenKind.ColorTextDisabled);
-            disabledStyle.Add(iconStyle);
-            Styles.Add(disabledStyle);
-        }
-    }
 
     protected override void OnInitialized()
     {
