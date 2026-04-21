@@ -1,9 +1,15 @@
+using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Controls.Commons;
+using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
@@ -90,6 +96,7 @@ public class LineEdit : TextBox,
     #endregion
 
     private AddOnDecoratedBox? _addOnDecoratedBox;
+    private CompositeDisposable? _contentRightAddOnBindings;
     
     public LineEdit()
     {
@@ -120,6 +127,55 @@ public class LineEdit : TextBox,
         base.OnApplyTemplate(e);
         UpdatePseudoClasses();
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        SetupContentRightAddOnBindings(e);
+    }
+
+    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    {
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = new CompositeDisposable();
+
+        if (e.NameScope.Find<InputClearIconButton>(TextBoxThemeConstants.ClearButtonPart) is { } clearButton)
+        {
+            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
+                new Binding(nameof(ClearIcon)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
+                new Binding(nameof(IsMotionEnabled)) { Source = this }));
+        }
+
+        if (e.NameScope.Find<RevealButton>(TextBoxThemeConstants.RevealButtonPart) is { } revealButton)
+        {
+            _contentRightAddOnBindings.Add(revealButton.Bind(ToggleButton.IsCheckedProperty,
+                new Binding(nameof(RevealPassword)) { Source = this, Mode = BindingMode.TwoWay }));
+            _contentRightAddOnBindings.Add(revealButton.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(IsEnableRevealButton)) { Source = this }));
+        }
+
+        if (e.NameScope.Find<ContentPresenter>("FormFeedBack") is { } formFeedback)
+        {
+            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
+                new Binding(nameof(FormFeedback)) { Source = this }));
+            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(FormFeedback)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+        }
+
+        if (e.NameScope.Find<ContentPresenter>("InnerRightContentPresenter") is { } innerRightContent)
+        {
+            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
+                new Binding(nameof(InnerRightContent)) { Source = this }));
+            _contentRightAddOnBindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(InnerRightContent)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+        }
+
+        if (e.NameScope.Find<TextBlock>("TextCountIndicator") is { } textCountIndicator)
+        {
+            _contentRightAddOnBindings.Add(textCountIndicator.Bind(Avalonia.Controls.TextBlock.TextProperty,
+                new Binding(nameof(CountText)) { Source = this }));
+            _contentRightAddOnBindings.Add(textCountIndicator.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(IsShowCount)) { Source = this }));
+        }
     }
     
     protected override double GetBorderThicknessForCompactSpace()

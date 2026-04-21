@@ -28,34 +28,24 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
-                                Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                                Icon="{Binding ClearIcon, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
-                                IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
-                                IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}" />
+                                Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}" />
                             <!-- 新增显示密码按钮 -->
                             <atom:RevealButton
-                                Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
-                                IsChecked="{Binding RevealPassword, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Mode=TwoWay}"
-                                IsVisible="{Binding IsEnableRevealButton, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}" />
+                                Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}" />
                             <ContentPresenter
                                 Name="FormFeedBack"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
-                                HorizontalAlignment="Right"
-                                IsVisible="{Binding FormFeedback, Converter={x:Static ObjectConverters.IsNotNull}, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
-                                Content="{Binding FormFeedback, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}" />
+                                HorizontalAlignment="Right" />
                             <ContentPresenter
+                                Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right"
-                                Focusable="False"
-                                Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
-                                IsVisible="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:LineEdit}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                Focusable="False" />
                             <atom:TextBlock Name="TextCountIndicator"
                                             VerticalAlignment="Center"
-                                            Foreground="{atom:SharedTokenResource ColorTextPlaceholder}"
-                                            Text="{Binding CountText, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}"
-                                            IsVisible="{Binding IsShowCount, RelativeSource={RelativeSource AncestorType=atom:LineEdit}}" />
+                                            Foreground="{atom:SharedTokenResource ColorTextPlaceholder}" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
 
