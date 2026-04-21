@@ -11,6 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -295,6 +296,10 @@ internal class AddOnDecoratedBox : ContentControl,
     private protected Control? _rightAddOn;
     private ContentPresenter? _contentLeftAddOn;
     private ContentPresenter? _contentRightAddOn;
+    private bool _borderInfoDirty;
+    private bool _cornerRadiusDirty;
+    private bool _borderThicknessDirty;
+    private bool _layoutUpdatePosted;
 
     internal Border? ContentFrame;
     
@@ -332,46 +337,75 @@ internal class AddOnDecoratedBox : ContentControl,
             UpdatePseudoClasses();
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == StyleVariantProperty ||
+            change.Property == BorderThicknessProperty)
         {
-            if (change.Property == StyleVariantProperty)
-            {
-                ConfigureInnerBoxBorderThickness();
-            }
+            _borderThicknessDirty = true;
+        }
 
-            if (change.Property == LeftAddOnProperty ||
-                change.Property == RightAddOnProperty ||
-                change.Property == CornerRadiusProperty ||
-                change.Property == StyleVariantProperty ||
-                change.Property == CompactSpaceItemPositionProperty ||
-                change.Property == CompactSpaceOrientationProperty)
-            {
-                ConfigureInnerBoxCornerRadius();
-            }
+        if (change.Property == LeftAddOnProperty ||
+            change.Property == RightAddOnProperty ||
+            change.Property == CornerRadiusProperty ||
+            change.Property == StyleVariantProperty ||
+            change.Property == CompactSpaceItemPositionProperty ||
+            change.Property == CompactSpaceOrientationProperty)
+        {
+            _cornerRadiusDirty = true;
+        }
 
-            if (change.Property == BorderThicknessProperty)
-            {
-                ConfigureInnerBoxBorderThickness();
-            }
+        if (change.Property == CornerRadiusProperty ||
+            change.Property == BorderThicknessProperty ||
+            change.Property == StyleVariantProperty ||
+            change.Property == CompactSpaceItemPositionProperty ||
+            change.Property == CompactSpaceOrientationProperty)
+        {
+            _borderInfoDirty = true;
+        }
 
-            if (change.Property == CornerRadiusProperty ||
-                change.Property == BorderThicknessProperty ||
-                change.Property == StyleVariantProperty ||
-                change.Property == CompactSpaceItemPositionProperty ||
-                change.Property == CompactSpaceOrientationProperty)
-            {
-                ConfigureAddOnBorderInfo();
-            }
+        if (change.Property == StatusProperty ||
+            change.Property == IsEnabledProperty ||
+            change.Property == ContentLeftAddOnProperty ||
+            change.Property == ContentRightAddOnProperty ||
+            change.Property == AddOnStatusForegroundProperty ||
+            change.Property == AddOnStatusIconBrushProperty)
+        {
+            UpdateIconStatusColors();
+        }
 
-            if (change.Property == StatusProperty ||
-                change.Property == IsEnabledProperty ||
-                change.Property == ContentLeftAddOnProperty ||
-                change.Property == ContentRightAddOnProperty ||
-                change.Property == AddOnStatusForegroundProperty ||
-                change.Property == AddOnStatusIconBrushProperty)
-            {
-                UpdateIconStatusColors();
-            }
+        ScheduleLayoutUpdate();
+    }
+
+    private void ScheduleLayoutUpdate()
+    {
+        if (_layoutUpdatePosted)
+        {
+            return;
+        }
+        if (!_borderInfoDirty && !_cornerRadiusDirty && !_borderThicknessDirty)
+        {
+            return;
+        }
+        _layoutUpdatePosted = true;
+        Dispatcher.UIThread.Post(ApplyDirtyLayoutUpdates, DispatcherPriority.Render);
+    }
+
+    private void ApplyDirtyLayoutUpdates()
+    {
+        _layoutUpdatePosted = false;
+        if (_cornerRadiusDirty)
+        {
+            ConfigureInnerBoxCornerRadius();
+            _cornerRadiusDirty = false;
+        }
+        if (_borderInfoDirty)
+        {
+            ConfigureAddOnBorderInfo();
+            _borderInfoDirty = false;
+        }
+        if (_borderThicknessDirty)
+        {
+            ConfigureInnerBoxBorderThickness();
+            _borderThicknessDirty = false;
         }
     }
     
