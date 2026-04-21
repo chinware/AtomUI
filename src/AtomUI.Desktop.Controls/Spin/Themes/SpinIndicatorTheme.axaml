@@ -33,6 +33,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
+            <Setter Property="CustomIndicatorSize" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
             <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
                 <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
                 <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
@@ -40,6 +41,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CustomIndicatorSize" Value="{atom:SpinTokenResource IndicatorSize}" />
             <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
                 <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSize}" />
                 <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSize}" />
@@ -47,6 +49,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
+            <Setter Property="CustomIndicatorSize" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
             <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
                 <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
                 <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSizeSM}" />

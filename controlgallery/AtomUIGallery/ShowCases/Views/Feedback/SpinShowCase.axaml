@@ -10,7 +10,7 @@
             Description="A simple loading status.">
             <atom:SpinIndicator />
         </gallery:ShowCaseItem>
-
+        
         <gallery:ShowCaseItem
             Title="Size"
             Description="A small SpinIndicator is used for loading text, default sized SpinIndicator for loading a card-level block, and large SpinIndicator used for loading a page.">
@@ -81,7 +81,7 @@
                                 Description="Further details about the context of this alert."
                                 Type="Info" />
                 </atom:Spin>
-                
+        
                 <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
                            IsShowTip="True"
                            Tip="Loading..."

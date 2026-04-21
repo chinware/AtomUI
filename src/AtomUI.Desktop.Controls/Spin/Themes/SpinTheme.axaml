@@ -17,20 +17,13 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Name="IndicatorLayout">
-                            <Panel>
-                                <ContentPresenter
-                                    Name="CustomIndicator"
-                                    Content="{TemplateBinding CustomIndicator}"
-                                    ContentTemplate="{TemplateBinding CustomIndicatorTemplate}"
-                                    IsVisible="{TemplateBinding IsCustomIndicator}"
-                                    HorizontalAlignment="Center"/>
-                                <atom:SpinIndicator Name="Indicator"
-                                                    SizeType="{TemplateBinding SizeType}"
-                                                    MotionDuration="{TemplateBinding MotionDuration}"
-                                                    MotionEasingCurve="{TemplateBinding MotionEasingCurve}"
-                                                    HorizontalAlignment="Center"
-                                                    IsVisible="{TemplateBinding IsCustomIndicator, Converter={x:Static BoolConverters.Not}}"/>
-                            </Panel>
+                            <atom:SpinIndicator Name="Indicator"
+                                                SizeType="{TemplateBinding SizeType}"
+                                                MotionDuration="{TemplateBinding MotionDuration}"
+                                                MotionEasingCurve="{TemplateBinding MotionEasingCurve}"
+                                                HorizontalAlignment="Center"
+                                                CustomIndicator="{TemplateBinding CustomIndicator}"
+                                                CustomIndicatorTemplate="{TemplateBinding CustomIndicatorTemplate}"/>
                             <atom:TextBlock
                                 Name="Tip"
                                 Text="{TemplateBinding Tip}"

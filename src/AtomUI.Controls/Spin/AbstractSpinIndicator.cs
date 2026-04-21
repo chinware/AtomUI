@@ -82,6 +82,9 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
             nameof(IndicatorAngle),
             o => o.IndicatorAngle,
             (o, v) => o.IndicatorAngle = v);
+    
+    internal static readonly StyledProperty<double> CustomIndicatorSizeProperty =
+        AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(CustomIndicatorSize), double.NaN);
 
     internal double DotSize
     {
@@ -102,6 +105,12 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         get => _indicatorAngle;
         set => SetAndRaise(IndicatorAngleProperty, ref _indicatorAngle, value);
     }
+    
+    internal double CustomIndicatorSize
+    {
+        get => GetValue(CustomIndicatorSizeProperty);
+        set => SetValue(CustomIndicatorSizeProperty, value);
+    }
 
     #endregion
 
@@ -115,7 +124,8 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
     {
         AffectsMeasure<AbstractSpinIndicator>(SizeTypeProperty,
             CustomIndicatorProperty,
-            CustomIndicatorTemplateProperty);
+            CustomIndicatorTemplateProperty,
+            CustomIndicatorSizeProperty);
         AffectsRender<AbstractSpinIndicator>(IndicatorAngleProperty);
     }
 
@@ -142,21 +152,22 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
     }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IndicatorAngleProperty)
-        {
-            HandleIndicatorAngleChanged();
-        }
-    }
-
+    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _customIndicatorPresenter =
-            e.NameScope.Find<ContentPresenter>("PART_CustomIndicatorPresenter");
+        if (_customIndicatorPresenter != null)
+        {
+            _customIndicatorPresenter.PropertyChanged -= HandleIndicatorPresenterPropertyChanged;
+        }
+
+        _customIndicatorPresenter = e.NameScope.Find<ContentPresenter>("PART_CustomIndicatorPresenter");
+
+        if (_customIndicatorPresenter != null)
+        {
+            _customIndicatorPresenter.PropertyChanged += HandleIndicatorPresenterPropertyChanged;
+            UpdateCustomIndicatorSize();
+        }
     }
     
     private void HandleIndicatorAngleChanged()
@@ -251,6 +262,42 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
             using var opacityState = context.PushOpacity(topItemOpacity);
             var       itemRect     = new Rect(topItemOffset, new Size(DotSize, DotSize));
             context.DrawEllipse(DotBgBrush, null, itemRect);
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == CustomIndicatorSizeProperty)
+        {
+            UpdateCustomIndicatorSize();
+        }
+        else if (change.Property == IndicatorAngleProperty)
+        {
+            HandleIndicatorAngleChanged();
+        }
+    }
+
+    private void HandleIndicatorPresenterPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ContentPresenter.ChildProperty)
+        {
+            UpdateCustomIndicatorSize();
+        }
+    }
+
+    private void UpdateCustomIndicatorSize()
+    {
+        if (_customIndicatorPresenter?.Child is not PathIcon child)
+        {
+            return;
+        }
+
+        var size = CustomIndicatorSize;
+        if (!double.IsNaN(size))
+        {
+            child.SetValue(WidthProperty, size);
+            child.SetValue(HeightProperty, size);
         }
     }
 }
