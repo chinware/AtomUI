@@ -43,8 +43,8 @@ public class ScopeAwareAdornerLayer : Canvas
 
     static ScopeAwareAdornerLayer()
     {
-        AdornedElementProperty.Changed.Subscribe(HandleAdornedElementChanged);
-        AdornerProperty.Changed.Subscribe(HandleAdornerChanged);
+        AdornedElementProperty.Changed.AddClassHandler<Visual>(HandleAdornedElementChanged);
+        AdornerProperty.Changed.AddClassHandler<Visual>(HandleAdornerChanged);
     }
 
     public ScopeAwareAdornerLayer()
@@ -225,39 +225,35 @@ public class ScopeAwareAdornerLayer : Canvas
         clip.Rect = clipBounds;
     }
 
-    private static void HandleAdornedElementChanged(AvaloniaPropertyChangedEventArgs<Control?> e)
+    private static void HandleAdornedElementChanged(Visual sender, AvaloniaPropertyChangedEventArgs e)
     {
-        var adorner = (Visual)e.Sender;
-        var adorned = e.NewValue.GetValueOrDefault();
-        var layer   = adorner.GetVisualParent<ScopeAwareAdornerLayer>();
-        layer?.UpdateAdornedElement(adorner, adorned);
+        var adorned = e.NewValue as Control;
+        var layer   = sender.GetVisualParent<ScopeAwareAdornerLayer>();
+        layer?.UpdateAdornedElement(sender, adorned);
     }
 
-    private static void HandleAdornerChanged(AvaloniaPropertyChangedEventArgs<Control?> e)
+    private static void HandleAdornerChanged(Visual visual, AvaloniaPropertyChangedEventArgs e)
     {
-        if (e.Sender is Visual visual)
+        var oldAdorner = e.OldValue as Control;
+        var newAdorner = e.NewValue as Control;
+
+        if (Equals(oldAdorner, newAdorner))
         {
-            var oldAdorner = e.OldValue.GetValueOrDefault();
-            var newAdorner = e.NewValue.GetValueOrDefault();
+            return;
+        }
 
-            if (Equals(oldAdorner, newAdorner))
-            {
-                return;
-            }
+        if (oldAdorner is { })
+        {
+            visual.AttachedToVisualTree   -= VisualOnAttachedToVisualTree;
+            visual.DetachedFromVisualTree -= VisualOnDetachedFromVisualTree;
+            Detach(visual, oldAdorner);
+        }
 
-            if (oldAdorner is { })
-            {
-                visual.AttachedToVisualTree   -= VisualOnAttachedToVisualTree;
-                visual.DetachedFromVisualTree -= VisualOnDetachedFromVisualTree;
-                Detach(visual, oldAdorner);
-            }
-
-            if (newAdorner is { })
-            {
-                visual.AttachedToVisualTree   += VisualOnAttachedToVisualTree;
-                visual.DetachedFromVisualTree += VisualOnDetachedFromVisualTree;
-                Attach(visual, newAdorner);
-            }
+        if (newAdorner is { })
+        {
+            visual.AttachedToVisualTree   += VisualOnAttachedToVisualTree;
+            visual.DetachedFromVisualTree += VisualOnDetachedFromVisualTree;
+            Attach(visual, newAdorner);
         }
     }
 

@@ -196,7 +196,7 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Background" Value="Transparent" />
 
-        <Style Selector="^[StyleVariant=Outlined]">
+        <Style Selector="^:outline">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
 
             <Style Selector="^[IsInnerBoxHover=True]">
@@ -272,7 +272,7 @@
 
         </Style>
 
-        <Style Selector="^[StyleVariant=Filled]">
+        <Style Selector="^:filled">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
 
@@ -373,7 +373,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^[StyleVariant=Borderless]">
+        <Style Selector="^:borderless">
             <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
                 <Setter Property="Background" Value="Transparent" />
             </Style>
@@ -383,7 +383,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^[StyleVariant=Underlined]">
+        <Style Selector="^:underlined">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
 
             <Style Selector="^[IsInnerBoxHover=True]">
@@ -461,7 +461,7 @@
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
 
-            <Style Selector="^[StyleVariant=Outlined]">
+            <Style Selector="^:outline">
                 <Setter Property="Background"
                         Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
                 <Setter Property="BorderBrush"
@@ -482,7 +482,7 @@
                 </Style>
             </Style>
 
-            <Style Selector="^[StyleVariant=Filled]">
+            <Style Selector="^:filled">
                 <Setter Property="Background"
                         Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
                 <Setter Property="BorderBrush"
@@ -503,7 +503,7 @@
                 </Style>
             </Style>
 
-            <Style Selector="^[StyleVariant=Underlined]">
+            <Style Selector="^:underlined">
                 <Setter Property="BorderBrush"
                         Value="{atom:SharedTokenResource ColorBorder}" />
             </Style>

@@ -302,17 +302,22 @@ internal class AddOnDecoratedBox : ContentControl,
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
+        PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Underlined, StyleVariant == InputControlStyleVariant.Underlined);
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == StyleVariantProperty)
+        {
+            UpdatePseudoClasses();
+        }
+
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == StyleVariantProperty)
             {
-                UpdatePseudoClasses();
                 ConfigureInnerBoxBorderThickness();
             }
     
@@ -451,7 +456,8 @@ internal class AddOnDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
+        UpdatePseudoClasses();
+
         _leftAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
         _rightAddOn  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
         
