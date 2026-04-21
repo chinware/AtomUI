@@ -415,31 +415,34 @@ internal class AddOnDecoratedBox : ContentControl,
         var topRightRadius    = CornerRadius.TopRight;
         var bottomLeftRadius  = CornerRadius.BottomLeft;
         var bottomRightRadius = CornerRadius.BottomRight;
-        
+
+        CornerRadius newLeftRadius;
+        CornerRadius newRightRadius;
+
         if (IsUsedInCompactSpace && CompactSpaceItemPosition.HasValue &&
-            (!CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) || 
+            (!CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) ||
              !CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
         {
             if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First))
             {
                 if (CompactSpaceOrientation == Orientation.Horizontal)
                 {
-                    LeftAddOnCornerRadius = new CornerRadius(topLeft:topLeftRadius,
+                    newLeftRadius = new CornerRadius(topLeft:topLeftRadius,
                         topRight:0,
                         bottomLeft: bottomLeftRadius,
                         bottomRight: 0);
-                    RightAddOnCornerRadius = new CornerRadius(topLeft:0,
+                    newRightRadius = new CornerRadius(topLeft:0,
                         topRight: 0,
                         bottomLeft: 0,
                         bottomRight: 0);
                 }
                 else
                 {
-                    LeftAddOnCornerRadius = new CornerRadius(topLeft:topLeftRadius,
+                    newLeftRadius = new CornerRadius(topLeft:topLeftRadius,
                         topRight:0,
                         bottomLeft: 0,
                         bottomRight: 0);
-                    RightAddOnCornerRadius = new CornerRadius(topLeft:0,
+                    newRightRadius = new CornerRadius(topLeft:0,
                         topRight:topRightRadius,
                         bottomLeft: 0,
                         bottomRight: 0);
@@ -447,35 +450,35 @@ internal class AddOnDecoratedBox : ContentControl,
             }
             else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Middle))
             {
-                LeftAddOnCornerRadius = new CornerRadius(topLeft:0,
+                newLeftRadius = new CornerRadius(topLeft:0,
                     topRight:0,
                     bottomLeft: 0,
                     bottomRight: 0);
-                RightAddOnCornerRadius = new CornerRadius(topLeft:0,
+                newRightRadius = new CornerRadius(topLeft:0,
                     topRight:0,
                     bottomLeft: 0,
                     bottomRight: 0);
             }
-            else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last))
+            else // Last
             {
                 if (CompactSpaceOrientation == Orientation.Horizontal)
                 {
-                    LeftAddOnCornerRadius = new CornerRadius(topLeft:0,
+                    newLeftRadius = new CornerRadius(topLeft:0,
                         topRight:0,
                         bottomLeft: 0,
                         bottomRight: 0);
-                    RightAddOnCornerRadius = new CornerRadius(topLeft:0,
+                    newRightRadius = new CornerRadius(topLeft:0,
                         topRight:topRightRadius,
                         bottomLeft: 0,
                         bottomRight: bottomRightRadius);
                 }
                 else
                 {
-                    LeftAddOnCornerRadius = new CornerRadius(topLeft:0,
+                    newLeftRadius = new CornerRadius(topLeft:0,
                         topRight:0,
                         bottomLeft: bottomLeftRadius,
                         bottomRight: 0);
-                    RightAddOnCornerRadius = new CornerRadius(topLeft:0,
+                    newRightRadius = new CornerRadius(topLeft:0,
                         topRight:0,
                         bottomLeft: 0,
                         bottomRight: bottomRightRadius);
@@ -484,16 +487,28 @@ internal class AddOnDecoratedBox : ContentControl,
         }
         else
         {
-            LeftAddOnCornerRadius = new CornerRadius(topLeft:topLeftRadius,
+            newLeftRadius = new CornerRadius(topLeft:topLeftRadius,
                 topRight:0,
                 bottomLeft: bottomLeftRadius,
                 bottomRight: 0);
-            RightAddOnCornerRadius = new CornerRadius(topLeft:0,
+            newRightRadius = new CornerRadius(topLeft:0,
                 topRight:topRightRadius,
                 bottomLeft: 0,
                 bottomRight: bottomRightRadius);
         }
-        
+
+        if (LeftAddOnCornerRadius != newLeftRadius)
+        {
+            LeftAddOnCornerRadius = newLeftRadius;
+        }
+        if (RightAddOnCornerRadius != newRightRadius)
+        {
+            RightAddOnCornerRadius = newRightRadius;
+        }
+
+        Thickness newLeftThickness;
+        Thickness newRightThickness;
+
         if (StyleVariant == InputControlStyleVariant.Outlined ||
             StyleVariant == InputControlStyleVariant.Filled)
         {
@@ -501,17 +516,32 @@ internal class AddOnDecoratedBox : ContentControl,
             var rightThickness  = BorderThickness.Right;
             var bottomThickness = BorderThickness.Bottom;
             var leftThickness   = BorderThickness.Left;
-            
-            LeftAddOnBorderThickness =
+
+            newLeftThickness =
                 new Thickness(top: topThickness, right: 0, bottom: bottomThickness, left: leftThickness);
-            RightAddOnBorderThickness =
+            newRightThickness =
                 new Thickness(top: topThickness, right: rightThickness, bottom: bottomThickness, left: 0);
         }
         else if (StyleVariant == InputControlStyleVariant.Underlined)
         {
-            LeftAddOnBorderThickness  = new Thickness(0);
-            RightAddOnBorderThickness = new Thickness(0);
+            newLeftThickness  = new Thickness(0);
+            newRightThickness = new Thickness(0);
         }
+        else
+        {
+            newLeftThickness  = LeftAddOnBorderThickness;
+            newRightThickness = RightAddOnBorderThickness;
+        }
+
+        if (LeftAddOnBorderThickness != newLeftThickness)
+        {
+            LeftAddOnBorderThickness = newLeftThickness;
+        }
+        if (RightAddOnBorderThickness != newRightThickness)
+        {
+            RightAddOnBorderThickness = newRightThickness;
+        }
+
         NotifyAddOnBorderInfoCalculated();
     }
 
