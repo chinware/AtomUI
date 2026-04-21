@@ -153,6 +153,9 @@ public class WindowTitleBar : TemplatedControl,
     {
         base.OnAttachedToVisualTree(e);
 
+        _disposables?.Dispose();
+        _disposables = null;
+
         if (VisualRoot is Window window)
         {
             _disposables = new CompositeDisposable(6)
@@ -177,6 +180,7 @@ public class WindowTitleBar : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
         _disposables?.Dispose();
+        _disposables = null;
         _captionButtonGroup?.Detach();
         _captionButtonGroup = null;
     }

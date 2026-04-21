@@ -219,6 +219,10 @@ protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e
 }
 ```
 
+### 已修复案例
+
+- `WindowTitleBar.cs` — `OnAttachedToVisualTree` 中覆盖 `_disposables` 未先 Dispose
+
 ---
 
 ## 模式四：静态构造函数中使用 Subscribe 代替 AddClassHandler
