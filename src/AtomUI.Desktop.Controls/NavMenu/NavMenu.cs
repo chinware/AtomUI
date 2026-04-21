@@ -473,7 +473,7 @@ public class NavMenu : ItemsControl,
         {
             EnterDisableMotionRegion();
             var          segments     = treeNodePath.Segments;
-            IList        items        = Items.ToList();
+            IList        items        = Items;
             var          pathNodes    = new List<NavMenuItem>();
             NavMenuItem? previousItem = null;
             for (int i = 0; i < segments.Count; i++)
@@ -528,7 +528,7 @@ public class NavMenu : ItemsControl,
         try
         {
             EnterDisableMotionRegion();
-            IList        items        = Items.ToList();
+            IList        items        = Items;
             var          pathItems    = new List<NavMenuItem>();
             NavMenuItem? previousItem = null;
             for (int i = 0; i < pathNodes.Count; i++)
