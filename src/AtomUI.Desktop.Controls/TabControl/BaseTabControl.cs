@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
@@ -262,7 +260,6 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
-    private protected readonly Dictionary<TabItem, CompositeDisposable> ItemsBindingDisposables = new();
     private const int UnselectedIndex = -1;
     private const int FirstItemIndex  = 0;
     private const int SingleItemCount = 1;
@@ -280,7 +277,6 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     public BaseTabControl()
     {
         this.RegisterTokenResourceScope(TabControlToken.ScopeProvider);
-        LogicalChildren.CollectionChanged += HandleCollectionChanged;
     }
     
     public bool CloseTab(TabItem tabItem)
@@ -368,27 +364,6 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         return previousIndex >= FirstItemIndex ? previousIndex : FirstItemIndex;
     }
     
-    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.OldItems != null)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Count > 0)
-            {
-                foreach (var item in e.OldItems)
-                {
-                    if (item is TabItem tabItem)
-                    {
-                        if (ItemsBindingDisposables.TryGetValue(tabItem, out var disposable))
-                        {
-                            disposable.Dispose();
-                            ItemsBindingDisposables.Remove(tabItem);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -489,8 +464,6 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         {
             tabItem.TabStripPlacement = TabStripPlacement;
             
-            var disposables = new CompositeDisposable(4);
-            
             if (item != null && item is not Visual)
             {
                 if (!tabItem.IsSet(TabItem.ContentProperty))
@@ -529,20 +502,13 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
 
             if (ItemTemplate != null)
             {
-                disposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, tabItem, TabItem.ContentTemplateProperty));
+                tabItem[!TabItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
             }
-            
-            disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, tabItem, TabItem.SizeTypeProperty));
-            disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, tabItem, TabItem.IsMotionEnabledProperty));
-            
-            PrepareTabItem(tabItem, item, index, disposables);
-            
-            if (ItemsBindingDisposables.TryGetValue(tabItem, out var oldDisposables))
-            {
-                oldDisposables.Dispose();
-                ItemsBindingDisposables.Remove(tabItem);
-            }
-            ItemsBindingDisposables.Add(tabItem, disposables);
+
+            tabItem[!TabItem.SizeTypeProperty] = this[!SizeTypeProperty];
+            tabItem[!TabItem.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+
+            PrepareTabItem(tabItem, item, index);
             ConfigureTabItem(tabItem);
         }
         else
@@ -550,8 +516,8 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type TabItem.");
         }
     }
-    
-    protected virtual void PrepareTabItem(TabItem tabItem, object? item, int index, CompositeDisposable compositeDisposable)
+
+    protected virtual void PrepareTabItem(TabItem tabItem, object? item, int index)
     {
     }
     
