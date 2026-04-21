@@ -197,13 +197,8 @@ public class CompactSpace : TemplatedControl,
 
             target.PropertyChanged += CompactSpaceItemChildPropertyChanged;
             SetItemSize(compactSpaceItem, GetItemSize(target));
-        
-            NotifyCollectionChangedEventHandler childClassesChangedHandler = delegate (object? sender, NotifyCollectionChangedEventArgs e)
-            {
-                HandleChildFocusWithinChanged(compactSpaceItem, target.Classes.Contains(StdPseudoClass.FocusWithIn));
-            };
-            _childClassesChangedHandlers.Add(target, childClassesChangedHandler);
-            target.Classes.CollectionChanged += childClassesChangedHandler;
+
+            RegisterChildClassesChangedHandler(compactSpaceItem, target);
             if (targetCompactSpaceAware != null && targetCompactSpaceAware.IsAlwaysActiveZIndex())
             {
                 compactSpaceItem.ZIndex = ACTIVE_ZINDEX;
@@ -335,6 +330,7 @@ public class CompactSpace : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ClearChildClassesChangedHandlers();
         _contentLayout = e.NameScope.Get<Grid>(CompactSpaceThemeConstants.ContentLayoutPart);
         var compactSpaceItems = new List<CompactSpaceItem>();
         foreach (var child in Children)
@@ -380,6 +376,61 @@ public class CompactSpace : TemplatedControl,
             }
         }
         return base.MeasureCore(availableSize);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearChildClassesChangedHandlers();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ReRegisterChildClassesChangedHandlers();
+    }
+
+    private void ClearChildClassesChangedHandlers()
+    {
+        foreach (var (target, handler) in _childClassesChangedHandlers)
+        {
+            if (target is Control control)
+            {
+                control.Classes.CollectionChanged -= handler;
+            }
+        }
+        _childClassesChangedHandlers.Clear();
+    }
+
+    private void ReRegisterChildClassesChangedHandlers()
+    {
+        if (_contentLayout == null)
+        {
+            return;
+        }
+
+        foreach (var child in _contentLayout.Children)
+        {
+            if (child is CompactSpaceItem compactSpaceItem && compactSpaceItem.Child is { } target)
+            {
+                RegisterChildClassesChangedHandler(compactSpaceItem, target);
+            }
+        }
+    }
+
+    private void RegisterChildClassesChangedHandler(CompactSpaceItem compactSpaceItem, Control target)
+    {
+        if (_childClassesChangedHandlers.ContainsKey(target))
+        {
+            return;
+        }
+
+        NotifyCollectionChangedEventHandler handler = (_, _) =>
+        {
+            HandleChildFocusWithinChanged(compactSpaceItem, target.Classes.Contains(StdPseudoClass.FocusWithIn));
+        };
+        _childClassesChangedHandlers.Add(target, handler);
+        target.Classes.CollectionChanged += handler;
     }
 
     private void ConfigureSizeDefinitions()

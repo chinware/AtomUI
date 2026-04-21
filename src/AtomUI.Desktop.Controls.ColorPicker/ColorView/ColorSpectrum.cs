@@ -387,7 +387,6 @@ internal class ColorSpectrum : TemplatedControl
 
         // OnAttachedToVisualTree is called after OnApplyTemplate so events cannot be connected here
     }
-    
 
     /// <summary>
     /// Explicitly unregisters all events connected in OnApplyTemplate().
