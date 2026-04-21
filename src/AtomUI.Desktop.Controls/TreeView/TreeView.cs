@@ -990,7 +990,7 @@ public partial class TreeView : AvaloniaTreeView,
         {
             SetCurrentValue(IsMotionEnabledProperty, false);
             var   segments  = treeNodePath.Segments;
-            IList items     = Items.ToList();
+            IList items     = Items;
             var   pathNodes = new List<TreeViewItem>();
             foreach (var segment in segments)
             {
@@ -1046,7 +1046,7 @@ public partial class TreeView : AvaloniaTreeView,
         try
         {
             var   segments  = treeNodePath.Segments;
-            IList items     = Items.ToList();
+            IList items     = Items;
             var   pathNodes = new List<TreeViewItem>();
             foreach (var segment in segments)
             {
@@ -1108,7 +1108,7 @@ public partial class TreeView : AvaloniaTreeView,
         {
             SetCurrentValue(IsMotionEnabledProperty, false);
             var   segments             = treeNodePath.Segments;
-            IList items                = Items.ToList();
+            IList items                = Items;
             var   pathNodes            = new List<TreeViewItem>();
             var   pathNodeExpandStatus = new List<bool>();
             try
