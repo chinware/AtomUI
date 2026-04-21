@@ -1,9 +1,11 @@
+using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -90,6 +92,13 @@ public class SplitView : AvaloniaSplitView, IMotionAwareControl
     {
         base.OnInitialized();
         ConfigureTransitions(false);
+        this.DisableTransitions();
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        this.EnableTransitions();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

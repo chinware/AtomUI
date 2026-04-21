@@ -2,20 +2,23 @@ using System.Collections;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls.Primitives;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
 internal class SelectCandidateList : ListView, ICandidateList
 {
     private static readonly FuncTemplate<Panel?> DefaultPanel = new(() => new CandidateVirtualizingStackPanel());
-    
+
+    private ScrollViewer? _scrollViewer;
+
     #region 公共属性定义
     
     public static readonly DirectProperty<SelectCandidateList, object?> CandidateSelectedItemProperty =
@@ -154,11 +157,16 @@ internal class SelectCandidateList : ListView, ICandidateList
     
     private void ResetScrollViewer()
     {
-        var sv = this.GetLogicalDescendants().OfType<ScrollViewer>().FirstOrDefault();
-        if (sv != null)
+        if (_scrollViewer != null)
         {
-            sv.Offset = new Vector(0, 0);
+            _scrollViewer.Offset = new Vector(0, 0);
         }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _scrollViewer = e.NameScope.Find<ScrollViewer>(ListViewThemeConstants.ScrollViewerPart);
     }
 
     private void HandleCandidateSelectedIndexChanged(AvaloniaPropertyChangedEventArgs e)

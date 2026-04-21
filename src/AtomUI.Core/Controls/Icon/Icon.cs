@@ -222,6 +222,13 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         DrawPens[secondaryFillIndex]   = new Pen(secondaryFillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
         DrawPens[fallbackIndex]        = new Pen(fallbackBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
         ConfigureTransitions(false);
+        this.DisableTransitions();
+    }
+    
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        this.EnableTransitions();
     }
 
     protected virtual IBrush? ProcessBrush(IBrush? brush)

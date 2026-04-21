@@ -233,37 +233,37 @@ public abstract class AbstractTag : TemplatedControl
         base.OnPropertyChanged(change);
 
         if (change.Property == CloseIconProperty)
-            {
-                SetupDefaultCloseIcon();
-            }
-
-            if (this.IsAttachedToVisualTree())
-            {
-                if (change.Property == TagColorProperty)
-                {
-                    if (TagColor is not null)
-                    {
-                        SetupTagColorInfo(TagColor); 
-                    }
-                }
-                else if (change.Property == IsBorderedProperty)
-                {
-                    ConfigureBorderThickness();
-                }
-            }
-        }
-
-        private void ConfigureBorderThickness()
         {
-            if (IsBordered)
+            SetupDefaultCloseIcon();
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == TagColorProperty)
             {
-                SetValue(BorderThicknessProperty, RenderScaleAwareBorderThickness, BindingPriority.Template);
+                if (TagColor is not null)
+                {
+                    SetupTagColorInfo(TagColor); 
+                }
             }
-            else
+            else if (change.Property == IsBorderedProperty)
             {
-                SetValue(BorderThicknessProperty, new Thickness(), BindingPriority.Template);
+                ConfigureBorderThickness();
             }
         }
+    }
+
+    private void ConfigureBorderThickness()
+    {
+        if (IsBordered)
+        {
+            SetValue(BorderThicknessProperty, RenderScaleAwareBorderThickness, BindingPriority.Template);
+        }
+        else
+        {
+            SetValue(BorderThicknessProperty, new Thickness(), BindingPriority.Template);
+        }
+    }
 
     // TODO 优化成静态变量
     private static void SetupPresetColorMap(bool force = false)
@@ -338,16 +338,16 @@ public abstract class AbstractTag : TemplatedControl
     {
         IsPresetColorTag = false;
         IsColorSet       = false;
-        colorStr          = colorStr.Trim().ToLower();
+        colorStr         = colorStr.Trim().ToLower();
 
         foreach (var entry in PresetColorMap)
         {
             if (entry.Key.ToString().ToLower() == colorStr)
             {
                 var colorInfo = PresetColorMap[entry.Key];
-                Foreground        = new SolidColorBrush(colorInfo.TextColor);
-                BorderBrush       = new SolidColorBrush(colorInfo.LightBorderColor);
-                Background        = new SolidColorBrush(colorInfo.LightColor);
+                Foreground       = new SolidColorBrush(colorInfo.TextColor);
+                BorderBrush      = new SolidColorBrush(colorInfo.LightBorderColor);
+                Background       = new SolidColorBrush(colorInfo.LightColor);
                 IsPresetColorTag = true;
                 PseudoClasses.Set(TagPseudoClass.PresetColor, true);
                 PseudoClasses.Set(TagPseudoClass.StatusColor, false);
@@ -361,9 +361,9 @@ public abstract class AbstractTag : TemplatedControl
             if (entry.Key.ToString().ToLower() == colorStr)
             {
                 var colorInfo = StatusColorMap[entry.Key];
-                Foreground        = new SolidColorBrush(colorInfo.Color);
-                BorderBrush       = new SolidColorBrush(colorInfo.BorderColor);
-                Background        = new SolidColorBrush(colorInfo.Background);
+                Foreground       = new SolidColorBrush(colorInfo.Color);
+                BorderBrush      = new SolidColorBrush(colorInfo.BorderColor);
+                Background       = new SolidColorBrush(colorInfo.Background);
                 IsPresetColorTag = true;
                 PseudoClasses.Set(TagPseudoClass.PresetColor, false);
                 PseudoClasses.Set(TagPseudoClass.StatusColor, true);
@@ -373,15 +373,15 @@ public abstract class AbstractTag : TemplatedControl
         }
 
         if (Color.TryParse(colorStr, out var color))
-            {
-                IsBordered = false;
-                IsColorSet = true;
-                Background = new SolidColorBrush(color);
-                PseudoClasses.Set(TagPseudoClass.PresetColor, false);
-                PseudoClasses.Set(TagPseudoClass.StatusColor, false);
-                PseudoClasses.Set(TagPseudoClass.CustomColor, true);
-            }
+        {
+            IsBordered = false;
+            IsColorSet = true;
+            Background = new SolidColorBrush(color);
+            PseudoClasses.Set(TagPseudoClass.PresetColor, false);
+            PseudoClasses.Set(TagPseudoClass.StatusColor, false);
+            PseudoClasses.Set(TagPseudoClass.CustomColor, true);
         }
+    }
 
     private void SetupDefaultCloseIcon()
     {

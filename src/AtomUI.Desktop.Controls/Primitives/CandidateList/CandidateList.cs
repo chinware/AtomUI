@@ -1,12 +1,13 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
@@ -88,6 +89,8 @@ public class CandidateList : ListBox, ICandidateList
     #endregion
     
     private static readonly FuncTemplate<Panel?> DefaultPanel = new(() => new CandidateVirtualizingStackPanel());
+
+    private ScrollViewer? _scrollViewer;
 
     static CandidateList()
     {
@@ -215,11 +218,16 @@ public class CandidateList : ListBox, ICandidateList
     
     private void ResetScrollViewer()
     {
-        var sv = this.GetLogicalDescendants().OfType<ScrollViewer>().FirstOrDefault();
-        if (sv != null)
+        if (_scrollViewer != null)
         {
-            sv.Offset = new Vector(0, 0);
+            _scrollViewer.Offset = new Vector(0, 0);
         }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _scrollViewer = e.NameScope.Find<ScrollViewer>(ListViewThemeConstants.ScrollViewerPart);
     }
     
     public void HandleKeyDown(KeyEventArgs e)
