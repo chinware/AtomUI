@@ -21,6 +21,8 @@ public partial class TreeView
 
     internal ISet<TreeViewItem> SelectedItemsClosure = new HashSet<TreeViewItem>();
 
+    private HashSet<TreeViewItem>? _descendantsMatchCache;
+
     private static void ConfigureFilter()
     {
         SelectingItemsControl.SelectionChangedEvent.AddClassHandler<TreeView>((treeView, args) => treeView.HandleSelectionChanged());
@@ -95,36 +97,31 @@ public partial class TreeView
                 {
                     if (ContainerFromIndex(i) is TreeViewItem item)
                     {
-                        originExpandedItems.UnionWith(CollectExpandedItems(item));
+                        CollectExpandedItems(item, originExpandedItems);
                     }
                 }
             }
- 
-            ExpandAll(false); // TODO 这样合适吗？
+
+            ExpandAll(false);
             using var state = BeginTurnOffMotion();
             if (!FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.ExpandPath) && originExpandedItems != null)
             {
                 RestoreItemExpandedStates(originExpandedItems);
             }
 
-            if (!originIsFilterMode)
-            {
-                for (int i = 0; i < ItemCount; i++)
-                {
-                    if (ContainerFromIndex(i) is TreeViewItem item)
-                    {
-                        BackupStateForFilterMode(item);
-                    }
-                }
-            }
-         
+            var needBackup = !originIsFilterMode;
+            _descendantsMatchCache = new HashSet<TreeViewItem>();
+
             for (var i = 0; i < ItemCount; i++)
             {
                 if (ContainerFromIndex(i) is TreeViewItem treeViewItem)
                 {
-                    FilterItem(treeViewItem);
+                    FilterItem(treeViewItem, needBackup);
                 }
             }
+
+            _descendantsMatchCache = null;
+            ConfigureEmptyIndicator();
         }
         else
         {
@@ -132,19 +129,31 @@ public partial class TreeView
         }
     }
 
-    private void FilterItem(TreeViewItem treeViewItem)
+    private void FilterItem(TreeViewItem treeViewItem, bool needBackup)
     {
         if (Filter == null)
         {
             return;
         }
+
+        var anyDescendantMatched = false;
         for (var i = 0; i < treeViewItem.ItemCount; i++)
         {
             if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childTreeViewItem)
             {
-                FilterItem(childTreeViewItem);
+                FilterItem(childTreeViewItem, needBackup);
+                if (_descendantsMatchCache!.Contains(childTreeViewItem))
+                {
+                    anyDescendantMatched = true;
+                }
             }
         }
+
+        if (needBackup)
+        {
+            treeViewItem.CreateFilterContextBackup();
+        }
+
         treeViewItem.IsFilterMode = true;
         var filterResult = Filter.Filter(this, treeViewItem, FilterValue);
         treeViewItem.IsFilterMatch = filterResult;
@@ -157,8 +166,12 @@ public partial class TreeView
                 treeViewItem.FilterHighlightWords = FilterValue?.ToString();
             }
         }
-        ConfigureEmptyIndicator();
-        
+
+        if (filterResult || anyDescendantMatched)
+        {
+            _descendantsMatchCache!.Add(treeViewItem);
+        }
+
         if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HideUnMatched))
         {
             if (treeViewItem.IsFilterMatch)
@@ -174,7 +187,7 @@ public partial class TreeView
                 }
                 treeViewItem.SetCurrentValue(TreeViewItem.IsVisibleProperty, true);
             }
-            else if (!HasChildOrDescendantsMatchFilter(treeViewItem))
+            else if (!anyDescendantMatched)
             {
                 treeViewItem.SetCurrentValue(TreeViewItem.IsVisibleProperty, false);
             }
@@ -182,57 +195,26 @@ public partial class TreeView
 
         if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.ExpandPath))
         {
-            SetupExpandForFilter(treeViewItem);
+            SetupExpandForFilter(treeViewItem, anyDescendantMatched);
         }
     }
 
-    private void SetupExpandForFilter(TreeViewItem treeViewItem)
+    private void SetupExpandForFilter(TreeViewItem treeViewItem, bool hasDescendantMatch)
     {
-        var hasChildOrDescendantsMatchFilter = HasChildOrDescendantsMatchFilter(treeViewItem);
-        if (hasChildOrDescendantsMatchFilter || treeViewItem.IsFilterMatch)
+        if (hasDescendantMatch || treeViewItem.IsFilterMatch)
         {
             var current = treeViewItem.Parent;
-            while (current != null && current is TreeViewItem)
+            while (current is TreeViewItem item)
             {
-                if (current is TreeViewItem item)
-                {
-                    item.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
-                }
-                current =  current.Parent;
+                item.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
+                current = item.Parent;
             }
         }
 
-        if (!hasChildOrDescendantsMatchFilter)
+        if (!hasDescendantMatch && !treeViewItem.IsFilterMatch)
         {
             treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, false);
         }
-    }
-
-    private bool HasChildOrDescendantsMatchFilter(TreeViewItem treeViewItem)
-    {
-        for (int i = 0; i < treeViewItem.ItemCount; i++)
-        {
-            if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childItem)
-            {
-                if (HasChildOrDescendantsMatchFilter(childItem))
-                {
-                    return true;
-                }
-            }
-        }
-        return treeViewItem.IsFilterMatch;
-    }
-    
-    private void BackupStateForFilterMode(TreeViewItem treeViewItem)
-    {
-        for (int i = 0; i < treeViewItem.ItemCount; i++)
-        {
-            if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childItem)
-            {
-                BackupStateForFilterMode(childItem);
-            }
-        }
-        treeViewItem.CreateFilterContextBackup();
     }
 
     private void ClearFilter()
@@ -267,14 +249,13 @@ public partial class TreeView
         treeViewItem.ClearFilterMode();
     }
 
-    private ISet<TreeViewItem> CollectExpandedItems(TreeViewItem treeViewItem)
+    private void CollectExpandedItems(TreeViewItem treeViewItem, HashSet<TreeViewItem> expandedItems)
     {
-        var expandedItems = new HashSet<TreeViewItem>();
         for (var i = 0; i < treeViewItem.ItemCount; i++)
         {
             if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childTreeItem)
             {
-                expandedItems.UnionWith(CollectExpandedItems(childTreeItem));
+                CollectExpandedItems(childTreeItem, expandedItems);
             }
         }
 
@@ -282,7 +263,6 @@ public partial class TreeView
         {
             expandedItems.Add(treeViewItem);
         }
-        return expandedItems;
     }
 
     private void RestoreItemExpandedStates(ISet<TreeViewItem> originExpandedItems)
