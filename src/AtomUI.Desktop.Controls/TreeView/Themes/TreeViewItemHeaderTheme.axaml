@@ -104,17 +104,22 @@
             <Setter Property="Padding" Value="{atom:TreeViewTokenResource TreeItemHeaderPadding}" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
-        <Style Selector="^:not(^[NodeHoverMode=WholeLine])">
+
+        <Style Selector="^[NodeHoverMode=Default]">
             <Setter Property="ContentFrameBackground" Value="Transparent" />
             <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
                 <Setter Property="HorizontalAlignment" Value="Left" />
             </Style>
-            <Style Selector="^[NodeHoverMode=Block]">
-                <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
-                    <Setter Property="HorizontalAlignment" Value="Stretch" />
-                </Style>
-            </Style>
+        </Style>
 
+        <Style Selector="^[NodeHoverMode=Block]">
+            <Setter Property="ContentFrameBackground" Value="Transparent" />
+            <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[NodeHoverMode=Default], ^[NodeHoverMode=Block]">
             <Style Selector="^[IsHover=True]">
                 <Setter Property="ContentFrameBackground"
                         Value="{atom:TreeViewTokenResource NodeHoverBg}" />
@@ -210,7 +215,7 @@
                 <Setter Property="Opacity" Value="0.3" />
             </Style>
 
-            <Style Selector="^:not(^[NodeHoverMode=WholeLine])">
+            <Style Selector="^[NodeHoverMode=Default], ^[NodeHoverMode=Block]">
                 <Style Selector="^[IsSelectable=True]">
                     <Style Selector="^[IsSelected=True]">
                         <Setter Property="ContentFrameBackground"
