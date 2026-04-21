@@ -157,6 +157,17 @@ public class ScopeAwareAdornerLayer : Canvas
                 }
 
                 break;
+
+            case NotifyCollectionChangedAction.Remove:
+                foreach (Visual i in e.OldItems!)
+                {
+                    UpdateAdornedElement(i, null);
+                }
+
+                break;
+
+            case NotifyCollectionChangedAction.Reset:
+                break;
         }
 
         InvalidateArrange();
@@ -168,7 +179,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
         if (info != null)
         {
-            info.Subscription!.Dispose();
+            info.Subscription?.Dispose();
 
             if (adorned == null)
             {

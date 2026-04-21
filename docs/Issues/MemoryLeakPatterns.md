@@ -76,8 +76,8 @@ protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e
 
 ### 安全使用场景
 
-- `static` 构造函数中调用 `AddClassHandler` — 只执行一次，不增长
-- `static` 构造函数中调用 `Changed.Subscribe` 且回调为静态方法 — 不捕获实例
+- `static` 构造函数中调用 `AddClassHandler` — 由属性系统管理，不创建 LightweightSubject 订阅
+- ~~`static` 构造函数中调用 `Changed.Subscribe` 且回调为静态方法~~ — 见模式四，应改用 `AddClassHandler`
 
 ### 已修复案例
 
@@ -221,11 +221,70 @@ protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e
 
 ---
 
+## 模式四：静态构造函数中使用 Subscribe 代替 AddClassHandler
+
+### 泄漏原理
+
+在静态构造函数中通过 `Property.Changed.Subscribe()` 订阅属性变化，会在 `LightweightSubject` 上创建一个永久存在的 reactive 订阅。虽然不会捕获实例引用，但这个订阅绕过了 Avalonia 属性系统的 class handler 机制，无法被框架管理生命周期。对于附加属性（Attached Property），所有设置了该属性的控件实例的变化都会经过这个订阅，增加不必要的开销。
+
+### 典型错误代码
+
+```csharp
+// ❌ 错误：在静态构造函数中使用 Subscribe
+static MyControl()
+{
+    MyAttachedProperty.Changed.Subscribe(HandlePropertyChanged);
+}
+
+private static void HandlePropertyChanged(AvaloniaPropertyChangedEventArgs<Control?> e)
+{
+    var sender = (Visual)e.Sender;
+    var value = e.NewValue.GetValueOrDefault();
+    // ...
+}
+```
+
+### 正确做法
+
+```csharp
+// ✅ 正确：使用 AddClassHandler，由属性系统管理
+static MyControl()
+{
+    MyAttachedProperty.Changed.AddClassHandler<Visual>(HandlePropertyChanged);
+}
+
+private static void HandlePropertyChanged(Visual sender, AvaloniaPropertyChangedEventArgs e)
+{
+    var value = e.NewValue as Control;
+    // ...
+}
+```
+
+### 关键区别
+
+| 方式 | 机制 | 生命周期管理 |
+|------|------|-------------|
+| `Property.Changed.Subscribe()` | 在 `LightweightSubject` 上创建 reactive 订阅 | 需要手动 Dispose（静态构造函数中无法做到） |
+| `Property.Changed.AddClassHandler<T>()` | 注册到属性系统的 class handler 列表 | 由 Avalonia 属性系统管理，无需 Dispose |
+
+### 注意事项
+
+- 使用 `AddClassHandler<T>` 后，handler 签名从 `(AvaloniaPropertyChangedEventArgs<TValue> e)` 变为 `(T sender, AvaloniaPropertyChangedEventArgs e)`
+- 取值方式从 `e.NewValue.GetValueOrDefault()` 变为 `e.NewValue as TValue`（非泛型 args）
+- `sender` 参数直接提供，无需从 `e.Sender` 强转
+
+### 已修复案例
+
+- `ScopeAwareAdornerLayer.cs` — `AdornedElementProperty.Changed.Subscribe` / `AdornerProperty.Changed.Subscribe`
+
+---
+
 ## 快速检查清单
 
 开发新控件或 review 代码时，检查以下要点：
 
 - [ ] 是否在实例方法中使用了 `Property.Changed.Subscribe()`？→ 改用 `instance.GetObservable(Property)`
+- [ ] 是否在静态构造函数中使用了 `Property.Changed.Subscribe()`？→ 改用 `Property.Changed.AddClassHandler<T>()`
 - [ ] AXAML 主题中是否使用了 `^[Property=Value]` 属性选择器？→ 考虑改用伪类选择器
 - [ ] 创建新订阅前是否先 Dispose 了旧的？
 - [ ] `OnDetachedFromVisualTree` 中是否清理了所有订阅？
@@ -241,3 +300,4 @@ protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e
 1. **模式一特征**: `LightweightSubject` → observer 链无限增长
 2. **模式二特征**: `AvaloniaPropertyObservable._observers` → `PropertyEqualsActivator._property` → `StyledProperty<T>`
 3. **模式三特征**: 同一属性的多个 observer 实例（应该只有一个）
+4. **模式四特征**: `LightweightSubject` 中存在永久的静态方法委托订阅，对应属性为 AttachedProperty
