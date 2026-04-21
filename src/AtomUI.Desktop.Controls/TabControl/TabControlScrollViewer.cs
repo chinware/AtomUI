@@ -64,11 +64,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         }
 
         // 收集没有完全显示的 Tab 列表
-        var oldItems = MenuFlyout.Items.ToList();
-        foreach (var item in oldItems)
-        {
-            MenuFlyout.Items.Remove(item);
-        }
+        MenuFlyout.Items.Clear();
 
         if (TabControl is not null)
         {
