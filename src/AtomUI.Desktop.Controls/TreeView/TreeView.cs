@@ -2,10 +2,8 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -597,37 +595,18 @@ public partial class TreeView : AvaloniaTreeView,
 
     private ISet<object> DoCheckedSubTree(TreeViewItem treeViewItem)
     {
-        var checkedItems = new HashSet<object>();
-        if (RecursiveCheckNodePredicate(treeViewItem))
-        {
-            treeViewItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
-            var treeItemData = TreeItemFromContainer(treeViewItem);
-            Debug.Assert(treeItemData != null);
-            checkedItems.Add(treeItemData);
-        }
-        var originIsExpanded = treeViewItem.IsExpanded;
+        var checkedItems    = new HashSet<object>();
+        var expandedStates  = new Dictionary<TreeViewItem, bool>();
+
+        // Phase 1: Expand entire subtree to realize all containers
+        ExpandSubTreeForCheck(treeViewItem, expandedStates);
+
         try
         {
-            if (treeViewItem.Presenter?.Panel == null && !originIsExpanded && this.GetVisualRoot() is ILayoutRoot visualRoot)
-            {
-                treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
-                var layoutManager = visualRoot.GetLayoutManager();
-                layoutManager.ExecuteLayoutPass();
-            }
+            // Phase 2: Check all nodes (all containers are now realized)
+            DoCheckedSubTreeCore(treeViewItem, checkedItems);
 
-            foreach (var childItem in treeViewItem.Items)
-            {
-                if (childItem != null)
-                {
-                    var container = TreeContainerFromItem(childItem);
-                    if (container is TreeViewItem childTreeViewItem && childTreeViewItem.IsEffectiveCheckable())
-                    {
-                        var childCheckedItems = DoCheckedSubTree(childTreeViewItem);
-                        checkedItems.UnionWith(childCheckedItems);
-                    }
-                }
-            }
-
+            // Phase 3: Update parent chain once after all children are checked
             if (!IsCheckStrictly)
             {
                 var (checkedParentItems, _) = SetupParentNodeCheckedStatus(treeViewItem);
@@ -636,12 +615,36 @@ public partial class TreeView : AvaloniaTreeView,
         }
         finally
         {
-            treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, originIsExpanded);
+            // Phase 4: Restore all expanded states
+            RestoreExpandedStates(expandedStates);
         }
-        
+
         return checkedItems;
     }
-    
+
+    private void DoCheckedSubTreeCore(TreeViewItem treeViewItem, HashSet<object> checkedItems)
+    {
+        if (RecursiveCheckNodePredicate(treeViewItem))
+        {
+            treeViewItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+            var treeItemData = TreeItemFromContainer(treeViewItem);
+            Debug.Assert(treeItemData != null);
+            checkedItems.Add(treeItemData);
+        }
+
+        foreach (var childItem in treeViewItem.Items)
+        {
+            if (childItem != null)
+            {
+                var container = TreeContainerFromItem(childItem);
+                if (container is TreeViewItem childTreeViewItem && childTreeViewItem.IsEffectiveCheckable())
+                {
+                    DoCheckedSubTreeCore(childTreeViewItem, checkedItems);
+                }
+            }
+        }
+    }
+
     public void UnCheckedSubTree(TreeViewItem viewItem)
     {
         if (!viewItem.IsEffectiveCheckable())
@@ -680,6 +683,34 @@ public partial class TreeView : AvaloniaTreeView,
     public ISet<object> DoUnCheckedSubTree(TreeViewItem treeViewItem)
     {
         var unCheckedItems = new HashSet<object>();
+        var expandedStates = new Dictionary<TreeViewItem, bool>();
+
+        // Phase 1: Expand entire subtree to realize all containers
+        ExpandSubTreeForCheck(treeViewItem, expandedStates);
+
+        try
+        {
+            // Phase 2: Uncheck all nodes (all containers are now realized)
+            DoUnCheckedSubTreeCore(treeViewItem, unCheckedItems);
+
+            // Phase 3: Update parent chain once after all children are unchecked
+            if (!IsCheckStrictly)
+            {
+                var (_, unCheckedParentItems) = SetupParentNodeCheckedStatus(treeViewItem);
+                unCheckedItems.UnionWith(unCheckedParentItems);
+            }
+        }
+        finally
+        {
+            // Phase 4: Restore all expanded states
+            RestoreExpandedStates(expandedStates);
+        }
+
+        return unCheckedItems;
+    }
+
+    private void DoUnCheckedSubTreeCore(TreeViewItem treeViewItem, HashSet<object> unCheckedItems)
+    {
         if (treeViewItem.IsChecked == true && RecursiveUnCheckNodePredicate(treeViewItem))
         {
             var treeItemData = TreeItemFromContainer(treeViewItem);
@@ -687,40 +718,52 @@ public partial class TreeView : AvaloniaTreeView,
             unCheckedItems.Add(treeItemData);
             treeViewItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, false);
         }
-        var originIsExpanded = treeViewItem.IsExpanded;
 
-        try
+        foreach (var childItem in treeViewItem.Items)
         {
-            if (treeViewItem.Presenter?.Panel == null && !originIsExpanded && this.GetVisualRoot() is ILayoutRoot visualRoot)
+            if (childItem != null)
             {
-                treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
-                var layoutManager = visualRoot.GetLayoutManager();
-                layoutManager.ExecuteLayoutPass();
-            }
-
-            foreach (var childItem in treeViewItem.Items)
-            {
-                if (childItem != null)
+                var control = TreeContainerFromItem(childItem);
+                if (control is TreeViewItem childTreeViewItem && childTreeViewItem.IsEffectiveCheckable())
                 {
-                    var control = TreeContainerFromItem(childItem);
-                    if (control is TreeViewItem childTreeViewItem && childTreeViewItem.IsEffectiveCheckable())
-                    {
-                        var childUnCheckedItems = DoUnCheckedSubTree(childTreeViewItem);
-                        unCheckedItems.UnionWith(childUnCheckedItems);
-                    }
+                    DoUnCheckedSubTreeCore(childTreeViewItem, unCheckedItems);
                 }
             }
-
-            if (!IsCheckStrictly)
-            {
-                var (_, unCheckedParentItems) = SetupParentNodeCheckedStatus(treeViewItem);
-                unCheckedItems.UnionWith(unCheckedParentItems);
-            }
-            return unCheckedItems;
         }
-        finally
+    }
+
+    private void ExpandSubTreeForCheck(TreeViewItem treeViewItem, Dictionary<TreeViewItem, bool> expandedStates)
+    {
+        var wasExpanded = treeViewItem.IsExpanded;
+        expandedStates[treeViewItem] = wasExpanded;
+
+        if (treeViewItem.Presenter?.Panel == null && !wasExpanded)
         {
-            treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, originIsExpanded);
+            treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
+            if (this.GetVisualRoot() is ILayoutRoot visualRoot)
+            {
+                visualRoot.GetLayoutManager().ExecuteLayoutPass();
+            }
+        }
+
+        foreach (var childItem in treeViewItem.Items)
+        {
+            if (childItem != null)
+            {
+                var container = TreeContainerFromItem(childItem);
+                if (container is TreeViewItem childTreeViewItem)
+                {
+                    ExpandSubTreeForCheck(childTreeViewItem, expandedStates);
+                }
+            }
+        }
+    }
+
+    private void RestoreExpandedStates(Dictionary<TreeViewItem, bool> expandedStates)
+    {
+        foreach (var (item, wasExpanded) in expandedStates)
+        {
+            item.SetCurrentValue(TreeViewItem.IsExpandedProperty, wasExpanded);
         }
     }
 

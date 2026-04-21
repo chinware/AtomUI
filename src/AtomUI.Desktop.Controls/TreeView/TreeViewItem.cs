@@ -10,7 +10,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -378,7 +377,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     
     internal TreeView? OwnerTreeView { get; set; }
 
-    private ITreeViewInteractionHandler? TreeViewInteractionHandler => this.FindLogicalAncestorOfType<TreeView>()?.InteractionHandler;
+    private ITreeViewInteractionHandler? TreeViewInteractionHandler => OwnerTreeView?.InteractionHandler;
     
     #endregion
     
@@ -429,12 +428,6 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
                 OwnerTreeView.CheckedItems.Clear();
                 break;
         }
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        OwnerTreeView = this.GetLogicalAncestors().OfType<TreeView>().FirstOrDefault();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
