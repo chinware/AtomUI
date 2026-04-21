@@ -75,7 +75,7 @@ public partial class TreeView
                                 {
                                     child.UpdateParentNode(treeItemData);
                                 }
-                                treeItemData.Children.AddRange(result.Data);
+                                ((IList<ITreeItemNode>)treeItemData.Children).AddRange(result.Data);
                                 viewItem.IsExpanded = true;
                             }
                         }

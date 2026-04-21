@@ -34,4 +34,6 @@ public class MenuItemData : IMenuItemData
             }
         }
     }
+
+    IEnumerable<IMenuItemData> ITreeNode<IMenuItemData>.Children => Children;
 }

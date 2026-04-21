@@ -4,7 +4,6 @@ using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -939,7 +938,7 @@ public class TreeSelect : AbstractSelect
                 {
                     foreach (var node in SelectedItems)
                     {
-                        if (node.Children.Count == 0)
+                        if (!node.Children.Any())
                         {
                             effectiveSelectedItems.Add(node);
                         }

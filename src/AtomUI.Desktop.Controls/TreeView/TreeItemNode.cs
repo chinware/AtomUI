@@ -31,6 +31,8 @@ public record TreeItemNode : ITreeItemNode, ISelectTagTextProvider
         init => _children.AddRange(value);
     }
 
+    IEnumerable<ITreeItemNode> ITreeNode<ITreeItemNode>.Children => Children;
+
     public TreeItemNode()
     {
         _children.CollectionChanged += HandleCollectionChanged;

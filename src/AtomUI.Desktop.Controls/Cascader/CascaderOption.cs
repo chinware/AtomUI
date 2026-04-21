@@ -25,7 +25,7 @@ public static class ICascaderOptionExtensions
 {
     public static bool IsEffectiveLeaf(this ICascaderOption option)
     {
-        return option.IsLeaf || option.Children.Count == 0;
+        return option.IsLeaf || !option.Children.Any();
     }
 }
 
@@ -52,6 +52,8 @@ public record CascaderOption : ICascaderOption, ISelectTagTextProvider
         get => _children;
         init => _children.AddRange(value);
     }
+
+    IEnumerable<ICascaderOption> ITreeNode<ICascaderOption>.Children => Children;
     
     public void UpdateParentNode(ICascaderOption? parentNode)
     {

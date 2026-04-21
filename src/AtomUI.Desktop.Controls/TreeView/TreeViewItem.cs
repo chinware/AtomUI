@@ -91,7 +91,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         set => SetValue(IsIndicatorEnabledProperty, value);
     }
     
-    IList<ITreeItemNode> ITreeNode<ITreeItemNode>.Children => Items.OfType<ITreeItemNode>().ToList();
+    IEnumerable<ITreeItemNode> ITreeNode<ITreeItemNode>.Children => Items.OfType<ITreeItemNode>();
     ITreeNode<ITreeItemNode>? ITreeNode<ITreeItemNode>.ParentNode => Parent as ITreeNode<ITreeItemNode>;
     
     public EntityKey? ItemKey { get; set; }

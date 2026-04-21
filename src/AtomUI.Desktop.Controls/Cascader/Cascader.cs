@@ -832,7 +832,7 @@ public class Cascader : AbstractSelect
                 {
                     foreach (var option in SelectedOptions)
                     {
-                        if (option.Children.Count == 0)
+                        if (!option.Children.Any())
                         {
                             effectiveSelectedOptions.Add(option);
                         }

@@ -71,7 +71,7 @@ public partial class CascaderView
                                 {
                                     child.UpdateParentNode(option);
                                 }
-                                option.Children.AddRange(result.Data);
+                                ((IList<ICascaderOption>)option.Children).AddRange(result.Data);
                             }
                         }
                     }

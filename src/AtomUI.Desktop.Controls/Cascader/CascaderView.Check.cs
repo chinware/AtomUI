@@ -231,7 +231,7 @@ public partial class CascaderView
             var isAllChecked    = false;
             var isAnyChecked    = false;
     
-            if (parentViewOption.Children.Count > 0)
+            if (parentViewOption.Children.Any())
             {
                 isAllChecked = parentViewOption.Children.All(childItem =>
                 {

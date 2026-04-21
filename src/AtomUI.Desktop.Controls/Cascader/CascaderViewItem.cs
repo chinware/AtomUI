@@ -341,7 +341,7 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     {
         if (HasItemAsyncDataLoader)
         {
-            if (AttachedOption?.Children.Count > 0)
+            if (AttachedOption != null && AttachedOption.Children.Any())
             {
                 IsLeaf = false;
             }
@@ -352,7 +352,7 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         }
         else
         {
-            IsLeaf = AttachedOption?.Children.Count == 0;
+            IsLeaf = AttachedOption != null && !AttachedOption.Children.Any();
         }
     }
 

@@ -99,7 +99,7 @@ public partial class CascaderView
             CollectionPaths(childItem, result);
         }
 
-        if (option.Children.Count == 0)
+        if (!option.Children.Any())
         {
             result.Add(GetFullPath(option));
         }

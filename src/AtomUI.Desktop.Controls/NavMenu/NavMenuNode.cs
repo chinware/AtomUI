@@ -1,5 +1,4 @@
 using System.Collections.Specialized;
-using System.Windows.Input;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Collections;
@@ -97,6 +96,8 @@ public class NavMenuNode : AvaloniaObject, INavMenuNode
         get => _children;
         init => _children.AddRange(value);
     }
+
+    IEnumerable<INavMenuNode> ITreeNode<INavMenuNode>.Children => Children;
     
     public NavMenuNode()
     {

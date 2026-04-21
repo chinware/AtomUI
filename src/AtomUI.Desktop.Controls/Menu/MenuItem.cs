@@ -49,7 +49,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     #endregion
     
-    IList<IMenuItemData> ITreeNode<IMenuItemData>.Children => Items.OfType<IMenuItemData>().ToList();
+    IEnumerable<IMenuItemData> ITreeNode<IMenuItemData>.Children => Items.OfType<IMenuItemData>();
     public ITreeNode<IMenuItemData>? ParentNode => Parent as ITreeNode<IMenuItemData>;
     public EntityKey? ItemKey { get; set; }
 

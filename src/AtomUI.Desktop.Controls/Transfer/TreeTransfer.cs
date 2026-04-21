@@ -59,7 +59,7 @@ public class TreeTransfer : AbstractTransfer
         }
     }
 
-    private List<IListItemData> CalculateTargetItemsSource(IList<ITreeItemNode>? itemNodes)
+    private List<IListItemData> CalculateTargetItemsSource(IEnumerable<ITreeItemNode>? itemNodes)
     {
         var results = new List<IListItemData>();
         if (itemNodes != null)

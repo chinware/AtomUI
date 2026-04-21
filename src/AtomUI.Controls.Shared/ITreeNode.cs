@@ -9,5 +9,5 @@ public interface ITreeNode<TChild> : IItemKey
     object? Header { get; }
     PathIcon? Icon { get; }
     bool IsEnabled { get; }
-    IList<TChild> Children { get; }
+    IEnumerable<TChild> Children { get; }
 }

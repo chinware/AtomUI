@@ -377,7 +377,7 @@ public partial class CascaderView : TemplatedControl,
         var                    segments     = path.Segments;
         var                    count        = path.Segments.Count;
         var                    isPathValid  = true;
-        IList<ICascaderOption> currentItems = _options.Cast<ICascaderOption>().ToList();
+        IEnumerable<ICascaderOption> currentItems = _options.Cast<ICascaderOption>().ToList();
         
         var                          options    = new List<ICascaderOption>();
         for (var i = 0; i < count; i++)
@@ -474,7 +474,7 @@ public partial class CascaderView : TemplatedControl,
     
     private void SelectTargetOption(ICascaderOption option)
     {
-        var isLeaf = option.IsLeaf || option.Children.Count == 0;
+        var isLeaf = option.IsLeaf || !option.Children.Any();
     
         if (!isLeaf && !IsAllowSelectParent)
         {
