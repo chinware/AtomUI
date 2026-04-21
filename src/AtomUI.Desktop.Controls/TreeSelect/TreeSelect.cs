@@ -502,10 +502,7 @@ public class TreeSelect : AbstractSelect
     {
         SubscriptionsOnOpen.Clear();
         this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(SubscriptionsOnOpen);
-        foreach (var parent in this.GetVisualAncestors().OfType<Control>())
-        {
-            parent.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(SubscriptionsOnOpen);
-        }
+        this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, SubscriptionsOnOpen);
         NotifyPopupOpened();
      
         if (!IsMultiple)

@@ -1,4 +1,7 @@
+using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
@@ -29,7 +32,7 @@ public static class VisualExtensions
         {
             return false;
         }
-           
+
         IEnumerable<Visual> visualChildren = visual.GetVisualChildren();
         foreach (var child in visualChildren)
         {
@@ -39,5 +42,29 @@ public static class VisualExtensions
             }
         }
         return false;
+    }
+
+    public static void SubscribeAncestorIsVisible(
+        this Visual visual,
+        Action<bool> handler,
+        CompositeDisposable disposable)
+    {
+        var current = visual.GetVisualParent();
+        while (current is not null)
+        {
+            if (current is Control control)
+            {
+                control.GetObservable(Visual.IsVisibleProperty)
+                       .Subscribe(handler)
+                       .DisposeWith(disposable);
+            }
+
+            if (current is TopLevel)
+            {
+                break;
+            }
+
+            current = current.GetVisualParent();
+        }
     }
 }

@@ -1078,10 +1078,7 @@ public class Mentions : TemplatedControl,
         _subscriptionsOnOpen = new CompositeDisposable(2);
         this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
         this.GetObservable(IsEnabledProperty).Subscribe(HandleIsEnabledChanged).DisposeWith(_subscriptionsOnOpen);
-        foreach (var parent in this.GetVisualAncestors().OfType<Control>())
-        {
-            parent.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
-        }
+        this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, _subscriptionsOnOpen);
         NotifyDropDownOpened(EventArgs.Empty);
         _textArea?.Focus();
     }

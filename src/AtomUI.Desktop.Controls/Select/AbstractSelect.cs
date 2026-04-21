@@ -700,10 +700,7 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         SubscriptionsOnOpen.Clear();
         this.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(SubscriptionsOnOpen);
-        foreach (var parent in this.GetVisualAncestors().OfType<Control>())
-        {
-            parent.GetObservable(IsVisibleProperty).Subscribe(IsVisibleChanged).DisposeWith(SubscriptionsOnOpen);
-        }
+        this.SubscribeAncestorIsVisible(IsVisibleChanged, SubscriptionsOnOpen);
 
         ConfigurePopupMinWith(Bounds.Width);
         NotifyPopupOpened();
