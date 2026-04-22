@@ -25,6 +25,7 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
     private int _transitionFromIndex = -1;
     private CancellationTokenSource? _transition;
     private EventHandler? _scrollInvalidated;
+    private bool _isMeasureQueued;
 
     bool ILogicalScrollable.CanHorizontallyScroll { get; set; }
     bool ILogicalScrollable.CanVerticallyScroll { get; set; }
@@ -41,7 +42,11 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
         {
             if (!MathUtils.AreClose(_offset.X, value.X))
             {
-                InvalidateMeasure();
+                if (!_isMeasureQueued)
+                {
+                    _isMeasureQueued = true;
+                    InvalidateMeasure();
+                }
             }
             _offset = value;
         }
@@ -85,6 +90,7 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
 
     protected override Size MeasureOverride(Size availableSize)
     {
+        _isMeasureQueued = false;
         var items = Items;
         var index = (int)_offset.X;
 
@@ -271,7 +277,11 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
                 break;
         }
 
-        InvalidateMeasure();
+        if (!_isMeasureQueued)
+        {
+            _isMeasureQueued = true;
+            InvalidateMeasure();
+        }
     }
 
     private Control GetOrCreateElement(IReadOnlyList<object?> items, int index)
