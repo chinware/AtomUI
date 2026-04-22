@@ -1,4 +1,4 @@
-using AtomUI.Controls;
+using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -46,6 +46,8 @@ public class Row : Panel
 
     private MediaBreakPoint? _breakPoint;
     private IMediaBreakAwareControl? _mediaOwner;
+    private readonly List<RowChildInfo> _orderedChildrenCache = new();
+    private bool _orderedChildrenDirty = true;
 
     static Row()
     {
@@ -76,8 +78,15 @@ public class Row : Panel
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)
     {
         _breakPoint = args.MediaBreakPoint;
+        _orderedChildrenDirty = true;
         InvalidateMeasure();
         InvalidateArrange();
+    }
+
+    protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        base.ChildrenChanged(sender, e);
+        _orderedChildrenDirty = true;
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -233,7 +242,12 @@ public class Row : Panel
 
     private List<RowChildInfo> GetOrderedChildren(MediaBreakPoint breakPoint)
     {
-        var children = new List<RowChildInfo>(Children.Count);
+        if (!_orderedChildrenDirty)
+        {
+            return _orderedChildrenCache;
+        }
+
+        _orderedChildrenCache.Clear();
         for (var i = 0; i < Children.Count; i++)
         {
             if (Children[i] is not Control child || !child.IsVisible)
@@ -245,13 +259,17 @@ public class Row : Panel
                 ? col.ResolveLayout(breakPoint)
                 : new GridColLayout(0, 0, 0, 0, 0);
 
-            children.Add(new RowChildInfo(child, layout, i));
+            _orderedChildrenCache.Add(new RowChildInfo(child, layout, i));
         }
 
-        return children
-            .OrderBy(info => info.Layout.Order)
-            .ThenBy(info => info.Index)
-            .ToList();
+        _orderedChildrenCache.Sort((a, b) =>
+        {
+            var orderCmp = a.Layout.Order.CompareTo(b.Layout.Order);
+            return orderCmp != 0 ? orderCmp : a.Index.CompareTo(b.Index);
+        });
+
+        _orderedChildrenDirty = false;
+        return _orderedChildrenCache;
     }
 
     private MediaBreakPoint GetBreakPoint()
