@@ -137,14 +137,15 @@ internal class SplitterPanel : Panel
     
     private void SyncTrackedPanels(IReadOnlyList<Control> panels)
     {
-        foreach (var panel in _trackedPanels.ToList())
+        _trackedPanels.RemoveWhere(panel =>
         {
             if (!panels.Contains(panel))
             {
                 panel.PropertyChanged -= HandlePanelPropertyChanged;
-                _trackedPanels.Remove(panel);
+                return true;
             }
-        }
+            return false;
+        });
 
         foreach (var panel in panels)
         {
