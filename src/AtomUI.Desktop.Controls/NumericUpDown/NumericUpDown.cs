@@ -1,12 +1,16 @@
 ﻿using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Controls.Commons;
 using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -257,6 +261,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     
     private IconButton? _clearButton;
     private TextBox? _textBoxPart;
+    private CompositeDisposable? _contentRightAddOnBindings;
     private readonly NumericUpDownTextConverter _textConverter;
     private IValueConverter? _userTextConverter;
     private bool _suppressTextConverterTracking;
@@ -298,6 +303,39 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         SetTextBoxPart(e.NameScope.Find<TextBox>("PART_TextBox"));
         ConfigureEffectiveShowClearButton();
         _buttonSpinner =  e.NameScope.Find<ButtonSpinner>(NumericUpDownThemeConstants.SpinnerPart);
+        SetupContentRightAddOnBindings(e);
+    }
+
+    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    {
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = new CompositeDisposable();
+
+        if (e.NameScope.Find<InputClearIconButton>(TextBoxThemeConstants.ClearButtonPart) is { } clearButton)
+        {
+            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
+                new Binding(nameof(ClearIcon)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
+                new Binding(nameof(IsMotionEnabled)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
+        }
+
+        if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
+        {
+            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
+                new Binding(nameof(InnerRightContent)) { Source = this }));
+            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentTemplateProperty,
+                new Binding(nameof(InnerRightContentTemplate)) { Source = this }));
+            _contentRightAddOnBindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(InnerRightContent)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+        }
+
+        if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)
+        {
+            _contentRightAddOnBindings.Add(textBox.Bind(NumericUpDown.IsCustomFontSizeProperty,
+                new Binding(nameof(IsCustomFontSize)) { Source = this }));
+        }
     }
     
     protected virtual void NotifyClearButtonClicked()

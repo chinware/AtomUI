@@ -31,18 +31,13 @@
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
                                 Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
-                                Icon="{Binding ClearIcon, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"
-                                IsPassthroughMouseEvent="False"
-                                IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}" 
-                                IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"/>
+                                IsPassthroughMouseEvent="False" />
                             <ContentPresenter
+                                Name="PART_InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
                                 HorizontalAlignment="Right"
-                                Focusable="False"
-                                Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"
-                                ContentTemplate="{Binding InnerRightContentTemplate, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}" 
-                                IsVisible="{Binding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}, RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"/>
+                                Focusable="False" />
                         </StackPanel>
                     </atom:ButtonSpinner.InnerRightContent>
                     <atom:TextBox
@@ -53,7 +48,6 @@
                         BorderThickness="0"
                         TextWrapping="NoWrap"
                         AcceptsReturn="False"
-                        IsCustomFontSize="{Binding (atom:NumericUpDown.IsCustomFontSize), RelativeSource={RelativeSource AncestorType=atom:NumericUpDown}}"
                         DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                         SizeType="{TemplateBinding SizeType}"
                         IsReadOnly="{TemplateBinding IsReadOnly}"
