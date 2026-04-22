@@ -1,10 +1,11 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -12,7 +13,6 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
-using Avalonia.Styling;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
@@ -146,6 +146,7 @@ public class Space : Control,
     
     #region 内部属性定义
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
+    private CompositeDisposable? _spacingBindings;
     #endregion
     
     static Space()
@@ -163,39 +164,35 @@ public class Space : Control,
     public Space()
     {
         this.RegisterTokenResourceScope(SpaceToken.ScopeProvider);
-        ConfigureInstanceStyle();
+        ApplySpacingTokenBinding();
         Children.CollectionChanged += HandleChildrenChanged;
     }
 
-    private void ConfigureInstanceStyle()
+    private void ApplySpacingTokenBinding()
     {
+        _spacingBindings?.Dispose();
+        var tokenKind = SizeType switch
         {
-            var middleStyle = new Style(x =>
-                x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Middle));
-            middleStyle.Add(ItemSpacingProperty, SpaceTokenKind.GapMiddleSize);
-            middleStyle.Add(LineSpacingProperty, SpaceTokenKind.GapMiddleSize);
-            Styles.Add(middleStyle);
-        }
+            CustomizableSizeType.Small  => SpaceTokenKind.GapSmallSize,
+            CustomizableSizeType.Middle => SpaceTokenKind.GapMiddleSize,
+            CustomizableSizeType.Large  => SpaceTokenKind.GapLargeSize,
+            _                           => SpaceTokenKind.GapSmallSize
+        };
+        _spacingBindings = new CompositeDisposable
         {
-            var smallStyle = new Style(x =>
-                x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Small));
-            smallStyle.Add(ItemSpacingProperty, SpaceTokenKind.GapSmallSize);
-            smallStyle.Add(LineSpacingProperty, SpaceTokenKind.GapSmallSize);
-            Styles.Add(smallStyle);
-        }
-        {
-            var largeStyle = new Style(x =>
-                x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Large));
-            largeStyle.Add(ItemSpacingProperty, SpaceTokenKind.GapLargeSize);
-            largeStyle.Add(LineSpacingProperty, SpaceTokenKind.GapLargeSize);
-            Styles.Add(largeStyle);
-        }
+            TokenResourceBinder.CreateTokenBinding(this, ItemSpacingProperty, tokenKind),
+            TokenResourceBinder.CreateTokenBinding(this, LineSpacingProperty, tokenKind)
+        };
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == SizeTypeProperty)
+        {
+            ApplySpacingTokenBinding();
+        }
+        else if (this.IsAttachedToVisualTree())
         {
             if (change.Property == SplitTemplateProperty)
             {
