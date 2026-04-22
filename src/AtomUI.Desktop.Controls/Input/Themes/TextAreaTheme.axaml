@@ -36,23 +36,18 @@
                                             Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                     <atom:InputClearIconButton
                                         Name="{x:Static atom:TextAreaThemeConstants.ClearButtonPart}"
-                                        IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
-                                        IsVisible="{Binding IsEffectiveShowClearButton, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
-                                        VerticalAlignment="Center"
-                                        Icon="{Binding ClearIcon, RelativeSource={RelativeSource AncestorType=atom:TextArea}}" />
+                                        VerticalAlignment="Center" />
                                     <ContentPresenter
-                                        Name="FormFeedBack"
+                                        Name="PART_FormFeedBack"
                                         VerticalAlignment="Stretch"
                                         VerticalContentAlignment="Center"
-                                        HorizontalAlignment="Right"
-                                        IsVisible="{Binding FormFeedback, Converter={x:Static ObjectConverters.IsNotNull}, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
-                                        Content="{Binding FormFeedback, RelativeSource={RelativeSource AncestorType=atom:TextArea}}" />
+                                        HorizontalAlignment="Right" />
                                     <ContentPresenter
+                                        Name="PART_InnerRightContentPresenter"
                                         VerticalAlignment="Center"
                                         VerticalContentAlignment="Center"
                                         HorizontalAlignment="Right"
                                         Focusable="False"
-                                        Content="{Binding InnerRightContent, RelativeSource={RelativeSource AncestorType=atom:TextArea}}"
                                         IsVisible="False" />
                                 </StackPanel>
                             </atom:TextAreaDecoratedBox.ContentRightAddOn>
