@@ -1,17 +1,20 @@
-﻿using AtomUI.Controls;
+﻿using System.Reactive.Disposables;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
@@ -296,6 +299,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private protected AddOnDecoratedBox? DecoratedBox;
     private protected PickerClearUpButton? PickerClearUpButton;
+    private CompositeDisposable? _contentRightAddOnBindings;
     private protected readonly FlyoutStateHelper FlyoutStateHelper;
     private protected Flyout? PickerFlyout;
     protected bool CurrentValidSelected;
@@ -469,15 +473,11 @@ public abstract class InfoPickerInput : TemplatedControl,
 
         DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         InfoInputBox = e.NameScope.Get<TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
-        
+        PickerClearUpButton = e.NameScope.Find<PickerClearUpButton>(InfoPickerInputThemeConstants.ClearUpButtonPart);
+
         if (DecoratedBox != null)
         {
             KeyboardNavigation.SetTabOnceActiveElement(this, DecoratedBox);
-            if (DecoratedBox.ContentRightAddOn is Control rightContent)
-            {
-                PickerClearUpButton = rightContent.FindDescendantOfType<PickerClearUpButton>();
-            }
-
             DecoratedBox.TemplateApplied += HandleDecoratedBoxTemplateApplied;
             DecoratedBox.PropertyChanged += HandleDecoratedBoxPropertyChanged;
         }
@@ -488,8 +488,37 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
         
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        
+
         SetupFlyoutProperties();
+        SetupContentRightAddOnBindings(e);
+    }
+
+    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    {
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = new CompositeDisposable();
+
+        if (PickerClearUpButton is { } clearUpButton)
+        {
+            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.IsInClearModeProperty,
+                new Binding(nameof(IsClearButtonVisible)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.IconProperty,
+                new Binding(nameof(InfoIcon)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.FormFeedbackProperty,
+                new Binding(nameof(FormFeedback)) { Source = this }));
+            _contentRightAddOnBindings.Add(clearUpButton.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(InfoIcon)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+        }
+
+        if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
+        {
+            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
+                new Binding(nameof(ContentRightAddOn)) { Source = this }));
+            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
+                new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
+            _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
+                new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+        }
     }
 
     protected virtual void ConfigureIsClearButtonVisible()

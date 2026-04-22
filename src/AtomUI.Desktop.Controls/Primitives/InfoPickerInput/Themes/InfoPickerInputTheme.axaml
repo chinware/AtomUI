@@ -28,13 +28,8 @@
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXS}">
                             <atom:PickerClearUpButton
-                                IsInClearMode="{Binding IsClearButtonVisible, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
-                                Icon="{Binding InfoIcon, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
-                                FormFeedback="{Binding FormFeedback, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
-                                IsVisible="{Binding InfoIcon, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                            <ContentPresenter Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
-                                              ContentTemplate="{Binding ContentRightAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}}"
-                                              IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:InfoPickerInput}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}" />
+                            <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
