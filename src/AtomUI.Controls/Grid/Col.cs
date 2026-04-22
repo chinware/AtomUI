@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -141,7 +140,6 @@ public class Col : ContentControl
             if (this.GetVisualParent() is Layoutable parent)
             {
                 parent.InvalidateMeasure();
-                parent.InvalidateArrange();
             }
         }
     }

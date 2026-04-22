@@ -80,7 +80,6 @@ public class Row : Panel
         _breakPoint = args.MediaBreakPoint;
         _orderedChildrenDirty = true;
         InvalidateMeasure();
-        InvalidateArrange();
     }
 
     protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
