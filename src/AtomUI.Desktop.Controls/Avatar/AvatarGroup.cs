@@ -136,8 +136,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var tobeAdded = e.NewItems!.OfType<Control>().ToList();
-                foreach (var item in tobeAdded)
+                foreach (var item in e.NewItems!.OfType<Control>())
                 {
                     if (item is Avatar avatar)
                     {
@@ -147,7 +146,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
                 if (!MaxDisplayCount.HasValue || LogicalChildren.Count < MaxDisplayCount.Value)
                 {
                     var startingIndex = e.NewStartingIndex;
-                    foreach (var item in tobeAdded)
+                    foreach (var item in e.NewItems!.OfType<Control>())
                     {
                         LogicalChildren.Insert(startingIndex, item);
                         VisualChildren.Insert(startingIndex, item);
@@ -175,9 +174,9 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
                 break;
 
             case NotifyCollectionChangedAction.Remove:
-                var items = e.OldItems!.OfType<Control>().ToList();
-                LogicalChildren.RemoveAll(items);
-                VisualChildren.RemoveAll(items);
+                var removedItems = e.OldItems!.OfType<Control>();
+                LogicalChildren.RemoveAll(removedItems);
+                VisualChildren.RemoveAll(removedItems);
                 break;
 
             case NotifyCollectionChangedAction.Replace:
