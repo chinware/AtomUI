@@ -42,14 +42,24 @@ public class AbstractMotion : IMotion
         RunAnimations(actor, aboutToStart, completedAction);
     }
 
-    public Task RunAsync(BaseMotionActor actor, Action? aboutToStart = null)
+    public async Task RunAsync(BaseMotionActor actor,
+                               Action? aboutToStart = null,
+                               CancellationToken cancellationToken = default)
     {
-        var tsc = new TaskCompletionSource();
-        Run(actor, aboutToStart, () =>
+        if (actor.IsFollowMode())
         {
-            tsc.SetResult();
-        });
-        return tsc.Task;
+            throw new InvalidOperationException("The Actor is in follow mode and cannot perform animations.");
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (SpiritType == MotionSpiritType.Transition)
+        {
+            await RunTransitionsAsync(actor, aboutToStart, cancellationToken);
+            return;
+        }
+
+        await RunAnimationsAsync(actor, aboutToStart, cancellationToken);
     }
 
     private void RunAnimations(BaseMotionActor actor,
@@ -132,6 +142,100 @@ public class AbstractMotion : IMotion
                 t.Dispose();
             }
         });
+    }
+
+    private async Task RunAnimationsAsync(BaseMotionActor actor,
+                                          Action? aboutToStart = null,
+                                          CancellationToken cancellationToken = default)
+    {
+        ConfigureAnimation();
+        var originRenderTransformOrigin = actor.RenderTransformOrigin;
+
+        actor.RenderTransformOrigin = RenderTransformOrigin;
+        actor.NotifyMotionPreStart();
+        NotifyPreStart(actor);
+        aboutToStart?.Invoke();
+
+        try
+        {
+            foreach (var animation in Animations)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await animation.RunAsync(actor, cancellationToken);
+            }
+
+            actor.NotifyMotionCompleted();
+            NotifyCompleted(actor);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        finally
+        {
+            actor.RenderTransformOrigin = originRenderTransformOrigin;
+        }
+    }
+
+    private async Task RunTransitionsAsync(BaseMotionActor actor,
+                                           Action? aboutToStart = null,
+                                           CancellationToken cancellationToken = default)
+    {
+        ConfigureTransitions();
+        var originRenderTransformOrigin = actor.RenderTransformOrigin;
+        actor.NotifyMotionPreStart();
+        NotifyPreStart(actor);
+        aboutToStart?.Invoke();
+
+        actor.RenderTransformOrigin = RenderTransformOrigin;
+        actor.Transitions           = null;
+        ConfigureMotionStartValue(actor);
+
+        try
+        {
+            var tasks       = new List<Task<bool>>();
+            var transitions = new Transitions();
+            TimeSpan maxDuration = TimeSpan.Zero;
+            foreach (var transition in Transitions)
+            {
+                transitions.Add(transition);
+                tasks.Add(transition.CompletedObservable.ToTask());
+                if (transition.Duration > maxDuration)
+                {
+                    maxDuration = transition.Duration;
+                }
+            }
+
+            var delta = maxDuration * 0.1;
+            if (delta > TimeSpan.FromMilliseconds(100))
+            {
+                delta = TimeSpan.FromMilliseconds(100);
+            }
+
+            maxDuration       += delta;
+            actor.Transitions =  transitions;
+            ConfigureMotionEndValue(actor);
+            await Task.WhenAny(Task.WhenAny(tasks), Task.Delay(maxDuration, cancellationToken));
+
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                actor.NotifyMotionCompleted();
+                NotifyCompleted(actor);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        finally
+        {
+            actor.RenderTransformOrigin = originRenderTransformOrigin;
+            actor.MotionTransform       = null;
+            foreach (var t in Transitions)
+            {
+                t.Dispose();
+            }
+        }
     }
 
     protected virtual void ConfigureAnimation()

@@ -10,6 +10,7 @@ using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
+using Avalonia.Threading;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -311,16 +312,16 @@ public class CollapseItem : HeaderedContentControl,
         {
             if (IsSelected)
             {
-                ExpandItemContent();
+                Dispatcher.UIThread.InvokeAsync(ExpandItemContentAsync);
             }
             else
             {
-                CollapseItemContent();
+                Dispatcher.UIThread.InvokeAsync(CollapseItemContentAsync);
             }
         }
     }
 
-    private void ExpandItemContent()
+    private async Task ExpandItemContentAsync()
     {
         if (_motionActor is null || InAnimating)
         {
@@ -335,11 +336,11 @@ public class CollapseItem : HeaderedContentControl,
 
         InAnimating = true;
         var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
-        motion.Run(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
-            () => { InAnimating = false; });
+        await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
+        InAnimating = false;
     }
 
-    private void CollapseItemContent()
+    private async Task CollapseItemContentAsync()
     {
         if (_motionActor is null || InAnimating)
         {
@@ -354,11 +355,9 @@ public class CollapseItem : HeaderedContentControl,
 
         InAnimating = true;
         var motion = new SlideUpOutMotion(MotionDuration, new CubicEaseIn());
-        motion.Run(_motionActor, null, () =>
-        {
-            _motionActor.SetCurrentValue(IsVisibleProperty, false);
-            InAnimating = false;
-        });
+        await motion.RunAsync(_motionActor);
+        _motionActor.SetCurrentValue(IsVisibleProperty, false);
+        InAnimating = false;
     }
 
     internal bool IsPointInHeaderBounds(Point position)

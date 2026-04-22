@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -484,11 +485,11 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     {
         if (IsExpanded)
         {
-            ExpandChildren();
+            Dispatcher.UIThread.InvokeAsync(ExpandChildrenAsync);
         }
         else
         {
-            CollapseChildren();
+            Dispatcher.UIThread.InvokeAsync(CollapseChildrenAsync);
         }
     }
 
@@ -514,7 +515,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnCheckedChanged(this);
     }
 
-    private void ExpandChildren()
+    private async Task ExpandChildrenAsync()
     {
         if (_itemsPresenterMotionActor is null ||
             _animating ||
@@ -538,23 +539,21 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseOut());
         motion.Duration = OwnerTreeView.MotionDuration;
 
-        motion.Run(_itemsPresenterMotionActor, () => { _itemsPresenterMotionActor.IsVisible = true; },
-            () =>
+        await motion.RunAsync(_itemsPresenterMotionActor,
+            () => { _itemsPresenterMotionActor.IsVisible = true; });
+        _animating = false;
+        _header?.NotifyAnimating(false);
+        _isRealExpanded = true;
+        if (IsAutoExpandParent)
+        {
+            if (Parent is TreeViewItem parentTreeItem)
             {
-                _animating = false;
-                _header?.NotifyAnimating(false);
-                _isRealExpanded = true;
-                if (IsAutoExpandParent)
-                {
-                    if (Parent is TreeViewItem parentTreeItem)
-                    {
-                        parentTreeItem.SetCurrentValue(IsExpandedProperty, true);
-                    }
-                }
-            });
+                parentTreeItem.SetCurrentValue(IsExpandedProperty, true);
+            }
+        }
     }
 
-    private void CollapseChildren()
+    private async Task CollapseChildrenAsync()
     {
         if (_itemsPresenterMotionActor is null ||
             _animating ||
@@ -578,13 +577,11 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         var motion = OwnerTreeView.CloseMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
 
-        motion.Run(_itemsPresenterMotionActor, null, () =>
-        {
-            _itemsPresenterMotionActor.IsVisible = false;
-            _animating                           = false;
-            _header?.NotifyAnimating(false);
-            _isRealExpanded = false;
-        });
+        await motion.RunAsync(_itemsPresenterMotionActor);
+        _itemsPresenterMotionActor.IsVisible = false;
+        _animating                           = false;
+        _header?.NotifyAnimating(false);
+        _isRealExpanded = false;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

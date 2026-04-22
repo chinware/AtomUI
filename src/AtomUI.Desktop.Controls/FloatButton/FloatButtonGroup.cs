@@ -1,10 +1,7 @@
 using System.Collections.Specialized;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Controls.Commons;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
@@ -268,11 +265,11 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
             {
                 if (IsOpen)
                 {
-                    ApplyShowMotion();
+                    Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
                 }
                 else
                 {
-                    ApplyHideMotion();
+                    Dispatcher.UIThread.InvokeAsync(ApplyHideMotionAsync);
                 }
             });
         }
@@ -573,7 +570,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         Canvas.SetTop(_motionActor, offsetY);
     }
     
-    private void ApplyShowMotion()
+    private async Task ApplyShowMotionAsync()
     {
         if (_motionActor is not null)
         {
@@ -602,15 +599,17 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 {
                     motion = new MoveLeftInMotion(DesiredSize.Width, MenuMotionDuration, new CubicEaseOut());
                 }
-                motion?.Run(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); }, () =>
+                if (motion != null)
                 {
-                    _showAnimating = false;
-                    if (_closeRequest)
-                    {
-                        _closeRequest = false;
-                        Dispatcher.UIThread.Post(ApplyHideMotion);
-                    }
-                });
+                    await motion.RunAsync(_motionActor,
+                        () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
+                }
+                _showAnimating = false;
+                if (_closeRequest)
+                {
+                    _closeRequest = false;
+                    await ApplyHideMotionAsync();
+                }
             }
             else
             {
@@ -619,7 +618,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         }
     }
 
-    private void ApplyHideMotion()
+    private async Task ApplyHideMotionAsync()
     {
         if (_motionActor is not null)
         {
@@ -657,11 +656,12 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                     motion =
                         new MoveLeftOutMotion(DesiredSize.Width, MenuMotionDuration, new CubicEaseIn());
                 }
-                motion?.Run(_motionActor, null, () =>
+                if (motion != null)
                 {
-                    _hideAnimating = false; 
-                    _motionActor.SetCurrentValue(IsVisibleProperty, true);
-                });
+                    await motion.RunAsync(_motionActor);
+                }
+                _hideAnimating = false;
+                _motionActor.SetCurrentValue(IsVisibleProperty, true);
             }
             else
             {
@@ -676,11 +676,11 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         CalculateItemsControlPosition();
         if (IsOpen)
         {
-            ApplyShowMotion();
+            Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
         }
         else
         {
-            ApplyHideMotion();
+            Dispatcher.UIThread.InvokeAsync(ApplyHideMotionAsync);
         }
     }
 }

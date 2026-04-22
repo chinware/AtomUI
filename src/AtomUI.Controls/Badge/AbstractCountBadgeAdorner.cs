@@ -5,6 +5,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -243,17 +244,19 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
         return size;
     }
 
-    private void ApplyShowMotion()
+    private async Task ApplyShowMotionAsync()
     {
         if (_indicatorMotionActor is not null)
         {
             _indicatorMotionActor.IsVisible = false;
             var motion = new BadgeZoomBadgeInMotion(MotionDuration);
-            motion.Run(_indicatorMotionActor, () => { _indicatorMotionActor.IsVisible = true; });
+            await motion.RunAsync(_indicatorMotionActor,
+                () => { _indicatorMotionActor.IsVisible = true; },
+                _motionCancellationTokenSource?.Token ?? default);
         }
     }
 
-    private void ApplyHideMotion(Action completedAction)
+    private async Task ApplyHideMotionAsync()
     {
         if (_indicatorMotionActor is not null)
         {
@@ -261,7 +264,8 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
-            motion.Run(_indicatorMotionActor,  null, completedAction);
+            await motion.RunAsync(_indicatorMotionActor,
+                cancellationToken: _motionCancellationTokenSource.Token);
         }
         else
         {
@@ -285,7 +289,7 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
-            ApplyShowMotion();
+            Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
         }
         else
         {
@@ -296,17 +300,15 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
         }
     }
 
-    internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
+    internal async Task DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
         if (enableMotion)
         {
-            ApplyHideMotion(() =>
+            await ApplyHideMotionAsync();
+            if (adornerLayer is not null)
             {
-                if (adornerLayer is not null)
-                {
-                    adornerLayer.Children.Remove(this);
-                }
-            });
+                adornerLayer.Children.Remove(this);
+            }
         }
         else
         {

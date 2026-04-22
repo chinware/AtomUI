@@ -226,14 +226,14 @@ internal class DrawerContainer : ContentControl
         {
             ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
             layer.Children.Add(this);
-            Dispatcher.UIThread.Post(() =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 // 让 layer 更新
                 if (_motionActor is null || _openAnimating)
                 {
                     return;
                 }
-              
+
                 if (!IsMotionEnabled)
                 {
                     _motionActor.Opacity = 1.0;
@@ -241,22 +241,18 @@ internal class DrawerContainer : ContentControl
                     return;
                 }
 
-                _openAnimating         = true;
+                _openAnimating       = true;
                 _motionActor.Opacity = 0.0;
-                
+
                 LayoutHelper.MeasureChild(_motionActor, DesiredSize, new Thickness());
-                
+
                 var motion = BuildMotionByPlacement(Placement, MotionDuration, true);
-           
-                motion.Run(_motionActor, null,
-                    () =>
-                    {
-                        _openAnimating = false;
-                        drawer.NotifyOpened();
-                       
-                    });
+
+                await motion.RunAsync(_motionActor);
+                _openAnimating = false;
+                drawer.NotifyOpened();
             });
-           
+
         }
     }
 
@@ -268,14 +264,14 @@ internal class DrawerContainer : ContentControl
             {
                 return;
             }
-        
+
             if (!IsMotionEnabled)
             {
                 layer.Children.Remove(this);
                 drawer.NotifyClosed();
                 return;
             }
-        
+
             _closeAnimating = true;
             var duration = TimeSpan.Zero;
             if (Transitions is not null)
@@ -291,27 +287,15 @@ internal class DrawerContainer : ContentControl
                     }
                 }
             }
-        
+
             SetValue(BackgroundProperty, Brushes.Transparent, BindingPriority.Template);
-        
-            var maskRunTaskSrc  = new TaskCompletionSource();
-            var moveAnimTaskSrc = new TaskCompletionSource();
-            var motion          = BuildMotionByPlacement(Placement, MotionDuration, false);
-            motion.Run(_motionActor, null,
-                () =>
-                {
-                    _closeAnimating = false;
-                    _motionActor.Opacity = 0.0;
-                    moveAnimTaskSrc.SetResult();
-                });
+
+            var motion = BuildMotionByPlacement(Placement, MotionDuration, false);
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await Task.Delay(duration);
-                maskRunTaskSrc.SetResult();
-            });
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await Task.WhenAll(moveAnimTaskSrc.Task, moveAnimTaskSrc.Task);
+                await Task.WhenAll(motion.RunAsync(_motionActor), Task.Delay(duration));
+                _closeAnimating      = false;
+                _motionActor.Opacity = 0.0;
                 layer.Children.Remove(this);
                 _motionActor.Opacity = 1.0;
                 drawer.NotifyClosed();

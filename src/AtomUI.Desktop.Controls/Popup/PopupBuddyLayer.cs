@@ -171,11 +171,7 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
     private ContentPresenter? _ghostContentPresenter;
     private CompositeDisposable? _bindingDisposables;
     private IArrowAwareShadowMaskInfoProvider? _popupArrowDecoratedBox;
-    
-    // 用于保证动画状态最终一致性
-    private IDisposable? _openMotionForceDisposable;
-    private IDisposable? _closeMotionForceDisposable;
-    
+
     private CompositeDisposable? _shadowBindingDisposables;
     
     internal Popup BuddyPopup => _buddyPopup;
@@ -320,15 +316,13 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         }
     }
     
-    public void RunOpenMotion(Action? aboutToStart = null, Action? completedAction = null)
+    public async Task RunOpenMotionAsync(Action? aboutToStart = null)
     {
         if (MotionActor == null)
         {
-            completedAction?.Invoke();
-            _openMotionForceDisposable?.Dispose();
             return;
         }
-        var motion       = OpenMotion ?? new ZoomBigInMotion();
+        var motion = OpenMotion ?? new ZoomBigInMotion();
         if (MotionDuration != TimeSpan.Zero)
         {
             motion.Duration = MotionDuration;
@@ -337,40 +331,17 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         Debug.Assert(shadowAwareLayer != null);
         shadowAwareLayer.NotifyOpenMotionAboutToStart();
 
-        var completedFuncCalled = false;
-        
-        _openMotionForceDisposable?.Dispose();
-        _openMotionForceDisposable = DispatcherTimer.RunOnce(() =>
-        {
-            if (!completedFuncCalled)
-            {
-                shadowAwareLayer.NotifyOpenMotionCompleted();
-                completedAction?.Invoke();
-                completedFuncCalled = true;
-            }
-        }, motion.Duration * 1.2);
-        
-        motion.Run(MotionActor, aboutToStart, () =>
-        {
-            _openMotionForceDisposable.Dispose();
-            if (!completedFuncCalled)
-            {
-                shadowAwareLayer.NotifyOpenMotionCompleted();
-                completedAction?.Invoke();
-                completedFuncCalled = true;
-            }
-        });
+        await motion.RunAsync(MotionActor, aboutToStart);
+        shadowAwareLayer.NotifyOpenMotionCompleted();
     }
 
-    public void RunCloseMotion(Action? aboutToStart = null, Action? completedAction = null)
+    public async Task RunCloseMotionAsync(Action? aboutToStart = null)
     {
         if (MotionActor == null)
         {
-            completedAction?.Invoke();
-            _closeMotionForceDisposable?.Dispose();
             return;
         }
-        var motion       = CloseMotion ?? new ZoomBigOutMotion();
+        var motion = CloseMotion ?? new ZoomBigOutMotion();
         if (MotionDuration != TimeSpan.Zero)
         {
             motion.Duration = MotionDuration;
@@ -378,29 +349,9 @@ internal class PopupBuddyLayer : SceneLayer, IShadowAwareLayer
         var shadowAwareLayer = this as IShadowAwareLayer;
         Debug.Assert(shadowAwareLayer != null);
         shadowAwareLayer.NotifyCloseMotionAboutToStart();
-        
-        var completedFuncCalled = false;
-        
-        _closeMotionForceDisposable?.Dispose();
-        _closeMotionForceDisposable = DispatcherTimer.RunOnce(() =>
-        {
-            if (!completedFuncCalled)
-            {
-                shadowAwareLayer.NotifyCloseMotionCompleted();
-                completedAction?.Invoke();
-                completedFuncCalled = true;
-            }
-        }, motion.Duration * 1.2);
-        motion.Run(MotionActor, aboutToStart, () =>
-        {
-            _closeMotionForceDisposable.Dispose();
-            if (!completedFuncCalled)
-            {
-                shadowAwareLayer.NotifyCloseMotionCompleted();
-                completedAction?.Invoke();
-                completedFuncCalled = true;
-            }
-        });
+
+        await motion.RunAsync(MotionActor, aboutToStart);
+        shadowAwareLayer.NotifyCloseMotionCompleted();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

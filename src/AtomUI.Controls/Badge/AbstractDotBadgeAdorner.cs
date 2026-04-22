@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -121,7 +122,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         _motionCancellationTokenSource = null;
     }
 
-    private void ApplyShowMotion()
+    private async Task ApplyShowMotionAsync()
     {
         if (_indicatorMotionActor is not null)
         {
@@ -130,11 +131,13 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeInMotion(MotionDuration, null, FillMode.Forward);
-            motion.Run(_indicatorMotionActor, () => _indicatorMotionActor.IsVisible = true);
+            await motion.RunAsync(_indicatorMotionActor,
+                () => _indicatorMotionActor.IsVisible = true,
+                _motionCancellationTokenSource.Token);
         }
     }
 
-    private void ApplyHideMotion(Action completedAction)
+    private async Task ApplyHideMotionAsync()
     {
         if (_indicatorMotionActor is not null)
         {
@@ -142,7 +145,8 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration, null, FillMode.Forward);
-            motion.Run(_indicatorMotionActor, null, completedAction);
+            await motion.RunAsync(_indicatorMotionActor,
+                cancellationToken: _motionCancellationTokenSource.Token);
         }
     }
 
@@ -181,7 +185,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
 
-            ApplyShowMotion();
+            Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
         }
         else
         {
@@ -192,7 +196,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         }
     }
 
-    internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
+    internal async Task DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
         if (adornerLayer is null)
         {
@@ -201,7 +205,8 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
 
         if (enableMotion)
         {
-            ApplyHideMotion(() => adornerLayer.Children.Remove(this));
+            await ApplyHideMotionAsync();
+            adornerLayer.Children.Remove(this);
         }
         else
         {

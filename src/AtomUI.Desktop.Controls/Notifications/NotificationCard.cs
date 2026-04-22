@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Threading;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -207,16 +208,16 @@ public class NotificationCard : ContentControl, IMotionAwareControl
             _closeButton.Click += HandleCloseButtonClose;
         }
 
-        ApplyShowMotion();
+        Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
     }
 
-    private void ApplyShowMotion()
+    private async Task ApplyShowMotionAsync()
     {
         if (_motionActor is null)
         {
             return;
         }
-        
+
         if (IsMotionEnabled)
         {
             AbstractMotion? motion;
@@ -239,17 +240,17 @@ public class NotificationCard : ContentControl, IMotionAwareControl
                 motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
                     new CubicEaseOut());
             }
-            motion.Run(_motionActor);
+            await motion.RunAsync(_motionActor);
         }
     }
 
-    private void ApplyHideMotion()
+    private async Task ApplyHideMotionAsync()
     {
         if (_motionActor is null)
         {
             return;
         }
-        
+
         if (IsMotionEnabled)
         {
             AbstractMotion? motion;
@@ -273,8 +274,9 @@ public class NotificationCard : ContentControl, IMotionAwareControl
                 motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
                     new CubicEaseIn());
             }
-        
-            motion.Run(_motionActor, null, () => { IsClosed = true; });
+
+            await motion.RunAsync(_motionActor);
+            IsClosed = true;
         }
         else
         {
@@ -316,7 +318,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                ApplyHideMotion();
+                Dispatcher.UIThread.InvokeAsync(ApplyHideMotionAsync);
             }
         } 
         else if (change.Property == IconProperty)

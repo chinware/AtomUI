@@ -21,7 +21,7 @@ public interface IMotion
     FillMode PropertyValueFillMode { get; }
     MotionSpiritType SpiritType { get; set; }
 
-    void Run(BaseMotionActor actor,
-             Action? aboutToStart = null,
-             Action? completedAction = null);
+    Task RunAsync(BaseMotionActor actor,
+                  Action? aboutToStart = null,
+                  CancellationToken cancellationToken = default);
 }

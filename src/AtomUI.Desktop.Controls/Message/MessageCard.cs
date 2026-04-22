@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Threading;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
@@ -185,7 +186,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                ApplyHideMotion();
+                Dispatcher.UIThread.InvokeAsync(ApplyHideMotionAsync);
             }
         }
     }
@@ -194,12 +195,12 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     {
         base.OnApplyTemplate(e);
         _motionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
-        ApplyShowMotion();
+        Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
         UpdatePseudoClasses();
         SetupDefaultMessageIcon();
     }
 
-    private void ApplyShowMotion()
+    private async Task ApplyShowMotionAsync()
     {
         if (_motionActor is not null)
         {
@@ -207,7 +208,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
             {
                 _motionActor.IsVisible = false;
                 var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
-                motion.Run(_motionActor, () => { _motionActor.IsVisible = true; });
+                await motion.RunAsync(_motionActor, () => { _motionActor.IsVisible = true; });
             }
             else
             {
@@ -216,7 +217,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
         }
     }
 
-    private void ApplyHideMotion()
+    private async Task ApplyHideMotionAsync()
     {
         if (_motionActor is not null)
         {
@@ -224,7 +225,8 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
             {
                 var motion =
                     new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
-                motion.Run(_motionActor, null, () => { IsClosed = true; });
+                await motion.RunAsync(_motionActor);
+                IsClosed = true;
             }
             else
             {

@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -123,11 +124,11 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
         {
             if (IsActive)
             {
-                ApplyShowMotion();
+                Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
             }
             else
             {
-                ApplyHideMotion();
+                Dispatcher.UIThread.InvokeAsync(ApplyHideMotionAsync);
             }
         }
     }
@@ -162,7 +163,7 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
         }
     }
 
-    private void ApplyShowMotion()
+    private async Task ApplyShowMotionAsync()
     {
         if (_motionActor is not null)
         {
@@ -176,8 +177,9 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
                 _showAnimating = true;
                 _motionActor.SetCurrentValue(IsVisibleProperty, false);
                 var motion = new FadeInMotion(MotionDuration, new QuadraticEaseOut());
-                motion.Run(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
-                    () => { _showAnimating = false; });
+                await motion.RunAsync(_motionActor,
+                    () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
+                _showAnimating = false;
             }
             else
             {
@@ -186,7 +188,7 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
         }
     }
 
-    private void ApplyHideMotion()
+    private async Task ApplyHideMotionAsync()
     {
         if (_motionActor is not null)
         {
@@ -200,11 +202,9 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
                 _hideAnimating = true;
                 var motion =
                     new FadeOutMotion(MotionDuration, new QuadraticEaseOut());
-                motion.Run(_motionActor, null, () =>
-                {
-                    _hideAnimating = false;
-                    _motionActor.SetCurrentValue(IsVisibleProperty, false);
-                });
+                await motion.RunAsync(_motionActor);
+                _hideAnimating = false;
+                _motionActor.SetCurrentValue(IsVisibleProperty, false);
             }
             else
             {

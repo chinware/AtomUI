@@ -4,11 +4,10 @@ using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
+using Avalonia.Threading;using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -317,15 +316,15 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
     {
         if (IsExpanded)
         {
-            ExpandItemContent();
+            Dispatcher.UIThread.InvokeAsync(ExpandItemContentAsync);
         }
         else
         {
-            CollapseItemContent();
+            Dispatcher.UIThread.InvokeAsync(CollapseItemContentAsync);
         }
     }
 
-    private void ExpandItemContent()
+    private async Task ExpandItemContentAsync()
     {
         if (_motionActor is null || _animating)
         {
@@ -342,11 +341,11 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         var motion = new ExpandMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
             new CubicEaseOut());
-        motion.Run(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); },
-            () => { _animating = false; });
+        await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
+        _animating = false;
     }
 
-    private void CollapseItemContent()
+    private async Task CollapseItemContentAsync()
     {
         if (_motionActor is null || _animating)
         {
@@ -363,11 +362,9 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         var motion = new CollapseMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
             new CubicEaseIn());
-        motion.Run(_motionActor, null, () =>
-        {
-            _motionActor.SetCurrentValue(IsVisibleProperty, false);
-            _animating = false;
-        });
+        await motion.RunAsync(_motionActor);
+        _motionActor.SetCurrentValue(IsVisibleProperty, false);
+        _animating = false;
     }
 
     private static Direction DirectionFromExpandDirection(ExpandDirection expandDirection)

@@ -11,6 +11,6 @@ internal interface IShadowAwareLayer
     void NotifyCloseMotionAboutToStart();
     void NotifyCloseMotionCompleted();
     
-    void RunOpenMotion(Action? aboutToStart = null, Action? completedAction = null);
-    void RunCloseMotion(Action? aboutToStart = null, Action? completedAction = null);
+    Task RunOpenMotionAsync(Action? aboutToStart = null);
+    Task RunCloseMotionAsync(Action? aboutToStart = null);
 }
