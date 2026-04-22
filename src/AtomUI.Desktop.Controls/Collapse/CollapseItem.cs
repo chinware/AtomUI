@@ -20,8 +20,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
-public class CollapseItem : HeaderedContentControl,
-                            ISelectable
+public class CollapseItem : HeaderedContentControl, ISelectable
 {
     #region 公共属性定义
 
@@ -198,8 +197,7 @@ public class CollapseItem : HeaderedContentControl,
         DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
         AffectsRender<CollapseItem>(HeaderBorderThicknessProperty, ContentBorderThicknessProperty);
     }
-
-    private bool _tempAnimationDisabled;
+    
     private BaseMotionActor? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
@@ -249,20 +247,28 @@ public class CollapseItem : HeaderedContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+
+        if (_expandButton is not null)
+        {
+            _expandButton.Click -= HandleExpandButtonClick;
+        }
+
         _motionActor           = e.NameScope.Find<BaseMotionActor>(CollapseItemThemeConstants.ContentMotionActorPart);
         _headerDecorator       = e.NameScope.Find<Border>(CollapseItemThemeConstants.HeaderDecoratorPart);
         _expandButton          = e.NameScope.Find<IconButton>(CollapseItemThemeConstants.ExpandButtonPart);
-        
-        // 必须放在这里，因为依赖 _motionActor 是否设置
-        _tempAnimationDisabled = true;
-        HandleSelectedChanged();
-        _tempAnimationDisabled = false;
+
+        HandleSelectedChanged(true);
         if (_expandButton is not null)
         {
-            _expandButton.Click += (sender, args) => { IsSelected = !IsSelected; };
+            _expandButton.Click += HandleExpandButtonClick;
         }
 
         UpdatePseudoClasses();
+    }
+
+    private void HandleExpandButtonClick(object? sender, RoutedEventArgs args)
+    {
+        IsSelected = !IsSelected;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -306,29 +312,29 @@ public class CollapseItem : HeaderedContentControl,
         }
     }
 
-    private void HandleSelectedChanged()
+    private void HandleSelectedChanged(bool forceDisabledMotion = false)
     {
         if (Presenter is not null)
         {
             if (IsSelected)
             {
-                Dispatcher.UIThread.InvokeAsync(ExpandItemContentAsync);
+                ExpandItemContentAsync(forceDisabledMotion);
             }
             else
             {
-                Dispatcher.UIThread.InvokeAsync(CollapseItemContentAsync);
+                CollapseItemContentAsync(forceDisabledMotion);
             }
         }
     }
 
-    private async Task ExpandItemContentAsync()
+    private void ExpandItemContentAsync(bool forceDisabledMotion = false)
     {
         if (_motionActor is null || InAnimating)
         {
             return;
         }
 
-        if (!IsMotionEnabled || _tempAnimationDisabled)
+        if (!IsMotionEnabled || forceDisabledMotion)
         {
             _motionActor.IsVisible = true;
             return;
@@ -336,18 +342,21 @@ public class CollapseItem : HeaderedContentControl,
 
         InAnimating = true;
         var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
-        await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
-        InAnimating = false;
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
+            InAnimating = false;
+        });
     }
 
-    private async Task CollapseItemContentAsync()
+    private void CollapseItemContentAsync(bool forceDisabledMotion = false)
     {
         if (_motionActor is null || InAnimating)
         {
             return;
         }
 
-        if (!IsMotionEnabled || _tempAnimationDisabled)
+        if (!IsMotionEnabled || forceDisabledMotion)
         {
             _motionActor.IsVisible = false;
             return;
@@ -355,9 +364,12 @@ public class CollapseItem : HeaderedContentControl,
 
         InAnimating = true;
         var motion = new SlideUpOutMotion(MotionDuration, new CubicEaseIn());
-        await motion.RunAsync(_motionActor);
-        _motionActor.SetCurrentValue(IsVisibleProperty, false);
-        InAnimating = false;
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await motion.RunAsync(_motionActor);
+            _motionActor.SetCurrentValue(IsVisibleProperty, false);
+            InAnimating = false;
+        });
     }
 
     internal bool IsPointInHeaderBounds(Point position)
