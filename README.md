@@ -139,7 +139,11 @@ Searching for "AtomUI" will find available AtomUI packages. Then, install them o
         <PackageReference Include="AtomUI" Version="5.2.0-build.4"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">
+            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>
+```
 
 ###### Program.cs Configure
 
