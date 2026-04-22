@@ -32,27 +32,9 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource SpacingXS}">
-                                <atom:SelectMaxCountIndicator
-                                    MaxCount="{Binding MaxCount, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    SelectedCount="{Binding SelectedCount, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsVisible="{Binding IsShowMaxCountIndicator, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}" />
-                                <ContentPresenter
-                                    Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                <atom:SelectHandle
-                                    FormFeedback="{Binding FormFeedback, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    LoadingIcon="{Binding SuffixLoadingIcon, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    OpenIndicator="{Binding SuffixIcon, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsFilterEnabled="{Binding IsFilterEnabled, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsLoading="{Binding IsLoading, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsAllowClear="{Binding IsAllowClear, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsSelectionEmpty="{Binding IsSelectionEmpty, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsDropDownOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=atom:TreeSelect}}"
-                                    IsInputHover="{Binding IsInnerBoxHover, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}"
-                                    IsInputPressed="{Binding IsInnerBoxPressed, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}" />
+                                <atom:SelectMaxCountIndicator Name="PART_SelectMaxCountIndicator" />
+                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
+                                <atom:SelectHandle Name="PART_SelectHandle" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>

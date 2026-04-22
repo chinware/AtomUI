@@ -31,27 +31,9 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource SpacingXS}">
-                                <atom:SelectMaxCountIndicator
-                                    MaxCount="{Binding MaxCount, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    SelectedCount="{Binding SelectedCount, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsVisible="{Binding IsShowMaxCountIndicator, RelativeSource={RelativeSource AncestorType=atom:Cascader}}" />
-                                <ContentPresenter
-                                    Content="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    ContentTemplate="{Binding ContentLeftAddOnTemplate, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsVisible="{Binding ContentRightAddOn, RelativeSource={RelativeSource AncestorType=atom:Cascader}, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                <atom:SelectHandle
-                                    FormFeedback="{Binding FormFeedback, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    LoadingIcon="{Binding SuffixLoadingIcon, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    OpenIndicator="{Binding SuffixIcon, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsFilterEnabled="{Binding IsFilterEnabled, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsLoading="{Binding IsLoading, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsAllowClear="{Binding IsAllowClear, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsSelectionEmpty="{Binding IsSelectionEmpty, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsDropDownOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=atom:Cascader}}"
-                                    IsInputHover="{Binding IsInnerBoxHover, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}"
-                                    IsInputPressed="{Binding IsInnerBoxPressed, RelativeSource={RelativeSource AncestorType=atom:AddOnDecoratedBox}}" />
+                                <atom:SelectMaxCountIndicator Name="PART_SelectMaxCountIndicator" />
+                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
+                                <atom:SelectHandle Name="PART_SelectHandle" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
