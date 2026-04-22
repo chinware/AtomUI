@@ -2,6 +2,7 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -14,7 +15,6 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -186,8 +186,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public Popup()
     {
         this.ConfigureMotionBindingStyle();
-        Bind(MaskShadowsProperty, this.GetResourceObservable(SharedTokenKind.BoxShadowsSecondary));
-        Bind(MotionDurationProperty, this.GetResourceObservable(SharedTokenKind.MotionDurationMid));
+        TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKind.BoxShadowsSecondary);
+        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
         Closed += HandleClosed;
         Opened += HandleOpened;
         if (this is IPopupHostProvider popupHostProvider)

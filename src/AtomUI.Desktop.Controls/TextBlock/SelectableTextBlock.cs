@@ -1,3 +1,4 @@
+using AtomUI.Data;
 using AtomUI.Media.TextFormatting;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -7,7 +8,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
-using Avalonia.Styling;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
@@ -107,17 +107,15 @@ public class SelectableTextBlock : TextBlock
     }
 
     #endregion
-    
+
     private bool _canCopy;
     private int _wordSelectionStart = -1;
 
     public SelectableTextBlock()
     {
-        var styles = new Style();
-        styles.Add(SelectionBrushProperty, SharedTokenKind.SelectionBackground);
-        styles.Add(SelectionForegroundBrushProperty, SharedTokenKind.SelectionForeground);
-        styles.Add(CursorProperty, new Cursor(StandardCursorType.Ibeam));
-        Styles.Add(styles);
+        TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty, SharedTokenKind.SelectionBackground);
+        TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty, SharedTokenKind.SelectionForeground);
+        Cursor = new Cursor(StandardCursorType.Ibeam);
     }
 
     /// <summary>
