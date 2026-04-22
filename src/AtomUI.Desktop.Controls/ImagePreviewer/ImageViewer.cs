@@ -309,6 +309,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     
     private ImagePreviewRenderer? _image;
     private bool _isSelfChangedPosition;
+    private bool _isArrangeQueued;
     private Point? _lastestPoint;
     private double _originalTranslateX;
     private double _originalTranslateY;
@@ -407,6 +408,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
 
     protected override Size ArrangeOverride(Size finalSize)
     {
+        _isArrangeQueued = false;
         var size = base.ArrangeOverride(finalSize);
         if (_image != null)
         {
@@ -521,7 +523,11 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
             if (MathUtilities.LessThanOrClose(scaledImageWidth, Bounds.Width) && MathUtilities.LessThanOrClose(scaledImageHeight, Bounds.Height))
             {
                 _isSelfChangedPosition = false;
-                InvalidateArrange();
+                if (!_isArrangeQueued)
+                {
+                    _isArrangeQueued = true;
+                    InvalidateArrange();
+                }
             }
             else
             {
@@ -658,7 +664,11 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
             if (MathUtilities.LessThanOrClose(scaledImageWidth, Bounds.Width) && MathUtilities.LessThanOrClose(scaledImageHeight, Bounds.Height))
             {
                 _isSelfChangedPosition = false;
-                InvalidateArrange();
+                if (!_isArrangeQueued)
+                {
+                    _isArrangeQueued = true;
+                    InvalidateArrange();
+                }
             }
             else
             {
