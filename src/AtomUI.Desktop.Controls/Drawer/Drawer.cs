@@ -5,14 +5,12 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Metadata;
-using Avalonia.Styling;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -208,6 +206,7 @@ public class Drawer : Control,
 
     private DrawerContainer? _container;
     private CompositeDisposable? _relayBindingDisposables;
+    private IDisposable? _dialogSizeBinding;
     
     static Drawer()
     {
@@ -218,7 +217,8 @@ public class Drawer : Control,
     {
         this.RegisterTokenResourceScope(DrawerToken.ScopeProvider);
         this.ConfigureMotionBindingStyle();
-        ConfigureInstanceStyles();
+        TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKind.PushOffsetPercent);
+        ApplyDialogSizeTokenBinding();
     }
     
     public static Drawer? GetDrawer(Visual element)
@@ -305,6 +305,11 @@ public class Drawer : Control,
             change.Property == DialogSizeProperty)
         {
             ConfigureEffectiveDialogSize();
+        }
+
+        if (change.Property == SizeTypeProperty)
+        {
+            ApplyDialogSizeTokenBinding();
         }
         
         if (change.Property == OpenOnProperty)
@@ -443,23 +448,17 @@ public class Drawer : Control,
         Closed?.Invoke(this, EventArgs.Empty);
     }
     
-    private void ConfigureInstanceStyles()
+    private void ApplyDialogSizeTokenBinding()
     {
-        var style = new Style();
-        style.Add(PushOffsetPercentProperty, DrawerTokenKind.PushOffsetPercent);
-        Styles.Add(style);
-        
-        var smallStyle = new Style(x => x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Small)); 
-        smallStyle.Add(DialogSizeProperty, DrawerTokenKind.SmallSize);
-        Styles.Add(smallStyle);
-        
-        var largeStyle = new Style(x => x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Large));
-        largeStyle.Add(DialogSizeProperty, DrawerTokenKind.LargeSize);
-        Styles.Add(largeStyle);
-        
-        var middleStyle = new Style(x => x.PropertyEquals(SizeTypeProperty, CustomizableSizeType.Middle)); 
-        middleStyle.Add(DialogSizeProperty, DrawerTokenKind.MiddleSize);
-        Styles.Add(middleStyle);
+        _dialogSizeBinding?.Dispose();
+        var tokenKind = SizeType switch
+        {
+            CustomizableSizeType.Small  => DrawerTokenKind.SmallSize,
+            CustomizableSizeType.Middle => DrawerTokenKind.MiddleSize,
+            CustomizableSizeType.Large  => DrawerTokenKind.LargeSize,
+            _                           => DrawerTokenKind.SmallSize
+        };
+        _dialogSizeBinding = TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, tokenKind);
     }
 
     private void ConfigureEffectiveDialogSize()
@@ -467,7 +466,7 @@ public class Drawer : Control,
         if (DialogSize.IsAbsolute)
         {
             SetCurrentValue(EffectiveDialogSizeProperty, DialogSize.Value);
-        } 
+        }
         else if (DialogSize.IsPercentage)
         {
             if (OpenOn != null)
