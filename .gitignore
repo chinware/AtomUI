@@ -199,3 +199,4 @@ cmake-build-*/
 
 controlgallery/AtomUIGallery/GeneratedFiles/Avalonia.Generators/
 .referenceprojects/
+.claude/settings.local.json

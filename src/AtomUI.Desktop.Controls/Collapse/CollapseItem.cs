@@ -318,16 +318,16 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             if (IsSelected)
             {
-                ExpandItemContentAsync(forceDisabledMotion);
+                ExpandItemContent(forceDisabledMotion);
             }
             else
             {
-                CollapseItemContentAsync(forceDisabledMotion);
+                CollapseItemContent(forceDisabledMotion);
             }
         }
     }
 
-    private void ExpandItemContentAsync(bool forceDisabledMotion = false)
+    private void ExpandItemContent(bool forceDisabledMotion = false)
     {
         if (_motionActor is null || InAnimating)
         {
@@ -349,7 +349,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         });
     }
 
-    private void CollapseItemContentAsync(bool forceDisabledMotion = false)
+    private void CollapseItemContent(bool forceDisabledMotion = false)
     {
         if (_motionActor is null || InAnimating)
         {

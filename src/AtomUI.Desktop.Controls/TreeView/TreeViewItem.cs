@@ -481,15 +481,15 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         }
     }
 
-    private void HandleExpandedChanged()
+    private void HandleExpandedChanged(bool forceDisabledMotion = false)
     {
         if (IsExpanded)
         {
-            Dispatcher.UIThread.InvokeAsync(ExpandChildrenAsync);
+            ExpandChildren(forceDisabledMotion);
         }
         else
         {
-            Dispatcher.UIThread.InvokeAsync(CollapseChildrenAsync);
+            CollapseChildren(forceDisabledMotion);
         }
     }
 
@@ -515,7 +515,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         (TreeViewInteractionHandler as DefaultTreeViewInteractionHandler)?.OnCheckedChanged(this);
     }
 
-    private async Task ExpandChildrenAsync()
+    private void ExpandChildren(bool forceDisabledMotion = false)
     {
         if (_itemsPresenterMotionActor is null ||
             _animating ||
@@ -525,7 +525,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             return;
         }
 
-        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess)
+        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || forceDisabledMotion)
         {
             _itemsPresenterMotionActor.Opacity   = 1.0;
             _itemsPresenterMotionActor.IsVisible = true;
@@ -538,22 +538,24 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
 
         var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseOut());
         motion.Duration = OwnerTreeView.MotionDuration;
-
-        await motion.RunAsync(_itemsPresenterMotionActor,
-            () => { _itemsPresenterMotionActor.IsVisible = true; });
-        _animating = false;
-        _header?.NotifyAnimating(false);
-        _isRealExpanded = true;
-        if (IsAutoExpandParent)
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            if (Parent is TreeViewItem parentTreeItem)
+            await motion.RunAsync(_itemsPresenterMotionActor,
+                () => { _itemsPresenterMotionActor.IsVisible = true; });
+            _animating = false;
+            _header?.NotifyAnimating(false);
+            _isRealExpanded = true;
+            if (IsAutoExpandParent)
             {
-                parentTreeItem.SetCurrentValue(IsExpandedProperty, true);
+                if (Parent is TreeViewItem parentTreeItem)
+                {
+                    parentTreeItem.SetCurrentValue(IsExpandedProperty, true);
+                }
             }
-        }
+        });
     }
 
-    private async Task CollapseChildrenAsync()
+    private void CollapseChildren(bool forceDisabledMotion = false)
     {
         if (_itemsPresenterMotionActor is null ||
             _animating ||
@@ -563,7 +565,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             return;
         }
 
-        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess)
+        if (!IsMotionEnabled || OwnerTreeView.IsExpandAllProcess || forceDisabledMotion)
         {
             _itemsPresenterMotionActor.Opacity   = 0.0;
             _itemsPresenterMotionActor.IsVisible = false;
@@ -577,11 +579,14 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         var motion = OwnerTreeView.CloseMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
 
-        await motion.RunAsync(_itemsPresenterMotionActor);
-        _itemsPresenterMotionActor.IsVisible = false;
-        _animating                           = false;
-        _header?.NotifyAnimating(false);
-        _isRealExpanded = false;
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await motion.RunAsync(_itemsPresenterMotionActor);
+            _itemsPresenterMotionActor.IsVisible = false;
+            _animating                           = false;
+            _header?.NotifyAnimating(false);
+            _isRealExpanded = false;
+        });
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -592,18 +597,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             e.NameScope.Find<BaseMotionActor>(TreeViewItemThemeConstants.ItemsPresenterMotionActorPart);
         
         ConfigureIsLeaf();
-        
-        var originIsMotionEnabled = IsMotionEnabled;
-        try
-        {
-            SetCurrentValue(IsMotionEnabledProperty, false);
-            HandleExpandedChanged();
-        }
-        finally
-        {
-            SetCurrentValue(IsMotionEnabledProperty, originIsMotionEnabled);
-        }
-        
+        HandleExpandedChanged(true);
     }
     
     internal bool IsEffectiveCheckable()
