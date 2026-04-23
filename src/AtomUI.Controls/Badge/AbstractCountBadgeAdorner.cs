@@ -174,11 +174,6 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             _needInitialHide                = false;
         }
         BuildBoxShadow();
-    }
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToLogicalTree(e);
         BuildCountText();
     }
 
@@ -208,18 +203,15 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == BadgeShadowSizeProperty ||
+            change.Property == BadgeShadowColorProperty)
         {
-            if (change.Property == BadgeShadowSizeProperty ||
-                change.Property == BadgeShadowColorProperty)
-            {
-                BuildBoxShadow();
-            }
+            BuildBoxShadow();
+        }
 
-            if (change.Property == CountProperty || change.Property == OverflowCountProperty)
-            {
-                BuildCountText();
-            }
+        if (change.Property == CountProperty || change.Property == OverflowCountProperty)
+        {
+            BuildCountText();
         }
     }
 

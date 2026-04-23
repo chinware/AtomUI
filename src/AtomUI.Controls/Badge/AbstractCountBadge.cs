@@ -187,11 +187,11 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     {
         if (_badgeAdorner is not null)
         {
-            _badgeAdorner[!AbstractCountBadgeAdorner.OffsetProperty] = this[!OffsetProperty];
-            _badgeAdorner[!SizeProperty]                             = this[!SizeProperty];
-            _badgeAdorner[!OverflowCountProperty]                    = this[!OverflowCountProperty];
-            _badgeAdorner[!CountProperty]                            = this[!CountProperty];
-            _badgeAdorner[!IsMotionEnabledProperty]                  = this[!IsMotionEnabledProperty];
+            _badgeAdorner[!AbstractCountBadgeAdorner.OffsetProperty]        = this[!OffsetProperty];
+            _badgeAdorner[!AbstractCountBadgeAdorner.SizeProperty]          = this[!SizeProperty];
+            _badgeAdorner[!AbstractCountBadgeAdorner.OverflowCountProperty] = this[!OverflowCountProperty];
+            _badgeAdorner[!AbstractCountBadgeAdorner.CountProperty]         = this[!CountProperty];
+            _badgeAdorner[!AbstractCountBadgeAdorner.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
         }
     }
 
