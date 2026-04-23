@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -153,7 +152,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             return;
         }
 
-        Dispatcher.UIThread.InvokeAsync(() => _badgeAdorner.DetachFromTargetAsync(_adornerLayer, enableMotion));
+        _badgeAdorner.DetachFromTargetAsync(_adornerLayer, enableMotion);
         if (!enableMotion)
         {
             if (DecoratedTarget is null)
@@ -229,7 +228,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             }
             else
             {
-                HideAdorner(IsMotionEnabled);
+                HideAdorner(IsMotionEnabled && IsLoaded);
             }
         }
 

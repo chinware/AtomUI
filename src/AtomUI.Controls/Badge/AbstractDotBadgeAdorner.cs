@@ -179,7 +179,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         AdornerLayer.SetIsClipEnabled(this, false);
         adornerLayer.Children.Add(this);
         
-        if (IsMotionEnabled)
+        if (IsMotionEnabled && IsLoaded)
         {
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource?.Dispose();
@@ -196,7 +196,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         }
     }
 
-    internal async Task DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
+    internal void DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
         if (adornerLayer is null)
         {
@@ -205,8 +205,11 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
 
         if (enableMotion)
         {
-            await ApplyHideMotionAsync();
-            adornerLayer.Children.Remove(this);
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+               await ApplyHideMotionAsync();
+               adornerLayer.Children.Remove(this);
+            });
         }
         else
         {

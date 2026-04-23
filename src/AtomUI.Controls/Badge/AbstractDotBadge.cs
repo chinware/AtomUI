@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.Threading;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -136,7 +135,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
             return;
         }
 
-        Dispatcher.UIThread.InvokeAsync(() => _dotBadgeAdorner.DetachFromTargetAsync(_adornerLayer, enableMotion));
+        _dotBadgeAdorner.DetachFromTargetAsync(_adornerLayer, enableMotion);
         if (!enableMotion)
         {
             if (DecoratedTarget is null)
@@ -210,7 +209,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
             }
             else
             {
-                HideAdorner(IsMotionEnabled);
+                HideAdorner(IsMotionEnabled && IsLoaded);
             }
         }
 

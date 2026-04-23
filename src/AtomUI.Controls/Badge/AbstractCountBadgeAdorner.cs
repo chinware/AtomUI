@@ -284,7 +284,7 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             adornerLayer.Children.Add(this);
         }
         
-        if (IsMotionEnabled)
+        if (IsMotionEnabled && IsLoaded)
         {
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource?.Dispose();
@@ -300,15 +300,18 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
         }
     }
 
-    internal async Task DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
+    internal void DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
         if (enableMotion)
         {
-            await ApplyHideMotionAsync();
-            if (adornerLayer is not null)
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                adornerLayer.Children.Remove(this);
-            }
+                await ApplyHideMotionAsync();
+                if (adornerLayer is not null)
+                {
+                    adornerLayer.Children.Remove(this);
+                }
+            });
         }
         else
         {
