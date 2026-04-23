@@ -126,28 +126,31 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
     {
         if (_indicatorMotionActor is not null)
         {
-            _indicatorMotionActor.IsVisible = false;
-            _motionCancellationTokenSource?.Cancel();
-            _motionCancellationTokenSource?.Dispose();
-            _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeInMotion(MotionDuration, null, FillMode.Forward);
-            await motion.RunAsync(_indicatorMotionActor,
-                () => _indicatorMotionActor.IsVisible = true,
-                _motionCancellationTokenSource.Token);
+            try
+            {
+                await motion.RunAsync(_indicatorMotionActor,
+                    () => _indicatorMotionActor.IsVisible = true,
+                    _motionCancellationTokenSource?.Token ?? default);
+            }
+            catch (OperationCanceledException)
+            {
+                _indicatorMotionActor.Opacity         = 1.0;
+                _indicatorMotionActor.MotionTransform = null;
+                _indicatorMotionActor.IsVisible       = true;
+            }
         }
     }
 
-    private async Task ApplyHideMotionAsync()
+    private async Task ApplyHideMotionAsync(AdornerLayer adornerLayer, CancellationToken cancellationToken)
     {
         if (_indicatorMotionActor is not null)
         {
-            _motionCancellationTokenSource?.Cancel();
-            _motionCancellationTokenSource?.Dispose();
-            _motionCancellationTokenSource = new CancellationTokenSource();
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration, null, FillMode.Forward);
-            await motion.RunAsync(_indicatorMotionActor,
-                cancellationToken: _motionCancellationTokenSource.Token);
+            await motion.RunAsync(_indicatorMotionActor, cancellationToken: cancellationToken);
         }
+
+        adornerLayer.Children.Remove(this);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -184,14 +187,19 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
-
+            if (_indicatorMotionActor is not null)
+            {
+                _indicatorMotionActor.MotionTransform = new ScaleTransform(0.01, 0.01);
+            }
             Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
         }
         else
         {
             if (_indicatorMotionActor is not null)
             {
-                _indicatorMotionActor.IsVisible = true;
+                _indicatorMotionActor.Opacity         = 1.0;
+                _indicatorMotionActor.MotionTransform = null;
+                _indicatorMotionActor.IsVisible       = true;
             }
         }
     }
@@ -205,11 +213,11 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
 
         if (enableMotion)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-               await ApplyHideMotionAsync();
-               adornerLayer.Children.Remove(this);
-            });
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource?.Dispose();
+            _motionCancellationTokenSource = new CancellationTokenSource();
+            var token = _motionCancellationTokenSource.Token;
+            Dispatcher.UIThread.InvokeAsync(() => ApplyHideMotionAsync(adornerLayer, token));
         }
         else
         {

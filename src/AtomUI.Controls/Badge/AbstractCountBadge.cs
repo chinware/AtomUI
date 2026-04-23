@@ -139,8 +139,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         }
         else
         {
-            IsVisible = true;
-            badgeAdorner.ApplyToTarget(null, this);
+            badgeAdorner.ApplyToTarget(null, this, () => IsVisible = true);
         }
     }
 
@@ -152,7 +151,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             return;
         }
 
-        _badgeAdorner.DetachFromTargetAsync(_adornerLayer, enableMotion);
+        _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
         if (!enableMotion)
         {
             if (DecoratedTarget is null)

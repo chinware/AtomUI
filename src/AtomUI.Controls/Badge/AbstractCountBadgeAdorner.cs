@@ -3,10 +3,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
 
@@ -152,7 +150,7 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
 
     private BaseMotionActor? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
-    private bool _needInitialHide;
+    private Action? _pendingTemplateAction;
 
     static AbstractCountBadgeAdorner()
     {
@@ -168,11 +166,8 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
     {
         base.OnApplyTemplate(e);
         _indicatorMotionActor = e.NameScope.Get<BaseMotionActor>(BaseMotionActor.MotionActorPart);
-        if (_needInitialHide)
-        {
-            _indicatorMotionActor.IsVisible = false;
-            _needInitialHide                = false;
-        }
+        _pendingTemplateAction?.Invoke();
+        _pendingTemplateAction = null;
         BuildBoxShadow();
         BuildCountText();
     }
@@ -236,36 +231,51 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
         return size;
     }
 
-    private async Task ApplyShowMotionAsync()
+    private async Task ApplyShowMotionAsync(Action? onShowReady = null)
     {
         if (_indicatorMotionActor is not null)
         {
-            _indicatorMotionActor.IsVisible = false;
             var motion = new BadgeZoomBadgeInMotion(MotionDuration);
-            await motion.RunAsync(_indicatorMotionActor,
-                () => { _indicatorMotionActor.IsVisible = true; },
-                _motionCancellationTokenSource?.Token ?? default);
+            try
+            {
+                await motion.RunAsync(_indicatorMotionActor,
+                    () =>
+                    {
+                        onShowReady?.Invoke();
+                        _indicatorMotionActor.IsVisible = true;
+                    },
+                    _motionCancellationTokenSource?.Token ?? default);
+            }
+            catch (OperationCanceledException)
+            {
+                onShowReady?.Invoke();
+                _indicatorMotionActor.Opacity         = 1.0;
+                _indicatorMotionActor.MotionTransform = null;
+                _indicatorMotionActor.IsVisible       = true;
+            }
+        }
+        else
+        {
+            onShowReady?.Invoke();
         }
     }
 
-    private async Task ApplyHideMotionAsync()
+    private async Task ApplyHideMotionAsync(AdornerLayer? adornerLayer, CancellationToken cancellationToken)
     {
         if (_indicatorMotionActor is not null)
         {
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration);
-            _motionCancellationTokenSource?.Cancel();
-            _motionCancellationTokenSource?.Dispose();
-            _motionCancellationTokenSource = new CancellationTokenSource();
-            await motion.RunAsync(_indicatorMotionActor,
-                cancellationToken: _motionCancellationTokenSource.Token);
+            await motion.RunAsync(_indicatorMotionActor, cancellationToken: cancellationToken);
+            adornerLayer?.Children.Remove(this);
         }
         else
         {
-            _needInitialHide = true;
+            _pendingTemplateAction = () => _indicatorMotionActor!.IsVisible = false;
+            adornerLayer?.Children.Remove(this);
         }
     }
 
-    internal void ApplyToTarget(AdornerLayer? adornerLayer, Control adorned)
+    internal void ApplyToTarget(AdornerLayer? adornerLayer, Control adorned, Action? onShowReady = null)
     {
         if (adornerLayer is not null)
         {
@@ -275,35 +285,51 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             AdornerLayer.SetIsClipEnabled(this, false);
             adornerLayer.Children.Add(this);
         }
-        
+
         if (IsMotionEnabled && IsLoaded)
         {
             _motionCancellationTokenSource?.Cancel();
             _motionCancellationTokenSource?.Dispose();
             _motionCancellationTokenSource = new CancellationTokenSource();
-            Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
+            if (_indicatorMotionActor != null)
+            {
+                _indicatorMotionActor.MotionTransform = new ScaleTransform(0.01, 0.01);
+                Dispatcher.UIThread.InvokeAsync(() => ApplyShowMotionAsync(onShowReady));
+            }
+            else
+            {
+                _pendingTemplateAction = () =>
+                {
+                    _indicatorMotionActor!.MotionTransform = new ScaleTransform(0.01, 0.01);
+                    _motionCancellationTokenSource?.Cancel();
+                    _motionCancellationTokenSource?.Dispose();
+                    _motionCancellationTokenSource = new CancellationTokenSource();
+                    Dispatcher.UIThread.InvokeAsync(() => ApplyShowMotionAsync(onShowReady));
+                };
+                onShowReady?.Invoke();
+            }
         }
         else
         {
+            onShowReady?.Invoke();
             if (_indicatorMotionActor != null)
             {
-                _indicatorMotionActor.IsVisible = true;
+                _indicatorMotionActor.Opacity         = 1.0;
+                _indicatorMotionActor.MotionTransform = null;
+                _indicatorMotionActor.IsVisible       = true;
             }
         }
     }
 
-    internal void DetachFromTargetAsync(AdornerLayer? adornerLayer, bool enableMotion = true)
+    internal void DetachFromTarget(AdornerLayer? adornerLayer, bool enableMotion = true)
     {
         if (enableMotion)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await ApplyHideMotionAsync();
-                if (adornerLayer is not null)
-                {
-                    adornerLayer.Children.Remove(this);
-                }
-            });
+            _motionCancellationTokenSource?.Cancel();
+            _motionCancellationTokenSource?.Dispose();
+            _motionCancellationTokenSource = new CancellationTokenSource();
+            var token = _motionCancellationTokenSource.Token;
+            Dispatcher.UIThread.InvokeAsync(() => ApplyHideMotionAsync(adornerLayer, token));
         }
         else
         {
