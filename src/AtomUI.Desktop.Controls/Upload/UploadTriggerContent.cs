@@ -10,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -169,6 +170,6 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

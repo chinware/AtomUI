@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -294,6 +295,6 @@ internal class RateItem : TemplatedControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

@@ -1,4 +1,5 @@
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
@@ -772,6 +773,6 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

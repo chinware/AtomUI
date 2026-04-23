@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -365,7 +366,7 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
         ConfigureIsLeaf();
     }
     

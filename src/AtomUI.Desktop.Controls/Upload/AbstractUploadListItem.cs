@@ -3,6 +3,7 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -155,6 +156,6 @@ internal class AbstractUploadListItem : TemplatedControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

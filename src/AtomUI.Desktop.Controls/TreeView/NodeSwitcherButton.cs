@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Avalonia.Threading;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
@@ -254,6 +255,6 @@ internal class NodeSwitcherButton : ToggleButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

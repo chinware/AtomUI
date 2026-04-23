@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -50,6 +51,6 @@ public abstract class AbstractScrollBarThumb : Thumb, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

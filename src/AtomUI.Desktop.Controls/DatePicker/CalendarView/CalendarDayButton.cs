@@ -7,6 +7,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Desktop.Controls.CalendarView;
@@ -360,6 +361,6 @@ internal sealed class CalendarDayButton : AvaloniaButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

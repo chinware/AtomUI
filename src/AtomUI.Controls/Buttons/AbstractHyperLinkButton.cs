@@ -150,6 +150,6 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

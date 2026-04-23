@@ -1,8 +1,9 @@
+
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia.Interactivity;
-
 namespace AtomUI.Desktop.Controls;
 
 public class ToggleSwitch : AbstractToggleSwitch
@@ -21,6 +22,6 @@ public class ToggleSwitch : AbstractToggleSwitch
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

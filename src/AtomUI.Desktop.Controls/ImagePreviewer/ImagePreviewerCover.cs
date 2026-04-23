@@ -1,4 +1,5 @@
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -59,6 +60,6 @@ internal class ImagePreviewerCover : ContentControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

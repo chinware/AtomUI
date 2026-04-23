@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls;
@@ -132,6 +133,6 @@ internal class CaptionButton : AvaloniaButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

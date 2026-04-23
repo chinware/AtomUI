@@ -1,5 +1,6 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls;
+using Avalonia.Threading;
 using Avalonia;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls.Metadata;
@@ -216,6 +217,6 @@ public class SliderThumb : TemplatedControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

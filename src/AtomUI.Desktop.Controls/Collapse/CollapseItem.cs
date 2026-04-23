@@ -397,6 +397,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

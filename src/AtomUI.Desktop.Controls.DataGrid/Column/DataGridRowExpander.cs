@@ -8,6 +8,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -125,6 +126,6 @@ internal class DataGridRowExpander : ToggleButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

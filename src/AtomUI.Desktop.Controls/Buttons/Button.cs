@@ -251,7 +251,7 @@ public class Button : AvaloniaButton,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 
     protected override Size MeasureOverride(Size availableSize)

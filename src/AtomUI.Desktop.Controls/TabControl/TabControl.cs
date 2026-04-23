@@ -1,5 +1,6 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Desktop.Controls.Themes;
+using Avalonia.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -163,6 +164,6 @@ public class TabControl : BaseTabControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Media;
 using AtomUI.Utils;
@@ -635,7 +636,7 @@ public class SliderTrack : TemplatedControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
     
     private Vector CalculateThumbAdjustment(SliderThumb thumb, Rect newThumbBounds)

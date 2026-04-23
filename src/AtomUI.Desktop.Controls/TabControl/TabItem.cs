@@ -1,4 +1,5 @@
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Themes;
@@ -285,6 +286,6 @@ public class TabItem : HeaderedContentControl, ISelectable
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

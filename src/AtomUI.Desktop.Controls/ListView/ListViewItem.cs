@@ -1,4 +1,6 @@
+
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Automation;
@@ -173,7 +175,7 @@ public class ListViewItem : ContentControl,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 
     private void ConfigureSelectedIndicator()

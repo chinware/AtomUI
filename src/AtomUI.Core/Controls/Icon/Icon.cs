@@ -11,6 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.Styling;
+using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
@@ -228,7 +229,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 
     protected virtual IBrush? ProcessBrush(IBrush? brush)

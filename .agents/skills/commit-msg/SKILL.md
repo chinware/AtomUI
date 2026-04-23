@@ -223,7 +223,7 @@ If the changes include a breaking API change:
 - Writing headers longer than 72 characters unless truly unavoidable
 - Wrapping the final output in backticks, quotes, or code blocks
 - Do not push to the remote end unless explicitly requested
-- Do not add "Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>" or information regarding other agents.
+- Do not add "Co-Authored-By: xxx" or information regarding other agents.
 
 ## Reference
 

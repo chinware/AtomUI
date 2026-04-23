@@ -20,6 +20,7 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls;
@@ -951,6 +952,6 @@ internal partial class DataGridColumnHeader : ContentControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

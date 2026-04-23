@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Avalonia.Threading;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Themes;
@@ -665,6 +666,6 @@ internal class TreeViewItemHeader : ContentControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }

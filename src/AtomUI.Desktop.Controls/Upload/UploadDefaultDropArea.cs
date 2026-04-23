@@ -1,4 +1,5 @@
 using AtomUI.Animations;
+using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
@@ -131,6 +132,6 @@ public class UploadDefaultDropArea : TemplatedControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 }
