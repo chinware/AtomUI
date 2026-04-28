@@ -3,6 +3,12 @@ using AtomUI.Theme;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
 {
+    public enum ArrowDecoratedBoxTokenKind
+    {
+        ArrowSize,
+        Padding
+    }
+
     public enum ButtonTokenKind
     {
         BorderColorDisabled,
@@ -64,12 +70,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         BorderRadius,
         BoxShadows,
         MarginToAnchor
-    }
-
-    public enum ArrowDecoratedBoxTokenKind
-    {
-        ArrowSize,
-        Padding
     }
 
     public enum SpaceTokenKind
@@ -135,6 +135,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TitleBarHeight
     }
 
+    public class ArrowDecoratedBoxTokenResourceExtension : TokenResourceExtension<ArrowDecoratedBoxTokenKind>
+    {
+        public ArrowDecoratedBoxTokenResourceExtension()
+        {
+        }
+
+        public ArrowDecoratedBoxTokenResourceExtension(ArrowDecoratedBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class ButtonTokenResourceExtension : TokenResourceExtension<ButtonTokenKind>
     {
         public ButtonTokenResourceExtension()
@@ -153,17 +164,6 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public PopupHostTokenResourceExtension(PopupHostTokenKind kind) : base(kind)
-        {
-        }
-    }
-
-    public class ArrowDecoratedBoxTokenResourceExtension : TokenResourceExtension<ArrowDecoratedBoxTokenKind>
-    {
-        public ArrowDecoratedBoxTokenResourceExtension()
-        {
-        }
-
-        public ArrowDecoratedBoxTokenResourceExtension(ArrowDecoratedBoxTokenKind kind) : base(kind)
         {
         }
     }

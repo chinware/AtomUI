@@ -31,7 +31,8 @@
                                             Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}"
                                             Margin="{TemplateBinding FrameShadowThickness}">
                             <DockPanel LastChildFill="True">
-                                <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}" DockPanel.Dock="Top">
+                                <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
+                                       DockPanel.Dock="Top">
                                     <ContentPresenter Name="TitleBarFrameLayer"
                                                       Background="{TemplateBinding TitleBarFrameBackground}"
                                                       Content="{TemplateBinding TitleBarFrameLayer}"
@@ -71,12 +72,12 @@
 
                         <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
                                             IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}"
-                                            Margin="{TemplateBinding FrameShadowThickness}"/>
+                                            Margin="{TemplateBinding FrameShadowThickness}" />
                     </Panel>
                 </ControlTemplate>
             </Setter>
         </Style>
-        
+
         <Style Selector="^[OsType=Windows][IsCsdEnabled=False]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
@@ -102,7 +103,8 @@
                                             Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}"
                                             Margin="{TemplateBinding FrameShadowThickness}">
                             <DockPanel LastChildFill="True">
-                                <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}" DockPanel.Dock="Top">
+                                <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
+                                       DockPanel.Dock="Top">
                                     <ContentPresenter Name="TitleBarFrameLayer"
                                                       Background="{TemplateBinding TitleBarFrameBackground}"
                                                       Content="{TemplateBinding TitleBarFrameLayer}"
@@ -168,7 +170,8 @@
                                             Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}"
                                             Margin="{TemplateBinding FrameShadowThickness}">
                             <DockPanel LastChildFill="True">
-                                <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}" DockPanel.Dock="Top">
+                                <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
+                                       DockPanel.Dock="Top">
                                     <ContentPresenter Name="TitleBarFrameLayer"
                                                       Background="{TemplateBinding TitleBarFrameBackground}"
                                                       Content="{TemplateBinding TitleBarFrameLayer}"
@@ -209,7 +212,6 @@
         </Style>
 
         <Style Selector="^[IsCsdEnabled=True]">
-            <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
                     <Panel>
@@ -267,6 +269,7 @@
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         <Setter Property="FontFamily" Value="{atom:SharedTokenResource FontFamily}" />
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
+        <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="WindowDecorations" Value="Full" />
         <Setter Property="TitleBarHeight" Value="{atom:WindowTokenResource TitleBarHeight}" />
 
@@ -274,13 +277,18 @@
             <Setter Property="atom:MacStandardWindowButtons.OffsetX" Value="15" />
             <Setter Property="atom:MacStandardWindowButtons.Spacing" Value="20" />
         </Style>
+
+        <Style Selector="^[OsType=Windows]">
+            <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
+        </Style>
+
         <Style Selector="^[WindowState=FullScreen]">
             <Setter Property="CornerRadius" Value="0" />
         </Style>
         <Style Selector="^[WindowState=Maximized]">
             <Setter Property="CornerRadius" Value="0" />
         </Style>
-        
+
         <Style Selector="^[OsType=Linux]">
             <Setter Property="FrameShadow" Value="{atom:WindowTokenResource FrameShadows}" />
             <Setter Property="CornerRadius" Value="{atom:WindowTokenResource CornerRadius}" />
