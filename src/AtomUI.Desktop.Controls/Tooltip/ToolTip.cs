@@ -73,6 +73,9 @@ public class ToolTip : ContentControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ToolTip>();
     
+    public static readonly AttachedProperty<double> MarginToAnchorProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("MarginToAnchor", 4);
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -288,6 +291,15 @@ public class ToolTip : ContentControl,
         element.SetValue(ServiceEnabledProperty, value);
     }
 
+    public static double GetMarginToAnchor(Control element)
+    {
+        return element.GetValue(MarginToAnchorProperty);
+    }
+
+    public static void SetMarginToAnchor(Control element, double margin)
+    {
+        element.SetValue(MarginToAnchorProperty, margin);
+    }
     #endregion
 
     #region 路由事件访问器
@@ -601,14 +613,17 @@ public class ToolTip : ContentControl,
         {
             return;
         }
+
         var shadowThickness    = _popup.MaskShadows.Thickness();
         var requestedPlacement = GetPlacement(target);
         var isUseOverlayHost   = GetIsUseOverlayHost(target);
         var hOffset            = GetHorizontalOffset(target);
         var vOffset            = GetVerticalOffset(target);
+        var marginToAnchor     = GetMarginToAnchor(target);
 
         PopupAnchor anchor;
         PopupGravity gravity;
+
         if (requestedPlacement == PlacementMode.Pointer)
         {
             var topLevel = TopLevel.GetTopLevel(target);
@@ -627,44 +642,24 @@ public class ToolTip : ContentControl,
             (anchor, gravity) = PopupUtils.GetAnchorAndGravity(requestedPlacement);
         }
 
-        placement.Anchor      = anchor;
-        placement.Gravity     = gravity;
-        // 根据是否反转，做相应的调整，调正负
-        var (flipX, flipY) = isUseOverlayHost
-            ? PopupUtils.CalculateOverlayPopupHostFlipInfo(placement)
-            : PopupUtils.CalculatePopupRootFlipInfo(placement);
-        _popup.NotifyFlipped(flipX || flipY);
-
-        if (requestedPlacement == PlacementMode.Pointer)
+        var arrowIndicatorLayoutBounds = default(Rect);
+        if (this is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
         {
-            hOffset += shadowThickness.Left;
-            vOffset += shadowThickness.Top;
+            arrowIndicatorLayoutBounds = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
         }
-        else
-        {
-            if (!isUseOverlayHost)
-            {
-                var arrowPosition = PopupUtils.CalculateArrowPosition(requestedPlacement, anchor, gravity);
-                if (arrowPosition != null)
-                {
-                    if (flipX || flipY)
-                    {
-                        arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value);
-                    }
-                    Rect arrowIndicatorLayoutBounds = default;
-                    if (this is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
-                    {
-                        arrowIndicatorLayoutBounds = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
-                    }
 
-                    var (shadowOffsetX, shadowOffsetY) = PopupUtils.CalculateShadowOffset(arrowPosition.Value,
-                        shadowThickness, arrowIndicatorLayoutBounds);
-                    hOffset += shadowOffsetX;
-                    vOffset += shadowOffsetY;
-                }
-            }
-        }
-        
-        placement.Offset = new Point(hOffset, vOffset);
+        var isFlipped = PopupUtils.ApplyCustomPlacement(
+            placement,
+            requestedPlacement,
+            isUseOverlayHost,
+            hOffset,
+            vOffset,
+            marginToAnchor,
+            shadowThickness,
+            anchor,
+            gravity,
+            arrowIndicatorLayoutBounds);
+
+        _popup.NotifyFlipped(isFlipped);
     }
 }

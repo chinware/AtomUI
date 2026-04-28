@@ -18,9 +18,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         AvaloniaProperty.Register<Popup, BoxShadows>(nameof(MaskShadows));
 
-    public static readonly StyledProperty<double> MarginToAnchorProperty =
-        AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
-
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
 
@@ -45,12 +42,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         get => GetValue(MaskShadowsProperty);
         set => SetValue(MaskShadowsProperty, value);
-    }
-
-    public double MarginToAnchor
-    {
-        get => GetValue(MarginToAnchorProperty);
-        set => SetValue(MarginToAnchorProperty, value);
     }
 
     public TimeSpan MotionDuration
