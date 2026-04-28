@@ -9,12 +9,12 @@
                 <Panel>
                     <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                     <Border Background="{TemplateBinding Background}">
-                        <atom:VisualLayerManager>
+                        <VisualLayerManager>
                             <ContentPresenter Name="PART_ContentPresenter"
                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}"
                                               Margin="{TemplateBinding Padding}"/>
-                        </atom:VisualLayerManager>
+                        </VisualLayerManager>
                     </Border>
                 </Panel>
             </ControlTemplate>

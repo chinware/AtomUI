@@ -3,33 +3,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" 
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Center"
-                                     TextWrapping="Wrap"/>
     <ControlTheme x:Key="{x:Type atom:ToolTip}" TargetType="atom:ToolTip">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:ArrowDecoratedBox Name="{x:Static atom:ToolTipThemeConstants.ToolTipContainerPart}"
+                <atom:ArrowDecoratedBox Name="{x:Static atom:ArrowDecoratedBox.ArrowDecoratorPart}"
                                         Background="{TemplateBinding Background}">
                     <ContentPresenter
-                        Name="{x:Static atom:ToolTipThemeConstants.ToolTipContainerPresenterPart}"
-                        Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                        Name="PART_ContentPresenter"
+                        Content="{TemplateBinding Content}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"/>
                 </atom:ArrowDecoratedBox>
             </ControlTemplate>
         </Setter>
         
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
-        <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}" />
         <Setter Property="Background" Value="{atom:ToolTipTokenResource ToolTipBackground}" />
+        <Setter Property="MaskShadows" Value="{atom:ToolTipTokenResource PopupRootHostShadows}" />
+        <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}" />
         
-        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ToolTipContainer">
+        <Style Selector="^[ShouldUseOverlayLayer=True]">
+            <Setter Property="MaskShadows" Value="{atom:ToolTipTokenResource OverlayHostShadows}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
             <Setter Property="MaxWidth" Value="{atom:ToolTipTokenResource ToolTipMaxWidth}" />
             <Setter Property="Foreground" Value="{atom:ToolTipTokenResource ToolTipColor}" />
             <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
-            <Setter Property="Padding" Value="{atom:ToolTipTokenResource ToolTipPadding}" />
+            <Setter Property="Padding" Value="{atom:ToolTipTokenResource Padding}" />
             <Setter Property="CornerRadius" Value="{atom:ToolTipTokenResource BorderRadiusOuter}" />
         </Style>
     </ControlTheme>

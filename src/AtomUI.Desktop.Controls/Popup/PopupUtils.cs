@@ -82,8 +82,7 @@ internal static class PopupUtils
     internal static bool CanEnabledArrow(PlacementMode placement, PopupAnchor? anchor = null,
         PopupGravity? gravity = null)
     {
-        if (placement == PlacementMode.Center ||
-            placement == PlacementMode.Pointer)
+        if (placement == PlacementMode.Center || placement == PlacementMode.Pointer)
         {
             return false;
         }
@@ -125,6 +124,26 @@ internal static class PopupUtils
         return true;
     }
 
+    internal static bool IsCanonicalAnchorPlacementMode(PlacementMode placement)
+    {
+        return placement switch
+        {
+            PlacementMode.Bottom => true,
+            PlacementMode.Right => true,
+            PlacementMode.Left => true,
+            PlacementMode.Top => true,
+            PlacementMode.TopEdgeAlignedRight => true,
+            PlacementMode.TopEdgeAlignedLeft => true,
+            PlacementMode.BottomEdgeAlignedLeft => true,
+            PlacementMode.BottomEdgeAlignedRight => true,
+            PlacementMode.LeftEdgeAlignedTop => true,
+            PlacementMode.LeftEdgeAlignedBottom => true,
+            PlacementMode.RightEdgeAlignedTop => true,
+            PlacementMode.RightEdgeAlignedBottom => true,
+            _ => false
+        };
+    }
+    
     public static void ValidateEdge(this PopupAnchor edge)
     {
         if (edge.HasAllFlags(PopupAnchor.Left | PopupAnchor.Right) ||
@@ -271,6 +290,176 @@ internal static class PopupUtils
         };
     }
 
+    internal static Direction FlipDirection(Direction direction)
+    {
+        if (direction == Direction.Left)
+        {
+            direction = Direction.Right;
+        }
+        else if (direction == Direction.Right)
+        {
+            direction = Direction.Left;
+        }
+        else if (direction == Direction.Top)
+        {
+            direction = Direction.Bottom;
+        }
+        else if (direction == Direction.Bottom)
+        {
+            direction = Direction.Top;
+        }
+        return direction;
+    }
+
+    /// <summary>
+    /// 判断在给定的自定义放置参数下，<c>PopupRoot</c>（独立窗口弹窗）最终会在 X / Y 轴上发生翻转。
+    /// 实现与 Avalonia 的 <c>ManagedPopupPositioner.Calculate</c> 完全一致。
+    /// </summary>
+    /// <param name="placement">自定义放置参数（来源于 <c>Popup.CustomPopupPlacementCallback</c>）。</param>
+    /// <returns>X 轴是否翻转、Y 轴是否翻转。</returns>
+    internal static (bool flipX, bool flipY) CalculatePopupRootFlipInfo(CustomPopupPlacement placement)
+    {
+        var target = placement.Target;
+        if (placement.PopupSize.Width <= 0 || placement.PopupSize.Height <= 0)
+        {
+            return (false, false);
+        }
+
+        var topLevel = TopLevel.GetTopLevel(target);
+        var screens  = topLevel?.Screens;
+        if (topLevel == null || screens == null || screens.ScreenCount == 0)
+        {
+            return (false, false);
+        }
+
+        // —— 与 Avalonia ManagedPopupPositioner 保持单位一致 ——
+        // 关键：使用 DesktopScaling（不是 RenderScaling），原因：
+        //   * Win32:  DesktopScaling == RenderScaling，整套换算到物理像素；
+        //   * macOS:  DesktopScaling == 1（原生硬编码），PointToScreen 与 NSScreen.frame 都是 Cocoa 逻辑点，
+        //             ManagedPopupPositionerPopupImplHelper.Scaling 用的也是 DesktopScaling，整套在逻辑点系。
+        // 这样保证 anchorRect、clientScreenPos、screen.Bounds 三者单位完全一致。
+        var scaling         = topLevel.PlatformImpl?.DesktopScaling ?? 1.0;
+        var clientScreenPos = topLevel.PointToScreen(default);
+        var anchorRectPx    = new Rect(
+            placement.AnchorRectangle.X * scaling + clientScreenPos.X,
+            placement.AnchorRectangle.Y * scaling + clientScreenPos.Y,
+            placement.AnchorRectangle.Width  * scaling,
+            placement.AnchorRectangle.Height * scaling);
+        var popupSizePx = placement.PopupSize * scaling;
+        var offsetPx    = placement.Offset    * scaling;
+
+        // —— 选屏：与 ManagedPopupPositioner.GetBounds 优先级一致：先 anchor 所在屏，再 TopLevel 所在屏，再主屏 ——
+        var anchorPixelRect = new PixelRect(
+            (int)anchorRectPx.X, (int)anchorRectPx.Y,
+            (int)anchorRectPx.Width, (int)anchorRectPx.Height);
+        var screen = screens.ScreenFromBounds(anchorPixelRect)
+                  ?? screens.ScreenFromTopLevel(topLevel)
+                  ?? screens.Primary
+                  ?? screens.All.FirstOrDefault();
+        if (screen == null)
+        {
+            return (false, false);
+        }
+
+        var workingAreaPx = screen.WorkingArea;
+        var bounds = (workingAreaPx.Width == 0 && workingAreaPx.Height == 0)
+            ? screen.Bounds.ToRect(1.0)
+            : workingAreaPx.ToRect(1.0);
+
+        return CalculateFlipInfoCore(placement, anchorRectPx, bounds, popupSizePx, offsetPx);
+    }
+
+    /// <summary>
+    /// 判断在给定的自定义放置参数下，<c>OverlayPopupHost</c>（Overlay 层弹窗）最终会在 X / Y 轴上发生翻转。
+    /// 实现与 Avalonia 的 <c>OverlayPopupHost + ManagedPopupPositioner.Calculate</c> 完全一致：
+    /// 使用 TopLevel 客户区逻辑坐标，并按 SafeAreaPadding 收缩可用区域。
+    /// </summary>
+    /// <param name="placement">自定义放置参数（来源于 <c>Popup.CustomPopupPlacementCallback</c>）。</param>
+    /// <returns>X 轴是否翻转、Y 轴是否翻转。</returns>
+    internal static (bool flipX, bool flipY) CalculateOverlayPopupHostFlipInfo(CustomPopupPlacement placement)
+    {
+        var target = placement.Target;
+        if (placement.PopupSize.Width <= 0 || placement.PopupSize.Height <= 0)
+        {
+            return (false, false);
+        }
+
+        var topLevel = TopLevel.GetTopLevel(target);
+        if (topLevel == null)
+        {
+            return (false, false);
+        }
+
+        var bounds = new Rect(default, topLevel.ClientSize);
+        var padding = topLevel.InsetsManager?.SafeAreaPadding ?? default;
+        if (padding != default)
+        {
+            bounds = bounds.Deflate(padding);
+        }
+
+        return CalculateFlipInfoCore(
+            placement,
+            placement.AnchorRectangle,
+            bounds,
+            placement.PopupSize,
+            placement.Offset);
+    }
+
+    private static (bool flipX, bool flipY) CalculateFlipInfoCore(
+        CustomPopupPlacement placement,
+        Rect anchorRect,
+        Rect bounds,
+        Size popupSize,
+        Point offset)
+    {
+        var anchor               = placement.Anchor;
+        var gravity              = placement.Gravity;
+        var constraintAdjustment = placement.ConstraintAdjustment;
+
+        Rect GetUnconstrained(PopupAnchor a, PopupGravity g) =>
+            new Rect(Gravitate(GetAnchorPoint(anchorRect, a), popupSize, g) + offset, popupSize);
+
+        bool FitsInBounds(Rect rc, PopupAnchor edge)
+        {
+            if (edge.HasAllFlags(PopupAnchor.Left)   && rc.X      < bounds.X      ||
+                edge.HasAllFlags(PopupAnchor.Top)    && rc.Y      < bounds.Y      ||
+                edge.HasAllFlags(PopupAnchor.Right)  && rc.Right  > bounds.Right  ||
+                edge.HasAllFlags(PopupAnchor.Bottom) && rc.Bottom > bounds.Bottom)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        var geo   = GetUnconstrained(anchor, gravity);
+        var flipX = false;
+        var flipY = false;
+
+        if (!FitsInBounds(geo, PopupAnchor.HorizontalMask)
+            && constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.FlipX))
+        {
+            var flipped = GetUnconstrained(anchor.FlipX(), gravity.FlipX());
+            if (FitsInBounds(flipped, PopupAnchor.HorizontalMask))
+            {
+                flipX = true;
+                geo   = geo.WithX(flipped.X);
+            }
+        }
+
+        if (!FitsInBounds(geo, PopupAnchor.VerticalMask)
+            && constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.FlipY))
+        {
+            var flipped = GetUnconstrained(anchor.FlipY(), gravity.FlipY());
+            if (FitsInBounds(flipped, PopupAnchor.VerticalMask))
+            {
+                flipY = true;
+            }
+        }
+
+        return (flipX, flipY);
+    }
+
     internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
     {
         return placement switch
@@ -289,5 +478,74 @@ internal static class PopupUtils
             PlacementMode.RightEdgeAlignedBottom => (PopupAnchor.BottomRight, PopupGravity.TopRight),
             _ => (PopupAnchor.None, PopupGravity.None)
         };
+    }
+    
+    internal static (double offsetX, double offsetY) CalculateShadowOffset(ArrowPosition arrowPosition, Thickness shadowThickness, Rect arrowBounds)
+    {
+        var shadowOffsetX = 0.0d;
+        var shadowOffsetY = 0.0d;
+
+        var arrowWidth              = arrowBounds.Width;
+        var arrowHeight             = arrowBounds.Height;
+        var leftResidualShadow      = Math.Max(shadowThickness.Left   - arrowWidth, 0);
+        var rightResidualShadow     = Math.Max(shadowThickness.Right  - arrowWidth, 0);
+        var topResidualShadow       = Math.Max(shadowThickness.Top    - arrowHeight, 0);
+        var bottomResidualShadow    = Math.Max(shadowThickness.Bottom - arrowHeight, 0);
+        var centeredVerticalDelta   = (shadowThickness.Bottom - shadowThickness.Top) / 2;
+        var centeredHorizontalDelta = (shadowThickness.Right  - shadowThickness.Left) / 2;
+
+        switch (arrowPosition)
+        {
+            case ArrowPosition.Left:
+                shadowOffsetX = leftResidualShadow;
+                shadowOffsetY = centeredVerticalDelta;
+                break;
+            case ArrowPosition.LeftEdgeAlignedTop:
+                shadowOffsetX = leftResidualShadow;
+                shadowOffsetY = -shadowThickness.Top;
+                break;
+            case ArrowPosition.LeftEdgeAlignedBottom:
+                shadowOffsetX = leftResidualShadow;
+                shadowOffsetY = shadowThickness.Bottom;
+                break;
+            case ArrowPosition.Right:
+                shadowOffsetX = -rightResidualShadow;
+                shadowOffsetY = centeredVerticalDelta;
+                break;
+            case ArrowPosition.RightEdgeAlignedTop:
+                shadowOffsetX = -rightResidualShadow;
+                shadowOffsetY = -shadowThickness.Top;
+                break;
+            case ArrowPosition.RightEdgeAlignedBottom:
+                shadowOffsetX = -rightResidualShadow;
+                shadowOffsetY = shadowThickness.Bottom;
+                break;
+            case ArrowPosition.Top:
+                shadowOffsetX = centeredHorizontalDelta;
+                shadowOffsetY = topResidualShadow;
+                break;
+            case ArrowPosition.TopEdgeAlignedLeft:
+                shadowOffsetX = -shadowThickness.Left;
+                shadowOffsetY = topResidualShadow;
+                break;
+            case ArrowPosition.TopEdgeAlignedRight:
+                shadowOffsetX = shadowThickness.Right;
+                shadowOffsetY = topResidualShadow;
+                break;
+            case ArrowPosition.Bottom:
+                shadowOffsetX = centeredHorizontalDelta;
+                shadowOffsetY = -bottomResidualShadow;
+                break;
+            case ArrowPosition.BottomEdgeAlignedLeft:
+                shadowOffsetX = -shadowThickness.Left;
+                shadowOffsetY = -bottomResidualShadow;
+                break;
+            case ArrowPosition.BottomEdgeAlignedRight:
+                shadowOffsetX = shadowThickness.Right;
+                shadowOffsetY = -bottomResidualShadow;
+                break;
+        }
+
+        return (shadowOffsetX, shadowOffsetY);
     }
 }

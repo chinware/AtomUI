@@ -11,4 +11,9 @@
     <Import Project="$(MSBuildThisFileDirectory)/build/PackageMetaInfo.props"/>
     <Import Project="$(MSBuildThisFileDirectory)/build/Output.props"/>
 
+    <PropertyGroup>
+        <RestoreSources>
+            https://nuget-feed-nightly.avaloniaui.net/v3/index.json;
+        </RestoreSources>
+    </PropertyGroup>
 </Project>

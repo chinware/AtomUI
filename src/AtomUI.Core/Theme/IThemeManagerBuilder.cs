@@ -1,7 +1,6 @@
 using System.Globalization;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
-using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Theme;

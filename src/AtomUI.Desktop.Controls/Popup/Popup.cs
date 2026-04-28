@@ -1,22 +1,12 @@
-﻿using System.Diagnostics;
+using System.ComponentModel;
 using AtomUI.Controls;
-using AtomUI.Controls.Primitives;
-using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Diagnostics;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -25,9 +15,6 @@ using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 public class Popup : AvaloniaPopup, IMotionAwareControl
 {
     #region 公共属性定义
-
-    public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
-
     public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
         AvaloniaProperty.Register<Popup, BoxShadows>(nameof(MaskShadows));
 
@@ -36,12 +23,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
-    
-    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
-        AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(OpenMotion));
-    
-    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
-        AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(CloseMotion));
 
     public static readonly DirectProperty<Popup, bool> IsFlippedProperty =
         AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
@@ -51,15 +32,15 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
 
-    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty = 
+    public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<Popup>();
-    
-    public static readonly StyledProperty<bool> IsMotionAwareOpenProperty =
-        AvaloniaProperty.Register<Popup, bool>(nameof (IsMotionAwareOpen));
-    
-    public static readonly StyledProperty<bool> ConfigureBlankMaskWhenMotionAwareOpenProperty =
-        AvaloniaProperty.Register<Popup, bool>(nameof (ConfigureBlankMaskWhenMotionAwareOpen), false);
 
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty =
+        AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(OpenMotion));
+
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty =
+        AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(CloseMotion));
+    
     public BoxShadows MaskShadows
     {
         get => GetValue(MaskShadowsProperty);
@@ -97,7 +78,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         get => GetValue(IsWaveSpiritEnabledProperty);
         set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
-    
+
     public AbstractMotion? OpenMotion
     {
         get => GetValue(OpenMotionProperty);
@@ -109,845 +90,115 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         get => GetValue(CloseMotionProperty);
         set => SetValue(CloseMotionProperty, value);
     }
-    
-    public bool IsMotionAwareOpen
-    {
-        get => GetValue(IsMotionAwareOpenProperty);
-        set => SetValue(IsMotionAwareOpenProperty, value);
-    }
-    
-    /// <summary>
-    /// When the animation is turned on and off, whether to not make a complete mask after the animation ends, including the content
-    /// </summary>
-    public bool ConfigureBlankMaskWhenMotionAwareOpen
-    {
-        get => GetValue(ConfigureBlankMaskWhenMotionAwareOpenProperty);
-        set => SetValue(ConfigureBlankMaskWhenMotionAwareOpenProperty, value);
-    }
-
-    #endregion
-    
-    public Func<IPopupHostProvider, RawPointerEventArgs, bool>? ClickHidePredicate;
-    public Action<Popup>? CloseAction;
-
-    #region 内部属性定义
-
-    internal static readonly StyledProperty<bool> IsDetectMouseClickEnabledProperty =
-        AvaloniaProperty.Register<Popup, bool>(nameof(IsDetectMouseClickEnabled), true);
-    
-    internal static readonly DirectProperty<Popup, PopupHostMarginPlacement> HostDecoratorDirectionProperty =
-        AvaloniaProperty.RegisterDirect<Popup, PopupHostMarginPlacement>(nameof(HostDecoratorDirection),
-            o => o.HostDecoratorDirection,
-            (o, v) => o.HostDecoratorDirection = v);
-
-    internal bool IsDetectMouseClickEnabled
-    {
-        get => GetValue(IsDetectMouseClickEnabledProperty);
-        set => SetValue(IsDetectMouseClickEnabledProperty, value);
-    }
-    
-    private PopupHostMarginPlacement _hostDecoratorDirection;
-
-    internal PopupHostMarginPlacement HostDecoratorDirection
-    {
-        get => _hostDecoratorDirection;
-        private set => SetAndRaise(HostDecoratorDirectionProperty, ref _hostDecoratorDirection, value);
-    }
-    
     #endregion
 
-    internal BaseMotionActor? MotionActor;
-    private PlacementAwareDecorator? _placementAwareDecorator;
-    private PopupBuddyLayer? _buddyLayer;
-    private IDisposable? _selfLightDismissDisposable;
-    private IManagedPopupPositionerPopup? _managedPopupPositioner;
-    private bool _ignoreIsOpenChanged;
+    #region 公共事件定义
 
-    // 在翻转之后或者恢复正常，会有属性的变动，在变动之后捕捉动画需要等一个事件循环，保证布局已经生效
-    private bool _openAnimating;
-    private bool _closeAnimating;
-    private bool _motionAwareOpened;
+    public event EventHandler<PopupFlippedEventArgs>? PositionFlipped;
 
-    // 当鼠标移走了，但是打开动画还没完成，我们需要记录下来这个信号
-    internal bool RequestCloseWhereAnimationCompleted { get; set; }
+    #endregion
 
-    static Popup()
-    {
-        AffectsMeasure<Popup>(PlacementProperty);
-        AffectsMeasure<Popup>(PlacementAnchorProperty);
-        AffectsMeasure<Popup>(PlacementGravityProperty);
-        IsLightDismissEnabledProperty.OverrideDefaultValue<Popup>(false);
-    }
+    #region 动画相关字段
+
+    private bool _isClosingAnimating;
+    private CancellationTokenSource? _motionCts;
+    private PopupMotionActor? _motionActor;
+
+    #endregion
 
     public Popup()
     {
         this.ConfigureMotionBindingStyle();
         TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKind.BoxShadowsSecondary);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
-        Closed += HandleClosed;
-        Opened += HandleOpened;
-        if (this is IPopupHostProvider popupHostProvider)
+
+        this.AddClosingEventHandler(HandlePopupClosing);
+        Opened += HandlePopupOpened;
+    }
+
+    #region 动画逻辑
+
+    private void HandlePopupOpened(object? sender, EventArgs e)
+    {
+        if (!IsMotionEnabled || OpenMotion is null || _motionActor is null)
         {
-            if (popupHostProvider.PopupHost != null)
-            {
-                HandlePopupHostChanged(popupHostProvider.PopupHost);
-            }
-            else
-            {
-                popupHostProvider.PopupHostChanged += HandlePopupHostChanged;
-            }
+            return;
+        }
+        
+        _motionCts?.Cancel();
+        _motionCts = new CancellationTokenSource();
+
+        var motion = OpenMotion;
+        motion.Duration      = MotionDuration;
+        _motionActor.Opacity = 0.0d;
+        Dispatcher.UIThread.InvokeAsync(() => PlayMotionAsync(motion, _motionActor, _motionCts.Token));
+    }
+
+    private void HandlePopupClosing(object? sender, CancelEventArgs e)
+    {
+        if (_isClosingAnimating)
+        {
+            _isClosingAnimating = false;
+            _motionActor        = null;
+            return;
+        }
+
+        if (!IsMotionEnabled || CloseMotion is null || _motionActor is null)
+        {
+            return;
+        }
+
+        e.Cancel = true;
+        Dispatcher.UIThread.InvokeAsync(() => PlayCloseMotionAndCloseAsync(_motionActor));
+    }
+
+    private async Task PlayMotionAsync(AbstractMotion motion, BaseMotionActor actor, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await motion.RunAsync(actor, cancellationToken: cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            // 动画被取消（快速开关场景），忽略
         }
     }
 
-    private void HandlePopupHostChanged(IPopupHost? popupHost)
+    private async Task PlayCloseMotionAndCloseAsync(BaseMotionActor actor)
     {
-        _placementAwareDecorator = null;
-        if (popupHost is PopupRoot popupRoot)
+        if (_motionCts != null)
         {
-            MotionActor              = popupRoot.FindDescendantOfType<MotionActor>();
-            _placementAwareDecorator = popupRoot.FindDescendantOfType<PlacementAwareDecorator>();
+           await _motionCts.CancelAsync();
         }
-        else if (popupHost is OverlayPopupHost overlayPopupHost)
-        {
-            MotionActor              = overlayPopupHost.FindDescendantOfType<MotionActor>();
-            _placementAwareDecorator = overlayPopupHost.FindDescendantOfType<PlacementAwareDecorator>();
-            var popupContent = overlayPopupHost.FindDescendantOfType<OverlayPopupContent>();
-            Debug.Assert(popupContent != null);
-            
-            popupContent[!OverlayPopupContent.IsFlippedProperty] = this[!IsFlippedProperty];
-        }
-        if (_placementAwareDecorator != null)
-        {
-            _placementAwareDecorator[!PlacementAwareDecorator.MarginToAnchorProperty]  = this[!MarginToAnchorProperty];
-            _placementAwareDecorator[!PlacementAwareDecorator.MarginPlacementProperty] = this[!HostDecoratorDirectionProperty];
-        }
-    }
     
-    protected Control? GetEffectivePlacementTarget()
-    {
-        return PlacementTarget ?? this.FindLogicalAncestorOfType<Control>();
+        _motionCts = new CancellationTokenSource();
+
+        var motion = CloseMotion!;
+        motion.Duration = MotionDuration;
+
+        try
+        {
+            await motion.RunAsync(actor, cancellationToken: _motionCts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // 动画被取消，仍然需要关闭
+        }
+
+        _isClosingAnimating = true;
+        Dispatcher.UIThread.Post(Close);
     }
 
-    private void HandleClosed(object? sender, EventArgs? args)
+    #endregion
+
+    internal void NotifyFlipped(bool flipped)
     {
-        _selfLightDismissDisposable?.Dispose();
-        _selfLightDismissDisposable = null;
-        if (IgnoreFirstDetected)
-        {
-            _firstDetected = true;
-        }
-        var placementTarget = GetEffectivePlacementTarget();
-        if (placementTarget is not null)
-        {
-            if (TopLevel.GetTopLevel(placementTarget) is Window window)
-            {
-                window.ScrollOccurred -= HandlePlacementTargetScrolled; 
-            }
-            if (Host is PopupRoot popupRoot)
-            {
-                popupRoot.PositionChanged -= HandlePositionAndSizeChanged;
-                popupRoot.SizeChanged     -= HandlePositionAndSizeChanged;
-            }
-            else if (Host is OverlayPopupHost overlayPopupHost)
-            {
-                overlayPopupHost.PropertyChanged -= HandleOverlayPopupHostPropertyChanged;
-                overlayPopupHost.SizeChanged     -= HandlePositionAndSizeChanged;
-            }
-            
-        }
+        PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(flipped));
     }
 
-    private void HandleOpened(object? sender, EventArgs? args)
+    internal void NotifyMotionActorReady(PopupMotionActor actor)
     {
-        {
-            if (Host is PopupRoot popupRoot)
-            {
-                var popupPositioner = popupRoot.PlatformImpl?.PopupPositioner;
-                if (popupPositioner is ManagedPopupPositioner managedPopupPositioner)
-                {
-                    _managedPopupPositioner = managedPopupPositioner.GetManagedPopupPositionerPopup();
-                }
-#if DEBUG
-                if (popupRoot is TopLevel topLevel)
-                {
-                    topLevel.AttachDevTools();
-                }
-#endif
-            }
-        }
-        
-        var placementTarget = GetEffectivePlacementTarget();
-        if (placementTarget is not null)
-        {
-            if (Placement != PlacementMode.Pointer && Placement != PlacementMode.Center)
-            {
-                if (Host is PopupRoot popupRoot)
-                {
-                    popupRoot.PositionChanged += HandlePositionAndSizeChanged;
-                    popupRoot.SizeChanged     += HandlePositionAndSizeChanged;
-                }
-                else if (Host is OverlayPopupHost overlayPopupHost)
-                {
-                    overlayPopupHost.PropertyChanged += HandleOverlayPopupHostPropertyChanged;
-                    overlayPopupHost.SizeChanged     += HandlePositionAndSizeChanged;
-                }
-            }
-            
-            AdjustPopupHostPosition(placementTarget);
-
-            // 如果没有启动，我们使用自己的处理函数，一般是为了增加我们自己的动画效果
-            HandleIsLightDismissEnabledChanged();
-
-            if (TopLevel.GetTopLevel(placementTarget) is Window window)
-            {
-                window.ScrollOccurred += HandlePlacementTargetScrolled; 
-            }
-        }
-    }
-
-    private void HandlePositionAndSizeChanged(object? sender, EventArgs e)
-    {
-        var placementTarget = GetEffectivePlacementTarget();
-        if (placementTarget != null)
-        {
-            AdjustPopupHostPosition(placementTarget);
-        }
-    }
-    
-    private void HandleIsLightDismissEnabledChanged()
-    {
-        if (!IsLightDismissEnabled)
-        {
-            var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as  IInputManager;
-            _selfLightDismissDisposable = inputManager?.Process.Subscribe(HandleMouseClick);
-        }
-        else
-        {
-            _selfLightDismissDisposable?.Dispose();
-            _selfLightDismissDisposable = null;
-        }
-    }
-
-    private void HandlePlacementTargetScrolled(object? sender, EventArgs args)
-    {
-        var placementTarget = GetEffectivePlacementTarget();
-        if (placementTarget != null && Host != null)
-        {
-            this.UpdateHostPosition(Host, placementTarget);
-        }
-    }
-
-    private void HandleOverlayPopupHostPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
-    {
-        if (Host is OverlayPopupHost overlayPopupHost)
-        {
-            if (change.Property == Canvas.LeftProperty ||
-                change.Property == Canvas.TopProperty)
-            {
-                var left = Canvas.GetLeft(overlayPopupHost);
-                var top = Canvas.GetTop(overlayPopupHost);
-                if (!double.IsNaN(left) && !double.IsNaN(top))
-                {
-                    overlayPopupHost.PropertyChanged -= HandleOverlayPopupHostPropertyChanged;
-                    var placementTarget = GetEffectivePlacementTarget();
-                    if (placementTarget is not null)
-                    {
-                        AdjustPopupHostPosition(placementTarget);
-                    }
-                }
-            }
-        }
-    }
-    
-    // 正常的菜单项点击的时候第一次是需要忽略点击的探测的，不然按钮会被关闭
-    // 这个可以优化动态探测 Popup 的 parent
-    internal bool IgnoreFirstDetected { get; set; } = true;
-    private bool _firstDetected = true;
-
-    private void HandleMouseClick(RawInputEventArgs args)
-    {
-        if (!IsMotionAwareOpen)
-        {
-            return;
-        }
-
-        if (IsDetectMouseClickEnabled)
-        {
-            if (args is RawPointerEventArgs pointerEventArgs)
-            {
-                if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
-                {
-                    // TODO 这个逻辑要优化
-                    if ((IgnoreFirstDetected && _firstDetected) || pointerEventArgs.IsPointLogicalIn(PlacementTarget) || _openAnimating)
-                    {
-                        if (IgnoreFirstDetected && _firstDetected)
-                        {
-                            _firstDetected = false;
-                        }
-                        return;
-                    }
-                    
-                    if (this is IPopupHostProvider popupHostProvider)
-                    {
-                        if (ClickHidePredicate is not null)
-                        {
-                            if (ClickHidePredicate(popupHostProvider, pointerEventArgs))
-                            {
-                                if (CloseAction != null)
-                                {
-                                    CloseAction.Invoke(this);
-                                }
-                                else
-                                {
-                                    MotionAwareClose();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (popupHostProvider.PopupHost is PopupRoot popupRoot)
-                            {
-                                if (popupRoot != pointerEventArgs.Root)
-                                {
-                                    if (CloseAction != null)
-                                    {
-                                        CloseAction.Invoke(this);
-                                    }
-                                    else
-                                    {
-                                        MotionAwareClose();
-                                    }
-                                }
-                            }
-                            else if (popupHostProvider.PopupHost is OverlayPopupHost overlayPopupHost)
-                            {
-                                if (args.Root is Control root)
-                                {
-                                    var offset = overlayPopupHost.TranslatePoint(default, root);
-                                    if (offset.HasValue)
-                                    {
-                                        var bounds = new Rect(offset.Value, overlayPopupHost.Bounds.Size);
-                                        if (!bounds.Contains(pointerEventArgs.Position))
-                                        {
-                                            if (CloseAction != null)
-                                            {
-                                                CloseAction.Invoke(this);
-                                            }
-                                            else
-                                            {
-                                                MotionAwareClose();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    private void CreatePopupRootBuddyLayer()
-    {
-        Debug.Assert(_buddyLayer == null);
-        var topLevel = TopLevel.GetTopLevel(PlacementTarget ?? Parent as Visual);
-        Debug.Assert(topLevel is not null);
-        _buddyLayer         = new PopupBuddyLayer(this, topLevel);
-        _buddyLayer.Topmost = true;
-    }
-
-    internal (bool left, bool top, bool right, bool bottom) CalculateFlipInfo(Size translatedSize, Rect anchorRect, PopupAnchor anchor,
-                                                                              PopupGravity gravity,
-                                                                              Point offset)
-    {
-        var bounds = GetBounds(anchorRect);
-        return CalculateFlipInfo(bounds, translatedSize, anchorRect, anchor, gravity, offset);
-    }
-
-    internal static (bool left, bool top, bool right, bool bottom) CalculateFlipInfo(Rect bounds, Size translatedSize, Rect anchorRect,
-                                                   PopupAnchor anchor,
-                                                   PopupGravity gravity,
-                                                   Point offset)
-    {
-        (bool left, bool top, bool right, bool bottom) FitsInBounds(Rect rc, PopupAnchor edge = PopupAnchor.AllMask)
-        {
-            if ((edge.HasFlag(PopupAnchor.Left) && rc.X < bounds.X) ||
-                (edge.HasFlag(PopupAnchor.Top) && rc.Y < bounds.Y) ||
-                (edge.HasFlag(PopupAnchor.Right) && rc.Right > bounds.Right) ||
-                (edge.HasFlag(PopupAnchor.Bottom) && rc.Bottom > bounds.Bottom))
-            {
-                return ((edge.HasFlag(PopupAnchor.Left) && rc.X < bounds.X),
-                        (edge.HasFlag(PopupAnchor.Top) && rc.Y < bounds.Y),
-                        (edge.HasFlag(PopupAnchor.Right) && rc.Right > bounds.Right),
-                        (edge.HasFlag(PopupAnchor.Bottom) && rc.Bottom > bounds.Bottom));
-            }
-
-            return (false, false, false, false);
-        }
-
-        Rect GetUnconstrained(PopupAnchor a, PopupGravity g)
-        {
-            return new Rect(PopupUtils.Gravitate(PopupUtils.GetAnchorPoint(anchorRect, a), translatedSize, g) + offset,
-                translatedSize);
-        }
-
-        var geo = GetUnconstrained(anchor, gravity);
-        // If flipping geometry and anchor is allowed and helps, use the flipped one,
-        // otherwise leave it as is
-        return FitsInBounds(geo, anchor);
-    }
-
-    private Rect GetBounds(Rect anchorRect)
-    {
-        IManagedPopupPositionerPopup? positionerPopup = null;
-        if (!ShouldUseOverlayLayer)
-        {
-            positionerPopup = _managedPopupPositioner;
-        }
-        else
-        {
-            positionerPopup = Host as IManagedPopupPositionerPopup;
-        }
-        if (positionerPopup is null)
-        {
-            throw new InvalidOperationException("ManagedPopupPositioner is null");
-        }
-        var parentGeometry = positionerPopup.ParentClientAreaScreenGeometry;
-        var screens        = positionerPopup.Screens;
-        return GetBounds(anchorRect, parentGeometry, screens);
-    }
-
-    private static Rect GetBounds(Rect anchorRect, Rect parentGeometry,
-                                  IReadOnlyList<ManagedPopupPositionerScreenInfo> screens)
-    {
-        var targetScreen = screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(anchorRect.TopLeft))
-                           ?? screens.FirstOrDefault(s => s.Bounds.Intersects(anchorRect))
-                           ?? screens.FirstOrDefault(s => s.Bounds.ContainsExclusive(parentGeometry.TopLeft))
-                           ?? screens.FirstOrDefault(s => s.Bounds.Intersects(parentGeometry))
-                           ?? screens.FirstOrDefault();
-
-        if (targetScreen != null &&
-            targetScreen.WorkingArea.Width == 0 && targetScreen.WorkingArea.Height == 0)
-        {
-            return targetScreen.Bounds;
-        }
-
-        return targetScreen?.WorkingArea
-               ?? new Rect(0, 0, double.MaxValue, double.MaxValue);
-    }
-
-    /// <summary>
-    /// 在这里处理翻转问题
-    /// </summary>
-    internal void AdjustPopupHostPosition(Control placementTarget)
-    {
-        var topLevel = TopLevel.GetTopLevel(placementTarget)!;
-        
-        Size popupSize = default;
-        if (Host is PopupRoot popupRoot)
-        {
-            popupSize = popupRoot.ClientSize;
-        }
-        else if (Host is OverlayPopupHost overlayPopupHost)
-        {
-            popupSize = overlayPopupHost.DesiredSize;
-        }
-        
-        IManagedPopupPositionerPopup? positionerPopup = null;
-        if (!ShouldUseOverlayLayer)
-        {
-            positionerPopup = _managedPopupPositioner;
-        }
-        else
-        {
-            positionerPopup = Host as IManagedPopupPositionerPopup;
-        }
-        Debug.Assert(positionerPopup != null);
-        var scaling      = positionerPopup.Scaling;
-        var parentOrigin = positionerPopup.ParentClientAreaScreenGeometry.TopLeft;
-        
-        if (Placement != PlacementMode.Center && Placement != PlacementMode.Pointer)
-        {
-            // 计算是否 flip
-            var parameters = new PopupPositionerParameters();
-            var offset     = new Point(HorizontalOffset, VerticalOffset);
-            parameters.ConfigurePosition(topLevel,
-                placementTarget,
-                Placement,
-                offset,
-                PlacementAnchor,
-                PlacementGravity,
-                PopupPositionerConstraintAdjustment.All,
-                null,
-                FlowDirection);
-            
-            var anchorRect = new Rect(
-                parameters.AnchorRectangle.TopLeft * scaling,
-                parameters.AnchorRectangle.Size * scaling);
-            
-            anchorRect = anchorRect.Translate(parentOrigin);
-        
-            var flipInfo = CalculateFlipInfo(popupSize * scaling,
-                anchorRect,
-                parameters.Anchor,
-                parameters.Gravity,
-                offset * scaling);
-            
-            var direction     = GetHostDecoratorDirection(Placement);
-            var originFlipped = IsFlipped;
-            var flipPlacement = Placement;
-            if ((direction == PopupHostMarginPlacement.Top && flipInfo.bottom) ||
-                (direction == PopupHostMarginPlacement.Bottom && flipInfo.top))
-            {
-                flipPlacement  = GetFlipPlacement(Placement, false, true);
-                IsFlipped      = true;
-            }
-            else if ((direction == PopupHostMarginPlacement.Left && flipInfo.right) ||
-                     (direction == PopupHostMarginPlacement.Right && flipInfo.left))
-            {
-                flipPlacement = GetFlipPlacement(Placement, true, false);
-                IsFlipped     = true;
-            }
-            else
-            {
-                IsFlipped     = false;
-            }
-            HostDecoratorDirection = GetHostDecoratorDirection(flipPlacement);
-            
-            if (originFlipped != IsFlipped)
-            {
-                PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(IsFlipped));
-            }
-        }
-    }
-
-    protected static PlacementMode GetFlipPlacement(PlacementMode placement, bool isHorizontalFlipped,
-                                                    bool isVerticalFlipped)
-    {
-        return placement switch
-        {
-            PlacementMode.Left => isHorizontalFlipped ? PlacementMode.Right : PlacementMode.Left,
-            PlacementMode.LeftEdgeAlignedTop => isHorizontalFlipped
-                ? PlacementMode.RightEdgeAlignedTop
-                : PlacementMode.LeftEdgeAlignedTop,
-            PlacementMode.LeftEdgeAlignedBottom => isHorizontalFlipped
-                ? PlacementMode.RightEdgeAlignedBottom
-                : PlacementMode.LeftEdgeAlignedBottom,
-
-            PlacementMode.Top => isVerticalFlipped ? PlacementMode.Bottom : PlacementMode.Top,
-            PlacementMode.TopEdgeAlignedLeft => isVerticalFlipped
-                ? PlacementMode.BottomEdgeAlignedLeft
-                : PlacementMode.TopEdgeAlignedLeft,
-            PlacementMode.TopEdgeAlignedRight => isVerticalFlipped
-                ? PlacementMode.BottomEdgeAlignedRight
-                : PlacementMode.TopEdgeAlignedRight,
-
-            PlacementMode.Right => isHorizontalFlipped ? PlacementMode.Left : PlacementMode.Right,
-            PlacementMode.RightEdgeAlignedTop => isHorizontalFlipped
-                ? PlacementMode.LeftEdgeAlignedTop
-                : PlacementMode.RightEdgeAlignedTop,
-            PlacementMode.RightEdgeAlignedBottom => isHorizontalFlipped
-                ? PlacementMode.LeftEdgeAlignedBottom
-                : PlacementMode.RightEdgeAlignedBottom,
-
-            PlacementMode.Bottom => isVerticalFlipped ? PlacementMode.Top : PlacementMode.Bottom,
-            PlacementMode.BottomEdgeAlignedLeft => isVerticalFlipped
-                ? PlacementMode.TopEdgeAlignedLeft
-                : PlacementMode.BottomEdgeAlignedLeft,
-            PlacementMode.BottomEdgeAlignedRight => isVerticalFlipped
-                ? PlacementMode.TopEdgeAlignedRight
-                : PlacementMode.BottomEdgeAlignedRight,
-
-            _ => throw new ArgumentOutOfRangeException(nameof(placement), placement, "Invalid value for PlacementMode")
-        };
-    }
-
-    public void MotionAwareOpen(Action? opened = null)
-    {
-        if (!IsMotionEnabled)
-        {
-            Open();
-            if (!ShouldUseOverlayLayer)
-            {
-                CreatePopupRootBuddyLayer();
-                _buddyLayer?.Attach();
-                _buddyLayer?.Show();
-            }
-            opened?.Invoke();
-            _motionAwareOpened = true;
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, true);
-            }
-            return;
-        }
-        
-        if (_motionAwareOpened || _openAnimating || _closeAnimating)
-        {
-            opened?.Invoke();
-            return;
-        }
-        Open();
-        
-        if (MotionActor == null)
-        {
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, false);
-            }
-            Close();
-            return;
-        }
-        _openAnimating = true;
-
-        if (!ShouldUseOverlayLayer)
-        {
-            OpenPopupRootHost(opened);
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(() => OpenOverlayPopupHostAsync(opened));
-        }
-    }
-
-    private void OpenPopupRootHost(Action? opened = null)
-    {
-        if (Host?.Presenter != null)
-        {
-            Host?.Presenter.Opacity = 0.0;
-        }
-        Dispatcher.UIThread.Post(async () =>
-        {
-            CreatePopupRootBuddyLayer();
-            _buddyLayer?.Attach();
-            _buddyLayer?.Show();
-            var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
-            Debug.Assert(shadowAwareLayer != null);
-            await shadowAwareLayer.RunOpenMotionAsync();
-            opened?.Invoke();
-            _openAnimating     = false;
-            _motionAwareOpened = true;
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, true);
-            }
-            if (RequestCloseWhereAnimationCompleted)
-            {
-                RequestCloseWhereAnimationCompleted = false;
-                Dispatcher.UIThread.Post(() => MotionAwareClose());
-            }
-        });
-    }
-
-    private async Task OpenOverlayPopupHostAsync(Action? opened = null)
-    {
-        if (MotionActor == null)
-        {
-            opened?.Invoke();
-            _openAnimating     = false;
-            _motionAwareOpened = true;
-            return;
-        }
-
-        var motion = OpenMotion ?? new ZoomBigInMotion();
-        if (MotionDuration != TimeSpan.Zero)
-        {
-            motion.Duration = MotionDuration;
-        }
-
-        await motion.RunAsync(MotionActor);
-        opened?.Invoke();
-        _openAnimating     = false;
-        _motionAwareOpened = true;
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsMotionAwareOpenProperty, true);
-        }
-        if (RequestCloseWhereAnimationCompleted)
-        {
-            RequestCloseWhereAnimationCompleted = false;
-            Dispatcher.UIThread.Post(() => MotionAwareClose());
-        }
-    }
-
-    public async Task MotionAwareOpenAsync(CancellationToken cancellationToken = default)
-    {
-        var tcs = new TaskCompletionSource<bool>();
-        MotionAwareOpen(() => tcs.SetResult(true));
-        await tcs.Task.WaitAsync(cancellationToken);
-    }
-
-    public void MotionAwareClose(Action? closed = null)
-    {
-        if ((!_motionAwareOpened && !_openAnimating) || _closeAnimating)
-        {
-            closed?.Invoke();
-            return;
-        }
-        
-        if (_openAnimating)
-        {
-            RequestCloseWhereAnimationCompleted = true;
-            closed?.Invoke();
-            return;
-        }
-        
-        if (MotionActor == null)
-        {
-            closed?.Invoke();
-            return;
-        }
-        
-        if (!IsMotionEnabled || Host == null)
-        {
-            Close();
-            if (!ShouldUseOverlayLayer)
-            {
-                _buddyLayer?.Detach();
-                _buddyLayer = null;
-            }
-            closed?.Invoke();
-            _motionAwareOpened = false;
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, false);
-            }
-            
-            return;
-        }
-        
-        _closeAnimating    = true;
-
-        if (!ShouldUseOverlayLayer)
-        {
-            Dispatcher.UIThread.InvokeAsync(() => ClosePopupRootHostAsync(closed));
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(() => CloseOverlayPopupHostAsync(closed));
-        }
-    }
-
-    private async Task ClosePopupRootHostAsync(Action? closed = null)
-    {
-        var shadowAwareLayer = _buddyLayer as IShadowAwareLayer;
-        Debug.Assert(shadowAwareLayer != null);
-        await shadowAwareLayer.RunCloseMotionAsync();
-        _buddyLayer?.Detach();
-        _buddyLayer = null;
-        Close();
-        closed?.Invoke();
-        _closeAnimating    = false;
-        _motionAwareOpened = false;
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsMotionAwareOpenProperty, false);
-        }
-    }
-
-    private async Task CloseOverlayPopupHostAsync(Action? closed = null)
-    {
-        if (MotionActor == null)
-        {
-            Close();
-            closed?.Invoke();
-            _closeAnimating    = false;
-            _motionAwareOpened = false;
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsMotionAwareOpenProperty, false);
-            }
-            return;
-        }
-
-        var motion = CloseMotion ?? new ZoomBigOutMotion();
-        if (MotionDuration != TimeSpan.Zero)
-        {
-            motion.Duration = MotionDuration;
-        }
-
-        await motion.RunAsync(MotionActor);
-        Close();
-        closed?.Invoke();
-        _closeAnimating     = false;
-        _motionAwareOpened  = false;
-        using (BeginIgnoringIsOpen())
-        {
-            SetCurrentValue(IsMotionAwareOpenProperty, false);
-        }
-    }
-
-    public async Task MotionAwareCloseAsync(CancellationToken cancellationToken = default)
-    {
-        var tcs = new TaskCompletionSource<bool>();
-        MotionAwareClose(() => tcs.SetResult(true));
-        await tcs.Task.WaitAsync(cancellationToken);
-    }
-    
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsMotionAwareOpenProperty)
-        {
-            if (!_ignoreIsOpenChanged)
-            {
-                if (change.GetNewValue<bool>())
-                {
-                    MotionAwareOpen();
-                }
-                else
-                {
-                    MotionAwareClose();
-                }
-            }
-        }
-        else if (change.Property == PlacementProperty)
-        {
-            HostDecoratorDirection = GetHostDecoratorDirection(Placement);
-        }
-        else if (change.Property == IsLightDismissEnabledProperty)
-        {
-            HandleIsLightDismissEnabledChanged();
-        }
-    }
-
-    private PopupHostMarginPlacement GetHostDecoratorDirection(PlacementMode placement)
-    {
-        return placement switch
-        {
-            PlacementMode.Left => PopupHostMarginPlacement.Right,
-            PlacementMode.LeftEdgeAlignedBottom => PopupHostMarginPlacement.Right,
-            PlacementMode.LeftEdgeAlignedTop => PopupHostMarginPlacement.Right,
-
-            PlacementMode.Top => PopupHostMarginPlacement.Bottom,
-            PlacementMode.TopEdgeAlignedLeft => PopupHostMarginPlacement.Bottom,
-            PlacementMode.TopEdgeAlignedRight => PopupHostMarginPlacement.Bottom,
-
-            PlacementMode.Right => PopupHostMarginPlacement.Left,
-            PlacementMode.RightEdgeAlignedBottom => PopupHostMarginPlacement.Left,
-            PlacementMode.RightEdgeAlignedTop => PopupHostMarginPlacement.Left,
-
-            PlacementMode.Bottom => PopupHostMarginPlacement.Top,
-            PlacementMode.BottomEdgeAlignedLeft => PopupHostMarginPlacement.Top,
-            PlacementMode.BottomEdgeAlignedRight => PopupHostMarginPlacement.Top,
-            _ => PopupHostMarginPlacement.None
-        };
-    }
-    
-    private IgnoreIsOpenScope BeginIgnoringIsOpen() => new IgnoreIsOpenScope(this);
-    
-    private readonly struct IgnoreIsOpenScope : IDisposable
-    {
-        private readonly Popup _owner;
-
-        public IgnoreIsOpenScope(Popup owner)
-        {
-            _owner                      = owner;
-            _owner._ignoreIsOpenChanged = true;
-        }
-
-        public void Dispose() => _owner._ignoreIsOpenChanged = false;
+        _motionActor = actor;
     }
 }
 

@@ -1,6 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Media;
-using AtomUIGallery.ShowCases;
 using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.Desktop;
@@ -13,13 +11,6 @@ internal class Program
         try
         {
             BuildAvaloniaApp()
-                .With(new FontManagerOptions
-                {
-                    FontFallbacks = [new FontFallback
-                    {
-                        FontFamily = new FontFamily("Microsoft YaHei")
-                    }]
-                })
                 .StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
@@ -49,11 +40,18 @@ internal class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<GalleryApplication>()
-                         .UseReactiveUI(build =>
-                             build.ConfigureViewLocator(locator => new ShowCaseViewModule().RegisterViews(locator)))
-                         .UsePlatformDetect()
-                         .With(new Win32PlatformOptions())
-                         .LogToTrace();
-
+            .UseReactiveUI(build =>
+                {})
+            // On X11 (Linux) drawn decorations are off by default. Enable them so
+            // the WM stops drawing its own title bar / borders and lets our
+            // WindowDrawnDecorations theme own the chrome. Win32 and macOS do
+            // this automatically when ExtendClientAreaToDecorationsHint=True.
+            .With(new X11PlatformOptions
+            {
+                EnableDrawnDecorations = true
+            })
+            .UsePlatformDetect()
+            .WithDeveloperTools()
+            .LogToTrace();
     }
 }

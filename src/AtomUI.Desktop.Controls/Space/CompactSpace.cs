@@ -249,7 +249,7 @@ public class CompactSpace : TemplatedControl,
     
     #region 孩子的 ZIndex 处理方法
 
-    private void HandleGotFocus(object? sender, GotFocusEventArgs e)
+    private void HandleGotFocus(object? sender, FocusChangedEventArgs e)
     {
         if (sender is Control currentControl && _contentLayout != null)
         {

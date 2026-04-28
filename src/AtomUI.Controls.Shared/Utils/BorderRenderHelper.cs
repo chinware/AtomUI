@@ -1,4 +1,5 @@
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -143,7 +144,7 @@ internal class BorderRenderHelper
             PenUtils.TryModifyOrCreate(ref _cachedPen, borderBrush, thickness, strokeDashArray, strokeDaskOffset);
 
             var rect = new Rect(_size);
-            if (!MathUtilities.IsZero(thickness))
+            if (!MathUtils.IsZero(thickness))
             {
                 rect = rect.Deflate(thickness * 0.5);
             }

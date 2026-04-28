@@ -1,9 +1,8 @@
-﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.MotionScene;
+using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Threading;
@@ -11,10 +10,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-/// <summary>
-/// Handles <see cref="ToolTip" /> interaction with controls.
-/// </summary>
-internal sealed class ToolTipService : IDisposable
+public sealed class ToolTipService : IDisposable
 {
     private readonly IDisposable _subscriptions;
 
@@ -24,13 +20,12 @@ internal sealed class ToolTipService : IDisposable
     private ulong _lastTipEventTime;
     private ulong _lastWindowEventTime;
 
-    public ToolTipService()
+    public ToolTipService(IInputManager inputManager)
     {
-        var inputManager = AvaloniaLocator.Current.GetService<IInputManager>()!;
-        _subscriptions = new CompositeDisposable(
-            inputManager.Process.Subscribe(HandleInputManagerOnProcess),
-            ToolTip.ServiceEnabledProperty.Changed.Subscribe(HandleServiceEnabledChanged),
-            ToolTip.TipProperty.Changed.Subscribe(HandleTipChanged));
+        _subscriptions = new CompositeDisposable([
+            inputManager.Process.Subscribe(InputManager_OnProcess),
+            ToolTip.ServiceEnabledProperty.Changed.Subscribe(ServiceEnabledChanged),
+            ToolTip.TipProperty.Changed.Subscribe(TipChanged)]);
     }
 
     public void Dispose()
@@ -39,34 +34,31 @@ internal sealed class ToolTipService : IDisposable
         _subscriptions.Dispose();
     }
 
-    private void HandleInputManagerOnProcess(RawInputEventArgs args)
+    private void InputManager_OnProcess(RawInputEventArgs e)
     {
-        if (args is RawPointerEventArgs pointerEventArgs)
+        if (e is RawPointerEventArgs pointerEvent)
         {
-            var isTooltipEvent = false;
-            if (_tipControl?.GetValue(ToolTip.ToolTipProperty) is { } currentTip &&
-                pointerEventArgs.Root == currentTip.PopupHost)
+            bool isTooltipEvent = false;
+            if (_tipControl?.GetValue(ToolTip.ToolTipProperty) is { } currentTip
+                && e.Root == currentTip.GetVisualRoot() as IInputRoot)
             {
-                isTooltipEvent    = true;
-                _lastTipEventTime = pointerEventArgs.Timestamp;
+                isTooltipEvent = true;
+                _lastTipEventTime = pointerEvent.Timestamp;
             }
-            else if (pointerEventArgs.Root == _tipControl?.GetVisualRoot())
+            else if (e.Root.GetRootElement() == _tipControl?.GetVisualRoot())
             {
-                _lastWindowEventTime = pointerEventArgs.Timestamp;
+                _lastWindowEventTime = pointerEvent.Timestamp;
             }
 
-            var eventType = pointerEventArgs.Type;
-            switch (eventType)
+            switch (pointerEvent.Type)
             {
                 case RawPointerEventType.Move:
-                    var inputHitTestResult =
-                        pointerEventArgs.GetInputHitTestResult();
-                    Update(pointerEventArgs.Root, inputHitTestResult.element as Visual);
+                    Update(pointerEvent.Root, pointerEvent.GetInputHitTestResult().element as Visual);
                     break;
                 case RawPointerEventType.LeaveWindow
-                    when (pointerEventArgs.Root == _tipControl?.GetVisualRoot() &&
-                          _lastTipEventTime != pointerEventArgs.Timestamp) ||
-                         (isTooltipEvent && _lastWindowEventTime != pointerEventArgs.Timestamp):
+                    when (e.Root.GetRootElement() == _tipControl?.GetVisualRoot() &&
+                          _lastTipEventTime != e.Timestamp) ||
+                         (isTooltipEvent && _lastWindowEventTime != e.Timestamp):
                     ClearTip();
                     _tipControl = null;
                     break;
@@ -75,11 +67,6 @@ internal sealed class ToolTipService : IDisposable
                 case RawPointerEventType.MiddleButtonDown:
                 case RawPointerEventType.XButton1Down:
                 case RawPointerEventType.XButton2Down:
-                    if (_tipControl is not null && ToolTip.GetIsCustomShowAndHide(_tipControl))
-                    {
-                        break;
-                    }
-
                     ClearTip();
                     break;
             }
@@ -95,40 +82,28 @@ internal sealed class ToolTipService : IDisposable
     public void Update(IInputRoot root, Visual? candidateToolTipHost)
     {
         var currentToolTip = _tipControl?.GetValue(ToolTip.ToolTipProperty);
-        if (root is SceneLayer || root is PopupRoot)
-        {
-            return;
-        }
 
-        if (root == currentToolTip?.PopupHost?.HostedVisualTreeRoot)
+        if (root == currentToolTip?.GetVisualRoot() as IInputRoot)
         {
-            // Don't update while the pointer is over a tooltip
             return;
         }
 
         while (candidateToolTipHost != null)
         {
             if (candidateToolTipHost == currentToolTip)
-            {
-                // when OverlayPopupHost is in use, the tooltip is in the same window as the host control
                 return;
-            }
 
             if (candidateToolTipHost is Control control)
             {
-                if (!ToolTip.GetServiceEnabled(control) || ToolTip.GetIsCustomShowAndHide(control))
-                {
+                if (!ToolTip.GetServiceEnabled(control))
                     return;
-                }
 
                 if (ToolTip.GetTip(control) != null &&
                     (control.IsEffectivelyEnabled || ToolTip.GetShowOnDisabled(control)))
-                {
                     break;
-                }
             }
 
-            candidateToolTipHost = candidateToolTipHost.GetVisualParent();
+            candidateToolTipHost = candidateToolTipHost?.GetVisualParent();
         }
 
         var newControl = candidateToolTipHost as Control;
@@ -138,11 +113,11 @@ internal sealed class ToolTipService : IDisposable
             return;
         }
 
-        HandleTipControlChanged(_tipControl, newControl);
+        OnTipControlChanged(_tipControl, newControl);
         _tipControl = newControl;
     }
 
-    private void HandleServiceEnabledChanged(AvaloniaPropertyChangedEventArgs<bool> args)
+    private void ServiceEnabledChanged(AvaloniaPropertyChangedEventArgs<bool> args)
     {
         if (args.Sender == _tipControl && !ToolTip.GetServiceEnabled(_tipControl))
         {
@@ -150,17 +125,13 @@ internal sealed class ToolTipService : IDisposable
         }
     }
 
-    /// <summary>
-    /// called when the <see cref="ToolTip.TipProperty" /> property changes on a control.
-    /// </summary>
-    /// <param name="e">The event args.</param>
-    private void HandleTipChanged(AvaloniaPropertyChangedEventArgs change)
+    private void TipChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var control = (Control)change.Sender;
+        var control = (Control)e.Sender;
 
-        if (ToolTip.GetIsOpen(control) && change.NewValue != change.OldValue && !(change.NewValue is ToolTip))
+        if (ToolTip.GetIsOpen(control) && e.NewValue != e.OldValue && e.NewValue is not ToolTip)
         {
-            if (change.NewValue is null)
+            if (e.NewValue is null)
             {
                 Close(control);
             }
@@ -168,18 +139,17 @@ internal sealed class ToolTipService : IDisposable
             {
                 if (control.GetValue(ToolTip.ToolTipProperty) is { } tip)
                 {
-                    tip.Content = change.NewValue;
+                    tip.Content = e.NewValue;
                 }
             }
         }
     }
 
-    private void HandleTipControlChanged(Control? oldValue, Control? newValue)
+    private void OnTipControlChanged(Control? oldValue, Control? newValue)
     {
         StopTimer();
 
-        var closedPreviousTip =
-            false; // avoid race conditions by remembering whether we closed a tooltip in the current call.
+        var closedPreviousTip = false;
 
         if (oldValue != null && ToolTip.GetIsOpen(oldValue))
         {
@@ -193,8 +163,10 @@ internal sealed class ToolTipService : IDisposable
 
             int showDelay;
 
-            if (betweenShowDelay >= 0 && (closedPreviousTip || DateTime.UtcNow.Ticks - _lastTipCloseTime <=
-                    betweenShowDelay * TimeSpan.TicksPerMillisecond))
+            if (betweenShowDelay >= 0 &&
+                (closedPreviousTip ||
+                 (DateTime.UtcNow.Ticks - _lastTipCloseTime) <=
+                 betweenShowDelay * TimeSpan.TicksPerMillisecond))
             {
                 showDelay = 0;
             }
@@ -214,20 +186,18 @@ internal sealed class ToolTipService : IDisposable
         }
     }
 
-    private void HandleToolTipClosed(object? sender, EventArgs e)
+    private void ToolTipClosed(object? sender, EventArgs e)
     {
         _lastTipCloseTime = DateTime.UtcNow.Ticks;
         if (sender is ToolTip toolTip)
         {
-            toolTip.Closed        -= HandleToolTipClosed;
-            toolTip.PointerExited -= HandleToolTipPointerExited;
+            toolTip.Closed -= ToolTipClosed;
+            toolTip.PointerExited -= ToolTipPointerExited;
         }
     }
 
-    private void HandleToolTipPointerExited(object? sender, PointerEventArgs e)
+    private void ToolTipPointerExited(object? sender, PointerEventArgs e)
     {
-        // The pointer has exited the tooltip. Close the tooltip unless the current tooltip source is still the
-        // adorned control.
         if (sender is ToolTip { AdornedControl: { } control } && control != _tipControl)
         {
             Close(control);
@@ -236,50 +206,41 @@ internal sealed class ToolTipService : IDisposable
 
     private void StartShowTimer(int showDelay, Control control)
     {
-        StopTimer();  // 先清理旧定时器
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(showDelay), Tag = (this, control) };
-        _timer.Tick += HandleShowTimerTick;
-        _timer.Start();
-    }
-
-    private void HandleShowTimerTick(object? sender, EventArgs e)
-    {
-        if (_timer?.Tag is ValueTuple<ToolTipService, Control> tuple)
+        _timer.Tick += (o, e) =>
         {
-            Open(tuple.Item2);
-        }
+            if (_timer != null)
+            {
+                Open(control);
+            }
+        };
+        _timer.Start();
     }
 
     private void Open(Control control)
     {
         StopTimer();
+
         if (control.IsAttachedToVisualTree())
         {
             ToolTip.SetIsOpen(control, true);
 
-            if (control.GetValue(ToolTip.ToolTipProperty) is { } tooltip)
+            if (ToolTip.GetIsOpen(control) && control.GetValue(ToolTip.ToolTipProperty) is { } tooltip)
             {
-                tooltip.Closed        += HandleToolTipClosed;
-                tooltip.PointerExited += HandleToolTipPointerExited;
+                tooltip.Closed += ToolTipClosed;
+                tooltip.PointerExited += ToolTipPointerExited;
             }
         }
     }
 
     private void Close(Control control)
     {
-        if (!ToolTip.GetIsCustomShowAndHide(control))
-        {
-            ToolTip.SetIsOpen(control, false);
-        }
+        ToolTip.SetIsOpen(control, false);
     }
 
     private void StopTimer()
     {
-        if (_timer != null)
-        {
-            _timer.Tick -= HandleShowTimerTick;
-            _timer.Stop();
-            _timer = null;
-        }
+        _timer?.Stop();
+        _timer = null;
     }
 }

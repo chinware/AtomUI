@@ -409,9 +409,15 @@ internal class ThemeManager : Styles, IThemeManager
             var langVariant = change.NewValue as LanguageVariant;
             langVariant ??= IThemeManager.DEFAULT_LANGUAGE;
             var languageResource = TryGetLanguageResource(langVariant);
-            languageResource ??= _languages[IThemeManager.DEFAULT_LANGUAGE];
-            
-            Resources.MergedDictionaries.Add(languageResource);
+            if (_languages.TryGetValue(IThemeManager.DEFAULT_LANGUAGE, out var defaultLang))
+            {
+                languageResource ??= defaultLang;
+            }
+
+            if (languageResource != null)
+            {
+                Resources.MergedDictionaries.Add(languageResource);
+            }
             NotifyLanguageVariantChanged();
             LanguageVariantChanged?.Invoke(this, new LanguageVariantChangedEventArgs(LanguageVariant, change.GetOldValue<LanguageVariant>()));
         }

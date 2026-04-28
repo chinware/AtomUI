@@ -7,14 +7,14 @@ namespace AtomUI.Controls.Utils;
 internal sealed class BindingEvaluator<T> : StyledElement, IDisposable
 {
     private BindingExpressionBase? _expression;
-    private IBinding? _lastBinding;
+    private BindingBase? _lastBinding;
 
     [SuppressMessage(
         "AvaloniaProperty",
         "AVP1002:AvaloniaProperty objects should not be owned by a generic type",
         Justification = "This property is not supposed to be used from XAML.")]
     public static readonly StyledProperty<T> ValueProperty =
-        AvaloniaProperty.Register<BindingEvaluator<T>, T>(nameof(Value));
+        AvaloniaProperty.Register<BindingEvaluator<T>, T>("Value");
 
     /// <summary>
     /// Gets or sets the data item value.
@@ -29,14 +29,12 @@ internal sealed class BindingEvaluator<T> : StyledElement, IDisposable
     {
         // Only update the DataContext if necessary
         if (!Equals(dataContext, DataContext))
-        {
             DataContext = dataContext;
-        }
 
         return GetValue(ValueProperty);
     }
 
-    public void UpdateBinding(IBinding binding)
+    public void UpdateBinding(BindingBase binding)
     {
         if (binding == _lastBinding)
         {
@@ -44,7 +42,7 @@ internal sealed class BindingEvaluator<T> : StyledElement, IDisposable
         }
 
         _expression?.Dispose();
-        _expression  = Bind(ValueProperty, binding);
+        _expression = Bind(ValueProperty, binding);
         _lastBinding = binding;
     }
 
@@ -54,16 +52,18 @@ internal sealed class BindingEvaluator<T> : StyledElement, IDisposable
     public void Dispose()
     {
         _expression?.Dispose();
-        _expression  = null;
+        _expression = null;
         _lastBinding = null;
-        DataContext  = null;
+        DataContext = null;
     }
 
     [return: NotNullIfNotNull(nameof(binding))]
-    public static BindingEvaluator<T>? TryCreate(IBinding? binding)
+    public static BindingEvaluator<T>? TryCreate(BindingBase? binding)
     {
         if (binding is null)
+        {
             return null;
+        }
 
         var evaluator = new BindingEvaluator<T>();
         evaluator.UpdateBinding(binding);

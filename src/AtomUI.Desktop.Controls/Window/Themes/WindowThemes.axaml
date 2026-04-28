@@ -1,10 +1,11 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
                     xmlns:atom="https://atomui.net"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="WindowDrawnDecorationsTheme.axaml" />
         <ResourceInclude Source="WindowResizerTheme.axaml" />
+        <ResourceInclude Source="FullscreenPopoverLayerTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
-    <themes:WindowTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window" />
+    <atom:WindowTheme x:Key="{x:Type atom:Window}" TargetType="atom:Window" />
 </ResourceDictionary>

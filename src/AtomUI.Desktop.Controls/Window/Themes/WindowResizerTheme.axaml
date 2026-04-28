@@ -8,10 +8,10 @@
             <ControlTemplate>
                 <Panel Name="{x:Static atom:WindowResizerThemeConstants.RootLayoutPart}">
                     <Border Tag="{x:Static atom:ResizeHandleLocation.North}"
-                               HorizontalAlignment="Stretch"
-                               VerticalAlignment="Top"
-                               Cursor="SizeNorthSouth"
-                               Height="6" />
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            Cursor="SizeNorthSouth"
+                            Height="6" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.South}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
@@ -54,10 +54,10 @@
                 </Panel>
             </ControlTemplate>
         </Setter>
-        
+
         <Style Selector="^ /template/ Border">
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent" />
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

@@ -6,25 +6,22 @@
     <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:MotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}">
-                    <atom:PlacementAwareDecorator>
-                        <Panel>
-                            <Border Name="{x:Static atom:PopupThemeConstants.TransparencyFallbackPart}"
-                                    IsHitTestVisible="False" />
-                            <atom:VisualLayerManager IsPopup="True">
-                                <ContentPresenter Name="{x:Static atom:PopupThemeConstants.ContentPresenterPart}"
-                                                  Background="{TemplateBinding Background}"
-                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}"
-                                                  Padding="{TemplateBinding Padding}" />
-                            </atom:VisualLayerManager>
-                        </Panel>
-                    </atom:PlacementAwareDecorator>
-                </atom:MotionActor>
+                <atom:PopupMotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
+                                       ClipToBounds="False">
+                    <Panel ClipToBounds="False">
+                        <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
+                        <VisualLayerManager ClipToBounds="False">
+                            <atom:ShadowsAwareContainer>
+                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </atom:ShadowsAwareContainer>
+                        </VisualLayerManager>
+                    </Panel>
+                </atom:PopupMotionActor>
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />

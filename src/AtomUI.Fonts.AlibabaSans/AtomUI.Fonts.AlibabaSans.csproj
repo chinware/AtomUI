@@ -13,5 +13,5 @@
     <ItemGroup>
         <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
     </ItemGroup>
-    
+
 </Project>

@@ -67,4 +67,10 @@ public static class VisualExtensions
             current = current.GetVisualParent();
         }
     }
+
+    internal static Visual? GetVisualRoot(this Visual visual)
+    {
+        return visual.GetPresentationSource()?.RootVisual;
+    }
+    
 }

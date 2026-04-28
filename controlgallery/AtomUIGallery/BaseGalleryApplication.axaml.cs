@@ -1,4 +1,4 @@
-﻿using AtomUIGallery.Workspace.Views;
+using AtomUIGallery.Workspace.Views;
 using Avalonia;
 
 namespace AtomUIGallery;

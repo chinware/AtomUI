@@ -43,15 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
-    </ItemGroup>
-
-    <!-- 安全漏洞修复: CVE-2026-39959 / GHSA-xrw6-gwf8-vvr9 (NU1903)
-       Tmds.DBus.Protocol 0.21.2（由 Avalonia.Desktop 传递引入）存在高危漏洞。
-       将其提升为直接引用，使 NuGet 选用 Directory.Packages.props 中固定的修复版本 (0.21.3)。
-       排除 Roslyn 源码生成器项目（IsRoslynComponent），因其目标框架为 netstandard2.0。 -->
-    <ItemGroup Condition="'$(IsRoslynComponent)' != 'true'">
-        <PackageReference Include="Tmds.DBus.Protocol"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
     </ItemGroup>
 
 </Project>

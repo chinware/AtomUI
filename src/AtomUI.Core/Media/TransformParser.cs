@@ -1,4 +1,5 @@
 using System.Globalization;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media.Transformation;
 using Avalonia.Utilities;
@@ -461,9 +462,9 @@ public static class TransformParser
         return value.Unit switch
         {
             Unit.Radian => value.Value,
-            Unit.Gradian => MathUtilities.Grad2Rad(value.Value),
-            Unit.Degree => MathUtilities.Deg2Rad(value.Value),
-            Unit.Turn => MathUtilities.Turn2Rad(value.Value),
+            Unit.Gradian => MathUtils.Grad2Rad(value.Value),
+            Unit.Degree => MathUtils.Deg2Rad(value.Value),
+            Unit.Turn => MathUtils.Turn2Rad(value.Value),
             _ => value.Value
         };
     }

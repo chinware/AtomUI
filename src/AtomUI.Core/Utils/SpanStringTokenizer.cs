@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Avalonia.Utilities;
+using static System.Char;
 
 namespace AtomUI.Utils;
 
@@ -36,16 +37,16 @@ internal ref struct SpanStringTokenizer
 
     public SpanStringTokenizer(ReadOnlySpan<char> s, char separator = DefaultSeparatorChar, string? exceptionMessage = null)
     {
-        _s                = s;
-        _length           = s.Length;
-        _separator        = separator;
+        _s = s;
+        _length = s.Length;
+        _separator = separator;
         _exceptionMessage = exceptionMessage;
-        _formatProvider   = CultureInfo.InvariantCulture;
-        _index            = 0;
-        _tokenIndex       = -1;
-        _tokenLength      = 0;
+        _formatProvider = CultureInfo.InvariantCulture;
+        _index = 0;
+        _tokenIndex = -1;
+        _tokenLength = 0;
 
-        while (_index < _length && char.IsWhiteSpace(_s[_index]))
+        while (_index < _length && IsWhiteSpace(_s[_index]))
         {
             _index++;
         }
@@ -158,14 +159,14 @@ internal ref struct SpanStringTokenizer
 
         var c = _s[_index];
 
-        var index  = _index;
+        var index = _index;
         var length = 0;
 
         while (_index < _length)
         {
             c = _s[_index];
 
-            if (char.IsWhiteSpace(c) || c == separator)
+            if (IsWhiteSpace(c) || c == separator)
             {
                 break;
             }
@@ -176,7 +177,7 @@ internal ref struct SpanStringTokenizer
 
         SkipToNextToken(separator);
 
-        _tokenIndex  = index;
+        _tokenIndex = index;
         _tokenLength = length;
 
         if (_tokenLength < 1)
@@ -193,7 +194,7 @@ internal ref struct SpanStringTokenizer
         {
             var c = _s[_index];
 
-            if (c != separator && !char.IsWhiteSpace(c))
+            if (c != separator && !IsWhiteSpace(c))
             {
                 throw GetFormatException();
             }
@@ -216,7 +217,7 @@ internal ref struct SpanStringTokenizer
                 }
                 else
                 {
-                    if (!char.IsWhiteSpace(c))
+                    if (!IsWhiteSpace(c))
                     {
                         break;
                     }

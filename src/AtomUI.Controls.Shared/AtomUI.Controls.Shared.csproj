@@ -6,7 +6,7 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>GeneratedFiles</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs"/>
     </ItemGroup>
@@ -14,7 +14,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
         <ProjectReference Include="../AtomUI.Generator/AtomUI.Generator.csproj"

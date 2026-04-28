@@ -7,6 +7,11 @@ namespace AtomUIGallery.Desktop;
 
 public class GalleryApplication : BaseGalleryApplication
 {
+    public GalleryApplication()
+    {
+        Name = "AtomUI Desktop Gallery";
+    }
+    
     public override void Initialize()
     {
         base.Initialize();
@@ -16,15 +21,7 @@ public class GalleryApplication : BaseGalleryApplication
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
-            builder.UseGalleryControls();
-            builder.UseDesktopDataGrid();
-            builder.UseDesktopColorPicker();
         });
-    }
-
-    public GalleryApplication()
-    {
-        Name = "AtomUI Desktop Gallery";
     }
 
     public override void OnFrameworkInitializationCompleted()

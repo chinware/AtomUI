@@ -21,6 +21,7 @@ internal class WindowResizer : TemplatedControl
                 child.PointerPressed -= HandleResizeHandlePressed;
             }
         }
+
         _rootLayout = e.NameScope.Find<Panel>(WindowResizerThemeConstants.RootLayoutPart);
         if (_rootLayout != null)
         {
@@ -43,25 +44,20 @@ internal class WindowResizer : TemplatedControl
             return;
         }
 
-        if (VisualRoot is not Window window)
-        {
-            return;
-        }
-
         var windowEdge = location switch
         {
-            ResizeHandleLocation.North => WindowEdge.North,
-            ResizeHandleLocation.South => WindowEdge.South,
-            ResizeHandleLocation.West => WindowEdge.West,
-            ResizeHandleLocation.East => WindowEdge.East,
+            ResizeHandleLocation.North     => WindowEdge.North,
+            ResizeHandleLocation.South     => WindowEdge.South,
+            ResizeHandleLocation.West      => WindowEdge.West,
+            ResizeHandleLocation.East      => WindowEdge.East,
             ResizeHandleLocation.NorthWest => WindowEdge.NorthWest,
             ResizeHandleLocation.NorthEast => WindowEdge.NorthEast,
             ResizeHandleLocation.SouthWest => WindowEdge.SouthWest,
             ResizeHandleLocation.SouthEast => WindowEdge.SouthEast,
-            _ => throw new ArgumentOutOfRangeException()
+            _                              => throw new ArgumentOutOfRangeException()
         };
 
-        window.BeginResizeDrag(windowEdge, e);
+        TargetWindow.BeginResizeDrag(windowEdge, e);
         e.Handled = true;
     }
 }

@@ -6,18 +6,14 @@
     <ControlTheme x:Key="{x:Type OverlayPopupHost}" TargetType="OverlayPopupHost">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:MotionActor ClipToBounds="False">
-                    <atom:PlacementAwareDecorator>
-                        <atom:VisualLayerManager IsPopup="True" ClipToBounds="False">
-                            <atom:OverlayPopupContent
-                                Name="{x:Static atom:OverlayPopupHostThemeConstants.ContentPresenterPart}"
-                                Background="{TemplateBinding Background}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                Content="{TemplateBinding Content}"
-                                Padding="{TemplateBinding Padding}" />
-                        </atom:VisualLayerManager>
-                    </atom:PlacementAwareDecorator>
-                </atom:MotionActor>
+                <atom:PopupMotionActor ClipToBounds="False">
+                    <VisualLayerManager ClipToBounds="False">
+                        <atom:ShadowsAwareContainer IsOverlayMode="True">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </atom:ShadowsAwareContainer>
+                    </VisualLayerManager>
+                </atom:PopupMotionActor>
             </ControlTemplate>
         </Setter>
 

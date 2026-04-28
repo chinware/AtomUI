@@ -79,7 +79,7 @@ public abstract class BaseControlTheme : ControlTheme
         {
             Mode      = mode,
             Converter = converter
-        }, BindingPriority.Template);
+        });
     }
 
     protected static IDisposable CreateTemplateParentBinding<T>(
@@ -93,7 +93,7 @@ public abstract class BaseControlTheme : ControlTheme
         {
             Mode      = mode,
             Converter = converter
-        }, BindingPriority.Template);
+        });
     }
 
     protected static IDisposable CreateTemplateParentBinding(
@@ -107,7 +107,7 @@ public abstract class BaseControlTheme : ControlTheme
         {
             Mode      = mode,
             Converter = converter
-        }, BindingPriority.Template);
+        });
     }
 
     protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,

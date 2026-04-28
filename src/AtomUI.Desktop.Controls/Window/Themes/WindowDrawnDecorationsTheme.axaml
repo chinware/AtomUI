@@ -1,0 +1,163 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:antdicons="https://atomui.net/icons/antdesign"
+                    xmlns:converters="using:Avalonia.Controls.Converters">
+    <converters:CornerRadiusFilterConverter x:Key="TitleBarCornerRadiusFilter" Filter="TopLeft, TopRight" />
+
+    <ControlTheme x:Key="{x:Type WindowDrawnDecorations}" TargetType="WindowDrawnDecorations">
+        <Setter Property="Template">
+            <WindowDrawnDecorationsTemplate>
+                <WindowDrawnDecorationsContent>
+                    <WindowDrawnDecorationsContent.Underlay>
+                        <Panel Name="PART_UnderlayWrapper">
+                            <Border Name="PART_WindowFrame" IsHitTestVisible="False"
+                                    CornerRadius="{Binding $parent[atom:Window].CornerRadius}">
+                                <ContentPresenter Name="WindowFrameLayer"
+                                                  Content="{Binding $parent[atom:Window].WindowFrameLayer}"
+                                                  Opacity="{Binding $parent[atom:Window].WindowFrameLayerOpacity}"
+                                                  ContentTemplate="{Binding $parent[atom:Window].WindowFrameLayerTemplate}" />
+                            </Border>
+
+                            <ContentPresenter x:Name="PART_TitleBar"
+                                              VerticalAlignment="Top"
+                                              IsVisible="{TemplateBinding HasTitleBar}"
+                                              WindowDecorationProperties.ElementRole="TitleBar"
+                                              Background="{Binding #PART_WindowFrame.Background}"
+                                              Content="{Binding $parent[atom:Window].TitleBarFrameLayer}"
+                                              ContentTemplate="{Binding $parent[atom:Window].TitleBarFrameLayerTemplate}"
+                                              Opacity="{Binding $parent[atom:Window].TitleBarFrameLayerOpacity}"
+                                              ClipToBounds="True"
+                                              CornerRadius="{Binding #PART_WindowFrame.CornerRadius, Converter={StaticResource TitleBarCornerRadiusFilter}}"
+                                              Height="{TemplateBinding TitleBarHeight}" />
+                        </Panel>
+                    </WindowDrawnDecorationsContent.Underlay>
+
+                    <WindowDrawnDecorationsContent.Overlay>
+                        <Panel Name="PART_OverlayWrapper">
+                            <ContentPresenter Name="PART_TitleBarPresenter"
+                                              VerticalAlignment="Top"
+                                              Height="{TemplateBinding TitleBarHeight}"
+                                              IsVisible="{TemplateBinding HasTitleBar}"
+                                              Content="{Binding $parent[atom:Window].TitleBar}"
+                                              WindowDecorationProperties.ElementRole="User" />
+                        </Panel>
+
+                    </WindowDrawnDecorationsContent.Overlay>
+
+                    <WindowDrawnDecorationsContent.FullscreenPopover>
+                        <Border Name="FullscreenHeaderFrame"
+                                VerticalAlignment="Top"
+                                Height="{TemplateBinding DefaultTitleBarHeight}"
+                                WindowDecorationProperties.ElementRole="User">
+                            <Panel>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                            DockPanel.Dock="Left"
+                                            HorizontalAlignment="Center">
+                                    <ContentPresenter Name="FullscreenLogoPresenter"
+                                                      HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalContentAlignment="Center"
+                                                      VerticalContentAlignment="Center"
+                                                      Content="{Binding $parent[atom:Window].Logo}"
+                                                      ContentTemplate="{Binding $parent[atom:Window].LogoTemplate}"/>
+                                    <TextBlock Name="FullscreenTitleText"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               IsHitTestVisible="False"
+                                               Text="{TemplateBinding Title}"
+                                               IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                </StackPanel>
+                                
+                                <StackPanel Name="CaptionButtonGroup" 
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal">
+                                    <atom:CaptionButton
+                                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
+                                        NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
+                                        CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
+                                        IsChecked="True"
+                                        WindowDecorationProperties.ElementRole="FullScreenButton">
+                                    </atom:CaptionButton>
+                                    
+                                    <atom:CaptionButton
+                                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
+                                        NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
+                                        WindowDecorationProperties.ElementRole="CloseButton"/>
+                                </StackPanel>
+                            </Panel>
+                        </Border>
+                    </WindowDrawnDecorationsContent.FullscreenPopover>
+
+                </WindowDrawnDecorationsContent>
+            </WindowDrawnDecorationsTemplate>
+        </Setter>
+
+        <Setter Property="DefaultTitleBarHeight" Value="{atom:WindowTokenResource TitleBarHeight}" />
+        <Setter Property="DefaultShadowThickness" Value="{Binding $parent[atom:Window].FrameShadowThickness}" />
+        <Setter Property="DefaultFrameThickness" Value="1" />
+
+        <Style Selector="^/template/ Border#PART_WindowFrame">
+            <Setter Property="Background" Value="{atom:WindowTokenResource DefaultBackground}" />
+            <Setter Property="BoxShadow" Value="{atom:WindowTokenResource FrameShadows}" />
+        </Style>
+
+        <Style Selector="^:has-shadow /template/ Panel#PART_UnderlayWrapper">
+            <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}" />
+        </Style>
+        <Style Selector="^:has-shadow /template/ Panel#PART_OverlayWrapper">
+            <Setter Property="Margin" Value="{TemplateBinding ShadowThickness}" />
+        </Style>
+
+        <Style Selector="^:has-border /template/ ContentPresenter#PART_TitleBarPresenter">
+            <Setter Property="Margin" Value="1,1,1,0" />
+        </Style>
+
+        <Style Selector="^:has-border /template/ Border#PART_TitleBar">
+            <Setter Property="Margin" Value="1,1,1,0" />
+        </Style>
+
+        <Style Selector="^:maximized /template/ Border#PART_WindowFrame">
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+
+        <Style Selector="^:fullscreen /template/ Panel#PART_TitleBarPresenter">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:fullscreen /template/ Border#PART_TitleBar">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:fullscreen /template/ Border#FullscreenHeaderFrame">
+            <Setter Property="Background" Value="{atom:WindowTokenResource DefaultBackground}" />
+            <Setter Property="BoxShadow" Value="{atom:WindowTokenResource FullscreenPopoverShadows}" />
+            <Setter Property="Padding" Value="{atom:WindowTokenResource FullscreenHeaderFramePadding}" />
+        </Style>
+        
+        <Style Selector="^:fullscreen /template/ TextBlock#FullscreenTitleText">
+            <Setter Property="Foreground" Value="{atom:WindowTitleBarTokenResource ActiveColor}" />
+            <Setter Property="FontSize" Value="{atom:WindowTitleBarTokenResource TitleFontSize}" />
+            <Setter Property="FontWeight" Value="{atom:WindowTitleBarTokenResource TitleFontWeight}" />
+        </Style>
+        
+        <Style Selector="^:fullscreen /template/ ContentPresenter#FullscreenLogoPresenter">
+            <Setter Property="Width" Value="{atom:WindowTitleBarTokenResource LogoSize}" />
+            <Setter Property="Height" Value="{atom:WindowTitleBarTokenResource LogoSize}" />
+        </Style>
+        
+        <Style Selector="^:fullscreen /template/ atom|CaptionButton">
+            <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+            <Setter Property="IsWindowActive" Value="True" />
+            <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource SizeLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource SizeLG}" />
+        </Style>
+        <Style Selector="^:fullscreen /template/ StackPanel#CaptionButtonGroup">
+            <Setter Property="Spacing" Value="{atom:WindowTitleBarTokenResource CaptionGroupSpacing}" />
+        </Style>
+    
+    </ControlTheme>
+
+</ResourceDictionary>

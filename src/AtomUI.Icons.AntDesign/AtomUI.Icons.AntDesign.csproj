@@ -7,7 +7,7 @@
         <RootNamespace>AtomUI.Icons.AntDesign</RootNamespace>
         <OutputType>library</OutputType>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
     </ItemGroup>

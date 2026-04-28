@@ -1,7 +1,6 @@
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Utilities;
 
 namespace AtomUI.Media;
 
@@ -38,8 +37,8 @@ public static class CommonShapeBuilder
             return new StreamGeometry();
         }
 
-        var angle1 = MathUtilities.Deg2Rad(startAngle);
-        var angle2 = angle1 + MathUtilities.Deg2Rad(sweepAngle);
+        var angle1 = MathUtils.Deg2Rad(startAngle);
+        var angle2 = angle1 + MathUtils.Deg2Rad(sweepAngle);
 
         startAngle = Math.Min(angle1, angle2);
         sweepAngle = Math.Max(angle1, angle2);

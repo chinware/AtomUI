@@ -5,7 +5,7 @@ namespace AtomUI.Reactive;
 internal abstract class LightweightObservableBase<T> : IObservable<T>
 {
     private Exception? _error;
-    private List<IObserver<T>>? _observers = new List<IObserver<T>>();
+    private List<IObserver<T>>? _observers = new();
 
     public bool HasObservers => _observers?.Count > 0;
 

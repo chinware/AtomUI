@@ -7,16 +7,16 @@ namespace AtomUI.Native.Linux;
 internal static class WindowUtilsInterop
 {
     #region XCB基本类型和常量
-        
+
     // 基础句柄类型
     internal struct xcb_connection_t { }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct xcb_window_t { public uint Id; }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct xcb_void_cookie_t { public uint Sequence; }
-    
+
     // 矩形结构
     [StructLayout(LayoutKind.Sequential)]
     internal struct xcb_rectangle_t
@@ -26,7 +26,10 @@ internal static class WindowUtilsInterop
         public ushort Width;
         public ushort Height;
     }
-    
+
+    // Atom 常量
+    internal const uint XCB_ATOM_CARDINAL = 6;
+
     // 枚举类型（对应C中的typedef enum）
     internal enum xcb_shape_op_t : byte
     {
@@ -172,6 +175,6 @@ internal static class WindowUtilsInterop
         
     [DllImport("libxcb-shape.so.0", EntryPoint = "xcb_shape_get_rectangles_rectangles_length")]
     internal static extern int xcb_shape_get_rectangles_rectangles_length(IntPtr reply);
-        
+
     #endregion
 }

@@ -1,8 +1,7 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
-using Avalonia.Controls.Templates;
+using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
@@ -53,7 +52,7 @@ public class ScopeAwareOverlayLayer : Canvas
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment   = VerticalAlignment.Stretch,
-            ZIndex              = VisualLayerManager.ScopeAwareOverlayZIndex
+            ZIndex              = VisualLayerManagerUtils.ScopeAwareOverlayZIndex
         };
         try
         {

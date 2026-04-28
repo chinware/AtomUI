@@ -25,12 +25,12 @@
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <antdicons:LoadingOutlined
-                                    Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                    LoadingAnimation="Spin"
-                                    Margin="{Binding (atom:IconPresenter.Margin),
-                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                                    DockPanel.Dock="Left" />
+                                <!-- <antdicons:LoadingOutlined -->
+                                <!--     Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}" -->
+                                <!--     LoadingAnimation="Spin" -->
+                                <!--     Margin="{CompiledBinding (atom:IconPresenter.Margin), -->
+                                <!--    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" -->
+                                <!--     DockPanel.Dock="Left" /> -->
 
                                 <atom:IconPresenter
                                     Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
@@ -53,14 +53,14 @@
                                     IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             </DockPanel>
                         </Border>
-                        <Border Name="FocusVisual"
-                                IsVisible="False"
-                                IsHitTestVisible="False"
-                                BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}"
-                                BorderBrush="{atom:SharedTokenResource ColorFocusBorder}"
-                                CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}"
-                                ZIndex="1" />
+                        <!-- <Border Name="FocusVisual" -->
+                        <!--         IsVisible="False" -->
+                        <!--         IsHitTestVisible="False" -->
+                        <!--         BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}" -->
+                        <!--         BorderBrush="{atom:SharedTokenResource ColorFocusBorder}" -->
+                        <!--         CornerRadius="{TemplateBinding EffectiveCornerRadius}" -->
+                        <!--         Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}" -->
+                        <!--         ZIndex="1" /> -->
                     </Panel>
                 </ControlTemplate>
             </Setter>
@@ -88,11 +88,11 @@
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <antdicons:LoadingOutlined
-                                    Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                    Margin="{Binding (atom:IconPresenter.Margin),
-                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                                    DockPanel.Dock="Left" />
+                                <!-- <antdicons:LoadingOutlined -->
+                                <!--     Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}" -->
+                                <!--     Margin="{Binding (atom:IconPresenter.Margin), -->
+                                <!--    ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" -->
+                                <!--     DockPanel.Dock="Left" /> -->
 
                                 <atom:IconPresenter
                                     Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
@@ -114,14 +114,14 @@
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
                             </DockPanel>
                         </atom:DashedBorder>
-                        <Border Name="FocusVisual"
-                                IsVisible="False"
-                                IsHitTestVisible="False"
-                                BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}"
-                                BorderBrush="{atom:SharedTokenResource ColorFocusBorder}"
-                                CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}"
-                                ZIndex="1" />
+                        <!-- <Border Name="FocusVisual" -->
+                        <!--         IsVisible="False" -->
+                        <!--         IsHitTestVisible="False" -->
+                        <!--         BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}" -->
+                        <!--         BorderBrush="{atom:SharedTokenResource ColorFocusBorder}" -->
+                        <!--         CornerRadius="{TemplateBinding EffectiveCornerRadius}" -->
+                        <!--         Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}" -->
+                        <!--         ZIndex="1" /> -->
                     </Panel>
                 </ControlTemplate>
             </Setter>
@@ -1056,11 +1056,11 @@
                                    LastChildFill="True"
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <antdicons:LoadingOutlined
-                                Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
-                                Margin="{Binding (atom:IconPresenter.Margin),
-                                   ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}"
-                                DockPanel.Dock="Left" />
+                            <!-- <antdicons:LoadingOutlined -->
+                            <!--     Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}" -->
+                            <!--     Margin="{Binding (atom:IconPresenter.Margin), -->
+                            <!--        ElementName={x:Static atom:ButtonThemeConstants.ButtonIconPart}}" -->
+                            <!--     DockPanel.Dock="Left" /> -->
 
                             <atom:IconPresenter
                                 Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
@@ -1081,14 +1081,14 @@
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </DockPanel>
                     </atom:DashedBorder>
-                    <Border Name="FocusVisual"
-                            IsVisible="False"
-                            IsHitTestVisible="False"
-                            BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}"
-                            BorderBrush="{atom:SharedTokenResource ColorFocusBorder}"
-                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}"
-                            ZIndex="1" />
+                    <!-- <Border Name="FocusVisual" -->
+                    <!--         IsVisible="False" -->
+                    <!--         IsHitTestVisible="False" -->
+                    <!--         BorderThickness="{atom:SharedTokenResource FocusVisualBorderThickness}" -->
+                    <!--         BorderBrush="{atom:SharedTokenResource ColorFocusBorder}" -->
+                    <!--         CornerRadius="{TemplateBinding EffectiveCornerRadius}" -->
+                    <!--         Margin="{atom:AdornerLayerTokenResource FocusVisualMargin}" -->
+                    <!--         ZIndex="1" /> -->
                 </Panel>
             </ControlTemplate>
         </Setter>

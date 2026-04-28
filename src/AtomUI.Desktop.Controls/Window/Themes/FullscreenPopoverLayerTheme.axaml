@@ -1,0 +1,85 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:antdicons="https://atomui.net/icons/antdesign"
+                    x:ClassModifier="internal">
+
+    <ControlTheme x:Key="{x:Type atom:FullscreenPopoverLayer}" TargetType="atom:FullscreenPopoverLayer">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:FullscreenPopoverLayer">
+                <Panel>
+                    <Border Name="PART_PopoverBorder"
+                            VerticalAlignment="Top"
+                            Height="{atom:WindowTokenResource TitleBarHeight}"
+                            IsVisible="False"
+                            IsHitTestVisible="True">
+                        <Panel>
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                        HorizontalAlignment="Center">
+                                <ContentPresenter Name="FullscreenLogoPresenter"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalContentAlignment="Center"
+                                                  VerticalContentAlignment="Center"
+                                                  Content="{Binding $parent[atom:Window].Logo}"
+                                                  ContentTemplate="{Binding $parent[atom:Window].LogoTemplate}"/>
+                                <TextBlock Name="FullscreenTitleText"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           Text="{Binding $parent[atom:Window].Title}"
+                                           IsVisible="{Binding $parent[atom:Window].Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </StackPanel>
+
+                            <StackPanel Name="FullscreenCaptionButtonGroup"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                <atom:CaptionButton
+                                    Name="PART_PopoverFullScreenButton"
+                                    NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
+                                    CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
+                                    IsChecked="True" />
+                                <atom:CaptionButton
+                                    Name="PART_PopoverCloseButton"
+                                    NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}" />
+                            </StackPanel>
+                        </Panel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ Border#PART_PopoverBorder">
+            <Setter Property="Background" Value="{atom:WindowTokenResource DefaultBackground}" />
+            <Setter Property="BoxShadow" Value="{atom:WindowTokenResource FullscreenPopoverShadows}" />
+            <Setter Property="Padding" Value="{atom:WindowTokenResource FullscreenHeaderFramePadding}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextBlock#FullscreenTitleText">
+            <Setter Property="Foreground" Value="{atom:WindowTitleBarTokenResource ActiveColor}" />
+            <Setter Property="FontSize" Value="{atom:WindowTitleBarTokenResource TitleFontSize}" />
+            <Setter Property="FontWeight" Value="{atom:WindowTitleBarTokenResource TitleFontWeight}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#FullscreenLogoPresenter">
+            <Setter Property="Width" Value="{atom:WindowTitleBarTokenResource LogoSize}" />
+            <Setter Property="Height" Value="{atom:WindowTitleBarTokenResource LogoSize}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|CaptionButton">
+            <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+            <Setter Property="IsWindowActive" Value="True" />
+            <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource SizeLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource SizeLG}" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#FullscreenCaptionButtonGroup">
+            <Setter Property="Spacing" Value="{atom:WindowTitleBarTokenResource CaptionGroupSpacing}" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

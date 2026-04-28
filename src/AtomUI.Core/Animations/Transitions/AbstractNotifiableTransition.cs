@@ -7,6 +7,7 @@ namespace AtomUI.Animations;
 internal abstract class AbstractNotifiableTransition<T> : InterpolatingTransitionBase<T>, INotifyTransitionCompleted
 {
     internal const double CompletedProgress = 1.0d;
+    
     public event EventHandler<TransitionCompletedEventArgs>? TransitionCompleted;
     
     public IObservable<bool> CompletedObservable => _subject ?? throw new ObjectDisposedException(GetType().Name);

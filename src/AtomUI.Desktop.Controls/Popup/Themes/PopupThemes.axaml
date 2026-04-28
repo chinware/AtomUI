@@ -3,9 +3,6 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="OverlayPopupHostTheme.axaml"/>
-        <ResourceInclude Source="PopupBuddyLayerTheme.axaml"/>
         <ResourceInclude Source="PopupRootTheme.axaml"/>
-        <ResourceInclude Source="OverlayPopupContentTheme.axaml"/>
-        <ResourceInclude Source="PlacementAwareDecoratorTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

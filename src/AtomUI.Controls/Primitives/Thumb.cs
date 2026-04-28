@@ -111,8 +111,7 @@ public class Thumb : TemplatedControl
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         e.Handled  = true;
-        var topLevel = TopLevel.GetTopLevel(this) as Visual;
-        _dragRoot = this.GetVisualRoot() as Visual ?? topLevel ?? this;
+        _dragRoot = this.GetPresentationSource()?.RootVisual ?? this;
         _dragStartPoint = e.GetPosition(_dragRoot);
         _currentPoint = _dragStartPoint;
         e.Pointer.Capture(this);

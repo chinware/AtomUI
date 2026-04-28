@@ -27,8 +27,6 @@
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"/>
-        <ProjectReference Include="../../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj" />
-        <ProjectReference Include="../../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
         <ProjectReference Include="../../src/AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
@@ -37,11 +35,12 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia" />
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics"/>
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="../AtomUIGallery.Icons.Desktop/AtomUIGallery.Icons.Desktop.csproj" />
+      <Content Include="Assets\.DS_Store" />
+      <Content Include="Assets\ImagePreviewerShowCase\.DS_Store" />
     </ItemGroup>
-    
+
 </Project>

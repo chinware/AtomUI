@@ -1,4 +1,5 @@
 ﻿using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
@@ -40,17 +41,22 @@ internal class ToolTipToken : AbstractControlDesignToken
     /// <summary>
     /// ToolTip 默认的内间距
     /// </summary>
-    public Thickness ToolTipPadding { get; set; }
+    public Thickness Padding { get; set; }
 
     /// <summary>
-    /// 内置阴影
+    /// OverlayHost 类型的阴影
     /// </summary>
-    public BoxShadows ToolTipShadows { get; set; }
+    public BoxShadows OverlayHostShadows { get; set; }
+    
+    /// <summary>
+    /// 窗口类型的阴影
+    /// </summary>
+    public BoxShadows PopupRootHostShadows { get; set; }
 
     /// <summary>
     /// 动画时长
     /// </summary>
-    public TimeSpan ToolTipMotionDuration { get; set; }
+    public TimeSpan MotionDuration { get; set; }
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
@@ -63,9 +69,24 @@ internal class ToolTipToken : AbstractControlDesignToken
             Math.Max(BorderRadiusOuter.TopRight, 4),
             Math.Max(BorderRadiusOuter.BottomLeft, 4),
             Math.Max(BorderRadiusOuter.BottomRight, 4));
-        ToolTipPadding        = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingSM / 2 + 2);
-        ToolTipShadows        = SharedToken.BoxShadowsSecondary;
-        ToolTipMotionDuration = SharedToken.MotionDurationMid;
+        Padding               = new Thickness(SharedToken.UniformlyPaddingSM, SharedToken.UniformlyPaddingSM / 2 + 2);
+        OverlayHostShadows    = SharedToken.BoxShadowsSecondary;
+        PopupRootHostShadows = new BoxShadows(new BoxShadow
+        {
+            OffsetX = 0,
+            OffsetY = 1,
+            Blur    = 4,
+            Spread  = 0,
+            Color   = ColorUtils.FromRgbF(0.1, 0, 0, 0)
+        }, [new BoxShadow
+            {
+                OffsetX = 0,
+                OffsetY = 0,
+                Blur    = 1,
+                Spread  = 0,
+                Color   = ColorUtils.FromRgbF(0.15, 0, 0, 0)
+            }]);
+        MotionDuration = SharedToken.MotionDurationMid;
     }
     
     protected override Type GetTokenKindType() => typeof(ToolTipTokenKind);

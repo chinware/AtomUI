@@ -3,12 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
-using AtomUI.Utils;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
-using Point = Avalonia.Point;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -18,53 +13,31 @@ internal static class PopupReflectionExtensions
 {
     #region 反射信息定义
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(Popup))]
-    private static readonly Lazy<MethodInfo> SetPopupParentMethodInfo = new Lazy<MethodInfo>(() =>
-        typeof(Popup).GetMethodInfoOrThrow("SetPopupParent",
-            BindingFlags.Instance | BindingFlags.NonPublic));
-    
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaPopup))]
-    private static readonly Lazy<MethodInfo> UpdateHostPositionMethodInfo = new Lazy<MethodInfo>(() =>
-        typeof(AvaloniaPopup).GetMethodInfoOrThrow("UpdateHostPosition",
-            BindingFlags.Instance | BindingFlags.NonPublic));
-
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicEvents, typeof(Popup))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicEvents, typeof(AvaloniaPopup))]
     private static readonly Lazy<EventInfo> ClosingEventInfo = new Lazy<EventInfo>(() =>
-        typeof(Popup).GetEventInfoOrThrow("Closing", BindingFlags.NonPublic | BindingFlags.Instance));
+        typeof(AvaloniaPopup).GetEventInfoOrThrow("Closing", BindingFlags.NonPublic | BindingFlags.Instance));
 
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(Popup))]
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicFields, typeof(AvaloniaPopup))]
     private static readonly Lazy<FieldInfo> IgnoreIsOpenChangedFieldInfo = new Lazy<FieldInfo>(() =>
         typeof(AvaloniaPopup).GetFieldInfoOrThrow("_ignoreIsOpenChanged",
             BindingFlags.Instance | BindingFlags.NonPublic));
+    
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaPopup))]
+    private static readonly Lazy<MethodInfo> SetPopupParentMethodInfo = new Lazy<MethodInfo>(() =>
+        typeof(AvaloniaPopup).GetMethodInfoOrThrow("SetPopupParent",
+            BindingFlags.Instance | BindingFlags.NonPublic));
 
     #endregion
-
-    public static void MoveAndResize(this Popup popup, Point devicePoint, Size virtualSize)
+    
+    public static void AddClosingEventHandler(this AvaloniaPopup popup, EventHandler<CancelEventArgs> handler)
     {
-        if (popup.Host is PopupRoot popupRoot)
-        {
-            if (popupRoot.PlatformImpl?.PopupPositioner is ManagedPopupPositioner managedPopupPositioner)
-            {
-                var managedPopupPositionerPopup = managedPopupPositioner.GetManagedPopupPositionerPopup();
-                managedPopupPositionerPopup.MoveAndResize(devicePoint, virtualSize);
-            }
-        }
-    }
-
-    public static void SetPopupParent(this Popup popup, Control? newParent)
-    {
-        SetPopupParentMethodInfo.Value.Invoke(popup, [newParent]);
-    }
-
-    public static void AddClosingEventHandler(this Popup popup, EventHandler<CancelEventArgs> handler)
-    {
-        var closingEventAddMethod = ClosingEventInfo.Value.GetAddMethod();
+        var closingEventAddMethod = ClosingEventInfo.Value.GetAddMethod(true);
         closingEventAddMethod?.Invoke(popup, [handler]);
     }
 
-    public static void RemoveClosingEventHandler(this Popup popup, EventHandler<CancelEventArgs> handler)
+    public static void RemoveClosingEventHandler(this AvaloniaPopup popup, EventHandler<CancelEventArgs> handler)
     {
-        var closingEventRemoveMethod = ClosingEventInfo.Value.GetRemoveMethod();
+        var closingEventRemoveMethod = ClosingEventInfo.Value.GetRemoveMethod(true);
         closingEventRemoveMethod?.Invoke(popup, [handler]);
     }
 
@@ -80,8 +53,8 @@ internal static class PopupReflectionExtensions
         return value.Value;
     }
     
-    public static void UpdateHostPosition(this AvaloniaPopup popup, IPopupHost popupHost, Control placementTarget)
+    public static void SetPopupParent(this AvaloniaPopup popup, Control? newParent)
     {
-        UpdateHostPositionMethodInfo.Value.Invoke(popup, [popupHost, placementTarget]);
+        SetPopupParentMethodInfo.Value.Invoke(popup, [newParent]);
     }
 }

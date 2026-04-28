@@ -1,6 +1,6 @@
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.Utilities;
 
 namespace AtomUI.Controls.Utils;
 
@@ -275,7 +275,7 @@ internal class RoundRectGeometryBuilder
         // Otherwise (inner rectangle) subtract the border - if any
         if (fOuter)
         {
-            if (MathUtilities.AreClose(cornerRadius.TopLeft, 0.0, Epsilon))
+            if (MathUtils.AreClose(cornerRadius.TopLeft, 0.0, Epsilon))
             {
                 fLeftTop = 0.0;
                 fTopLeft = 0.0;
@@ -286,7 +286,7 @@ internal class RoundRectGeometryBuilder
                 fTopLeft = cornerRadius.TopLeft + top;
             }
 
-            if (MathUtilities.AreClose(cornerRadius.TopRight, 0.0, Epsilon))
+            if (MathUtils.AreClose(cornerRadius.TopRight, 0.0, Epsilon))
             {
                 fTopRight = 0.0;
                 fRightTop = 0.0;
@@ -297,7 +297,7 @@ internal class RoundRectGeometryBuilder
                 fRightTop = cornerRadius.TopRight + right;
             }
 
-            if (MathUtilities.AreClose(cornerRadius.BottomRight, 0.0, Epsilon))
+            if (MathUtils.AreClose(cornerRadius.BottomRight, 0.0, Epsilon))
             {
                 fRightBottom = 0.0;
                 fBottomRight = 0.0;
@@ -308,7 +308,7 @@ internal class RoundRectGeometryBuilder
                 fBottomRight = cornerRadius.BottomRight + bottom;
             }
 
-            if (MathUtilities.AreClose(cornerRadius.BottomLeft, 0.0, Epsilon))
+            if (MathUtils.AreClose(cornerRadius.BottomLeft, 0.0, Epsilon))
             {
                 fBottomLeft = 0.0;
                 fLeftBottom = 0.0;

@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Input;
 using Avalonia.Media.Transformation;
 
 namespace AtomUI.Desktop.Controls;
@@ -34,6 +36,8 @@ public static class ThemeManagerBuilderExtensions
     private static void HandleThemeManagerInitialized(object? sender, EventArgs e)
     {
         Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
-        AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService());
+        var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
+        Debug.Assert(inputManager != null);
+        AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));
     }
 }

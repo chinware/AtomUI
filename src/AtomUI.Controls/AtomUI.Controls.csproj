@@ -15,7 +15,6 @@
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Svg.Controls.Avalonia" />
         <PackageReference Include="SkiaSharp.QrCode" />
-        <PackageReference Include="SkiaSharp" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,11 +32,6 @@
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="TextSelectionHandle\Themes\TextSelectionHandleTheme.axaml" />
-      <AdditionalFiles Include="TransitioningContentControl\Themes\TransitioningContentControlTheme.axaml" />
     </ItemGroup>
     
 </Project>

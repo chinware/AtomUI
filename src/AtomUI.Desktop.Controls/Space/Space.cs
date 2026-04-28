@@ -6,6 +6,7 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -382,7 +383,7 @@ public class Space : Control,
                 itemHeightSet ? itemHeight : child.DesiredSize.Height);
 
             var nextSpacing = itemExists && child.IsVisible ? itemSpacing : 0;
-            if (MathUtilities.GreaterThan(curLineSize.U + childSize.U + nextSpacing, uvConstraint.U)) // Need to switch to another line
+            if (MathUtils.GreaterThan(curLineSize.U + childSize.U + nextSpacing, uvConstraint.U)) // Need to switch to another line
             {
                 panelSize.U =  Math.Max(curLineSize.U, panelSize.U);
                 panelSize.V += curLineSize.V + (lineExists ? lineSpacing : 0);
@@ -437,7 +438,7 @@ public class Space : Control,
                 itemHeightSet ? itemHeight : child.DesiredSize.Height);
 
             var nextSpacing = itemExists && child.IsVisible ? itemSpacing : 0;
-            if (MathUtilities.GreaterThan(curLineSize.U + childSize.U + nextSpacing, uvFinalSize.U)) // Need to switch to another line
+            if (MathUtils.GreaterThan(curLineSize.U + childSize.U + nextSpacing, uvFinalSize.U)) // Need to switch to another line
             {
                 accumulatedV += lineExists ? lineSpacing : 0; // add spacing to arrange line first
                 ArrangeLine(curLineSize.V, firstInLine, i);

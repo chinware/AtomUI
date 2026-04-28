@@ -6,7 +6,6 @@ namespace AtomUI.Native.MacOS;
 [SupportedOSPlatform("macos")]
 internal static class WindowUtilsInterop
 {
-    // 结构体定义
     [StructLayout(LayoutKind.Sequential)]
     public struct CGPoint
     {
@@ -19,7 +18,7 @@ internal static class WindowUtilsInterop
             Y = y;
         }
     }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     public struct CGSize
     {
@@ -32,26 +31,7 @@ internal static class WindowUtilsInterop
             Height = height;
         }
     }
-    
-    [StructLayout(LayoutKind.Sequential)]
-    public struct NSRect
-    {
-        public CGPoint Origin;
-        public CGSize Size;
 
-        public NSRect(CGPoint origin, CGSize size)
-        {
-            Origin = origin;
-            Size   = size;
-        }
-
-        public NSRect(double x, double y, double width, double height)
-        {
-            Origin = new CGPoint(x, y);
-            Size   = new CGSize(width, height);
-        }
-    }
-    
     [StructLayout(LayoutKind.Sequential)]
     public struct NSPoint
     {
@@ -77,7 +57,7 @@ internal static class WindowUtilsInterop
             Height = height;
         }
     }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     public struct NSRectFull
     {
@@ -96,39 +76,26 @@ internal static class WindowUtilsInterop
             Size   = new NSSize(width, height);
         }
     }
-    
-    // 按钮类型枚举 - 完整枚举项
-    public enum WindowButtonType : long
-    {
-        CloseButton = 0,
-        MinimizeButton = 1,
-        ZoomButton = 2,
-        ToolbarButton = 3,
-        DocumentIconButton = 4,
-        DocumentVersionsButton = 5,
-        FullScreenButton = 7
-    }
 
-    // NSWindowStyleMask 完整枚举
-    [Flags]
-    public enum NSWindowStyleMask : ulong
-    {
-        Borderless = 0,
-        Titled = 1 << 0,
-        Closable = 1 << 1,
-        Miniaturizable = 1 << 2,
-        Resizable = 1 << 3,
-        TexturedBackground = 1 << 8,
-        UnifiedTitleAndToolbar = 1 << 12,
-        FullScreen = 1 << 14,
-        FullSizeContentView = 1 << 15,
-        UtilityWindow = 1 << 4,
-        DocModalWindow = 1 << 6,
-        NonactivatingPanel = 1 << 7,
-        HUDWindow = 1 << 13
-    }
-    
-    // NSWindowButton 完整枚举
+    /// <summary>
+    /// macOS AppKit 的 <c>NSWindowButton</c> 枚举，标识窗口标题栏上的标准按钮。
+    /// </summary>
+    /// <remarks>
+    /// 数值来源于 Apple SDK 的 <c>AppKit/NSWindow.h</c>：
+    /// <code>
+    /// typedef NS_ENUM(NSUInteger, NSWindowButton) {
+    ///     NSWindowCloseButton            = 0,
+    ///     NSWindowMiniaturizeButton      = 1,
+    ///     NSWindowZoomButton             = 2,
+    ///     NSWindowToolbarButton          = 3,
+    ///     NSWindowDocumentIconButton     = 4,
+    ///     NSWindowDocumentVersionsButton = 6,  // 注意：跳过 5
+    ///     NSWindowFullScreenButton       = 7   // API_DEPRECATED since 10.12
+    /// };
+    /// </code>
+    /// 常规 <c>NSWindow</c> 上只存在 Close / Miniaturize / Zoom；其余按钮取决于窗口样式
+    /// (<c>styleMask</c>)、是否有 toolbar、是否为 document window 等。
+    /// </remarks>
     public enum NSWindowButton : long
     {
         CloseButton = 0,
@@ -136,51 +103,11 @@ internal static class WindowUtilsInterop
         ZoomButton = 2,
         ToolbarButton = 3,
         DocumentIconButton = 4,
-        DocumentVersionsButton = 5,
+        DocumentVersionsButton = 6,
         FullScreenButton = 7
     }
     
-    // NSBackingStoreType 枚举
-    public enum NSBackingStoreType : ulong
-    {
-        Buffered = 2
-    }
-    
-    // NSWindowCollectionBehavior 枚举
-    [Flags]
-    public enum NSWindowCollectionBehavior : ulong
-    {
-        Default = 0,
-        CanJoinAllSpaces = 1 << 0,
-        MoveToActiveSpace = 1 << 1,
-        Managed = 1 << 2,
-        Transient = 1 << 3,
-        Stationary = 1 << 4,
-        ParticipatesInCycle = 1 << 5,
-        IgnoresCycle = 1 << 6,
-        FullScreenPrimary = 1 << 7,
-        FullScreenAuxiliary = 1 << 8,
-        FullScreenNone = 1 << 9,
-        FullScreenAllowsTiling = 1 << 11,
-        FullScreenDisallowsTiling = 1 << 12
-    }
-    
-    // NSWindowLevel 枚举
-    public enum NSWindowLevel : int
-    {
-        Normal = 0,
-        Floating = 3,
-        ModalPanel = 8,
-        MainMenu = 24,
-        StatusBar = 25,
-        PopUpMenu = 101,
-        ScreenSaver = 1000
-    }
-    
     // Objective-C 运行时函数
-    [DllImport("/usr/lib/libobjc.A.dylib")]
-    public static extern IntPtr objc_getClass(string className);
-
     [DllImport("/usr/lib/libobjc.A.dylib")]
     public static extern IntPtr sel_registerName(string selectorName);
 
@@ -192,16 +119,10 @@ internal static class WindowUtilsInterop
     public static extern IntPtr objc_msgSend_intptr_long(IntPtr receiver, IntPtr selector, long arg);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
-    public static extern void objc_msgSend_void(IntPtr receiver, IntPtr selector);
-
-    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern void objc_msgSend_void_bool(IntPtr receiver, IntPtr selector, bool arg);
-    
+
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern bool objc_msgSend_bool(IntPtr receiver, IntPtr selector);
-
-    [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
-    public static extern void objc_msgSend_void_rect(IntPtr receiver, IntPtr selector, NSRectFull rect);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
     public static extern NSRectFull objc_msgSend_rect(IntPtr receiver, IntPtr selector);
@@ -211,29 +132,27 @@ internal static class WindowUtilsInterop
     public static extern void objc_msgSend_stret_rect(out NSRectFull rect, IntPtr receiver, IntPtr selector);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
-    public static extern ulong objc_msgSend_ulong(IntPtr receiver, IntPtr selector);
+    public static extern void objc_msgSend_void_point(IntPtr receiver, IntPtr selector, CGPoint point);
 
     [DllImport("/usr/lib/libobjc.A.dylib", EntryPoint = "objc_msgSend")]
-    public static extern void objc_msgSend_void_ulong(IntPtr receiver, IntPtr selector, ulong arg);
-    
+    public static extern void objc_msgSend_void(IntPtr receiver, IntPtr selector);
+
     // Selector字符串缓存
     public static readonly IntPtr SetIgnoresMouseEventsSelector = sel_registerName("setIgnoresMouseEvents:");
     public static readonly IntPtr IgnoresMouseEventsSelector = sel_registerName("ignoresMouseEvents");
     public static readonly IntPtr StandardWindowButtonSelector = sel_registerName("standardWindowButton:");
     public static readonly IntPtr FrameSelector = sel_registerName("frame");
-    public static readonly IntPtr SetFrameSelector = sel_registerName("setFrame:");
     public static readonly IntPtr SuperviewSelector = sel_registerName("superview");
+    public static readonly IntPtr SetFrameOriginSelector = sel_registerName("setFrameOrigin:");
+    public static readonly IntPtr UpdateTrackingAreasSelector = sel_registerName("updateTrackingAreas");
     public static readonly IntPtr SetNeedsDisplaySelector = sel_registerName("setNeedsDisplay:");
-    public static readonly IntPtr StyleMaskSelector = sel_registerName("styleMask");
-    public static readonly IntPtr SetStyleMaskSelector = sel_registerName("setStyleMask:");
-    public static readonly IntPtr SetEnabledSelector = sel_registerName("setEnabled:");
-    
+
     // 辅助方法
     public static IntPtr GetStandardWindowButton(IntPtr window, long buttonType)
     {
         return objc_msgSend_intptr_long(window, StandardWindowButtonSelector, buttonType);
     }
-    
+
     public static NSRectFull GetFrame(IntPtr view)
     {
         if (view == IntPtr.Zero)
@@ -250,32 +169,51 @@ internal static class WindowUtilsInterop
         return objc_msgSend_rect(view, FrameSelector);
     }
 
-    public static void SetFrame(IntPtr view, NSRectFull frame)
+    public static NSRectFull GetRect(IntPtr obj, IntPtr selector)
     {
-        if (view == IntPtr.Zero)
+        if (obj == IntPtr.Zero)
         {
-            throw new ArgumentException("Invalid view handle");
+            throw new ArgumentException("Invalid object handle");
         }
-        objc_msgSend_void_rect(view, SetFrameSelector, frame);
+
+        if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+        {
+            objc_msgSend_stret_rect(out var rect, obj, selector);
+            return rect;
+        }
+
+        return objc_msgSend_rect(obj, selector);
     }
-    
+
     public static IntPtr GetSuperview(IntPtr view)
     {
         return objc_msgSend_intptr(view, SuperviewSelector);
     }
 
-    public static void SetNeedsDisplay(IntPtr view, bool flag)
+    public static void SetFrameOrigin(IntPtr view, CGPoint point)
     {
-        objc_msgSend_void_bool(view, SetNeedsDisplaySelector, flag);
+        if (view == IntPtr.Zero)
+        {
+            throw new ArgumentException("Invalid view handle");
+        }
+        objc_msgSend_void_point(view, SetFrameOriginSelector, point);
     }
 
-    public static ulong GetStyleMask(IntPtr window)
+    public static void UpdateTrackingAreas(IntPtr view)
     {
-        return objc_msgSend_ulong(window, StyleMaskSelector);
+        if (view == IntPtr.Zero)
+        {
+            return;
+        }
+        objc_msgSend_void(view, UpdateTrackingAreasSelector);
     }
-    
-    public static void SetEnabled(IntPtr control, bool enabled)
+
+    public static void SetNeedsDisplay(IntPtr view, bool flag)
     {
-        objc_msgSend_void_bool(control, SetEnabledSelector, enabled);
+        if (view == IntPtr.Zero)
+        {
+            return;
+        }
+        objc_msgSend_void_bool(view, SetNeedsDisplaySelector, flag);
     }
 }

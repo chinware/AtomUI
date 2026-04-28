@@ -9,15 +9,12 @@
 
         <AtomUITargetFrameworks Condition=" '$(Configuration)' == 'Debug' ">$(AtomUIDevelopTargetFramework)</AtomUITargetFrameworks>
         <AtomUITargetFrameworks Condition=" '$(Configuration)' == 'Release' ">$(AtomUIDevelopTargetFramework);$(AtomUIProductionTargetFramework)</AtomUITargetFrameworks>
-
-        <!-- 'bin/ref/' https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/compiler-options/output#producereferenceassembly -->
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-        <!-- 'win-x64' https://learn.microsoft.com/zh-cn/dotnet/core/project-sdk/msbuild-props#appendruntimeidentifiertooutputpath -->
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-
-        <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">true</IsTestProject>
+        
+        <IsTestProject Condition="$(MSBuildProjectFullPath.Contains('test')) and ($(MSBuildProjectName.EndsWith('.Tests')) or $(MSBuildProjectName.EndsWith('.TestBase')))">
+            true
+        </IsTestProject>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-        <NoWarn>$(NoWarn);CS1591;CS0436;CS7035;AVA3001</NoWarn>
+        <NoWarn>$(NoWarn);CS1591;CS0436;CS7035;AVA3001;AVALONIA_X11_CSD</NoWarn>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <GenerateAssemblyConfigurationAttribute>true</GenerateAssemblyConfigurationAttribute>
         <GenerateAssemblyCompanyAttribute>true</GenerateAssemblyCompanyAttribute>

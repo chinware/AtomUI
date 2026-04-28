@@ -102,7 +102,7 @@ public struct CompactSpaceSize : IEquatable<CompactSpaceSize>
     /// <returns>True if the structures are equal, otherwise false.</returns>
     public static bool operator ==(CompactSpaceSize a, CompactSpaceSize b)
     {
-        return (a.IsAuto && b.IsAuto) || (MathUtilities.AreClose(a._value, b._value) && a._type == b._type);
+        return (a.IsAuto && b.IsAuto) || (MathUtils.AreClose(a._value, b._value) && a._type == b._type);
     }
 
     /// <summary>

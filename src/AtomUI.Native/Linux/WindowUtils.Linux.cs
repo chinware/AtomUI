@@ -1,42 +1,35 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AtomUI.Native.Linux;
+using Avalonia.Controls;
 
 namespace AtomUI.Native;
 
-internal static partial class WindowExtensions
+[SupportedOSPlatform("linux")]
+internal static class WindowUtilsLinux
 {
-    [SupportedOSPlatform("linux")]
-    private static void SetWindowIgnoreMouseEventsLinux(IntPtr handle, bool flag)
+    public static void SetWindowIgnoreMouseEventsLinux(IntPtr handle, bool flag)
     {
         if (handle == IntPtr.Zero)
         {
             throw new ArgumentException("Invalid window handle");
         }
 
-        // 转换为X11窗口ID（uint类型）
-        uint windowId = (uint)handle.ToInt64();
-
-        // 连接到X服务器
-        IntPtr connection = WindowUtilsInterop.xcb_connect(string.Empty, IntPtr.Zero);
-        if (connection == IntPtr.Zero || WindowUtilsInterop.xcb_connection_has_error(connection) != 0)
+        if (!XcbConnectionHolder.IsShapeSupported)
         {
-            throw new InvalidOperationException("XCB connection error");
+            throw new InvalidOperationException("SHAPE extension is unavailable");
         }
 
-        try
+        uint windowId = (uint)handle.ToInt64();
+        IntPtr connection = XcbConnectionHolder.Connection;
+
+        WindowUtilsInterop.xcb_void_cookie_t cookie;
+
+        if (flag)
         {
-            // 检查形状扩展是否可用
-            if (!IsShapeExtensionAvailable(connection))
+            // 启用鼠标事件穿透：设置输入形状为空
+            lock (XcbConnectionHolder.SyncRoot)
             {
-                throw new InvalidOperationException("SHAPE extension is unavailable");
-            }
-
-            WindowUtilsInterop.xcb_void_cookie_t cookie;
-
-            if (flag)
-            {
-                // 启用鼠标事件穿透：设置输入形状为空
                 cookie = WindowUtilsInterop.xcb_shape_rectangles_checked(
                     connection,
                     WindowUtilsInterop.xcb_shape_op_t.XCB_SHAPE_SO_SET,
@@ -48,10 +41,16 @@ internal static partial class WindowExtensions
                     0, // num_rects = 0 表示空区域
                     IntPtr.Zero // rects = nullptr
                 );
+
+                CheckRequest(connection, cookie);
+                WindowUtilsInterop.xcb_flush(connection);
             }
-            else
+        }
+        else
+        {
+            // 禁用鼠标事件穿透：恢复默认输入形状（整个窗口）
+            lock (XcbConnectionHolder.SyncRoot)
             {
-                // 禁用鼠标事件穿透：恢复默认输入形状（整个窗口）
                 IntPtr geomReplyPtr = GetWindowGeometry(connection, windowId);
                 if (geomReplyPtr == IntPtr.Zero)
                 {
@@ -62,7 +61,6 @@ internal static partial class WindowExtensions
                 {
                     var geometry = Marshal.PtrToStructure<WindowUtilsInterop.xcb_get_geometry_reply_t>(geomReplyPtr);
 
-                    // 创建覆盖整个窗口的矩形
                     var rect = new WindowUtilsInterop.xcb_rectangle_t
                     {
                         X      = 0,
@@ -71,13 +69,11 @@ internal static partial class WindowExtensions
                         Height = geometry.Height
                     };
 
-                    // 分配非托管内存存储矩形
                     IntPtr rectPtr = Marshal.AllocHGlobal(Marshal.SizeOf(rect));
                     try
                     {
                         Marshal.StructureToPtr(rect, rectPtr, false);
 
-                        // 设置输入形状为整个窗口
                         cookie = WindowUtilsInterop.xcb_shape_rectangles_checked(
                             connection,
                             WindowUtilsInterop.xcb_shape_op_t.XCB_SHAPE_SO_SET,
@@ -89,6 +85,9 @@ internal static partial class WindowExtensions
                             1,
                             rectPtr
                         );
+
+                        CheckRequest(connection, cookie);
+                        WindowUtilsInterop.xcb_flush(connection);
                     }
                     finally
                     {
@@ -100,50 +99,26 @@ internal static partial class WindowExtensions
                     Marshal.FreeHGlobal(geomReplyPtr);
                 }
             }
-
-            // 检查操作是否出错
-            IntPtr errorPtr = WindowUtilsInterop.xcb_request_check(connection, cookie);
-            if (errorPtr != IntPtr.Zero)
-            {
-                var error = Marshal.PtrToStructure<WindowUtilsInterop.xcb_generic_error_t>(errorPtr);
-                Marshal.FreeHGlobal(errorPtr);
-                Console.Error.WriteLine($"Shape manipulation error: {error.ErrorCode}");
-            }
-
-            // 刷新请求
-            WindowUtilsInterop.xcb_flush(connection);
-        }
-        finally
-        {
-            WindowUtilsInterop.xcb_disconnect(connection);
         }
     }
-
-    [SupportedOSPlatform("linux")]
-    private static bool IsWindowIgnoreMouseEventsLinux(IntPtr handle)
+    
+    public static bool IsWindowIgnoreMouseEventsLinux(IntPtr handle)
     {
         if (handle == IntPtr.Zero)
         {
             throw new ArgumentException("Invalid window handle");
         }
 
-        uint windowId = (uint)handle.ToInt64();
-
-        IntPtr connection = WindowUtilsInterop.xcb_connect(string.Empty, IntPtr.Zero);
-        if (connection == IntPtr.Zero || WindowUtilsInterop.xcb_connection_has_error(connection) != 0)
+        if (!XcbConnectionHolder.IsShapeSupported)
         {
-            throw new InvalidOperationException("XCB connection error");
+            throw new InvalidOperationException("SHAPE extension is unavailable");
         }
 
-        try
-        {
-            // 检查形状扩展是否可用
-            if (!IsShapeExtensionAvailable(connection))
-            {
-                throw new InvalidOperationException("SHAPE extension is unavailable");
-            }
+        uint windowId = (uint)handle.ToInt64();
+        IntPtr connection = XcbConnectionHolder.Connection;
 
-            // 查询窗口的输入形状
+        lock (XcbConnectionHolder.SyncRoot)
+        {
             uint rectsCookie = WindowUtilsInterop.xcb_shape_get_rectangles(connection, windowId,
                 WindowUtilsInterop.xcb_shape_kind_t.XCB_SHAPE_SK_INPUT);
             IntPtr errorPtr      = IntPtr.Zero;
@@ -163,9 +138,8 @@ internal static partial class WindowExtensions
 
             try
             {
-                // 获取矩形数量
                 int numRects = WindowUtilsInterop.xcb_shape_get_rectangles_rectangles_length(rectsReplyPtr);
-                // 如果矩形数量为0，表示输入区域为空（鼠标穿透）
+                // 矩形数量为 0 表示输入区域为空（鼠标穿透）
                 return numRects == 0;
             }
             finally
@@ -173,40 +147,113 @@ internal static partial class WindowExtensions
                 Marshal.FreeHGlobal(rectsReplyPtr);
             }
         }
-        finally
-        {
-            WindowUtilsInterop.xcb_disconnect(connection);
-        }
     }
-
-    [SupportedOSPlatform("linux")]
-    private static bool IsShapeExtensionAvailable(IntPtr connection)
+    
+    private static void CheckRequest(IntPtr connection, WindowUtilsInterop.xcb_void_cookie_t cookie)
     {
-        uint   shapeCookie   = WindowUtilsInterop.xcb_shape_query_version(connection);
-        IntPtr errorPtr      = IntPtr.Zero;
-        IntPtr shapeReplyPtr = WindowUtilsInterop.xcb_shape_query_version_reply(connection, shapeCookie, errorPtr);
-
+        IntPtr errorPtr = WindowUtilsInterop.xcb_request_check(connection, cookie);
         if (errorPtr != IntPtr.Zero)
         {
             var error = Marshal.PtrToStructure<WindowUtilsInterop.xcb_generic_error_t>(errorPtr);
-            Console.Error.WriteLine($"SHAPE extension error: {error.ErrorCode}");
             Marshal.FreeHGlobal(errorPtr);
-            return false;
+            Console.Error.WriteLine($"Shape manipulation error: {error.ErrorCode}");
         }
-
-        if (shapeReplyPtr == IntPtr.Zero)
-        {
-            return false;
-        }
-
-        Marshal.FreeHGlobal(shapeReplyPtr);
-        return true;
     }
-
-    [SupportedOSPlatform("linux")]
+    
     private static IntPtr GetWindowGeometry(IntPtr connection, uint windowId)
     {
         uint geomCookie = WindowUtilsInterop.xcb_get_geometry(connection, windowId);
         return WindowUtilsInterop.xcb_get_geometry_reply(connection, geomCookie, IntPtr.Zero);
+    }
+
+    /// <summary>
+    /// 获取 Linux 系统默认的标题栏高度。
+    /// 使用 Avalonia 的 WindowDecorationMargin 属性获取标题栏高度。
+    /// </summary>
+    /// <returns>非 Linux 或无窗口句柄时返回 <c>null</c>。</returns>
+    public static double? GetSystemTitleBarHeightLinux(Window window)
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return null;
+        }
+
+        // 使用 Avalonia 提供的 WindowDecorationMargin 属性
+        // Top 值就是标题栏高度
+        var margin = window.WindowDecorationMargin;
+        return margin.Top > 0 ? margin.Top : null;
+    }
+    
+    /// <summary>
+    /// 基于 XCB SHAPE 扩展的 X11 窗体输入区域操作。
+    /// 将（视觉透明的）阴影缓冲区从输入区中裁掉，使阴影区域的鼠标事件穿透到下层窗口。
+    /// 所有坐标均为 <b>device pixel</b>（X11 原生坐标），非 DIP。
+    /// 内部连接由 <see cref="XcbConnectionHolder"/> 提供。
+    /// </summary>
+    /// <summary>X 服务器是否暴露 SHAPE 扩展且本地连接已建立。</summary>
+    public static bool IsSupported => XcbConnectionHolder.IsShapeSupported;
+
+    /// <summary>
+    /// 将窗体的 X11 input region 替换为指定矩形。矩形外的像素事件将穿透到下层窗口（含跨进程）。
+    /// </summary>
+    public static void SetInputRectangle(IntPtr handle, int x, int y, int width, int height)
+    {
+        if (handle == IntPtr.Zero) return;
+        if (width <= 0 || height <= 0) return;
+        if (!IsSupported) return;
+
+        uint windowId = (uint)handle.ToInt64();
+
+        var rect = new WindowUtilsInterop.xcb_rectangle_t
+        {
+            X      = (short)Math.Clamp(x, short.MinValue, short.MaxValue),
+            Y      = (short)Math.Clamp(y, short.MinValue, short.MaxValue),
+            Width  = (ushort)Math.Min(width, ushort.MaxValue),
+            Height = (ushort)Math.Min(height, ushort.MaxValue)
+        };
+
+        IntPtr rectPtr = Marshal.AllocHGlobal(Marshal.SizeOf(rect));
+        try
+        {
+            Marshal.StructureToPtr(rect, rectPtr, false);
+
+            lock (XcbConnectionHolder.SyncRoot)
+            {
+                var connection = XcbConnectionHolder.Connection;
+                var cookie = WindowUtilsInterop.xcb_shape_rectangles_checked(
+                    connection,
+                    WindowUtilsInterop.xcb_shape_op_t.XCB_SHAPE_SO_SET,
+                    WindowUtilsInterop.xcb_shape_kind_t.XCB_SHAPE_SK_INPUT,
+                    (byte)WindowUtilsInterop.xcb_clip_ordering_t.XCB_CLIP_ORDERING_UNSORTED,
+                    windowId,
+                    0,
+                    0,
+                    1,
+                    rectPtr
+                );
+
+                IntPtr errorPtr = WindowUtilsInterop.xcb_request_check(connection, cookie);
+                if (errorPtr != IntPtr.Zero)
+                {
+                    var error = Marshal.PtrToStructure<WindowUtilsInterop.xcb_generic_error_t>(errorPtr);
+                    Marshal.FreeHGlobal(errorPtr);
+                    Console.Error.WriteLine($"Shape manipulation error: {error.ErrorCode}");
+                }
+
+                WindowUtilsInterop.xcb_flush(connection);
+            }
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(rectPtr);
+        }
+    }
+
+    /// <summary>
+    /// 将窗体的输入区域重置为整个客户区。
+    /// </summary>
+    public static void ResetInputRegion(IntPtr handle, int width, int height)
+    {
+        SetInputRectangle(handle, 0, 0, width, height);
     }
 }
