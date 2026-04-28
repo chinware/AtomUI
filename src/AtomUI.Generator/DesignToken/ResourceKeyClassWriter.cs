@@ -103,7 +103,7 @@ internal class ResourceKeyClassWriter
         }
         
         // 添加控件 Design Token
-        foreach (var entry in controlTokenInfos)
+        foreach (var entry in controlTokenInfos.OrderBy(e => e.Key))
         {
             if (entry.Value.Count > 0)
             {
@@ -111,7 +111,7 @@ internal class ResourceKeyClassWriter
                 var controlTokenKindSyntaxList = new List<MemberDeclarationSyntax>();
                 var controlTokenMarkupExtensionSyntaxList = new List<MemberDeclarationSyntax>();
                 // 添加控件类成员
-                foreach (var controlTokenInfo in entry.Value)
+                foreach (var controlTokenInfo in entry.Value.OrderBy(info => info.ControlName))
                 {
                     if (controlTokenInfo.Tokens.Count > 0)
                     {

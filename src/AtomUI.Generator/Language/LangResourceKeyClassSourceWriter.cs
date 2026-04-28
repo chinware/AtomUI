@@ -187,7 +187,7 @@ internal class LangResourceKeyClassSourceWriter
 
         compilationUnit = compilationUnit.AddUsings(usingSyntaxList.ToArray());
 
-        foreach (var entry in _languagesById)
+        foreach (var entry in _languagesById.OrderBy(e => e.Key))
         {
             if (entry.Value.Count > 0)
             {
