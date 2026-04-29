@@ -1,0 +1,247 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type atom:CollapseItem}" TargetType="atom:CollapseItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="{x:Static atom:CollapseItemThemeConstants.MainLayoutPart}"
+                           LastChildFill="True">
+                    <Border Name="{x:Static atom:CollapseItemThemeConstants.HeaderDecoratorPart}"
+                            DockPanel.Dock="Top"
+                            BorderThickness="{TemplateBinding HeaderBorderThickness}"
+                            Padding="{TemplateBinding HeaderPadding}">
+                        <Grid ColumnDefinitions="Auto, *, Auto, Auto">
+                            <atom:IconButton
+                                Name="{x:Static atom:CollapseItemThemeConstants.ExpandButtonPart}"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                Icon="{TemplateBinding ExpandIcon}"
+                                IsVisible="{TemplateBinding IsShowExpandIcon}"
+                                IsEnabled="{TemplateBinding IsEnabled}"/>
+                            <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.HeaderPresenterPart}"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center"
+                                              HorizontalContentAlignment="Left"
+                                              VerticalContentAlignment="Center"
+                                              Margin="0, 1, 0, 0"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                              Grid.Column="1" />
+                            <ContentPresenter
+                                Name="{x:Static atom:CollapseItemThemeConstants.AddOnContentPresenterPart}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Center"
+                                Content="{TemplateBinding AddOnContent}"
+                                ContentTemplate="{TemplateBinding AddOnContentTemplate}"
+                                Grid.Column="2" />
+                        </Grid>
+                    </Border>
+                    <atom:LayoutAwareMotionActor
+                        Name="{x:Static atom:CollapseItemThemeConstants.ContentMotionActorPart}"
+                        ClipToBounds="True">
+                        <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.ContentPresenterPart}"
+                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          BorderThickness="{TemplateBinding ContentBorderThickness}" 
+                                          Padding="{TemplateBinding ContentPadding}"/>
+                    </atom:LayoutAwareMotionActor>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationSlow}" />
+        <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+        </Style>
+
+        <Style Selector="^[IsSelected=True]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="RenderTransform" Value="rotate(90deg)" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(:custom-header-padding)">
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                    <Setter Property="Padding"
+                            Value="{atom:CollapseTokenResource CollapseHeaderPaddingLG}" />
+                </Style>
+                
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                    <Setter Property="Padding" Value="{atom:CollapseTokenResource HeaderPadding}" />
+                </Style>
+                
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                    <Setter Property="Padding"
+                            Value="{atom:CollapseTokenResource CollapseHeaderPaddingSM}" />
+                </Style>
+                
+            </Style>
+        </Style>
+        
+        <Style Selector="^:not(:custom-content-padding)">
+            <Style Selector="^[SizeType=Large]">
+
+                <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Padding"
+                            Value="{atom:CollapseTokenResource CollapseContentPaddingLG}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Padding"
+                            Value="{atom:CollapseTokenResource ContentPadding}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+
+                <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Padding"
+                            Value="{atom:CollapseTokenResource CollapseContentPaddingSM}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="TextElement.FontSize"
+                        Value="{atom:SharedTokenResource FontSizeLG}" />
+                <Setter Property="TextBlock.LineHeight"
+                        Value="{atom:SharedTokenResource FontHeightLG}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="TextElement.FontSize"
+                        Value="{atom:SharedTokenResource FontSize}" />
+                <Setter Property="TextBlock.LineHeight"
+                        Value="{atom:SharedTokenResource FontHeight}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="TextElement.FontSize"
+                        Value="{atom:SharedTokenResource FontSize}" />
+                <Setter Property="TextBlock.LineHeight"
+                        Value="{atom:SharedTokenResource FontHeight}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TriggerType=Header]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TriggerType=Icon]">
+            <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ExpandIconPosition=Start]">
+            
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Margin"
+                            Value="{atom:CollapseTokenResource LeftExpandButtonMarginLG}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Margin"
+                            Value="{atom:CollapseTokenResource LeftExpandButtonMargin}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Margin"
+                            Value="{atom:CollapseTokenResource LeftExpandButtonMarginSM}" />
+                </Style>
+            </Style>
+           
+        </Style>
+
+        <Style Selector="^[ExpandIconPosition=End]">
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="3" />
+                    <Setter Property="Margin"
+                            Value="{atom:CollapseTokenResource RightExpandButtonMarginLG}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="3" />
+                    <Setter Property="Margin"
+                            Value="{atom:CollapseTokenResource RightExpandButtonMargin}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
+                    <Setter Property="Grid.Column" Value="3" />
+                    <Setter Property="Margin"
+                            Value="{atom:CollapseTokenResource RightExpandButtonMarginSM}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsBorderless=True]">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsGhostStyle=True]">
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+                <Setter Property="Background" Value="{atom:CollapseTokenResource ContentBg}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Style Selector="^ /template/ Border#PART_HeaderDecorator ContentPresenter">
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <ThicknessTransition Property="HeaderBorderThickness" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <ThicknessTransition Property="ContentBorderThickness" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
