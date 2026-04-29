@@ -985,6 +985,32 @@ var spacing = textParagraphProperties.GetLineSpacing();
 3. Update imports if necessary
 4. Verify no new issues introduced
 
+### Code generation style
+
+**Always use braces `{}` for code blocks, even single-line statements:**
+
+```csharp
+// ❌ Wrong - no braces
+if (condition)
+    DoSomething();
+
+for (int i = 0; i < count; i++)
+    Process(i);
+
+// ✅ Correct - always use braces
+if (condition)
+{
+    DoSomething();
+}
+
+for (int i = 0; i < count; i++)
+{
+    Process(i);
+}
+```
+
+**Why:** Prevents bugs from accidental statement misalignment, improves readability, and maintains consistency with C# style guidelines.
+
 ### When reporting
 
 1. Show current code
