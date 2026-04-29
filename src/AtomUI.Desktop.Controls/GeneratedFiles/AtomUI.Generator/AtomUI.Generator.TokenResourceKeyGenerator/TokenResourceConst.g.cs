@@ -292,6 +292,31 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         SplitTriggerSize
     }
 
+    public enum ToggleSwitchTokenKind
+    {
+        ExtraInfoFontSize,
+        ExtraInfoFontSizeSM,
+        HandleBg,
+        HandleShadow,
+        HandleSize,
+        HandleSizeSM,
+        IconSize,
+        IconSizeSM,
+        InnerMaxMargin,
+        InnerMaxMarginSM,
+        InnerMinMargin,
+        InnerMinMarginSM,
+        LoadingAnimationDuration,
+        OffStateLoadIndicatorColor,
+        SwitchColor,
+        SwitchDisabledOpacity,
+        TrackHeight,
+        TrackHeightSM,
+        TrackMinWidth,
+        TrackMinWidthSM,
+        TrackPadding
+    }
+
     public enum ToolTipTokenKind
     {
         BorderRadiusOuter,
@@ -516,6 +541,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplitterTokenResourceExtension(SplitterTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ToggleSwitchTokenResourceExtension : TokenResourceExtension<ToggleSwitchTokenKind>
+    {
+        public ToggleSwitchTokenResourceExtension()
+        {
+        }
+
+        public ToggleSwitchTokenResourceExtension(ToggleSwitchTokenKind kind) : base(kind)
         {
         }
     }

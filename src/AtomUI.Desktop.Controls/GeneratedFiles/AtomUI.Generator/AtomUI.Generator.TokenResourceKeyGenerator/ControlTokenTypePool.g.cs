@@ -24,6 +24,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SegmentedToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpaceToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToggleSwitchToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToolTipToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.WindowTitleBarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.WindowToken));

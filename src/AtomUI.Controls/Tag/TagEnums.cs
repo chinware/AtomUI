@@ -1,5 +1,3 @@
-using Avalonia.Media;
-
 namespace AtomUI.Controls;
 
 public enum TagStatus
