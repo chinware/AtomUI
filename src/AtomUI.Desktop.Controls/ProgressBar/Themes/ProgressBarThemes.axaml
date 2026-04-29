@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="CircleProgressTheme.axaml"/>
+        <ResourceInclude Source="DashboardProgressTheme.axaml"/>
+        <ResourceInclude Source="StepsProgressBarTheme.axaml"/>
+        <ResourceInclude Source="ProgressBarTheme.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
