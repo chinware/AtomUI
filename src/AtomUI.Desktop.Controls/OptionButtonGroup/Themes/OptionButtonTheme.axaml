@@ -1,0 +1,188 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:OptionButton}" TargetType="atom:OptionButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
+                                              CornerRadius="{TemplateBinding CornerRadius}" />
+                    <DockPanel Name="ContentLayout"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               LastChildFill="True">
+                        <atom:IconPresenter Name="IconPresenter"
+                                            DockPanel.Dock="Left"
+                                            IconBrush="{TemplateBinding Foreground}"
+                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            IsMotionEnabled="False"
+                                            Icon="{TemplateBinding Icon}" />
+                        <atom:TextBlock Padding="0"
+                                        VerticalAlignment="Center"
+                                        Text="{TemplateBinding Content}" />
+                    </DockPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="ClipToBounds" Value="False" />
+
+        <Style Selector="^ /template/ DockPanel#ContentLayout">
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="FontSize"
+                    Value="{atom:OptionButtonTokenResource ContentFontSizeLG}" />
+            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource PaddingLG}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="FontSize" Value="{atom:OptionButtonTokenResource ContentFontSize}" />
+            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource Padding}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize"
+                    Value="{atom:OptionButtonTokenResource ContentFontSizeSM}" />
+            <Setter Property="Padding" Value="{atom:OptionButtonTokenResource PaddingSM}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+                    
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
+            <Setter Property="WaveType" Value="RoundRectWave" />
+        </Style>
+        <Style Selector="^[ButtonStyle=Solid]">
+            <Style Selector="^[IsMotionEnabled=True]">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                        <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                        <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    </Transitions>
+                </Setter>
+            </Style>
+            <Style Selector="^:checked">
+                <Setter Property="Foreground"
+                        Value="{atom:OptionButtonTokenResource ButtonSolidCheckedColor}" />
+                <Setter Property="Background"
+                        Value="{atom:OptionButtonTokenResource ButtonSolidCheckedBackground}" />
+
+                <Style Selector="^:pointerover">
+                    <Setter Property="Background"
+                            Value="{atom:OptionButtonTokenResource ButtonSolidCheckedHoverBackground}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="Background"
+                            Value="{atom:OptionButtonTokenResource ButtonSolidCheckedActiveBackground}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:unchecked">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+                <Setter Property="Background" Value="Transparent" />
+
+                <Style Selector="^:pointerover">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:disabled">
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+
+                <Style Selector="^:checked">
+                    <Setter Property="Foreground"
+                            Value="{atom:OptionButtonTokenResource ButtonCheckedColorDisabled}" />
+                    <Setter Property="Background"
+                            Value="{atom:OptionButtonTokenResource ButtonCheckedBgDisabled}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[ButtonStyle=Outline]">
+            <Style Selector="^[IsMotionEnabled=True]">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                        <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    </Transitions>
+                </Setter>
+            </Style>
+            <Setter Property="Background" Value="Transparent" />
+            <Style Selector="^:checked">
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush"
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+
+            <Style Selector="^:unchecked">
+                <Setter Property="Foreground"
+                        Value="{atom:OptionButtonTokenResource ButtonColor}" />
+                <Setter Property="BorderBrush"
+                        Value="{atom:SharedTokenResource ColorBorder}" />
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                <Setter Property="BorderBrush"
+                        Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+                <Setter Property="BorderBrush"
+                        Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+            </Style>
+
+            <Style Selector="^:disabled">
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+
+                <Style Selector="^:checked">
+                    <Setter Property="Foreground"
+                            Value="{atom:OptionButtonTokenResource ButtonCheckedColorDisabled}" />
+                    <Setter Property="Background"
+                            Value="{atom:OptionButtonTokenResource ButtonCheckedBgDisabled}" />
+                </Style>
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
