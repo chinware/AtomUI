@@ -14,6 +14,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CarouselToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CheckBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));

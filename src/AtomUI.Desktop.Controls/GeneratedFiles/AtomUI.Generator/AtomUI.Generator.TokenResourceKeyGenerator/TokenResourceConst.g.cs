@@ -102,6 +102,15 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextMargin
     }
 
+    public enum EmptyTokenKind
+    {
+        DescriptionMargin,
+        DescriptionMarginSM,
+        EmptyImgHeight,
+        EmptyImgHeightMD,
+        EmptyImgHeightSM
+    }
+
     public enum MarqueeLabelTokenKind
     {
         CycleSpace,
@@ -470,6 +479,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public CheckBoxTokenResourceExtension(CheckBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class EmptyTokenResourceExtension : TokenResourceExtension<EmptyTokenKind>
+    {
+        public EmptyTokenResourceExtension()
+        {
+        }
+
+        public EmptyTokenResourceExtension(EmptyTokenKind kind) : base(kind)
         {
         }
     }

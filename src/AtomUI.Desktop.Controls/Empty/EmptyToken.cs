@@ -1,0 +1,42 @@
+﻿using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme;
+using AtomUI.Theme.TokenSystem;
+using Avalonia;
+
+namespace AtomUI.Desktop.Controls;
+
+[ControlDesignToken]
+internal class EmptyToken : AbstractControlDesignToken
+{
+    public const string ID = "Empty";
+    public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
+    
+    /// <summary>
+    /// 空图片的高度
+    /// </summary>
+    public double EmptyImgHeight { get; set; }
+
+    public double EmptyImgHeightSM { get; set; }
+    public double EmptyImgHeightMD { get; set; }
+    
+    public Thickness DescriptionMargin { get; set; }
+    public Thickness DescriptionMarginSM { get; set; }
+
+    public EmptyToken()
+        : base(ID)
+    {
+    }
+
+    public override void CalculateTokenValues(bool isDarkMode)
+    {
+        base.CalculateTokenValues(isDarkMode);
+        var controlHeightLG = SharedToken.ControlHeightLG;
+        EmptyImgHeight      = controlHeightLG * 2.5;
+        EmptyImgHeightMD    = controlHeightLG * 1.85;
+        EmptyImgHeightSM    = controlHeightLG * 0.875;
+        DescriptionMargin   = new Thickness(0, SharedToken.UniformlyMarginSM, 0, 0);
+        DescriptionMarginSM = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
+    }
+    
+    protected override Type GetTokenKindType() => typeof(EmptyTokenKind);
+}
