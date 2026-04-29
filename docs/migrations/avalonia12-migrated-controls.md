@@ -34,7 +34,7 @@
 | RadioButton | 待迁移 | | |
 | Rate | 待迁移 | | |
 | Result | 待迁移 | | |
-| ScrollViewer | 待迁移 | | |
+| ScrollViewer | 已完成 | `Dispatcher.UIThread` → `this.Dispatcher`；`Root` → `Root.GetRootElement()` 修复 PresentationSource 比较 | 2026-04-29 |
 | Segmented | 待迁移 | | |
 | Separator | 待迁移 | | |
 | Spin | 待迁移 | | |
@@ -97,7 +97,7 @@
 | RadioButton | 待迁移 | | |
 | Rate | 待迁移 | | |
 | Result | 待迁移 | | |
-| ScrollViewer | 待迁移 | | |
+| ScrollViewer | 已完成 | 无需修改，已兼容 Avalonia 12 | 2026-04-29 |
 | Segmented | 待迁移 | | |
 | Select | 待迁移 | | |
 | Separator | 待迁移 | | |

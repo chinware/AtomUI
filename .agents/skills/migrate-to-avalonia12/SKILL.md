@@ -113,6 +113,26 @@ When accessing private/internal Avalonia APIs:
 - Follow ReflectionExtensions naming convention
 - Document in reflection-extensions-pattern.md
 
+### 11. Always scan base classes in AtomUI.Controls
+
+AtomUI uses a layered architecture for multi-platform support:
+
+- **`AtomUI.Controls`** — Platform-agnostic base controls (shared across all platforms)
+- **`AtomUI.Desktop.Controls`** — Desktop-specific control implementations
+- **`AtomUI.Mobile.Controls`** (planned) — Mobile-specific control implementations
+
+Desktop and Mobile controls typically inherit from abstract base classes in `AtomUI.Controls`. For example:
+- `AtomUI.Desktop.Controls.ScrollBar` → `AtomUI.Controls.Commons.AbstractScrollBar`
+- `AtomUI.Desktop.Controls.ScrollViewer` → `AtomUI.Controls.Commons.AbstractScrollViewer`
+
+**When migrating a control in `AtomUI.Desktop.Controls` (or `AtomUI.Mobile.Controls`):**
+1. Identify the base class by reading the class declaration
+2. If the base class is in `AtomUI.Controls`, scan it for breaking changes too
+3. Apply fixes to both the base class and the derived class
+4. Report issues from both layers in the migration report
+
+**Why:** Breaking changes in the base class affect all platform-specific implementations. Missing base class issues leads to runtime bugs (e.g., `RawInputEventArgs.Root` comparison failures) that are hard to trace back to the migration.
+
 ## Execution Steps
 
 ### Step 1: Determine scope and platform

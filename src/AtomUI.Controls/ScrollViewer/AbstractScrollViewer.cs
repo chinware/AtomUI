@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls.Utils;
+using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -105,7 +105,7 @@ public abstract class AbstractScrollViewer : AvaloniaScrollViewer, IMotionAwareC
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        this.Dispatcher.Post(this.EnableTransitions);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -135,7 +135,7 @@ public abstract class AbstractScrollViewer : AvaloniaScrollViewer, IMotionAwareC
     {
         if (e is RawPointerEventArgs mouseEventArgs)
         {
-            if (mouseEventArgs.Root != TopLevel.GetTopLevel(this) || Classes.Contains(StdPseudoClass.Disabled))
+            if (mouseEventArgs.Root.GetRootElement() != TopLevel.GetTopLevel(this) || Classes.Contains(StdPseudoClass.Disabled))
             {
                 return;
             }
@@ -168,7 +168,7 @@ public abstract class AbstractScrollViewer : AvaloniaScrollViewer, IMotionAwareC
     private bool IsMousePointIn(RawPointerEventArgs args)
     {
         var scaling          = TopLevelUtils.GetDesktopScaling(this);
-        var pointRoot        = args.Root as Control;
+        var pointRoot        = args.Root.GetRootElement() as Control;
         var localPoint       = pointRoot?.PointToScreen(args.Position) ?? default;
         var offset           = this.PointToScreen(new Point(0, 0));
         var constraintBounds = new Rect(new Point(offset.X, offset.Y), Bounds.Size * scaling);
