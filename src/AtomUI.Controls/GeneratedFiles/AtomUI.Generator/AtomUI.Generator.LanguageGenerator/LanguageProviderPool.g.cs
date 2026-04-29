@@ -9,6 +9,8 @@ namespace AtomUI.Theme.Language
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
             List<LanguageProvider> languageProviders = new List<LanguageProvider>();
+            languageProviders.Add(new AtomUI.Controls.Localization.en_US());
+            languageProviders.Add(new AtomUI.Controls.Localization.zh_CN());
             return languageProviders;
         }
     }

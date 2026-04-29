@@ -5,11 +5,13 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
+using System.Globalization;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -181,14 +183,14 @@ public class SelectableTextBlock : TextBlock
         SetCurrentValue(SelectionEndProperty, SelectionStart);
     }
 
-    protected override void OnGotFocus(GotFocusEventArgs e)
+    protected override void OnGotFocus(FocusChangedEventArgs e)
     {
         base.OnGotFocus(e);
 
         UpdateCommandStates();
     }
 
-    protected override void OnLostFocus(RoutedEventArgs e)
+    protected override void OnLostFocus(FocusChangedEventArgs e)
     {
         base.OnLostFocus(e);
 
@@ -207,28 +209,29 @@ public class SelectableTextBlock : TextBlock
 
         var defaultProperties = new GenericTextRunProperties(
             typeface,
-            FontFeatures,
             FontSize,
             TextDecorations,
-            Foreground);
+            Foreground,
+            fontFeatures: FontFeatures);
 
         var paragraphProperties = new GenericTextParagraphProperties(FlowDirection, TextAlignment, true, false,
             defaultProperties, TextWrapping, LineHeight, 0, LetterSpacing);
-        paragraphProperties.SetLineSpacing(LineSpacing);
 
-        IReadOnlyList<ValueSpan<TextRunProperties>>? textStyleOverrides = null;
-        var                                          selectionStart = SelectionStart;
-        var                                          selectionEnd = SelectionEnd;
-        var                                          start = Math.Min(selectionStart, selectionEnd);
-        var                                          length = Math.Max(selectionStart, selectionEnd) - start;
+        List<ValueSpan<TextRunProperties>>? textStyleOverrides = null;
+        var selectionStart = SelectionStart;
+        var selectionEnd = SelectionEnd;
+        var start = Math.Min(selectionStart, selectionEnd);
+        var length = Math.Max(selectionStart, selectionEnd) - start;
 
         if (length > 0 && SelectionForegroundBrush != null)
         {
-            textStyleOverrides = new[]
+            textStyleOverrides = new List<ValueSpan<TextRunProperties>>
             {
                 new ValueSpan<TextRunProperties>(start, length,
-                    new GenericTextRunProperties(typeface, FontFeatures, FontSize,
-                        foregroundBrush: SelectionForegroundBrush))
+                    new GenericTextRunProperties(typeface, FontSize,
+                        TextDecorations,
+                        foregroundBrush: SelectionForegroundBrush,
+                        fontFeatures: FontFeatures))
             };
         }
 
@@ -412,8 +415,8 @@ public class SelectableTextBlock : TextBlock
             var point = e.GetPosition(this) - new Point(padding.Left, padding.Top);
 
             point = new Point(
-                MathUtilities.Clamp(point.X, 0, Math.Max(TextLayout.WidthIncludingTrailingWhitespace, 0)),
-                MathUtilities.Clamp(point.Y, 0, Math.Max(TextLayout.Height, 0)));
+                Math.Clamp(point.X, 0, Math.Max(TextLayout.WidthIncludingTrailingWhitespace, 0)),
+                Math.Clamp(point.Y, 0, Math.Max(TextLayout.Height, 0)));
 
             var hit          = TextLayout.HitTestPoint(point);
             var textPosition = hit.TextPosition;

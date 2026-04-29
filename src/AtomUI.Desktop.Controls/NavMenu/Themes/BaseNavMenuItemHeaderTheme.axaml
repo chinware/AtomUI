@@ -9,7 +9,7 @@
     <Style Selector="^:is(atom|BaseNavMenuItemHeader)">
         <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
             <Setter Property="Margin" Value="{atom:NavMenuTokenResource ItemMargin}" />
-        </Style>
+        </Style> 
 
         <Setter Property="Cursor" Value="Hand" />
 

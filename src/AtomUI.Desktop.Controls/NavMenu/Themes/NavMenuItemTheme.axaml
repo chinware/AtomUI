@@ -25,15 +25,14 @@
                         <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
-                                    IsDetectMouseClickEnabled="False"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                            <atom:Popup.IsMotionAwareOpen>
+                            <atom:Popup.IsOpen>
                                 <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">
                                     <Binding Path="IsSubMenuOpen" RelativeSource="{RelativeSource TemplatedParent}" />
                                     <Binding Path="HasSubMenu" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
-                            </atom:Popup.IsMotionAwareOpen>
+                            </atom:Popup.IsOpen>
                             <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}"
                                     MinWidth="{TemplateBinding EffectivePopupMinWidth}">
                                 <atom:ScrollViewer IsScrollChainingEnabled="False"
@@ -71,16 +70,15 @@
                         <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
-                                    IsDetectMouseClickEnabled="False"
                                     Placement="RightEdgeAlignedTop"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                            <atom:Popup.IsMotionAwareOpen>
+                            <atom:Popup.IsOpen>
                                 <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">
                                     <Binding Path="IsSubMenuOpen" RelativeSource="{RelativeSource TemplatedParent}" />
                                     <Binding Path="HasSubMenu" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
-                            </atom:Popup.IsMotionAwareOpen>
+                            </atom:Popup.IsOpen>
 
                             <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
                                 <atom:ScrollViewer IsScrollChainingEnabled="False"
@@ -136,8 +134,8 @@
                     Value="{atom:NavMenuTokenResource MenuPopupMinWidth}" />
 
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
-                <Setter Property="MarginToAnchor"
-                        Value="{atom:NavMenuTokenResource TopLevelItemPopupMarginToAnchor}" />
+                <!-- <Setter Property="MarginToAnchor" -->
+                <!--         Value="{atom:NavMenuTokenResource TopLevelItemPopupMarginToAnchor}" /> -->
                 <Setter Property="MaskShadows"
                         Value="{atom:PopupHostTokenResource BoxShadows}" />
             </Style>

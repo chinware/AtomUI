@@ -65,11 +65,94 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextTextHoverColor
     }
 
+    public enum NavMenuTokenKind
+    {
+        ActiveBarHeight,
+        ActiveBarScaleX,
+        CollapsedIconSize,
+        CollapsedWidth,
+        DangerItemActiveBg,
+        DangerItemColor,
+        DangerItemHoverColor,
+        DangerItemSelectedBg,
+        DangerItemSelectedColor,
+        DarkDangerItemActiveBg,
+        DarkDangerItemColor,
+        DarkDangerItemHoverColor,
+        DarkDangerItemSelectedBg,
+        DarkDangerItemSelectedColor,
+        DarkGroupTitleColor,
+        DarkItemBg,
+        DarkItemColor,
+        DarkItemDisabledColor,
+        DarkItemHoverBg,
+        DarkItemHoverColor,
+        DarkItemSelectedBg,
+        DarkItemSelectedColor,
+        DarkMenuBg,
+        DarkMenuPopupBg,
+        DarkSubMenuItemBg,
+        GroupTitleColor,
+        GroupTitleFontSize,
+        GroupTitleLineHeight,
+        HorizontalItemBorderRadius,
+        HorizontalItemHoverBg,
+        HorizontalItemHoverColor,
+        HorizontalItemMargin,
+        HorizontalItemSelectedBg,
+        HorizontalItemSelectedColor,
+        HorizontalLineHeight,
+        IconMargin,
+        IconSize,
+        InlineItemIndentUnit,
+        ItemActiveBg,
+        ItemBg,
+        ItemBorderRadius,
+        ItemColor,
+        ItemContentMargin,
+        ItemContentPadding,
+        ItemDisabledColor,
+        ItemHeight,
+        ItemHoverBg,
+        ItemHoverColor,
+        ItemIconSize,
+        ItemMargin,
+        ItemSelectedBg,
+        ItemSelectedColor,
+        KeyGestureColor,
+        MenuArrowSize,
+        MenuHorizontalHeight,
+        MenuPopupBg,
+        MenuPopupContentPadding,
+        MenuPopupMaxHeight,
+        MenuPopupMaxWidth,
+        MenuPopupMinWidth,
+        MenuSubMenuBg,
+        SubMenuItemBg,
+        SubMenuItemBorderRadius,
+        TopLevelItemPopupMarginToAnchor,
+        VerticalChildItemsMargin,
+        VerticalItemsPanelSpacing,
+        VerticalMenuContentPadding
+    }
+
     public enum PopupHostTokenKind
     {
         BorderRadius,
         BoxShadows,
         MarginToAnchor
+    }
+
+    public enum ScrollViewerTokenKind
+    {
+        LiteModeThumbThickness,
+        NormalModeThumbThickness,
+        ScrollBarContentHPadding,
+        ScrollBarContentVPadding,
+        ThumbActiveBg,
+        ThumbBg,
+        ThumbCornerRadius,
+        ThumbHoverBg
     }
 
     public enum SpaceTokenKind
@@ -157,6 +240,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class NavMenuTokenResourceExtension : TokenResourceExtension<NavMenuTokenKind>
+    {
+        public NavMenuTokenResourceExtension()
+        {
+        }
+
+        public NavMenuTokenResourceExtension(NavMenuTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class PopupHostTokenResourceExtension : TokenResourceExtension<PopupHostTokenKind>
     {
         public PopupHostTokenResourceExtension()
@@ -164,6 +258,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public PopupHostTokenResourceExtension(PopupHostTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ScrollViewerTokenResourceExtension : TokenResourceExtension<ScrollViewerTokenKind>
+    {
+        public ScrollViewerTokenResourceExtension()
+        {
+        }
+
+        public ScrollViewerTokenResourceExtension(ScrollViewerTokenKind kind) : base(kind)
         {
         }
     }

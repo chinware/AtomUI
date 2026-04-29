@@ -14,7 +14,7 @@ namespace AtomUI.Desktop.Controls;
 internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {
     private IDisposable? _inputManagerSubscription;
-    private IRenderRoot? _root;
+    private Visual? _root;
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
     private bool _currentPressedIsValid;
@@ -46,11 +46,11 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     public static TimeSpan MenuShowDelay { get; set; } = TimeSpan.FromMilliseconds(400);
 
-    protected virtual void GotFocus(object? sender, GotFocusEventArgs e)
+    protected virtual void GotFocus(object? sender, FocusChangedEventArgs e)
     {
     }
 
-    protected virtual void LostFocus(object? sender, RoutedEventArgs e)
+    protected virtual void LostFocus(object? sender, FocusChangedEventArgs e)
     {
     }
 
@@ -265,9 +265,12 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         
         Menu.AddHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
         Menu.AddHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
-        
-        _root = Menu.VisualRoot;
-        
+
+        if (Menu is Visual visual)
+        {
+            _root = TopLevel.GetTopLevel(visual);
+        }
+
         if (_root is InputElement inputRoot)
         {
             inputRoot.AddHandler(InputElement.PointerPressedEvent, RootPointerPressed, RoutingStrategies.Tunnel);
@@ -361,7 +364,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         void Execute()
         {
             var parent = item.Parent as NavMenuItem;
-            if (!item.IsTopLevel && parent?.Popup?.Host != null)
+            if (!item.IsTopLevel && parent?.Popup?.IsOpen == true)
             {
                 item.Open();
             }

@@ -1,4 +1,3 @@
-
 using System.Windows.Input;
 using Avalonia.Threading;
 using AtomUI.Animations;
@@ -255,7 +254,7 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
         IsPressed = false;
     }
     
-    protected override void OnLostFocus(RoutedEventArgs e)
+    protected override void OnLostFocus(FocusChangedEventArgs e)
     {
         base.OnLostFocus(e);
         IsPressed = false;

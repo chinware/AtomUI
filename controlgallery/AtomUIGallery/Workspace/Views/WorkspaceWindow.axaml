@@ -4,6 +4,7 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:workspaceviews="using:AtomUIGallery.Workspace.Views"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              x:Class="AtomUIGallery.Workspace.Views.WorkspaceWindow"
              Icon="/Assets/AtomUIGallery.ico"
              IsPinCaptionButtonVisible="True"
@@ -18,14 +19,9 @@
         </DataTemplate>
     </atom:Window.LogoTemplate>
     <Panel>
-       <atom:Button 
-           ButtonType="Primary"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center" Width="300"
-           atom:ToolTip.IsShowArrow="True"
-           atom:ToolTip.Tip="This is a tooltip for."
-           atom:ToolTip.Placement="Pointer">
-           AtomUI love Avalonia v12
-       </atom:Button>
+       <atom:Button atom:ToolTip.Tip="hahahahhhaha"
+                    atom:ToolTip.Placement="Top"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">Text</atom:Button>
     </Panel>
 </atom:Window>

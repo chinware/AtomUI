@@ -1,6 +1,12 @@
-namespace AtomUI.Desktop.Controls.NavMenu;
+using Avalonia.Input;
+using Avalonia.LogicalTree;
 
-public class INavMenuElement
+namespace AtomUI.Desktop.Controls;
+
+public interface INavMenuElement : IInputElement, ILogical
 {
-    
+    /// <summary>
+    /// Gets the submenu items.
+    /// </summary>
+    IEnumerable<INavMenuItem> SubItems { get; }
 }

@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Media.TextFormatting;
-using Avalonia.Threading;
 
 namespace AtomUI.Media.TextFormatting;
 
