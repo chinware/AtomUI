@@ -1,0 +1,39 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CardMetaContent}" TargetType="atom:CardMetaContent">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel LastChildFill="True" 
+                           HorizontalSpacing="{atom:SharedTokenResource Spacing}">
+                    <ContentPresenter Name="AvatarContentPresenter" 
+                                      DockPanel.Dock="Left"
+                                      Content="{TemplateBinding Avatar}"
+                                      VerticalAlignment="Top"/>
+                    <DockPanel LastChildFill="True"
+                               VerticalSpacing="{atom:SharedTokenResource SpacingXS}">
+                        <ContentPresenter Name="TitleContentPresenter"
+                                          DockPanel.Dock="Top"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"/>
+                        <ContentPresenter Name="DescriptionContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    </DockPanel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ ContentPresenter#TitleContentPresenter">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}" />
+            <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}" />
+            <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#DescriptionContentPresenter">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

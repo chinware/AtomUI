@@ -1,0 +1,46 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CardTabsContent}" TargetType="atom:CardTabsContent">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:TabControl Name="{x:Static atom:CardTabsContentThemeConstants.TabControlPart}"
+                                 SizeType="{TemplateBinding SizeType}"
+                                 ItemsSource="{TemplateBinding TabItemsSource}"
+                                 ItemTemplate="{TemplateBinding TabItemTemplate}"
+                                 TabAndContentGutter="0"
+                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                 HeaderEndExtraContent="{TemplateBinding TabBarExtraContent}"
+                                 HeaderEndExtraContentTemplate="{TemplateBinding TabBarExtraContentTemplate}"
+                                 />
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|TabControl">
+                <Setter Property="ContentPadding" Value="{atom:CardTokenResource BodyPaddingLG}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingLG}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingLG}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|TabControl">
+                <Setter Property="ContentPadding" Value="{atom:CardTokenResource BodyPadding}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingSM}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingSM}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|TabControl">
+                <Setter Property="ContentPadding" Value="{atom:CardTokenResource BodyPaddingSM}" />
+                <Setter Property="HeaderStartEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingXS}" />
+                <Setter Property="HeaderEndEdgePadding" Value="{atom:SharedTokenResource UniformlyPaddingXS}" />
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>
