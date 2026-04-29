@@ -120,13 +120,13 @@ Comprehensive code scanning completed to identify all Avalonia 11 → 12 breakin
 
 ## ⚠️ Pending Items (Action Required)
 
-### 1. IInputRoot Interface Removal (HIGH PRIORITY)
+### 1. IInputRoot Interface Now [PrivateApi] (HIGH PRIORITY)
 
 **File:** `src/AtomUI.Core/Input/IInputRootRefectionExtensions.cs`
 
 **Issues:**
 1. Filename has typo: `Refection` → should be `Reflection`
-2. File uses removed `IInputRoot` interface
+2. File uses `IInputRoot` interface which is now `[PrivateApi]`
 3. Reflection code tries to access `IInputRoot.RootElement` property
 
 **Current Code:**
@@ -148,17 +148,23 @@ internal static class IInputRootReflectionExtensions
 **Migration Path:**
 - Option 1: Remove file entirely if `GetRootElement()` is not used
 - Option 2: Update to use `TopLevel` instead of `IInputRoot`
-- Option 3: Update to use `IPresentationSource` if available
+- Option 3: Keep as-is since IInputRoot still exists internally (just [PrivateApi])
+
+**Note:** IInputRoot is NOT removed — it's marked `[PrivateApi]`. The reflection code may still work but is accessing a private API.
 
 **Action:** Verify usage of `GetRootElement()` method and decide on migration strategy
 
 ---
 
-### 2. PlacementMode Removal (HIGH PRIORITY)
+### 2. Popup.PlacementMode Renamed to Popup.Placement (HIGH PRIORITY)
 
 **File:** `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs`
 
-**Issue:** 43 uses of removed `PlacementMode` enum
+**Issue:** Uses `PlacementMode` enum values (which is fine) but may reference `Popup.PlacementMode` property (which is renamed to `Popup.Placement`)
+
+**Correction:** Previous analysis claimed PlacementMode enum was removed with 43 uses needing migration. This was WRONG. The `PlacementMode` enum still exists. Only the property accessor was renamed:
+- `Popup.PlacementMode` → `Popup.Placement`
+- `ContextMenu.PlacementMode` → `ContextMenu.Placement`
 
 **Current Code Pattern:**
 ```csharp
@@ -178,17 +184,11 @@ internal static ArrowPosition? CalculateArrowPosition(
 ```
 
 **Migration Path:**
-- Remove `PlacementMode` parameter
-- Use `PopupAnchor` and `PopupGravity` directly
-- Update `GetAnchorAndGravity()` method signature
-- Update all callers of `CalculateArrowPosition()`
+- Code using `PlacementMode` enum values in logic (switch, comparisons) → NO CHANGE NEEDED
+- Code accessing `popup.PlacementMode` property → rename to `popup.Placement`
+- Code accessing `contextMenu.PlacementMode` property → rename to `contextMenu.Placement`
 
-**Affected Methods:**
-- `CalculateArrowPosition()`
-- `CanEnabledArrow()`
-- `GetAnchorAndGravity()`
-
-**Action:** Refactor PopupUtils.cs to remove PlacementMode dependency
+**Action:** Only rename property accesses, not enum value usage
 
 ---
 
@@ -215,14 +215,29 @@ internal static ArrowPosition? CalculateArrowPosition(
 
 1. **Fix IInputRootRefectionExtensions.cs:**
    - Rename file to `IInputRootReflectionExtensions.cs`
-   - Update or remove based on usage analysis
+   - Decide: keep (IInputRoot still exists as [PrivateApi]) or migrate to TopLevel
 
-2. **Migrate PlacementMode in PopupUtils.cs:**
-   - Refactor method signatures
-   - Update all callers
-   - Test popup positioning
+2. **Rename Popup.PlacementMode property accesses:**
+   - Only rename property accesses (`popup.PlacementMode` → `popup.Placement`)
+   - Do NOT change `PlacementMode` enum value usage — enum still exists
 
-3. **Final Verification:**
+3. **Check for internalized API usage:**
+   - `Gestures` class (now internal) → use `InputElement`
+   - `BindingPlugins` (now internal) → remove direct access
+   - `IPopupHost` (now internal) → use `Popup.IsOpen`
+   - `KeyboardNavigationHandler` (now internal) → use `FocusManager`
+
+4. **Check for renamed members:**
+   - `TextBox.Watermark` → `PlaceholderText`
+   - `Window.SystemDecorations` → `WindowDecorations`
+   - `RenderOptions.TextRenderingMode` → `TextOptions.TextRenderingMode`
+   - Other renames (see SKILL.md category 40)
+
+5. **Check for removed obsolete members:**
+   - `IStyleable`, `CubicBezierEasing`, `FileDialog`, etc.
+   - See SKILL.md category 41 for full list
+
+6. **Final Verification:**
    - Run full build
    - Run unit tests
    - Run integration tests
@@ -239,6 +254,9 @@ internal static ArrowPosition? CalculateArrowPosition(
 | Files Using Math.Clamp | 5 | ✅ Migrated |
 | Files Using BindingPriority | 6 | ✅ Verified |
 | Removed APIs Found | 0 | ✅ None |
-| Pending Issues | 2 | ⚠️ Action Required |
+| IInputRoot [PrivateApi] Usage | 1 | ⚠️ Review needed |
+| Popup.PlacementMode Renames | TBD | ⚠️ Check property accesses |
+| Internalized API Usage | TBD | ⚠️ Check Gestures, BindingPlugins, IPopupHost |
+| Renamed Member Usage | TBD | ⚠️ Check Watermark, SystemDecorations, etc. |
 | Migration Completion | ~95% | In Progress |
 

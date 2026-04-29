@@ -500,13 +500,17 @@ public void AttachDeveloperTools() { }
 |----------|---------|-----|---------------|
 | Binding System | IBinding, IBinding2, InstancedBinding | BindingBase, ReflectionBinding | 85 |
 | Focus Events | GotFocusEventArgs | FocusChangedEventArgs | 29 |
-| TopLevel | IRenderRoot, ILayoutRoot, IEmbeddedLayoutRoot, ITextInputMethodRoot | IPresentationSource, PresentationSource | 100+ |
+| TopLevel | IRenderRoot removed, ILayoutRoot/IInputRoot internalized | IPresentationSource, PresentationSource | 100+ |
 | Clipboard | IDataObject, DataObject, wrappers | DataTransfer, DataTransferItem, DataFormat | 23 |
 | Obsolete | 50+ members | - | 26 |
 | Platform | Tizen, Blazor, IAndroidView | AvaloniaAndroidApplication | 10+ |
 | Text | Old constructor order | New parameter order | 5+ |
 | Rendering | Direct2D1 | Skia only | 1 |
 | Diagnostics | Avalonia.Diagnostics | AvaloniaUI.DiagnosticsSupport | 1 |
+| Internalized | Gestures, BindingPlugins, IPopupHost, KeyboardNavigationHandler | InputElement events, FocusManager | 20+ |
+| Window Decorations | TitleBar, CaptionButtons, ChromeOverlayLayer, SystemDecorations | WindowDrawnDecorations, DrawnWindowDecorationParts | 30+ |
+| Renamed | Popup.PlacementMode, TextBox.Watermark, Window.SystemDecorations, etc. | Popup.Placement, PlaceholderText, WindowDecorations | 15+ |
+| Dispatcher | Single global | Multiple per-thread | 10+ |
 
 ---
 
@@ -514,9 +518,14 @@ public void AttachDeveloperTools() { }
 
 1. **Binding System**: Complete refactor needed if using IBinding directly
 2. **Focus Events**: All OnGotFocus/OnLostFocus must use FocusChangedEventArgs
-3. **TopLevel**: Replace all VisualRoot usage with TopLevel.GetTopLevel()
+3. **TopLevel**: Replace all external VisualRoot usage with TopLevel.GetTopLevel() (VisualRoot is now `protected internal`)
 4. **Clipboard**: Complete API rewrite for drag-drop operations
 5. **Text Formatting**: Parameter order change in GenericTextRunProperties
+6. **Internalized APIs**: Gestures, BindingPlugins, IPopupHost, KeyboardNavigationHandler are now internal — use public replacements
+7. **Window Decorations**: Complete redesign — TitleBar/CaptionButtons/ChromeOverlayLayer removed, use WindowDrawnDecorations
+8. **Renamed Members**: Many property renames (PlacementMode→Placement, Watermark→PlaceholderText, etc.)
+9. **IInputRoot**: Now [PrivateApi], not removed — use TopLevel or IPresentationSource instead
+10. **PlacementMode**: Enum still exists, only property accessor renamed (Popup.PlacementMode → Popup.Placement)
 6. **Obsolete Members**: Remove all deprecated API usage
 7. **Platform**: Update Android initialization if applicable
 8. **Rendering**: Ensure Skia + HarfBuzz configuration

@@ -1,199 +1,209 @@
-# Avalonia 12 Migration - 遗漏点补充
+# Avalonia 12 Migration — Corrections & Newly Discovered Changes
 
-## 发现的遗漏点
+## Corrections to Previous Analysis
 
-### 1. PlacementMode 使用 (HIGH)
+### 1. PlacementMode is NOT Removed (Correction)
 
-**发现位置:** `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs` (43 处使用)
+**Previous claim:** PlacementMode enum completely removed.
+**Actual:** The `PlacementMode` enum still exists. Only the property accessor was renamed:
+- `Popup.PlacementMode` → `Popup.Placement`
+- `ContextMenu.PlacementMode` → `ContextMenu.Placement`
 
-**问题:** PlacementMode 在 Avalonia 12 中被移除，但 AtomUI 中大量使用
+**Verified in source:** `.referenceprojects/Avalonia/src/Avalonia.Controls/PlacementMode.cs` — public enum, no `[Obsolete]` attribute.
 
-**当前代码:**
-```csharp
-internal static ArrowPosition? CalculateArrowPosition(
-    PlacementMode placement,
-    PopupAnchor? anchor,
-    PopupGravity? gravity)
-{
-    if (placement != PlacementMode.AnchorAndGravity)
-    {
-        // ...
-    }
-}
-```
-
-**Avalonia 12 变动:**
-- `PlacementMode` 枚举被移除
-- 改用 `PopupAnchor` 和 `PopupGravity` 的组合
-- 相关的 `Popup.PlacementMode` 属性被移除
-
-**迁移方案:**
-```csharp
-// 需要重构 PlacementMode 的使用
-// 改用 PopupAnchor 和 PopupGravity 直接处理
-internal static ArrowPosition? CalculateArrowPosition(
-    PopupAnchor anchor,
-    PopupGravity gravity)
-{
-    // 直接使用 anchor 和 gravity
-}
-```
-
-**影响范围:**
-- PopupUtils.cs - 核心逻辑需要重构
-- 所有使用 PlacementMode 的代码
+**Impact on AtomUI:** `PopupUtils.cs` code using `PlacementMode` enum values in switch statements is fine. Only property access like `popup.PlacementMode = ...` needs to change to `popup.Placement = ...`.
 
 ---
 
-### 2. IInputRoot 接口使用 (HIGH)
+### 2. Visual.VisualRoot is NOT Removed (Correction)
 
-**发现位置:** `src/AtomUI.Core/Input/IInputRootRefectionExtensions.cs`
-
-**问题:** 
-- 文件名拼写错误: `IInputRootRefectionExtensions.cs` (应为 `IInputRootReflectionExtensions.cs`)
-- IInputRoot 接口在 Avalonia 12 中被移除
-- 但代码仍在尝试反射访问 IInputRoot
-
-**当前代码:**
+**Previous claim:** VisualRoot removed.
+**Actual:** Changed from `public` to `protected internal`. Still exists at `Visual.cs:348`:
 ```csharp
-internal static class IInputRootReflectionExtensions
-{
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(IInputRoot))]
-    private static readonly Lazy<PropertyInfo> RootElementPropertyInfo = new(() =>
-        typeof(IInputRoot).GetPropertyInfoOrThrow("RootElement",
-            BindingFlags.Instance | BindingFlags.NonPublic));
-
-    public static Visual? GetRootElement(this IInputRoot inputRoot)
-    {
-        return RootElementPropertyInfo.Value.GetValue(inputRoot) as Visual;
-    }
-}
+protected internal Visual? VisualRoot => PresentationSource?.RootVisual;
 ```
 
-**Avalonia 12 变动:**
-- `IInputRoot` 接口被移除
-- 功能移到 `IPresentationSource` 和 `TopLevel`
-
-**迁移方案:**
-```csharp
-// 改用 TopLevel 或 IPresentationSource
-public static Visual? GetRootElement(this TopLevel topLevel)
-{
-    return topLevel.RootVisual;
-}
-```
-
-**立即行动:**
-1. 修复文件名拼写
-2. 检查 IInputRoot 的所有使用
-3. 替换为 TopLevel 或 IPresentationSource
+**Impact:** Code inside Avalonia or derived classes can still access it. External code must use `TopLevel.GetTopLevel(visual)`.
 
 ---
 
-### 3. Popup 相关 API (MEDIUM)
+### 3. MathUtilities.Clamp Still Exists (Correction)
 
-**发现位置:** 多个 Popup 相关文件
-
-**问题:**
-- `IPopupHost` 接口被移除 (现在是 private API)
-- `OverlayPopupHost` 仍在使用但需要验证
-- Popup 的一些属性/方法可能已变更
-
-**需要检查的文件:**
-- `src/AtomUI.Desktop.Controls/Popup/PopupUtils.cs`
-- `src/AtomUI.Desktop.Controls/Popup/PopupHostToken.cs`
-- 所有使用 Popup 的控件
+**Previous claim:** Implied removal.
+**Actual:** All overloads (double, decimal, float, int) still present in `MathUtilities.cs`. `Math.Clamp()` is preferred but not required.
 
 ---
 
-### 4. 文件名拼写错误
+### 4. IInputRoot is [PrivateApi], Not Removed (Correction)
 
-**发现:**
-- `IInputRootRefectionExtensions.cs` → 应为 `IInputRootReflectionExtensions.cs`
+**Previous claim:** IInputRoot interface removed.
+**Actual:** Marked `[PrivateApi]` — still exists internally. External code should not use it.
 
-**影响:** 
-- 代码可读性
-- 搜索和维护困难
+**Verified in source:** `.referenceprojects/Avalonia/src/Avalonia.Base/Input/IInputRoot.cs`
 
 ---
 
-## 补充的 Breaking Changes
+### 5. BindingPlugins is Internal, Not Removed (Correction)
 
-### 33. PlacementMode 移除 (HIGH)
+**Previous claim:** Binding plugins removed.
+**Actual:** `BindingPlugins` class changed from `public` to `internal`.
 
-**What changed:** `PlacementMode` 枚举被完全移除。改用 `PopupAnchor` 和 `PopupGravity` 的组合。
-
-**Detection:**
-```csharp
-PlacementMode placement;
-if (placement != PlacementMode.AnchorAndGravity)
-if (placement == PlacementMode.Center)
-Popup.PlacementMode = PlacementMode.Bottom;
-```
-
-**Fix:**
-```csharp
-// 改用 PopupAnchor 和 PopupGravity
-PopupAnchor anchor;
-PopupGravity gravity;
-if (anchor != PopupAnchor.None)
-if (anchor == PopupAnchor.Center)
-// 使用 Popup.Anchor 和 Popup.Gravity 属性
-```
-
-**Why:** Avalonia 12 简化了 Popup 定位 API，使用更明确的 anchor/gravity 模型。
+**Verified in source:** `internal static class BindingPlugins`
 
 ---
 
-### 34. IInputRoot 接口移除 (HIGH)
+## Newly Discovered Breaking Changes
 
-**What changed:** `IInputRoot` 接口被移除。功能分散到 `IPresentationSource` 和 `TopLevel`。
+### 6. Gestures Class Now Internal (HIGH)
 
-**Detection:**
-```csharp
-typeof(IInputRoot).GetProperty("RootElement", ...)
-public void Process(IInputRoot root)
-if (root is IInputRoot inputRoot)
-```
-
-**Fix:**
-```csharp
-// 改用 TopLevel
-typeof(TopLevel).GetProperty("RootVisual", ...)
-public void Process(TopLevel topLevel)
-if (topLevel is TopLevel)
-```
-
-**Why:** IInputRoot 的职责被重新分配到更专门的接口。
+**Discovery:** Source scan found `internal static class Gestures` in Avalonia 12.
+**Impact:** Any code referencing `Gestures.TappedEvent`, `Gestures.DoubleTappedEvent`, etc. will fail.
+**Fix:** Use `InputElement.TappedEvent`, `InputElement.DoubleTappedEvent` instead.
 
 ---
 
-## 修复优先级
+### 7. IPopupHost Now Internal (HIGH)
 
-### 立即修复 (CRITICAL)
-1. ✅ 修复 IInputRootRefectionExtensions 文件名拼写
-2. ✅ 检查 IInputRoot 的所有使用
-3. ✅ 处理 PlacementMode 的 43 处使用
-
-### 需要验证 (HIGH)
-1. Popup 相关 API 的完整兼容性
-2. PopupUtils 中的 PlacementMode 逻辑重构
-3. OverlayPopupHost 的状态
-
-### 可选优化 (MEDIUM)
-1. 代码清理和重构
-2. 性能优化
+**Discovery:** Source scan found `internal interface IPopupHost` in Avalonia 12.
+**Impact:** Code using `IPopupHost` directly (e.g., `popup.Host`) will fail.
+**Fix:** Use `Popup.IsOpen` for state management.
 
 ---
 
-## 总结
+### 8. KeyboardNavigationHandler Now Internal (HIGH)
 
-**新发现的 Breaking Changes:** 2 个
-- PlacementMode 移除 (43 处使用)
-- IInputRoot 接口移除 (需要重构反射代码)
+**Discovery:** Source scan found `internal sealed class KeyboardNavigationHandler`.
+**Impact:** Code using `KeyboardNavigationHandler.GetNext()` will fail.
+**Fix:** Use `FocusManager.GetNextElement()`.
 
-**代码质量问题:** 1 个
-- 文件名拼写错误
+---
 
-**总体影响:** 中等 - 主要集中在 Popup 相关功能
+### 9. IRenderer Now [PrivateApi] (MEDIUM)
 
+**Discovery:** `IRenderer` interface marked as private API.
+**Impact:** Direct renderer access no longer supported for external code.
+**Fix:** Use higher-level APIs like `InvalidateVisual()`.
+
+---
+
+### 10. Window Decoration Architecture Redesign (HIGH)
+
+**Discovery:** Far more extensive than previously documented. Full list of removed types:
+- `Chrome.TitleBar`
+- `Chrome.CaptionButtons`
+- `ChromeOverlayLayer`
+- `LightDismissOverlayLayer`
+- `SystemDecorations` enum
+- `ExtendClientAreaChromeHints` enum
+- `IPopupHostProvider` interface
+
+New replacement system:
+- `WindowDrawnDecorations` — template-based decoration manager
+- `WindowDrawnDecorationsContent` — template content
+- `IWindowDrawnDecorationsTemplate` — template interface
+- `DrawnWindowDecorationParts` enum
+- `WindowDecorationsElementRole` enum
+- `WindowDecorationProperties.ElementRoleProperty` — attached property
+
+---
+
+### 11. Multiple Dispatchers Support (MEDIUM)
+
+**Discovery:** Avalonia 12 supports multiple dispatchers (one per thread).
+**Impact:** Library/control authors should use `AvaloniaObject.Dispatcher` or `Dispatcher.CurrentDispatcher`.
+**Previous:** Single global `Dispatcher.UIThread`.
+
+---
+
+### 12. Animations Stopped on Invisible Controls (LOW)
+
+**Discovery:** Animations no longer tick when control is hidden.
+**Fix:** Set `Animation.PlaybackBehavior = PlaybackBehavior.Always` to restore old behavior.
+
+---
+
+### 13. Windows BinaryFormatter Removed (MEDIUM)
+
+**Discovery:** No longer uses BinaryFormatter for clipboard serialization.
+**Impact:** Custom objects on clipboard need explicit serialization (e.g., JSON).
+
+---
+
+### 14. Comprehensive Renamed Members (MEDIUM)
+
+**Discovery:** Many more renames than previously documented:
+- `TextBox.Watermark` → `TextBox.PlaceholderText`
+- `TextBox.UseFloatingWatermark` → `TextBox.UseFloatingPlaceholder`
+- `Window.SystemDecorations` → `Window.WindowDecorations`
+- `RenderOptions.TextRenderingMode` → `TextOptions.TextRenderingMode`
+- `TextBlock.LetterSpacing` → `TextElement.LetterSpacing` (now inherited attached property)
+- `PseudolassesExtensions` → `PseudoClassesExtensions` (typo fix)
+- `X11PlatformOptions.ExterinalGLibMainLoopExceptionLogger` → `ExternalGLibMainLoopExceptionLogger`
+
+---
+
+### 15. Comprehensive Obsolete Member Removals (HIGH)
+
+**Discovery:** 40+ members deprecated in Avalonia 11 now removed. Key items:
+- `IStyleable` → `StyledElement`
+- `CubicBezierEasing` → `SplineEasing`
+- `CustomAnimatorBase` → `InterpolatingAnimator<T>`
+- `FileDialog`/`OpenFileDialog`/`SaveFileDialog` → `IStorageProvider`
+- `SystemDialog` → `IStorageProvider`
+- `ToggleButton.Checked/Unchecked/Indeterminate` → `IsCheckedChanged`
+- `DrawingContext.PushPreTransform/PushPostTransform` → `PushTransform`
+- `IActivatableApplicationLifetime` → `TryGetFeature<IActivatableLifetime>`
+- `AppBuilder.LifetimeOverride` → removed
+- `IApplicationPlatformEvents` → removed
+
+---
+
+### 16. Android CreateAppBuilder/CustomizeAppBuilder Removed (MEDIUM)
+
+**Discovery:** Virtual methods removed from `AvaloniaMainActivity`.
+**Fix:** Move logic to `AvaloniaAndroidApplication<TApp>` subclass.
+
+---
+
+### 17. Render Target Interfaces Reworked (CRITICAL for custom backends)
+
+**Discovery:** Major rework of rendering interfaces:
+- `IRenderTarget.CreateDrawingContext` signature changed
+- `IRenderTargetBitmapImpl` no longer extends `IRenderTarget`
+- `ISkiaGpu` now internal
+- Versioned interfaces merged
+- `LockedFramebuffer` constructor requires `AlphaFormat`
+
+---
+
+### 18. FuncMultiValueConverter (LOW)
+
+**Discovery:** New `IReadOnlyList<TIn?>` constructor added. Old `IEnumerable<TIn?>` kept for compatibility.
+
+---
+
+### 19. Popup New Properties (MEDIUM)
+
+**Discovery:** New properties on Popup:
+- `OverlayDismissEventPassThrough`
+- `OverlayInputPassThroughElement`
+- `ShouldUseOverlayLayer`
+- `IsUsingOverlayLayer`
+
+---
+
+### 20. VisualLayerManager Changes (MEDIUM)
+
+**Discovery:** Layer access methods changed:
+- `VisualLayerManager.AdornerLayer` → `AdornerLayer.GetAdornerLayer()`
+- `VisualLayerManager.OverlayLayer` → `OverlayLayer.GetOverlayLayer()`
+- `VisualLayerManager.ChromeOverlayLayer` → removed (use `WindowDrawnDecorations`)
+- `VisualLayerManager.LightDismissOverlayLayer` → removed
+
+---
+
+## Summary
+
+**Corrections:** 5 items (PlacementMode, VisualRoot, MathUtilities.Clamp, IInputRoot, BindingPlugins)
+**New discoveries:** 15 items
+**Total skill categories:** Updated from 36 to 51

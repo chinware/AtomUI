@@ -287,13 +287,220 @@ public void Update(TopLevel root, Visual? candidateToolTipHost)
 | Pattern | Avalonia 11 | Avalonia 12 | Complexity |
 |---------|------------|-----------|-----------|
 | Event parameters | `GotFocusEventArgs` | `FocusChangedEventArgs` | Low |
-| Top-level access | `.VisualRoot` | `TopLevel.GetTopLevel()` | Medium |
+| Top-level access | `.VisualRoot` (public) | `TopLevel.GetTopLevel()` (VisualRoot now protected internal) | Medium |
 | Popup state | `.Host != null` | `.IsOpen` | Low |
+| Popup placement | `.PlacementMode` | `.Placement` | Low |
 | Selection update | `UpdateSelection()` | `SetCurrentValue()` | Low |
 | Text properties | Wrong param order | Correct param order | Medium |
 | Clipboard | `SetTextAsync()` | Extension method | Low |
-| Utilities | `MathUtilities.Clamp()` | `Math.Clamp()` | Low |
+| Utilities | `MathUtilities.Clamp()` | `Math.Clamp()` (both work) | Low |
 | Extension methods | `GetVisualRoot()` with IInputRoot | `TopLevel.GetTopLevel()` | Medium |
+| Gestures | `Gestures.TappedEvent` | `InputElement.TappedEvent` | Low |
+| IPopupHost | `popup.Host` | `popup.IsOpen` | Low |
+| Focus navigation | `KeyboardNavigationHandler.GetNext()` | `FocusManager.GetNextElement()` | Medium |
+| Window decorations | `TitleBar`, `CaptionButtons` | `WindowDrawnDecorations` | High |
+| Renamed members | `TextBox.Watermark` | `TextBox.PlaceholderText` | Low |
+| Dispatcher | `Dispatcher.UIThread` | `AvaloniaObject.Dispatcher` | Medium |
+
+---
+
+## Example 9: Popup Placement Migration
+
+### Before (Avalonia 11)
+```csharp
+popup.PlacementMode = PlacementMode.Bottom;
+contextMenu.PlacementMode = PlacementMode.Right;
+```
+
+### After (Avalonia 12)
+```csharp
+popup.Placement = PlacementMode.Bottom;
+contextMenu.Placement = PlacementMode.Right;
+// Note: PlacementMode enum is unchanged, only the property name changed
+```
+
+### XAML Before
+```xml
+<Popup PlacementMode="Bottom" />
+```
+
+### XAML After
+```xml
+<Popup Placement="Bottom" />
+```
+
+### Key Changes
+- Property renamed from `PlacementMode` to `Placement`
+- `PlacementMode` enum itself is NOT removed
+- Enum values remain the same
+
+---
+
+## Example 10: Gestures Class Migration
+
+### Before (Avalonia 11)
+```csharp
+control.AddHandler(Gestures.TappedEvent, OnTapped);
+control.AddHandler(Gestures.DoubleTappedEvent, OnDoubleTapped);
+control.AddHandler(Gestures.RightTappedEvent, OnRightTapped);
+```
+
+### After (Avalonia 12)
+```csharp
+control.AddHandler(InputElement.TappedEvent, OnTapped);
+control.AddHandler(InputElement.DoubleTappedEvent, OnDoubleTapped);
+control.AddHandler(InputElement.RightTappedEvent, OnRightTapped);
+```
+
+### XAML Before
+```xml
+<Button Gestures.Tapped="OnTapped" />
+```
+
+### XAML After
+```xml
+<Button Tapped="OnTapped" />
+```
+
+### Key Changes
+- `Gestures` class is now `internal`
+- All events moved to `InputElement`
+- Remove `Gestures.` prefix in XAML
+
+---
+
+## Example 11: IPopupHost Migration
+
+### Before (Avalonia 11)
+```csharp
+IPopupHost host = popup.Host;
+if (host != null)
+{
+    host.Close();
+}
+```
+
+### After (Avalonia 12)
+```csharp
+if (popup.IsOpen)
+{
+    popup.IsOpen = false;
+}
+```
+
+### Key Changes
+- `IPopupHost` is now `internal`
+- `Popup.Host` property removed
+- Use `Popup.IsOpen` for state management
+
+---
+
+## Example 12: KeyboardNavigationHandler Migration
+
+### Before (Avalonia 11)
+```csharp
+var next = KeyboardNavigationHandler.GetNext(currentElement, NavigationDirection.Next);
+```
+
+### After (Avalonia 12)
+```csharp
+var focusManager = TopLevel.GetTopLevel(currentElement)?.FocusManager;
+var next = focusManager?.GetNextElement(currentElement, NavigationDirection.Next);
+```
+
+### Key Changes
+- `KeyboardNavigationHandler` is now `internal`
+- Use `FocusManager.GetNextElement()` instead
+
+---
+
+## Example 13: Renamed Members Migration
+
+### Before (Avalonia 11)
+```csharp
+textBox.Watermark = "Enter text...";
+textBox.UseFloatingWatermark = true;
+window.SystemDecorations = SystemDecorations.Full;
+```
+
+### After (Avalonia 12)
+```csharp
+textBox.PlaceholderText = "Enter text...";
+textBox.UseFloatingPlaceholder = true;
+window.WindowDecorations = WindowDecorations.Full;
+```
+
+### Key Changes
+- `Watermark` → `PlaceholderText`
+- `UseFloatingWatermark` → `UseFloatingPlaceholder`
+- `SystemDecorations` → `WindowDecorations`
+
+---
+
+## Example 14: Window Decorations Migration
+
+### Before (Avalonia 11)
+```xml
+<Window>
+    <Chrome:TitleBar />
+    <Chrome:CaptionButtons />
+</Window>
+```
+```csharp
+var layer = VisualLayerManager.ChromeOverlayLayer;
+var adorner = VisualLayerManager.AdornerLayer;
+```
+
+### After (Avalonia 12)
+```xml
+<Window>
+    <Chrome:WindowDrawnDecorations />
+</Window>
+```
+```csharp
+// ChromeOverlayLayer removed — use WindowDrawnDecorations
+var adorner = AdornerLayer.GetAdornerLayer(visual);
+var overlay = OverlayLayer.GetOverlayLayer(visual);
+```
+
+### Key Changes
+- `TitleBar`, `CaptionButtons`, `ChromeOverlayLayer` removed
+- Use `WindowDrawnDecorations` template-based system
+- Layer access via static methods instead of VisualLayerManager properties
+
+---
+
+## Example 15: Dispatcher Migration
+
+### Before (Avalonia 11)
+```csharp
+Dispatcher.UIThread.InvokeAsync(() =>
+{
+    UpdateUI();
+});
+```
+
+### After (Avalonia 12)
+```csharp
+// In control code, use the object's own dispatcher
+this.Dispatcher.InvokeAsync(() =>
+{
+    UpdateUI();
+});
+
+// Or use current thread's dispatcher
+Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+{
+    UpdateUI();
+});
+```
+
+### Key Changes
+- Multiple dispatchers now supported (one per thread)
+- Use `AvaloniaObject.Dispatcher` in control code
+- `Dispatcher.UIThread` still works but less precise
+
+---
 
 ## Common Mistakes to Avoid
 
@@ -304,4 +511,13 @@ public void Update(TopLevel root, Visual? candidateToolTipHost)
 5. ❌ Trying to access `.VisualRoot` directly instead of using `TopLevel.GetTopLevel()`
 6. ❌ Forgetting to update custom extension methods that use removed APIs
 7. ❌ Casting to `IInputRoot` when `e.Root` is already `TopLevel`
-8. ❌ Using `GetPresentationSource()` which is no longer accessible
+8. ❌ Using `GetPresentationSource()` which is no longer accessible externally
+9. ❌ Claiming `PlacementMode` enum is removed — only the property name changed
+10. ❌ Claiming `Visual.VisualRoot` is removed — it's `protected internal`
+11. ❌ Claiming `MathUtilities.Clamp` is removed — it still exists
+12. ❌ Using `Gestures.TappedEvent` — class is now `internal`, use `InputElement.TappedEvent`
+13. ❌ Using `IPopupHost` directly — now `internal`, use `Popup.IsOpen`
+14. ❌ Using `KeyboardNavigationHandler.GetNext()` — now `internal`, use `FocusManager`
+15. ❌ Using old property names (`Watermark`, `PlacementMode`, `SystemDecorations`)
+16. ❌ Using `TitleBar`/`CaptionButtons` — removed, use `WindowDrawnDecorations`
+17. ❌ Assuming single global dispatcher — Avalonia 12 supports multiple
