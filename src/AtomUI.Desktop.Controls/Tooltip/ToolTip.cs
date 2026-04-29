@@ -74,6 +74,9 @@ public class ToolTip : ContentControl,
     public static readonly AttachedProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, double>("MarginToAnchor", 4);
     
+    public static readonly AttachedProperty<bool> IsCustomShowAndHideProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsCustomShowAndHide");
+    
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -298,6 +301,17 @@ public class ToolTip : ContentControl,
     {
         element.SetValue(MarginToAnchorProperty, margin);
     }
+    
+    public static bool GetIsCustomShowAndHide(Control element)
+    {
+        return element.GetValue(IsCustomShowAndHideProperty);
+    }
+
+    public static void SetIsCustomShowAndHide(Control element, bool flag)
+    {
+        element.SetValue(IsCustomShowAndHideProperty, flag);
+    }
+
     #endregion
 
     #region 路由事件访问器

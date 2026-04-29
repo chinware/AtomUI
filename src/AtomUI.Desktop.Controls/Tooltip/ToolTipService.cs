@@ -67,6 +67,10 @@ public sealed class ToolTipService : IDisposable
                 case RawPointerEventType.MiddleButtonDown:
                 case RawPointerEventType.XButton1Down:
                 case RawPointerEventType.XButton2Down:
+                    if (_tipControl is not null && ToolTip.GetIsCustomShowAndHide(_tipControl))
+                    {
+                        break;
+                    }
                     ClearTip();
                     break;
             }
@@ -91,16 +95,22 @@ public sealed class ToolTipService : IDisposable
         while (candidateToolTipHost != null)
         {
             if (candidateToolTipHost == currentToolTip)
+            {
                 return;
+            }
 
             if (candidateToolTipHost is Control control)
             {
-                if (!ToolTip.GetServiceEnabled(control))
+                if (!ToolTip.GetServiceEnabled(control) || ToolTip.GetIsCustomShowAndHide(control))
+                {
                     return;
+                }
 
                 if (ToolTip.GetTip(control) != null &&
                     (control.IsEffectivelyEnabled || ToolTip.GetShowOnDisabled(control)))
+                {
                     break;
+                }
             }
 
             candidateToolTipHost = candidateToolTipHost?.GetVisualParent();
@@ -113,7 +123,7 @@ public sealed class ToolTipService : IDisposable
             return;
         }
 
-        OnTipControlChanged(_tipControl, newControl);
+        HandleTipControlChanged(_tipControl, newControl);
         _tipControl = newControl;
     }
 
@@ -145,7 +155,7 @@ public sealed class ToolTipService : IDisposable
         }
     }
 
-    private void OnTipControlChanged(Control? oldValue, Control? newValue)
+    private void HandleTipControlChanged(Control? oldValue, Control? newValue)
     {
         StopTimer();
 
@@ -235,7 +245,10 @@ public sealed class ToolTipService : IDisposable
 
     private void Close(Control control)
     {
-        ToolTip.SetIsOpen(control, false);
+        if (!ToolTip.GetIsCustomShowAndHide(control))
+        {
+            ToolTip.SetIsOpen(control, false);
+        }
     }
 
     private void StopTimer()
