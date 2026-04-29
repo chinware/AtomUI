@@ -15,6 +15,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CarouselToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CheckBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.GroupBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));
@@ -24,8 +25,11 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ResultToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ScrollViewerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SegmentedToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SeparatorToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpaceToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpinToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TimelineToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToggleSwitchToken));

@@ -520,10 +520,14 @@ public class Steps : SelectingItemsControl,
         base.OnPointerPressed(e);
         if (IsItemClickable && e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
         {
-            e.Handled = UpdateSelectionFromEventSource(e.Source);
+            var container = GetContainerFromEventSource(e.Source);
+            if (container != null)
+            {
+                e.Handled = UpdateSelectionFromEvent(container, e);
+            }
         }
     }
-    
+
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         if (IsItemClickable && e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
@@ -532,7 +536,7 @@ public class Steps : SelectingItemsControl,
             if (container != null && container.GetVisualsAt(e.GetPosition(container))
                                               .Any(c => container == c || container.IsVisualAncestorOf(c)))
             {
-                e.Handled = UpdateSelectionFromEventSource(e.Source);
+                e.Handled = UpdateSelectionFromEvent(container, e);
             }
         }
     }

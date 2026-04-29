@@ -111,6 +111,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         EmptyImgHeightSM
     }
 
+    public enum GroupBoxTokenKind
+    {
+        ContentPadding,
+        HeaderContainerMargin,
+        HeaderContentPadding,
+        HeaderIconMargin,
+        OrientationMarginPercent,
+        TextPaddingInline,
+        VerticalMarginInline
+    }
+
     public enum MarqueeLabelTokenKind
     {
         CycleSpace,
@@ -282,6 +293,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TrackPadding
     }
 
+    public enum SeparatorTokenKind
+    {
+        HorizontalMarginBlock,
+        HorizontalMarginBlockLG,
+        HorizontalMarginBlockSM,
+        HorizontalWithTextGutterMargin,
+        OrientationMarginPercent,
+        TextPaddingInline,
+        VerticalMarginInline
+    }
+
     public enum SpaceTokenKind
     {
         AddonBg,
@@ -291,6 +313,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         GapLargeSize,
         GapMiddleSize,
         GapSmallSize
+    }
+
+    public enum SpinTokenKind
+    {
+        DotSize,
+        DotSizeLG,
+        DotSizeSM,
+        IndicatorDuration,
+        IndicatorSize,
+        IndicatorSizeLG,
+        IndicatorSizeSM
     }
 
     public enum SplitterTokenKind
@@ -310,6 +343,70 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         SplitBarHandleSize,
         SplitBarSize,
         SplitTriggerSize
+    }
+
+    public enum StepsTokenKind
+    {
+        CustomIconFontSize,
+        CustomIconSize,
+        DescriptionMaxWidth,
+        DotCurrentSize,
+        DotLineThickness,
+        DotSize,
+        ErrorDescriptionColor,
+        ErrorDotColor,
+        ErrorIconBgColor,
+        ErrorIconBorderColor,
+        ErrorIconColor,
+        ErrorTailColor,
+        ErrorTitleColor,
+        FinishDescriptionColor,
+        FinishDotColor,
+        FinishIconBgColor,
+        FinishIconBorderColor,
+        FinishIconColor,
+        FinishTailColor,
+        FinishTitleColor,
+        HorizontalDotMargin,
+        HorizontalHeaderMargin,
+        IconFontSize,
+        IconSize,
+        IconSizeSM,
+        InlineDotSize,
+        InlineHeaderMargin,
+        InlineHeaderPadding,
+        InlineItemPadding,
+        InlineTailColor,
+        InlineTitleColor,
+        NavArrowColor,
+        NavItemGutter,
+        NavItemGutterSM,
+        ProcessDescriptionColor,
+        ProcessDotColor,
+        ProcessIconBgColor,
+        ProcessIconBorderColor,
+        ProcessIconColor,
+        ProcessTailColor,
+        ProcessTitleColor,
+        ProgressColor,
+        ProgressFramePadding,
+        ProgressFramePaddingSM,
+        ProgressGrooveColor,
+        StepsNavActiveColor,
+        StepsProgressSize,
+        VerticalDescriptionPadding,
+        VerticalDotMargin,
+        VerticalItemSpacing,
+        VerticalLabelContentMargin,
+        VerticalNavArrowMargin,
+        VerticalNavArrowMarginSM,
+        WaitDescriptionColor,
+        WaitDotColor,
+        WaitIconBgColor,
+        WaitIconBorderColor,
+        WaitIconColor,
+        WaitTailColor,
+        WaitTitleColor
     }
 
     public enum TagTokenKind
@@ -494,6 +591,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class GroupBoxTokenResourceExtension : TokenResourceExtension<GroupBoxTokenKind>
+    {
+        public GroupBoxTokenResourceExtension()
+        {
+        }
+
+        public GroupBoxTokenResourceExtension(GroupBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class MarqueeLabelTokenResourceExtension : TokenResourceExtension<MarqueeLabelTokenKind>
     {
         public MarqueeLabelTokenResourceExtension()
@@ -593,6 +701,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class SeparatorTokenResourceExtension : TokenResourceExtension<SeparatorTokenKind>
+    {
+        public SeparatorTokenResourceExtension()
+        {
+        }
+
+        public SeparatorTokenResourceExtension(SeparatorTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class SpaceTokenResourceExtension : TokenResourceExtension<SpaceTokenKind>
     {
         public SpaceTokenResourceExtension()
@@ -604,6 +723,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class SpinTokenResourceExtension : TokenResourceExtension<SpinTokenKind>
+    {
+        public SpinTokenResourceExtension()
+        {
+        }
+
+        public SpinTokenResourceExtension(SpinTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class SplitterTokenResourceExtension : TokenResourceExtension<SplitterTokenKind>
     {
         public SplitterTokenResourceExtension()
@@ -611,6 +741,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplitterTokenResourceExtension(SplitterTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class StepsTokenResourceExtension : TokenResourceExtension<StepsTokenKind>
+    {
+        public StepsTokenResourceExtension()
+        {
+        }
+
+        public StepsTokenResourceExtension(StepsTokenKind kind) : base(kind)
         {
         }
     }
