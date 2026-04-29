@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Controls.Primitives;
-using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Palette;
 using Avalonia;
@@ -372,8 +370,6 @@ public class ToolTip : ContentControl,
             _popup.Opened                       += HandlePopupOpened;
             _popup.Closed                       += HandlePopupClosed;
             _popup.PositionFlipped              += HandlePositionFlipped;
-            _popup.Placement                    =  PlacementMode.Custom;
-            _popup.CustomPopupPlacementCallback =  HandleCustomPlacement;
         }
 
         _subscriptions = new CompositeDisposable([
@@ -384,6 +380,8 @@ public class ToolTip : ContentControl,
             _popup.Bind(Popup.IsMotionEnabledProperty, this.GetObservable(IsMotionEnabledProperty)),
             _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty)),
             _popup.Bind(Popup.VerticalOffsetProperty, control.GetBindingObservable(VerticalOffsetProperty)),
+            _popup.Bind(Popup.RequestedPlacementProperty, control.GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
+            _popup.Bind(Popup.MarginToAnchorProperty, control.GetBindingObservable(MarginToAnchorProperty)),
         ]);
 
         _popup.PlacementTarget = control;
@@ -607,59 +605,4 @@ public class ToolTip : ContentControl,
         }
     }
 
-    private void HandleCustomPlacement(CustomPopupPlacement placement)
-    {
-        if (_popup?.PlacementTarget is not {} target)
-        {
-            return;
-        }
-
-        var shadowThickness    = _popup.MaskShadows.Thickness();
-        var requestedPlacement = GetPlacement(target);
-        var isUseOverlayHost   = GetIsUseOverlayHost(target);
-        var hOffset            = GetHorizontalOffset(target);
-        var vOffset            = GetVerticalOffset(target);
-        var marginToAnchor     = GetMarginToAnchor(target);
-
-        PopupAnchor anchor;
-        PopupGravity gravity;
-
-        if (requestedPlacement == PlacementMode.Pointer)
-        {
-            var topLevel = TopLevel.GetTopLevel(target);
-            if (topLevel == null)
-            {
-                return;
-            }
-
-            var position = topLevel.PointToClient(topLevel.GetLastPointerPosition() ?? default);
-            placement.AnchorRectangle = new Rect(position, new Size(1, 1));
-            anchor                    = PopupAnchor.TopLeft;
-            gravity                   = PopupGravity.BottomRight;
-        }
-        else
-        {
-            (anchor, gravity) = PopupUtils.GetAnchorAndGravity(requestedPlacement);
-        }
-
-        var arrowIndicatorLayoutBounds = default(Rect);
-        if (this is IArrowAwareShadowMaskInfoProvider arrowAwareShadowMaskInfoProvider)
-        {
-            arrowIndicatorLayoutBounds = arrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
-        }
-
-        var isFlipped = PopupUtils.ApplyCustomPlacement(
-            placement,
-            requestedPlacement,
-            isUseOverlayHost,
-            hOffset,
-            vOffset,
-            marginToAnchor,
-            shadowThickness,
-            anchor,
-            gravity,
-            arrowIndicatorLayoutBounds);
-
-        _popup.NotifyFlipped(isFlipped);
-    }
 }

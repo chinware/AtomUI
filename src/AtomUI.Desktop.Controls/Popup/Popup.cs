@@ -1,10 +1,14 @@
 using System.ComponentModel;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Data;
+using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Threading;
 
@@ -37,6 +41,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty =
         AvaloniaProperty.Register<Popup, AbstractMotion?>(nameof(CloseMotion));
+
+    public static readonly StyledProperty<PlacementMode?> RequestedPlacementProperty =
+        AvaloniaProperty.Register<Popup, PlacementMode?>(nameof(RequestedPlacement));
+
+    public static readonly StyledProperty<double> MarginToAnchorProperty =
+        AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
     
     public BoxShadows MaskShadows
     {
@@ -80,6 +90,18 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         get => GetValue(CloseMotionProperty);
         set => SetValue(CloseMotionProperty, value);
+    }
+
+    public PlacementMode? RequestedPlacement
+    {
+        get => GetValue(RequestedPlacementProperty);
+        set => SetValue(RequestedPlacementProperty, value);
+    }
+
+    public double MarginToAnchor
+    {
+        get => GetValue(MarginToAnchorProperty);
+        set => SetValue(MarginToAnchorProperty, value);
     }
     #endregion
 
@@ -191,6 +213,85 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         _motionActor = actor;
     }
+
+    #region 自定义定位逻辑
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == RequestedPlacementProperty)
+        {
+            var requestedPlacement = change.GetNewValue<PlacementMode?>();
+            if (requestedPlacement is not null)
+            {
+                Placement = PlacementMode.Custom;
+                CustomPopupPlacementCallback = HandleCustomPlacement;
+            }
+            else
+            {
+                CustomPopupPlacementCallback = null;
+            }
+        }
+    }
+
+    private void HandleCustomPlacement(CustomPopupPlacement placement)
+    {
+        if (PlacementTarget is not {} target)
+        {
+            return;
+        }
+
+        var shadowThickness    = MaskShadows.Thickness();
+        var requestedPlacement = RequestedPlacement!.Value;
+        var isUseOverlayHost   = ShouldUseOverlayLayer;
+        var hOffset            = HorizontalOffset;
+        var vOffset            = VerticalOffset;
+        var marginToAnchor     = MarginToAnchor;
+
+        PopupAnchor anchor;
+        PopupGravity gravity;
+
+        if (requestedPlacement == PlacementMode.Pointer)
+        {
+            var topLevel = TopLevel.GetTopLevel(target);
+            if (topLevel == null)
+            {
+                return;
+            }
+
+            var position = topLevel.PointToClient(topLevel.GetLastPointerPosition() ?? default);
+            placement.AnchorRectangle = new Rect(position, new Size(1, 1));
+            anchor  = PopupAnchor.TopLeft;
+            gravity = PopupGravity.BottomRight;
+        }
+        else
+        {
+            (anchor, gravity) = PopupUtils.GetAnchorAndGravity(requestedPlacement);
+        }
+
+        var arrowIndicatorLayoutBounds = default(Rect);
+        if (Child is IArrowAwareShadowMaskInfoProvider provider)
+        {
+            arrowIndicatorLayoutBounds = provider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
+        }
+
+        var isFlipped = PopupUtils.ApplyCustomPlacement(
+            placement,
+            requestedPlacement,
+            isUseOverlayHost,
+            hOffset,
+            vOffset,
+            marginToAnchor,
+            shadowThickness,
+            anchor,
+            gravity,
+            arrowIndicatorLayoutBounds);
+
+        NotifyFlipped(isFlipped);
+    }
+
+    #endregion
 }
 
 public class PopupFlippedEventArgs : EventArgs
