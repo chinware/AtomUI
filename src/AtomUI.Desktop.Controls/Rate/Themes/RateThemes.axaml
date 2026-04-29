@@ -1,0 +1,9 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="RateItemTheme.axaml" />
+        <ResourceInclude Source="RateTheme.axaml" />
+        <ResourceInclude Source="RateItemsControlTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

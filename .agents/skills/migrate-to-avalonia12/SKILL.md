@@ -133,7 +133,16 @@ Desktop and Mobile controls typically inherit from abstract base classes in `Ato
 
 **Why:** Breaking changes in the base class affect all platform-specific implementations. Missing base class issues leads to runtime bugs (e.g., `RawInputEventArgs.Root` comparison failures) that are hard to trace back to the migration.
 
-### 12. Token definitions and language packs are copy-only
+### 12. Verify Avalonia API from reference source, not assembly metadata
+
+When you need to check whether an Avalonia 12 API exists, what properties/methods a type exposes, or how a type is defined, look up the source code in `.referenceprojects/Avalonia/src` first. This is the local checkout of the exact Avalonia version used by the project. Do NOT attempt to decompile NuGet assemblies, parse `strings` output, or guess API shapes. The source is authoritative and always available.
+
+Examples:
+- Check if `TextOptions` has a `TextRenderingModeProperty`: search in `.referenceprojects/Avalonia/src/Avalonia.Base` or `Avalonia.Controls`
+- Check if `IInputManager` is still public: read the interface definition from source
+- Check constructor signatures, property names, or method overloads: read the source file directly
+
+### 13. Token definitions and language packs are copy-only
 
 When migrating a control module, the following files do NOT need breaking-change scanning or dependency analysis — copy them directly from `release/5.0` to the target branch:
 

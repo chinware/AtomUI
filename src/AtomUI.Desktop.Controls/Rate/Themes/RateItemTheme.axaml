@@ -1,0 +1,66 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:atomc="https://atomui.net/common-controls"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atomc:RateItem}" TargetType="atomc:RateItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <Panel>
+                        <atom:DashedBorder BorderThickness="0.75" BorderBrush="{TemplateBinding StarColor}" StrokeDashArray="4, 2"
+                                           IsVisible="{TemplateBinding IsFocusStartItem}"/>
+                        <Rectangle Fill="{TemplateBinding CharacterBgBrush}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"/>
+                        <Rectangle Name="ActiveItem"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Clip="{TemplateBinding StarClip}"/>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Background" Value="Transparent"/>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Width" Value="{atom:RateTokenResource StarSizeLG}"/>
+            <Setter Property="Height" Value="{atom:RateTokenResource StarSizeLG}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Width" Value="{atom:RateTokenResource StarSize}"/>
+            <Setter Property="Height" Value="{atom:RateTokenResource StarSize}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Width" Value="{atom:RateTokenResource StarSizeSM}"/>
+            <Setter Property="Height" Value="{atom:RateTokenResource StarSizeSM}"/>
+        </Style>
+        <Style Selector="^:not(^[SelectedState=None])">
+            <Style Selector="^ /template/ Rectangle#ActiveItem">
+                <Setter Property="Fill" Value="{TemplateBinding CharacterBrush}"/>
+            </Style>
+        </Style>
+        
+        <Setter Property="RenderTransformOrigin" Value="{x:Static RelativePoint.Center}"/>
+        <Setter Property="HoverScale" Value="{atom:RateTokenResource StarHoverScale}"/>
+        <Style Selector="^:pointerover">
+            <Setter Property="RenderTransform" Value="{Binding HoverRenderTransform, RelativeSource={RelativeSource Self}}"/> 
+        </Style>
+        <Style Selector="^[IsFocusStartItem=True]">
+            <Setter Property="RenderTransform" Value="{Binding HoverRenderTransform, RelativeSource={RelativeSource Self}}"/> 
+        </Style>
+    
+    </ControlTheme>
+</ResourceDictionary>
