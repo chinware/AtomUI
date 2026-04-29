@@ -45,8 +45,7 @@
                               IsVisible="False">
                             <Grid.RowDefinitions>
                                 <RowDefinition
-                                    Height="{Binding (atom:CalendarItem.DayTitleHeight), RelativeSource={RelativeSource Self},
-                                    Converter={StaticResource DoubleToGridLengthConverter}}" />
+                                    Height="{TemplateBinding DayTitleHeight}" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />

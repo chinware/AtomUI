@@ -17,6 +17,8 @@ description: Comprehensive Avalonia 12 migration tool for AtomUI. Detects and fi
 
 **5. Ensure AOT compatibility** — Identify and fix reflection-based API access with proper [DynamicDependency] patterns.
 
+**6. Verify compilation** — After applying code changes, always run `dotnet build` to ensure the migrated code compiles successfully. Migration is only complete when the build succeeds.
+
 ## Core Principle
 
 > Avalonia 12 is a major version with significant breaking changes across binding system, focus handling, clipboard API, window decorations, TopLevel architecture, Popup positioning, extension methods, dispatcher model, obsolete member removals, renamed APIs, and platform support. This skill automates detection and fixing of the most common issues while providing guidance for complex migrations and AOT-safe reflection patterns.
@@ -252,6 +254,37 @@ Include:
 ### Step 5: Apply fixes (if requested)
 
 Only auto-fix safe transformations. Flag complex changes for manual review.
+
+### Step 6: Build verification (MANDATORY after code changes)
+
+After applying any code changes during migration, you MUST verify the changes compile successfully:
+
+1. **Identify the project file** — Find the `.csproj` file for the module being migrated
+2. **Run dotnet build** — Execute `dotnet build <project-file>` to verify compilation
+3. **Check for errors** — If build fails:
+   - Read the error messages carefully
+   - Identify which migration changes caused the errors
+   - Fix the errors (common issues: missing using directives, incorrect API usage, typos)
+   - Rebuild until successful
+4. **Report build status** — Always report whether the build succeeded or failed in your final summary
+
+**Build verification is NOT optional** — it catches:
+- Typos in renamed APIs
+- Missing namespace imports
+- Incorrect method signatures
+- Breaking changes not covered by the migration rules
+- Syntax errors introduced during editing
+
+**Example build command:**
+```bash
+dotnet build src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
+```
+
+**If build fails multiple times:**
+- Review the Avalonia 12 reference source in `.referenceprojects/Avalonia/src`
+- Check if the API you're using actually exists in Avalonia 12
+- Verify the correct namespace and assembly
+- Consider whether reflection/extraction is needed for internal APIs
 
 ## Migration Rules (36+ Categories)
 
@@ -1387,6 +1420,11 @@ string? key = accessText.AccessKey;
 2. Preserve formatting and comments
 3. Update imports if necessary
 4. Verify no new issues introduced
+5. **MANDATORY: Build verification after code changes**
+   - After applying any code changes, run `dotnet build <project-file>` to verify compilation
+   - If build fails, read error messages, fix issues, and rebuild
+   - Report build status in final summary
+   - Do NOT consider migration complete until build succeeds
 
 ### Code generation style
 
@@ -1444,6 +1482,8 @@ for (int i = 0; i < count; i++)
 - Missing checks for renamed members (Watermark→PlaceholderText, etc.)
 - Missing checks for internalized classes (Gestures, BindingPlugins, IPopupHost, KeyboardNavigationHandler)
 - Writing new reflection code when an existing ReflectionExtension already covers the target member (check the catalog first)
+- ALWAYS run `dotnet build` to verify compilation
+- migration is only complete when code compiles successfully
 
 ## AtomUI ReflectionExtensions Catalog
 

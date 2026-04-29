@@ -386,7 +386,7 @@ internal class AddOnDecoratedBox : ContentControl,
             return;
         }
         _layoutUpdatePosted = true;
-        Dispatcher.UIThread.Post(ApplyDirtyLayoutUpdates, DispatcherPriority.Render);
+        Dispatcher.Post(ApplyDirtyLayoutUpdates, DispatcherPriority.Render);
     }
 
     private void ApplyDirtyLayoutUpdates()
@@ -829,6 +829,6 @@ internal class AddOnDecoratedBox : ContentControl,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

@@ -8,16 +8,22 @@ namespace AtomUI.Theme
         internal static IList<Type> GetTokenTypes()
         {
             List<Type> tokenTypes = new List<Type>();
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AddOnDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AdornerLayerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ArrowDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.BreadcrumbToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CalendarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CarouselToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CheckBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CollapseToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ExpanderToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.GroupBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.LineEditToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.OptionButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ProgressBarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.RadioButtonToken));
@@ -31,6 +37,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TextAreaToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TimelineToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToggleSwitchToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToolTipToken));

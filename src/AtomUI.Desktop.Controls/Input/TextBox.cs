@@ -40,12 +40,6 @@ public class TextBox : AvaloniaTextBox,
     public static readonly StyledProperty<PathIcon?> ClearIconProperty =
         AvaloniaProperty.Register<TextBox, PathIcon?>(nameof(ClearIcon));
     
-    public static readonly StyledProperty<string?> PlaceholderTextProperty =
-        AvaloniaProperty.Register<TextBox, string?>(nameof(PlaceholderText));
-    
-    public static readonly StyledProperty<IBrush?> PlaceholderForegroundProperty =
-        AvaloniaProperty.Register<TextBox, IBrush?>(nameof(PlaceholderForeground));
-    
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextBox>();
     
@@ -83,18 +77,6 @@ public class TextBox : AvaloniaTextBox,
     {
         get => GetValue(ClearIconProperty);
         set => SetValue(ClearIconProperty, value);
-    }
-    
-    public string? PlaceholderText
-    {
-        get => GetValue(PlaceholderTextProperty);
-        set => SetValue(PlaceholderTextProperty, value);
-    }
-
-    public IBrush? PlaceholderForeground
-    {
-        get => GetValue(PlaceholderForegroundProperty);
-        set => SetValue(PlaceholderForegroundProperty, value);
     }
     
     public bool IsMotionEnabled
@@ -188,7 +170,6 @@ public class TextBox : AvaloniaTextBox,
     static TextBox()
     {
         AffectsArrange<TextBox>(CompactSpaceItemPositionProperty, CompactSpaceOrientationProperty);
-        WatermarkProperty.Changed.AddClassHandler<TextBox>((textBox, args) => textBox.SetCurrentValue(PlaceholderTextProperty, args.NewValue));
         TextChangedEvent.AddClassHandler<TextBox>((textBox, args) => textBox.HandleTextChanged());
     }
 

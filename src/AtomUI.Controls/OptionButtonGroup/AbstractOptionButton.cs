@@ -218,7 +218,7 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     {
         _borderRenderHelper.Render(context,
             Bounds.Size,
-            BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, VisualRoot?.RenderScaling ?? 1.0),
+            BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0),
             CornerRadius,
             BackgroundSizing.InnerBorderEdge,
             Background,

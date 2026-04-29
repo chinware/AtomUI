@@ -55,12 +55,6 @@ public class TextArea : AvaloniaTextBox,
     public static readonly StyledProperty<bool> IsAllowClearProperty =
         AvaloniaProperty.Register<TextArea, bool>(nameof(IsAllowClear));
 
-    public static readonly StyledProperty<string?> PlaceholderTextProperty =
-        AvaloniaProperty.Register<TextArea, string?>(nameof(PlaceholderText));
-    
-    public static readonly StyledProperty<IBrush?> PlaceholderForegroundProperty =
-        AvaloniaProperty.Register<TextArea, IBrush?>(nameof(PlaceholderForeground));
-
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextArea>();
 
@@ -127,19 +121,7 @@ public class TextArea : AvaloniaTextBox,
         get => GetValue(IsAllowClearProperty);
         set => SetValue(IsAllowClearProperty, value);
     }
-
-    public string? PlaceholderText
-    {
-        get => GetValue(PlaceholderTextProperty);
-        set => SetValue(PlaceholderTextProperty, value);
-    }
     
-    public IBrush? PlaceholderForeground
-    {
-        get => GetValue(PlaceholderForegroundProperty);
-        set => SetValue(PlaceholderForegroundProperty, value);
-    }
-
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -208,7 +190,6 @@ public class TextArea : AvaloniaTextBox,
     static TextArea()
     {
         AffectsMeasure<TextArea>(IsAutoSizeProperty, LinesProperty);
-        WatermarkProperty.Changed.AddClassHandler<TextArea>((textArea, args) => textArea.SetCurrentValue(PlaceholderTextProperty, args.NewValue));
         TextChangedEvent.AddClassHandler<TextArea>((textArea, args) => textArea.HandleTextChanged());
     }
     

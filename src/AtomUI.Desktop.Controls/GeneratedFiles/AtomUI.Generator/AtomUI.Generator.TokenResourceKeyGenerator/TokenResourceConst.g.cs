@@ -3,6 +3,27 @@ using AtomUI.Theme;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
 {
+    public enum AddOnDecoratedBoxTokenKind
+    {
+        ActiveBg,
+        ActiveBorderColor,
+        ActiveShadow,
+        AddonBg,
+        AddOnPadding,
+        AddOnPaddingLG,
+        AddOnPaddingSM,
+        ContentMargin,
+        ErrorActiveShadow,
+        HoverBg,
+        HoverBorderColor,
+        LeftInnerAddOnMargin,
+        Padding,
+        PaddingLG,
+        PaddingSM,
+        RightInnerAddOnMargin,
+        WarningActiveShadow
+    }
+
     public enum AdornerLayerTokenKind
     {
         FocusVisualMargin
@@ -83,6 +104,27 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextTextHoverColor
     }
 
+    public enum CalendarTokenKind
+    {
+        CellActiveWithRangeBg,
+        CellBgDisabled,
+        CellHeight,
+        CellHoverBg,
+        CellHoverWithRangeBg,
+        CellLineHeight,
+        CellMargin,
+        CellRangeBorderColor,
+        CellWidth,
+        DayTitleHeight,
+        HeaderMargin,
+        ItemPanelMinHeight,
+        ItemPanelMinWidth,
+        PanelContentPadding,
+        RangeCalendarSpacing,
+        TextHeight,
+        WithoutTimeCellHeight
+    }
+
     public enum CarouselTokenKind
     {
         ArrowOffset,
@@ -102,6 +144,25 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextMargin
     }
 
+    public enum CollapseTokenKind
+    {
+        CollapseContentPaddingLG,
+        CollapseContentPaddingSM,
+        CollapseHeaderPaddingLG,
+        CollapseHeaderPaddingSM,
+        CollapsePanelBorderRadius,
+        ContentBg,
+        ContentPadding,
+        HeaderBg,
+        HeaderPadding,
+        LeftExpandButtonMargin,
+        LeftExpandButtonMarginLG,
+        LeftExpandButtonMarginSM,
+        RightExpandButtonMargin,
+        RightExpandButtonMarginLG,
+        RightExpandButtonMarginSM
+    }
+
     public enum EmptyTokenKind
     {
         DescriptionMargin,
@@ -109,6 +170,23 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         EmptyImgHeight,
         EmptyImgHeightMD,
         EmptyImgHeightSM
+    }
+
+    public enum ExpanderTokenKind
+    {
+        ContentBg,
+        ContentPadding,
+        ContentPaddingLG,
+        ContentPaddingSM,
+        ExpanderBorderRadius,
+        HeaderBg,
+        HeaderPadding,
+        HeaderPaddingLG,
+        HeaderPaddingSM,
+        LeftExpandButtonHMargin,
+        LeftExpandButtonVMargin,
+        RightExpandButtonHMargin,
+        RightExpandButtonVMargin
     }
 
     public enum GroupBoxTokenKind
@@ -120,6 +198,13 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         OrientationMarginPercent,
         TextPaddingInline,
         VerticalMarginInline
+    }
+
+    public enum LineEditTokenKind
+    {
+        InputFontSize,
+        InputFontSizeLG,
+        InputFontSizeSM
     }
 
     public enum MarqueeLabelTokenKind
@@ -197,6 +282,29 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         VerticalChildItemsMargin,
         VerticalItemsPanelSpacing,
         VerticalMenuContentPadding
+    }
+
+    public enum OptionButtonTokenKind
+    {
+        ButtonBackground,
+        ButtonCheckedBackground,
+        ButtonCheckedBgDisabled,
+        ButtonCheckedColorDisabled,
+        ButtonColor,
+        ButtonPadding,
+        ButtonSolidCheckedActiveBackground,
+        ButtonSolidCheckedBackground,
+        ButtonSolidCheckedColor,
+        ButtonSolidCheckedHoverBackground,
+        ContentFontSize,
+        ContentFontSizeLG,
+        ContentFontSizeSM,
+        ContentLineHeight,
+        ContentLineHeightLG,
+        ContentLineHeightSM,
+        Padding,
+        PaddingLG,
+        PaddingSM
     }
 
     public enum PopupHostTokenKind
@@ -422,6 +530,18 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TagTextPaddingInline
     }
 
+    public enum TextAreaTokenKind
+    {
+        FontSize,
+        FontSizeLG,
+        FontSizeSM,
+        ResizeHandleSize,
+        ResizeIndicatorLineColor,
+        RightAddOnPadding,
+        RightAddOnPaddingLG,
+        RightAddOnPaddingSM
+    }
+
     public enum TimelineTokenKind
     {
         IndicatorDotBorderWidth,
@@ -514,6 +634,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TitleBarHeight
     }
 
+    public class AddOnDecoratedBoxTokenResourceExtension : TokenResourceExtension<AddOnDecoratedBoxTokenKind>
+    {
+        public AddOnDecoratedBoxTokenResourceExtension()
+        {
+        }
+
+        public AddOnDecoratedBoxTokenResourceExtension(AddOnDecoratedBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class AdornerLayerTokenResourceExtension : TokenResourceExtension<AdornerLayerTokenKind>
     {
         public AdornerLayerTokenResourceExtension()
@@ -558,6 +689,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class CalendarTokenResourceExtension : TokenResourceExtension<CalendarTokenKind>
+    {
+        public CalendarTokenResourceExtension()
+        {
+        }
+
+        public CalendarTokenResourceExtension(CalendarTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class CarouselTokenResourceExtension : TokenResourceExtension<CarouselTokenKind>
     {
         public CarouselTokenResourceExtension()
@@ -580,6 +722,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class CollapseTokenResourceExtension : TokenResourceExtension<CollapseTokenKind>
+    {
+        public CollapseTokenResourceExtension()
+        {
+        }
+
+        public CollapseTokenResourceExtension(CollapseTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class EmptyTokenResourceExtension : TokenResourceExtension<EmptyTokenKind>
     {
         public EmptyTokenResourceExtension()
@@ -591,6 +744,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class ExpanderTokenResourceExtension : TokenResourceExtension<ExpanderTokenKind>
+    {
+        public ExpanderTokenResourceExtension()
+        {
+        }
+
+        public ExpanderTokenResourceExtension(ExpanderTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class GroupBoxTokenResourceExtension : TokenResourceExtension<GroupBoxTokenKind>
     {
         public GroupBoxTokenResourceExtension()
@@ -598,6 +762,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public GroupBoxTokenResourceExtension(GroupBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class LineEditTokenResourceExtension : TokenResourceExtension<LineEditTokenKind>
+    {
+        public LineEditTokenResourceExtension()
+        {
+        }
+
+        public LineEditTokenResourceExtension(LineEditTokenKind kind) : base(kind)
         {
         }
     }
@@ -620,6 +795,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public NavMenuTokenResourceExtension(NavMenuTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class OptionButtonTokenResourceExtension : TokenResourceExtension<OptionButtonTokenKind>
+    {
+        public OptionButtonTokenResourceExtension()
+        {
+        }
+
+        public OptionButtonTokenResourceExtension(OptionButtonTokenKind kind) : base(kind)
         {
         }
     }
@@ -763,6 +949,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TagTokenResourceExtension(TagTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TextAreaTokenResourceExtension : TokenResourceExtension<TextAreaTokenKind>
+    {
+        public TextAreaTokenResourceExtension()
+        {
+        }
+
+        public TextAreaTokenResourceExtension(TextAreaTokenKind kind) : base(kind)
         {
         }
     }
