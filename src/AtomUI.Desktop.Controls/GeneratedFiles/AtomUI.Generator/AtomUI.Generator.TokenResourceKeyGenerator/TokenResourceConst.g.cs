@@ -244,6 +244,24 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         ThumbHoverBg
     }
 
+    public enum SegmentedTokenKind
+    {
+        ItemActiveBg,
+        ItemColor,
+        ItemHoverBg,
+        ItemHoverColor,
+        ItemMinHeight,
+        ItemMinHeightLG,
+        ItemMinHeightSM,
+        ItemSelectedBg,
+        ItemSelectedColor,
+        SegmentedItemContentMargin,
+        SegmentedItemPadding,
+        SegmentedItemPaddingSM,
+        TrackBg,
+        TrackPadding
+    }
+
     public enum SpaceTokenKind
     {
         AddonBg,
@@ -446,6 +464,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ScrollViewerTokenResourceExtension(ScrollViewerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class SegmentedTokenResourceExtension : TokenResourceExtension<SegmentedTokenKind>
+    {
+        public SegmentedTokenResourceExtension()
+        {
+        }
+
+        public SegmentedTokenResourceExtension(SegmentedTokenKind kind) : base(kind)
         {
         }
     }

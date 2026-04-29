@@ -21,6 +21,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.RateToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ResultToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ScrollViewerToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SegmentedToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpaceToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToolTipToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.WindowTitleBarToken));
