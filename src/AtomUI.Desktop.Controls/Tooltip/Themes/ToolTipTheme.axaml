@@ -18,12 +18,7 @@
         
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="Background" Value="{atom:ToolTipTokenResource ToolTipBackground}" />
-        <Setter Property="MaskShadows" Value="{atom:ToolTipTokenResource PopupRootHostShadows}" />
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}" />
-        
-        <Style Selector="^[ShouldUseOverlayLayer=True]">
-            <Setter Property="MaskShadows" Value="{atom:ToolTipTokenResource OverlayHostShadows}" />
-        </Style>
         
         <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />

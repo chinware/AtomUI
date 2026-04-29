@@ -1,4 +1,5 @@
 using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Media;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
 using Avalonia.Media;
@@ -16,9 +17,14 @@ internal class PopupHostToken : AbstractControlDesignToken
     public CornerRadius BorderRadius { get; set; }
 
     /// <summary>
-    /// Popup 阴影
+    /// OverlayHost 类型的阴影
     /// </summary>
-    public BoxShadows BoxShadows { get; set; }
+    public BoxShadows OverlayHostShadow { get; set; }
+    
+    /// <summary>
+    /// PopupRoot 类型的阴影
+    /// </summary>
+    public BoxShadows PopupRootShadow { get; set; }
     
     /// <summary>
     /// 顶层弹出菜单，距离顶层菜单项的边距
@@ -33,7 +39,22 @@ internal class PopupHostToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        BoxShadows     = SharedToken.BoxShadowsSecondary;
+        OverlayHostShadow = SharedToken.BoxShadowsSecondary;
+        PopupRootShadow = new BoxShadows(new BoxShadow
+        {
+            OffsetX = 0,
+            OffsetY = 1,
+            Blur    = 4,
+            Spread  = 0,
+            Color   = ColorUtils.FromRgbF(0.1, 0, 0, 0)
+        }, [new BoxShadow
+        {
+            OffsetX = 0,
+            OffsetY = 0,
+            Blur    = 1,
+            Spread  = 0,
+            Color   = ColorUtils.FromRgbF(0.15, 0, 0, 0)
+        }]);
         BorderRadius   = SharedToken.BorderRadiusLG;
         MarginToAnchor = SharedToken.UniformlyMarginXXS;
     }

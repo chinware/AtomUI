@@ -2,6 +2,7 @@ using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Media;
 using AtomUI.MotionScene;
 using AtomUI.Theme.Styling;
@@ -19,8 +20,11 @@ using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
 public class Popup : AvaloniaPopup, IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        AvaloniaProperty.Register<Popup, BoxShadows>(nameof(MaskShadows));
+    public static readonly StyledProperty<BoxShadows> PopupRootShadowProperty =
+        AvaloniaProperty.Register<Popup, BoxShadows>(nameof(PopupRootShadow));
+    
+    public static readonly StyledProperty<BoxShadows> OverlayHostShadowProperty =
+        AvaloniaProperty.Register<Popup, BoxShadows>(nameof(OverlayHostShadow));
 
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
@@ -48,10 +52,16 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
     
-    public BoxShadows MaskShadows
+    public BoxShadows PopupRootShadow
     {
-        get => GetValue(MaskShadowsProperty);
-        set => SetValue(MaskShadowsProperty, value);
+        get => GetValue(PopupRootShadowProperty);
+        set => SetValue(PopupRootShadowProperty, value);
+    }
+    
+    public BoxShadows OverlayHostShadow
+    {
+        get => GetValue(OverlayHostShadowProperty);
+        set => SetValue(OverlayHostShadowProperty, value);
     }
 
     public TimeSpan MotionDuration
@@ -111,6 +121,18 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<BoxShadows> FrameShadowProperty =
+        AvaloniaProperty.Register<Popup, BoxShadows>(nameof(FrameShadow));    
+
+    internal BoxShadows FrameShadow
+    {
+        get => GetValue(FrameShadowProperty);
+        set => SetValue(FrameShadowProperty, value);
+    }
+    #endregion
+
     #region 动画相关字段
 
     private bool _isClosingAnimating;
@@ -122,7 +144,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public Popup()
     {
         this.ConfigureMotionBindingStyle();
-        TokenResourceBinder.CreateTokenBinding(this, MaskShadowsProperty, SharedTokenKind.BoxShadowsSecondary);
+        TokenResourceBinder.CreateTokenBinding(this, PopupRootShadowProperty, PopupHostTokenKind.PopupRootShadow);
+        TokenResourceBinder.CreateTokenBinding(this, OverlayHostShadowProperty, PopupHostTokenKind.OverlayHostShadow);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
 
         this.AddClosingEventHandler(HandlePopupClosing);
@@ -233,6 +256,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 CustomPopupPlacementCallback = null;
             }
         }
+        else if (change.Property == PopupRootShadowProperty ||
+                 change.Property == OverlayHostShadowProperty ||
+                 change.Property == ShouldUseOverlayLayerProperty)
+        {
+            ConfigureFrameShadow();
+        }
     }
 
     private void HandleCustomPlacement(CustomPopupPlacement placement)
@@ -242,7 +271,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             return;
         }
 
-        var shadowThickness    = MaskShadows.Thickness();
+        var shadowThickness    = FrameShadow.Thickness();
         var requestedPlacement = RequestedPlacement!.Value;
         var isUseOverlayHost   = ShouldUseOverlayLayer;
         var hOffset            = HorizontalOffset;
@@ -292,6 +321,24 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     }
 
     #endregion
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureFrameShadow();
+    }
+
+    private void ConfigureFrameShadow()
+    {
+        if (ShouldUseOverlayLayer)
+        {
+            FrameShadow = OverlayHostShadow;
+        }
+        else
+        {
+            FrameShadow = PopupRootShadow;
+        }
+    }
 }
 
 public class PopupFlippedEventArgs : EventArgs

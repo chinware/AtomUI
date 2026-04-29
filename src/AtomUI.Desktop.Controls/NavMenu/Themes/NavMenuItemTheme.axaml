@@ -136,8 +136,8 @@
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <!-- <Setter Property="MarginToAnchor" -->
                 <!--         Value="{atom:NavMenuTokenResource TopLevelItemPopupMarginToAnchor}" /> -->
-                <Setter Property="MaskShadows"
-                        Value="{atom:PopupHostTokenResource BoxShadows}" />
+                <!-- <Setter Property="MaskShadows" -->
+                <!--         Value="{atom:PopupHostTokenResource BoxShadows}" /> -->
             </Style>
 
             <Style Selector="^ /template/ Border#PART_PopupFrame">

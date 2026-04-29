@@ -99,20 +99,11 @@ public class ToolTip : ContentControl,
     internal static readonly AttachedProperty<ToolTip?> ToolTipProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, ToolTip?>("ToolTip");
     
-    internal static readonly StyledProperty<BoxShadows> MaskShadowsProperty =
-        AvaloniaProperty.Register<ToolTip, BoxShadows>(nameof(MaskShadows));
-    
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<ToolTip>();
     
     internal static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
         Popup.ShouldUseOverlayLayerProperty.AddOwner<ToolTip>();
-
-    internal BoxShadows MaskShadows
-    {
-        get => GetValue(MaskShadowsProperty);
-        set => SetValue(MaskShadowsProperty, value);
-    }
     
     internal TimeSpan MotionDuration
     {
@@ -389,7 +380,6 @@ public class ToolTip : ContentControl,
         _subscriptions = new CompositeDisposable([
             Bind(ShouldUseOverlayLayerProperty, control.GetBindingObservable(IsUseOverlayHostProperty)),
             _popup.Bind(Popup.ShouldUseOverlayLayerProperty, this.GetObservable(ShouldUseOverlayLayerProperty)),
-            _popup.Bind(Popup.MaskShadowsProperty, this.GetObservable(MaskShadowsProperty)),
             _popup.Bind(Popup.MotionDurationProperty, this.GetObservable(MotionDurationProperty)),
             _popup.Bind(Popup.IsMotionEnabledProperty, this.GetObservable(IsMotionEnabledProperty)),
             _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty)),

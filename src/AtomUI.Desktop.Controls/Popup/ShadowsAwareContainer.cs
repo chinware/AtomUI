@@ -109,7 +109,7 @@ internal class ShadowsAwareContainer : Decorator
         if (popup != null)
         {
             _shadowsRenderDisposable?.Dispose();
-            _shadowsRenderDisposable = BindUtils.RelayBind(popup, Popup.MaskShadowsProperty, this, BoxShadowProperty);
+            _shadowsRenderDisposable = BindUtils.RelayBind(popup, Popup.FrameShadowProperty, this, BoxShadowProperty);
         }
     }
 
@@ -220,7 +220,7 @@ internal class ShadowsAwareContainer : Decorator
         {
             _contentPresenterChildSubscription = contentPresenter
                 .GetObservable(ContentPresenter.ChildProperty)
-                .Subscribe(child => PostConfigureShadowsInfo(child));
+                .Subscribe(PostConfigureShadowsInfo);
 
             PostConfigureShadowsInfo(contentPresenter.Child);
         }
@@ -274,11 +274,11 @@ internal class ShadowsAwareContainer : Decorator
         {
             case Direction.Left:
             case Direction.Right:
-                width -= ArrowSize;
+                width -= ArrowSize / 2;
                 break;
             case Direction.Top:
             case Direction.Bottom:
-                height -= ArrowSize;
+                height -= ArrowSize / 2;
                 break;
         }
 

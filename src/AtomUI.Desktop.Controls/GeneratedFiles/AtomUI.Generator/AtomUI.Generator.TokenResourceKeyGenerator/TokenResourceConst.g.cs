@@ -328,8 +328,9 @@ namespace AtomUI.Desktop.Controls.DesignTokens
     public enum PopupHostTokenKind
     {
         BorderRadius,
-        BoxShadows,
-        MarginToAnchor
+        MarginToAnchor,
+        OverlayHostShadow,
+        PopupRootShadow
     }
 
     public enum ProgressBarTokenKind
@@ -604,9 +605,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
     {
         BorderRadiusOuter,
         MotionDuration,
-        OverlayHostShadows,
         Padding,
-        PopupRootHostShadows,
         ToolTipBackground,
         ToolTipColor,
         ToolTipMaxWidth
