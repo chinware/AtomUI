@@ -1,6 +1,6 @@
 ---
 name: migrate-to-avalonia12
-description: Comprehensive Avalonia 12 migration tool for AtomUI. Detects and fixes all breaking changes from Avalonia 11 to 12, covering 50+ categories including focus events, TopLevel API, clipboard changes, binding system updates, PlacementMode rename, IInputRoot/IPopupHost/Gestures internalization, window decoration redesign, dispatcher changes, obsolete member removals, renamed members, internal API extraction strategy, ReflectionExtensions for internal members, extension methods, and platform-specific changes. Use when migrating projects to Avalonia 12 or checking compatibility.
+description: Comprehensive Avalonia 12 migration tool for AtomUI. Detects and fixes all breaking changes from Avalonia 11 to 12, covering 50+ categories including focus events, TopLevel API, clipboard changes, binding system updates, PlacementMode rename, [PrivateApi] public interface handling (IInputRoot still usable), IPopupHost/Gestures internalization, window decoration redesign, dispatcher changes, obsolete member removals, renamed members, internal API extraction strategy, ReflectionExtensions for internal members, extension methods, and platform-specific changes. Use when migrating projects to Avalonia 12 or checking compatibility.
 ---
 
 # Avalonia 12 Migration Skill
@@ -30,6 +30,11 @@ Use this skill when the user:
 - Wants to check if code works with Avalonia 12
 - Provides code that needs Avalonia 12 migration
 - Asks about specific Avalonia 12 changes
+- Asks to "upgrade" (升级) any code, file, or module — e.g., "请将 xxx 升级", "upgrade xxx"
+- Asks to refactor or rewrite code "for Avalonia 12" / "按照 Avalonia 12" — e.g., "按照 Avalonia 12 进行重构", "refactor xxx for Avalonia 12"
+- Asks to "改造" (transform/rework) code — e.g., "请将 xxx 改造为 Avalonia 12 标准"
+- Uses keywords like "升级", "upgrade", "迁移", "migrate", "重构", "refactor", "改造", "适配 Avalonia 12", "升级至 Avalonia 12 标准写法" in the context of Avalonia code changes
+- Any request involving modifying AtomUI source code to conform to Avalonia 12 standards, regardless of language (Chinese or English)
 
 ## Fundamental Rules
 
@@ -61,8 +66,8 @@ Analyze and report without modifying files unless explicitly requested.
 
 Scan for custom extension methods that use removed or internalized APIs like:
 - `GetVisualRoot()` using `GetPresentationSource()`
-- `GetRootElement()` on IInputRoot
-- Any method returning IInputRoot, IRenderRoot, or ILayoutRoot
+- `GetRootElement()` on IInputRoot (note: IInputRoot itself is still public and usable)
+- Any method returning IRenderRoot or ILayoutRoot (these are truly internal)
 - Any code referencing IPopupHost (now internal)
 - Any code using Gestures class directly (now internal)
 - Any code using BindingPlugins (now internal)
@@ -86,7 +91,20 @@ Scan for renamed APIs that will still compile but may cause confusion:
 - `ContextMenu.PlacementMode` → `ContextMenu.Placement`
 - `PseudolassesExtensions` → `PseudoClassesExtensions` (typo fix)
 
-### 8. AOT-safe reflection patterns
+### 8. Distinguish [PrivateApi] public interfaces from truly internal interfaces
+
+`[PrivateApi]` is a documentation attribute — it does NOT change the accessibility of the type. A `public interface` annotated with `[PrivateApi]` is still fully compilable and usable. NEVER replace such interfaces with alternatives like `TopLevel`.
+
+- **`[PrivateApi]` public interfaces (USE DIRECTLY):** `IInputRoot` — still `public`, compiles fine, use as-is
+- **Truly `internal` interfaces (NEED reflection or extraction):** `IRenderRoot`, `ILayoutRoot` — cannot be referenced from external assemblies
+
+When you encounter `[PrivateApi]` on a public type, check the actual C# access modifier. If it's `public`, use it directly. Only use reflection/extraction for types that are genuinely `internal` or `private`.
+
+### 9. Prefer existing ReflectionExtensions over new reflection code
+
+AtomUI already has a comprehensive set of ReflectionExtensions that wrap internal/private Avalonia members. Before writing new reflection code during migration, check the **AtomUI ReflectionExtensions Catalog** section below. If an extension already exists for the member you need, use it directly. Only create new ReflectionExtensions when no existing one covers the target member.
+
+### 10. AOT-safe reflection patterns
 
 When accessing private/internal Avalonia APIs:
 - Use `[DynamicDependency]` attributes to mark members for AOT preservation
@@ -117,7 +135,7 @@ Check all 50+ categories:
 5. Binding plugins (now `internal`, data validation disabled by default)
 6. Text shaper configuration (must call UseHarfBuzz)
 7. Touch/pen selection behavior (triggers on release, not press)
-8. TopLevel API changes (VisualRoot now `protected internal`, IInputRoot/IRenderRoot/ILayoutRoot internalized)
+8. TopLevel API changes (VisualRoot now `protected internal`, IInputRoot still public with [PrivateApi], IRenderRoot/ILayoutRoot truly internal)
 9. Window decoration redesign (TitleBar/CaptionButtons/ChromeOverlayLayer removed → WindowDrawnDecorations)
 10. Focus event improvements (unified FocusChangedEventArgs, KeyboardNavigationHandler now internal)
 11. Extension methods & helper utilities (GetVisualRoot, GetRootElement, etc.)
@@ -170,7 +188,7 @@ Check all 50+ categories:
 
 **AtomUI-Specific (4 categories)**
 48. PlacementMode usage in PopupUtils (property renamed, refactor needed)
-49. IInputRoot reflection extensions (interface now [PrivateApi])
+49. IInputRoot is [PrivateApi] but still public — use directly, only use reflection for truly internal members
 50. ReflectionExtensions for internal members (wrap internal/private access)
 51. Windows ExtendClientAreaToDecorationsHint behavior improved
 
@@ -308,7 +326,9 @@ protected override void UpdateSelectionFromEvent(ItemsControl itemsControl, Rout
 
 #### 8. TopLevel API Changes (HIGH)
 
-**What changed:** `Visual.VisualRoot` changed from `public` to `protected internal` (not removed, but inaccessible from outside). Use `TopLevel.GetTopLevel(visual)`. Interfaces `IInputRoot`, `IRenderRoot`, `ILayoutRoot` changed to `internal`/`[PrivateApi]`. New `IPresentationSource` interface introduced. `KeyboardNavigationHandler` is now `internal` — use `FocusManager.GetNextElement` instead.
+**What changed:** `Visual.VisualRoot` changed from `public` to `protected internal` (not removed, but inaccessible from outside). Use `TopLevel.GetTopLevel(visual)`. `IRenderRoot` and `ILayoutRoot` are now truly `internal`. `IInputRoot` is marked `[PrivateApi]` but remains a `public interface` — it can and should be used directly. New `IPresentationSource` interface introduced (internal). `KeyboardNavigationHandler` is now `internal` — use `FocusManager.GetNextElement` instead.
+
+**IMPORTANT:** `[PrivateApi]` is a documentation attribute only. It does NOT change the C# access modifier. `IInputRoot` is still `public` and fully usable. Do NOT replace `IInputRoot` with `TopLevel` — this will break code because `RawInputEventArgs.Root` returns `PresentationSource` (which implements `IInputRoot`), NOT `TopLevel`.
 
 **Detection patterns:**
 ```csharp
@@ -316,18 +336,11 @@ protected override void UpdateSelectionFromEvent(ItemsControl itemsControl, Rout
 var root = visual.VisualRoot as IRenderRoot;
 if (root != null) { }
 
-// Pattern 2: Extension method GetVisualRoot()
-if (Presenter?.GetVisualRoot() != null)
-if (e.Root == currentTip.GetVisualRoot() as IInputRoot)
+// Pattern 2: IRenderRoot / ILayoutRoot usage (now truly internal)
+IRenderRoot renderRoot = ...;
+ILayoutRoot layoutRoot = ...;
 
-// Pattern 3: IInputRoot interface usage (now [PrivateApi])
-public void Update(IInputRoot root, Visual? candidateToolTipHost)
-if (root == currentToolTip?.GetVisualRoot() as IInputRoot)
-
-// Pattern 4: GetRootElement() method
-e.Root.GetRootElement() == _tipControl?.GetVisualRoot()
-
-// Pattern 5: KeyboardNavigationHandler usage (now internal)
+// Pattern 3: KeyboardNavigationHandler usage (now internal)
 KeyboardNavigationHandler.GetNext(element, direction)
 ```
 
@@ -337,22 +350,23 @@ KeyboardNavigationHandler.GetNext(element, direction)
 var topLevel = TopLevel.GetTopLevel(visual);
 if (topLevel is WindowBase window) { }
 
-// Pattern 2: Replace GetVisualRoot() with TopLevel.GetTopLevel()
-if (Presenter != null && TopLevel.GetTopLevel(Presenter) != null)
-if (e.Root == TopLevel.GetTopLevel(currentTip))
+// Pattern 2: Use reflection or extraction for IRenderRoot/ILayoutRoot
+// See Category 35 for internal API extraction strategy
 
-// Pattern 3: Replace IInputRoot with TopLevel
-public void Update(TopLevel root, Visual? candidateToolTipHost)
-if (root == TopLevel.GetTopLevel(currentToolTip as Visual))
-
-// Pattern 4: e.Root is now TopLevel directly
-e.Root == TopLevel.GetTopLevel(_tipControl)
-
-// Pattern 5: Use FocusManager instead
+// Pattern 3: Use FocusManager instead
 focusManager.TryMoveFocus(NavigationDirection.Next)
 ```
 
-**Why:** The visual tree architecture was refactored. `TopLevel` is now the primary way to access the root. `IPresentationSource` is the new internal abstraction. `Visual.VisualRoot` still exists but is `protected internal` — accessible only within the assembly or derived classes. `IInputRoot` is marked `[PrivateApi]` and `ILayoutRoot`/`IRenderRoot` are `internal`.
+**NO fix needed for IInputRoot usage:**
+```csharp
+// These are ALL CORRECT in Avalonia 12 — do NOT change them:
+public void Update(IInputRoot root, Visual? candidateToolTipHost)  // OK
+if (root == currentToolTip?.GetVisualRoot() as IInputRoot)          // OK
+if (e.Root == currentTip.GetVisualRoot() as IInputRoot)             // OK
+e.Root.GetRootElement() == _tipControl?.GetVisualRoot()             // OK
+```
+
+**Why:** The visual tree architecture was refactored. `TopLevel` is now the primary way to access the root visual. `IPresentationSource` is the new internal abstraction that implements `IInputRoot`. `Visual.VisualRoot` still exists but is `protected internal`. `IInputRoot` is marked `[PrivateApi]` but remains `public` — it compiles and works correctly. `IRenderRoot` and `ILayoutRoot` are truly `internal` and need reflection/extraction.
 
 #### 9. Window Decoration Redesign (HIGH)
 
@@ -712,10 +726,10 @@ InputElement.DoubleTappedEvent
 
 #### 31. Extension Methods & Helper Utilities (HIGH)
 
-**What changed:** Custom extension methods using removed APIs need updating. Common patterns:
-- `GetVisualRoot()` extension using `GetPresentationSource()` 
-- `GetRootElement()` method on IInputRoot
-- Custom utilities wrapping removed interfaces
+**What changed:** Custom extension methods using removed or truly internal APIs need updating. Common patterns:
+- `GetVisualRoot()` extension using `GetPresentationSource()` (needed because `Visual.VisualRoot` is now `protected internal`)
+- `GetRootElement()` method on IInputRoot (IInputRoot itself is still public and usable)
+- Custom utilities wrapping truly `internal` interfaces like `IRenderRoot`, `ILayoutRoot`
 
 **Detection:**
 ```csharp
@@ -725,18 +739,16 @@ internal static Visual? GetVisualRoot(this Visual visual)
     return visual.GetPresentationSource()?.RootVisual;
 }
 
-// Usage in service classes
+// Usage in service classes — these are FINE, no migration needed:
 if (Presenter?.GetVisualRoot() != null)
 if (e.Root == currentTip.GetVisualRoot() as IInputRoot)
 ```
 
 **Fix:**
 ```csharp
-// Option 1: Update extension to use TopLevel
-internal static TopLevel? GetVisualRootTopLevel(this Visual visual)
-{
-    return TopLevel.GetTopLevel(visual);
-}
+// GetVisualRoot() extension is correct as-is if it uses GetPresentationSource()
+// IInputRoot usage is correct as-is — do NOT replace with TopLevel
+// Only fix extensions that reference truly internal types (IRenderRoot, ILayoutRoot)
 
 // Option 2: Replace all usages directly with TopLevel.GetTopLevel()
 if (Presenter != null && TopLevel.GetTopLevel(Presenter) != null)
@@ -814,26 +826,28 @@ contextMenu.Placement = PlacementMode.Right;
 
 **Why:** Property renamed for consistency. The `PlacementMode` enum is NOT removed — only the property accessor name changed. Code that uses `PlacementMode` enum values directly (e.g., in switch statements, comparisons) does NOT need changes.
 
-#### 34. IInputRoot Interface Now [PrivateApi] (HIGH)
+#### 34. IInputRoot Interface — [PrivateApi] but Still Public (LOW)
 
-**What changed:** `IInputRoot` interface is now marked `[PrivateApi]` — still exists but not for public consumption. `IRenderRoot` removed entirely. `ILayoutRoot` now `internal`. Functionality distributed to `IPresentationSource` and `TopLevel`.
+**What changed:** `IInputRoot` interface is now marked `[PrivateApi]` but remains a `public interface`. It is fully compilable and usable. `IRenderRoot` is truly `internal`. `ILayoutRoot` is truly `internal`. `PresentationSource` (internal class) implements `IInputRoot` and is the actual object returned by `RawInputEventArgs.Root`.
 
-**Detection:**
+**IMPORTANT:** Do NOT replace `IInputRoot` usage with `TopLevel`. `RawInputEventArgs.Root` returns a `PresentationSource` object which implements `IInputRoot` but is NOT a `TopLevel`. Replacing `IInputRoot` with `TopLevel` will cause comparisons to always fail and break functionality (e.g., tooltips stop triggering).
+
+**No migration needed for:**
 ```csharp
-typeof(IInputRoot).GetProperty("RootElement", ...)
-public void Process(IInputRoot root)
-if (root is IInputRoot inputRoot)
+// All of these are CORRECT in Avalonia 12:
+public void Process(IInputRoot root)           // OK — IInputRoot is public
+if (root is IInputRoot inputRoot)              // OK — compiles and works
+e.Root == currentTip.GetVisualRoot() as IInputRoot  // OK
+public void Update(IInputRoot root, Visual? candidateToolTipHost)  // OK
 ```
 
-**Fix:**
+**Only use reflection for truly internal members of IInputRoot:**
 ```csharp
-// Use TopLevel instead
-typeof(TopLevel).GetProperty("RootVisual", ...)
-public void Process(TopLevel topLevel)
-if (topLevel is TopLevel)
+// RootElement property is not on the public interface — needs reflection
+typeof(IInputRoot).GetProperty("RootElement", ...)  // Use ReflectionExtensions pattern
 ```
 
-**Why:** IInputRoot responsibilities redistributed. It still exists internally but external code should use `TopLevel` or `IPresentationSource`.
+**Why:** `[PrivateApi]` is a documentation-only attribute indicating the API may change in future versions. It does NOT change the C# access modifier. `IInputRoot` is still `public` and the correct type to use when working with `RawInputEventArgs.Root`. Only members that are not part of the public interface surface (like `RootElement` on `PresentationSource`) need reflection.
 
 #### 35. Internal API Extraction Strategy (MEDIUM)
 
@@ -1384,10 +1398,101 @@ for (int i = 0; i < count; i++)
 - Accessing internal/private members without ReflectionExtensions wrapper
 - Reflection info not cached in Lazy<T>
 - AOT-unsafe reflection patterns
-- Missing PlacementMode rename and IInputRoot internalization checks
-- Claiming APIs are "removed" when they are actually "internal" or "[PrivateApi]"
+- Missing PlacementMode rename checks
+- Replacing [PrivateApi] public interfaces (like IInputRoot) with alternatives — they are still public and usable
+- Claiming APIs are "removed" or "internal" when they are actually `public` with `[PrivateApi]`
 - Missing checks for renamed members (Watermark→PlaceholderText, etc.)
 - Missing checks for internalized classes (Gestures, BindingPlugins, IPopupHost, KeyboardNavigationHandler)
+- Writing new reflection code when an existing ReflectionExtension already covers the target member (check the catalog first)
+
+## AtomUI ReflectionExtensions Catalog
+
+When migrating code that accesses internal/private Avalonia members, **always check this catalog first** and use existing extensions instead of writing new reflection code.
+
+### Infrastructure (AtomUI.Core — `AtomUI.Reflection` namespace)
+
+| File | Class | Description |
+|------|-------|-------------|
+| `src/AtomUI.Core/Reflection/TypeMemberExtension.cs` | `TypeMemberExtension` | Safe reflection helpers: `TryGetPropertyInfo`, `TryGetFieldInfo`, `TryGetMethodInfo`, `TryGetEventInfo`, and `*OrThrow` variants |
+| `src/AtomUI.Core/Reflection/ObjectExtension.cs` | `ObjectExtension` | Instance-level reflection: `TryGetProperty<T>`, `GetPropertyOrThrow<T>`, `TrySetProperty<T>`, `TryGetField<T>`, `GetFieldOrThrow<T>`, `TrySetField<T>`, `TryInvokeMethod`, `InvokeMethodOrThrow` |
+
+### AtomUI.Core Extensions
+
+| File | Class | Extension Method | Target Type | Wrapped Member | Access |
+|------|-------|-----------------|-------------|----------------|--------|
+| `src/AtomUI.Core/Input/IInputRootRefectionExtensions.cs` | `IInputRootReflectionExtensions` | `GetRootElement(this IInputRoot)` | `IInputRoot` | `RootElement` property | NonPublic |
+| `src/AtomUI.Core/Utils/AvaloniaPropertyReflectionExtensions.cs` | `AvaloniaPropertyReflectionExtensions` | `InvokeNotifying(this AvaloniaProperty, AvaloniaObject, bool)` | `AvaloniaProperty` | `Notifying` property (delegate) | NonPublic |
+| `src/AtomUI.Core/Controls/VisualReflectionExtensions.cs` | `VisualReflectionExtensions` | `SetVisualParent(this Visual, Control?)` | `Visual` | `SetVisualParent()` method | NonPublic |
+| | | `ClearVisualParentRecursive(this Visual)` | `Visual` | recursive `SetVisualParent(null)` | NonPublic |
+| | | `GetVisualChildrenList(this Visual)` | `Visual` | `VisualChildren` property → `IAvaloniaList<Visual>` | NonPublic |
+| | | `IndexOfVisualChildren(this Visual, Visual)` | `Visual` | via `GetVisualChildrenList` | NonPublic |
+| | | `AddToVisualChildren(this Visual, Visual)` | `Visual` | via `GetVisualChildrenList` | NonPublic |
+| | | `InsertToVisualChildren(this Visual, int, Control)` | `Visual` | via `GetVisualChildrenList` | NonPublic |
+| `src/AtomUI.Core/Controls/ItemCollectionReflectionExtensions.cs` | `ItemCollectionReflectionExtensions` | `SetItemsSource(this ItemCollection, IEnumerable?)` | `ItemCollection` | `SetItemsSource()` method | NonPublic |
+| `src/AtomUI.Core/Controls/RawPointerEventTypeReflectionExtensions.cs` | `RawPointerEventTypeReflectionExtensions` | `GetInputHitTestResult(this RawPointerEventArgs)` | `RawPointerEventArgs` | `InputHitTestResult` property | NonPublic |
+| `src/AtomUI.Core/Animations/AnimatableReflectionExtensions.cs` | `AnimatableReflectionExtensions` | `EnableTransitions(this Animatable)` | `Animatable` | `EnableTransitions()` method | NonPublic |
+| | | `DisableTransitions(this Animatable)` | `Animatable` | `DisableTransitions()` method | NonPublic |
+| `src/AtomUI.Core/Reflection/StyledElementReflectionExtensions.cs` | `StyledElementReflectionExtensions` | `GetLogicalChildrenList(this StyledElement)` | `StyledElement` | `LogicalChildren` property → `IAvaloniaList<ILogical>` | NonPublic |
+| | | `AddToLogicalChildren(this StyledElement, ILogical)` | `StyledElement` | via `GetLogicalChildrenList` | NonPublic |
+| | | `InsertToLogicalChildren(this StyledElement, int, Control)` | `StyledElement` | via `GetLogicalChildrenList` | NonPublic |
+| | | `SetTemplatedParent(this StyledElement, AvaloniaObject?)` | `StyledElement` | `TemplatedParent` property setter | Public |
+| | | `SetTemplatedParentRecursive(this StyledElement, AvaloniaObject?)` | `StyledElement` | recursive `SetTemplatedParent` | Public |
+| `src/AtomUI.Core/Media/TextFormatting/TextParagraphPropertiesReflectionExtensions.cs` | `TextParagraphPropertiesReflectionExtensions` | `GetLineSpacing(this TextParagraphProperties)` | `TextParagraphProperties` | `LineSpacing` property | NonPublic |
+| | | `SetLineSpacing(this TextParagraphProperties, double)` | `TextParagraphProperties` | `LineSpacing` property | NonPublic |
+| `src/AtomUI.Core/Data/DynamicResourceReflectionExtension.cs` | `DynamicResourceReflectionExtension` | `SetAnchor(this DynamicResourceExtension, object?)` | `DynamicResourceExtension` | `_anchor` field | NonPublic |
+| `src/AtomUI.Core/Controls/VisualExtensions.cs` | `VisualExtensions` | `GetVisualRoot(this Visual)` | `Visual` | `GetPresentationSource()?.RootVisual` | protected internal |
+
+### AtomUI.Controls Extensions
+
+| File | Class | Extension Method | Target Type | Wrapped Member | Access |
+|------|-------|-----------------|-------------|----------------|--------|
+| `src/AtomUI.Controls/ItemsControl/ItemCollectionReflectionExtensions.cs` | `ItemCollectionReflectionExtensions` | `AddSourceChangedEvent(this ItemCollection, EventHandler?)` | `ItemCollection` | `SourceChanged` event (add) | NonPublic |
+| `src/AtomUI.Controls/ItemsControl/ItemsControlReflectionExtensions.cs` | `ItemsControlReflectionExtensions` | `GetWrapFocus(this ItemsControl)` | `ItemsControl` | `WrapFocus` property | NonPublic |
+| | | `SetWrapFocus(this ItemsControl, bool)` | `ItemsControl` | `WrapFocus` property | NonPublic |
+| | | `GetItems(this ItemsControl)` | `ItemsControl` | `_items` field | NonPublic |
+| `src/AtomUI.Controls/ItemsControl/ItemsSourceViewReflectionExtensions.cs` | `ItemsSourceViewReflectionExtensions` | `TryGetInitializedSource(this ItemsSourceView)` | `ItemsSourceView` | `TryGetInitializedSource()` method | NonPublic |
+| `src/AtomUI.Controls/Primitives/TextSearchReflectionExtensions.cs` | `TextSearchUtils` | `GetEffectiveText(object?, BindingEvaluator<string?>?)` | `TextSearch` | `GetEffectiveText()` static method | NonPublic |
+| `src/AtomUI.Controls/Primitives/TopLevelReflectionExtensions.cs` | `TopLevelReflectionExtensions` | `GetLastPointerPosition(this TopLevel)` | `TopLevel` | `LastPointerPosition` property | NonPublic |
+| `src/AtomUI.Controls/Primitives/VisualLayers/VisualLayerManagerReflectionExtensions.cs` | `VisualLayerManagerReflectionExtensions` | `AddLayer(this VisualLayerManager, Control, int)` | `VisualLayerManager` | `AddLayer()` method | NonPublic |
+| | | `GetLayers(this VisualLayerManager)` | `VisualLayerManager` | `_layers` field | NonPublic |
+| `src/AtomUI.Controls/ScrollViewer/ScrollBarReflectionExtensions.cs` | `ScrollBarReflectionExtensions` | `GetTimer(this ScrollBar)` | `ScrollBar` | `_timer` field | NonPublic |
+| | | `SetIsExpanded(this ScrollBar, bool)` | `ScrollBar` | `IsExpanded` property (private setter) | Public/Private |
+
+### AtomUI.Desktop.Controls Extensions
+
+| File | Class | Extension Method | Target Type | Wrapped Member | Access |
+|------|-------|-----------------|-------------|----------------|--------|
+| `src/AtomUI.Desktop.Controls/Popup/PopupReflectionExtensions.cs` | `PopupReflectionExtensions` | `AddClosingEventHandler(this Popup, EventHandler<CancelEventArgs>)` | `Popup` | `Closing` event (add) | NonPublic |
+| | | `RemoveClosingEventHandler(this Popup, EventHandler<CancelEventArgs>)` | `Popup` | `Closing` event (remove) | NonPublic |
+| | | `SetIgnoreIsOpenChanged(this Popup, bool)` | `Popup` | `_ignoreIsOpenChanged` field | NonPublic |
+| | | `GetIgnoreIsOpenChanged(this Popup)` | `Popup` | `_ignoreIsOpenChanged` field | NonPublic |
+| | | `SetPopupParent(this Popup, Control?)` | `Popup` | `SetPopupParent()` method | NonPublic |
+| `src/AtomUI.Desktop.Controls/TextBlock/TextBlockReflectionExtensions.cs` | `TextBlockReflectionExtensions` | `GetMaxSizeFromConstraint(this TextBlock)` | `TextBlock` | `GetMaxSizeFromConstraint()` method | NonPublic |
+| | | `GetHasComplexContent(this TextBlock)` | `TextBlock` | `HasComplexContent` property | NonPublic |
+
+### Quick Lookup by Avalonia Type
+
+When you encounter code accessing an internal/private member of an Avalonia type, use this index:
+
+| Avalonia Type | Available Extensions | Using Directive |
+|---------------|---------------------|-----------------|
+| `IInputRoot` | `GetRootElement()` | `using AtomUI.Input;` |
+| `AvaloniaProperty` | `InvokeNotifying()` | `using AtomUI.Utils;` |
+| `Visual` | `SetVisualParent()`, `GetVisualChildrenList()`, `AddToVisualChildren()`, `InsertToVisualChildren()`, `IndexOfVisualChildren()`, `ClearVisualParentRecursive()`, `GetVisualRoot()` | `using AtomUI.Controls;` |
+| `StyledElement` | `GetLogicalChildrenList()`, `AddToLogicalChildren()`, `InsertToLogicalChildren()`, `SetTemplatedParent()`, `SetTemplatedParentRecursive()` | `using AtomUI.Reflection;` |
+| `Animatable` | `EnableTransitions()`, `DisableTransitions()` | `using AtomUI.Animations;` |
+| `ItemCollection` | `SetItemsSource()`, `AddSourceChangedEvent()` | `using AtomUI.Controls;` |
+| `ItemsControl` | `GetWrapFocus()`, `SetWrapFocus()`, `GetItems()` | `using AtomUI.Controls;` |
+| `ItemsSourceView` | `TryGetInitializedSource()` | `using AtomUI.Controls;` |
+| `RawPointerEventArgs` | `GetInputHitTestResult()` | `using AtomUI.Controls;` |
+| `TextSearch` | `TextSearchUtils.GetEffectiveText()` | `using AtomUI.Controls;` |
+| `TopLevel` | `GetLastPointerPosition()` | `using AtomUI.Controls.Primitives;` |
+| `VisualLayerManager` | `AddLayer()`, `GetLayers()` | `using AtomUI.Controls.Primitives;` |
+| `ScrollBar` | `GetTimer()`, `SetIsExpanded()` | `using AtomUI.Controls.Commons;` |
+| `Popup` | `AddClosingEventHandler()`, `RemoveClosingEventHandler()`, `SetIgnoreIsOpenChanged()`, `GetIgnoreIsOpenChanged()`, `SetPopupParent()` | `using AtomUI.Desktop.Controls;` |
+| `TextBlock` | `GetMaxSizeFromConstraint()`, `GetHasComplexContent()` | `using AtomUI.Desktop.Controls;` |
+| `TextParagraphProperties` | `GetLineSpacing()`, `SetLineSpacing()` | `using AtomUI.Media.TextFormatting;` |
+| `DynamicResourceExtension` | `SetAnchor()` | `using AtomUI.Data;` |
 
 ## References
 
