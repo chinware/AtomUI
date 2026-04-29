@@ -1,0 +1,109 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <atom:CheckBoxIndicatorStateConverter x:Key="CheckBoxIndicatorStateConverter" />
+    <ControlTheme x:Key="{x:Type atom:CheckBox}" TargetType="atom:CheckBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Padding="0, 1, 0, 1">
+                    <DockPanel LastChildFill="True">
+                        <atom:CheckBoxIndicator Name="Indicator"
+                                                DockPanel.Dock="Left"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                IsWaveSpiritEnabled="{TemplateBinding IsWaveSpiritEnabled}"
+                                                IsEnabled="{TemplateBinding IsEnabled}"
+                                                State="{TemplateBinding IsChecked, Converter={StaticResource CheckBoxIndicatorStateConverter}}" />
+                        <ContentPresenter Name="ContentPresenter"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="IsWaveSpiritEnabled"
+                Value="{atom:SharedTokenResource EnableWaveSpirit}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+
+        <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+            <Setter Property="Margin" Value="{atom:CheckBoxTokenResource TextMargin}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+            <Setter Property="Width" Value="{atom:CheckBoxTokenResource CheckIndicatorSize}" />
+            <Setter Property="Height" Value="{atom:CheckBoxTokenResource CheckIndicatorSize}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            <Setter Property="TristateMarkSize"
+                    Value="{atom:CheckBoxTokenResource IndicatorTristateMarkSize}" />
+            <Setter Property="TristateMarkBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="CheckedMarkBrush" Value="White" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <Style Selector="^:checked">
+            <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                    <Setter Property="Background"
+                            Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                    <Setter Property="BorderBrush"
+                            Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(:checked):pointerover">
+            <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                <Setter Property="BorderBrush"
+                        Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:indeterminate:pointerover">
+            <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                <Setter Property="BorderBrush"
+                        Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            </Style>
+            <Style Selector="^:checked">
+                <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                    <Setter Property="CheckedMarkBrush"
+                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                </Style>
+            </Style>
+            <Style Selector="^:indeterminate">
+                <Style Selector="^ /template/ atom|CheckBoxIndicator#Indicator">
+                    <Setter Property="TristateMarkBrush"
+                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                </Style>
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

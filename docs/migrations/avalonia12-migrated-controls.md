@@ -17,7 +17,7 @@
 | Avatar | 待迁移 | | |
 | Badge | 待迁移 | | |
 | Buttons | 待迁移 | | |
-| CheckBox | 待迁移 | | |
+| CheckBox | 已完成 | 重建 ItemCollection（不再继承 ItemsSourceView） | 2026-04-29 |
 | Embedding | 待迁移 | | |
 | Empty | 待迁移 | | |
 | FlexPanel | 待迁移 | | |
@@ -60,7 +60,7 @@
 | Card | 待迁移 | | |
 | Carousel | 待迁移 | | |
 | Cascader | 待迁移 | | |
-| CheckBox | 待迁移 | | |
+| CheckBox | 已完成 | 重建 ItemCollection（不再继承 ItemsSourceView） | 2026-04-29 |
 | Chrome | 待迁移 | | |
 | Collapse | 待迁移 | | |
 | ComboBox | 待迁移 | | |

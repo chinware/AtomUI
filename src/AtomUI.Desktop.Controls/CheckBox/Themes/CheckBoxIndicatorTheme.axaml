@@ -1,0 +1,78 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:CheckBoxIndicator}" TargetType="atom:CheckBoxIndicator">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"
+                                              CornerRadius="{TemplateBinding CornerRadius}"/>
+                    <Border Name="Frame"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <Panel>
+                            <antdicons:CheckBoldOutlined Name="CheckedMark"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center" 
+                                                         StrokeBrush="{TemplateBinding CheckedMarkBrush}"
+                                                         IsMotionEnabled="False"
+                                                         RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
+                                                         RenderTransformOrigin="{x:Static RelativePoint.Center}"
+                                                         IsVisible="False"/>
+                            <Rectangle Name="TristateMark"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="{TemplateBinding TristateMarkBrush}"
+                                       Width="{TemplateBinding TristateMarkSize}"
+                                       Height="{TemplateBinding TristateMarkSize}"
+                                       IsVisible="False"/>
+                        </Panel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="TristateMarkBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <TransformOperationsTransition Property="CheckedMarkRenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" Easing="BackEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ atom|WaveSpiritDecorator#PART_WaveSpirit">
+            <Setter Property="WaveType" Value="RoundRectWave"/>
+        </Style>
+        
+        <Setter Property="CheckedMarkRenderTransform" Value="scale(0.1)"/>
+        
+        <Style Selector="^ /template/ atom|Icon#CheckedMark">
+            <Setter Property="Width" Value="{atom:CheckBoxTokenResource CheckedMarkSize}" />
+            <Setter Property="Height" Value="{atom:CheckBoxTokenResource CheckedMarkSize}" />
+        </Style>
+        
+        <Style Selector="^[State=Checked]">
+            <Setter Property="CheckedMarkRenderTransform" Value="scale(1.0)"/>
+            <Style Selector="^ /template/ atom|Icon#CheckedMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        <Style Selector="^[State=Indeterminate]">
+            <Style Selector="^ /template/ Rectangle#TristateMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
