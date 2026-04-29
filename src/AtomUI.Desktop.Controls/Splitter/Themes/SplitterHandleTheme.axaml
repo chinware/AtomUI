@@ -1,0 +1,172 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SplitterHandle}" TargetType="atom:SplitterHandle">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent"
+                        ClipToBounds="False">
+                    <Grid>
+                        <Border Name="{x:Static atom:SplitterThemeConstants.HandleLinePart}"
+                                Background="{TemplateBinding LineBrush}" />
+                        <Border Name="{x:Static atom:SplitterThemeConstants.HandleGripPart}"
+                                Background="{atom:SharedTokenResource ColorFill}"
+                                CornerRadius="{atom:SharedTokenResource BorderRadiusXS}" />
+                        <Canvas Name="{x:Static atom:SplitterThemeConstants.CollapseIconsHostPart}"
+                                Width="0"
+                                Height="0"
+                                ClipToBounds="False"
+                                ZIndex="{atom:SharedTokenResource ZIndexPopupBase}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                            <atom:IconButton Name="{x:Static atom:SplitterThemeConstants.CollapsePrevButtonPart}"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                            <atom:IconButton Name="{x:Static atom:SplitterThemeConstants.CollapseNextButtonPart}"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center" />
+                        </Canvas>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
+        <Setter Property="LineThickness" Value="{atom:SplitterTokenResource SplitBarSize}" />
+        <Setter Property="ClipToBounds" Value="False" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineHoverColor}" />
+        </Style>
+
+        <Style Selector="^:dragging">
+            <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineDragColor}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconColor}" />
+            <Setter Property="IconWidth" Value="{atom:SplitterTokenResource HandleIconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SplitterTokenResource HandleIconSize}" />
+            <Setter Property="IsMotionEnabled" Value="False" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CollapsePrevButton">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgHover}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ZIndex" Value="{atom:SharedTokenResource ZIndexPopupBase}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CollapsePrevButton:pointerover">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActive}" />
+            <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconHoverColor}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CollapsePrevButton:pressed">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActiveHover}" />
+            <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconPressedColor}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CollapseNextButton">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgHover}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ZIndex" Value="{atom:SharedTokenResource ZIndexPopupBase}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CollapseNextButton:pointerover">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActive}" />
+            <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconHoverColor}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton#PART_CollapseNextButton:pressed">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ControlItemBgActiveHover}" />
+            <Setter Property="IconBrush" Value="{atom:SplitterTokenResource HandleIconPressedColor}" />
+        </Style>
+
+        <Style Selector="^[Orientation=Vertical] /template/ Border#PART_HandleLine">
+            <Setter Property="Width" Value="{Binding LineThickness, RelativeSource={RelativeSource TemplatedParent}}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+
+        <Style Selector="^[Orientation=Vertical] /template/ Border#PART_HandleGrip">
+            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarSize}" />
+            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="^[Orientation=Horizontal] /template/ Border#PART_HandleLine">
+            <Setter Property="Height" Value="{Binding LineThickness, RelativeSource={RelativeSource TemplatedParent}}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
+        <Style Selector="^[Orientation=Horizontal] /template/ Border#PART_HandleGrip">
+            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarSize}" />
+            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="^[Orientation=Vertical] /template/ atom|IconButton#PART_CollapsePrevButton">
+            <Setter Property="Width" Value="{atom:SharedTokenResource FontSizeSM}" />
+            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            <Setter Property="Canvas.Left"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseOffsetNegative}" />
+            <Setter Property="Canvas.Top"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseCrossOffset}" />
+        </Style>
+
+        <Style Selector="^[Orientation=Vertical] /template/ atom|IconButton#PART_CollapseNextButton">
+            <Setter Property="Width" Value="{atom:SharedTokenResource FontSizeSM}" />
+            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            <Setter Property="Canvas.Left"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseOffset}" />
+            <Setter Property="Canvas.Top"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseCrossOffset}" />
+        </Style>
+
+        <Style Selector="^[Orientation=Horizontal] /template/ atom|IconButton#PART_CollapsePrevButton">
+            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource FontSizeSM}" />
+            <Setter Property="Canvas.Left"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseCrossOffset}" />
+            <Setter Property="Canvas.Top"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseOffsetNegative}" />
+        </Style>
+
+        <Style Selector="^[Orientation=Horizontal] /template/ atom|IconButton#PART_CollapseNextButton">
+            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource FontSizeSM}" />
+            <Setter Property="Canvas.Left"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseCrossOffset}" />
+            <Setter Property="Canvas.Top"
+                    Value="{atom:SplitterTokenResource SplitBarCollapseOffset}" />
+        </Style>
+
+        <Style Selector="^[IsDragEnabled=False]">
+            <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
+            <Style Selector="^ /template/ Border#PART_HandleGrip">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsDragEnabled=False]:pointerover">
+            <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
+        </Style>
+
+        <Style Selector="^[IsDragEnabled=False]:dragging">
+            <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

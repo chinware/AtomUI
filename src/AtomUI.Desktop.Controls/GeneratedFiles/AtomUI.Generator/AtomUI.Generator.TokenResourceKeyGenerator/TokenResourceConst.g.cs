@@ -273,6 +273,25 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         GapSmallSize
     }
 
+    public enum SplitterTokenKind
+    {
+        HandleIconColor,
+        HandleIconHoverColor,
+        HandleIconPressedColor,
+        HandleIconSize,
+        HandleLineColor,
+        HandleLineDragColor,
+        HandleLineHoverColor,
+        HandleLineThickness,
+        SplitBarCollapseCrossOffset,
+        SplitBarCollapseOffset,
+        SplitBarCollapseOffsetNegative,
+        SplitBarDraggableSize,
+        SplitBarHandleSize,
+        SplitBarSize,
+        SplitTriggerSize
+    }
+
     public enum ToolTipTokenKind
     {
         BorderRadiusOuter,
@@ -486,6 +505,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SpaceTokenResourceExtension(SpaceTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class SplitterTokenResourceExtension : TokenResourceExtension<SplitterTokenKind>
+    {
+        public SplitterTokenResourceExtension()
+        {
+        }
+
+        public SplitterTokenResourceExtension(SplitterTokenKind kind) : base(kind)
         {
         }
     }

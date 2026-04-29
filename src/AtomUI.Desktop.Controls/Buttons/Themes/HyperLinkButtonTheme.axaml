@@ -1,0 +1,321 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:HyperLinkButton}" TargetType="atom:HyperLinkButton">
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Padding="{TemplateBinding Padding}"
+                        BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal">
+                        <antdicons:LoadingOutlined Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                                                   Margin="{ReflectionBinding (atom:IconPresenter.Margin),
+                                   ElementName=PART_ButtonIcon}" />
+                        <atom:IconPresenter
+                            Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                            Icon="{TemplateBinding Icon}"
+                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ContentPresenter
+                            Name="{x:Static atom:ButtonThemeConstants.ContentPresenterPart}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            </Style>
+            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
+            <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingLG}" />
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingLG}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            </Style>
+            <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
+            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            </Style>
+            <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingSM}" />
+            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorLink}" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorLink}" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorLink}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorLinkHover}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorLinkHover}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorLinkHover}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorLinkActive}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorLinkActive}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorLinkActive}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                <Setter Property="StrokeBrush"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:danger">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorError}" />
+                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="IconBrush"
+                            Value="{atom:SharedTokenResource ColorErrorHover}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="FillBrush"
+                            Value="{atom:SharedTokenResource ColorErrorHover}" />
+                    <Setter Property="StrokeBrush"
+                            Value="{atom:SharedTokenResource ColorErrorHover}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="IconBrush"
+                            Value="{atom:SharedTokenResource ColorErrorActive}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="FillBrush"
+                            Value="{atom:SharedTokenResource ColorErrorActive}" />
+                    <Setter Property="StrokeBrush"
+                            Value="{atom:SharedTokenResource ColorErrorActive}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^:disabled">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="IconBrush"
+                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="FillBrush"
+                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                    <Setter Property="StrokeBrush"
+                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <!--  text 和 icon 都存在的情况 -->
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeSM}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:icononly">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Margin" Value="0" />
+            </Style>
+            <Style Selector="^[SizeType=Large]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="Width"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+                    <Setter Property="Height"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Width"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+                    <Setter Property="Height"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Middle]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="Width"
+                            Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                    <Setter Property="Height"
+                            Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Width"
+                            Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                    <Setter Property="Height"
+                            Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                </Style>
+            </Style>
+            <Style Selector="^[SizeType=Small]">
+                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                    <Setter Property="Width"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+                    <Setter Property="Height"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+                </Style>
+                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                    <Setter Property="Width"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+                    <Setter Property="Height"
+                            Value="{atom:ButtonTokenResource OnlyIconSizeSM}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(:icononly)">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Margin" Value="{atom:ButtonTokenResource IconMargin}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <Style Selector="^:loading">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="LoadingAnimation" Value="Spin" />
+            </Style>
+            <Setter Property="Opacity" Value="{atom:SharedTokenResource OpacityLoading}" />
+        </Style>
+
+        <Style Selector="^:not(:disabled)">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLink}" />
+            <Style Selector="^/template/ Border#Frame">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLinkHover}" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLinkActive}" />
+            </Style>
+
+            <Style Selector="^:danger">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorError}" />
+
+                <Style Selector="^:pointerover">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorHover}" />
+                </Style>
+
+                <Style Selector="^:pressed">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorActive}" />
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsGhost=True]">
+                <Style Selector="^/template/ Border#Frame">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="BorderBrush"
+                    Value="{atom:ButtonTokenResource BorderColorDisabled}" />
+
+            <Style Selector="^/template/ Border#Frame">
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

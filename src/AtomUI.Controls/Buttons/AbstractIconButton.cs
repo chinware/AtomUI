@@ -142,6 +142,6 @@ public abstract class AbstractIconButton : AvaloniaButton, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        this.Dispatcher.Post(this.EnableTransitions);
     }
 }

@@ -130,7 +130,7 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
         Uri? uri = NavigateUri;
         if (uri is not null)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            this.Dispatcher.InvokeAsync(async () =>
             {
                 bool success = await TopLevel.GetTopLevel(this)!.Launcher.LaunchUriAsync(uri);
                 if (success)
@@ -150,6 +150,6 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        this.Dispatcher.Post(this.EnableTransitions);
     }
 }

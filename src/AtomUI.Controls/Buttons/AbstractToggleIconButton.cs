@@ -134,6 +134,6 @@ public abstract class AbstractToggleIconButton : ToggleButton, IMotionAwareContr
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        this.Dispatcher.Post(this.EnableTransitions);
     }
 }
