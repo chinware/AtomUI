@@ -53,7 +53,7 @@
 | AutoComplete | 待迁移 | | |
 | Avatar | 待迁移 | | |
 | Badge | 待迁移 | | |
-| Breadcrumb | 待迁移 | | |
+| Breadcrumb | 已完成 | 无需修改，已兼容 Avalonia 12 | 2026-04-29 |
 | ButtonSpinner | 待迁移 | | |
 | Buttons | 待迁移 | | |
 | Calendar | 待迁移 | | |

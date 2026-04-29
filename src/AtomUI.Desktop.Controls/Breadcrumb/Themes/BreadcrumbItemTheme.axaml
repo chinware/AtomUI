@@ -1,0 +1,79 @@
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:BreadcrumbItem}" TargetType="atom:BreadcrumbItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Name="RootLayout" Orientation="Horizontal">
+                    <Border Name="ContentInfoFrame"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}">
+                        <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXXS}">
+                            <atom:IconPresenter Name="IconPresenter"
+                                                 Icon="{TemplateBinding Icon}"
+                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <ContentPresenter Name="Content"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </StackPanel>
+                    </Border>
+                    <ContentPresenter Name="Separator"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalContentAlignment="Center"
+                                      Foreground="{atom:BreadcrumbTokenResource SeparatorColor}"
+                                      Content="{TemplateBinding Separator}"
+                                      Margin="{atom:BreadcrumbTokenResource SeparatorMargin}"
+                                      ContentTemplate="{TemplateBinding SeparatorTemplate}"
+                                      IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}"/>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Padding" Value="{atom:BreadcrumbTokenResource BreadcrumbItemContentPadding}"/>
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{atom:BreadcrumbTokenResource ItemColor}"/>
+        
+        <Style Selector="^[IsLast=True][IsNavigateResponsive=False]">
+            <Setter Property="Foreground" Value="{atom:BreadcrumbTokenResource LastItemColor}"/>
+        </Style>
+        
+        <Style Selector="^[IsNavigateResponsive=True]">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="{atom:BreadcrumbTokenResource LinkColor}"/>
+            
+            <Style Selector="^:pointerover">
+                <Setter Property="Background"
+                        Value="{atom:BreadcrumbTokenResource LinkHoverBgColor}" />
+                <Setter Property="Foreground"
+                        Value="{atom:BreadcrumbTokenResource LinkHoverColor}" />
+                
+                <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                    <Setter Property="IconBrush"
+                            Value="{atom:BreadcrumbTokenResource LinkHoverColor}" />
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+            <Setter Property="IconBrush"
+                    Value="{atom:BreadcrumbTokenResource ItemColor}" />
+            <Setter Property="Width"
+                    Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="Height"
+                    Value="{atom:SharedTokenResource IconSizeSM}" />
+        </Style>
+        
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
