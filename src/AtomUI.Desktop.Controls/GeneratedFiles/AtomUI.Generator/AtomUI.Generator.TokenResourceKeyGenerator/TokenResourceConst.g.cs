@@ -3,6 +3,11 @@ using AtomUI.Theme;
 
 namespace AtomUI.Desktop.Controls.DesignTokens
 {
+    public enum AdornerLayerTokenKind
+    {
+        FocusVisualMargin
+    }
+
     public enum ArrowDecoratedBoxTokenKind
     {
         ArrowSize,
@@ -216,6 +221,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         FullscreenPopoverShadows,
         SystemBarColor,
         TitleBarHeight
+    }
+
+    public class AdornerLayerTokenResourceExtension : TokenResourceExtension<AdornerLayerTokenKind>
+    {
+        public AdornerLayerTokenResourceExtension()
+        {
+        }
+
+        public AdornerLayerTokenResourceExtension(AdornerLayerTokenKind kind) : base(kind)
+        {
+        }
     }
 
     public class ArrowDecoratedBoxTokenResourceExtension : TokenResourceExtension<ArrowDecoratedBoxTokenKind>

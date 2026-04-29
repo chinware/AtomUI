@@ -8,6 +8,7 @@ namespace AtomUI.Theme
         internal static IList<Type> GetTokenTypes()
         {
             List<Type> tokenTypes = new List<Type>();
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AdornerLayerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ArrowDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));

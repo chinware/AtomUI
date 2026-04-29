@@ -133,6 +133,15 @@ Desktop and Mobile controls typically inherit from abstract base classes in `Ato
 
 **Why:** Breaking changes in the base class affect all platform-specific implementations. Missing base class issues leads to runtime bugs (e.g., `RawInputEventArgs.Root` comparison failures) that are hard to trace back to the migration.
 
+### 12. Token definitions and language packs are copy-only
+
+When migrating a control module, the following files do NOT need breaking-change scanning or dependency analysis — copy them directly from `release/5.0` to the target branch:
+
+- **`*Token.cs`** — Control design token definitions (e.g., `AlertToken.cs`, `AdornerLayerToken.cs`). Only apply the `ScopeProvider` field addition to match main's pattern.
+- **`*LangResource*.cs` / `*Lang*.resx`** — Control language pack / localization resource files.
+
+These files contain only data declarations (token values, string resources) with no Avalonia API usage that could be affected by breaking changes. Scanning them wastes time.
+
 ## Execution Steps
 
 ### Step 1: Determine scope and platform

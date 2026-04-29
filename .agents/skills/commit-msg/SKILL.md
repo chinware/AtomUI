@@ -1,6 +1,6 @@
 ---
 name: atomui-commit-msg
-description: Generate a single-line commit message for AtomUI by reading the project's git staged area and recent commit style. Use when the user asks for a commit message, says "msg", "commit msg", "写提交信息", or wants one-line text that covers all staged changes. Output should match the repository's existing commit style and summarize all staged changes in one line.
+description: Generate a single-line commit message for AtomUI by reading the project's git staged area and recent commit style. Use when the user asks for a commit message, says "msg", "commit msg", "写提交信息", "创建 commit", "创建commit", or wants one-line text that covers all staged changes. Output should match the repository's existing commit style and summarize all staged changes in one line.
 ---
 
 # AtomUI Commit Message Generation Skill
@@ -15,14 +15,19 @@ description: Generate a single-line commit message for AtomUI by reading the pro
 
 > A commit message is not a per-file listing of the diff — it is a compressed expression of the commit's intent. Read the staging area first, then summarize, then output one line.
 
-## Trigger Conditions
+## IMPORTANT: Trigger Conditions
 
-Use this skill when the user:
+This skill MUST be invoked when the user's message matches ANY of the following patterns. Do NOT skip this skill and handle the request manually.
 
-- Asks for a commit message or "提交信息"
-- Says "msg" in a git commit context
-- Wants a one-line summary generated from current changes
-- Asks the agent to summarize staged changes into a commit title
+| Trigger phrase | Example |
+|---|---|
+| `创建 commit` / `创建commit` | "创建 commit" |
+| `commit msg` / `msg` | "msg", "commit msg" |
+| `提交信息` / `写提交信息` | "帮我写提交信息" |
+| Asks for a commit message | "generate a commit message" |
+| Asks to summarize staged changes into a commit title | "summarize my staged changes" |
+
+When triggered, this skill handles the **entire commit workflow**: reading staged changes, generating the message, creating the commit, and verifying the result. The caller should NOT add extra trailers (e.g., `Co-Authored-By`) or wrap the message in additional formatting.
 
 ## Fundamental Rules
 
@@ -52,13 +57,13 @@ Gather the following information before generating. Do not guess or rely on file
 git status --short
 git diff --cached --stat
 git diff --cached
-git log --oneline -10
+git log --oneline -10 --no-merges
 ```
 
 - `git status --short` — Confirm which files are staged and whether unstaged changes exist.
 - `git diff --cached --stat` — Quickly assess the scope of changes.
 - `git diff --cached` — Read the actual content being committed. This is the primary basis for the message.
-- `git log --oneline -10` — Check the repository's recent commit style, language, and type/scope conventions.
+- `git log --oneline -10 --no-merges` — Check the repository's recent commit style, language, and type/scope conventions. When reviewing commit style, **ignore any `Co-Authored-By:` trailers** — they are not part of the project's commit convention and must not be reproduced.
 
 ### Step 2: Check if generation is possible
 
