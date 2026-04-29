@@ -1,0 +1,129 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SearchEdit}" TargetType="atom:SearchEdit">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:SearchEditDecoratedBox
+                    Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
+                    LeftAddOn="{TemplateBinding LeftAddOn}"
+                    LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
+                    ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                    StyleVariant="{TemplateBinding StyleVariant}"
+                    SizeType="{TemplateBinding SizeType}"
+                    Status="{TemplateBinding Status}"
+                    SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
+                    SearchButtonText="{TemplateBinding SearchButtonText}"
+                    SearchButtonLoading="{TemplateBinding IsOperating}"
+                    IsEnabled="{TemplateBinding IsEnabled}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
+                    CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
+                    IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}"
+                    Focusable="True">
+                    <atom:SearchEditDecoratedBox.ContentRightAddOn>
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
+                            <atom:InputClearIconButton Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}" />
+                            <!-- 新增显示密码按钮 -->
+                            <atom:RevealButton Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}" />
+                            <ContentPresenter
+                                Name="InnerRightContentPresenter"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Focusable="False" />
+                        </StackPanel>
+                    </atom:SearchEditDecoratedBox.ContentRightAddOn>
+
+                    <atom:ScrollViewer
+                        Name="PART_ScrollViewer"
+                        Cursor="Ibeam"
+                        AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                        IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                        <Panel>
+                            <atom:TextBlock
+                                Name="Placeholder"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Foreground="{TemplateBinding PlaceholderForeground}"
+                                Text="{TemplateBinding PlaceholderText}"
+                                LineHeight="{TemplateBinding LineHeight}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}"
+                                IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                            <TextPresenter
+                                Name="PART_TextPresenter"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                CaretBrush="{TemplateBinding CaretBrush}"
+                                CaretIndex="{TemplateBinding CaretIndex}"
+                                LineHeight="{TemplateBinding LineHeight}"
+                                PasswordChar="{TemplateBinding PasswordChar}"
+                                RevealPassword="{TemplateBinding RevealPassword}"
+                                SelectionBrush="{TemplateBinding SelectionBrush}"
+                                SelectionStart="{TemplateBinding SelectionStart}"
+                                SelectionEnd="{TemplateBinding SelectionEnd}"
+                                SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                Text="{TemplateBinding Text, Mode=TwoWay}"
+                                TextAlignment="{TemplateBinding TextAlignment}"
+                                TextWrapping="{TemplateBinding TextWrapping}" />
+                        </Panel>
+                    </atom:ScrollViewer>
+                </atom:SearchEditDecoratedBox>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+        <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
+        <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Setter Property="SelectionBrush" Value="{atom:SharedTokenResource SelectionBackground}" />
+        <Setter Property="CaretBrush" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="SelectionForegroundBrush"
+                Value="{atom:SharedTokenResource SelectionForeground}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+
+        <Style Selector="^[StyleVariant=Borderless]">
+            <Style Selector="^:error">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
+                </Style>
+            </Style>
+            <Style Selector="^:warning">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorWarningText}" />
+                </Style>
+            </Style>
+        </Style>
+        <Style Selector="^[StyleVariant=Filled]">
+            <Style Selector="^:error">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
+                </Style>
+            </Style>
+            <Style Selector="^:warning">
+                <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
+                    <Setter Property="Foreground"
+                            Value="{atom:SharedTokenResource ColorWarningText}" />
+                </Style>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,184 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TextArea}" TargetType="atom:TextArea">
+
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:TextArea">
+                <DockPanel LastChildFill="True"
+                           Height="{TemplateBinding Height}">
+                    <atom:TextBlock Name="TextCountIndicator"
+                                    DockPanel.Dock="Bottom"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    Text="{TemplateBinding CountText}"
+                                    IsVisible="{TemplateBinding IsShowCount}" />
+                    <Panel>
+                        <atom:TextAreaDecoratedBox
+                            Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
+                            ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
+                            ContentLeftAddOnTemplate="{TemplateBinding InnerLeftContentTemplate}"
+                            StyleVariant="{TemplateBinding StyleVariant}"
+                            SizeType="{TemplateBinding SizeType}"
+                            Status="{TemplateBinding Status}"
+                            Focusable="True"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            IsResizable="{TemplateBinding IsResizable}"
+                            IsAllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}"
+                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                            IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
+                            <atom:TextAreaDecoratedBox.ContentRightAddOn>
+                                <StackPanel Orientation="Vertical"
+                                            Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
+                                    <atom:InputClearIconButton
+                                        Name="{x:Static atom:TextAreaThemeConstants.ClearButtonPart}"
+                                        VerticalAlignment="Center" />
+                                    <ContentPresenter
+                                        Name="PART_FormFeedBack"
+                                        VerticalAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        HorizontalAlignment="Right" />
+                                    <ContentPresenter
+                                        Name="PART_InnerRightContentPresenter"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        Focusable="False"
+                                        IsVisible="False" />
+                                </StackPanel>
+                            </atom:TextAreaDecoratedBox.ContentRightAddOn>
+
+                            <Panel Name="ContentLayout">
+                                <atom:TextBlock
+                                    Name="Placeholder"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Text="{TemplateBinding PlaceholderText}"
+                                    Foreground="{TemplateBinding PlaceholderForeground}"
+                                    LineHeight="{TemplateBinding LineHeight}"
+                                    TextAlignment="{TemplateBinding TextAlignment}"
+                                    TextWrapping="{TemplateBinding TextWrapping}"
+                                    IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                <TextPresenter
+                                    Name="PART_TextPresenter"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                    CaretBrush="{TemplateBinding CaretBrush}"
+                                    CaretIndex="{TemplateBinding CaretIndex}"
+                                    LineHeight="{TemplateBinding LineHeight}"
+                                    PasswordChar="{TemplateBinding PasswordChar}"
+                                    RevealPassword="{TemplateBinding RevealPassword}"
+                                    SelectionBrush="{TemplateBinding SelectionBrush}"
+                                    SelectionStart="{TemplateBinding SelectionStart}"
+                                    SelectionEnd="{TemplateBinding SelectionEnd}"
+                                    SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                    Text="{TemplateBinding Text, Mode=TwoWay}"
+                                    TextAlignment="{TemplateBinding TextAlignment}"
+                                    TextWrapping="{TemplateBinding TextWrapping}"
+                                    Focusable="False" />
+                            </Panel>
+                        </atom:TextAreaDecoratedBox>
+                        <atom:ResizeHandle Name="{x:Static atom:TextAreaThemeConstants.ResizeHandle}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Bottom"
+                                           Cursor="SizeNorthSouth" />
+                    </Panel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="SelectionBrush" Value="{atom:SharedTokenResource SelectionBackground}" />
+        <Setter Property="CaretBrush" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="SelectionForegroundBrush"
+                Value="{atom:SharedTokenResource SelectionForeground}" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="PlaceholderForeground"
+                Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="AcceptsReturn" Value="True" />
+
+        <Style Selector="^ /template/ Panel#ContentLayout">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Ibeam" />
+        </Style>
+
+        <Style Selector="^[StyleVariant=Borderless]">
+            <Style Selector="^:error">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
+                </Style>
+            </Style>
+            <Style Selector="^:warning">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{atom:SharedTokenResource ColorWarningText}" />
+                </Style>
+            </Style>
+        </Style>
+        <Style Selector="^[StyleVariant=Filled]">
+            <Style Selector="^:error">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
+                </Style>
+            </Style>
+            <Style Selector="^:warning">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{atom:SharedTokenResource ColorWarningText}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
+            <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+                <Setter Property="Margin" Value="0, 1, 0, 1" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="FontSize" Value="{atom:TextAreaTokenResource FontSizeLG}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="FontSize" Value="{atom:TextAreaTokenResource FontSize}" />
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="FontSize" Value="{atom:TextAreaTokenResource FontSizeSM}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Margin"
+                    Value="2 0 2 0" />
+        </Style>
+
+        <Style
+            Selector="^ /template/ StackPanel#PART_LeftAddOnLayout, ^ /template/ StackPanel#PART_RightAddOnLayout">
+            <Setter Property="Spacing"
+                    Value="{atom:SharedTokenResource UniformlyPaddingXXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|TextBlock#TextCountIndicator">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground"
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

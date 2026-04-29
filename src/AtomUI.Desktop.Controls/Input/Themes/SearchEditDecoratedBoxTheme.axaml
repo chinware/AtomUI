@@ -1,0 +1,133 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SearchEditDecoratedBox}" TargetType="atom:SearchEditDecoratedBox">
+        <ControlTheme.BasedOn>
+            <atom:AddOnDecoratedBoxTheme TargetType="atom:SearchEditDecoratedBox" />
+        </ControlTheme.BasedOn>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:SearchEditPanel Name="RootLayout" ClipToBounds="False">
+                    <ContentPresenter
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Focusable="False"
+                        Content="{TemplateBinding LeftAddOn}"
+                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                        BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
+                        CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
+                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                    <atom:SearchButton
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
+                        Focusable="False"
+                        IsEnabled="{TemplateBinding IsEnabled}"
+                        Icon="{antdicons:AntDesignIconProvider SearchOutlined}"
+                        BackgroundSizing="OuterBorderEdge"
+                        IsLoading="{TemplateBinding SearchButtonLoading}"
+                        Content="{TemplateBinding SearchButtonText}"
+                        SizeType="{TemplateBinding SizeType}"
+                        Status="{TemplateBinding Status}"
+                        StyleVariant="{TemplateBinding StyleVariant}"
+                        BorderThickness="{Binding RightAddOnBorderThickness, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
+                        CornerRadius="{Binding RightAddOnCornerRadius, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"/>
+
+                    <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                            BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
+                            CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            BackgroundSizing="OuterBorderEdge">
+                        <DockPanel Name="ContentLayout" LastChildFill="True">
+                            <ContentPresenter
+                                Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
+                                DockPanel.Dock="Left"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Focusable="False"
+                                Content="{TemplateBinding ContentLeftAddOn}"
+                                ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                                IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <ContentPresenter
+                                DockPanel.Dock="Right"
+                                Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Focusable="False"
+                                Content="{TemplateBinding ContentRightAddOn}"
+                                ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
+                                IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                            <ContentPresenter
+                                Name="PART_ContentPresenter"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </DockPanel>
+                    </Border>
+                </atom:SearchEditPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Style Selector="^ /template/ Border#PART_ContentFrame">
+            <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
+        </Style>
+
+        <Style Selector="^[SearchButtonStyle=Default]">
+            <Style
+                Selector="^ /template/ Border#PART_ContentFrame:focus-within">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+            </Style>
+            <Style
+                Selector="^ /template/ Border#PART_ContentFrame:pointerover">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+            </Style>
+
+            <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+                <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.NormalZIndex}" />
+                <Setter Property="IsIconVisible" Value="True" />
+                <Setter Property="ButtonType" Value="Default" />
+            </Style>
+
+            <Style Selector="^[StyleVariant=Outlined]">
+                <Style
+                    Selector="^ /template/ atom|SearchButton#PART_RightAddOn:pressed">
+                    <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+                </Style>
+
+                <Style
+                    Selector="^ /template/ atom|SearchButton#PART_RightAddOn:pointerover">
+                    <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+                </Style>
+            </Style>
+
+        </Style>
+
+        <Style Selector="^[SearchButtonStyle=Primary]">
+            <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+                <Setter Property="IsIconVisible" Value="True" />
+                <Setter Property="ButtonType" Value="Primary" />
+            </Style>
+            <Style Selector="^[StyleVariant=Outlined]">
+                <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+                    <Setter Property="ZIndex" Value="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(^[StyleVariant=Outlined])">
+            <Style Selector="^ /template/ atom|SearchButton#PART_RightAddOn">
+                <Setter Property="ButtonType" Value="Text" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

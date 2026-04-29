@@ -1,0 +1,424 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Desktop.Controls.Primitives.Themes.AddOnDecoratedBoxTheme"
+              TargetType="atom:AddOnDecoratedBox"
+              x:ClassModifier="internal">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:AddOnDecoratedBox">
+            <DockPanel Name="RootLayout" LastChildFill="True">
+                <ContentPresenter
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Focusable="False"
+                    DockPanel.Dock="Left"
+                    BackgroundSizing="InnerBorderEdge"
+                    Content="{TemplateBinding LeftAddOn}"
+                    ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                    BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
+                    CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
+                    IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                <ContentPresenter
+                    Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Focusable="False"
+                    BackgroundSizing="InnerBorderEdge"
+                    Content="{TemplateBinding RightAddOn}"
+                    ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                    BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
+                    CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
+                    IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                        BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
+                        CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}"
+                        BackgroundSizing="InnerBorderEdge">
+                    <DockPanel Name="ContentLayout" LastChildFill="True">
+                        <ContentPresenter
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
+                            DockPanel.Dock="Left"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Focusable="False"
+                            Content="{TemplateBinding ContentLeftAddOn}"
+                            ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                            IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                        <ContentPresenter
+                            DockPanel.Dock="Right"
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart}"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Focusable="False"
+                            Content="{TemplateBinding ContentRightAddOn}"
+                            ContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
+                            IsVisible="{TemplateBinding ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                        <ContentPresenter
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentPresenterPart}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </DockPanel>
+        </ControlTemplate>
+    </Setter>
+    
+    <Style Selector="^:is(atom|AddOnDecoratedBox)">
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="UseLayoutRounding" Value="False" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        
+        <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+            <Setter Property="Background" Value="{atom:AddOnDecoratedBoxTokenResource AddonBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background" Value="{atom:AddOnDecoratedBoxTokenResource AddonBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <Style
+            Selector="^ /template/ DockPanel#ContentLayout">
+            <Setter Property="HorizontalSpacing"
+                    Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
+            </Style>
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
+            </Style>
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
+            </Style>
+            <Style
+                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
+            </Style>
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource FontHeight}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="Padding"
+                        Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource FontHeightSM}" />
+                <Setter Property="Margin" Value="{atom:AddOnDecoratedBoxTokenResource ContentMargin}" />
+            </Style>
+        </Style>
+        
+        <!-- status 不同的时候左右附加区域的主体色设置 -->
+        <Style Selector="^[Status=Error]">
+            <Setter Property="AddOnStatusForeground" Value="{atom:SharedTokenResource ColorErrorText}" />
+            <Setter Property="AddOnStatusIconBrush" Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+
+        <Style Selector="^[Status=Warning]">
+            <Setter Property="AddOnStatusForeground" Value="{atom:SharedTokenResource ColorWarningText}" />
+            <Setter Property="AddOnStatusIconBrush" Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+
+        <!-- Outline -->
+        <Style Selector="^:outline">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+        <Style Selector="^:outline[IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource HoverBorderColor}" />
+        </Style>
+        <Style Selector="^:outline:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+        </Style>
+        <Style Selector="^:outline:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+        </Style>
+
+        <!-- Outline + Error -->
+        <Style Selector="^:outline[Status=Error]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+        <Style Selector="^:outline[Status=Error] /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:outline[Status=Error] /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+        <Style Selector="^:outline[Status=Error][IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
+        </Style>
+        <Style Selector="^:outline[Status=Error]:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+        <Style Selector="^:outline[Status=Error]:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+
+        <!-- Outline + Warning -->
+        <Style Selector="^:outline[Status=Warning]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+        <Style Selector="^:outline[Status=Warning] /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:outline[Status=Warning] /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+        <Style Selector="^:outline[Status=Warning][IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarningBorderHover}" />
+        </Style>
+        <Style Selector="^:outline[Status=Warning]:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+        <Style Selector="^:outline[Status=Warning]:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+
+        <!-- Filled -->
+        <Style Selector="^:filled">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
+        </Style>
+        <Style Selector="^:filled /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:filled /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorFillTertiary}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
+        </Style>
+        <Style Selector="^:filled[IsInnerBoxHover=True]">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorFillSecondary}" />
+        </Style>
+        <Style Selector="^:filled:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^:filled:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+        </Style>
+
+        <!-- Filled + Error -->
+        <Style Selector="^:filled[Status=Error]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorErrorBg}" />
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorErrorBg}" />
+        </Style>
+        <Style Selector="^:filled[Status=Error] /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:filled[Status=Error] /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorErrorBg}" />
+        </Style>
+        <Style Selector="^:filled[Status=Error][IsInnerBoxHover=True]">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorErrorBgHover}" />
+        </Style>
+        <Style Selector="^:filled[Status=Error]:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="Background"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+        </Style>
+        <Style Selector="^:filled[Status=Error]:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+
+        <!-- Filled + Warning -->
+        <Style Selector="^:filled[Status=Warning]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorWarningBg}" />
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorWarningBg}" />
+        </Style>
+        <Style Selector="^:filled[Status=Warning] /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:filled[Status=Warning] /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorWarningBg}" />
+        </Style>
+        <Style Selector="^:filled[Status=Warning][IsInnerBoxHover=True]">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorWarningBgHover}" />
+        </Style>
+        <Style Selector="^:filled[Status=Warning]:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+            <Setter Property="Background"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+        </Style>
+        <Style Selector="^:filled[Status=Warning]:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+
+        <!-- Borderless -->
+        <Style Selector="^:borderless /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:borderless /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- Underlined -->
+        <Style Selector="^:underlined">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+        <Style Selector="^:underlined /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:underlined /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^:underlined[IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource HoverBorderColor}" />
+        </Style>
+        <Style Selector="^:underlined:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+        </Style>
+        <Style Selector="^:underlined:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+        </Style>
+
+        <!-- Underlined + Error -->
+        <Style Selector="^:underlined[Status=Error]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+        <Style Selector="^:underlined[Status=Error][IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
+        </Style>
+        <Style Selector="^:underlined[Status=Error]:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+        <Style Selector="^:underlined[Status=Error]:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+
+        <!-- Underlined + Warning -->
+        <Style Selector="^:underlined[Status=Warning]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+        <Style Selector="^:underlined[Status=Warning][IsInnerBoxHover=True]">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarningBorderHover}" />
+        </Style>
+        <Style Selector="^:underlined[Status=Warning]:focus-within">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+        <Style Selector="^:underlined[Status=Warning]:pressed">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+
+        <!-- Disabled -->
+        <Style Selector="^:disabled">
+            <Setter Property="AddOnStatusForeground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="AddOnStatusIconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Setter Property="Foreground"
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+        <Style Selector="^:disabled:outline, ^:disabled:filled">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+        <Style Selector="^:disabled:outline /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:disabled:outline /template/ ContentPresenter#PART_RightAddOn,
+                         ^:disabled:filled /template/ ContentPresenter#PART_LeftAddOn,
+                         ^:disabled:filled /template/ ContentPresenter#PART_RightAddOn">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+        <Style Selector="^:disabled:underlined">
+            <Setter Property="BorderBrush"
+                    Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </Style>
+</ControlTheme>

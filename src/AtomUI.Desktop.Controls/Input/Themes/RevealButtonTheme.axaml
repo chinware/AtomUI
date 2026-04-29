@@ -1,0 +1,36 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:RevealButton}" TargetType="atom:RevealButton">
+        <ControlTheme.BasedOn>
+            <themes:ToggleIconButtonTheme TargetType="{x:Type atom:RevealButton}" />
+        </ControlTheme.BasedOn>
+        
+        <Setter Property="IconWidth"
+                Value="{atom:SharedTokenResource IconSize}" />
+        <Setter Property="IconHeight"
+                Value="{atom:SharedTokenResource IconSize}" />
+
+        <Setter Property="IconBrush"
+                Value="{atom:SharedTokenResource ColorIcon}" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorIconHover}" />
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorText}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

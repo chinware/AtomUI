@@ -1,0 +1,89 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+              x:Class="AtomUI.Desktop.Controls.Themes.SearchButtonTheme"
+              TargetType="{x:Type atom:SearchButton}"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:ButtonTheme TargetType="{x:Type atom:SearchButton}" />
+    </ControlTheme.BasedOn>
+    
+    <Style Selector="^:is(atom|SearchButton)[ButtonType=Text]">
+        <Style Selector="^[StyleVariant=Filled]">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorFillTertiary}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorBgTextHover}" />
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorBgTextActive}" />
+        </Style>
+
+        <Style Selector="^[Status=Error]">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorErrorBg}" />
+            <Style Selector="^:pointerover">
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorErrorBgHover}" />
+            </Style>
+            <Style Selector="^:pressed">
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorErrorBgActive}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Warning]">
+            <Setter Property="Background"
+                    Value="{atom:SharedTokenResource ColorWarningBg}" />
+            <Style Selector="^:pointerover">
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorWarningHover}" />
+            </Style>
+            <Style Selector="^:pressed">
+                <Setter Property="Background"
+                        Value="{atom:SharedTokenResource ColorWarningActive}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDescription}" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:pressed">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultActiveColor}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultActiveColor}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+        </Style>
+    </Style>
+
+</ControlTheme>
