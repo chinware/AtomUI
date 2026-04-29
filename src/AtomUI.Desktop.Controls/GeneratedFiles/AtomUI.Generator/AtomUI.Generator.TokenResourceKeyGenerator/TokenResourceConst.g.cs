@@ -292,6 +292,34 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         SplitTriggerSize
     }
 
+    public enum TagTokenKind
+    {
+        DefaultBg,
+        DefaultColor,
+        TagBorderlessBg,
+        TagCloseIconSize,
+        TagFontSize,
+        TagIconSize,
+        TagLineHeight,
+        TagPadding,
+        TagTextPaddingInline
+    }
+
+    public enum TimelineTokenKind
+    {
+        IndicatorDotBorderWidth,
+        IndicatorDotSize,
+        IndicatorLeftModeMargin,
+        IndicatorMiddleModeMargin,
+        IndicatorRightModeMargin,
+        IndicatorSize,
+        IndicatorTailColor,
+        IndicatorTailWidth,
+        ItemPaddingBottom,
+        ItemPaddingBottomLG,
+        LastItemContentMinHeight
+    }
+
     public enum ToggleSwitchTokenKind
     {
         ExtraInfoFontSize,
@@ -541,6 +569,28 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplitterTokenResourceExtension(SplitterTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TagTokenResourceExtension : TokenResourceExtension<TagTokenKind>
+    {
+        public TagTokenResourceExtension()
+        {
+        }
+
+        public TagTokenResourceExtension(TagTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TimelineTokenResourceExtension : TokenResourceExtension<TimelineTokenKind>
+    {
+        public TimelineTokenResourceExtension()
+        {
+        }
+
+        public TimelineTokenResourceExtension(TimelineTokenKind kind) : base(kind)
         {
         }
     }

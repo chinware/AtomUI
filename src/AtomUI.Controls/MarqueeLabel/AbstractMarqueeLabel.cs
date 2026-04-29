@@ -4,8 +4,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Styling;
-using Avalonia.Threading;
+using Avalonia.Styling; 
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
