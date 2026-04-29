@@ -206,11 +206,12 @@ Check all 50+ categories:
 46. ReflectionExtensions pattern for AOT (DynamicDependency, Lazy<T> caching)
 47. Internal API extraction strategy (extract vs reflect for internal APIs)
 
-**AtomUI-Specific (4 categories)**
+**AtomUI-Specific (5 categories)**
 48. PlacementMode usage in PopupUtils (property renamed, refactor needed)
 49. IInputRoot is [PrivateApi] but still public — use directly, only use reflection for truly internal members
 50. ReflectionExtensions for internal members (wrap internal/private access)
 51. Windows ExtendClientAreaToDecorationsHint behavior improved
+52. Popup.MotionAwareOpen/MotionAwareClose removed in AtomUI 6.0 — use Popup.IsOpen directly
 
 ### Step 3: Categorize by severity and platform
 
@@ -1513,6 +1514,28 @@ When you encounter code accessing an internal/private member of an Avalonia type
 | `TextBlock` | `GetMaxSizeFromConstraint()`, `GetHasComplexContent()` | `using AtomUI.Desktop.Controls;` |
 | `TextParagraphProperties` | `GetLineSpacing()`, `SetLineSpacing()` | `using AtomUI.Media.TextFormatting;` |
 | `DynamicResourceExtension` | `SetAnchor()` | `using AtomUI.Data;` |
+
+#### 52. Popup.MotionAwareOpen/MotionAwareClose Removed (HIGH - AtomUI 6.0)
+
+**What changed:** In AtomUI 6.0, the custom `Popup.MotionAwareOpen()` and `Popup.MotionAwareClose()` methods are removed. Popup open/close is now controlled directly via `Popup.IsOpen`.
+
+**Detection:**
+```csharp
+Popup.MotionAwareOpen(() => { HandlePopupOpened(placementTarget); });
+Popup.MotionAwareClose(HandlePopupClosed);
+```
+
+**Fix:**
+```csharp
+Popup.IsOpen = true;
+HandlePopupOpened(placementTarget);
+
+// For close:
+Popup.IsOpen = false;
+HandlePopupClosed();
+```
+
+**Why:** The motion/animation system for popups was redesigned in AtomUI 6.0. Open/close animations are now handled internally by the Popup infrastructure, so callers no longer need to use motion-aware wrappers.
 
 ## References
 
