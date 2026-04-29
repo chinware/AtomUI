@@ -21,6 +21,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ExpanderToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.GroupBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.LineEditToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ListBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.OptionButtonToken));

@@ -207,6 +207,24 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         InputFontSizeSM
     }
 
+    public enum ListBoxTokenKind
+    {
+        ContentPadding,
+        FilterHighlightColor,
+        ItemBgColor,
+        ItemColor,
+        ItemDisabledColor,
+        ItemHoverBgColor,
+        ItemHoverColor,
+        ItemMargin,
+        ItemPadding,
+        ItemPaddingLG,
+        ItemPaddingSM,
+        ItemSelectedBgColor,
+        ItemSelectedColor,
+        SelectedIndicatorMargin
+    }
+
     public enum MarqueeLabelTokenKind
     {
         CycleSpace,
@@ -773,6 +791,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public LineEditTokenResourceExtension(LineEditTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ListBoxTokenResourceExtension : TokenResourceExtension<ListBoxTokenKind>
+    {
+        public ListBoxTokenResourceExtension()
+        {
+        }
+
+        public ListBoxTokenResourceExtension(ListBoxTokenKind kind) : base(kind)
         {
         }
     }
