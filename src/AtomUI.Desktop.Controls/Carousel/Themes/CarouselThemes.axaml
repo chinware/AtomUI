@@ -1,0 +1,11 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="CarouselPageIndicatorTheme.axaml"/>
+        <ResourceInclude Source="CarouselPaginationTheme.axaml"/>
+        <ResourceInclude Source="CarouselPageTheme.axaml"/>
+        <ResourceInclude Source="CarouselTheme.axaml"/>
+        <ResourceInclude Source="CarouselNavButtonTheme.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

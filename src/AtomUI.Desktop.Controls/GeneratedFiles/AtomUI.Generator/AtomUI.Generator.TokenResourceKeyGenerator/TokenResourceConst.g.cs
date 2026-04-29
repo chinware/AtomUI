@@ -83,6 +83,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextTextHoverColor
     }
 
+    public enum CarouselTokenKind
+    {
+        ArrowOffset,
+        ArrowSize,
+        IndicatorActiveWidth,
+        IndicatorGap,
+        IndicatorHeight,
+        IndicatorWidth,
+        PaginationOffset
+    }
+
     public enum CheckBoxTokenKind
     {
         CheckedMarkSize,
@@ -437,6 +448,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ButtonTokenResourceExtension(ButtonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class CarouselTokenResourceExtension : TokenResourceExtension<CarouselTokenKind>
+    {
+        public CarouselTokenResourceExtension()
+        {
+        }
+
+        public CarouselTokenResourceExtension(CarouselTokenKind kind) : base(kind)
         {
         }
     }
