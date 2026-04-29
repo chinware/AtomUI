@@ -1,0 +1,118 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Result}" TargetType="atom:Result">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame" Padding="{TemplateBinding Padding}">
+                    <StackPanel Name="RootLayout">
+                        <ContentPresenter Name="PART_StatusIconPresenter"
+                                          HorizontalAlignment="Center"
+                                          IsVisible="False"
+                                          Content="{TemplateBinding StatusIcon}" />
+                        <Svg Name="PART_ErrorCodeImage"
+                             HorizontalAlignment="Center"
+                             IsVisible="False" />
+                        <ContentPresenter Name="Header"
+                                          HorizontalAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          TextWrapping="Wrap"
+                                          FontSize="{TemplateBinding HeaderFontSize}"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          LineHeight="{TemplateBinding HeaderLineHeight}"
+                                          IsVisible="{TemplateBinding Header, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <ContentPresenter Name="SubHeader"
+                                          HorizontalAlignment="Center"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          FontSize="{TemplateBinding SubHeaderFontSize}"
+                                          TextWrapping="Wrap"
+                                          Content="{TemplateBinding SubHeader}"
+                                          LineHeight="{TemplateBinding SubHeaderLineHeight}"
+                                          ContentTemplate="{TemplateBinding SubHeaderTemplate}"
+                                          IsVisible="{TemplateBinding SubHeader, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <ContentPresenter Name="ExtraContent"
+                                          HorizontalAlignment="Center"
+                                          Content="{TemplateBinding Extra}"
+                                          ContentTemplate="{TemplateBinding ExtraTemplate}"
+                                          TextAlignment="Center" />
+                        <ContentPresenter Name="Content"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          ClipToBounds="False" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Padding" Value="{atom:ResultTokenResource FramePadding}" />
+        <Setter Property="RelativeHeaderLineHeight" Value="{atom:SharedTokenResource RelativeLineHeightHeading3}" />
+        <Setter Property="RelativeSubHeaderLineHeight" Value="{atom:SharedTokenResource RelativeLineHeight}" />
+        <Setter Property="HeaderFontSize" Value="{atom:ResultTokenResource HeaderFontSize}" />
+        <Setter Property="SubHeaderFontSize" Value="{atom:ResultTokenResource SubHeaderFontSize}" />
+        <Style Selector="^/template/ ContentPresenter#PART_StatusIconPresenter">
+            <Setter Property="Margin" Value="{atom:ResultTokenResource StatusImageMargin}" />
+        </Style>
+        
+        <Style Selector="^/template/ Svg#PART_ErrorCodeImage">
+            <Setter Property="Margin" Value="{atom:ResultTokenResource StatusImageMargin}" />
+        </Style>
+        
+        <Style Selector="^/template/ Svg#PART_ErrorCodeImage">
+            <Setter Property="Width" Value="{atom:ResultTokenResource ImageWidth}" />
+            <Setter Property="Height" Value="{atom:ResultTokenResource ImageHeight}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#Header">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}" />
+            <Setter Property="Margin" Value="{atom:ResultTokenResource HeaderMargin}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#SubHeader">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#Content">
+            <Setter Property="Margin" Value="{atom:ResultTokenResource ContentMargin}" />
+            <Setter Property="Padding" Value="{atom:ResultTokenResource ContentPadding}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillAlter}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#ExtraContent">
+            <Setter Property="Margin" Value="{atom:ResultTokenResource ExtraMargin}" />
+        </Style>
+
+        <Setter Property="StatusIconSize" Value="{atom:ResultTokenResource IconSize}" />
+
+        <Style Selector="^[Status=Info]">
+            <Setter Property="StatusIconBrush" Value="{atom:ResultTokenResource ResultInfoIconColor}" />
+        </Style>
+        <Style Selector="^[Status=Success]">
+            <Setter Property="StatusIconBrush" Value="{atom:ResultTokenResource ResultSuccessIconColor}" />
+        </Style>
+        <Style Selector="^[Status=Warning]">
+            <Setter Property="StatusIconBrush" Value="{atom:ResultTokenResource ResultWarningIconColor}" />
+        </Style>
+        <Style Selector="^[Status=Error]">
+            <Setter Property="StatusIconBrush" Value="{atom:ResultTokenResource ResultErrorIconColor}" />
+        </Style>
+
+        <Style Selector="^[Status=Info],^[Status=Success], ^[Status=Warning], ^[Status=Error]">
+            <Style Selector="^ /template/ ContentPresenter#PART_StatusIconPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=ErrorCode403],^[Status=ErrorCode404], ^[Status=ErrorCode500]">
+            <Style Selector="^ /template/ Svg#PART_ErrorCodeImage">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

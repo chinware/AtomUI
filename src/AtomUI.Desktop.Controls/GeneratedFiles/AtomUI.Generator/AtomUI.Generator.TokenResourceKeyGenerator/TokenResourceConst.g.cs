@@ -175,6 +175,63 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         MarginToAnchor
     }
 
+    public enum ProgressBarTokenKind
+    {
+        CircleMinimumIconSize,
+        CircleMinimumTextFontSize,
+        CircleTextColor,
+        DefaultColor,
+        LineBorderRadius,
+        LineExtraInfoMargin,
+        LineInfoIconSize,
+        LineInfoIconSizeSM,
+        LineProgressPadding,
+        ProgressActiveMotionDuration,
+        ProgressStepMarginInlineEnd,
+        ProgressStepMinWidth,
+        RemainingColor
+    }
+
+    public enum RadioButtonTokenKind
+    {
+        DotColorDisabled,
+        DotPadding,
+        DotSize,
+        RadioBgColor,
+        RadioColor,
+        RadioSize,
+        TextMargin
+    }
+
+    public enum RateTokenKind
+    {
+        StarBg,
+        StarColor,
+        StarHoverScale,
+        StarSize,
+        StarSizeLG,
+        StarSizeSM
+    }
+
+    public enum ResultTokenKind
+    {
+        ContentMargin,
+        ContentPadding,
+        ExtraMargin,
+        FramePadding,
+        HeaderFontSize,
+        HeaderMargin,
+        IconSize,
+        ImageHeight,
+        ImageWidth,
+        ResultErrorIconColor,
+        ResultInfoIconColor,
+        ResultSuccessIconColor,
+        ResultWarningIconColor,
+        StatusImageMargin,
+        SubHeaderFontSize
+    }
+
     public enum ScrollViewerTokenKind
     {
         LiteModeThumbThickness,
@@ -334,6 +391,50 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public PopupHostTokenResourceExtension(PopupHostTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ProgressBarTokenResourceExtension : TokenResourceExtension<ProgressBarTokenKind>
+    {
+        public ProgressBarTokenResourceExtension()
+        {
+        }
+
+        public ProgressBarTokenResourceExtension(ProgressBarTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class RadioButtonTokenResourceExtension : TokenResourceExtension<RadioButtonTokenKind>
+    {
+        public RadioButtonTokenResourceExtension()
+        {
+        }
+
+        public RadioButtonTokenResourceExtension(RadioButtonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class RateTokenResourceExtension : TokenResourceExtension<RateTokenKind>
+    {
+        public RateTokenResourceExtension()
+        {
+        }
+
+        public RateTokenResourceExtension(RateTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ResultTokenResourceExtension : TokenResourceExtension<ResultTokenKind>
+    {
+        public ResultTokenResourceExtension()
+        {
+        }
+
+        public ResultTokenResourceExtension(ResultTokenKind kind) : base(kind)
         {
         }
     }

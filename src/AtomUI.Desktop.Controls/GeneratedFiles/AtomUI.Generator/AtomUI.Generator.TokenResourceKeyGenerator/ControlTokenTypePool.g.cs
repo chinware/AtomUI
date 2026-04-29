@@ -16,6 +16,10 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ProgressBarToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.RadioButtonToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.RateToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ResultToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ScrollViewerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpaceToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToolTipToken));
