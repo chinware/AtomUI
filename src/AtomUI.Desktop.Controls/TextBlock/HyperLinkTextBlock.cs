@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using Avalonia.Threading;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
@@ -335,6 +334,6 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        this.Dispatcher.Post(this.EnableTransitions);
     }
 }
