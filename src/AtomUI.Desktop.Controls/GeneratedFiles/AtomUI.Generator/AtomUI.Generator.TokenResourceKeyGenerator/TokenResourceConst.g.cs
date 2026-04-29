@@ -14,6 +14,19 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         Padding
     }
 
+    public enum BreadcrumbTokenKind
+    {
+        BreadcrumbItemContentPadding,
+        IconSize,
+        ItemColor,
+        LastItemColor,
+        LinkColor,
+        LinkHoverBgColor,
+        LinkHoverColor,
+        SeparatorColor,
+        SeparatorMargin
+    }
+
     public enum ButtonTokenKind
     {
         BorderColorDisabled,
@@ -68,6 +81,20 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextTextActiveColor,
         TextTextColor,
         TextTextHoverColor
+    }
+
+    public enum CheckBoxTokenKind
+    {
+        CheckedMarkSize,
+        CheckIndicatorSize,
+        IndicatorTristateMarkSize,
+        TextMargin
+    }
+
+    public enum MarqueeLabelTokenKind
+    {
+        CycleSpace,
+        DefaultSpeed
     }
 
     public enum NavMenuTokenKind
@@ -245,6 +272,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class BreadcrumbTokenResourceExtension : TokenResourceExtension<BreadcrumbTokenKind>
+    {
+        public BreadcrumbTokenResourceExtension()
+        {
+        }
+
+        public BreadcrumbTokenResourceExtension(BreadcrumbTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class ButtonTokenResourceExtension : TokenResourceExtension<ButtonTokenKind>
     {
         public ButtonTokenResourceExtension()
@@ -252,6 +290,28 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ButtonTokenResourceExtension(ButtonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class CheckBoxTokenResourceExtension : TokenResourceExtension<CheckBoxTokenKind>
+    {
+        public CheckBoxTokenResourceExtension()
+        {
+        }
+
+        public CheckBoxTokenResourceExtension(CheckBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class MarqueeLabelTokenResourceExtension : TokenResourceExtension<MarqueeLabelTokenKind>
+    {
+        public MarqueeLabelTokenResourceExtension()
+        {
+        }
+
+        public MarqueeLabelTokenResourceExtension(MarqueeLabelTokenKind kind) : base(kind)
         {
         }
     }

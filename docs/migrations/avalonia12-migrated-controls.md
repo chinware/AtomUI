@@ -17,7 +17,7 @@
 | Avatar | 待迁移 | | |
 | Badge | 待迁移 | | |
 | Buttons | 待迁移 | | |
-| CheckBox | 已完成 | 重建 ItemCollection（不再继承 ItemsSourceView） | 2026-04-29 |
+| CheckBox | 已完成 | 重建 ItemCollection（不再继承 ItemsSourceView）；`UpdateSelection` → `Selection.Select/Deselect` | 2026-04-29 |
 | Embedding | 待迁移 | | |
 | Empty | 待迁移 | | |
 | FlexPanel | 待迁移 | | |
@@ -26,7 +26,7 @@
 | Grid | 待迁移 | | |
 | Icon | 待迁移 | | |
 | ItemsControl | 待迁移 | | |
-| MarqueeLabel | 待迁移 | | |
+| MarqueeLabel | 已完成 | `Dispatcher.UIThread` → `this.Dispatcher` (AbstractMarqueeLabel) | 2026-04-29 |
 | OptionButtonGroup | 待迁移 | | |
 | Primitives | 待迁移 | | |
 | ProgressBar | 待迁移 | | |
@@ -60,7 +60,7 @@
 | Card | 待迁移 | | |
 | Carousel | 待迁移 | | |
 | Cascader | 待迁移 | | |
-| CheckBox | 已完成 | 重建 ItemCollection（不再继承 ItemsSourceView） | 2026-04-29 |
+| CheckBox | 已完成 | 重建 ItemCollection（不再继承 ItemsSourceView）；`UpdateSelection` → `Selection.Select/Deselect` | 2026-04-29 |
 | Chrome | 待迁移 | | |
 | Collapse | 待迁移 | | |
 | ComboBox | 待迁移 | | |
@@ -79,7 +79,7 @@
 | Input | 待迁移 | | |
 | ListBox | 待迁移 | | |
 | ListView | 待迁移 | | |
-| MarqueeLabel | 待迁移 | | |
+| MarqueeLabel | 已完成 | `Dispatcher.UIThread` → `this.Dispatcher` (AbstractMarqueeLabel) | 2026-04-29 |
 | Mentions | 待迁移 | | |
 | Menu | 待迁移 | | |
 | Message | 待迁移 | | |

@@ -221,6 +221,7 @@ Check all 50+ categories:
 50. ReflectionExtensions for internal members (wrap internal/private access)
 51. Windows ExtendClientAreaToDecorationsHint behavior improved
 52. Popup.MotionAwareOpen/MotionAwareClose removed in AtomUI 6.0 — use Popup.IsOpen directly
+53. SelectingItemsControl.UpdateSelection obsolete — prefer UpdateSelectionFromEvent, fall back to Selection.Select/Deselect for non-input events
 
 ### Step 3: Categorize by severity and platform
 
@@ -1545,6 +1546,48 @@ HandlePopupClosed();
 ```
 
 **Why:** The motion/animation system for popups was redesigned in AtomUI 6.0. Open/close animations are now handled internally by the Popup infrastructure, so callers no longer need to use motion-aware wrappers.
+
+#### 53. SelectingItemsControl.UpdateSelection Obsolete (HIGH)
+
+**What changed:** `SelectingItemsControl.UpdateSelection(Control, bool, bool, bool, bool, bool)` and `UpdateSelectionFromEventSource(...)` are marked `[Obsolete]` in Avalonia 12. The recommended replacement is `UpdateSelectionFromEvent(Control, RoutedEventArgs)`.
+
+**However**, `UpdateSelectionFromEvent` only handles three event types via an internal `switch`:
+- `PointerEventArgs` (with `ShouldTriggerSelection` check)
+- `KeyEventArgs` (with `ShouldTriggerSelection` check)
+- `FocusChangedEventArgs`
+
+For any other event type (e.g., property change events like `IsCheckedChanged`), `UpdateSelectionFromEvent` returns `false`. In these scenarios, fall back to the `Selection` model directly.
+
+**Priority:** Always try `UpdateSelectionFromEvent` first. Only use `Selection.Select/Deselect` when the event is not a pointer, key, or focus event.
+
+**Detection:**
+```csharp
+UpdateSelection(container, select, rangeModifier, toggleModifier);
+UpdateSelectionFromEventSource(eventSource, select, rangeModifier, toggleModifier);
+```
+
+**Fix — for pointer/key/focus events (use UpdateSelectionFromEvent):**
+```csharp
+UpdateSelectionFromEvent(container, eventArgs);
+```
+
+**Fix — for programmatic selection (use Selection model directly):**
+```csharp
+var index = IndexFromContainer(container);
+if (index != -1)
+{
+    if (shouldSelect)
+    {
+        Selection.Select(index);
+    }
+    else
+    {
+        Selection.Deselect(index);
+    }
+}
+```
+
+**Why:** Avalonia 12 redesigned selection handling to be event-driven. `UpdateSelectionFromEvent` extracts modifier keys from the event args to determine range/toggle behavior. When selection is driven by a non-input event (e.g., a checkbox toggling its `IsChecked` property), the `Selection` model's `Select`/`Deselect` methods are the correct API — they bypass modifier logic entirely and directly update the selection state.
 
 ## References
 

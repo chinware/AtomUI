@@ -146,7 +146,7 @@ public abstract class AbstractMarqueeLabel : TextBlock
             _cancellationTokenSource = new CancellationTokenSource();
             var animationTask = _animation!.RunAsync(this, _cancellationTokenSource.Token);
             _animationRunning = true;
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            this.Dispatcher.InvokeAsync(async () =>
             {
                 await animationTask;
                 _animationRunning = false;
