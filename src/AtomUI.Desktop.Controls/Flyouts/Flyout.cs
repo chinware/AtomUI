@@ -256,7 +256,6 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
                     var anchorSize = anchorTarget.Bounds.Size;
                     var centerX    = anchorSize.Width / 2;
                     var centerY    = anchorSize.Height / 2;
-                    // 这里计算不需要全局坐标
                     if (placement == PlacementMode.TopEdgeAlignedLeft ||
                         placement == PlacementMode.BottomEdgeAlignedLeft)
                     {
@@ -284,7 +283,6 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         return new Point(offsetX, offsetY);
     }
 
-    // 因为在某些 placement 下箭头是不能显示的
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -317,63 +315,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     protected void ConfigureArrowPosition()
     {
-        var placement = Placement;
-        var anchor    = PlacementAnchor;
-        var gravity   = PlacementGravity;
-        
-        var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
+        var arrowPosition = PopupUtils.CalculateArrowPosition(Placement, PlacementAnchor, PlacementGravity);
         if (arrowPosition.HasValue)
         {
             if (IsPopupFlipped)
             {
-                if (arrowPosition == ArrowPosition.Top)
-                {
-                    arrowPosition = ArrowPosition.Bottom;
-                }
-                else if (arrowPosition == ArrowPosition.Bottom)
-                {
-                    arrowPosition = ArrowPosition.Top;
-                }
-                else if (arrowPosition == ArrowPosition.Left)
-                {
-                    arrowPosition = ArrowPosition.Right;
-                }
-                else if (arrowPosition == ArrowPosition.Right)
-                {
-                    arrowPosition = ArrowPosition.Left;
-                }
-                else if (arrowPosition == ArrowPosition.TopEdgeAlignedLeft)
-                {
-                    arrowPosition = ArrowPosition.BottomEdgeAlignedLeft;
-                }
-                else if (arrowPosition == ArrowPosition.TopEdgeAlignedRight)
-                {
-                    arrowPosition = ArrowPosition.BottomEdgeAlignedRight;
-                }
-                else if (arrowPosition == ArrowPosition.BottomEdgeAlignedLeft)
-                {
-                    arrowPosition = ArrowPosition.TopEdgeAlignedLeft;
-                }
-                else if (arrowPosition == ArrowPosition.BottomEdgeAlignedRight)
-                {
-                    arrowPosition = ArrowPosition.TopEdgeAlignedRight;
-                }
-                else if (arrowPosition == ArrowPosition.LeftEdgeAlignedTop)
-                {
-                    arrowPosition = ArrowPosition.RightEdgeAlignedTop;
-                }
-                else if (arrowPosition == ArrowPosition.LeftEdgeAlignedBottom)
-                {
-                    arrowPosition = ArrowPosition.RightEdgeAlignedBottom;
-                }
-                else if (arrowPosition == ArrowPosition.RightEdgeAlignedTop)
-                {
-                    arrowPosition = ArrowPosition.LeftEdgeAlignedTop;
-                }
-                else if (arrowPosition == ArrowPosition.RightEdgeAlignedBottom)
-                {
-                    arrowPosition = ArrowPosition.LeftEdgeAlignedBottom;
-                }
+                arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value);
             }
             SetCurrentValue(ArrowPositionProperty, arrowPosition);
         }

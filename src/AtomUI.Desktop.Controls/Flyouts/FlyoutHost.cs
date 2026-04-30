@@ -241,26 +241,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
 
     private void ConfigureMotion(PlacementMode placement)
     {
-        if (!PopupUtils.IsCanonicalAnchorPlacementMode(placement))
-        {
-            OpenMotion  = null;
-            CloseMotion = null;
-        }
-        else
-        {
-            var openMotion = new ZoomBigInMotion();
-            if (MotionDuration != TimeSpan.Zero)
-            {
-                openMotion.Duration = MotionDuration;
-            }
-            var closeMotion = new ZoomBigOutMotion();
-            if (MotionDuration != TimeSpan.Zero)
-            {
-                closeMotion.Duration = MotionDuration;
-            }
-            OpenMotion  = openMotion;
-            CloseMotion = closeMotion;
-        }
+        (OpenMotion, CloseMotion) = PopupUtils.CreateMotionForPlacement(placement);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

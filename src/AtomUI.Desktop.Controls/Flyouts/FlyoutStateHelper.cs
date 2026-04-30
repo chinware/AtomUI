@@ -428,6 +428,12 @@ internal class FlyoutStateHelper : AvaloniaObject
         StopMouseLeaveTimer();
         if (Flyout.IsOpen)
         {
+            if (Flyout.Popup is Popup popup && popup.IsPlayingCloseMotion)
+            {
+                popup.CancelCloseAnimation();
+                _isFlyoutShowing = false;
+                return;
+            }
             Flyout.Hide();
         }
 

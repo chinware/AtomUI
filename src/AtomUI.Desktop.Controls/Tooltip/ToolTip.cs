@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.MotionScene;
 using AtomUI.Theme.Palette;
 using Avalonia;
 using Avalonia.Controls;
@@ -406,26 +405,7 @@ public class ToolTip : ContentControl,
 
     private void ConfigureMotion(Popup popup, PlacementMode placement)
     {
-        if (!PopupUtils.IsCanonicalAnchorPlacementMode(placement))
-        {
-            popup.OpenMotion  = null;
-            popup.CloseMotion = null;
-        }
-        else
-        {
-            var openMotion = new ZoomBigInMotion();
-            if (MotionDuration != TimeSpan.Zero)
-            {
-                openMotion.Duration = MotionDuration;
-            }
-            var closeMotion = new ZoomBigOutMotion();
-            if (MotionDuration != TimeSpan.Zero)
-            {
-                closeMotion.Duration = MotionDuration;
-            }
-            popup.OpenMotion  = openMotion;
-            popup.CloseMotion = closeMotion;
-        }
+        (popup.OpenMotion, popup.CloseMotion) = PopupUtils.CreateMotionForPlacement(placement);
     }
 
     private void Close()

@@ -1,4 +1,5 @@
 ﻿using AtomUI.Controls;
+using AtomUI.MotionScene;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -142,6 +143,16 @@ internal static class PopupUtils
             PlacementMode.RightEdgeAlignedBottom => true,
             _ => false
         };
+    }
+
+    internal static (AbstractMotion? open, AbstractMotion? close) CreateMotionForPlacement(PlacementMode placement)
+    {
+        if (!IsCanonicalAnchorPlacementMode(placement))
+        {
+            return (null, null);
+        }
+
+        return (new ZoomBigInMotion(), new ZoomBigOutMotion());
     }
     
     public static void ValidateEdge(this PopupAnchor edge)

@@ -137,6 +137,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     #region 动画相关字段
 
     private bool _isClosingAnimating;
+    private bool _isPlayingCloseMotion;
     private CancellationTokenSource? _motionCts;
     private PopupMotionActor? _motionActor;
 
@@ -207,7 +208,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
            await _motionCts.CancelAsync();
         }
-    
+
+        _isPlayingCloseMotion = true;
         _motionCts = new CancellationTokenSource();
 
         var motion = CloseMotion!;
@@ -219,14 +221,34 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
         catch (OperationCanceledException)
         {
-            // 动画被取消，仍然需要关闭
+            _isPlayingCloseMotion = false;
+            return;
         }
 
+        _isPlayingCloseMotion = false;
         _isClosingAnimating = true;
         Dispatcher.UIThread.Post(Close);
     }
 
     #endregion
+
+    internal bool IsPlayingCloseMotion => _isPlayingCloseMotion;
+
+    internal void CancelCloseAnimation()
+    {
+        if (!_isPlayingCloseMotion)
+        {
+            return;
+        }
+
+        _motionCts?.Cancel();
+        if (_motionActor is not null)
+        {
+            _motionActor.Opacity = 1.0d;
+        }
+
+        IsOpen = true;
+    }
 
     internal void NotifyFlipped(bool flipped)
     {
