@@ -1,4 +1,4 @@
-﻿using AtomUI.Desktop.Controls;
+using AtomUI.Desktop.Controls;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -11,7 +11,7 @@ public class GalleryApplication : BaseGalleryApplication
     {
         Name = "AtomUI Desktop Gallery";
     }
-    
+
     public override void Initialize()
     {
         base.Initialize();
@@ -21,6 +21,7 @@ public class GalleryApplication : BaseGalleryApplication
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
+            builder.UseGalleryControls();
         });
     }
 

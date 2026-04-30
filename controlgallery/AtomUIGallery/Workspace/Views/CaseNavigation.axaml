@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.Workspace.Views.CaseNavigation"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             x:CompileBindings="True">
+    <atom:NavMenu Mode="Inline" Width="260" Name="ShowCaseNavMenu"
+                  atom:ScrollViewer.IsLiteMode="True"
+                  ScrollViewer.AllowAutoHide="True">
+        <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
+
+        <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=LayoutOutlined}" />
+
+        <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}" />
+
+        <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}" />
+
+        <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}" />
+
+        <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"
+                          Icon="{antdicons:AntDesignIconProvider Kind=UserSwitchOutlined}" />
+    </atom:NavMenu>
+</UserControl>

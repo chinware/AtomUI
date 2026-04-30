@@ -1,10 +1,9 @@
 <atom:Window xmlns="https://github.com/avaloniaui"
              xmlns:rxui="http://reactiveui.net"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:workspaceviews="using:AtomUIGallery.Workspace.Views"
-             xmlns:atom="https://atomui.net"
-             xmlns:antdicons="https://atomui.net/icons/antdesign"
              x:Class="AtomUIGallery.Workspace.Views.WorkspaceWindow"
              Icon="/Assets/AtomUIGallery.ico"
              IsPinCaptionButtonVisible="True"
@@ -18,62 +17,64 @@
             <Image Source="/Assets/gallery-logo.png" />
         </DataTemplate>
     </atom:Window.LogoTemplate>
-    <Panel>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Orientation="Vertical">
-            <atom:FlyoutHost Trigger="Hover" HorizontalAlignment="Center" VerticalAlignment="Center"
-                             ShouldUseOverlayLayer="False"
-                             Placement="TopEdgeAlignedLeft"
-                             IsPointAtCenter="True">
-                <atom:FlyoutHost.Flyout>
-                    <atom:Flyout>
-                        <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                    </atom:Flyout>
-                </atom:FlyoutHost.Flyout>
-                <atom:Button ButtonType="Primary">Hover me</atom:Button>
-            </atom:FlyoutHost>
-            
-            <atom:FlyoutHost Trigger="Focus" HorizontalAlignment="Center" VerticalAlignment="Center"
-                             ShouldUseOverlayLayer="True"
-                             Placement="TopEdgeAlignedLeft"
-                             IsPointAtCenter="True">
-                <atom:FlyoutHost.Flyout>
-                    <atom:Flyout>
-                        <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                    </atom:Flyout>
-                </atom:FlyoutHost.Flyout>
-                <atom:Button ButtonType="Primary">Hover me</atom:Button>
-            </atom:FlyoutHost>
-            
-            <atom:FlyoutHost Trigger="Click" HorizontalAlignment="Center" VerticalAlignment="Center"
-                             ShouldUseOverlayLayer="True">
-                <atom:FlyoutHost.Flyout>
-                    <atom:Flyout>
-                        <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
-                    </atom:Flyout>
-                </atom:FlyoutHost.Flyout>
-                <atom:Button ButtonType="Primary">Hover me</atom:Button>
-            </atom:FlyoutHost>
-            
-            <atom:Button ButtonType="Primary"
-                         atom:ToolTip.Tip="asdasdadsada">Tooltip me</atom:Button>
-            
-            <atom:NavMenu Mode="Inline" Width="300" Margin="0, 0, 0, 20">
-                <atom:NavMenuNode Header="Navigation One" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
-                <atom:NavMenuNode Header="Navigation Two" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
-                                  IsEnabled="False" />
-                <atom:NavMenuNode Header="Navigation Three - Submenu" Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
-                    <atom:NavMenuNode Header="Item 1">
-                        <atom:NavMenuNode Header="Option 1" />
-                        <atom:NavMenuNode Header="Option 2" />
-                    </atom:NavMenuNode>
-        
-                    <atom:NavMenuNode Header="Item 2">
-                        <atom:NavMenuNode Header="Option 3" />
-                        <atom:NavMenuNode Header="Option 4" />
-                    </atom:NavMenuNode>
-                </atom:NavMenuNode>
-                <atom:NavMenuNode Header="Navigation Four" />
-            </atom:NavMenu>
-        </StackPanel>
-    </Panel>
+    <DockPanel LastChildFill="True"
+               Margin="0 0 2 0">
+        <Menu DockPanel.Dock="Top" Margin="4, 0, 4, 0">
+            <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemSettings}">
+                <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemWindowOptions}">
+                    <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableFullScreen}"
+                              ToggleType="CheckBox"
+                              IsChecked="True"
+                              Tag="{x:Static workspaceviews:WindowMenuItemKind.FullScreen}" />
+                    <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnablePin}"
+                              ToggleType="CheckBox"
+                              IsChecked="True"
+                              Tag="{x:Static workspaceviews:WindowMenuItemKind.Pin}" />
+                    <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableMinimize}"
+                              ToggleType="CheckBox"
+                              IsChecked="True"
+                              Tag="{x:Static workspaceviews:WindowMenuItemKind.Minimize}" />
+                    <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableMaximize}"
+                              ToggleType="CheckBox"
+                              IsChecked="True"
+                              Tag="{x:Static workspaceviews:WindowMenuItemKind.Maximize}" />
+                    <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableMove}"
+                              ToggleType="CheckBox"
+                              IsChecked="True"
+                              Tag="{x:Static workspaceviews:WindowMenuItemKind.Move}" />
+                    <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableResize}"
+                              ToggleType="CheckBox"
+                              IsChecked="True"
+                              Tag="{x:Static workspaceviews:WindowMenuItemKind.Resize}" />
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemTheme}">
+                <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemDarkMode}"
+                          ToggleType="CheckBox"
+                          Tag="{x:Static workspaceviews:WindowMenuItemKind.DarkMode}" />
+                <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemCompactMode}"
+                          ToggleType="CheckBox"
+                          Tag="{x:Static workspaceviews:WindowMenuItemKind.Compact}" />
+                <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableMotion}"
+                          ToggleType="CheckBox"
+                          IsChecked="True"
+                          Tag="{x:Static workspaceviews:WindowMenuItemKind.Motion}" />
+                <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemEnableWaveSpirit}"
+                          ToggleType="CheckBox"
+                          IsChecked="True"
+                          Tag="{x:Static workspaceviews:WindowMenuItemKind.WaveSpirit}" />
+            </MenuItem>
+            <MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemLanguage}">
+                <MenuItem Header="简体中文"
+                          ToggleType="Radio"
+                          IsChecked="True"
+                          Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageZhCN}" />
+                <MenuItem Header="English"
+                          ToggleType="Radio"
+                          Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageEnUS}" />
+            </MenuItem>
+        </Menu>
+        <workspaceviews:CaseNavigation Name="ShowCaseNavigation" DockPanel.Dock="Left" />
+        <rxui:RoutedViewHost Name="RoutedViewHost" PageTransition="{x:Null}" ClipToBounds="True" />
+    </DockPanel>
 </atom:Window>

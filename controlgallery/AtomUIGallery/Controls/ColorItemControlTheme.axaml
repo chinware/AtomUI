@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/oss-controls/gallery"
+                    xmlns:atom="https://atomui.net"
+                    x:CompileBindings="True">
+
+    <ControlTheme x:Key="{x:Type gallery:ColorItemControl}" TargetType="gallery:ColorItemControl">
+        <Setter Property="gallery:ColorItemControl.Height" Value="35" />
+        <Setter Property="gallery:ColorItemControl.Template">
+            <ControlTemplate TargetType="gallery:ColorItemControl">
+                <Border Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}">
+                    <Panel>
+                        <atom:TextBlock Padding="8"
+                                   FontSize="12"
+                                   FontWeight="600"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Text="{TemplateBinding ColorName}" />
+                        <atom:TextBlock Name="PART_HexTextBlock"
+                                   Padding="8"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   FontWeight="600"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   IsVisible="False"
+                                   Opacity="0.8"
+                                   Text="{TemplateBinding Hex}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ atom|TextBlock#PART_HexTextBlock">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

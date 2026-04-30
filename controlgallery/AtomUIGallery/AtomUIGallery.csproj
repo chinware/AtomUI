@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
@@ -17,8 +17,6 @@
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <PackageReference Include="AtomUI.Desktop.Controls"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker"/>
         <PackageReference Include="AtomUI.Generator"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
@@ -36,11 +34,6 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="Assets\.DS_Store" />
-      <Content Include="Assets\ImagePreviewerShowCase\.DS_Store" />
     </ItemGroup>
 
 </Project>
