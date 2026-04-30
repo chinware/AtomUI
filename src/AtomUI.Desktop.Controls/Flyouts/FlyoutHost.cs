@@ -235,6 +235,31 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PopupRootShadowProperty, Flyout, FlyoutControl.PopupRootShadowProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, OverlayHostShadowProperty, Flyout, FlyoutControl.OverlayHostShadowProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayLayerProperty, Flyout, FlyoutControl.ShouldUseOverlayLayerProperty));
+            ConfigureMotion(Placement);
+        }
+    }
+
+    private void ConfigureMotion(PlacementMode placement)
+    {
+        if (!PopupUtils.IsCanonicalAnchorPlacementMode(placement))
+        {
+            OpenMotion  = null;
+            CloseMotion = null;
+        }
+        else
+        {
+            var openMotion = new ZoomBigInMotion();
+            if (MotionDuration != TimeSpan.Zero)
+            {
+                openMotion.Duration = MotionDuration;
+            }
+            var closeMotion = new ZoomBigOutMotion();
+            if (MotionDuration != TimeSpan.Zero)
+            {
+                closeMotion.Duration = MotionDuration;
+            }
+            OpenMotion  = openMotion;
+            CloseMotion = closeMotion;
         }
     }
 
@@ -249,6 +274,10 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
                 {
                     SetupFlyoutProperties();
                 }
+            }
+            else if (change.Property == PlacementProperty)
+            {
+                ConfigureMotion(Placement);
             }
         }
     }

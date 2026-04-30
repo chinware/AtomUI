@@ -308,7 +308,7 @@ internal class ShadowsAwareContainer : Decorator
     {
         if (child != null)
         {
-            ConfigureShadowsInfo(child);
+            Dispatcher.Post(() => ConfigureShadowsInfo(child));
         }
     }
 

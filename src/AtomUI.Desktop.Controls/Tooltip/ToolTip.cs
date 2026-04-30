@@ -608,5 +608,4 @@ public class ToolTip : ContentControl,
             }
         }
     }
-
 }

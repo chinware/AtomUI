@@ -1,4 +1,5 @@
-﻿using AtomUI.Controls;
+﻿using System.ComponentModel;
+using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.MotionScene;
@@ -200,9 +201,28 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
         popup.Opened += this.OnPopupOpened;
         popup.Closed += this.OnPopupClosed;
-        popup.AddClosingEventHandler(this.OnPopupClosing);
+        popup.AddClosingEventHandler(HandlePopupClosing);
         popup.KeyUp += this.OnPlacementTargetOrPopupKeyUp;
         return popup;
+    }
+
+    private void HandlePopupClosing(object? sender, CancelEventArgs e)
+    {
+        if (!e.Cancel)
+        {
+            this.OnPopupClosing(sender, e);
+        }
+    }
+
+    protected override bool HideCore(bool canCancel = true)
+    {
+        if (canCancel && IsMotionEnabled && CloseMotion is not null && Popup.IsOpen)
+        {
+            Popup.IsOpen = false;
+            return true;
+        }
+
+        return base.HideCore(canCancel);
     }
 
     protected override Control CreatePresenter()

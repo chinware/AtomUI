@@ -49,6 +49,9 @@
                 </atom:FlyoutHost.Flyout>
                 <atom:Button ButtonType="Primary">Hover me</atom:Button>
             </atom:FlyoutHost>
+            
+            <atom:Button ButtonType="Primary"
+                         atom:ToolTip.Tip="asdasdadsada">Tooltip me</atom:Button>
         </StackPanel>
     </Panel>
 </atom:Window>
