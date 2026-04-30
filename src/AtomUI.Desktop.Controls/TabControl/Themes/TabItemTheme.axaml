@@ -1,0 +1,47 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Static atom:TabItemThemeConstants.TabItemThemeId}" TargetType="atom:TabItem">
+        <ControlTheme.BasedOn>
+            <themes:BaseTabItemTheme TargetType="atom:TabItem" />
+        </ControlTheme.BasedOn>
+
+        <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">
+            <Setter Property="Margin" Value="{atom:TabControlTokenResource HorizontalItemMargin}" />
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Padding"
+                        Value="{atom:TabControlTokenResource HorizontalItemPaddingLG}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Padding"
+                        Value="{atom:TabControlTokenResource HorizontalItemPadding}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Padding"
+                        Value="{atom:TabControlTokenResource HorizontalItemPaddingSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Left], ^[TabStripPlacement=Right]">
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Padding"
+                        Value="{atom:TabControlTokenResource VerticalItemPadding}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Padding"
+                        Value="{atom:TabControlTokenResource VerticalItemPadding}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Padding"
+                        Value="{atom:TabControlTokenResource VerticalItemPadding}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

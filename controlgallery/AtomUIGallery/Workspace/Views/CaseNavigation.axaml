@@ -4,12 +4,18 @@
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:viewmodels="using:AtomUIGallery.ShowCases.ViewModels"
              x:CompileBindings="True">
     <atom:NavMenu Mode="Inline" Width="260" Name="ShowCaseNavMenu"
                   atom:ScrollViewer.IsLiteMode="True"
                   ScrollViewer.AllowAutoHide="True">
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General}"
-                          Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
+                          Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_AboutUs}"
+                              ItemKey="{x:Static viewmodels:AboutUsViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Palette}"
+                              ItemKey="{x:Static viewmodels:PaletteViewModel.ID}" />
+        </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout}"
                           Icon="{antdicons:AntDesignIconProvider Kind=LayoutOutlined}" />

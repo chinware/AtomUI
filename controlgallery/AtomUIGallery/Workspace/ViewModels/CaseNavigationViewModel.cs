@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using AtomUIGallery.ShowCases.ViewModels;
 using Avalonia.Threading;
 using ReactiveUI;
 
@@ -46,14 +47,14 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
 
         this.WhenActivated((CompositeDisposable disposables) =>
         {
+            DoNavigateTo(AboutUsViewModel.ID);
         });
     }
 
     private void RegisterShowCaseViewModels()
     {
-        // ShowCase ViewModels will be registered here as they are added.
-        // Example:
-        // _showCaseViewModelFactories.Add(SomeViewModel.ID, () => new SomeViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(AboutUsViewModel.ID, () => new AboutUsViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(PaletteViewModel.ID, () => new PaletteViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

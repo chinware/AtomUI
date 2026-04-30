@@ -1,4 +1,4 @@
-using AtomUI.Desktop.Controls;
+﻿using AtomUI.Desktop.Controls;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia.Controls.ApplicationLifetimes;

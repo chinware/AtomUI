@@ -590,6 +590,39 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         WaitTitleColor
     }
 
+    public enum TabControlTokenKind
+    {
+        AddTabButtonMarginHorizontal,
+        AddTabButtonMarginVertical,
+        CardBg,
+        CardGutter,
+        CardPadding,
+        CardPaddingLG,
+        CardPaddingSM,
+        CardSize,
+        CloseIconMargin,
+        HorizontalItemGutter,
+        HorizontalItemMargin,
+        HorizontalItemPadding,
+        HorizontalItemPaddingLG,
+        HorizontalItemPaddingSM,
+        HorizontalMargin,
+        InkBarColor,
+        ItemColor,
+        ItemHoverColor,
+        ItemIconMargin,
+        ItemSelectedColor,
+        MenuEdgeThickness,
+        MenuIndicatorPaddingHorizontal,
+        MenuIndicatorPaddingVertical,
+        TabAndContentGutter,
+        TitleFontSize,
+        TitleFontSizeLG,
+        TitleFontSizeSM,
+        VerticalItemGutter,
+        VerticalItemPadding
+    }
+
     public enum TagTokenKind
     {
         DefaultBg,
@@ -1052,6 +1085,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public StepsTokenResourceExtension(StepsTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TabControlTokenResourceExtension : TokenResourceExtension<TabControlTokenKind>
+    {
+        public TabControlTokenResourceExtension()
+        {
+        }
+
+        public TabControlTokenResourceExtension(TabControlTokenKind kind) : base(kind)
         {
         }
     }

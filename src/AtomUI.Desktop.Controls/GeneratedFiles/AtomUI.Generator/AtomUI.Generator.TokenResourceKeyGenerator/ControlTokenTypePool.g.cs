@@ -39,6 +39,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpinToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StepsToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TextAreaToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TimelineToken));

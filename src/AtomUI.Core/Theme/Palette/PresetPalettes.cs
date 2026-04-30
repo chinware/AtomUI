@@ -52,7 +52,12 @@ public static class PresetPalettes
         {
             if (isDark)
             {
-                var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color());
+                var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color(),
+                    new PaletteGenerateOption
+                    {
+                        ThemeVariant    = ThemeVariant.Dark,
+                        BackgroundColor = Color.Parse("#141414")
+                    });
                 target[presetColor] = new PaletteInfo
                 {
                     Primary       = colorSequence[5],
@@ -61,12 +66,7 @@ public static class PresetPalettes
             }
             else
             {
-                var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color(),
-                    new PaletteGenerateOption
-                    {
-                        ThemeVariant    = ThemeVariant.Dark,
-                        BackgroundColor = Color.Parse("#141414")
-                    });
+                var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color());
                 target[presetColor] = new PaletteInfo
                 {
                     Primary       = colorSequence[5],

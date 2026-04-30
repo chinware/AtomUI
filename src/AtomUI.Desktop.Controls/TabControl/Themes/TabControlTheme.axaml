@@ -1,0 +1,205 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TabControl}" TargetType="atom:TabControl">
+        <ControlTheme.BasedOn>
+            <themes:BaseTabControlTheme TargetType="atom:TabControl" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame">
+                    <DockPanel>
+                        <Panel Name="{x:Static atom:TabControlThemeConstants.AlignWrapperPart}"
+                               DockPanel.Dock="{TemplateBinding TabStripPlacement}"
+                               Margin="{TemplateBinding TabStripMargin}">
+                            <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
+                                <DockPanel LastChildFill="True" Name="HeaderLayout">
+                                    <ContentPresenter Name="HeaderStartExtraContent"
+                                                      Content="{TemplateBinding HeaderStartExtraContent}"
+                                                      ContentTemplate="{TemplateBinding HeaderStartExtraContentTemplate}" />
+                                    <ContentPresenter Name="HeaderEndExtraContent"
+                                                      Content="{TemplateBinding HeaderEndExtraContent}"
+                                                      ContentTemplate="{TemplateBinding HeaderEndExtraContentTemplate}" />
+                                    <atom:TabControlScrollViewer
+                                        Name="{x:Static atom:TabControlThemeConstants.TabsContainerPart}"
+                                        IsScrollChainingEnabled="False"
+                                        TabStripPlacement="{TemplateBinding TabStripPlacement}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                        <Panel>
+                                            <ItemsPresenter
+                                                Name="{x:Static atom:TabControlThemeConstants.ItemsPresenterPart}"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                            <Border
+                                                Name="{x:Static atom:TabControlThemeConstants.SelectedItemIndicatorPart}"
+                                                RenderTransform="{TemplateBinding SelectedIndicatorRenderTransform}"/>
+                                        </Panel>
+                                    </atom:TabControlScrollViewer>
+                                </DockPanel>
+                            </Border>
+                        </Panel>
+
+                        <ContentPresenter Padding="{TemplateBinding ContentPadding}"
+                                          Content="{TemplateBinding SelectedContent}"
+                                          ContentTemplate="{TemplateBinding SelectedContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="SelectedIndicatorThickness"
+                Value="{atom:SharedTokenResource LineWidthBold}" />
+        <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+            <Setter Property="Background" Value="{atom:TabControlTokenResource InkBarColor}" />
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Top]">
+          
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{atom:TabControlTokenResource HorizontalItemGutter}" />
+                <Setter Property="Orientation" Value="Horizontal" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Right]">
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Bottom"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{atom:TabControlTokenResource VerticalItemGutter}" />
+                <Setter Property="Orientation" Value="Vertical" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Bottom]">
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{atom:TabControlTokenResource HorizontalItemGutter}" />
+                <Setter Property="Orientation" Value="Horizontal" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[TabStripPlacement=Left]">
+            <Style Selector="^ /template/ DockPanel#HeaderLayout">
+                <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderStartExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Top"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            
+            <Style Selector="^ /template/ ContentPresenter#HeaderEndExtraContent">
+                <Setter Property="DockPanel.Dock" Value="Bottom"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+
+            <!-- tabs 是否居中 -->
+            <Style Selector="^[TabAlignmentCenter=True]">
+                <Style Selector="^ /template/ Panel#PART_AlignWrapper > Border">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </Style>
+
+            <Style Selector="^ /template/ ItemsPresenter#PART_ItemsPresenter StackPanel">
+                <Setter Property="Spacing"
+                        Value="{atom:TabControlTokenResource VerticalItemGutter}" />
+                <Setter Property="Orientation" Value="Vertical" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#PART_SelectedItemIndicator">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="SelectedIndicatorRenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationSlow}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

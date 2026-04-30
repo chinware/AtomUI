@@ -9,6 +9,8 @@ namespace AtomUIGallery.Localization
         DataEntry,
         Feedback,
         General,
+        General_AboutUs,
+        General_Palette,
         Layout,
         Navigation
     }

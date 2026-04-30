@@ -8,6 +8,8 @@ namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 internal class zh_CN : LanguageProvider
 {
     public const string General = "通用";
+    public const string General_AboutUs = "关于我们";
+    public const string General_Palette = "调色板";
     public const string Layout = "布局";
     public const string Navigation = "导航";
     public const string DataEntry = "数据录入";
