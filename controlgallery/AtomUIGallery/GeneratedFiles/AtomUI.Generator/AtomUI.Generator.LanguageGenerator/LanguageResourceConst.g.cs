@@ -13,7 +13,9 @@ namespace AtomUIGallery.Localization
         General_Button,
         General_Icons,
         General_Palette,
+        General_SplitButton,
         Layout,
+        Layout_Splitter,
         Navigation
     }
 

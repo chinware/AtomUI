@@ -19,10 +19,15 @@
                               ItemKey="{x:Static viewmodels:IconViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Button}"
                               ItemKey="{x:Static viewmodels:ButtonViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_SplitButton}"
+                              ItemKey="{x:Static viewmodels:SplitButtonViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout}"
-                          Icon="{antdicons:AntDesignIconProvider Kind=LayoutOutlined}" />
+                          Icon="{antdicons:AntDesignIconProvider Kind=LayoutOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout_Splitter}"
+                              ItemKey="{x:Static viewmodels:SplitterViewModel.ID}" />
+        </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation}"
                           Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}" />
