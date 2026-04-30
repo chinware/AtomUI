@@ -19,7 +19,7 @@
         </DataTemplate>
     </atom:Window.LogoTemplate>
     <Panel>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Orientation="Horizontal">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Orientation="Vertical">
             <atom:FlyoutHost Trigger="Hover" HorizontalAlignment="Center" VerticalAlignment="Center"
                              ShouldUseOverlayLayer="False"
                              Placement="TopEdgeAlignedLeft"
@@ -56,6 +56,24 @@
             
             <atom:Button ButtonType="Primary"
                          atom:ToolTip.Tip="asdasdadsada">Tooltip me</atom:Button>
+            
+            <atom:NavMenu Mode="Inline" Width="300" Margin="0, 0, 0, 20">
+                <atom:NavMenuNode Header="Navigation One" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                <atom:NavMenuNode Header="Navigation Two" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                  IsEnabled="False" />
+                <atom:NavMenuNode Header="Navigation Three - Submenu" Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                    <atom:NavMenuNode Header="Item 1">
+                        <atom:NavMenuNode Header="Option 1" />
+                        <atom:NavMenuNode Header="Option 2" />
+                    </atom:NavMenuNode>
+        
+                    <atom:NavMenuNode Header="Item 2">
+                        <atom:NavMenuNode Header="Option 3" />
+                        <atom:NavMenuNode Header="Option 4" />
+                    </atom:NavMenuNode>
+                </atom:NavMenuNode>
+                <atom:NavMenuNode Header="Navigation Four" />
+            </atom:NavMenu>
         </StackPanel>
     </Panel>
 </atom:Window>

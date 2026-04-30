@@ -5,7 +5,6 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Rendering;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -14,7 +13,7 @@ namespace AtomUI.Desktop.Controls;
 internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 {
     private IDisposable? _inputManagerSubscription;
-    private Visual? _root;
+    private TopLevel? _root;
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
     private bool _currentPressedIsValid;
@@ -64,7 +63,19 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         _currentOpenDelayRunDisposable?.Dispose();
         _currentCloseDelayRunDisposable?.Dispose();
-        if (menuItem.HasSubMenu)
+
+        if (menuItem.IsTopLevel)
+        {
+            var currentOpen = menuItem.Parent.SubItems
+                .FirstOrDefault(s => s != menuItem && s.IsSubMenuOpen);
+            if (currentOpen != null)
+            {
+                currentOpen.Close();
+                if (menuItem.HasSubMenu)
+                    menuItem.Open();
+            }
+        }
+        else if (menuItem.HasSubMenu)
         {
             OpenWithDelay(menuItem);
         }
@@ -92,7 +103,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         _currentOpenDelayRunDisposable?.Dispose();
         _currentCloseDelayRunDisposable?.Dispose();
 
-        if (!menuItem.IsPointerOverSubMenu)
+        if (!menuItem.IsTopLevel && menuItem.HasSubMenu && !menuItem.IsPointerOverSubMenu)
         {
             _currentCloseDelayRunDisposable = DelayRun(() =>
             {
@@ -127,7 +138,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (_latestClickedItem is null || !_currentPressedIsValid) 
+        if (_latestClickedItem is null || !_currentPressedIsValid)
         {
             return;
         }
@@ -138,6 +149,113 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             Click(_latestClickedItem);
             e.Handled = true;
+        }
+    }
+
+    protected virtual void PointerMoved(object? sender, PointerEventArgs e)
+    {
+        var item = GetMenuItemCore(e.Source as Control);
+        if (item == null)
+            return;
+
+        var transformedBounds = item.GetTransformedBounds();
+        if (transformedBounds == null)
+            return;
+
+        var point = e.GetCurrentPoint(null);
+        if (point.Properties.IsLeftButtonPressed
+            && transformedBounds.Value.Contains(point.Position) == false)
+        {
+            e.Pointer.Capture(null);
+        }
+    }
+
+    protected virtual void KeyDown(object? sender, KeyEventArgs e)
+    {
+        var item = GetMenuItemCore(e.Source as Control);
+        HandleKeyDown(item, e);
+    }
+
+    internal void HandleKeyDown(NavMenuItem? item, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Up:
+            case Key.Down:
+            {
+                if (item?.IsTopLevel == true && item.HasSubMenu)
+                {
+                    if (!item.IsSubMenuOpen)
+                        item.Open();
+                    e.Handled = true;
+                }
+                break;
+            }
+
+            case Key.Left:
+            {
+                if (item is { IsSubMenuOpen: true, IsTopLevel: false })
+                {
+                    item.Close();
+                    item.Focus();
+                    e.Handled = true;
+                }
+                else if (item?.Parent is NavMenuItem { IsTopLevel: false, IsSubMenuOpen: true } parent)
+                {
+                    parent.Close();
+                    parent.Focus();
+                    e.Handled = true;
+                }
+                break;
+            }
+
+            case Key.Right:
+            {
+                if (item != null && !item.IsTopLevel && item.HasSubMenu)
+                {
+                    item.Open();
+                    e.Handled = true;
+                }
+                break;
+            }
+
+            case Key.Enter:
+            {
+                if (item != null)
+                {
+                    if (!item.HasSubMenu)
+                    {
+                        Select(item);
+                        Click(item);
+                    }
+                    else
+                    {
+                        item.Open();
+                    }
+                    e.Handled = true;
+                }
+                break;
+            }
+
+            case Key.Escape:
+            {
+                if (item?.Parent is NavMenuItem parentItem)
+                {
+                    parentItem.Close();
+                    parentItem.Focus();
+                }
+                else
+                {
+                    CloseAllTopLevelMenuItems();
+                }
+                e.Handled = true;
+                break;
+            }
+        }
+
+        if (!e.Handled && item?.Parent is NavMenuItem parentMenuItem)
+        {
+            HandleKeyDown(parentMenuItem, e);
         }
     }
 
@@ -260,11 +378,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         Menu                 =  navMenu;
         Menu.GotFocus        += GotFocus;
         Menu.LostFocus       += LostFocus;
+        Menu.KeyDown         += KeyDown;
         Menu.PointerPressed  += PointerPressed;
         Menu.PointerReleased += PointerReleased;
-        
+
         Menu.AddHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
         Menu.AddHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
+        Menu.AddHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         if (Menu is Visual visual)
         {
@@ -299,11 +419,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         Menu.GotFocus        -= GotFocus;
         Menu.LostFocus       -= LostFocus;
+        Menu.KeyDown         -= KeyDown;
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
-       
+
         Menu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
         Menu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
+        Menu.RemoveHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         if (_root is InputElement inputRoot)
         {
