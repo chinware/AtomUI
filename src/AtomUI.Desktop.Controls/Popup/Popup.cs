@@ -52,6 +52,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         AvaloniaProperty.Register<Popup, double>(nameof(MarginToAnchor));
+
+    public static readonly StyledProperty<bool> IsPointAtCenterProperty =
+        AvaloniaProperty.Register<Popup, bool>(nameof(IsPointAtCenter));
     
     public BoxShadows PopupRootShadow
     {
@@ -113,6 +116,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         get => GetValue(MarginToAnchorProperty);
         set => SetValue(MarginToAnchorProperty, value);
+    }
+
+    public bool IsPointAtCenter
+    {
+        get => GetValue(IsPointAtCenterProperty);
+        set => SetValue(IsPointAtCenterProperty, value);
     }
     #endregion
 
@@ -253,6 +262,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     internal void NotifyFlipped(bool flipped)
     {
+        IsFlipped = flipped;
         PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(flipped));
     }
 
@@ -339,6 +349,14 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         if (Child is IArrowAwareShadowMaskInfoProvider provider)
         {
             arrowIndicatorLayoutBounds = provider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
+
+            if (IsPointAtCenter && provider.IsShowArrow())
+            {
+                var delta = PopupUtils.CalculatePointAtCenterDelta(
+                    target, provider.GetArrowDecoratedBox(), requestedPlacement, anchor, gravity);
+                hOffset += delta.X;
+                vOffset += delta.Y;
+            }
         }
 
         var isFlipped = PopupUtils.ApplyCustomPlacement(

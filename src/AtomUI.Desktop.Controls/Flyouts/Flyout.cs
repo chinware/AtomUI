@@ -197,6 +197,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup[!PopupControl.CloseMotionProperty]           = this[!CloseMotionProperty];
         popup[!PopupControl.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
         popup[!PopupControl.MarginToAnchorProperty]        = this[!MarginToAnchorProperty];
+        popup[!PopupControl.IsPointAtCenterProperty]       = this[!IsPointAtCenterProperty];
         popup[!PopupControl.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
         this[!IsPopupFlippedProperty]                      = popup[!PopupControl.IsFlippedProperty];
 
@@ -236,52 +237,6 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         ConfigureShowArrowEffective();
         ConfigureArrowPosition();
         return presenter;
-    }
-
-    private Point CalculatePopupPositionDelta(Control anchorTarget,
-                                              Control? flyoutPresenter,
-                                              PlacementMode placement,
-                                              PopupAnchor? anchor = null,
-                                              PopupGravity? gravity = null)
-    {
-        var offsetX = 0d;
-        var offsetY = 0d;
-        if (IsShowArrow && IsPointAtCenter)
-        {
-            if (PopupUtils.CanEnabledArrow(placement, anchor, gravity))
-            {
-                if (flyoutPresenter is ArrowDecoratedBox arrowDecoratedBox)
-                {
-                    var arrowVertexPoint = arrowDecoratedBox.ArrowVertexPoint;
-
-                    var anchorSize = anchorTarget.Bounds.Size;
-                    var centerX    = anchorSize.Width / 2;
-                    var centerY    = anchorSize.Height / 2;
-                    if (placement == PlacementMode.TopEdgeAlignedLeft ||
-                        placement == PlacementMode.BottomEdgeAlignedLeft)
-                    {
-                        offsetX += centerX - arrowVertexPoint.Item1;
-                    }
-                    else if (placement == PlacementMode.TopEdgeAlignedRight ||
-                             placement == PlacementMode.BottomEdgeAlignedRight)
-                    {
-                        offsetX -= centerX - arrowVertexPoint.Item2;
-                    }
-                    else if (placement == PlacementMode.RightEdgeAlignedTop ||
-                             placement == PlacementMode.LeftEdgeAlignedTop)
-                    {
-                        offsetY += centerY - arrowVertexPoint.Item1;
-                    }
-                    else if (placement == PlacementMode.RightEdgeAlignedBottom ||
-                             placement == PlacementMode.LeftEdgeAlignedBottom)
-                    {
-                        offsetY -= centerY - arrowVertexPoint.Item2;
-                    }
-                }
-            }
-        }
-
-        return new Point(offsetX, offsetY);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

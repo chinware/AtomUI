@@ -490,6 +490,48 @@ internal static class PopupUtils
             _ => (PopupAnchor.None, PopupGravity.None)
         };
     }
+
+    internal static Point CalculatePointAtCenterDelta(Control anchorTarget,
+                                                      AbstractArrowDecoratedBox arrowDecoratedBox,
+                                                      PlacementMode placement,
+                                                      PopupAnchor? anchor,
+                                                      PopupGravity? gravity)
+    {
+        if (!CanEnabledArrow(placement, anchor, gravity))
+        {
+            return default;
+        }
+
+        var arrowVertexPoint = arrowDecoratedBox.ArrowVertexPoint;
+        var anchorSize = anchorTarget.Bounds.Size;
+        var centerX = anchorSize.Width / 2;
+        var centerY = anchorSize.Height / 2;
+        var offsetX = 0d;
+        var offsetY = 0d;
+
+        if (placement == PlacementMode.TopEdgeAlignedLeft ||
+            placement == PlacementMode.BottomEdgeAlignedLeft)
+        {
+            offsetX = centerX - arrowVertexPoint.Item1;
+        }
+        else if (placement == PlacementMode.TopEdgeAlignedRight ||
+                 placement == PlacementMode.BottomEdgeAlignedRight)
+        {
+            offsetX = -(centerX - arrowVertexPoint.Item2);
+        }
+        else if (placement == PlacementMode.RightEdgeAlignedTop ||
+                 placement == PlacementMode.LeftEdgeAlignedTop)
+        {
+            offsetY = centerY - arrowVertexPoint.Item1;
+        }
+        else if (placement == PlacementMode.RightEdgeAlignedBottom ||
+                 placement == PlacementMode.LeftEdgeAlignedBottom)
+        {
+            offsetY = -(centerY - arrowVertexPoint.Item2);
+        }
+
+        return new Point(offsetX, offsetY);
+    }
     
     internal static (double offsetX, double offsetY) CalculateShadowOffset(ArrowPosition arrowPosition, Thickness shadowThickness, Rect arrowBounds)
     {
@@ -572,8 +614,8 @@ internal static class PopupUtils
         PopupGravity gravity,
         Rect arrowIndicatorLayoutBounds = default)
     {
-        placement.Anchor      = anchor;
-        placement.Gravity     = gravity;
+        placement.Anchor  = anchor;
+        placement.Gravity = gravity;
 
         var (flipX, flipY) = isUseOverlayHost
             ? CalculateOverlayPopupHostFlipInfo(placement)

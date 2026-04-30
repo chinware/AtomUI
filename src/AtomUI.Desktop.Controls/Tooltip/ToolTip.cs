@@ -385,6 +385,7 @@ public class ToolTip : ContentControl,
             _popup.Bind(Popup.VerticalOffsetProperty, control.GetBindingObservable(VerticalOffsetProperty)),
             _popup.Bind(Popup.RequestedPlacementProperty, control.GetBindingObservable(PlacementProperty, v => (PlacementMode?)v)),
             _popup.Bind(Popup.MarginToAnchorProperty, control.GetBindingObservable(MarginToAnchorProperty)),
+            _popup.Bind(Popup.IsPointAtCenterProperty, control.GetBindingObservable(IsPointAtCenterProperty)),
         ]);
 
         _popup.PlacementTarget = control;
