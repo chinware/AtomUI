@@ -8,8 +8,10 @@ namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 internal class en_US : LanguageProvider
 {
     public const string General = "General";
-    public const string General_AboutUs = "About Us";
+    public const string General_AboutUs = "AboutUS";
     public const string General_Palette = "Palette";
+    public const string General_Icons = "Icons";
+    public const string General_Button = "Button";
     public const string Layout = "Layout";
     public const string Navigation = "Navigation";
     public const string DataEntry = "Data Entry";

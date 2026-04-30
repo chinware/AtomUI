@@ -2,7 +2,6 @@ using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -361,7 +360,7 @@ public class Button : AvaloniaButton,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>(ButtonThemeConstants.WaveSpiritPart);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
         UpdatePseudoClasses();
         ConfigureWaveSpiritType();
         ConfigureEffectiveBorderThickness();

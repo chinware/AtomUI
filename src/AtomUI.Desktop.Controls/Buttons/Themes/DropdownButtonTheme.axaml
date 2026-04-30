@@ -12,7 +12,7 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel>
-                        <atom:WaveSpiritDecorator Name="{x:Static atom:ButtonThemeConstants.WaveSpiritPart}"
+                        <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
                                                   CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                                   WaveType="{TemplateBinding WaveSpiritType}" />
                         <Border Name="ShadowsFrame"
@@ -24,7 +24,7 @@
                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                 Background="{TemplateBinding Background}">
-                            <DockPanel Name="{x:Static atom:ButtonThemeConstants.RootLayoutPart}"
+                            <DockPanel Name="PART_RootLayout"
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
@@ -37,7 +37,7 @@
                                     IsMotionEnabled="False"
                                     IsVisible="{TemplateBinding IsShowOpenIndicator}" />
                                 <atom:IconPresenter
-                                    Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                                    Name="PART_ButtonIcon"
                                     Icon="{TemplateBinding Icon}"
                                     DockPanel.Dock="Left">
                                     <atom:IconPresenter.IsVisible>
@@ -51,7 +51,7 @@
                                     </atom:IconPresenter.IsVisible>
                                 </atom:IconPresenter>
                                 <ContentPresenter
-                                    Name="{x:Static atom:ButtonThemeConstants.ContentPresenterPart}"
+                                    Name="PART_ContentPresenter"
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}"
                                     IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />

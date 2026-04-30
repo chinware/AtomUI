@@ -12,19 +12,19 @@
                         Padding="{TemplateBinding Padding}"
                         BackgroundSizing="{TemplateBinding BackgroundSizing}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <StackPanel Name="{x:Static atom:ButtonThemeConstants.MainInfoLayoutPart}"
+                    <StackPanel Name="PART_MainInfoLayout"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                 Orientation="Horizontal">
-                        <antdicons:LoadingOutlined Name="{x:Static atom:ButtonThemeConstants.LoadingIconPart}"
+                        <antdicons:LoadingOutlined Name="PART_LoadingIcon"
                                                    Margin="{ReflectionBinding (atom:IconPresenter.Margin),
                                    ElementName=PART_ButtonIcon}" />
                         <atom:IconPresenter
-                            Name="{x:Static atom:ButtonThemeConstants.ButtonIconPart}"
+                            Name="PART_ButtonIcon"
                             Icon="{TemplateBinding Icon}"
                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter
-                            Name="{x:Static atom:ButtonThemeConstants.ContentPresenterPart}"
+                            Name="PART_ContentPresenter"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </StackPanel>

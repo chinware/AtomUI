@@ -10,5 +10,7 @@ public sealed class ShowCaseViewModule : IViewModule
     {
         locator.Map<AboutUsViewModel, AboutUsPage>(() => new AboutUsPage());
         locator.Map<PaletteViewModel, PaletteShowCase>(() => new PaletteShowCase());
+        locator.Map<IconViewModel, IconShowCase>(() => new IconShowCase());
+        locator.Map<ButtonViewModel, ButtonShowCase>(() => new ButtonShowCase());
     }
 }

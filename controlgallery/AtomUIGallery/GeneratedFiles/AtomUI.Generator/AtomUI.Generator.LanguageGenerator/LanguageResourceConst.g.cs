@@ -10,6 +10,8 @@ namespace AtomUIGallery.Localization
         Feedback,
         General,
         General_AboutUs,
+        General_Button,
+        General_Icons,
         General_Palette,
         Layout,
         Navigation
