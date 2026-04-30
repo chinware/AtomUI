@@ -586,6 +586,12 @@ internal static class PopupUtils
         }
         else
         {
+            var direction = GetDirection(requestedPlacement);
+            if (flipX || flipY)
+            {
+                direction = FlipDirection(direction);
+            }
+
             if (!isUseOverlayHost)
             {
                 var arrowPosition = CalculateArrowPosition(requestedPlacement, anchor, gravity);
@@ -598,36 +604,52 @@ internal static class PopupUtils
 
                     var (shadowOffsetX, shadowOffsetY) = CalculateShadowOffset(arrowPosition.Value,
                         shadowThickness, arrowIndicatorLayoutBounds);
-                    hOffset += shadowOffsetX;
-                    vOffset += shadowOffsetY;
+
+                    var primaryIsHorizontal = direction is Direction.Left or Direction.Right;
+                    if (primaryIsHorizontal)
+                    {
+                        var primaryMargin = Math.Max(Math.Abs(shadowOffsetX), marginToAnchor);
+                        hOffset += direction == Direction.Right ? primaryMargin : -primaryMargin;
+                        vOffset += shadowOffsetY;
+                    }
+                    else
+                    {
+                        var primaryMargin = Math.Max(Math.Abs(shadowOffsetY), marginToAnchor);
+                        vOffset += direction == Direction.Bottom ? primaryMargin : -primaryMargin;
+                        hOffset += shadowOffsetX;
+                    }
                 }
-            }
-
-            var direction = GetDirection(requestedPlacement);
-            if (flipX || flipY)
-            {
-                direction = FlipDirection(direction);
-            }
-
-            if (direction == Direction.Left)
-            {
-                hOffset -= marginToAnchor;
-            }
-            else if (direction == Direction.Right)
-            {
-                hOffset += marginToAnchor;
-            }
-            else if (direction == Direction.Top)
-            {
-                vOffset -= marginToAnchor;
+                else
+                {
+                    ApplyMarginToAnchor(direction, marginToAnchor, ref hOffset, ref vOffset);
+                }
             }
             else
             {
-                vOffset += marginToAnchor;
+                ApplyMarginToAnchor(direction, marginToAnchor, ref hOffset, ref vOffset);
             }
         }
 
         placement.Offset = new Point(hOffset, vOffset);
         return flipX || flipY;
+    }
+
+    private static void ApplyMarginToAnchor(Direction direction, double marginToAnchor, ref double hOffset, ref double vOffset)
+    {
+        switch (direction)
+        {
+            case Direction.Left:
+                hOffset -= marginToAnchor;
+                break;
+            case Direction.Right:
+                hOffset += marginToAnchor;
+                break;
+            case Direction.Top:
+                vOffset -= marginToAnchor;
+                break;
+            case Direction.Bottom:
+                vOffset += marginToAnchor;
+                break;
+        }
     }
 }

@@ -44,16 +44,16 @@ internal class PopupHostToken : AbstractControlDesignToken
         {
             OffsetX = 0,
             OffsetY = 1,
-            Blur    = 4,
+            Blur    = 6,
             Spread  = 0,
-            Color   = ColorUtils.FromRgbF(0.1, 0, 0, 0)
+            Color   = ColorUtils.FromRgbF(0.14, 0, 0, 0)
         }, [new BoxShadow
         {
             OffsetX = 0,
             OffsetY = 0,
-            Blur    = 1,
+            Blur    = 4,
             Spread  = 0,
-            Color   = ColorUtils.FromRgbF(0.15, 0, 0, 0)
+            Color   = ColorUtils.FromRgbF(0.10, 0, 0, 0)
         }]);
         BorderRadius   = SharedToken.BorderRadiusLG;
         MarginToAnchor = SharedToken.UniformlyMarginXXS;

@@ -196,6 +196,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup[!PopupControl.OpenMotionProperty]            = this[!OpenMotionProperty];
         popup[!PopupControl.CloseMotionProperty]           = this[!CloseMotionProperty];
         popup[!PopupControl.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
+        popup[!PopupControl.MarginToAnchorProperty]        = this[!MarginToAnchorProperty];
         popup[!PopupControl.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
         this[!IsPopupFlippedProperty]                      = popup[!PopupControl.IsFlippedProperty];
 

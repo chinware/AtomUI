@@ -12,7 +12,8 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         IsVisible="{TemplateBinding IsShowArrow}"
-                        Opacity="{TemplateBinding ArrowOpacity}">
+                        Opacity="{TemplateBinding ArrowOpacity}"
+                        ClipToBounds="False">
                         <atom:ArrowIndicator
                             Name="PART_ArrowIndicator"
                             FilledColor="{TemplateBinding Background}"

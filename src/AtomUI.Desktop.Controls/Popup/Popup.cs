@@ -140,6 +140,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     private bool _isPlayingCloseMotion;
     private CancellationTokenSource? _motionCts;
     private PopupMotionActor? _motionActor;
+    private bool _isRedirectingPlacement;
 
     #endregion
 
@@ -277,6 +278,18 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             else
             {
                 CustomPopupPlacementCallback = null;
+            }
+        }
+        else if (change.Property == PlacementProperty && !_isRedirectingPlacement)
+        {
+            var placement = change.GetNewValue<PlacementMode>();
+            if (placement != PlacementMode.Custom)
+            {
+                _isRedirectingPlacement = true;
+                RequestedPlacement = placement;
+                CustomPopupPlacementCallback = HandleCustomPlacement;
+                Placement = PlacementMode.Custom;
+                _isRedirectingPlacement = false;
             }
         }
         else if (change.Property == PopupRootShadowProperty ||

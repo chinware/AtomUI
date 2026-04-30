@@ -43,7 +43,7 @@ internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
         base.CalculateTokenValues(isDarkMode);
         ArrowSize            = SharedToken.SizePopupArrow / 1.3;
         Padding              = SharedToken.PaddingXS;
-        ArrowStrokeColor     = ColorUtils.FromRgbF(0.06, 0, 0, 0);
+        ArrowStrokeColor     = ColorUtils.FromRgbF(0.07, 0, 0, 0);
         ArrowStrokeThickness = 1;
     }
 

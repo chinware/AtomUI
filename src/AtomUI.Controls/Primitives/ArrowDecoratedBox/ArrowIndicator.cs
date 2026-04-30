@@ -53,7 +53,6 @@ public class ArrowIndicator : Control
         AffectsRender<ArrowIndicator>(FilledColorProperty, StrokeBrushProperty, StrokeThicknessProperty);
         HorizontalAlignmentProperty.OverrideDefaultValue<ArrowIndicator>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<ArrowIndicator>(VerticalAlignment.Top);
-        ClipToBoundsProperty.OverrideDefaultValue<ArrowIndicator>(true);
     }
 
     private void BuildGeometry(bool force = false)

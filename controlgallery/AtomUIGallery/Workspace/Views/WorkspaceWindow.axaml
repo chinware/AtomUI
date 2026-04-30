@@ -21,7 +21,7 @@
     <Panel>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Orientation="Horizontal">
             <atom:FlyoutHost Trigger="Hover" HorizontalAlignment="Center" VerticalAlignment="Center"
-                             ShouldUseOverlayLayer="True">
+                             ShouldUseOverlayLayer="False">
                 <atom:FlyoutHost.Flyout>
                     <atom:Flyout>
                         <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>

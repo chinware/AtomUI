@@ -43,14 +43,14 @@ internal class FlyoutHostToken : AbstractControlDesignToken
             OffsetY = 1,
             Blur    = 6,
             Spread  = 0,
-            Color   = ColorUtils.FromRgbF(0.12, 0, 0, 0)
+            Color   = ColorUtils.FromRgbF(0.14, 0, 0, 0)
         }, [new BoxShadow
         {
             OffsetX = 0,
             OffsetY = 0,
-            Blur    = 2,
+            Blur    = 4,
             Spread  = 0,
-            Color   = ColorUtils.FromRgbF(0.08, 0, 0, 0)
+            Color   = ColorUtils.FromRgbF(0.10, 0, 0, 0)
         }]);
     }
     
