@@ -14,7 +14,7 @@
         <!-- <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Cascader/Themes/CascaderThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" /> -->
-        <!-- <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" /> -->
+        <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="WindowTitleBar/Themes/WindowTitleBarThemes.axaml" />
         <!-- <ResourceInclude Source="Card/Themes/CardThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" /> -->
@@ -49,7 +49,7 @@
         <ResourceInclude Source="Primitives/Themes/PrimitiveThemes.axaml" />
         <!-- <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" /> -->
         <!-- <ResourceInclude Source="QRCode/Themes/QRCodeTheme.axaml" /> -->
-        <!-- <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" /> -->
+        <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <!-- <ResourceInclude Source="Rate/Themes/RateThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Result/Themes/ResultTheme.axaml" /> -->
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />

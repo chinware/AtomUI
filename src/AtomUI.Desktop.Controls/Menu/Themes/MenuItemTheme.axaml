@@ -130,12 +130,14 @@
             </Style>
         </Style>
         <Style Selector="^[ToggleType=CheckBox]">
+            <Setter Property="StaysOpenOnClick" Value="True" />
             <Style Selector="^ /template/ atom|CheckBox#PART_ToggleCheckbox">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
 
         <Style Selector="^[ToggleType=Radio]">
+            <Setter Property="StaysOpenOnClick" Value="True" />
             <Style Selector="^ /template/ atom|RadioButton#PART_ToggleRadio">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
