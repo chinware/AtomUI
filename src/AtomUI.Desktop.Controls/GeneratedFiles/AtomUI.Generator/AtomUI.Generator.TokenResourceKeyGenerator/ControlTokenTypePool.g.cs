@@ -19,6 +19,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CollapseToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ExpanderToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.FlyoutHostToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.GroupBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.LineEditToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ListBoxToken));
@@ -42,6 +43,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TimelineToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToggleSwitchToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToolTipToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TreeFlyoutToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.WindowTitleBarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.WindowToken));
             return tokenTypes;

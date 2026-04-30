@@ -1,7 +1,9 @@
 ﻿using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
 using Avalonia;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -21,6 +23,16 @@ internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
     /// </summary>
     public Thickness Padding { get; set; }
 
+    /// <summary>
+    /// 箭头描边颜色
+    /// </summary>
+    public Color ArrowStrokeColor { get; set; }
+
+    /// <summary>
+    /// 箭头描边粗细
+    /// </summary>
+    public double ArrowStrokeThickness { get; set; }
+
     public ArrowDecoratedBoxToken()
         : base(ID)
     {
@@ -29,9 +41,11 @@ internal class ArrowDecoratedBoxToken : AbstractControlDesignToken
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ArrowSize = SharedToken.SizePopupArrow / 1.3;
-        Padding   = SharedToken.PaddingXS;
+        ArrowSize            = SharedToken.SizePopupArrow / 1.3;
+        Padding              = SharedToken.PaddingXS;
+        ArrowStrokeColor     = ColorUtils.FromRgbF(0.06, 0, 0, 0);
+        ArrowStrokeThickness = 1;
     }
-    
+
     protected override Type GetTokenKindType() => typeof(ArrowDecoratedBoxTokenKind);
 }

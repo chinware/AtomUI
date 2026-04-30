@@ -10,6 +10,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 
@@ -248,8 +249,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             var requestedPlacement = change.GetNewValue<PlacementMode?>();
             if (requestedPlacement is not null)
             {
-                Placement = PlacementMode.Custom;
                 CustomPopupPlacementCallback = HandleCustomPlacement;
+                Placement = PlacementMode.Custom;
             }
             else
             {
@@ -322,9 +323,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     #endregion
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
+        base.OnAttachedToLogicalTree(e);
         ConfigureFrameShadow();
     }
 

@@ -32,6 +32,8 @@ namespace AtomUI.Desktop.Controls.DesignTokens
     public enum ArrowDecoratedBoxTokenKind
     {
         ArrowSize,
+        ArrowStrokeColor,
+        ArrowStrokeThickness,
         Padding
     }
 
@@ -187,6 +189,13 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         LeftExpandButtonVMargin,
         RightExpandButtonHMargin,
         RightExpandButtonVMargin
+    }
+
+    public enum FlyoutHostTokenKind
+    {
+        MarginToAnchor,
+        OverlayHostShadow,
+        PopupRootShadow
     }
 
     public enum GroupBoxTokenKind
@@ -611,6 +620,16 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         ToolTipMaxWidth
     }
 
+    public enum TreeFlyoutTokenKind
+    {
+        PopupBgColor,
+        PopupContentPadding,
+        PopupMaxHeight,
+        PopupMaxWidth,
+        PopupMinHeight,
+        PopupMinWidth
+    }
+
     public enum WindowTitleBarTokenKind
     {
         ActiveBgColor,
@@ -768,6 +787,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ExpanderTokenResourceExtension(ExpanderTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class FlyoutHostTokenResourceExtension : TokenResourceExtension<FlyoutHostTokenKind>
+    {
+        public FlyoutHostTokenResourceExtension()
+        {
+        }
+
+        public FlyoutHostTokenResourceExtension(FlyoutHostTokenKind kind) : base(kind)
         {
         }
     }
@@ -1021,6 +1051,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ToolTipTokenResourceExtension(ToolTipTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TreeFlyoutTokenResourceExtension : TokenResourceExtension<TreeFlyoutTokenKind>
+    {
+        public TreeFlyoutTokenResourceExtension()
+        {
+        }
+
+        public TreeFlyoutTokenResourceExtension(TreeFlyoutTokenKind kind) : base(kind)
         {
         }
     }

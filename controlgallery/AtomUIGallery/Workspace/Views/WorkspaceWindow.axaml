@@ -19,9 +19,36 @@
         </DataTemplate>
     </atom:Window.LogoTemplate>
     <Panel>
-       <atom:Button atom:ToolTip.Tip="hahahahhhaha"
-                    atom:ToolTip.Placement="Top"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">Text</atom:Button>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Orientation="Horizontal">
+            <atom:FlyoutHost Trigger="Hover" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             ShouldUseOverlayLayer="True">
+                <atom:FlyoutHost.Flyout>
+                    <atom:Flyout>
+                        <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                    </atom:Flyout>
+                </atom:FlyoutHost.Flyout>
+                <atom:Button ButtonType="Primary">Hover me</atom:Button>
+            </atom:FlyoutHost>
+            
+            <atom:FlyoutHost Trigger="Focus" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             ShouldUseOverlayLayer="True">
+                <atom:FlyoutHost.Flyout>
+                    <atom:Flyout>
+                        <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                    </atom:Flyout>
+                </atom:FlyoutHost.Flyout>
+                <atom:Button ButtonType="Primary">Hover me</atom:Button>
+            </atom:FlyoutHost>
+            
+            <atom:FlyoutHost Trigger="Click" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             ShouldUseOverlayLayer="True">
+                <atom:FlyoutHost.Flyout>
+                    <atom:Flyout>
+                        <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
+                    </atom:Flyout>
+                </atom:FlyoutHost.Flyout>
+                <atom:Button ButtonType="Primary">Hover me</atom:Button>
+            </atom:FlyoutHost>
+        </StackPanel>
     </Panel>
 </atom:Window>

@@ -15,8 +15,10 @@
                         Opacity="{TemplateBinding ArrowOpacity}">
                         <atom:ArrowIndicator
                             Name="PART_ArrowIndicator"
-                            FilledColor="{TemplateBinding Background}" 
-                            ArrowSize="{TemplateBinding ArrowSize}"/>
+                            FilledColor="{TemplateBinding Background}"
+                            ArrowSize="{TemplateBinding ArrowSize}"
+                            StrokeBrush="{atom:ArrowDecoratedBoxTokenResource ArrowStrokeColor}"
+                            StrokeThickness="{atom:ArrowDecoratedBoxTokenResource ArrowStrokeThickness}"/>
                     </LayoutTransformControl>
                 </Panel>
                 <Border

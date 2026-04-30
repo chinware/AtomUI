@@ -26,7 +26,7 @@
         <!-- <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Empty/Themes/EmptyTheme.axaml" /> -->
         <!-- <ResourceInclude Source="Expander/Themes/ExpanderTheme.axaml" /> -->
-        <!-- <ResourceInclude Source="Flyouts/Themes/FlyoutThemes.axaml" /> -->
+        <ResourceInclude Source="Flyouts/Themes/FlyoutThemes.axaml" />
         <!-- <ResourceInclude Source="FloatButton/Themes/FloatButtonThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Form/Themes/FormThemes.axaml" /> -->
         <!-- <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" /> -->

@@ -1,0 +1,23 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:FlyoutHost}" TargetType="atom:FlyoutHost">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  ClipToBounds="{TemplateBinding ClipToBounds}"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}"/>
+        <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}"/>
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
+        <Setter Property="ClipToBounds" Value="False"/>
+        <Setter Property="PopupRootShadow" Value="{atom:FlyoutHostTokenResource PopupRootShadow}"/>
+        <Setter Property="OverlayHostShadow" Value="{atom:FlyoutHostTokenResource OverlayHostShadow}"/>
+    </ControlTheme>
+</ResourceDictionary>
