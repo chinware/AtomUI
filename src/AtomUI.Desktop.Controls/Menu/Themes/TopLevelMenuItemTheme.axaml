@@ -127,6 +127,10 @@
                 <Setter Property="OverlayHostShadow"
                         Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
             </Style>
+            
+            <Style Selector="^[ShouldUseOverlayLayer=False] /template/ atom|Popup#PART_Popup">
+                <Setter Property="MarginToAnchor" Value="1" />
+            </Style>
 
             <Style Selector="^:disabled">
                 <Setter Property="Foreground"

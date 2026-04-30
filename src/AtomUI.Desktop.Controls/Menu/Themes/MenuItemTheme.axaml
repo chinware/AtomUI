@@ -193,8 +193,6 @@
         </Style>
 
         <Style Selector="^ /template/ atom|Popup#PART_Popup">
-            <Setter Property="MarginToAnchor"
-                    Value="{atom:MenuTokenResource TopLevelItemPopupMarginToAnchor}" />
             <Setter Property="PopupRootShadow" Value="{atom:PopupHostTokenResource PopupRootShadow}" />
             <Setter Property="OverlayHostShadow" Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
             <Setter Property="MinWidth" Value="{atom:MenuTokenResource MenuPopupMinWidth}" />

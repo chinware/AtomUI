@@ -312,7 +312,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void HandleCustomPlacement(CustomPopupPlacement placement)
     {
-        if (PlacementTarget is not {} target)
+        var target = PlacementTarget ?? Parent as Control;
+        if (target is null)
         {
             return;
         }
@@ -358,7 +359,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 vOffset += delta.Y;
             }
         }
-
+        
         var isFlipped = PopupUtils.ApplyCustomPlacement(
             placement,
             requestedPlacement,

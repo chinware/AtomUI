@@ -650,13 +650,13 @@ internal static class PopupUtils
                     var primaryIsHorizontal = direction is Direction.Left or Direction.Right;
                     if (primaryIsHorizontal)
                     {
-                        var primaryMargin = Math.Max(Math.Abs(shadowOffsetX), marginToAnchor);
+                        var primaryMargin = MathUtils.AreClose(marginToAnchor, 0.0d) ? shadowOffsetX : marginToAnchor;
                         hOffset += direction == Direction.Right ? primaryMargin : -primaryMargin;
                         vOffset += shadowOffsetY;
                     }
                     else
                     {
-                        var primaryMargin = Math.Max(Math.Abs(shadowOffsetY), marginToAnchor);
+                        var primaryMargin = MathUtils.AreClose(marginToAnchor, 0.0d) ? shadowOffsetY : marginToAnchor;
                         vOffset += direction == Direction.Bottom ? primaryMargin : -primaryMargin;
                         hOffset += shadowOffsetX;
                     }
@@ -671,7 +671,7 @@ internal static class PopupUtils
                 ApplyMarginToAnchor(direction, marginToAnchor, ref hOffset, ref vOffset);
             }
         }
-
+        
         placement.Offset = new Point(hOffset, vOffset);
         return flipX || flipY;
     }

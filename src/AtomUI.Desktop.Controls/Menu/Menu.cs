@@ -26,7 +26,7 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
         AvaloniaProperty.Register<Menu, int>(nameof(DisplayPageSize), 10);
 
     public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        AvaloniaProperty.Register<Menu, bool>(nameof(ShouldUseOverlayLayer));
+        Popup.ShouldUseOverlayLayerProperty.AddOwner<Menu>();
 
     public SizeType SizeType
     {
