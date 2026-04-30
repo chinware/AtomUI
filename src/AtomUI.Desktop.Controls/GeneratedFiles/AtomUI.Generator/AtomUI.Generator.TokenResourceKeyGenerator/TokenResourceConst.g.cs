@@ -240,6 +240,51 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         DefaultSpeed
     }
 
+    public enum MenuTokenKind
+    {
+        ContextMenuOffsetX,
+        ContextMenuOffsetY,
+        DangerItemColor,
+        DangerItemHoverColor,
+        ItemBg,
+        ItemBorderRadius,
+        ItemColor,
+        ItemDisabledColor,
+        ItemHeight,
+        ItemHoverBg,
+        ItemHoverColor,
+        ItemIconMarginInlineEnd,
+        ItemIconSize,
+        ItemMargin,
+        ItemPaddingInline,
+        KeyGestureColor,
+        MenuPopupBgColor,
+        MenuPopupContentPadding,
+        MenuPopupMaxWidth,
+        MenuPopupMinWidth,
+        MenuTearOffHeight,
+        SeparatorItemHeight,
+        TopLevelItemBg,
+        TopLevelItemBorderRadius,
+        TopLevelItemBorderRadiusLG,
+        TopLevelItemBorderRadiusSM,
+        TopLevelItemColor,
+        TopLevelItemFontSize,
+        TopLevelItemFontSizeLG,
+        TopLevelItemFontSizeSM,
+        TopLevelItemHoverBg,
+        TopLevelItemHoverColor,
+        TopLevelItemLineHeight,
+        TopLevelItemLineHeightLG,
+        TopLevelItemLineHeightSM,
+        TopLevelItemPadding,
+        TopLevelItemPaddingLG,
+        TopLevelItemPaddingSM,
+        TopLevelItemPopupMarginToAnchor,
+        TopLevelItemSelectedBg,
+        TopLevelItemSelectedColor
+    }
+
     public enum NavMenuTokenKind
     {
         ActiveBarHeight,
@@ -842,6 +887,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public MarqueeLabelTokenResourceExtension(MarqueeLabelTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class MenuTokenResourceExtension : TokenResourceExtension<MenuTokenKind>
+    {
+        public MenuTokenResourceExtension()
+        {
+        }
+
+        public MenuTokenResourceExtension(MenuTokenKind kind) : base(kind)
         {
         }
     }

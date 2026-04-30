@@ -5,6 +5,7 @@ using AtomUIGallery.Workspace.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ReactiveUI;
+using MenuItem = AtomUI.Desktop.Controls.MenuItem;
 
 namespace AtomUIGallery.Workspace.Views;
 

@@ -1,0 +1,256 @@
+using System.ComponentModel;
+using AtomUI.Controls;
+using AtomUI.Theme;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Layout;
+
+namespace AtomUI.Desktop.Controls;
+
+using AvaloniaContextMenu = Avalonia.Controls.ContextMenu;
+
+public class ContextMenu : AvaloniaContextMenu,
+                           ISizeTypeAware,
+                           IMotionAwareControl
+{
+    #region 公共属性定义
+
+    public static readonly StyledProperty<SizeType> SizeTypeProperty =
+        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ContextMenu>();
+
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ContextMenu>();
+
+    public static readonly StyledProperty<int> DisplayPageSizeProperty =
+        Menu.DisplayPageSizeProperty.AddOwner<ContextMenu>();
+
+    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
+        Menu.ShouldUseOverlayLayerProperty.AddOwner<ContextMenu>();
+
+    public SizeType SizeType
+    {
+        get => GetValue(SizeTypeProperty);
+        set => SetValue(SizeTypeProperty, value);
+    }
+
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public int DisplayPageSize
+    {
+        get => GetValue(DisplayPageSizeProperty);
+        set => SetValue(DisplayPageSizeProperty, value);
+    }
+
+    public bool ShouldUseOverlayLayer
+    {
+        get => GetValue(ShouldUseOverlayLayerProperty);
+        set => SetValue(ShouldUseOverlayLayerProperty, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<double> ItemHeightProperty =
+        AvaloniaProperty.Register<ContextMenu, double>(nameof(ItemHeight));
+
+    internal static readonly StyledProperty<double> MaxPopupHeightProperty =
+        AvaloniaProperty.Register<ContextMenu, double>(nameof(MaxPopupHeight));
+
+    internal double ItemHeight
+    {
+        get => GetValue(ItemHeightProperty);
+        set => SetValue(ItemHeightProperty, value);
+    }
+
+    internal double MaxPopupHeight
+    {
+        get => GetValue(MaxPopupHeightProperty);
+        set => SetValue(MaxPopupHeightProperty, value);
+    }
+
+    #endregion
+
+    private Popup? _popup;
+    private WindowBase? _attachedWindow;
+
+    public ContextMenu()
+    {
+        this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
+        _popup = new Popup
+        {
+            WindowManagerAddShadowHint = false,
+            IsLightDismissEnabled      = false,
+        };
+
+        VerticalOffset   = 10;
+        HorizontalOffset = 10;
+        _popup.Opened  += this.CreateEventHandler("PopupOpened");
+        _popup.Opened  += HandlePopupOpened;
+        _popup.Closed  += this.CreateEventHandler<EventArgs>("PopupClosed");
+        _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
+        _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
+
+        _popup[!Popup.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+        _popup[!Popup.IsMotionEnabledProperty]        = this[!IsMotionEnabledProperty];
+
+        this.SetPopup(_popup);
+    }
+
+    private void HandlePopupOpened(object? sender, EventArgs e)
+    {
+        if (_popup?.PlacementTarget is { } target)
+        {
+            var topLevel = TopLevel.GetTopLevel(target);
+            if (topLevel is WindowBase window)
+            {
+                _attachedWindow    =  window;
+                window.Deactivated += HandleWindowDeactivated;
+            }
+        }
+    }
+
+    private void HandleWindowDeactivated(object? sender, EventArgs e)
+    {
+        Close();
+    }
+
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        if (item is MenuSeparatorData)
+        {
+            return new MenuSeparator();
+        }
+
+        return new MenuItem();
+    }
+
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        if (item is MenuItem or MenuSeparator)
+        {
+            recycleKey = null;
+            return false;
+        }
+
+        recycleKey = DefaultRecycleKey;
+        return true;
+    }
+
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is MenuItem menuItem)
+        {
+            if (item != null && item is not Visual)
+            {
+                if (!menuItem.IsSet(MenuItem.HeaderProperty))
+                {
+                    menuItem.SetCurrentValue(MenuItem.HeaderProperty, item);
+                }
+
+                if (item is IMenuItemData menuItemData)
+                {
+                    if (!menuItem.IsSet(MenuItem.IconProperty))
+                    {
+                        menuItem.SetCurrentValue(MenuItem.IconProperty, menuItemData.Icon);
+                    }
+
+                    if (menuItem.ItemKey == null)
+                    {
+                        menuItem.ItemKey = menuItemData.ItemKey;
+                    }
+
+                    if (!menuItem.IsSet(MenuItem.IsEnabledProperty))
+                    {
+                        menuItem.SetCurrentValue(IsEnabledProperty, menuItemData.IsEnabled);
+                    }
+
+                    if (!menuItem.IsSet(MenuItem.InputGestureProperty))
+                    {
+                        menuItem.SetCurrentValue(MenuItem.InputGestureProperty, menuItemData.InputGesture);
+                    }
+                }
+            }
+
+            if (ItemTemplate != null)
+            {
+                menuItem[!MenuItem.HeaderTemplateProperty] = this[!ItemTemplateProperty];
+            }
+
+            menuItem[!IsMotionEnabledProperty]                = this[!IsMotionEnabledProperty];
+            menuItem[!ItemTemplateProperty]                   = this[!ItemTemplateProperty];
+            menuItem[!SizeTypeProperty]                       = this[!SizeTypeProperty];
+            menuItem[!MenuItem.DisplayPageSizeProperty]       = this[!DisplayPageSizeProperty];
+            menuItem[!MenuItem.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+
+            PrepareMenuItem(menuItem, item, index);
+        }
+        else if (container is MenuSeparator menuSeparator)
+        {
+            menuSeparator.Orientation = Orientation.Vertical;
+        }
+        else
+        {
+            throw new ArgumentOutOfRangeException(nameof(container),
+                "The container type is incorrect, it must be type MenuItem or MenuSeparator.");
+        }
+    }
+
+    protected virtual void PrepareMenuItem(MenuItem menuItem, object? item, int index)
+    {
+    }
+
+    public override void Close()
+    {
+        if (!IsOpen || _popup == null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < ItemCount; i++)
+        {
+            var container = ContainerFromIndex(i);
+            if (container is MenuItem menuItem)
+            {
+                menuItem.Close();
+            }
+        }
+
+        _popup.IsOpen = false;
+
+        if (_attachedWindow != null)
+        {
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow              =  null;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == DisplayPageSizeProperty ||
+            change.Property == ItemHeightProperty)
+        {
+            ConfigureMaxPopupHeight();
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigureMaxPopupHeight();
+    }
+
+    private void ConfigureMaxPopupHeight()
+    {
+        SetCurrentValue(MaxPopupHeightProperty,
+            ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom);
+    }
+}

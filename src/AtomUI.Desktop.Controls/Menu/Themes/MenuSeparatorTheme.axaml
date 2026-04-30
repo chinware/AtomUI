@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:MenuSeparator}" TargetType="atom:MenuSeparator">
+        <Setter Property="MinHeight" Value="{atom:MenuTokenResource SeparatorItemHeight}"/>
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
+        <Setter Property="LineWidth" Value="{atom:SharedTokenResource LineWidth}"/>
+    </ControlTheme>
+</ResourceDictionary>
