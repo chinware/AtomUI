@@ -408,6 +408,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PaddingSM
     }
 
+    public enum PopupConfirmTokenKind
+    {
+        ButtonContainerMargin,
+        ButtonSpacing,
+        ContentContainerMargin,
+        IconMargin,
+        PopupMinHeight,
+        PopupMinWidth,
+        TitleMargin
+    }
+
     public enum PopupHostTokenKind
     {
         BorderRadius,
@@ -1004,6 +1015,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public OptionButtonTokenResourceExtension(OptionButtonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class PopupConfirmTokenResourceExtension : TokenResourceExtension<PopupConfirmTokenKind>
+    {
+        public PopupConfirmTokenResourceExtension()
+        {
+        }
+
+        public PopupConfirmTokenResourceExtension(PopupConfirmTokenKind kind) : base(kind)
         {
         }
     }

@@ -29,6 +29,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NotificationToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.OptionButtonToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupConfirmToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ProgressBarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.RadioButtonToken));

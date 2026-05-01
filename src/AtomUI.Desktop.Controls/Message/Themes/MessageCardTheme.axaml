@@ -8,14 +8,14 @@
             <ControlTemplate>
                 <atom:MotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
                                          ClipToBounds="False">
-                    <Border Name="{x:Static atom:MessageCardThemeConstants.FramePart}">
-                        <DockPanel Name="{x:Static atom:MessageCardThemeConstants.HeaderContainerPart}"
+                    <Border Name="PART_Frame">
+                        <DockPanel Name="PART_HeaderContainer"
                                    LastChildFill="True">
-                            <atom:IconPresenter Name="{x:Static atom:MessageCardThemeConstants.IconContentPart}"
+                            <atom:IconPresenter Name="PART_IconContent"
                                                 DockPanel.Dock="Left"
                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                                 Icon="{TemplateBinding Icon}" />
-                            <SelectableTextBlock Name="{x:Static atom:MessageCardThemeConstants.MessagePart}"
+                            <SelectableTextBlock Name="PART_Message"
                                                  Text="{TemplateBinding Message}" />
                         </DockPanel>
                     </Border>
