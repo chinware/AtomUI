@@ -1,0 +1,100 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:PopupConfirmContainer}" TargetType="atom:PopupConfirmContainer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel Name="PART_MainLayout"
+                           LastChildFill="True"
+                           ClipToBounds="{TemplateBinding ClipToBounds}">
+                    <StackPanel Name="PART_ButtonLayout"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                DockPanel.Dock="Bottom"
+                                ClipToBounds="False">
+                        <atom:Button Name="PART_CancelButton"
+                                     SizeType="Small"
+                                     Margin="0"
+                                     Content="{TemplateBinding CancelText}"
+                                     IsVisible="{TemplateBinding IsShowCancelButton}"/>
+                        <atom:Button Name="PART_OkButton"
+                                     SizeType="Small"
+                                     Margin="0"
+                                     Content="{TemplateBinding OkText}"
+                                     ButtonType="{TemplateBinding OkButtonType}"/>
+                    </StackPanel>
+                    <DockPanel LastChildFill="True">
+                        <atom:IconPresenter
+                            Name="PART_IconPresenter"
+                            Icon="{TemplateBinding Icon}"
+                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
+                            DockPanel.Dock="Left" />
+                        <StackPanel>
+                            <atom:TextBlock Name="PART_Title"
+                                            VerticalAlignment="Center"
+                                            Text="{TemplateBinding Title}"
+                                            DockPanel.Dock="Top" />
+                            <ContentPresenter Name="PART_Content"
+                                              Content="{TemplateBinding ConfirmContent}"
+                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}"
+                                              IsVisible="{TemplateBinding ConfirmContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </StackPanel>
+                    </DockPanel>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Style Selector="^ /template/ atom|TextBlock#PART_Title">
+            <Setter Property="Margin" Value="{atom:PopupConfirmTokenResource TitleMargin}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextHeading}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_Content">
+            <Setter Property="Margin"
+                    Value="{atom:PopupConfirmTokenResource ContentContainerMargin}" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
+            <Setter Property="Spacing" Value="{atom:PopupConfirmTokenResource ButtonSpacing}" />
+            <Setter Property="Margin"
+                    Value="{atom:PopupConfirmTokenResource ButtonContainerMargin}" />
+        </Style>
+
+        <Style Selector="^:empty-content">
+            <Style Selector="^ /template/ StackPanel#PART_ButtonLayout">
+                <Setter Property="Margin" Value="0" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="Margin" Value="{atom:PopupConfirmTokenResource IconMargin}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style Selector="^[ConfirmStatus=Info]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconBrush"
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+        </Style>
+        <Style Selector="^[ConfirmStatus=Warning]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconBrush"
+                        Value="{atom:SharedTokenResource ColorWarning}" />
+            </Style>
+        </Style>
+        <Style Selector="^[ConfirmStatus=Error]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="IconBrush"
+                        Value="{atom:SharedTokenResource ColorError}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

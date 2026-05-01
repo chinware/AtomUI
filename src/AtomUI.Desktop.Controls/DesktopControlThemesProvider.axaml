@@ -45,7 +45,7 @@
         <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
         <!-- <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" /> -->
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
-        <!-- <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" /> -->
+        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />
         <ResourceInclude Source="Primitives/Themes/PrimitiveThemes.axaml" />
         <!-- <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" /> -->
         <!-- <ResourceInclude Source="QRCode/Themes/QRCodeTheme.axaml" /> -->

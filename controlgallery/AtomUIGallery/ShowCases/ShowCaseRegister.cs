@@ -17,5 +17,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<BreadcrumbViewModel, BreadcrumbShowCase>(() => new BreadcrumbShowCase());
         locator.Map<MessageViewModel, MessageShowCase>(() => new MessageShowCase());
         locator.Map<NotificationViewModel, NotificationShowCase>(() => new NotificationShowCase());
+        locator.Map<PopupConfirmViewModel, PopupConfirmShowCase>(() => new PopupConfirmShowCase());
     }
 }

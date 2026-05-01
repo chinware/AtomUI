@@ -22,6 +22,7 @@ internal class en_US : LanguageProvider
     public const string Feedback = "Feedback";
     public const string Feedback_Message = "Message";
     public const string Feedback_Notification = "Notification";
+    public const string Feedback_PopupConfirm = "PopupConfirm";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }
