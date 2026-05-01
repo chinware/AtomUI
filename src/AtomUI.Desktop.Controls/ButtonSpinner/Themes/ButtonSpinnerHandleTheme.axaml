@@ -1,0 +1,59 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ButtonSpinnerHandle}" TargetType="atom:ButtonSpinnerHandle">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <UniformGrid
+                    Columns="1" 
+                    Rows="2"
+                    RowSpacing="1">
+                    <atom:IconButton
+                        Name="{x:Static atom:ButtonSpinnerThemeConstants.IncreaseButtonPart}"
+                        Icon="{antdicons:AntDesignIconProvider UpOutlined}"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        BackgroundSizing="InnerBorderEdge"/>
+                    <atom:IconButton
+                        Name="{x:Static atom:ButtonSpinnerThemeConstants.DecreaseButtonPart}"
+                        Icon="{antdicons:AntDesignIconProvider DownOutlined}"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        BackgroundSizing="InnerBorderEdge"/>
+                </UniformGrid>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="ClipToBounds" Value="True"/>
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
+        <Setter Property="SpinnerBorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}"/>
+        <Style
+            Selector="^ /template/ atom|IconButton#PART_IncreaseButton, ^ /template/ atom|IconButton#PART_DecreaseButton">
+            <Setter Property="IconWidth" Value="{atom:ButtonSpinnerTokenResource HandleIconSize}" />
+            <Setter Property="IconHeight"
+                    Value="{atom:ButtonSpinnerTokenResource HandleIconSize}" />
+        </Style>
+        
+        <Style
+            Selector="^ /template/ atom|IconButton#PART_IncreaseButton:pointerover, ^ /template/ atom|IconButton#PART_DecreaseButton:pointerover">
+            <Setter Property="IconBrush"
+                    Value="{atom:ButtonSpinnerTokenResource HandleHoverColor}" />
+        </Style>
+        
+        <Style
+            Selector="^ /template/ atom|IconButton#PART_IncreaseButton:pressed, ^ /template/ atom|IconButton#PART_DecreaseButton:pressed">
+            <Setter Property="IconBrush"
+                    Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+        </Style>
+        
+        <Style
+            Selector="^ /template/ atom|IconButton#PART_IncreaseButton:pressed, ^ /template/ atom|IconButton#PART_DecreaseButton:pressed">
+            <Setter Property="Background"
+                    Value="{atom:ButtonSpinnerTokenResource HandleActiveBg}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
