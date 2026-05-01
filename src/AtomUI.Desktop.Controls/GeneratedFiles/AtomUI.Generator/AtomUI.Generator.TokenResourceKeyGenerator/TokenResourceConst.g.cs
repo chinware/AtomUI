@@ -50,6 +50,21 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         SeparatorMargin
     }
 
+    public enum ButtonSpinnerTokenKind
+    {
+        ControlWidth,
+        FilledHandleBg,
+        HandleActiveBg,
+        HandleBg,
+        HandleBorderColor,
+        HandleHoverColor,
+        HandleIconSize,
+        HandleWidth,
+        InputFontSize,
+        InputFontSizeLG,
+        InputFontSizeSM
+    }
+
     public enum ButtonTokenKind
     {
         BorderColorDisabled,
@@ -383,6 +398,21 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         NotificationProgressMargin,
         NotificationTopMargin,
         NotificationWidth
+    }
+
+    public enum NumericUpDownTokenKind
+    {
+        ControlWidth,
+        FilledHandleBg,
+        HandleActiveBg,
+        HandleBg,
+        HandleBorderColor,
+        HandleHoverColor,
+        HandleIconSize,
+        HandleWidth,
+        InputFontSize,
+        InputFontSizeLG,
+        InputFontSizeSM
     }
 
     public enum OptionButtonTokenKind
@@ -832,6 +862,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class ButtonSpinnerTokenResourceExtension : TokenResourceExtension<ButtonSpinnerTokenKind>
+    {
+        public ButtonSpinnerTokenResourceExtension()
+        {
+        }
+
+        public ButtonSpinnerTokenResourceExtension(ButtonSpinnerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class ButtonTokenResourceExtension : TokenResourceExtension<ButtonTokenKind>
     {
         public ButtonTokenResourceExtension()
@@ -1004,6 +1045,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public NotificationTokenResourceExtension(NotificationTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class NumericUpDownTokenResourceExtension : TokenResourceExtension<NumericUpDownTokenKind>
+    {
+        public NumericUpDownTokenResourceExtension()
+        {
+        }
+
+        public NumericUpDownTokenResourceExtension(NumericUpDownTokenKind kind) : base(kind)
         {
         }
     }

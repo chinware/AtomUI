@@ -12,6 +12,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AdornerLayerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ArrowDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.BreadcrumbToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonSpinnerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CalendarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CarouselToken));
@@ -28,6 +29,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MessageToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NavMenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NotificationToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.NumericUpDownToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.OptionButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupConfirmToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));

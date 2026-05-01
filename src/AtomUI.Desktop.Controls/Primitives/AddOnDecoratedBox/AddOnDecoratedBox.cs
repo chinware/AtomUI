@@ -571,10 +571,10 @@ internal class AddOnDecoratedBox : ContentControl,
             oldRightAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
         }
 
-        _leftAddOn   = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.LeftAddOnPart);
-        _rightAddOn  = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
-        _contentLeftAddOn  = e.NameScope.Find<ContentPresenter>(AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart);
-        _contentRightAddOn = e.NameScope.Find<ContentPresenter>(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart);
+        _leftAddOn   = e.NameScope.Find<Control>("PART_LeftAddOn");
+        _rightAddOn  = e.NameScope.Find<Control>("PART_RightAddOn");
+        _contentLeftAddOn  = e.NameScope.Find<ContentPresenter>("PART_ContentLeftAddOn");
+        _contentRightAddOn = e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOn");
 
         // 订阅新的 ContentPresenter Child 变化
         if (_contentLeftAddOn != null)
@@ -605,7 +605,7 @@ internal class AddOnDecoratedBox : ContentControl,
             ContentFrame.PointerReleased -= HandleContentFramePointerReleased;
         }
         
-        ContentFrame = e.NameScope.Find<Border>(AddOnDecoratedBoxThemeConstants.ContentFramePart);
+        ContentFrame = e.NameScope.Find<Border>("PART_ContentFrame");
         if (ContentFrame != null)
         {
             ContentFrame.PointerEntered  += HandleContentFramePointerEnter;

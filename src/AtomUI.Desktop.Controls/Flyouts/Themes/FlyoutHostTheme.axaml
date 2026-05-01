@@ -10,7 +10,7 @@
                                   Content="{TemplateBinding Content}"
                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                   ClipToBounds="{TemplateBinding ClipToBounds}"/>
-            </ControlTemplate>
+            </ControlTemplate> 
         </Setter>
         
         <Setter Property="MarginToAnchor" Value="{atom:FlyoutHostTokenResource MarginToAnchor}"/>

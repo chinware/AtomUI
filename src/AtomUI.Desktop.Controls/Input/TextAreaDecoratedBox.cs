@@ -117,7 +117,7 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
             _rightContentAddOn.SizeChanged -= HandleRightContentAddOnSizeChanged;
         }
         
-        _rightContentAddOn = e.NameScope.Find<Control>(AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart);
+        _rightContentAddOn = e.NameScope.Find<Control>("PART_ContentRightAddOn");
         if (ScrollViewer != null)
         {
             Owner?.NotifyScrollViewerCreated(ScrollViewer);

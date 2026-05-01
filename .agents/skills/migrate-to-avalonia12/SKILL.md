@@ -286,6 +286,45 @@ dotnet build src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
 - Verify the correct namespace and assembly
 - Consider whether reflection/extraction is needed for internal APIs
 
+### Step 7: Gallery ShowCase registration (MANDATORY for ShowCase migration)
+
+When migrating a ShowCase from `release/5.0` to `release/6.0`, you MUST register it in the Gallery app. Missing registration causes the ShowCase to not display when clicking the menu item.
+
+**Registration checklist:**
+
+1. **ViewModel registration** — Add to `controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs`:
+   ```csharp
+   private void RegisterShowCaseViewModels()
+   {
+       // ... existing registrations ...
+       _showCaseViewModelFactories.Add(YourViewModel.ID, () => new YourViewModel(HostScreen));
+   }
+   ```
+
+2. **View mapping** — Add to `controlgallery/AtomUIGallery/ShowCases/ShowCaseRegister.cs`:
+   ```csharp
+   public void RegisterViews(DefaultViewLocator locator)
+   {
+       // ... existing mappings ...
+       locator.Map<YourViewModel, YourShowCase>(() => new YourShowCase());
+   }
+   ```
+
+3. **Navigation menu** — Add to `controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml`:
+   ```xml
+   <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Category_YourControl}"
+                     ItemKey="{x:Static viewmodels:YourViewModel.ID}" />
+   ```
+
+4. **Language resources** — Add to both `en_US.cs` and `zh_CN.cs` in `controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/`:
+   ```csharp
+   public const string Category_YourControl = "YourControl";
+   ```
+
+**Common mistake:** Registering the ViewModel in `CaseNavigationViewModel.cs` but forgetting the view mapping in `ShowCaseRegister.cs`. This causes the ShowCase to not display when clicking the menu item, even though the menu item appears and the build succeeds.
+
+**Verification:** After registration, build the Gallery app and click the menu item to verify the ShowCase displays correctly.
+
 ## Migration Rules (36+ Categories)
 
 ### Core Framework Changes

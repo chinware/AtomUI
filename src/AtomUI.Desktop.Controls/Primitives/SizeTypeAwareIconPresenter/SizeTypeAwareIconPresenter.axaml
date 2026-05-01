@@ -1,0 +1,44 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:primitives="using:AtomUI.Desktop.Controls.Primitives">
+    <ControlTheme x:Key="{x:Type primitives:SizeTypeAwareIconPresenter}"
+                  TargetType="primitives:SizeTypeAwareIconPresenter">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:IconPresenter
+                    Name="PART_IconPresenter"
+                    Icon="{TemplateBinding Icon}"
+                    Width="{TemplateBinding Width}"
+                    Height="{TemplateBinding Height}"
+                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="Width"
+                        Value="{atom:SharedTokenResource IconSizeLG}" />
+                <Setter Property="Height"
+                        Value="{atom:SharedTokenResource IconSizeLG}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="Width"
+                        Value="{atom:SharedTokenResource IconSize}" />
+                <Setter Property="Height"
+                        Value="{atom:SharedTokenResource IconSize}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="Width"
+                        Value="{atom:SharedTokenResource IconSizeSM}" />
+                <Setter Property="Height"
+                        Value="{atom:SharedTokenResource IconSizeSM}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

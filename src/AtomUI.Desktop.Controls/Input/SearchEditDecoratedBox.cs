@@ -56,7 +56,7 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
             _searchButton.Click -= HandleSearchButtonClick;
         }
         
-        _searchButton = e.NameScope.Find<Button>(AddOnDecoratedBoxThemeConstants.RightAddOnPart);
+        _searchButton = e.NameScope.Find<Button>("PART_RightAddOn");
 
         if (_searchButton != null)
         {

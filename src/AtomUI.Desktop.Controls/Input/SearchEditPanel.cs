@@ -16,15 +16,15 @@ internal class SearchEditPanel : Panel
         base.OnInitialized();
         foreach (var child in Children)
         {
-            if (child.Name == AddOnDecoratedBoxThemeConstants.LeftAddOnPart)
+            if (child.Name == "PART_LeftAddOn")
             {
                 _leftAddOn = child as ContentPresenter;
             }
-            else if (child.Name == AddOnDecoratedBoxThemeConstants.RightAddOnPart)
+            else if (child.Name == "PART_RightAddOn")
             {
                 _searchButton = child as SearchButton;
             }
-            else if (child.Name == AddOnDecoratedBoxThemeConstants.ContentFramePart)
+            else if (child.Name == "PART_ContentFrame")
             {
                 _contentFrame = child as Border;
             }

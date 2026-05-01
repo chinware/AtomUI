@@ -4,7 +4,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="WaveSpiritDecoratorTheme.axaml"/>
         <!-- <ResourceInclude Source="../InfoPickerInput/Themes/InfoPickerInputThemes.axaml" /> -->
-        <!-- <ResourceInclude Source="../SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" /> -->
+        <ResourceInclude Source="../SizeTypeAwareIconPresenter/SizeTypeAwareIconPresenter.axaml" />
         <ResourceInclude Source="../AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="../ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
         <!-- <ResourceInclude Source="../IndicatorScrollViewer/Themes/IndicatorScrollViewerThemes.axaml" /> -->
