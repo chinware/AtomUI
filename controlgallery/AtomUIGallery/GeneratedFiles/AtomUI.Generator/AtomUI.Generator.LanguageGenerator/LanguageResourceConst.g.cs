@@ -11,6 +11,7 @@ namespace AtomUIGallery.Localization
         Feedback_Message,
         Feedback_Notification,
         Feedback_PopupConfirm,
+        Feedback_Spin,
         General,
         General_AboutUs,
         General_Button,

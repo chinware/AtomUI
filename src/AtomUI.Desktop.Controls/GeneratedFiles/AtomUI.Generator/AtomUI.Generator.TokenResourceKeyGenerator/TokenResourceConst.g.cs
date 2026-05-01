@@ -29,6 +29,20 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         FocusVisualMargin
     }
 
+    public enum AlertTokenKind
+    {
+        CloseIconSize,
+        DefaultPadding,
+        DescriptionLabelMargin,
+        ExtraElementMargin,
+        IconDefaultMargin,
+        IconSize,
+        IconWithDescriptionMargin,
+        MessageWithDescriptionMargin,
+        WithDescriptionIconSize,
+        WithDescriptionPadding
+    }
+
     public enum ArrowDecoratedBoxTokenKind
     {
         ArrowSize,
@@ -836,6 +850,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public AdornerLayerTokenResourceExtension(AdornerLayerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class AlertTokenResourceExtension : TokenResourceExtension<AlertTokenKind>
+    {
+        public AlertTokenResourceExtension()
+        {
+        }
+
+        public AlertTokenResourceExtension(AlertTokenKind kind) : base(kind)
         {
         }
     }

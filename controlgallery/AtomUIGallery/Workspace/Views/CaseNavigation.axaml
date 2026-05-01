@@ -53,6 +53,8 @@
                               ItemKey="{x:Static viewmodels:NotificationViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_PopupConfirm}"
                               ItemKey="{x:Static viewmodels:PopupConfirmViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Spin}"
+                              ItemKey="{x:Static viewmodels:SpinViewModel.ID}" />
         </atom:NavMenuNode>
     </atom:NavMenu>
 </UserControl>

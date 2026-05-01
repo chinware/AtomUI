@@ -1,0 +1,200 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Alert}" TargetType="atom:Alert">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                    <DockPanel Name="RootLayout" LastChildFill="True">
+                        <Panel IsVisible="{TemplateBinding IsShowIcon}"
+                               DockPanel.Dock="Left">
+                            <antdicons:CheckCircleFilled Name="SuccessIcon"
+                                                         FillBrush="{atom:SharedTokenResource ColorSuccess}"
+                                                         IsVisible="False"/>
+                            <antdicons:InfoCircleFilled Name="InfoIcon"
+                                                        FillBrush="{atom:SharedTokenResource ColorPrimary}"
+                                                        IsVisible="False"/>
+                            <antdicons:ExclamationCircleFilled Name="WarningIcon"
+                                                               FillBrush="{atom:SharedTokenResource ColorWarning}"
+                                                               IsVisible="False"/>
+                            <antdicons:CloseCircleFilled Name="ErrorIcon"
+                                                         FillBrush="{atom:SharedTokenResource ColorError}"
+                                                         IsVisible="False"/>
+                        </Panel>
+                        
+                        <atom:IconButton
+                            Name="{x:Static atom:AlertThemeConstants.CloseBtnPart}"
+                            IsVisible="{TemplateBinding IsClosable}"
+                            Icon="{TemplateBinding CloseIcon}"
+                            DockPanel.Dock="Right" />
+                        <ContentPresenter Name="ExtraActionPresenter"
+                                          DockPanel.Dock="Right" 
+                                          IsVisible="{TemplateBinding ExtraAction, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                          Content="{TemplateBinding ExtraAction}" />
+                        <StackPanel Orientation="Vertical"
+                                    VerticalAlignment="Center"
+                                    ClipToBounds="True">
+                            <Label Name="MessageLabel"
+                                   HorizontalAlignment="Stretch"
+                                   HorizontalContentAlignment="Left"
+                                   VerticalContentAlignment="Center"
+                                   Padding="0"
+                                   TextBlock.TextWrapping="Wrap"
+                                   Content="{TemplateBinding Message}" />
+                            <atom:MarqueeLabel
+                                Name="MarqueeLabel"
+                                HorizontalAlignment="Stretch"
+                                Padding="0"
+                                IsVisible="{TemplateBinding IsMessageMarqueeEnabled}"
+                                Text="{TemplateBinding Message}" />
+                            <Label Name="DescriptionLabel"
+                                   HorizontalAlignment="Stretch"
+                                   HorizontalContentAlignment="Left"
+                                   VerticalContentAlignment="Center"
+                                   Padding="0"
+                                   IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                   TextBlock.TextWrapping="Wrap"
+                                   Content="{TemplateBinding Description}" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+        
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        
+        <Style Selector="^ /template/ DockPanel#RootLayout">
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+ 
+        <Style Selector="^[Type=Success]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorSuccessBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSuccessBorder}" />
+        </Style>
+
+        <Style Selector="^[Type=Info]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorInfoBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorInfoBorder}" />
+        </Style>
+
+        <Style Selector="^[Type=Warning]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorWarningBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorWarningBorder}" />
+        </Style>
+
+        <Style Selector="^[Type=Error]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorErrorBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorErrorBorder}" />
+        </Style>
+
+        <Style Selector="^:not(:has-description)">
+            <Setter Property="Padding" Value="{atom:AlertTokenResource DefaultPadding}" />
+        </Style>
+
+        <Style Selector="^:has-description">
+            <Setter Property="Padding" Value="{atom:AlertTokenResource WithDescriptionPadding}" />
+        </Style>
+        
+        <Style Selector="^:has-description">
+            <Style Selector="^ /template/ Label#MessageLabel, ^ /template/ atom|MarqueeLabel#MarqueeLabel">
+                <Setter Property="TemplatedControl.FontSize"
+                        Value="{atom:SharedTokenResource FontSizeLG}" />
+                <Setter Property="TemplatedControl.VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+        <Style Selector="^:not(:has-description)">
+            <Style Selector="^ /template/ Label#MessageLabel, ^ /template/ atom|MarqueeLabel#MarqueeLabel">
+                <Setter Property="TemplatedControl.FontSize"
+                        Value="{atom:SharedTokenResource FontSize}" />
+                <Setter Property="TemplatedControl.VerticalAlignment" Value="Stretch" />
+            </Style>
+        </Style>
+        <Style Selector="^ /template/ Label#MessageLabel">
+            <Setter Property="TextBox.LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
+        </Style>
+         <!-- 根据是否显示 MarqueeLabel 是指对应的样式 -->
+         <Style Selector="^[IsMessageMarqueeEnabled=True]">
+             <Style Selector="^ /template/ Label#MessageLabel">
+                 <Setter Property="IsVisible" Value="False" />
+             </Style>
+         </Style>
+        
+        <Style Selector="^ /template/ Label#DescriptionLabel">
+            <Setter Property="TextBox.LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
+            <Setter Property="Margin" Value="{atom:AlertTokenResource DescriptionLabelMargin}" />
+        </Style>
+ 
+        <Style Selector="^:has-description">
+            <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(:has-description)">
+            <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseBtn">
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
+            <Setter Property="Margin" Value="{atom:AlertTokenResource ExtraElementMargin}" />
+        </Style>
+
+        <Style Selector="^[Type=Success]">
+            <Style Selector="^ /template/ atom|Icon#SuccessIcon">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Type=Info]">
+            <Style Selector="^ /template/ atom|Icon#InfoIcon">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Type=Warning]">
+            <Style Selector="^ /template/ atom|Icon#WarningIcon">
+                <Setter Property="IsVisible" Value="True" /> 
+            </Style>
+        </Style>
+
+        <Style Selector="^[Type=Error]">
+            <Style Selector="^ /template/ atom|Icon#ErrorIcon">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        <Style Selector="^:has-description">
+            <Style Selector="^ /template/ atom|Icon">
+                <Setter Property="Width"
+                        Value="{atom:AlertTokenResource WithDescriptionIconSize}" />
+                <Setter Property="Height"
+                        Value="{atom:AlertTokenResource WithDescriptionIconSize}" />
+                <Setter Property="Margin"
+                        Value="{atom:AlertTokenResource IconWithDescriptionMargin}" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(:has-description)">
+            <Style Selector="^ /template/ atom|Icon">
+                <Setter Property="Width" Value="{atom:AlertTokenResource IconSize}" />
+                <Setter Property="Height" Value="{atom:AlertTokenResource IconSize}" />
+                <Setter Property="Margin" Value="{atom:AlertTokenResource IconDefaultMargin}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

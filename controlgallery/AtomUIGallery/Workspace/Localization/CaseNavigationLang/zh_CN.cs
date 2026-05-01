@@ -25,6 +25,7 @@ internal class zh_CN : LanguageProvider
     public const string Feedback_Message = "Message 全局提示";
     public const string Feedback_Notification = "Notification 通知提醒框";
     public const string Feedback_PopupConfirm = "PopupConfirm 气泡确认框";
+    public const string Feedback_Spin = "Spin 加载中";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

@@ -10,6 +10,7 @@ namespace AtomUI.Theme
             List<Type> tokenTypes = new List<Type>();
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AddOnDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AdornerLayerToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AlertToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ArrowDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.BreadcrumbToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonSpinnerToken));

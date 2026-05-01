@@ -19,6 +19,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<MessageViewModel, MessageShowCase>(() => new MessageShowCase());
         locator.Map<NotificationViewModel, NotificationShowCase>(() => new NotificationShowCase());
         locator.Map<PopupConfirmViewModel, PopupConfirmShowCase>(() => new PopupConfirmShowCase());
+        locator.Map<SpinViewModel, SpinShowCase>(() => new SpinShowCase());
         locator.Map<FlexPanelViewModel, FlexPanelShowCase>(() => new FlexPanelShowCase());
     }
 }
