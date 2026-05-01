@@ -64,6 +64,7 @@ internal class FlyoutStateHelper : AvaloniaObject
     private DispatcherTimer? _mouseEnterDelayTimer;
     private DispatcherTimer? _mouseLeaveDelayTimer;
     private CompositeDisposable? _subscriptions;
+    private IDisposable? _popupPointerSubscription;
     private TopLevel? _registeredTopLevel;
     private bool _isFlyoutShowing;
 
@@ -97,6 +98,11 @@ internal class FlyoutStateHelper : AvaloniaObject
             RegisterRootPointerHandler();
             Dispatcher.UIThread.Post(() => _isFlyoutShowing = false);
         }
+        else if (TriggerType == FlyoutTriggerType.Hover)
+        {
+            _isFlyoutShowing = false;
+            SubscribeToPopupPointer();
+        }
         else
         {
             _isFlyoutShowing = false;
@@ -107,6 +113,8 @@ internal class FlyoutStateHelper : AvaloniaObject
     private void HandleFlyoutClosed(object? sender, EventArgs e)
     {
         UnregisterRootPointerHandler();
+        _popupPointerSubscription?.Dispose();
+        _popupPointerSubscription = null;
         FlyoutClosed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -267,6 +275,8 @@ internal class FlyoutStateHelper : AvaloniaObject
         StopMouseLeaveTimer();
         StopMouseEnterTimer();
         UnregisterRootPointerHandler();
+        _popupPointerSubscription?.Dispose();
+        _popupPointerSubscription = null;
         _subscriptions?.Dispose();
         _subscriptions = null;
     }
@@ -314,6 +324,32 @@ internal class FlyoutStateHelper : AvaloniaObject
         }));
     }
 
+    private void SubscribeToPopupPointer()
+    {
+        _popupPointerSubscription?.Dispose();
+        _popupPointerSubscription = null;
+        if (Flyout is PopupFlyoutBase { Popup.Child: InputElement popupChild })
+        {
+            _popupPointerSubscription = popupChild.GetObservable(InputElement.IsPointerOverProperty)
+                .Subscribe(HandlePopupPointerOver);
+        }
+    }
+
+    private void HandlePopupPointerOver(bool isPointerOver)
+    {
+        if (isPointerOver)
+        {
+            StopMouseLeaveTimer();
+        }
+        else
+        {
+            if (AnchorTarget is not { IsPointerOver: true })
+            {
+                StartMouseLeaveTimer();
+            }
+        }
+    }
+
     private void HandleAnchorTargetHover(bool isPointerOver)
     {
         if (Flyout is not null)
@@ -325,6 +361,11 @@ internal class FlyoutStateHelper : AvaloniaObject
             else
             {
                 StopMouseEnterTimer();
+                if (Flyout is PopupFlyoutBase { IsOpen: true, Popup.Child: InputElement popupChild }
+                    && popupChild.IsPointerOver)
+                {
+                    return;
+                }
                 StartMouseLeaveTimer();
             }
         }

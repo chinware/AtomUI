@@ -7,6 +7,7 @@ using Avalonia.Controls.Platform;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -131,10 +132,12 @@ public class MenuFlyoutPresenter : MenuBase,
 
     public override void Close()
     {
-        if (MenuFlyout is not null)
+        // DefaultMenuInteractionHandler calls this
+        var host = this.FindLogicalAncestorOfType<Popup>();
+        if (host != null)
         {
             SelectedIndex = -1;
-            MenuFlyout.Hide();
+            host.IsOpen   = false;
         }
     }
 

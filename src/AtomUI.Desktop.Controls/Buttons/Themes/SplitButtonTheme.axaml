@@ -31,6 +31,7 @@
 
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="ShouldUseOverlayLayer" Value="True" />
         <Setter Property="GutterToFlyout" Value="{atom:ButtonTokenResource GutterToFlyout}"/>
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="IsWaveSpiritEnabled" Value="{atom:SharedTokenResource EnableWaveSpirit}" />

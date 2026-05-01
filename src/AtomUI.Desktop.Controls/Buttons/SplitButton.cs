@@ -53,13 +53,13 @@ public class SplitButton : ContentControl,
         Flyout.IsPointAtCenterProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<PlacementMode> PlacementProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementProperty.AddOwner<SplitButton>();
+        Popup.PlacementProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<PopupAnchor> PlacementAnchorProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementAnchorProperty.AddOwner<SplitButton>();
+        Popup.PlacementAnchorProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<PopupGravity> PlacementGravityProperty =
-        Avalonia.Controls.Primitives.Popup.PlacementGravityProperty.AddOwner<SplitButton>();
+        Popup.PlacementGravityProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<double> GutterToFlyoutProperty =
         AvaloniaProperty.Register<SplitButton, double>(nameof(GutterToFlyout));
@@ -87,6 +87,9 @@ public class SplitButton : ContentControl,
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
+
+    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
+        Popup.ShouldUseOverlayLayerProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<SplitButton>();
@@ -224,6 +227,12 @@ public class SplitButton : ContentControl,
     {
         get => GetValue(IsWaveSpiritEnabledProperty);
         set => SetValue(IsWaveSpiritEnabledProperty, value);
+    }
+
+    public bool ShouldUseOverlayLayer
+    {
+        get => GetValue(ShouldUseOverlayLayerProperty);
+        set => SetValue(ShouldUseOverlayLayerProperty, value);
     }
 
     #endregion
@@ -394,8 +403,9 @@ public class SplitButton : ContentControl,
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, GutterToFlyoutProperty, flyout, MenuFlyout.MarginToAnchorProperty));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayLayerProperty, flyout));
 
-            _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Avalonia.Controls.Primitives.Popup
+            _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Popup
                                                     .PlacementProperty)
                                                 .Subscribe(HandleFlyoutPlacementPropertyChanged));
         }
@@ -751,7 +761,7 @@ public class SplitButton : ContentControl,
             if (_secondaryButton is not null && _originRect.HasValue)
             {
                 _secondaryButton.Arrange(
-                    _originRect.Value.Deflate(new Thickness(_secondaryButton.BorderThickness.Left, 0, 0, 0)));
+                    _originRect.Value.Deflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
             }
         }
 

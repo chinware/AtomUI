@@ -11,9 +11,6 @@ using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
-using PopupControl = Popup;
-using AvaloniaPopup = Avalonia.Controls.Primitives.Popup;
-
 public class MenuFlyout : Flyout
 {
     #region 公共属性定义
@@ -135,26 +132,5 @@ public class MenuFlyout : Flyout
         {
             Items.SetItemsSource(change.GetNewValue<IEnumerable?>());
         }
-    }
-
-    protected override bool HideCore(bool canCancel = true)
-    {
-        if (!IsOpen)
-        {
-            return false;
-        }
-
-        if (Presenter != null)
-        {
-            foreach (var childItem in Presenter.Items)
-            {
-                if (childItem is MenuItem menuItem)
-                {
-                    menuItem.Close();
-                }
-            }
-        }
-
-        return base.HideCore(canCancel);
     }
 }

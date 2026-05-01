@@ -7,7 +7,6 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -173,8 +172,8 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     public Flyout()
     {
-        TokenResourceBinder.CreateTokenBinding(this, PopupRootShadowProperty, FlyoutHostTokenKind.PopupRootShadow);
-        TokenResourceBinder.CreateTokenBinding(this, OverlayHostShadowProperty, FlyoutHostTokenKind.OverlayHostShadow);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, PopupRootShadowProperty, FlyoutHostTokenKind.PopupRootShadow);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, OverlayHostShadowProperty, FlyoutHostTokenKind.OverlayHostShadow);
         TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
         this.SetPopupLazy(new Lazy<AvaloniaPopup>(CreatePopup));
     }
