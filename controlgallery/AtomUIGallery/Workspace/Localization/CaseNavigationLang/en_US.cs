@@ -21,6 +21,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay = "Data Display";
     public const string Feedback = "Feedback";
     public const string Feedback_Message = "Message";
+    public const string Feedback_Notification = "Notification";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

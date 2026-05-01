@@ -208,7 +208,12 @@ public class NotificationCard : ContentControl, IMotionAwareControl
             _closeButton.Click += HandleCloseButtonClose;
         }
 
-        Dispatcher.UIThread.InvokeAsync(ApplyShowMotionAsync);
+        if (_motionActor is not null && IsMotionEnabled)
+        {
+            _motionActor.Opacity = 0;
+        }
+
+        Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
     }
 
     private async Task ApplyShowMotionAsync()
@@ -241,6 +246,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
                     new CubicEaseOut());
             }
             await motion.RunAsync(_motionActor);
+            _motionActor.Opacity = 1;
         }
     }
 
@@ -318,7 +324,7 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                Dispatcher.UIThread.InvokeAsync(ApplyHideMotionAsync);
+                Dispatcher.InvokeAsync(ApplyHideMotionAsync);
             }
         } 
         else if (change.Property == IconProperty)

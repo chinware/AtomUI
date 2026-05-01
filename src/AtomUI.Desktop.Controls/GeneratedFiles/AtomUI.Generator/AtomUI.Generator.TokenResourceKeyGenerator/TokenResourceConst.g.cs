@@ -366,6 +366,25 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         VerticalMenuContentPadding
     }
 
+    public enum NotificationTokenKind
+    {
+        HeaderMargin,
+        NotificationBg,
+        NotificationBottomMargin,
+        NotificationCloseButtonPadding,
+        NotificationCloseButtonSize,
+        NotificationContentMargin,
+        NotificationIconMargin,
+        NotificationIconSize,
+        NotificationMarginBottom,
+        NotificationPadding,
+        NotificationProgressBg,
+        NotificationProgressHeight,
+        NotificationProgressMargin,
+        NotificationTopMargin,
+        NotificationWidth
+    }
+
     public enum OptionButtonTokenKind
     {
         ButtonBackground,
@@ -963,6 +982,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public NavMenuTokenResourceExtension(NavMenuTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class NotificationTokenResourceExtension : TokenResourceExtension<NotificationTokenKind>
+    {
+        public NotificationTokenResourceExtension()
+        {
+        }
+
+        public NotificationTokenResourceExtension(NotificationTokenKind kind) : base(kind)
         {
         }
     }

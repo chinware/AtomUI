@@ -196,7 +196,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         var expiration = notification.Expiration;
         var onClick    = notification.OnClick;
         var onClose    = notification.OnClose;
-        Dispatcher.UIThread.VerifyAccess();
+        Dispatcher.VerifyAccess();
 
         var notificationControl = new NotificationCard(this)
         {
@@ -208,7 +208,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             IsShowProgress   = notification.ShowProgress
         };
         notificationControl[!NotificationCard.PositionProperty] = this[!PositionProperty];
-        
+
         // Add style classes if any
         if (classes?.Length > 0)
         {
@@ -223,7 +223,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         notificationControl.PointerPressed     += OnNotificationPointerPressed;
         notificationControl.NotificationClosed += OnNotificationClosed;
 
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.Post(() =>
         {
             _items?.Add(notificationControl);
             ConfigureExpiredTimer();
@@ -303,7 +303,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     private void InstallFromTopLevel(TopLevel topLevel)
     {
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
-        _adornerLayer            =  topLevel.FindDescendantOfType<VisualLayerManager>()?.AdornerLayer;
+        _adornerLayer            =  AdornerLayer.GetAdornerLayer(topLevel);
         if (_adornerLayer is not null)
         {
             _adornerLayer.Children.Add(this);
