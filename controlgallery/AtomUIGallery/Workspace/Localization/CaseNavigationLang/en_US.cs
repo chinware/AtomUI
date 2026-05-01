@@ -16,6 +16,7 @@ internal class en_US : LanguageProvider
     public const string Layout = "Layout";
     public const string Layout_Splitter = "Splitter";
     public const string Navigation = "Navigation";
+    public const string Navigation_Breadcrumb = "Breadcrumb";
     public const string DataEntry = "Data Entry";
     public const string DataDisplay = "Data Display";
     public const string Feedback = "Feedback";

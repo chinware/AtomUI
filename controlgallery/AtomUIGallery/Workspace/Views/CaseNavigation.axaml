@@ -30,7 +30,10 @@
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation}"
-                          Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}" />
+                          Icon="{antdicons:AntDesignIconProvider Kind=MenuOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_Breadcrumb}"
+                              ItemKey="{x:Static viewmodels:BreadcrumbViewModel.ID}" />
+        </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry}"
                           Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}" />

@@ -285,6 +285,16 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TopLevelItemSelectedColor
     }
 
+    public enum MessageTokenKind
+    {
+        CardHeight,
+        ContentBg,
+        ContentPadding,
+        MessageIconMargin,
+        MessageIconSize,
+        MessageTopMargin
+    }
+
     public enum NavMenuTokenKind
     {
         ActiveBarHeight,
@@ -931,6 +941,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public MenuTokenResourceExtension(MenuTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class MessageTokenResourceExtension : TokenResourceExtension<MessageTokenKind>
+    {
+        public MessageTokenResourceExtension()
+        {
+        }
+
+        public MessageTokenResourceExtension(MessageTokenKind kind) : base(kind)
         {
         }
     }

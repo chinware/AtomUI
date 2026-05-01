@@ -16,7 +16,8 @@ namespace AtomUIGallery.Localization
         General_SplitButton,
         Layout,
         Layout_Splitter,
-        Navigation
+        Navigation,
+        Navigation_Breadcrumb
     }
 
     public class CaseNavigationLangResourceExtension : LanguageResourceExtension<CaseNavigationLangResourceKind>
