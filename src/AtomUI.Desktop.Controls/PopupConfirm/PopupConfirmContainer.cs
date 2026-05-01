@@ -1,5 +1,4 @@
-﻿using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Icons.AntDesign;
+﻿using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -114,8 +113,8 @@ internal class PopupConfirmContainer : TemplatedControl
     {
         base.OnApplyTemplate(e);
         SetupDefaultIcon();
-        _okButton     = e.NameScope.Find<Button>(PopupConfirmContainerThemeConstants.OkButtonPart);
-        _cancelButton = e.NameScope.Find<Button>(PopupConfirmContainerThemeConstants.CancelButtonPart);
+        _okButton     = e.NameScope.Find<Button>("PART_OkButton");
+        _cancelButton = e.NameScope.Find<Button>("PART_CancelButton");
         if (_okButton is not null)
         {
             _okButton.Click  += HandleButtonClicked;
