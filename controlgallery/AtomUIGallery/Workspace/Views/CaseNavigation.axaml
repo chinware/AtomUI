@@ -42,6 +42,9 @@
                           Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}" />
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"
-                          Icon="{antdicons:AntDesignIconProvider Kind=UserSwitchOutlined}" />
+                          Icon="{antdicons:AntDesignIconProvider Kind=UserSwitchOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Message}"
+                              ItemKey="{x:Static viewmodels:MessageViewModel.ID}" />
+        </atom:NavMenuNode>
     </atom:NavMenu>
 </UserControl>

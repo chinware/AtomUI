@@ -9,6 +9,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -194,7 +195,11 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     {
         base.OnApplyTemplate(e);
         _motionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
-        Dispatcher.InvokeAsync(ApplyShowMotionAsync);
+        if (_motionActor is not null && IsMotionEnabled)
+        {
+            _motionActor.Opacity = 0;
+        }
+        Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
         UpdatePseudoClasses();
         SetupDefaultMessageIcon();
     }
@@ -205,13 +210,9 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
         {
             if (IsMotionEnabled)
             {
-                _motionActor.IsVisible = false;
                 var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
-                await motion.RunAsync(_motionActor, () => { _motionActor.IsVisible = true; });
-            }
-            else
-            {
-                _motionActor.IsVisible = true;
+                await motion.RunAsync(_motionActor);
+                _motionActor.Opacity = 1;
             }
         }
     }

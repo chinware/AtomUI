@@ -20,6 +20,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry = "数据录入";
     public const string DataDisplay = "数据展示";
     public const string Feedback = "反馈";
+    public const string Feedback_Message = "Message 全局提示";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

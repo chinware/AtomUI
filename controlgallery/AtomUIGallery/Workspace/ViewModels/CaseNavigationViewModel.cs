@@ -60,6 +60,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(SplitButtonViewModel.ID, () => new SplitButtonViewModel(HostScreen));
         _showCaseViewModelFactories.Add(SplitterViewModel.ID, () => new SplitterViewModel(HostScreen));
         _showCaseViewModelFactories.Add(BreadcrumbViewModel.ID, () => new BreadcrumbViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(MessageViewModel.ID, () => new MessageViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

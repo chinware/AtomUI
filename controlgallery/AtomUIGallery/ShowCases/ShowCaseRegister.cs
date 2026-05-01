@@ -15,5 +15,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<SplitButtonViewModel, SplitButtonShowCase>(() => new SplitButtonShowCase());
         locator.Map<SplitterViewModel, SplitterShowCase>(() => new SplitterShowCase());
         locator.Map<BreadcrumbViewModel, BreadcrumbShowCase>(() => new BreadcrumbShowCase());
+        locator.Map<MessageViewModel, MessageShowCase>(() => new MessageShowCase());
     }
 }
