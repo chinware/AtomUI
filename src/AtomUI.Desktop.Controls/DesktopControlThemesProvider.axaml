@@ -16,7 +16,7 @@
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="WindowTitleBar/Themes/WindowTitleBarThemes.axaml" />
-        <!-- <ResourceInclude Source="Card/Themes/CardThemes.axaml" /> -->
+        <ResourceInclude Source="Card/Themes/CardThemes.axaml" />
         <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" />
         <!-- <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" /> -->
         <!-- <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" /> -->
@@ -55,7 +55,7 @@
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
         <!-- <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" /> -->
-        <!-- <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" /> -->
+        <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" />
         <!-- <ResourceInclude Source="Select/Themes/SelectThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Slider/Themes/SliderThemes.axaml" /> -->
         <ResourceInclude Source="Space/Themes/SpaceThemes.axaml" />

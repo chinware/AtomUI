@@ -171,6 +171,32 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         WithoutTimeCellHeight
     }
 
+    public enum CardTokenKind
+    {
+        ActionsBg,
+        ActionsSpacing,
+        BodyPadding,
+        BodyPaddingLG,
+        BodyPaddingSM,
+        CardActionsIconSize,
+        CardGridItemShadows,
+        CardHeadPadding,
+        CardPaddingBase,
+        CardShadows,
+        ExtraColor,
+        HeaderBg,
+        HeaderFontSize,
+        HeaderFontSizeLG,
+        HeaderFontSizeSM,
+        HeaderHeight,
+        HeaderHeightLG,
+        HeaderHeightSM,
+        HeaderPadding,
+        HeaderPaddingLG,
+        HeaderPaddingSM,
+        TabsMarginBottom
+    }
+
     public enum CarouselTokenKind
     {
         ArrowOffset,
@@ -584,6 +610,25 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         VerticalMarginInline
     }
 
+    public enum SkeletonTokenKind
+    {
+        AvatarMarginRight,
+        BlockRadius,
+        GradientFromColor,
+        GradientToColor,
+        ImageContainerMaxSize,
+        ImageContainerSize,
+        ImageSize,
+        LoadingBackgroundEnd,
+        LoadingBackgroundMiddle,
+        LoadingBackgroundStart,
+        LoadingMotionDuration,
+        ParagraphLineHeight,
+        ParagraphLineRoundCornerRadius,
+        ParagraphMarginTop,
+        TitleHeight
+    }
+
     public enum SpaceTokenKind
     {
         AddonBg,
@@ -946,6 +991,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class CardTokenResourceExtension : TokenResourceExtension<CardTokenKind>
+    {
+        public CardTokenResourceExtension()
+        {
+        }
+
+        public CardTokenResourceExtension(CardTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class CarouselTokenResourceExtension : TokenResourceExtension<CarouselTokenKind>
     {
         public CarouselTokenResourceExtension()
@@ -1217,6 +1273,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SeparatorTokenResourceExtension(SeparatorTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class SkeletonTokenResourceExtension : TokenResourceExtension<SkeletonTokenKind>
+    {
+        public SkeletonTokenResourceExtension()
+        {
+        }
+
+        public SkeletonTokenResourceExtension(SkeletonTokenKind kind) : base(kind)
         {
         }
     }

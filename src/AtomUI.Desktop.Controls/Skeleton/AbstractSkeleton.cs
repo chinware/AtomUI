@@ -8,7 +8,6 @@ using Avalonia.Animation.Easings;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Styling;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -157,7 +156,7 @@ public abstract class AbstractSkeleton : TemplatedControl
         _cancellationTokenSource = new CancellationTokenSource();
         if (_animation != null)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
                 await _animation.RunInfiniteAsync(this, _cancellationTokenSource.Token));
         }
     }

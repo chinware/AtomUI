@@ -1175,15 +1175,23 @@ var spacing = textParagraphProperties.GetLineSpacing();
 **Detection:**
 ```csharp
 Dispatcher.UIThread.InvokeAsync(...)
+Dispatcher.UIThread.Post(...)
 ```
 
 **Fix:**
 ```csharp
-// In control code, use the object's own dispatcher
-this.Dispatcher.InvokeAsync(...)
+// In control code, use the object's own dispatcher (NO this. prefix)
+Dispatcher.InvokeAsync(...)
+Dispatcher.Post(...)
 // Or use current thread's dispatcher
 Dispatcher.CurrentDispatcher.InvokeAsync(...)
 ```
+
+**IMPORTANT - Code Style:**
+- Do NOT use `this.Dispatcher` — the `this.` prefix is redundant
+- Do NOT use `this.` prefix when calling extension methods like `EnableTransitions()`, `DisableTransitions()`
+- Correct: `Dispatcher.Post(EnableTransitions)`
+- Wrong: `this.Dispatcher.Post(this.EnableTransitions)`
 
 **Note:** `DispatcherTimer` and `AvaloniaSynchronizationContext` use the current dispatcher by default. Ensure instantiations happen on the correct thread or pass the target dispatcher to the constructor.
 

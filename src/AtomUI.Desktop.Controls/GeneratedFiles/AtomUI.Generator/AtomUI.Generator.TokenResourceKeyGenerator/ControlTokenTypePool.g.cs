@@ -17,6 +17,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonSpinnerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CalendarToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CardToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CarouselToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CheckBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CollapseToken));
@@ -42,6 +43,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ScrollViewerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SegmentedToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SeparatorToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SkeletonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpaceToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpinToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
