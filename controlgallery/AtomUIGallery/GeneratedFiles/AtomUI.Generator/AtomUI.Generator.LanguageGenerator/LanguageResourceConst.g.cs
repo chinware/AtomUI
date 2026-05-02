@@ -34,7 +34,8 @@ namespace AtomUIGallery.Localization
         Layout_Splitter,
         Navigation,
         Navigation_Breadcrumb,
-        Navigation_ButtonSpinner
+        Navigation_ButtonSpinner,
+        Navigation_ComboBox
     }
 
     public class CaseNavigationLangResourceExtension : LanguageResourceExtension<CaseNavigationLangResourceKind>

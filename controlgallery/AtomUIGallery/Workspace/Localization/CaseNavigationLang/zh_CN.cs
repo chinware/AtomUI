@@ -20,6 +20,7 @@ internal class zh_CN : LanguageProvider
     public const string Navigation = "导航";
     public const string Navigation_Breadcrumb = "Breadcrumb 面包屑";
     public const string Navigation_ButtonSpinner = "ButtonSpinner 按钮微调器";
+    public const string Navigation_ComboBox = "ComboBox 下拉框";
     public const string DataEntry = "数据录入";
     public const string DataEntry_CheckBox = "CheckBox 多选框";
     public const string DataEntry_RadioButton = "RadioButton 单选框";

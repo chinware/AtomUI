@@ -39,6 +39,8 @@
                               ItemKey="{x:Static viewmodels:BreadcrumbViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_ButtonSpinner}"
                               ItemKey="{x:Static viewmodels:ButtonSpinnerViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_ComboBox}"
+                              ItemKey="{x:Static viewmodels:ComboBoxViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry}"

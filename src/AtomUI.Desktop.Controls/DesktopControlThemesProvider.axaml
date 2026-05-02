@@ -19,7 +19,7 @@
         <ResourceInclude Source="Card/Themes/CardThemes.axaml" />
         <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" />
         <ResourceInclude Source="Collapse/Themes/CollapseThemes.axaml" />
-        <!-- <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" /> -->
+        <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <!-- <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Descriptions/Themes/DescriptionsThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Dialog/Themes/DialogThemes.axaml" /> -->

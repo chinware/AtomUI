@@ -44,15 +44,15 @@ public class ComboBoxItem : AvaloniaComboBoxItem
         if (!e.Handled && ItemsControl.ItemsControlFromItemContainer(this) is ComboBox owner)
         {
             var p = e.GetCurrentPoint(this);
-            if (p.Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonPressed or 
+            if (p.Properties.PointerUpdateKind is PointerUpdateKind.LeftButtonPressed or
                 PointerUpdateKind.RightButtonPressed)
             {
                 if (p.Pointer.Type == PointerType.Mouse
                     || (p.Pointer.Type == PointerType.Pen && p.Properties.IsRightButtonPressed))
                 {
                     // If the pressed point comes from a mouse or right-click pen, perform the selection immediately.
-                    // In case of pen, only right-click is accepted, as left click (a tip touch) is used for scrolling. 
-                    e.Handled = owner.UpdateSelectionFromPointerEvent(this, e);
+                    // In case of pen, only right-click is accepted, as left click (a tip touch) is used for scrolling.
+                    e.Handled = owner.UpdateSelectionFromEvent(this, e);
                 }
                 else
                 {
@@ -79,7 +79,7 @@ public class ComboBoxItem : AvaloniaComboBoxItem
                 tapRect.ContainsExclusive(point.Position) &&
                 ItemsControl.ItemsControlFromItemContainer(this) is ComboBox owner)
             {
-                if (owner.UpdateSelectionFromPointerEvent(this, e))
+                if (owner.UpdateSelectionFromEvent(this, e))
                 {
                     // As we only update selection from touch/pen on pointer release, we need to raise
                     // the pointer event on the owner to trigger a commit.

@@ -53,7 +53,8 @@
 
                     <atom:Popup Name="PART_Popup"
                                 WindowManagerAddShadowHint="False"
-                                IsLightDismissEnabled="False"
+                                IsLightDismissEnabled="True"
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                 Placement="BottomEdgeAlignedLeft"
                                 IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border

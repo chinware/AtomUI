@@ -66,9 +66,12 @@ public class ComboBox : AvaloniaComboBox,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBox>();
     
-    public static readonly StyledProperty<int> DropDownDisplayPageSizeProperty = 
+    public static readonly StyledProperty<int> DropDownDisplayPageSizeProperty =
         AvaloniaProperty.Register<ComboBox, int>(nameof (DropDownDisplayPageSize), 10);
-    
+
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<ComboBox, bool>(nameof(ShouldUseOverlayPopup), true);
+
     public object? LeftAddOn
     {
         get => GetValue(LeftAddOnProperty);
@@ -159,6 +162,12 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(DropDownDisplayPageSizeProperty, value);
     }
 
+    public bool ShouldUseOverlayPopup
+    {
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
@@ -208,7 +217,6 @@ public class ComboBox : AvaloniaComboBox,
     
     private Popup? _popup;
     private Window? _attachedWindow;
-    private AddOnDecoratedBox? _addOnDecoratedBox;
     private ComboBoxHandle? _comboBoxHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
 
@@ -221,7 +229,7 @@ public class ComboBox : AvaloniaComboBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        this.SetPopup(null); // 情况父类，方式鼠标点击的错误处理
+        this.SetPopup(null); // 清空父类，防止鼠标点击的错误处理
 
         _popup = e.NameScope.Find<Popup>("PART_Popup");
 
@@ -230,7 +238,6 @@ public class ComboBox : AvaloniaComboBox,
             _comboBoxHandle.HandleClick -= HandleOpenPopupClicked;
         }
 
-        _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         _comboBoxHandle = e.NameScope.Find<ComboBoxHandle>("PART_ComboBoxHandle");
 
         if (_comboBoxHandle != null)
@@ -253,7 +260,7 @@ public class ComboBox : AvaloniaComboBox,
             _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this }));
             _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(ContentLeftAddOnTemplate)) { Source = this }));
+                new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
             _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
         }
@@ -363,6 +370,14 @@ public class ComboBox : AvaloniaComboBox,
         {
             ConfigureMaxDropdownHeight();
         }
+        else if (change.Property == SelectedItemProperty && change.NewValue != null)
+        {
+            // Close dropdown when an item is selected
+            if (IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false);
+            }
+        }
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -385,7 +400,8 @@ public class ComboBox : AvaloniaComboBox,
         }
         if (!e.Handled && e.Source is Visual source)
         {
-            if (PseudoClasses.Contains(StdPseudoClass.Pressed))
+            // Check if the click is inside the popup
+            if (_popup?.IsInsidePopup(source) != true && PseudoClasses.Contains(StdPseudoClass.Pressed))
             {
                 SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
             }
@@ -409,12 +425,7 @@ public class ComboBox : AvaloniaComboBox,
     {
         SetCurrentValue(MaxDropDownHeightProperty, DropDownDisplayPageSize * ItemHeight + PopupContentPadding.Top + PopupContentPadding.Bottom);
     }
-    
-    protected internal virtual bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
-    {
-        return UpdateSelectionFromEvent(source, e);
-    }
-    
+
     internal static ComboBoxItem? GetComboBoxItemCore(StyledElement? item)
     {
         while (true)

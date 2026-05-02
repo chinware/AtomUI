@@ -235,6 +235,31 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         RightExpandButtonMarginSM
     }
 
+    public enum ComboBoxTokenKind
+    {
+        ControlWidth,
+        FilledHandleBg,
+        HandleActiveBg,
+        HandleBg,
+        HandleBorderColor,
+        HandleHoverColor,
+        HandleIconSize,
+        HandleWidth,
+        InputFontSize,
+        InputFontSizeLG,
+        InputFontSizeSM,
+        ItemBgColor,
+        ItemColor,
+        ItemDisabledColor,
+        ItemHoverBgColor,
+        ItemHoverColor,
+        ItemMargin,
+        ItemPadding,
+        ItemSelectedBgColor,
+        ItemSelectedColor,
+        PopupContentPadding
+    }
+
     public enum EmptyTokenKind
     {
         DescriptionMargin,
@@ -1031,6 +1056,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public CollapseTokenResourceExtension(CollapseTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ComboBoxTokenResourceExtension : TokenResourceExtension<ComboBoxTokenKind>
+    {
+        public ComboBoxTokenResourceExtension()
+        {
+        }
+
+        public ComboBoxTokenResourceExtension(ComboBoxTokenKind kind) : base(kind)
         {
         }
     }
