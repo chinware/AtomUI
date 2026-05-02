@@ -238,14 +238,66 @@ using AtomUI.Controls;
 - Add `using ReactiveUI.Avalonia` and `using System.Reactive.Disposables.Fluent` if needed
 - Adjust namespace imports for Avalonia 12 compatibility
 
+**CRITICAL: Code-behind initialization must match release/5.0**
+
+ShowCase views in release/5.0 use `ReactiveUserControl<TViewModel>` with `WhenActivated` for initialization. When migrating:
+
+1. **Check the code-behind file** — Read `release/5.0:controlgallery/.../Views/.../XxxShowCase.axaml.cs` to see if it has `WhenActivated` logic
+2. **Copy ALL initialization code** — If the original has ViewModel property initialization, ReactiveUI bindings, or event subscriptions in `WhenActivated`, copy them exactly
+3. **Do NOT simplify to basic IViewFor** — Don't replace `ReactiveUserControl<T>` + `WhenActivated` with just `UserControl, IViewFor<T>` if the original has initialization logic
+4. **Missing initialization causes bugs** — For example, SliderShowCase needs `WhenActivated` to create and bind Marks to all 7 Slider controls. Without it, Marks won't display.
+
+**Example of WRONG migration (missing initialization):**
+
+```csharp
+// WRONG - Simplified to basic IViewFor, lost all initialization logic
+public partial class SliderShowCase : UserControl, IViewFor<SliderViewModel>
+{
+    public SliderShowCase() { InitializeComponent(); }
+    object? IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as SliderViewModel; }
+    public SliderViewModel? ViewModel { get; set; }
+}
+```
+
+**Correct migration (preserves initialization):**
+
+```csharp
+// RIGHT - Keeps ReactiveUserControl + WhenActivated with all initialization
+public partial class SliderShowCase : ReactiveUserControl<SliderViewModel>
+{
+    public SliderShowCase()
+    {
+        this.WhenActivated(disposables =>
+        {
+            if (DataContext is SliderViewModel viewModel)
+            {
+                // Copy ALL initialization from release/5.0
+                var marks = new List<SliderMark>();
+                marks.Add(new SliderMark("0°C", 0));
+                // ... rest of initialization
+                viewModel.SliderMarks = marks;
+                
+                // Copy ALL bindings from release/5.0
+                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider1.Marks)
+                    .DisposeWith(disposables);
+                // ... rest of bindings
+            }
+        });
+        InitializeComponent();
+    }
+}
+```
+
 **Verification checklist before committing:**
-1. Compare line-by-line with the original AXAML — every container, every property, every showcase item
-2. Compare ViewModel constructor initialization — every property must have its initial value
-3. Compare all command handler logic — every helper method, every state update sequence
-4. Compare property types — `IList<T>?` vs `IList?`, `bool` vs `bool?`, etc.
-5. Build and verify no compilation errors
-6. Test the ShowCase — verify all interactions work identically to release/5.0
-7. If you removed, simplified, or changed any logic/layout/types, you did it wrong — revert and copy exactly, then apply ONLY Avalonia 12 compatibility changes
+1. **Read release/5.0 code-behind FIRST** — Check if it has `WhenActivated` logic before writing the migration
+2. Compare line-by-line with the original AXAML — every container, every property, every showcase item
+3. Compare ViewModel constructor initialization — every property must have its initial value
+4. **Compare code-behind initialization** — every `WhenActivated` block, every binding, every subscription
+5. Compare all command handler logic — every helper method, every state update sequence
+6. Compare property types — `IList<T>?` vs `IList?`, `bool` vs `bool?`, etc.
+7. Build and verify no compilation errors
+8. Test the ShowCase — verify all interactions work identically to release/5.0
+9. If you removed, simplified, or changed any logic/layout/types/initialization, you did it wrong — revert and copy exactly, then apply ONLY Avalonia 12 compatibility changes
 
 ## Execution Steps
 
