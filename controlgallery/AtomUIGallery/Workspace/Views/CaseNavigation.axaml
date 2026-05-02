@@ -55,6 +55,8 @@
                               ItemKey="{x:Static viewmodels:RadioButtonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Rate}"
                               ItemKey="{x:Static viewmodels:RateViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Slider}"
+                              ItemKey="{x:Static viewmodels:SliderViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"

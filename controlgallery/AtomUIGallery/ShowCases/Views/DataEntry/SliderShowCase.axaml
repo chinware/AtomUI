@@ -1,0 +1,139 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.SliderShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
+             x:DataType="vm:SliderViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="Basic"
+            Description="Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Slider
+                    Maximum="100"
+                    Minimum="0"
+                    TickFrequency="5"
+                    IsEnabled="{Binding NormalEnabled}"
+                    Value="50" />
+
+                <atom:Slider
+                    Maximum="100"
+                    Minimum="0"
+                    IsRangeMode="True"
+                    TickFrequency="5"
+                    IsEnabled="{Binding NormalEnabled}"
+                    RangeValue="20, 80" />
+                <atom:Slider
+                    Name="Slider1"
+                    Maximum="100"
+                    Minimum="0"
+                    IsEnabled="{Binding NormalEnabled}"
+                    IsRangeMode="True"
+                    TickFrequency="5"
+                    RangeValue="20, 80" />
+
+                <StackPanel Orientation="Horizontal" Spacing="2">
+                    <atom:TextBlock VerticalAlignment="Center">Enabled:</atom:TextBlock>
+                    <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
+                </StackPanel>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Customize tooltip"
+            Description="Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Slider
+                    Maximum="100"
+                    Minimum="0"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
+                    ValueFormatTemplate="\{0\}%"
+                    Value="20" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Vertical"
+            Description="The vertical Slider.">
+            <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
+                <atom:Slider
+                    Maximum="100"
+                    Minimum="0"
+                    Orientation="Vertical"
+                    TickFrequency="1"
+                    Value="20" />
+                <atom:Slider
+                    Maximum="100"
+                    Minimum="0"
+                    Orientation="Vertical"
+                    TickFrequency="5"
+                    IsRangeMode="True"
+                    RangeValue="20, 80"
+                    IsSnapToTickEnabled="True"
+                    Value="20" />
+
+                <atom:Slider
+                    Name="Slider2"
+                    Maximum="100"
+                    Minimum="0"
+                    Orientation="Vertical"
+                    TickFrequency="1"
+                    Value="20" />
+
+                <atom:Slider
+                    Name="Slider3"
+                    Maximum="100"
+                    Minimum="0"
+                    IsRangeMode="True"
+                    Orientation="Vertical"
+                    TickFrequency="5"
+                    RangeValue="20, 80" />
+
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Graduated slider"
+            Description="Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb.
+            When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:TextBlock FontWeight="Bold">included=true</atom:TextBlock>
+                <atom:Slider
+                    Name="Slider4"
+                    Maximum="100"
+                    Minimum="0"
+                    TickFrequency="1"
+                    Value="20" />
+
+                <atom:Slider
+                    Name="Slider5"
+                    Maximum="100"
+                    Minimum="0"
+                    IsRangeMode="True"
+                    TickFrequency="5"
+                    RangeValue="20, 80" />
+
+                <atom:TextBlock FontWeight="Bold">included=false</atom:TextBlock>
+                <atom:Slider
+                    Name="Slider6"
+                    Maximum="100"
+                    Minimum="0"
+                    TickFrequency="1"
+                    Included="False"
+                    Value="20" />
+
+                <atom:Slider
+                    Name="Slider7"
+                    Maximum="100"
+                    Minimum="0"
+                    IsRangeMode="True"
+                    TickFrequency="5"
+                    Included="False"
+                    RangeValue="20, 80" />
+
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

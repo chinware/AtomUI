@@ -35,5 +35,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<ToggleSwitchViewModel, ToggleSwitchShowCase>(() => new ToggleSwitchShowCase());
         locator.Map<RadioButtonViewModel, RadioButtonShowCase>(() => new RadioButtonShowCase());
         locator.Map<RateViewModel, RateShowCase>(() => new RateShowCase());
+        locator.Map<SliderViewModel, SliderShowCase>(() => new SliderShowCase());
     }
 }
