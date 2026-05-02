@@ -30,5 +30,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<CollapseViewModel, CollapseShowCase>(() => new CollapseShowCase());
         locator.Map<CheckBoxViewModel, CheckBoxShowCase>(() => new CheckBoxShowCase());
         locator.Map<RadioButtonViewModel, RadioButtonShowCase>(() => new RadioButtonShowCase());
+        locator.Map<RateViewModel, RateShowCase>(() => new RateShowCase());
     }
 }

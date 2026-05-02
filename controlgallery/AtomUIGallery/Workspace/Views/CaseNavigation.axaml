@@ -45,6 +45,8 @@
                               ItemKey="{x:Static viewmodels:CheckBoxViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_RadioButton}"
                               ItemKey="{x:Static viewmodels:RadioButtonViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Rate}"
+                              ItemKey="{x:Static viewmodels:RateViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"

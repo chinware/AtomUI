@@ -14,6 +14,7 @@ namespace AtomUIGallery.Localization
         DataEntry,
         DataEntry_CheckBox,
         DataEntry_RadioButton,
+        DataEntry_Rate,
         Feedback,
         Feedback_Alert,
         Feedback_Message,

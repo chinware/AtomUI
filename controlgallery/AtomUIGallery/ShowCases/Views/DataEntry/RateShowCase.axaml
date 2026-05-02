@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.RateShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
+             x:DataType="vm:RateViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="Basic"
+            Description="The simplest usage.">
+            <atom:Rate/>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Half star"
+            Description="Support select half star.">
+            <atom:Rate DefaultValue="3.5" IsAllowHalf="True"/>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Show copywriting"
+            Description="Add copywriting in rate components.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Rate Name="ToolTipRate" ValueChanged="HandleValueChanged"/>
+                <TextBlock Text="{Binding ActiveTooltip}"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Read only"
+            Description="Read only, can't use mouse to interact.">
+            <atom:Rate DefaultValue="2" IsEnabled="False"/>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Clear star"
+            Description="Support set allow to clear star when click again.">
+            <StackPanel Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Rate DefaultValue="3" IsAllowClear="True" />
+                    <TextBlock>IsAllowClear: true</TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Rate DefaultValue="3" IsAllowClear="False" />
+                    <TextBlock>IsAllowClear: false</TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Other Character"
+            Description="Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Rate IsAllowHalf="True" IsAllowClear="True" Character="{antdicons:AntDesignIconProvider HeartOutlined}"/>
+                <atom:Rate IsAllowHalf="True" IsAllowClear="True" Character="A"/>
+                <atom:Rate IsAllowHalf="True" IsAllowClear="True" Character="秦"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
