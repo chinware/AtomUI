@@ -72,6 +72,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(CalendarViewModel.ID, () => new CalendarViewModel(HostScreen));
         _showCaseViewModelFactories.Add(SkeletonViewModel.ID, () => new SkeletonViewModel(HostScreen));
         _showCaseViewModelFactories.Add(CardViewModel.ID, () => new CardViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(CollapseViewModel.ID, () => new CollapseViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

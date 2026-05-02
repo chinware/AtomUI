@@ -25,6 +25,7 @@ internal class zh_CN : LanguageProvider
     public const string DataDisplay_Calendar = "Calendar 日历";
     public const string DataDisplay_Card = "Card 卡片";
     public const string DataDisplay_Carousel = "Carousel 走马灯";
+    public const string DataDisplay_Collapse = "Collapse 折叠面板";
     public const string Feedback = "反馈";
     public const string Feedback_Alert = "Alert 警告提示";
     public const string Feedback_Message = "Message 全局提示";

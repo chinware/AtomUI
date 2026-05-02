@@ -52,6 +52,8 @@
                               ItemKey="{x:Static viewmodels:CardViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Carousel}"
                               ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Collapse}"
+                              ItemKey="{x:Static viewmodels:CollapseViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"

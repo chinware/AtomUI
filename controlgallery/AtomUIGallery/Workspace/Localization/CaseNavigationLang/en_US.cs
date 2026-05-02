@@ -25,6 +25,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay_Calendar = "Calendar";
     public const string DataDisplay_Card = "Card";
     public const string DataDisplay_Carousel = "Carousel";
+    public const string DataDisplay_Collapse = "Collapse";
     public const string Feedback = "Feedback";
     public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";
