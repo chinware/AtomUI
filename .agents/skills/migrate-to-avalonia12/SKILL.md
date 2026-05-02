@@ -1779,6 +1779,56 @@ if (index != -1)
 
 **Why:** Avalonia 12 redesigned selection handling to be event-driven. `UpdateSelectionFromEvent` extracts modifier keys from the event args to determine range/toggle behavior. When selection is driven by a non-input event (e.g., a checkbox toggling its `IsChecked` property), the `Selection` model's `Select`/`Deselect` methods are the correct API — they bypass modifier logic entirely and directly update the selection state.
 
+#### 54. Visual Tree vs Logical Tree for Popup/Menu Hierarchies (CRITICAL)
+
+**What changed:** When working with Popup-based controls (Menu, MenuItem, ContextMenu, Flyout), understanding the difference between Visual Tree and Logical Tree is critical for correct parent-child relationship checks.
+
+**The Problem:**
+- **Visual Tree** (`IsVisualAncestorOf`): Used for rendering and layout. When a Popup opens, it creates a separate PopupHost in the visual tree, breaking the visual parent-child relationship.
+- **Logical Tree** (`IsLogicalAncestorOf`): Used for control relationships, data binding, and event routing. MenuItem's submenu items remain logical children even when displayed in a separate Popup.
+
+**Common Bug Pattern:**
+```csharp
+// WRONG: This fails for nested popups/submenus
+if (popupChild.IsVisualAncestorOf(element))
+{
+    // This returns false for submenu items because they're in a different PopupHost
+}
+```
+
+**Correct Pattern:**
+```csharp
+// CORRECT: Use logical tree for control hierarchy checks
+if (popupChild.IsLogicalAncestorOf(element))
+{
+    // This correctly identifies submenu items as descendants
+}
+```
+
+**Real-World Example:**
+When implementing hover behavior for dropdown menus with submenus:
+- Need to check if mouse is over the menu OR any nested submenu
+- Using `IsVisualAncestorOf` will fail because submenus are in separate PopupHosts
+- Using `IsLogicalAncestorOf` correctly identifies all menu items in the hierarchy
+
+**Detection:**
+```csharp
+// Look for visual tree checks on Popup.Child or Menu/MenuItem hierarchies
+popup.Child.IsVisualAncestorOf(element)
+menuItem.IsVisualAncestorOf(submenuItem)
+```
+
+**Fix:**
+```csharp
+// Use logical tree for control relationship checks
+popup.Child.IsLogicalAncestorOf(element)
+menuItem.IsLogicalAncestorOf(submenuItem)
+```
+
+**Why:** Avalonia's Popup architecture creates visual isolation (separate PopupHost) but maintains logical relationships. For control hierarchy checks (hit testing, scope validation, parent-child relationships), always use the Logical Tree. Only use Visual Tree for rendering-specific operations (layout, transforms, visual effects).
+
+**Key Takeaway:** When debugging "element not found in hierarchy" issues with Popups/Menus, first check if you're using the wrong tree traversal method.
+
 ## References
 
 For detailed information, see `references/` directory:

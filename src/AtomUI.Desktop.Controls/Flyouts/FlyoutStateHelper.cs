@@ -1,9 +1,12 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -221,7 +224,7 @@ internal class FlyoutStateHelper : AvaloniaObject
             {
                 return;
             }
-
+    
             FlyoutAboutToClose?.Invoke(this, EventArgs.Empty);
             Flyout.Hide();
         }
@@ -240,7 +243,7 @@ internal class FlyoutStateHelper : AvaloniaObject
         }
 
         if (Flyout is PopupFlyoutBase { Popup.Child: Visual popupChild } &&
-            (visual == popupChild || popupChild.IsVisualAncestorOf(visual)))
+            (visual == popupChild || popupChild.IsLogicalAncestorOf(visual)))
         {
             return true;
         }
@@ -328,24 +331,37 @@ internal class FlyoutStateHelper : AvaloniaObject
     {
         _popupPointerSubscription?.Dispose();
         _popupPointerSubscription = null;
-        if (Flyout is PopupFlyoutBase { Popup.Child: InputElement popupChild })
+
+        if (AnchorTarget != null)
         {
-            _popupPointerSubscription = popupChild.GetObservable(InputElement.IsPointerOverProperty)
-                .Subscribe(HandlePopupPointerOver);
+            var inputManager = AvaloniaLocator.Current.GetService<IInputManager>();
+            if (inputManager != null)
+            {
+                _popupPointerSubscription = inputManager.Process.Subscribe(HandleGlobalPointerMove);
+            }
         }
     }
 
-    private void HandlePopupPointerOver(bool isPointerOver)
+    private void HandleGlobalPointerMove(RawInputEventArgs e)
     {
-        if (isPointerOver)
+        if (e is RawPointerEventArgs pointerEvent && pointerEvent.Type == RawPointerEventType.Move)
         {
-            StopMouseLeaveTimer();
-        }
-        else
-        {
-            if (AnchorTarget is not { IsPointerOver: true })
+            var hitElement = pointerEvent.GetInputHitTestResult().element;
+            if (hitElement is Visual visual)
             {
-                StartMouseLeaveTimer();
+                // Check if the pointer is over the flyout scope
+                if (IsVisualInFlyoutScope(visual))
+                {
+                    StopMouseLeaveTimer();
+                }
+                else if (AnchorTarget is not { IsPointerOver: true })
+                {
+                    // Pointer left both anchor and popup, start close timer if not already started
+                    if (_mouseLeaveDelayTimer == null && Flyout is { IsOpen: true })
+                    {
+                        StartMouseLeaveTimer();
+                    }
+                }
             }
         }
     }
