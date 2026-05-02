@@ -15,9 +15,9 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Padding="{TemplateBinding Padding}">
-                <Panel Name="{x:Static atom:ToggleIconButtonThemeConstants.RootLayoutPart}">
+                <Panel Name="PART_RootLayout">
                     <atom:IconPresenter
-                        Name="{x:Static atom:ToggleIconButtonThemeConstants.CheckedIconPresenterPart}"
+                        Name="PART_CheckedIconPresenter"
                         Icon="{TemplateBinding CheckedIcon}"
                         IsVisible="{TemplateBinding IsChecked}"
                         Width="{TemplateBinding IconWidth}"
@@ -27,7 +27,7 @@
                         VerticalAlignment="Center"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                     <atom:IconPresenter
-                        Name="{x:Static atom:ToggleIconButtonThemeConstants.UnCheckedIconPresenterPart}"
+                        Name="PART_UnCheckedIconPresenter"
                         Icon="{TemplateBinding UnCheckedIcon}"
                         Width="{TemplateBinding IconWidth}"
                         Height="{TemplateBinding IconHeight}"

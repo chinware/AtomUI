@@ -44,12 +44,15 @@ public class DropdownButton : Button
 
     public static readonly StyledProperty<int> MouseLeaveDelayProperty =
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<DropdownButton>();
-    
+
     public static readonly StyledProperty<bool> IsShowOpenIndicatorProperty =
         AvaloniaProperty.Register<DropdownButton, bool>(nameof(IsShowOpenIndicator), true);
-    
+
     public static readonly StyledProperty<PathIcon?> OpenIndicatorProperty =
         AvaloniaProperty.Register<DropdownButton, PathIcon?>(nameof(OpenIndicator));
+
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<DropdownButton, bool>(nameof(ShouldUseOverlayPopup), true);
 
     public MenuFlyout? DropdownFlyout
     {
@@ -121,6 +124,12 @@ public class DropdownButton : Button
     {
         get => GetValue(OpenIndicatorProperty);
         set => SetValue(OpenIndicatorProperty, value);
+    }
+
+    public bool ShouldUseOverlayPopup
+    {
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     #endregion
@@ -206,7 +215,7 @@ public class DropdownButton : Button
     private void SetupFlyoutProperties(MenuFlyout menuFlyout)
     {
         _flyoutBindingDisposables?.Dispose();
-        _flyoutBindingDisposables = new CompositeDisposable(8);
+        _flyoutBindingDisposables = new CompositeDisposable(9);
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, menuFlyout));
@@ -214,6 +223,7 @@ public class DropdownButton : Button
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuFlyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, menuFlyout, MenuFlyout.ShouldUseOverlayLayerProperty));
     }
     
     private void HandleMenuItemClicked(object? sender, FlyoutMenuItemClickedEventArgs args)
