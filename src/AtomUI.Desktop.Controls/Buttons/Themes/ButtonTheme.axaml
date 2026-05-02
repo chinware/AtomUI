@@ -745,7 +745,7 @@
         <Style Selector="^[ButtonType=Link]">
             <Style Selector="^:not(:disabled)">
                 <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorLink}" />
-                <Style Selector="^/template/ Border#PART_Frame">
+                <Style Selector="^/template/ Border#Frame">
                     <Setter Property="Background" Value="{atom:ButtonTokenResource DefaultBg}" />
                 </Style>
 
