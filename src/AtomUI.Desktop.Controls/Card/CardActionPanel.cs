@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -43,7 +42,7 @@ internal class CardActionPanel : TemplatedControl
             _uniformGrid.Children.Clear();
         }
 
-        _uniformGrid = e.NameScope.Find<UniformGrid>(CardActionPanelThemeConstants.GridPanelPart);
+        _uniformGrid = e.NameScope.Find<UniformGrid>("PART_GridPanel");
         if (_uniformGrid != null)
         {
             _uniformGrid.SetCurrentValue(UniformGrid.ColumnsProperty, Actions.Count);

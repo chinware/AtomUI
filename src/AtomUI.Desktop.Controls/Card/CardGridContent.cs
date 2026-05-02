@@ -1,6 +1,5 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -113,7 +112,7 @@ public class CardGridContent : ItemsControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(CardGridContentThemeConstants.ItemsPresenterPart);
+        _itemsPresenter = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
         if (_itemsPresenter != null)
         {
             _itemsPresenter.ApplyTemplate();

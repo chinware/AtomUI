@@ -12,7 +12,7 @@
                 <Border Name="Frame" 
                         CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource CornerRadiusFilterConverter}}"
                         Background="{TemplateBinding Background}">
-                    <UniformGrid Name="{x:Static atom:CardActionPanelThemeConstants.GridPanelPart}"
+                    <UniformGrid Name="PART_GridPanel"
                                  ColumnSpacing="1"/>
                 </Border>
             </ControlTemplate>

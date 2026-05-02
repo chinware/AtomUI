@@ -1,6 +1,5 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -134,7 +133,7 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _frame = e.NameScope.Find<Border>(CarouselPageIndicatorThemeConstants.FramePart);
+        _frame = e.NameScope.Find<Border>("PART_Frame");
         if (IsShowTransitionProgress)
         {
             BuildProgressAnimation(false);

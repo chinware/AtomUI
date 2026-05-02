@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -320,7 +319,7 @@ public class Card : HeaderedContentControl,
         {
             _cardActionPanel.Actions.Clear();
         }
-        _cardActionPanel = e.NameScope.Find<CardActionPanel>(CardThemeConstants.ActionPanelPart);
+        _cardActionPanel = e.NameScope.Find<CardActionPanel>("PART_ActionPanel");
         if (_cardActionPanel != null)
         {
             foreach (var action in Actions)

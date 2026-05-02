@@ -8,7 +8,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:ScrollViewer Name="{x:Static atom:CarouselThemeConstants.ScrollViewerPart}"
+                    <atom:ScrollViewer Name="PART_ScrollViewer"
                                        Background="{TemplateBinding Background}"
                                        HorizontalScrollBarVisibility="Hidden"
                                        VerticalScrollBarVisibility="Hidden">
@@ -17,18 +17,18 @@
                             Margin="{TemplateBinding Padding}"
                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </atom:ScrollViewer>
-                    <atom:CarouselNavButton Name="{x:Static atom:CarouselThemeConstants.PreviousButtonPart}"
+                    <atom:CarouselNavButton Name="PART_PreviousButton"
                                             Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                             Margin="{TemplateBinding EffectivePreviousButtonMargin}"
                                             IsVisible="{TemplateBinding PreviousNavButtonVisible}" />
-                    <atom:CarouselNavButton Name="{x:Static atom:CarouselThemeConstants.NextButtonPart}"
+                    <atom:CarouselNavButton Name="PART_NextButton"
                                             Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                             Margin="{TemplateBinding EffectiveNextButtonMargin}"
                                             IsVisible="{TemplateBinding NextNavButtonVisible}" />
                     <LayoutTransformControl Name="PaginationLayoutTransform"
                                             Margin="{TemplateBinding EffectivePaginationMargin}"
                                             IsVisible="{TemplateBinding IsShowPagination}">
-                        <atom:CarouselPagination Name="{x:Static atom:CarouselThemeConstants.PaginationPart}"
+                        <atom:CarouselPagination Name="PART_Pagination"
                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                  IsShowTransitionProgress="{TemplateBinding IsEffectiveShowTransitionProgress}"
                                                  AutoPlaySpeed="{TemplateBinding AutoPlaySpeed}" 

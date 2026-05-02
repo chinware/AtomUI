@@ -30,7 +30,7 @@
                                                   VerticalAlignment="Center" />
                             </DockPanel>
                         </Border>
-                        <atom:CardActionPanel Name="{x:Static atom:CardThemeConstants.ActionPanelPart}"
+                        <atom:CardActionPanel Name="PART_ActionPanel"
                                               DockPanel.Dock="Bottom"
                                               CornerRadius="{TemplateBinding CornerRadius}"
                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

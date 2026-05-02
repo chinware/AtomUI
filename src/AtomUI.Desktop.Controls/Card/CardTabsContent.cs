@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -94,7 +93,7 @@ public class CardTabsContent : TemplatedControl
             _tabControl.Items.Clear();
         }
 
-        _tabControl = e.NameScope.Find<TabControl>(CardTabsContentThemeConstants.TabControlPart);
+        _tabControl = e.NameScope.Find<TabControl>("PART_TabControl");
         if (_tabControl != null)
         {
             foreach (var tabItem in Items)

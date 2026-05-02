@@ -8,7 +8,7 @@
             <ControlTemplate>
                 <Border Name="Frame"
                         Padding="{TemplateBinding Padding}">
-                    <ItemsPresenter Name="{x:Static atom:CardGridContentThemeConstants.ItemsPresenterPart}" ClipToBounds="False">
+                    <ItemsPresenter Name="PART_ItemsPresenter" ClipToBounds="False">
                         <ItemsPresenter.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <Grid />

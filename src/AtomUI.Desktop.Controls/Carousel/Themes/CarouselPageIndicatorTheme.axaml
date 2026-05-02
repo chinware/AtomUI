@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="{x:Static atom:CarouselPageIndicatorThemeConstants.FramePart}"
+                    <Border Name="PART_Frame"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Height="{TemplateBinding Height}"
                             Width="{TemplateBinding Width}"

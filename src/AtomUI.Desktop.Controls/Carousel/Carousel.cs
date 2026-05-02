@@ -1,5 +1,4 @@
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation;
@@ -335,10 +334,10 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _scroller       = e.NameScope.Find<IScrollable>(CarouselThemeConstants.ScrollViewerPart);
-        _pagination     = e.NameScope.Find<CarouselPagination>(CarouselThemeConstants.PaginationPart);
-        _previousButton = e.NameScope.Find<IconButton>(CarouselThemeConstants.PreviousButtonPart);
-        _nextButton     = e.NameScope.Find<IconButton>(CarouselThemeConstants.NextButtonPart);
+        _scroller       = e.NameScope.Find<IScrollable>("PART_ScrollViewer");
+        _pagination     = e.NameScope.Find<CarouselPagination>("PART_Pagination");
+        _previousButton = e.NameScope.Find<IconButton>("PART_PreviousButton");
+        _nextButton     = e.NameScope.Find<IconButton>("PART_NextButton");
         BuildEffectivePageTransition(false);
         ConfigureNavButtons();
         if (_previousButton != null)
