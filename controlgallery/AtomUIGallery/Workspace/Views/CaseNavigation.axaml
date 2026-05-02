@@ -43,7 +43,10 @@
                           Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}" />
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"
-                          Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}" />
+                          Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Carousel}"
+                              ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
+        </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"
                           Icon="{antdicons:AntDesignIconProvider Kind=UserSwitchOutlined}">

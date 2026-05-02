@@ -21,6 +21,7 @@ internal class zh_CN : LanguageProvider
     public const string Navigation_ButtonSpinner = "ButtonSpinner 按钮微调器";
     public const string DataEntry = "数据录入";
     public const string DataDisplay = "数据展示";
+    public const string DataDisplay_Carousel = "Carousel 走马灯";
     public const string Feedback = "反馈";
     public const string Feedback_Alert = "Alert 警告提示";
     public const string Feedback_Message = "Message 全局提示";

@@ -67,6 +67,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(AlertViewModel.ID, () => new AlertViewModel(HostScreen));
         _showCaseViewModelFactories.Add(SpinViewModel.ID, () => new SpinViewModel(HostScreen));
         _showCaseViewModelFactories.Add(FlexPanelViewModel.ID, () => new FlexPanelViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(CarouselViewModel.ID, () => new CarouselViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

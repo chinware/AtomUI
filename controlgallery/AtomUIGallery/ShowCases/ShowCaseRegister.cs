@@ -22,5 +22,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<AlertViewModel, AlertShowCase>(() => new AlertShowCase());
         locator.Map<SpinViewModel, SpinShowCase>(() => new SpinShowCase());
         locator.Map<FlexPanelViewModel, FlexPanelShowCase>(() => new FlexPanelShowCase());
+        locator.Map<CarouselViewModel, CarouselShowCase>(() => new CarouselShowCase());
     }
 }
