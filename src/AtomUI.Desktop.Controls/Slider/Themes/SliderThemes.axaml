@@ -1,0 +1,9 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="SliderTheme.axaml"/>
+        <ResourceInclude Source="SliderThumbTheme.axaml"/>
+        <ResourceInclude Source="SliderTrackTheme.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

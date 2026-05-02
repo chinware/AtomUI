@@ -654,6 +654,35 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TitleHeight
     }
 
+    public enum SliderTokenKind
+    {
+        MarginPartWithMark,
+        MarkBorderColor,
+        MarkBorderColorActive,
+        MarkBorderColorHover,
+        MarkSize,
+        RailBg,
+        RailHoverBg,
+        RailSize,
+        SliderPaddingHorizontal,
+        SliderPaddingVertical,
+        SliderTrackSize,
+        ThumbCircleBorderActiveColor,
+        ThumbCircleBorderColor,
+        ThumbCircleBorderColorDisabled,
+        ThumbCircleBorderHoverColor,
+        ThumbCircleBorderThickness,
+        ThumbCircleBorderThicknessHover,
+        ThumbCircleSize,
+        ThumbCircleSizeHover,
+        ThumbOutlineColor,
+        ThumbOutlineThickness,
+        ThumbSize,
+        TrackBg,
+        TrackBgDisabled,
+        TrackHoverBg
+    }
+
     public enum SpaceTokenKind
     {
         AddonBg,
@@ -1320,6 +1349,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SkeletonTokenResourceExtension(SkeletonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class SliderTokenResourceExtension : TokenResourceExtension<SliderTokenKind>
+    {
+        public SliderTokenResourceExtension()
+        {
+        }
+
+        public SliderTokenResourceExtension(SliderTokenKind kind) : base(kind)
         {
         }
     }

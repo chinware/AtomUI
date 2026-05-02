@@ -1,0 +1,53 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SliderThumb}" TargetType="atom:SliderThumb">
+
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        <Setter Property="BorderThickness"
+                Value="{atom:SliderTokenResource ThumbCircleBorderThickness}" />
+        <Setter Property="BorderBrush" Value="{atom:SliderTokenResource ThumbCircleBorderColor}" />
+        <Setter Property="OutlineBrush" Value="{atom:SliderTokenResource ThumbOutlineColor}" />
+        <Setter Property="OutlineThickness" Value="0" />
+        <Setter Property="ThumbCircleSize" Value="{atom:SliderTokenResource ThumbCircleSize}" />
+        <Setter Property="Width" Value="{atom:SliderTokenResource ThumbSize}" />
+        <Setter Property="Height" Value="{atom:SliderTokenResource ThumbSize}" />
+        <Setter Property="ZIndex" Value="100" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderThickness"
+                    Value="{atom:SliderTokenResource ThumbCircleBorderThicknessHover}" />
+            <Setter Property="BorderBrush"
+                    Value="{atom:SliderTokenResource ThumbCircleBorderActiveColor}" />
+            <Setter Property="ThumbCircleSize"
+                    Value="{atom:SliderTokenResource ThumbCircleSizeHover}" />
+            <Setter Property="OutlineThickness"
+                    Value="{atom:SliderTokenResource ThumbOutlineThickness}" />
+        </Style>
+
+        <Style Selector="^:focus">
+            <Setter Property="BorderThickness"
+                    Value="{atom:SliderTokenResource ThumbCircleBorderThicknessHover}" />
+            <Setter Property="BorderBrush"
+                    Value="{atom:SliderTokenResource ThumbCircleBorderActiveColor}" />
+            <Setter Property="ThumbCircleSize"
+                    Value="{atom:SliderTokenResource ThumbCircleSizeHover}" />
+            <Setter Property="OutlineThickness"
+                    Value="{atom:SliderTokenResource ThumbOutlineThickness}" />
+            <Setter Property="ZIndex" Value="1000" />
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="OutlineBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <ThicknessTransition Property="OutlineThickness" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationFast}" />
+                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
