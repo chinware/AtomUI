@@ -27,6 +27,7 @@ namespace AtomUIGallery.Localization
         General_Button,
         General_Icons,
         General_Palette,
+        General_Separator,
         General_SplitButton,
         Layout,
         Layout_FlexPanel,

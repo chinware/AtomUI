@@ -21,6 +21,8 @@
                               ItemKey="{x:Static viewmodels:ButtonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_SplitButton}"
                               ItemKey="{x:Static viewmodels:SplitButtonViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Separator}"
+                              ItemKey="{x:Static viewmodels:SeparatorViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout}"

@@ -13,6 +13,7 @@ internal class zh_CN : LanguageProvider
     public const string General_Icons = "Icons 图标";
     public const string General_Button = "Button 按钮";
     public const string General_SplitButton = "SplitButton 分割按钮";
+    public const string General_Separator = "Separator 分割线";
     public const string Layout = "布局";
     public const string Layout_FlexPanel = "FlexPanel 弹性布局";
     public const string Layout_Splitter = "Splitter 分割面板";
