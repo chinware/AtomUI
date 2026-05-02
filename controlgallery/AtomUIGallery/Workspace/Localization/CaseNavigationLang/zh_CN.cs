@@ -21,6 +21,7 @@ internal class zh_CN : LanguageProvider
     public const string Navigation_ButtonSpinner = "ButtonSpinner 按钮微调器";
     public const string DataEntry = "数据录入";
     public const string DataEntry_CheckBox = "CheckBox 多选框";
+    public const string DataEntry_RadioButton = "RadioButton 单选框";
     public const string DataDisplay = "数据展示";
     public const string DataDisplay_Avatar = "Avatar 头像";
     public const string DataDisplay_Calendar = "Calendar 日历";

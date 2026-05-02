@@ -43,6 +43,8 @@
                           Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}">
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_CheckBox}"
                               ItemKey="{x:Static viewmodels:CheckBoxViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_RadioButton}"
+                              ItemKey="{x:Static viewmodels:RadioButtonViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"

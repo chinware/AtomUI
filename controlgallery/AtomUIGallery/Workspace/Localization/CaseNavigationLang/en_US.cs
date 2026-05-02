@@ -21,6 +21,7 @@ internal class en_US : LanguageProvider
     public const string Navigation_ButtonSpinner = "ButtonSpinner";
     public const string DataEntry = "Data Entry";
     public const string DataEntry_CheckBox = "CheckBox";
+    public const string DataEntry_RadioButton = "RadioButton";
     public const string DataDisplay = "Data Display";
     public const string DataDisplay_Avatar = "Avatar";
     public const string DataDisplay_Calendar = "Calendar";
