@@ -48,6 +48,8 @@
                               ItemKey="{x:Static viewmodels:AvatarViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Calendar}"
                               ItemKey="{x:Static viewmodels:CalendarViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Card}"
+                              ItemKey="{x:Static viewmodels:CardViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Carousel}"
                               ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
         </atom:NavMenuNode>
@@ -62,6 +64,8 @@
                               ItemKey="{x:Static viewmodels:NotificationViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_PopupConfirm}"
                               ItemKey="{x:Static viewmodels:PopupConfirmViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Skeleton}"
+                              ItemKey="{x:Static viewmodels:SkeletonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Spin}"
                               ItemKey="{x:Static viewmodels:SpinViewModel.ID}" />
         </atom:NavMenuNode>

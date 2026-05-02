@@ -23,12 +23,14 @@ internal class zh_CN : LanguageProvider
     public const string DataDisplay = "数据展示";
     public const string DataDisplay_Avatar = "Avatar 头像";
     public const string DataDisplay_Calendar = "Calendar 日历";
+    public const string DataDisplay_Card = "Card 卡片";
     public const string DataDisplay_Carousel = "Carousel 走马灯";
     public const string Feedback = "反馈";
     public const string Feedback_Alert = "Alert 警告提示";
     public const string Feedback_Message = "Message 全局提示";
     public const string Feedback_Notification = "Notification 通知提醒框";
     public const string Feedback_PopupConfirm = "PopupConfirm 气泡确认框";
+    public const string Feedback_Skeleton = "Skeleton 骨架屏";
     public const string Feedback_Spin = "Spin 加载中";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);

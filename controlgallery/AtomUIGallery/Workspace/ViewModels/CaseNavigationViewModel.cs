@@ -70,6 +70,8 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(CarouselViewModel.ID, () => new CarouselViewModel(HostScreen));
         _showCaseViewModelFactories.Add(AvatarViewModel.ID, () => new AvatarViewModel(HostScreen));
         _showCaseViewModelFactories.Add(CalendarViewModel.ID, () => new CalendarViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(SkeletonViewModel.ID, () => new SkeletonViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(CardViewModel.ID, () => new CardViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

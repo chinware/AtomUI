@@ -25,5 +25,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<CarouselViewModel, CarouselShowCase>(() => new CarouselShowCase());
         locator.Map<AvatarViewModel, AvatarShowCase>(() => new AvatarShowCase());
         locator.Map<CalendarViewModel, CalendarShowCase>(() => new CalendarShowCase());
+        locator.Map<SkeletonViewModel, SkeletonShowCase>(() => new SkeletonShowCase());
+        locator.Map<CardViewModel, CardShowCase>(() => new CardShowCase());
     }
 }

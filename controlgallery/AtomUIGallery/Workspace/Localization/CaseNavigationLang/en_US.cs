@@ -23,12 +23,14 @@ internal class en_US : LanguageProvider
     public const string DataDisplay = "Data Display";
     public const string DataDisplay_Avatar = "Avatar";
     public const string DataDisplay_Calendar = "Calendar";
+    public const string DataDisplay_Card = "Card";
     public const string DataDisplay_Carousel = "Carousel";
     public const string Feedback = "Feedback";
     public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";
     public const string Feedback_Notification = "Notification";
     public const string Feedback_PopupConfirm = "PopupConfirm";
+    public const string Feedback_Skeleton = "Skeleton";
     public const string Feedback_Spin = "Spin";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
