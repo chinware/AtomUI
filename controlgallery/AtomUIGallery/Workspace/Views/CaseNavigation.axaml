@@ -44,6 +44,8 @@
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"
                           Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Avatar}"
+                              ItemKey="{x:Static viewmodels:AvatarViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Carousel}"
                               ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
         </atom:NavMenuNode>
