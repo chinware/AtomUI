@@ -1,0 +1,24 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    x:ClassModifier="internal">
+    
+    <ControlTheme x:Key="{x:Type atom:SkeletonLine}" TargetType="atom:SkeletonLine">
+        <ControlTheme.BasedOn>
+            <themes:AbstractSkeletonTheme TargetType="atom:SkeletonLine" />
+        </ControlTheme.BasedOn>
+        
+        <Setter Property="Height" Value="{atom:SkeletonTokenResource ParagraphLineHeight}"/>
+        
+        <Style Selector="^[IsRound=True]">
+            <Setter Property="CornerRadius" Value="{atom:SkeletonTokenResource ParagraphLineRoundCornerRadius}"/>
+        </Style>
+        
+        <Style Selector="^[IsRound=False]">
+            <Setter Property="CornerRadius" Value="{atom:SkeletonTokenResource BlockRadius}"/>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,33 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:Class="AtomUI.Desktop.Controls.Themes.AbstractSkeletonTheme"
+    TargetType="atom:AbstractSkeleton"
+    x:ClassModifier="internal">
+    
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:AbstractSkeleton">
+            <Panel Name="{x:Static atom:AbstractSkeletonThemeConstants.RootLayoutPart}">
+                <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ActiveAnimationLayerPart}"
+                        Background="{TemplateBinding AnimationLayerFill}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsVisible="{TemplateBinding IsActive}"/>
+                <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ContentLayerPart}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsVisible="{TemplateBinding IsActive, Converter={x:Static BoolConverters.Not}}"/>
+            </Panel>
+        </ControlTemplate>
+    </Setter>
+    
+    <Style Selector="^:is(atom|AbstractSkeleton)">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Background" Value="{atom:SkeletonTokenResource GradientFromColor}"/>
+        <Setter Property="MotionDuration" Value="{atom:SkeletonTokenResource LoadingMotionDuration}"/>
+        <Setter Property="LoadingBackgroundStart" Value="{atom:SkeletonTokenResource LoadingBackgroundStart}"/>
+        <Setter Property="LoadingBackgroundMiddle" Value="{atom:SkeletonTokenResource LoadingBackgroundMiddle}"/>
+        <Setter Property="LoadingBackgroundEnd" Value="{atom:SkeletonTokenResource LoadingBackgroundEnd}"/>
+    </Style>
+</ControlTheme>

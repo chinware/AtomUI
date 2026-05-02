@@ -1,0 +1,49 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SkeletonAvatar}" TargetType="atom:SkeletonAvatar">
+        <ControlTheme.BasedOn>
+            <themes:AbstractSkeletonTheme TargetType="atom:SkeletonAvatar" />
+        </ControlTheme.BasedOn>
+        
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="{atom:SkeletonTokenResource GradientFromColor}" />
+        
+         <Style Selector="^[SizeType=Large]">
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+        </Style>
+        
+        <Style Selector="^[Shape=Square]">
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            </Style>
+            
+            <Style Selector="^[IsCustomSize=True]">
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

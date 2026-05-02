@@ -1,0 +1,37 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:Class="AtomUI.Desktop.Controls.Themes.SkeletonElementTheme"
+    TargetType="atom:SkeletonElement"
+    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+    x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <themes:AbstractSkeletonTheme TargetType="atom:SkeletonElement" />
+    </ControlTheme.BasedOn>
+    
+    <Style Selector="^:is(atom|SkeletonElement)">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Style Selector="^[IsBlock=True]">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+            <Setter Property="VerticalAlignment" Value="Top" />
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+        </Style>
+        
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}"/>
+    </Style>
+    
+</ControlTheme>
