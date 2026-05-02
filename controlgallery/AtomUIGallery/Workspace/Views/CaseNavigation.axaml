@@ -47,6 +47,8 @@
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"
                           Icon="{antdicons:AntDesignIconProvider Kind=UserSwitchOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Alert}"
+                              ItemKey="{x:Static viewmodels:AlertViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Message}"
                               ItemKey="{x:Static viewmodels:MessageViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Notification}"

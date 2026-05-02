@@ -8,6 +8,7 @@ namespace AtomUIGallery.Localization
         DataDisplay,
         DataEntry,
         Feedback,
+        Feedback_Alert,
         Feedback_Message,
         Feedback_Notification,
         Feedback_PopupConfirm,

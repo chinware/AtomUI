@@ -22,6 +22,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry = "Data Entry";
     public const string DataDisplay = "Data Display";
     public const string Feedback = "Feedback";
+    public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";
     public const string Feedback_Notification = "Notification";
     public const string Feedback_PopupConfirm = "PopupConfirm";

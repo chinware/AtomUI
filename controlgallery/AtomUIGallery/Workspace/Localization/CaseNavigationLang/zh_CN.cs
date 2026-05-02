@@ -22,6 +22,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry = "数据录入";
     public const string DataDisplay = "数据展示";
     public const string Feedback = "反馈";
+    public const string Feedback_Alert = "Alert 警告提示";
     public const string Feedback_Message = "Message 全局提示";
     public const string Feedback_Notification = "Notification 通知提醒框";
     public const string Feedback_PopupConfirm = "PopupConfirm 气泡确认框";
