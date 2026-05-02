@@ -40,7 +40,10 @@
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry}"
-                          Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}" />
+                          Icon="{antdicons:AntDesignIconProvider Kind=FormOutlined}">
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_CheckBox}"
+                              ItemKey="{x:Static viewmodels:CheckBoxViewModel.ID}" />
+        </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"
                           Icon="{antdicons:AntDesignIconProvider Kind=AreaChartOutlined}">

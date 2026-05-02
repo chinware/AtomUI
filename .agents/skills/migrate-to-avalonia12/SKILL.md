@@ -153,6 +153,30 @@ When migrating a control module, the following files do NOT need breaking-change
 
 These files contain only data declarations (token values, string resources) with no Avalonia API usage that could be affected by breaking changes. Scanning them wastes time.
 
+### 14. ShowCase migration must preserve original functionality and layout
+
+When migrating a ShowCase from `release/5.0` to `release/6.0`, you MUST preserve the original functionality, layout, and initialization:
+
+**CRITICAL RULES:**
+1. **Do NOT change the layout structure** — Keep all original containers (StackPanel, WrapPanel, Grid, Border, etc.) with their exact properties (HorizontalAlignment, Orientation, Spacing, Margin, ColumnDefinitions, RowDefinitions, etc.)
+2. **Do NOT remove or simplify showcase items** — If the original has 3 CheckBoxGroup examples, keep all 3. If it shows UnChecked/Indeterminate/Checked states, keep all 3.
+3. **Do NOT change element content** — If the original says "Checkbox", don't change it to "CheckBox". If it uses "A, B, C, D, D", don't change it to "Apple, Pear, Orange".
+4. **Do NOT remove Styles** — If the original has `ShowCasePanel.Styles`, keep it exactly as-is.
+5. **Do NOT forget ViewModel initialization** — Copy ALL property initializations from the constructor (initial values, default states, etc.). Missing initialization causes incorrect initial UI state.
+6. **Do NOT remove CommandParameter bindings** — If the original uses `CommandParameter="{Binding ElementName=...}"`, keep it. Don't assume ReactiveUI bindings can replace all patterns.
+
+**What you CAN change for Avalonia 12:**
+- Add `xmlns:vm="using:..."` and `x:DataType="vm:XxxViewModel"` for compiled bindings
+- Change ViewModel base class from `ShowCaseViewModelBase` to `ReactiveObject, IRoutableViewModel` (release/6.0 pattern)
+- Add `using ReactiveUI.Avalonia` and `using System.Reactive.Disposables.Fluent` if needed
+- Adjust namespace imports for Avalonia 12 compatibility
+
+**Verification checklist before committing:**
+1. Compare line-by-line with the original AXAML — every container, every property, every showcase item
+2. Compare ViewModel constructor initialization — every property must have its initial value
+3. Build and verify no compilation errors
+4. If you removed or simplified anything, you did it wrong — revert and copy exactly
+
 ## Execution Steps
 
 ### Step 1: Determine scope and platform
