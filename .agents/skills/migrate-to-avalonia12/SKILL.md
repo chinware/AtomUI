@@ -194,6 +194,41 @@ These files contain only data declarations (token values, string resources) with
 7. **Property types** — Keep exact property types (e.g., `IList<T>?` vs `IList?`, `bool` vs `bool?`). Type changes can break binding or change null-handling behavior.
 8. **CommandParameter bindings** — If the original uses `CommandParameter="{Binding ElementName=...}"`, keep it. Don't assume ReactiveUI bindings can replace all patterns.
 
+**CRITICAL: Do NOT redefine existing types**
+
+Before defining any class, interface, or enum in a ShowCase ViewModel:
+
+1. **Check `src/AtomUI.Controls` first** — Most control-related types (e.g., `CheckBoxOption`, `RadioOption`, `SelectOption`) are already defined in the control's namespace
+2. **Check `src/AtomUI.Desktop.Controls`** — Platform-specific types may be defined here
+3. **Use the official type** — Import the correct namespace and use the existing type directly
+4. **NEVER create a duplicate class** — Defining your own `CheckBoxOption` when `AtomUI.Controls.CheckBoxOption` exists causes type mismatches, binding failures, and runtime errors
+
+**Example of what NOT to do:**
+
+```csharp
+// WRONG - Redefining CheckBoxOption in ViewModel file
+public class CheckBoxOption
+{
+    public string? Content { get; set; }
+    public bool IsEnabled { get; set; } = true;
+}
+```
+
+**Correct approach:**
+
+```csharp
+// RIGHT - Use the official type from AtomUI.Controls
+using AtomUI.Controls;
+
+// CheckBoxOption is already defined in AtomUI.Controls namespace
+// Just use it directly with IList<CheckBoxOption>
+```
+
+**Verification before committing:**
+- Search the codebase: `find src -name "*.cs" -exec grep -l "class YourType" {} \;`
+- If the type exists in `src/`, use it. Do NOT redefine it.
+- If you defined a type in the ViewModel file, you probably did it wrong.
+
 **What you CAN change for Avalonia 12:**
 - Add `xmlns:vm="using:..."` and `x:DataType="vm:XxxViewModel"` for compiled bindings
 - Change ViewModel base class from `ShowCaseViewModelBase` to `ReactiveObject, IRoutableViewModel` (release/6.0 pattern)

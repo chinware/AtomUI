@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reactive;
+using AtomUI.Controls;
 using Avalonia.Controls;
 using ReactiveUI;
 
@@ -235,10 +236,4 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
             CheckedAllStatus = null;
         }
     }
-}
-
-public class CheckBoxOption
-{
-    public string? Content { get; set; }
-    public bool IsEnabled { get; set; } = true;
 }
