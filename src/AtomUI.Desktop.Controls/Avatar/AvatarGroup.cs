@@ -279,11 +279,12 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
         var foldCountAvatar = GetFoldCountAvatar();
         if (_foldCountFlyout == null)
         {
-            _foldCountFlyout                 = new FlyoutHost();
-            _foldCountFlyout.ZIndex          = Int32.MaxValue;
-            _foldCountFlyout.Content         = foldCountAvatar;
-            _foldCountStackPanel             = new StackPanel();
-            _foldCountStackPanel.Orientation = Orientation.Horizontal;
+            _foldCountFlyout                       = new FlyoutHost();
+            _foldCountFlyout.ZIndex                = Int32.MaxValue;
+            _foldCountFlyout.Content               = foldCountAvatar;
+            _foldCountFlyout.ShouldUseOverlayLayer = true;
+            _foldCountStackPanel                   = new StackPanel();
+            _foldCountStackPanel.Orientation       = Orientation.Horizontal;
             
             _foldCountStackPanel[!StackPanel.SpacingProperty] = this[!GroupSpaceProperty];
             _foldCountFlyout[!FlyoutHost.TriggerProperty]     = this[!FoldAvatarFlyoutTriggerTypeProperty];

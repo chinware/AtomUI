@@ -7,7 +7,7 @@
         <ResourceInclude Source="AdornerLayer/Themes/AdornerLayerTheme.axaml" />
         <!-- <ResourceInclude Source="AutoComplete/Themes/AutoCompleteThemes.axaml" /> -->
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
-        <!-- <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" /> -->
+        <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <!-- <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" /> -->
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
@@ -17,7 +17,7 @@
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="WindowTitleBar/Themes/WindowTitleBarThemes.axaml" />
         <!-- <ResourceInclude Source="Card/Themes/CardThemes.axaml" /> -->
-        <!-- <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" /> -->
+        <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" />
         <!-- <ResourceInclude Source="Collapse/Themes/CollapseItemThemes.axaml" /> -->
         <!-- <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" /> -->
         <!-- <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" /> -->

@@ -6,6 +6,8 @@ namespace AtomUIGallery.Localization
     public enum CaseNavigationLangResourceKind
     {
         DataDisplay,
+        DataDisplay_Avatar,
+        DataDisplay_Carousel,
         DataEntry,
         Feedback,
         Feedback_Alert,

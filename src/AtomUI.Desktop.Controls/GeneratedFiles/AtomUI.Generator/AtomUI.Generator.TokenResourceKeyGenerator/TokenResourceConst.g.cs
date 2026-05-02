@@ -51,6 +51,21 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         Padding
     }
 
+    public enum AvatarTokenKind
+    {
+        AvatarBg,
+        AvatarColor,
+        ContainerSize,
+        ContainerSizeLG,
+        ContainerSizeSM,
+        GroupBorderColor,
+        GroupOverlapping,
+        GroupSpace,
+        TextFontSize,
+        TextFontSizeLG,
+        TextFontSizeSM
+    }
+
     public enum BreadcrumbTokenKind
     {
         BreadcrumbItemContentPadding,
@@ -872,6 +887,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ArrowDecoratedBoxTokenResourceExtension(ArrowDecoratedBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class AvatarTokenResourceExtension : TokenResourceExtension<AvatarTokenKind>
+    {
+        public AvatarTokenResourceExtension()
+        {
+        }
+
+        public AvatarTokenResourceExtension(AvatarTokenKind kind) : base(kind)
         {
         }
     }
