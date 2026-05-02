@@ -24,6 +24,7 @@ internal class zh_CN : LanguageProvider
     public const string Navigation_DropdownButton = "DropdownButton 下拉按钮";
     public const string DataEntry = "数据录入";
     public const string DataEntry_CheckBox = "CheckBox 多选框";
+    public const string DataEntry_ToggleSwitch = "ToggleSwitch 开关";
     public const string DataEntry_RadioButton = "RadioButton 单选框";
     public const string DataEntry_Rate = "Rate 评分";
     public const string DataDisplay = "数据展示";

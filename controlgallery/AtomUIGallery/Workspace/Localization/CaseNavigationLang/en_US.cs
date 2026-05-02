@@ -24,6 +24,7 @@ internal class en_US : LanguageProvider
     public const string Navigation_DropdownButton = "DropdownButton";
     public const string DataEntry = "Data Entry";
     public const string DataEntry_CheckBox = "CheckBox";
+    public const string DataEntry_ToggleSwitch = "ToggleSwitch";
     public const string DataEntry_RadioButton = "RadioButton";
     public const string DataEntry_Rate = "Rate";
     public const string DataDisplay = "Data Display";
