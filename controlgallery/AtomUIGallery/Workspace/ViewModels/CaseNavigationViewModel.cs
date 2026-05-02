@@ -81,6 +81,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(RadioButtonViewModel.ID, () => new RadioButtonViewModel(HostScreen));
         _showCaseViewModelFactories.Add(RateViewModel.ID, () => new RateViewModel(HostScreen));
         _showCaseViewModelFactories.Add(SliderViewModel.ID, () => new SliderViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(TagViewModel.ID, () => new TagViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)
