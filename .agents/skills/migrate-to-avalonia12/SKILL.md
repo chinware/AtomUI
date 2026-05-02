@@ -153,29 +153,64 @@ When migrating a control module, the following files do NOT need breaking-change
 
 These files contain only data declarations (token values, string resources) with no Avalonia API usage that could be affected by breaking changes. Scanning them wastes time.
 
-### 14. ShowCase migration must preserve original functionality and layout
+### 14. Preserve behavior and functionality during migration
 
-When migrating a ShowCase from `release/5.0` to `release/6.0`, you MUST preserve the original functionality, layout, and initialization:
+**CRITICAL PRINCIPLE:** Migration to Avalonia 12 or code optimization MUST NOT change the control's behavior, functionality, or user-facing features. This applies to both controls and their ShowCases.
 
-**CRITICAL RULES:**
-1. **Do NOT change the layout structure** — Keep all original containers (StackPanel, WrapPanel, Grid, Border, etc.) with their exact properties (HorizontalAlignment, Orientation, Spacing, Margin, ColumnDefinitions, RowDefinitions, etc.)
-2. **Do NOT remove or simplify showcase items** — If the original has 3 CheckBoxGroup examples, keep all 3. If it shows UnChecked/Indeterminate/Checked states, keep all 3.
-3. **Do NOT change element content** — If the original says "Checkbox", don't change it to "CheckBox". If it uses "A, B, C, D, D", don't change it to "Apple, Pear, Orange".
-4. **Do NOT remove Styles** — If the original has `ShowCasePanel.Styles`, keep it exactly as-is.
-5. **Do NOT forget ViewModel initialization** — Copy ALL property initializations from the constructor (initial values, default states, etc.). Missing initialization causes incorrect initial UI state.
-6. **Do NOT remove CommandParameter bindings** — If the original uses `CommandParameter="{Binding ElementName=...}"`, keep it. Don't assume ReactiveUI bindings can replace all patterns.
+#### For Control Migration:
+
+**What MUST be preserved:**
+1. **All public APIs** — Properties, methods, events, attached properties must remain unchanged
+2. **Control behavior** — User interactions, state transitions, visual feedback must work identically
+3. **Default values** — All property defaults must match the original
+4. **Event firing order** — Event sequences must remain the same
+5. **Visual appearance** — Layout, styling, animations must look identical (unless explicitly fixing a bug)
+6. **Data binding support** — All bindable properties must remain bindable
+7. **Template structure** — Control template parts and their roles must be preserved
+
+**What you CAN change for Avalonia 12:**
+- Replace removed Avalonia 11 APIs with Avalonia 12 equivalents (e.g., `IDataObject` → `IAsyncDataTransfer`)
+- Use ReflectionExtensions for internalized Avalonia APIs (e.g., `IRenderRoot`, `ILayoutRoot`)
+- Update namespace imports for Avalonia 12 compatibility
+- Optimize internal implementation (e.g., reduce allocations, improve performance) WITHOUT changing behavior
+- Fix actual bugs (but document them clearly in commit message)
+
+**What you CANNOT change:**
+- Remove features or properties "because they seem unused"
+- Simplify logic "to make it cleaner" if it changes behavior
+- Change default values "to match other controls"
+- Skip initialization steps "because they seem redundant"
+- Remove event handlers "because they look empty" (they may be overridden in derived classes)
+
+#### For ShowCase Migration:
+
+**What MUST be preserved:**
+1. **Layout structure** — Keep all original containers (StackPanel, WrapPanel, Grid, Border, etc.) with their exact properties (HorizontalAlignment, Orientation, Spacing, Margin, ColumnDefinitions, RowDefinitions, etc.)
+2. **All showcase items** — If the original has 3 CheckBoxGroup examples, keep all 3. If it shows UnChecked/Indeterminate/Checked states, keep all 3.
+3. **Element content** — If the original says "Checkbox", don't change it to "CheckBox". If it uses "A, B, C, D, D", don't change it to "Apple, Pear, Orange".
+4. **Styles** — If the original has `ShowCasePanel.Styles`, keep it exactly as-is.
+5. **ViewModel initialization** — Copy ALL property initializations from the constructor (initial values, default states, etc.). Missing initialization causes incorrect initial UI state.
+6. **Command logic** — Preserve all command handler logic, helper methods, and state update sequences. Do NOT simplify or "optimize" logic that changes behavior.
+7. **Property types** — Keep exact property types (e.g., `IList<T>?` vs `IList?`, `bool` vs `bool?`). Type changes can break binding or change null-handling behavior.
+8. **CommandParameter bindings** — If the original uses `CommandParameter="{Binding ElementName=...}"`, keep it. Don't assume ReactiveUI bindings can replace all patterns.
 
 **What you CAN change for Avalonia 12:**
 - Add `xmlns:vm="using:..."` and `x:DataType="vm:XxxViewModel"` for compiled bindings
 - Change ViewModel base class from `ShowCaseViewModelBase` to `ReactiveObject, IRoutableViewModel` (release/6.0 pattern)
+- Remove `IActivatableViewModel` and `ViewModelActivator` (release/6.0 doesn't use them)
+- Change `EntityKey ID` to `const string ID` (release/6.0 pattern)
+- Change `ReactiveCommand<Button, Unit>` to `ReactiveCommand<Unit, Unit>` and remove sender parameters (Avalonia 12 optimization)
 - Add `using ReactiveUI.Avalonia` and `using System.Reactive.Disposables.Fluent` if needed
 - Adjust namespace imports for Avalonia 12 compatibility
 
 **Verification checklist before committing:**
 1. Compare line-by-line with the original AXAML — every container, every property, every showcase item
 2. Compare ViewModel constructor initialization — every property must have its initial value
-3. Build and verify no compilation errors
-4. If you removed or simplified anything, you did it wrong — revert and copy exactly
+3. Compare all command handler logic — every helper method, every state update sequence
+4. Compare property types — `IList<T>?` vs `IList?`, `bool` vs `bool?`, etc.
+5. Build and verify no compilation errors
+6. Test the ShowCase — verify all interactions work identically to release/5.0
+7. If you removed, simplified, or changed any logic/layout/types, you did it wrong — revert and copy exactly, then apply ONLY Avalonia 12 compatibility changes
 
 ## Execution Steps
 
