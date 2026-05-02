@@ -12,13 +12,13 @@
                     Rows="2"
                     RowSpacing="1">
                     <atom:IconButton
-                        Name="{x:Static atom:ButtonSpinnerThemeConstants.IncreaseButtonPart}"
+                        Name="PART_IncreaseButton"
                         Icon="{antdicons:AntDesignIconProvider UpOutlined}"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
                         BackgroundSizing="InnerBorderEdge"/>
                     <atom:IconButton
-                        Name="{x:Static atom:ButtonSpinnerThemeConstants.DecreaseButtonPart}"
+                        Name="PART_DecreaseButton"
                         Icon="{antdicons:AntDesignIconProvider DownOutlined}"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"

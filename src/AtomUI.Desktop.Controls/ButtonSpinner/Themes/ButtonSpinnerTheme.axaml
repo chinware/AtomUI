@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:ButtonSpinnerDecoratedBox
-                    Name="{x:Static atom:ButtonSpinnerThemeConstants.DecoratedBoxPart}"
+                    Name="PART_DecoratedBox"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOnTemplate}"
                     RightAddOn="{TemplateBinding RightAddOn}"

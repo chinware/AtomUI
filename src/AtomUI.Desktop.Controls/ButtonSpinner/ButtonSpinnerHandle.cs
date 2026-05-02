@@ -1,6 +1,5 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -61,8 +60,8 @@ internal class ButtonSpinnerHandle : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        IncreaseButton = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.IncreaseButtonPart);
-        DecreaseButton = e.NameScope.Find<IconButton>(ButtonSpinnerThemeConstants.DecreaseButtonPart);
+        IncreaseButton = e.NameScope.Find<IconButton>("PART_IncreaseButton");
+        DecreaseButton = e.NameScope.Find<IconButton>("PART_DecreaseButton");
         ButtonsCreated?.Invoke(this, EventArgs.Empty);
     }
     

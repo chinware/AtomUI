@@ -92,7 +92,7 @@
                         </Border>
 
                         <ContentPresenter
-                            Name="{x:Static atom:ButtonSpinnerThemeConstants.SpinnerHandlePart}"
+                            Name="PART_SpinnerHandle"
                             ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
                             Content="{TemplateBinding SpinnerContent}"
                             Opacity="{TemplateBinding HandleOpacity}">

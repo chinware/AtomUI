@@ -1,6 +1,5 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -301,7 +300,7 @@ public class ButtonSpinner : Spinner,
         {
             _spinnerHandle.ButtonsCreated -= HandleButtonCreated;
         }
-        DecoratedBox = e.NameScope.Find<ButtonSpinnerDecoratedBox>(ButtonSpinnerThemeConstants.DecoratedBoxPart);
+        DecoratedBox = e.NameScope.Find<ButtonSpinnerDecoratedBox>("PART_DecoratedBox");
         base.OnApplyTemplate(e);
         if (DecoratedBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
         {
@@ -329,8 +328,8 @@ public class ButtonSpinner : Spinner,
             {
                 Icon = leftAddOnIcon
             };
-            iconPresenter[SizeTypeProperty] = this[SizeTypeProperty];
-            LeftAddOn = iconPresenter;
+            iconPresenter[!SizeTypeProperty] = this[!SizeTypeProperty];
+            LeftAddOn                        = iconPresenter;
         }
         if (InnerLeftContent is PathIcon innerLeftContent)
         {
@@ -338,8 +337,8 @@ public class ButtonSpinner : Spinner,
             {
                 Icon = innerLeftContent
             };
-            iconPresenter[SizeTypeProperty] = this[SizeTypeProperty];
-            InnerLeftContent                = iconPresenter;
+            iconPresenter[!SizeTypeProperty] = this[!SizeTypeProperty];
+            InnerLeftContent                 = iconPresenter;
         }
         if (RightAddOn is PathIcon rightAddOnIcon)
         {
@@ -347,8 +346,8 @@ public class ButtonSpinner : Spinner,
             {
                 Icon = rightAddOnIcon
             };
-            iconPresenter[SizeTypeProperty] = this[SizeTypeProperty];
-            RightAddOn                      = iconPresenter;
+            iconPresenter[!SizeTypeProperty] = this[!SizeTypeProperty];
+            RightAddOn                       = iconPresenter;
         }
         if (InnerRightContent is PathIcon innerRightContent)
         {
@@ -356,8 +355,8 @@ public class ButtonSpinner : Spinner,
             {
                 Icon = innerRightContent
             };
-            iconPresenter[SizeTypeProperty] = this[SizeTypeProperty];
-            InnerRightContent               = iconPresenter;
+            iconPresenter[!SizeTypeProperty] = this[!SizeTypeProperty];
+            InnerRightContent                = iconPresenter;
         }
     }
     
@@ -423,21 +422,6 @@ public class ButtonSpinner : Spinner,
                     e.Handled = true;
                 }
                 break;
-            }
-        }
-    }
-    
-    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
-    {
-        base.OnPointerWheelChanged(e);
-
-        if (AllowSpin && IsKeyboardFocusWithin)
-        {
-            if (e.Delta.Y != 0)
-            {
-                var spinnerEventArgs = new SpinEventArgs(SpinEvent, (e.Delta.Y < 0) ? SpinDirection.Decrease : SpinDirection.Increase, true);
-                OnSpin(spinnerEventArgs);
-                e.Handled = true;
             }
         }
     }
