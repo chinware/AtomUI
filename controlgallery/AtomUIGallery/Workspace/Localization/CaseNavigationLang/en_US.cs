@@ -22,6 +22,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry = "Data Entry";
     public const string DataDisplay = "Data Display";
     public const string DataDisplay_Avatar = "Avatar";
+    public const string DataDisplay_Calendar = "Calendar";
     public const string DataDisplay_Carousel = "Carousel";
     public const string Feedback = "Feedback";
     public const string Feedback_Alert = "Alert";

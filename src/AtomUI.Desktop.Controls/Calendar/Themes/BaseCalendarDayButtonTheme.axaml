@@ -46,16 +46,16 @@
             <Setter Property="LineHeight" Value="{atom:CalendarTokenResource CellLineHeight}" />
         </Style>
         
-        <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
-        </Style>
-        
         <Style Selector="^:inactive">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
         
         <Style Selector="^:today">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+        </Style>
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
         </Style>
         
         <Style Selector="^:selected:not(:inactive)">

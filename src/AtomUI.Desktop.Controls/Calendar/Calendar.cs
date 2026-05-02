@@ -1304,7 +1304,18 @@ public class Calendar : TemplatedControl, IMotionAwareControl
                     // It is SingleRange
                     for (i = startIndex; i <= endIndex; i++)
                     {
-                        ((CalendarDayButton)monthControl.MonthView!.Children[i]).IsSelected = false;
+                        if (monthControl.MonthView!.Children[i] is CalendarDayButton b)
+                        {
+                            var d = b.DataContext as DateTime?;
+
+                            if (d.HasValue)
+                            {
+                                if (!SelectedDates.Contains(d.Value))
+                                {
+                                    b.IsSelected = false;
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -22,6 +22,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry = "数据录入";
     public const string DataDisplay = "数据展示";
     public const string DataDisplay_Avatar = "Avatar 头像";
+    public const string DataDisplay_Calendar = "Calendar 日历";
     public const string DataDisplay_Carousel = "Carousel 走马灯";
     public const string Feedback = "反馈";
     public const string Feedback_Alert = "Alert 警告提示";

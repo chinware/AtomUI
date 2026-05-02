@@ -579,14 +579,19 @@ internal class CalendarItem : TemplatedControl
                 childButton.IsToday = CheckDayIsTodayState(dateToAdd);
 
                 // SET IF THE DAY IS SELECTED OR NOT
-                childButton.IsSelected = false;
+                var isSelected = false;
                 foreach (var item in Owner.SelectedDates)
                 {
                     // Since we should be comparing the Date values not
                     // DateTime values, we can't use
                     // Owner.SelectedDates.Contains(dateToAdd) directly
-                    childButton.IsSelected |= DateTimeHelper.CompareDays(dateToAdd, item) == 0;
+                    if (DateTimeHelper.CompareDays(dateToAdd, item) == 0)
+                    {
+                        isSelected = true;
+                        break;
+                    }
                 }
+                childButton.IsSelected = isSelected;
 
                 // SET THE FOCUS ELEMENT
                 if (Owner.LastSelectedDate != null)

@@ -7,6 +7,7 @@ namespace AtomUIGallery.Localization
     {
         DataDisplay,
         DataDisplay_Avatar,
+        DataDisplay_Calendar,
         DataDisplay_Carousel,
         DataEntry,
         Feedback,
