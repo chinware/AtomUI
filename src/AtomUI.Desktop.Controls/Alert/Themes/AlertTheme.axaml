@@ -30,7 +30,7 @@
                         </Panel>
                         
                         <atom:IconButton
-                            Name="{x:Static atom:AlertThemeConstants.CloseBtnPart}"
+                            Name="PART_CloseBtn"
                             IsVisible="{TemplateBinding IsClosable}"
                             Icon="{TemplateBinding CloseIcon}"
                             DockPanel.Dock="Right" />

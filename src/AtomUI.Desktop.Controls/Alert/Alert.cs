@@ -1,5 +1,4 @@
-﻿using AtomUI.Desktop.Controls.Themes;
-using AtomUI.Icons.AntDesign;
+﻿using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -156,7 +155,7 @@ public class Alert : TemplatedControl
         {
             _closeButton.Click -= HandleCloseBtnClick;
         }
-        _closeButton = e.NameScope.Find<IconButton>(AlertThemeConstants.CloseBtnPart);
+        _closeButton = e.NameScope.Find<IconButton>("PART_CloseBtn");
         if (_closeButton != null)
         {
             _closeButton.Click += HandleCloseBtnClick;
