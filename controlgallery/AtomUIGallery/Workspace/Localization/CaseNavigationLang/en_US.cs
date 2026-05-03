@@ -42,6 +42,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay_GroupBox = "GroupBox";
     public const string DataDisplay_Badge = "Badge";
     public const string DataDisplay_Timeline = "Timeline";
+    public const string DataDisplay_QRCode = "QRCode";
     public const string Feedback = "Feedback";
     public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";

@@ -44,6 +44,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<ResultViewModel, ResultShowCase>(() => new ResultShowCase());
         locator.Map<BadgeViewModel, BadgeShowCase>(() => new BadgeShowCase());
         locator.Map<TimelineViewModel, TimelineShowCase>(() => new TimelineShowCase());
+        locator.Map<QRCodeViewModel, QRCodeShowCase>(() => new QRCodeShowCase());
         locator.Map<LineEditViewModel, LineEditShowCase>(() => new LineEditShowCase());
     }
 }

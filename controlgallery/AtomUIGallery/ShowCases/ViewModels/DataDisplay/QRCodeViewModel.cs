@@ -1,0 +1,58 @@
+﻿using System.Collections;
+using System.Reactive;
+using AtomUI.Controls;
+using ReactiveUI;
+
+namespace AtomUIGallery.ShowCases.ViewModels;
+
+public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
+{
+    public const string ID = "QRCode";
+
+    public IScreen HostScreen { get; }
+
+    public string UrlPathSegment { get; } = ID;
+    private const double MinSize = 48;
+    private const double MaxSize = 300;
+
+    private string _qrCodeInput = "https://atomui.net";
+
+    public string QRCodeInput
+    {
+        get => _qrCodeInput;
+        set => this.RaiseAndSetIfChanged(ref _qrCodeInput, value);
+    }
+
+    private int _size = 160;
+
+    public int Size
+    {
+        get => _size;
+        set => this.RaiseAndSetIfChanged(ref _size, value);
+    }
+
+    private readonly ObservableAsPropertyHelper<int> _iconSize;
+
+    public int IconSize => _iconSize.Value;
+
+    private IList? _eccLevels;
+
+    public IList? EccLevels
+    {
+        get => _eccLevels;
+        set => this.RaiseAndSetIfChanged(ref _eccLevels, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> SmallerCommand { get; }
+    public ReactiveCommand<Unit, Unit> LargerCommand { get; }
+
+    public QRCodeViewModel(IScreen screen)
+    {
+        HostScreen = screen;
+        var smallerCanExecute = this.WhenAnyValue(x => x.Size, size => size > MinSize);
+        var largerCanExecute  = this.WhenAnyValue(x => x.Size, size => size < MaxSize);
+        SmallerCommand = ReactiveCommand.Create(() => { Size -= 10; }, smallerCanExecute);
+        LargerCommand  = ReactiveCommand.Create(() => { Size += 10; }, largerCanExecute);
+        _iconSize = this.WhenAnyValue(x => x.Size, size => size / 4).ToProperty(this, x => x.IconSize);
+    }
+}

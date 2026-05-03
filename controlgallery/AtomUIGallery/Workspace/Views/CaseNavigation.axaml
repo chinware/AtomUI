@@ -87,6 +87,8 @@
                               ItemKey="{x:Static viewmodels:BadgeViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Timeline}"
                               ItemKey="{x:Static viewmodels:TimelineViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_QRCode}"
+                              ItemKey="{x:Static viewmodels:QRCodeViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"
