@@ -91,6 +91,8 @@
                               ItemKey="{x:Static viewmodels:TimelineViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_QRCode}"
                               ItemKey="{x:Static viewmodels:QRCodeViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_InfoFlyout}"
+                              ItemKey="{x:Static viewmodels:InfoFlyoutViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"

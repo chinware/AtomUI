@@ -15,6 +15,7 @@ namespace AtomUIGallery.Localization
         DataDisplay_Empty,
         DataDisplay_Expander,
         DataDisplay_GroupBox,
+        DataDisplay_InfoFlyout,
         DataDisplay_QRCode,
         DataDisplay_Segmented,
         DataDisplay_Tag,

@@ -466,6 +466,18 @@ internal class FlyoutStateHelper : AvaloniaObject
         {
             if (Flyout is { IsOpen: true } && !_isFlyoutShowing && !IsFocusWithinFlyoutScope())
             {
+                var topLevel = AnchorTarget != null ? TopLevel.GetTopLevel(AnchorTarget) : null;
+                var currentFocused = topLevel?.FocusManager.GetFocusedElement();
+
+                if (currentFocused is Control focusedControl)
+                {
+                    var focusedParent = focusedControl.FindLogicalAncestorOfType<FlyoutHost>();
+                    if (focusedParent != null && focusedParent.Flyout != null && focusedParent.Flyout.IsOpen)
+                    {
+                        return;
+                    }
+                }
+
                 HideFlyout(immediately: true);
             }
         });
