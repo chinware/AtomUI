@@ -54,6 +54,7 @@ internal class en_US : LanguageProvider
     public const string Feedback_Spin = "Spin";
     public const string Feedback_Result = "Result";
     public const string Feedback_Watermark = "Watermark";
+    public const string Feedback_ProgressBar = "ProgressBar";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

@@ -113,6 +113,8 @@
                               ItemKey="{x:Static viewmodels:ResultViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Watermark}"
                               ItemKey="{x:Static viewmodels:WatermarkViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_ProgressBar}"
+                              ItemKey="{x:Static viewmodels:ProgressBarViewModel.ID}" />
         </atom:NavMenuNode>
     </atom:NavMenu>
 </UserControl>

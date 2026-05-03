@@ -54,6 +54,7 @@ internal class zh_CN : LanguageProvider
     public const string Feedback_Spin = "Spin 加载中";
     public const string Feedback_Result = "Result 结果";
     public const string Feedback_Watermark = "Watermark 水印";
+    public const string Feedback_ProgressBar = "ProgressBar 进度条";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }
