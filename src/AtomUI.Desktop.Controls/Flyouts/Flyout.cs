@@ -56,7 +56,10 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     
     public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
         PopupControl.ShouldUseOverlayLayerProperty.AddOwner<Flyout>();
-    
+
+    public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
+        AvaloniaPopup.IsLightDismissEnabledProperty.AddOwner<Flyout>();
+
     public BoxShadows PopupRootShadow
     {
         get => GetValue(PopupRootShadowProperty);
@@ -124,6 +127,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         set => SetValue(ShouldUseOverlayLayerProperty, value);
     }
 
+    public bool IsLightDismissEnabled
+    {
+        get => GetValue(IsLightDismissEnabledProperty);
+        set => SetValue(IsLightDismissEnabledProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
@@ -168,6 +177,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     static Flyout()
     {
         IsShowArrowProperty.OverrideDefaultValue<Flyout>(false);
+        IsLightDismissEnabledProperty.OverrideDefaultValue<Flyout>(true);
     }
 
     public Flyout()
@@ -183,22 +193,22 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         var popup = new PopupControl
         {
             WindowManagerAddShadowHint = false,
-            IsLightDismissEnabled      = false,
         };
 
-        popup[!PopupControl.RequestedPlacementProperty]    = this[!PlacementProperty];
-        popup[!PopupControl.PlacementAnchorProperty]       = this[!PlacementAnchorProperty];
-        popup[!PopupControl.PlacementGravityProperty]      = this[!PlacementGravityProperty];
-        popup[!PopupControl.PopupRootShadowProperty]       = this[!PopupRootShadowProperty];
-        popup[!PopupControl.OverlayHostShadowProperty]     = this[!OverlayHostShadowProperty];
-        popup[!PopupControl.MotionDurationProperty]        = this[!MotionDurationProperty];
-        popup[!PopupControl.OpenMotionProperty]            = this[!OpenMotionProperty];
-        popup[!PopupControl.CloseMotionProperty]           = this[!CloseMotionProperty];
-        popup[!PopupControl.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-        popup[!PopupControl.MarginToAnchorProperty]        = this[!MarginToAnchorProperty];
-        popup[!PopupControl.IsPointAtCenterProperty]       = this[!IsPointAtCenterProperty];
-        popup[!PopupControl.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
-        this[!IsPopupFlippedProperty]                      = popup[!PopupControl.IsFlippedProperty];
+        popup[!PopupControl.RequestedPlacementProperty]     = this[!PlacementProperty];
+        popup[!PopupControl.PlacementAnchorProperty]        = this[!PlacementAnchorProperty];
+        popup[!PopupControl.PlacementGravityProperty]       = this[!PlacementGravityProperty];
+        popup[!PopupControl.PopupRootShadowProperty]        = this[!PopupRootShadowProperty];
+        popup[!PopupControl.OverlayHostShadowProperty]      = this[!OverlayHostShadowProperty];
+        popup[!PopupControl.MotionDurationProperty]         = this[!MotionDurationProperty];
+        popup[!PopupControl.OpenMotionProperty]             = this[!OpenMotionProperty];
+        popup[!PopupControl.CloseMotionProperty]            = this[!CloseMotionProperty];
+        popup[!PopupControl.IsMotionEnabledProperty]        = this[!IsMotionEnabledProperty];
+        popup[!PopupControl.MarginToAnchorProperty]         = this[!MarginToAnchorProperty];
+        popup[!PopupControl.IsPointAtCenterProperty]        = this[!IsPointAtCenterProperty];
+        popup[!PopupControl.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayLayerProperty];
+        popup[!AvaloniaPopup.IsLightDismissEnabledProperty] = this[!IsLightDismissEnabledProperty];
+        this[!IsPopupFlippedProperty]                       = popup[!PopupControl.IsFlippedProperty];
 
         popup.Opened += this.OnPopupOpened;
         popup.Closed += this.OnPopupClosed;
