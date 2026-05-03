@@ -12,14 +12,14 @@
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}">
                     <Grid RowDefinitions="auto *">
-                        <ContentPresenter Name="{x:Static atom:HeaderedContentControlThemeConstants.HeaderPresenterPart}"
+                        <ContentPresenter Name="PART_HeaderPresenter"
                                           Content="{TemplateBinding Header}"
                                           RecognizesAccessKey="True"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Grid.Row="0" />
-                        <ContentPresenter Name="{x:Static atom:HeaderedContentControlThemeConstants.ContentPresenterPart}"
+                        <ContentPresenter Name="PART_ContentPresenter"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Content="{TemplateBinding Content}"
                                           RecognizesAccessKey="True"
