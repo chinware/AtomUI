@@ -28,9 +28,9 @@
                     <atom:SearchEditDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}" />
+                            <atom:InputClearIconButton Name="PART_ClearButton" />
                             <!-- 新增显示密码按钮 -->
-                            <atom:RevealButton Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}" />
+                            <atom:RevealButton Name="PART_RevealButton" />
                             <ContentPresenter
                                 Name="InnerRightContentPresenter"
                                 VerticalAlignment="Stretch"

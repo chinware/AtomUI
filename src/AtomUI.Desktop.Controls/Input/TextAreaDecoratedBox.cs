@@ -110,7 +110,7 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        ScrollViewer = e.NameScope.Find<ScrollViewer>(TextAreaThemeConstants.ScrollViewerPart);
+        ScrollViewer = e.NameScope.Find<ScrollViewer>("PART_ScrollViewer");
         
         if (_rightContentAddOn != null)
         {

@@ -35,7 +35,7 @@
                                 <StackPanel Orientation="Vertical"
                                             Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                                     <atom:InputClearIconButton
-                                        Name="{x:Static atom:TextAreaThemeConstants.ClearButtonPart}"
+                                        Name="PART_ClearButton"
                                         VerticalAlignment="Center" />
                                     <ContentPresenter
                                         Name="PART_FormFeedBack"
@@ -83,7 +83,7 @@
                                     Focusable="False" />
                             </Panel>
                         </atom:TextAreaDecoratedBox>
-                        <atom:ResizeHandle Name="{x:Static atom:TextAreaThemeConstants.ResizeHandle}"
+                        <atom:ResizeHandle Name="PART_ResizeHandle"
                                            HorizontalAlignment="Right"
                                            VerticalAlignment="Bottom"
                                            Cursor="SizeNorthSouth" />

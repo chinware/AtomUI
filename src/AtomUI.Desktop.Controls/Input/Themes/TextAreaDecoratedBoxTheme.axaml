@@ -31,7 +31,7 @@
                                 ContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                                 IsVisible="{TemplateBinding ContentLeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <Panel>
-                                <atom:ScrollViewer Name="{x:Static atom:TextAreaThemeConstants.ScrollViewerPart}"
+                                <atom:ScrollViewer Name="PART_ScrollViewer"
                                                    IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
                                                    AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}"
                                                    HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"

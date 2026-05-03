@@ -28,10 +28,10 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
-                                Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}" />
+                                Name="PART_ClearButton" />
                             <!-- 新增显示密码按钮 -->
                             <atom:RevealButton
-                                Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}" />
+                                Name="PART_RevealButton" />
                             <ContentPresenter
                                 Name="FormFeedBack"
                                 VerticalAlignment="Stretch"

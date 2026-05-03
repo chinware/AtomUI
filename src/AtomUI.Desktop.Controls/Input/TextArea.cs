@@ -242,13 +242,13 @@ public class TextArea : AvaloniaTextBox,
             _clearButton.Click -= HandleClearButtonClicked;
         }
 
-        _clearButton   = e.NameScope.Find<IconButton>(TextAreaThemeConstants.ClearButtonPart);
+        _clearButton   = e.NameScope.Find<IconButton>("PART_ClearButton");
         if (_clearButton != null)
         {
             _clearButton.Click += HandleClearButtonClicked;
         }
-        
-        _resizeHandle = e.NameScope.Find<ResizeHandle>(TextAreaThemeConstants.ResizeHandle);
+
+        _resizeHandle = e.NameScope.Find<ResizeHandle>("PART_ResizeHandle");
         if (_resizeHandle != null)
         {
             _resizeHandle.Owner = this;
@@ -265,7 +265,7 @@ public class TextArea : AvaloniaTextBox,
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = new CompositeDisposable();
 
-        if (e.NameScope.Find<InputClearIconButton>(TextAreaThemeConstants.ClearButtonPart) is { } clearButton)
+        if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
             _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
                 new Binding(nameof(IsMotionEnabled)) { Source = this }));

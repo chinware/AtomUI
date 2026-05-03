@@ -240,7 +240,7 @@ public class TextBox : AvaloniaTextBox,
             _clearButton.Click -= HandleClearButtonClicked;
         }
         
-        _clearButton = e.NameScope.Find<IconButton>(TextBoxThemeConstants.ClearButtonPart);
+        _clearButton = e.NameScope.Find<IconButton>("PART_ClearButton");
         if (_clearButton != null)
         {
             _clearButton.Click += HandleClearButtonClicked;

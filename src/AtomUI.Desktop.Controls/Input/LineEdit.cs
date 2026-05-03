@@ -135,7 +135,7 @@ public class LineEdit : TextBox,
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = new CompositeDisposable();
 
-        if (e.NameScope.Find<InputClearIconButton>(TextBoxThemeConstants.ClearButtonPart) is { } clearButton)
+        if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
             _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
                 new Binding(nameof(ClearIcon)) { Source = this }));
@@ -145,7 +145,7 @@ public class LineEdit : TextBox,
                 new Binding(nameof(IsMotionEnabled)) { Source = this }));
         }
 
-        if (e.NameScope.Find<RevealButton>(TextBoxThemeConstants.RevealButtonPart) is { } revealButton)
+        if (e.NameScope.Find<RevealButton>("PART_RevealButton") is { } revealButton)
         {
             _contentRightAddOnBindings.Add(revealButton.Bind(ToggleButton.IsCheckedProperty,
                 new Binding(nameof(RevealPassword)) { Source = this, Mode = BindingMode.TwoWay }));

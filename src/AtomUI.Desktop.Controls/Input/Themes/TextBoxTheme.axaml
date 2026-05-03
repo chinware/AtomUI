@@ -32,14 +32,14 @@
                         Orientation="Horizontal"
                         DockPanel.Dock="Right">
                         <atom:InputClearIconButton
-                            Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
+                            Name="PART_ClearButton"
                             IsVisible="{TemplateBinding IsEffectiveShowClearButton}" 
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             Icon="{TemplateBinding ClearIcon}"
                             VerticalAlignment="Center"/>
                         <!-- 新增显示密码按钮 -->
                         <atom:RevealButton
-                            Name="{x:Static atom:TextBoxThemeConstants.RevealButtonPart}"
+                            Name="PART_RevealButton"
                             IsChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
                             IsVisible="{TemplateBinding IsEnableRevealButton}" 
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
