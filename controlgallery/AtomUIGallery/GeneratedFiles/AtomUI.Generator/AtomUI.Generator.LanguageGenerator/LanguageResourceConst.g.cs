@@ -12,6 +12,7 @@ namespace AtomUIGallery.Localization
         DataDisplay_Carousel,
         DataDisplay_Collapse,
         DataDisplay_Empty,
+        DataDisplay_Expander,
         DataDisplay_Segmented,
         DataDisplay_Tag,
         DataEntry,

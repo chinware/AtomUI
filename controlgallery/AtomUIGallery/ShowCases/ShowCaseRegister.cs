@@ -32,6 +32,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<CardViewModel, CardShowCase>(() => new CardShowCase());
         locator.Map<CollapseViewModel, CollapseShowCase>(() => new CollapseShowCase());
         locator.Map<EmptyViewModel, EmptyShowCase>(() => new EmptyShowCase());
+        locator.Map<ExpanderViewModel, ExpanderShowCase>(() => new ExpanderShowCase());
         locator.Map<CheckBoxViewModel, CheckBoxShowCase>(() => new CheckBoxShowCase());
         locator.Map<ToggleSwitchViewModel, ToggleSwitchShowCase>(() => new ToggleSwitchShowCase());
         locator.Map<RadioButtonViewModel, RadioButtonShowCase>(() => new RadioButtonShowCase());
