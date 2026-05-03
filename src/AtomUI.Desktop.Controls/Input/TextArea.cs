@@ -1,7 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using Avalonia;
@@ -297,12 +296,7 @@ public class TextArea : AvaloniaTextBox,
 
     internal void NotifyScrollViewerCreated(ScrollViewer scrollViewer)
     {
-        if (_scrollViewer != null)
-        {
-            _scrollViewer.ScrollChanged -= this.HandleScrollChanged;
-        }
-        _scrollViewer               =  scrollViewer;
-        _scrollViewer.ScrollChanged += this.HandleScrollChanged;
+        _scrollViewer = scrollViewer;
         this.SetScrollViewer(scrollViewer);
     }
 

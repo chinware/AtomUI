@@ -4,7 +4,6 @@ using System.Reflection;
 using AtomUI.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
-using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls.Utils;
 
@@ -22,11 +21,6 @@ internal static class TextBoxReflectionExtensions
     private static readonly Lazy<FieldInfo> TextPresenterFieldInfo = new Lazy<FieldInfo>(() => 
         typeof(AvaloniaTextBox).GetFieldInfoOrThrow("_presenter",
             BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy));
-    
-    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaTextBox))]
-    internal static readonly Lazy<MethodInfo> ScrollViewerScrollChangedMethodInfo = new Lazy<MethodInfo>(() =>
-        typeof(AvaloniaTextBox).GetMethodInfoOrThrow("ScrollViewer_ScrollChanged",
-            BindingFlags.Instance | BindingFlags.NonPublic));
     
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaTextBox))]
     internal static readonly Lazy<MethodInfo> GetVerticalSpaceBetweenScrollViewerAndPresenterMethodInfo = new Lazy<MethodInfo>(() =>
@@ -63,10 +57,6 @@ internal static class TextBoxReflectionExtensions
         return textPresenter;
     }
     
-    public static void HandleScrollChanged(this AvaloniaTextBox textBox, object? sender, ScrollChangedEventArgs e)
-    { 
-        ScrollViewerScrollChangedMethodInfo.Value.Invoke(textBox, [sender, e]);
-    }
 
     public static double GetVerticalSpaceBetweenScrollViewerAndPresenter(this AvaloniaTextBox textBox)
     {

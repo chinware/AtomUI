@@ -20,6 +20,7 @@ namespace AtomUIGallery.Localization
         DataDisplay_Timeline,
         DataEntry,
         DataEntry_CheckBox,
+        DataEntry_LineEdit,
         DataEntry_RadioButton,
         DataEntry_Rate,
         DataEntry_Slider,

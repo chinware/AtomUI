@@ -57,6 +57,8 @@
                               ItemKey="{x:Static viewmodels:RateViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Slider}"
                               ItemKey="{x:Static viewmodels:SliderViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_LineEdit}"
+                              ItemKey="{x:Static viewmodels:LineEditViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"

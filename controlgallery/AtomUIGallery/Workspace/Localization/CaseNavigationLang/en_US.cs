@@ -28,6 +28,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry_RadioButton = "RadioButton";
     public const string DataEntry_Rate = "Rate";
     public const string DataEntry_Slider = "Slider";
+    public const string DataEntry_LineEdit = "LineEdit";
     public const string DataDisplay = "Data Display";
     public const string DataDisplay_Avatar = "Avatar";
     public const string DataDisplay_Calendar = "Calendar";

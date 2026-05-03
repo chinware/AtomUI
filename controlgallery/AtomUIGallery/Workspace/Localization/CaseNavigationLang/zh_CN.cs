@@ -28,6 +28,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry_RadioButton = "RadioButton 单选框";
     public const string DataEntry_Rate = "Rate 评分";
     public const string DataEntry_Slider = "Slider 滑动输入条";
+    public const string DataEntry_LineEdit = "LineEdit 输入框";
     public const string DataDisplay = "数据展示";
     public const string DataDisplay_Avatar = "Avatar 头像";
     public const string DataDisplay_Calendar = "Calendar 日历";
