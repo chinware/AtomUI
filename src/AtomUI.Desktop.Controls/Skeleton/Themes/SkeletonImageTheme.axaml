@@ -14,12 +14,12 @@
     
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:AbstractSkeleton">
-            <Panel Name="{x:Static atom:AbstractSkeletonThemeConstants.RootLayoutPart}">
-                <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ActiveAnimationLayerPart}"
+            <Panel Name="PART_RootLayout">
+                <Border Name="PART_ActiveAnimationLayer"
                         Background="{TemplateBinding AnimationLayerFill}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         IsVisible="{TemplateBinding IsActive}" />
-                <Border Name="{x:Static atom:AbstractSkeletonThemeConstants.ContentLayerPart}"
+                <Border Name="PART_ContentLayer"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <antdicons:ImageFilled Name="Image"

@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -64,7 +63,7 @@ public class SkeletonLine : AbstractSkeleton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _rootLayout               = e.NameScope.Find<Panel>(AbstractSkeletonThemeConstants.RootLayoutPart);
+        _rootLayout               = e.NameScope.Find<Panel>("PART_RootLayout");
         if (!IsFollowMode)
         {
             if (IsActive)

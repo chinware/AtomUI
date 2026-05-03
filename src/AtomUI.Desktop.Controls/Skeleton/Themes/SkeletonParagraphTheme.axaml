@@ -11,7 +11,7 @@
         
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel Orientation="Vertical" Name="{x:Static atom:SkeletonParagraphThemeConstants.LineLayoutPart}"/>
+                <StackPanel Orientation="Vertical" Name="PART_LineLayout"/>
             </ControlTemplate>
         </Setter>
         

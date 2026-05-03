@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -194,10 +193,10 @@ public class Skeleton : AbstractSkeleton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _avatar = e.NameScope.Find<SkeletonAvatar>(SkeletonThemeConstants.AvatarPart);
-        _title = e.NameScope.Find<SkeletonTitle>(SkeletonThemeConstants.TitlePart);
-        _paragraph = e.NameScope.Find<SkeletonParagraph>(SkeletonThemeConstants.ParagraphPart);
-        
+        _avatar = e.NameScope.Find<SkeletonAvatar>("PART_Avatar");
+        _title = e.NameScope.Find<SkeletonTitle>("PART_Title");
+        _paragraph = e.NameScope.Find<SkeletonParagraph>("PART_Paragraph");
+
         Debug.Assert(_avatar != null);
         Debug.Assert(_title != null);
         Debug.Assert(_paragraph != null);

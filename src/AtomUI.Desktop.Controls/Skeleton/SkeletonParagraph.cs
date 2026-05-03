@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -79,7 +78,7 @@ public class SkeletonParagraph : AbstractSkeleton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _linesLayout = e.NameScope.Find<StackPanel>(SkeletonParagraphThemeConstants.LineLayoutPart);
+        _linesLayout = e.NameScope.Find<StackPanel>("PART_LineLayout");
         BuildLines();
         if (!IsFollowMode)
         {

@@ -13,20 +13,20 @@
                 <Panel>
                     <DockPanel LastChildFill="True" IsVisible="{TemplateBinding IsContentVisible, Converter={x:Static BoolConverters.Not}}">
                         <atom:SkeletonAvatar DockPanel.Dock="Left"
-                                             Name="{x:Static atom:SkeletonThemeConstants.AvatarPart}"
+                                             Name="PART_Avatar"
                                              SizeType="{TemplateBinding AvatarSizeType}"
                                              Shape="{TemplateBinding AvatarShape}"
                                              Size="{TemplateBinding AvatarSize}"
                                              IsVisible="{TemplateBinding IsShowAvatar}"
                                              IsActive="{TemplateBinding IsActive}"/>
-                        <StackPanel Orientation="Vertical" 
-                                    Name="{x:Static atom:SkeletonThemeConstants.ContentPart}">
-                            <atom:SkeletonTitle Name="{x:Static atom:SkeletonThemeConstants.TitlePart}"
+                        <StackPanel Orientation="Vertical"
+                                    Name="PART_Content">
+                            <atom:SkeletonTitle Name="PART_Title"
                                                 IsVisible="{TemplateBinding IsShowTitle}"
                                                 IsRound="{TemplateBinding IsRound}"
                                                 LineWidth="{TemplateBinding TitleWidth}"
                                                 IsActive="{TemplateBinding IsActive}"/>
-                            <atom:SkeletonParagraph Name="{x:Static atom:SkeletonThemeConstants.ParagraphPart}"
+                            <atom:SkeletonParagraph Name="PART_Paragraph"
                                                     IsVisible="{TemplateBinding IsShowParagraph}"
                                                     IsRound="{TemplateBinding IsRound}"
                                                     Rows="{TemplateBinding ParagraphRows}"
