@@ -85,6 +85,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(SliderViewModel.ID, () => new SliderViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TagViewModel.ID, () => new TagViewModel(HostScreen));
         _showCaseViewModelFactories.Add(SegmentedViewModel.ID, () => new SegmentedViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(GroupBoxViewModel.ID, () => new GroupBoxViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

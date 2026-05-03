@@ -38,6 +38,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay_Expander = "Expander";
     public const string DataDisplay_Tag = "Tag";
     public const string DataDisplay_Segmented = "Segmented";
+    public const string DataDisplay_GroupBox = "GroupBox";
     public const string Feedback = "Feedback";
     public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";
