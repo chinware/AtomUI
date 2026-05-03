@@ -37,6 +37,8 @@ Use this skill when the user:
 - Asks to "改造" (transform/rework) code — e.g., "请将 xxx 改造为 Avalonia 12 标准"
 - Uses keywords like "升级", "upgrade", "迁移", "migrate", "重构", "refactor", "改造", "适配 Avalonia 12", "升级至 Avalonia 12 标准写法" in the context of Avalonia code changes
 - Any request involving modifying AtomUI source code to conform to Avalonia 12 standards, regardless of language (Chinese or English)
+- Asks to port/migrate ShowCase or Gallery files from release/5.0 to release/6.0 with Avalonia 12 adaptation — e.g., "把 release/5.0 的 XXXShowCase 移植到 release/6.0，按照 Avalonia 12 标准", "migrate XXXShowCase from release/5.0 to release/6.0 with Avalonia 12"
+- Any cross-branch file migration request that mentions "Avalonia 12 标准" or "Avalonia 12 standard"
 
 ## Fundamental Rules
 

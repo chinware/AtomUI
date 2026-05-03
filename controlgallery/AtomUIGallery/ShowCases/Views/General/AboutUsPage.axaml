@@ -8,9 +8,15 @@
         <Style Selector="Image#QinwareLogo">
             <Setter Property="Source" Value="/Assets/qinware-logo.png" />
         </Style>
+        <Style Selector="Image#TLAIC">
+            <Setter Property="Source" Value="/Assets/TLAIC.png" />
+        </Style>
         <Style Selector="views|AboutUsPage[IsDarkThemeMode=True]">
             <Style Selector="^ Image#QinwareLogo">
                 <Setter Property="Source" Value="/Assets/qinware-logo-white.png" />
+            </Style>
+            <Style Selector="^ Image#TLAIC">
+                <Setter Property="Source" Value="/Assets/TLAIC.png" />
             </Style>
         </Style>
     </UserControl.Styles>
@@ -18,11 +24,14 @@
                        VerticalScrollBarVisibility="Auto"
                        AllowAutoHide="False">
         <StackPanel MinWidth="800" MinHeight="600">
-            <Image
-                Name="QinwareLogo"
-                HorizontalAlignment="Center"
-                Width="300"
-                Margin="0, 80, 0, 20" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="50">
+                <Image
+                    Name="QinwareLogo"
+                    Width="300"/>
+                <Image
+                    Name="TLAIC"
+                    Width="200"/>
+            </StackPanel>
             <StackPanel Spacing="10" HorizontalAlignment="Center">
                 <atom:TextBlock HorizontalAlignment="Center" FontWeight="Bold" FontSize="18">
                     <Run Text="愿景：" Foreground="Red" />
