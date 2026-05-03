@@ -580,6 +580,12 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         RemainingColor
     }
 
+    public enum QRCodeTokenKind
+    {
+        QRCodeMaskBackgroundColor,
+        QRCodeTextColor
+    }
+
     public enum RadioButtonTokenKind
     {
         DotColorDisabled,
@@ -1318,6 +1324,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ProgressBarTokenResourceExtension(ProgressBarTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class QRCodeTokenResourceExtension : TokenResourceExtension<QRCodeTokenKind>
+    {
+        public QRCodeTokenResourceExtension()
+        {
+        }
+
+        public QRCodeTokenResourceExtension(QRCodeTokenKind kind) : base(kind)
         {
         }
     }
