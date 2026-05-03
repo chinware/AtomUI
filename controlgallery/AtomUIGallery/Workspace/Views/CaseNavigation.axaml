@@ -71,6 +71,8 @@
                               ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Collapse}"
                               ItemKey="{x:Static viewmodels:CollapseViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Empty}"
+                              ItemKey="{x:Static viewmodels:EmptyViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Tag}"
                               ItemKey="{x:Static viewmodels:TagViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Segmented}"
