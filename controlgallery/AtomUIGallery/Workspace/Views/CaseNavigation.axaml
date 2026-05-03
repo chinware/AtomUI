@@ -43,6 +43,8 @@
                               ItemKey="{x:Static viewmodels:ComboBoxViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_DropdownButton}"
                               ItemKey="{x:Static viewmodels:DropdownButtonViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_TabControl}"
+                              ItemKey="{x:Static viewmodels:TabControlViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry}"

@@ -22,6 +22,7 @@ internal class en_US : LanguageProvider
     public const string Navigation_ButtonSpinner = "ButtonSpinner";
     public const string Navigation_ComboBox = "ComboBox";
     public const string Navigation_DropdownButton = "DropdownButton";
+    public const string Navigation_TabControl = "TabControl";
     public const string DataEntry = "Data Entry";
     public const string DataEntry_CheckBox = "CheckBox";
     public const string DataEntry_ToggleSwitch = "ToggleSwitch";
