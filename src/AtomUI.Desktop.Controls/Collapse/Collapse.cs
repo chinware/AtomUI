@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -25,7 +24,7 @@ public enum CollapseExpandIconPosition
     End
 }
 
-[TemplatePart(CollapseThemeConstants.ItemsPresenterPart, typeof(ItemsPresenter))]
+[TemplatePart("PART_ItemsPresenter", typeof(ItemsPresenter))]
 public class Collapse : SelectingItemsControl, IMotionAwareControl
 {
     #region 公共属性定义

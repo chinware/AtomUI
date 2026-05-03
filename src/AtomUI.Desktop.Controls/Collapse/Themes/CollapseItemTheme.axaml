@@ -7,15 +7,15 @@
     <ControlTheme x:Key="{x:Type atom:CollapseItem}" TargetType="atom:CollapseItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel Name="{x:Static atom:CollapseItemThemeConstants.MainLayoutPart}"
+                <DockPanel Name="PART_MainLayout"
                            LastChildFill="True">
-                    <Border Name="{x:Static atom:CollapseItemThemeConstants.HeaderDecoratorPart}"
+                    <Border Name="PART_HeaderDecorator"
                             DockPanel.Dock="Top"
                             BorderThickness="{TemplateBinding HeaderBorderThickness}"
                             Padding="{TemplateBinding HeaderPadding}">
                         <Grid ColumnDefinitions="Auto, *, Auto, Auto">
                             <atom:IconButton
-                                Name="{x:Static atom:CollapseItemThemeConstants.ExpandButtonPart}"
+                                Name="PART_ExpandButton"
                                 Grid.Column="0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -23,7 +23,7 @@
                                 Icon="{TemplateBinding ExpandIcon}"
                                 IsVisible="{TemplateBinding IsShowExpandIcon}"
                                 IsEnabled="{TemplateBinding IsEnabled}"/>
-                            <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.HeaderPresenterPart}"
+                            <ContentPresenter Name="PART_HeaderPresenter"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Center"
                                               HorizontalContentAlignment="Left"
@@ -33,7 +33,7 @@
                                               ContentTemplate="{TemplateBinding HeaderTemplate}"
                                               Grid.Column="1" />
                             <ContentPresenter
-                                Name="{x:Static atom:CollapseItemThemeConstants.AddOnContentPresenterPart}"
+                                Name="PART_AddOnContentPresenter"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 HorizontalContentAlignment="Left"
@@ -44,12 +44,12 @@
                         </Grid>
                     </Border>
                     <atom:LayoutAwareMotionActor
-                        Name="{x:Static atom:CollapseItemThemeConstants.ContentMotionActorPart}"
+                        Name="PART_ContentMotionActor"
                         ClipToBounds="True">
-                        <ContentPresenter Name="{x:Static atom:CollapseItemThemeConstants.ContentPresenterPart}"
+                        <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          BorderThickness="{TemplateBinding ContentBorderThickness}" 
+                                          BorderThickness="{TemplateBinding ContentBorderThickness}"
                                           Padding="{TemplateBinding ContentPadding}"/>
                     </atom:LayoutAwareMotionActor>
                 </DockPanel>

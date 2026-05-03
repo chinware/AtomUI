@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using Avalonia;
@@ -253,9 +252,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             _expandButton.Click -= HandleExpandButtonClick;
         }
 
-        _motionActor           = e.NameScope.Find<BaseMotionActor>(CollapseItemThemeConstants.ContentMotionActorPart);
-        _headerDecorator       = e.NameScope.Find<Border>(CollapseItemThemeConstants.HeaderDecoratorPart);
-        _expandButton          = e.NameScope.Find<IconButton>(CollapseItemThemeConstants.ExpandButtonPart);
+        _motionActor           = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
+        _headerDecorator       = e.NameScope.Find<Border>("PART_HeaderDecorator");
+        _expandButton          = e.NameScope.Find<IconButton>("PART_ExpandButton");
 
         HandleSelectedChanged(true);
         if (_expandButton is not null)
