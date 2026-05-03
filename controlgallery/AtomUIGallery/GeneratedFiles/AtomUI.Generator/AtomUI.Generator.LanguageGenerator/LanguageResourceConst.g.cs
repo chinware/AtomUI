@@ -35,6 +35,7 @@ namespace AtomUIGallery.Localization
         Feedback_Result,
         Feedback_Skeleton,
         Feedback_Spin,
+        Feedback_Watermark,
         General,
         General_AboutUs,
         General_Button,

@@ -48,5 +48,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<LineEditViewModel, LineEditShowCase>(() => new LineEditShowCase());
         locator.Map<TabControlViewModel, TabControlShowCase>(() => new TabControlShowCase());
         locator.Map<InfoFlyoutViewModel, InfoFlyoutShowCase>(() => new InfoFlyoutShowCase());
+        locator.Map<WatermarkViewModel, WatermarkShowCase>(() => new WatermarkShowCase());
     }
 }

@@ -437,42 +437,166 @@ dotnet build src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
 
 ### Step 7: Gallery ShowCase registration (MANDATORY for ShowCase migration)
 
-When migrating a ShowCase from `release/5.0` to `release/6.0`, you MUST register it in the Gallery app. Missing registration causes the ShowCase to not display when clicking the menu item.
+When migrating a ShowCase from `release/5.0` to `release/6.0`, you MUST complete ALL 7 registration steps. Missing ANY step causes the ShowCase to not display or not appear in the menu.
 
-**Registration checklist:**
+**COMPLETE REGISTRATION CHECKLIST (ALL 7 STEPS REQUIRED):**
 
-1. **ViewModel registration** — Add to `controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs`:
-   ```csharp
-   private void RegisterShowCaseViewModels()
-   {
-       // ... existing registrations ...
-       _showCaseViewModelFactories.Add(YourViewModel.ID, () => new YourViewModel(HostScreen));
-   }
-   ```
+#### Step 7.1: Create ViewModel
+Location: `controlgallery/AtomUIGallery/ShowCases/ViewModels/{Category}/`
 
-2. **View mapping** — Add to `controlgallery/AtomUIGallery/ShowCases/ShowCaseRegister.cs`:
-   ```csharp
-   public void RegisterViews(DefaultViewLocator locator)
-   {
-       // ... existing mappings ...
-       locator.Map<YourViewModel, YourShowCase>(() => new YourShowCase());
-   }
-   ```
+```csharp
+using AtomUI.Controls;
+using ReactiveUI;
 
-3. **Navigation menu** — Add to `controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml`:
-   ```xml
-   <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Category_YourControl}"
-                     ItemKey="{x:Static viewmodels:YourViewModel.ID}" />
-   ```
+namespace AtomUIGallery.ShowCases.ViewModels;
 
-4. **Language resources** — Add to both `en_US.cs` and `zh_CN.cs` in `controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/`:
-   ```csharp
-   public const string Category_YourControl = "YourControl";
-   ```
+public class YourViewModel : ReactiveObject, IRoutableViewModel
+{
+    public static EntityKey ID = "YourControl";
 
-**Common mistake:** Registering the ViewModel in `CaseNavigationViewModel.cs` but forgetting the view mapping in `ShowCaseRegister.cs`. This causes the ShowCase to not display when clicking the menu item, even though the menu item appears and the build succeeds.
+    public IScreen HostScreen { get; }
 
-**Verification:** After registration, build the Gallery app and click the menu item to verify the ShowCase displays correctly.
+    public string UrlPathSegment { get; } = ID.ToString();
+
+    public YourViewModel(IScreen screen)
+    {
+        HostScreen = screen;
+    }
+}
+```
+
+#### Step 7.2: Create View (AXAML + Code-behind)
+Location: `controlgallery/AtomUIGallery/ShowCases/Views/{Category}/`
+
+**AXAML:**
+```xml
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.YourShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <!-- ShowCase items here -->
+    </gallery:ShowCasePanel>
+</UserControl>
+```
+
+**Code-behind:**
+```csharp
+using AtomUIGallery.ShowCases.ViewModels;
+using ReactiveUI;
+using ReactiveUI.Avalonia;
+
+namespace AtomUIGallery.ShowCases.Views;
+
+public partial class YourShowCase : ReactiveUserControl<YourViewModel>
+{
+    public YourShowCase()
+    {
+        this.WhenActivated(disposables => { });
+        InitializeComponent();
+    }
+}
+```
+
+#### Step 7.3: Register ViewModel in Navigation System
+File: `controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs`
+
+```csharp
+private void RegisterShowCaseViewModels()
+{
+    // ... existing registrations ...
+    _showCaseViewModelFactories.Add(YourViewModel.ID, () => new YourViewModel(HostScreen));
+}
+```
+
+#### Step 7.4: Register View Mapping
+File: `controlgallery/AtomUIGallery/ShowCases/ShowCaseRegister.cs`
+
+```csharp
+public void RegisterViews(DefaultViewLocator locator)
+{
+    // ... existing mappings ...
+    locator.Map<YourViewModel, YourShowCase>(() => new YourShowCase());
+}
+```
+
+#### Step 7.5: Add Menu Item (CRITICAL - MOST COMMONLY FORGOTTEN)
+File: `controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml`
+
+Add under the appropriate category node:
+```xml
+<atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Category_YourControl}"
+                  ItemKey="{x:Static viewmodels:YourViewModel.ID}" />
+```
+
+**Categories:**
+- General（通用）
+- Layout（布局）
+- Navigation（导航）
+- DataEntry（数据录入）
+- DataDisplay（数据展示）
+- Feedback（反馈）
+
+#### Step 7.6: Add Chinese Language Resource (CRITICAL - MOST COMMONLY FORGOTTEN)
+File: `controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_CN.cs`
+
+```csharp
+public const string Category_YourControl = "YourControl 中文名称";
+```
+
+**Example:**
+```csharp
+public const string Feedback_Watermark = "Watermark 水印";
+public const string DataEntry_CheckBox = "CheckBox 多选框";
+```
+
+#### Step 7.7: Add English Language Resource (CRITICAL - MOST COMMONLY FORGOTTEN)
+File: `controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/en_US.cs`
+
+```csharp
+public const string Category_YourControl = "YourControl";
+```
+
+**Example:**
+```csharp
+public const string Feedback_Watermark = "Watermark";
+public const string DataEntry_CheckBox = "CheckBox";
+```
+
+---
+
+**VERIFICATION CHECKLIST (Check ALL before considering migration complete):**
+
+- [ ] Step 7.1: ViewModel created in `ViewModels/{Category}/`
+- [ ] Step 7.2: View (AXAML + Code-behind) created in `Views/{Category}/`
+- [ ] Step 7.3: ViewModel registered in `CaseNavigationViewModel.cs`
+- [ ] Step 7.4: View mapped in `ShowCaseRegister.cs`
+- [ ] Step 7.5: **Menu item added to `CaseNavigation.axaml`** (MOST COMMONLY FORGOTTEN)
+- [ ] Step 7.6: **Chinese language resource added to `zh_CN.cs`** (MOST COMMONLY FORGOTTEN)
+- [ ] Step 7.7: **English language resource added to `en_US.cs`** (MOST COMMONLY FORGOTTEN)
+- [ ] Build succeeds: `dotnet build controlgallery/AtomUIGallery.Desktop`
+- [ ] Menu item appears in Gallery app
+- [ ] Clicking menu item displays the ShowCase correctly
+
+---
+
+**COMMON MISTAKES AND SYMPTOMS:**
+
+| Missing Step | Symptom |
+|--------------|---------|
+| Step 7.3 (ViewModel registration) | Runtime error when clicking menu item |
+| Step 7.4 (View mapping) | ShowCase doesn't display, blank screen |
+| Step 7.5 (Menu item) | **ShowCase doesn't appear in menu at all** |
+| Step 7.6 (Chinese resource) | **Menu shows resource key instead of Chinese text** |
+| Step 7.7 (English resource) | **Menu shows resource key instead of English text** |
+
+**CRITICAL:** Steps 7.5, 7.6, and 7.7 are the MOST COMMONLY FORGOTTEN. Always double-check these three steps before considering the migration complete.
+
+**Verification:** After completing ALL 7 steps, build the Gallery app and verify:
+1. Menu item appears in the correct category
+2. Menu item shows correct text in both Chinese and English
+3. Clicking the menu item displays the ShowCase correctly
 
 ## Migration Rules (36+ Categories)
 

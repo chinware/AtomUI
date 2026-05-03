@@ -53,6 +53,7 @@ internal class zh_CN : LanguageProvider
     public const string Feedback_Skeleton = "Skeleton 骨架屏";
     public const string Feedback_Spin = "Spin 加载中";
     public const string Feedback_Result = "Result 结果";
+    public const string Feedback_Watermark = "Watermark 水印";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }
