@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -328,7 +327,7 @@ public class Steps : SelectingItemsControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        var itemsPresenter = e.NameScope.Find<ItemsPresenter>(StepsThemeConstants.ItemsPresenterPart);
+        var itemsPresenter = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
         itemsPresenter?.ApplyTemplate();
         if (itemsPresenter?.Panel != null)
         {

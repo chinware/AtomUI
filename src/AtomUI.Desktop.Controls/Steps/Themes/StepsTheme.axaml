@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <ItemsPresenter
-                    Name="{x:Static atom:StepsThemeConstants.ItemsPresenterPart}">
+                    Name="PART_ItemsPresenter">
                     <ItemsPresenter.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Grid

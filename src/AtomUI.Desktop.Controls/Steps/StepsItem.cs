@@ -1,7 +1,6 @@
 using AtomUI.Animations;
 using Avalonia.Threading;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -299,7 +298,7 @@ public class StepsItem : HeaderedContentControl, ISelectable
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _indicator = e.NameScope.Find<StepsItemIndicator>(StepsItemThemeConstants.IndicatorPart);
+        _indicator = e.NameScope.Find<StepsItemIndicator>("PART_Indicator");
         UpdatePseudoClasses();
         ConfigureEffectiveShowProgress();
     }

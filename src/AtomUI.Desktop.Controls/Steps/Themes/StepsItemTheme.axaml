@@ -166,7 +166,7 @@
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
                                     <atom:StepsItemIndicator DockPanel.Dock="Left"
-                                                             Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                             Name="PART_Indicator"
                                                              IndicatorType="{TemplateBinding IndicatorType}"
                                                              IsCurrent="{TemplateBinding IsSelected}"
                                                              IsClickable="{TemplateBinding IsClickable}"
@@ -239,7 +239,7 @@
                                                        IsVisible="{TemplateBinding IsFirst, Converter={x:Static BoolConverters.Not}}"
                                                        Grid.Column="0" />
                                             <atom:StepsItemIndicator
-                                                Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                Name="PART_Indicator"
                                                 IndicatorType="{TemplateBinding IndicatorType}"
                                                 UseLayoutRounding="False"
                                                 Style="{TemplateBinding Style}"
@@ -346,7 +346,7 @@
                                                    IsVisible="{TemplateBinding IsFirst, Converter={x:Static BoolConverters.Not}}"
                                                    Grid.Column="0" />
                                         <atom:StepsItemIndicator
-                                            Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                            Name="PART_Indicator"
                                             IndicatorType="{TemplateBinding IndicatorType}"
                                             UseLayoutRounding="False"
                                             Style="{TemplateBinding Style}"
@@ -459,7 +459,7 @@
                                 <DockPanel DockPanel.Dock="Left" LastChildFill="True" Name="IndicatorLayout">
                                     <atom:StepsItemIndicator
                                         DockPanel.Dock="Top"
-                                        Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                        Name="PART_Indicator"
                                         IndicatorType="{TemplateBinding IndicatorType}"
                                         IsCurrent="{TemplateBinding IsSelected}"
                                         IsClickable="{TemplateBinding IsClickable}"
@@ -527,7 +527,7 @@
                                 <DockPanel DockPanel.Dock="Left" LastChildFill="True" Name="IndicatorLayout">
                                     <Panel DockPanel.Dock="Top" Name="ItemIndicatorLayout">
                                         <atom:StepsItemIndicator
-                                            Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                            Name="PART_Indicator"
                                             IndicatorType="{TemplateBinding IndicatorType}"
                                             IsCurrent="{TemplateBinding IsSelected}"
                                             IsClickable="{TemplateBinding IsClickable}"
@@ -717,7 +717,7 @@
                                             <DockPanel LastChildFill="True" Name="ItemContentLayout"
                                                        HorizontalAlignment="Center">
                                                 <atom:StepsItemIndicator DockPanel.Dock="Left"
-                                                                         Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                                         Name="PART_Indicator"
                                                                          IndicatorType="{TemplateBinding IndicatorType}"
                                                                          IsCurrent="{TemplateBinding IsSelected}"
                                                                          IsClickable="{TemplateBinding IsClickable}"
@@ -801,7 +801,7 @@
                                             <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                                                 <Panel Name="IndicatorLayout">
                                                     <atom:StepsItemIndicator
-                                                        Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                        Name="PART_Indicator"
                                                         IndicatorType="{TemplateBinding IndicatorType}"
                                                         SizeType="{TemplateBinding SizeType}"
                                                         Position="{TemplateBinding Position}"
@@ -876,7 +876,7 @@
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                                             <Panel Name="IndicatorLayout">
                                                 <atom:StepsItemIndicator
-                                                    Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                    Name="PART_Indicator"
                                                     IndicatorType="{TemplateBinding IndicatorType}"
                                                     SizeType="{TemplateBinding SizeType}"
                                                     Position="{TemplateBinding Position}"
@@ -981,7 +981,7 @@
                                     <DockPanel LastChildFill="True" Name="ItemContentLayout"
                                                HorizontalAlignment="Left">
                                         <atom:StepsItemIndicator
-                                            Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                            Name="PART_Indicator"
                                             DockPanel.Dock="Left"
                                             IndicatorType="{TemplateBinding IndicatorType}"
                                             IsCurrent="{TemplateBinding IsSelected}"
@@ -1057,7 +1057,7 @@
 
                                         <Panel DockPanel.Dock="Left" Name="IndicatorLayout" VerticalAlignment="Top">
                                             <atom:StepsItemIndicator
-                                                Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                                Name="PART_Indicator"
                                                 IndicatorType="{TemplateBinding IndicatorType}"
                                                 IsCurrent="{TemplateBinding IsSelected}"
                                                 IsClickable="{TemplateBinding IsClickable}"
@@ -1160,7 +1160,7 @@
                                            IsVisible="{TemplateBinding IsFirst, Converter={x:Static BoolConverters.Not}}"
                                            Grid.Column="0" />
                                 <atom:StepsItemIndicator
-                                    Name="{x:Static atom:StepsItemThemeConstants.IndicatorPart}"
+                                    Name="PART_Indicator"
                                     IndicatorType="{TemplateBinding IndicatorType}"
                                     UseLayoutRounding="False"
                                     SizeType="{TemplateBinding SizeType}"
