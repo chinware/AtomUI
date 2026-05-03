@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
@@ -330,7 +329,7 @@ public class CompactSpace : TemplatedControl,
     {
         base.OnApplyTemplate(e);
         ClearChildClassesChangedHandlers();
-        _contentLayout = e.NameScope.Get<Grid>(CompactSpaceThemeConstants.ContentLayoutPart);
+        _contentLayout = e.NameScope.Get<Grid>("PART_ContentLayout");
         var compactSpaceItems = new List<CompactSpaceItem>();
         foreach (var child in Children)
         {
