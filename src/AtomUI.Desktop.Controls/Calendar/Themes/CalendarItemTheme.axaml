@@ -9,38 +9,38 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border
-                    Name="{x:Static atom:CalendarItemThemeConstants.ItemFramePart}">
+                    Name="PART_ItemFrame">
                     <DockPanel
-                        Name="{x:Static atom:CalendarItemThemeConstants.ItemRootLayoutPart}"
+                        Name="PART_ItemRootLayout"
                         LastChildFill="True">
-                        <Grid Name="{x:Static atom:CalendarItemThemeConstants.HeaderLayoutPart}"
+                        <Grid Name="PART_HeaderLayout"
                               ColumnDefinitions="Auto, Auto, *, Auto, Auto"
                               DockPanel.Dock="Top">
                             <atom:IconButton
-                                Name="{x:Static atom:CalendarItemThemeConstants.PreviousButtonPart}"
+                                Name="PART_PreviousButton"
                                 Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
                                 Grid.Column="0" />
                             <atom:IconButton
-                                Name="{x:Static atom:CalendarItemThemeConstants.PreviousMonthButtonPart}"
+                                Name="PART_PreviousMonthButton"
                                 Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                 IsVisible="{TemplateBinding IsMonthViewMode}"
                                 Grid.Column="1" />
                             <atom:HeadTextButton
-                                Name="{x:Static atom:CalendarItemThemeConstants.HeaderButtonPart}"
+                                Name="PART_HeaderButton"
                                 Grid.Column="2"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                             <atom:IconButton
-                                Name="{x:Static atom:CalendarItemThemeConstants.NextMonthButtonPart}"
+                                Name="PART_NextMonthButton"
                                 Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                 IsVisible="{TemplateBinding IsMonthViewMode}"
                                 Grid.Column="3" />
                             <atom:IconButton
-                                Name="{x:Static atom:CalendarItemThemeConstants.NextButtonPart}"
+                                Name="PART_NextButton"
                                 Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
                                 Grid.Column="4" />
                         </Grid>
 
-                        <Grid Name="{x:Static atom:CalendarItemThemeConstants.MonthViewPart}"
+                        <Grid Name="PART_MonthView"
                               HorizontalAlignment="Stretch"
                               IsVisible="False">
                             <Grid.RowDefinitions>
@@ -63,7 +63,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                         </Grid>
-                        <Grid Name="{x:Static atom:CalendarItemThemeConstants.YearViewPart}"
+                        <Grid Name="PART_YearView"
                               IsVisible="False">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />

@@ -6,15 +6,15 @@
     <ControlTheme x:Key="{x:Type atom:Calendar}" TargetType="atom:Calendar">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:CalendarThemeConstants.FramePart}"
+                <Border Name="PART_Frame"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}">
-                    <Panel Name="{x:Static atom:CalendarThemeConstants.RootPart}"
+                    <Panel Name="PART_Root"
                            ClipToBounds="True">
-                        <atom:CalendarItem Name="{x:Static atom:CalendarThemeConstants.CalendarItemPart}"
+                        <atom:CalendarItem Name="PART_CalendarItem"
                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     </Panel>
                 </Border>

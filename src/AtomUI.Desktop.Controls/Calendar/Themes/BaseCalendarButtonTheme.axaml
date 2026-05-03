@@ -7,8 +7,8 @@
     <ControlTheme x:Key="{x:Type atom:BaseCalendarButton}" TargetType="atom:BaseCalendarButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter 
-                    Name="{x:Static atom:BaseCalendarButtonThemeConstants.ContentPart}"
+                <ContentPresenter
+                    Name="PART_Content"
                     Padding="{TemplateBinding Padding}"
                     Foreground="{TemplateBinding Foreground}"
                     Background="{TemplateBinding Background}"

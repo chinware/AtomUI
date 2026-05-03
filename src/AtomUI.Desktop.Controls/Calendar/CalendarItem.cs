@@ -4,7 +4,6 @@ using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -17,11 +16,11 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Desktop.Controls;
 
-[TemplatePart(CalendarItemThemeConstants.HeaderButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemThemeConstants.MonthViewPart, typeof(Grid))]
-[TemplatePart(CalendarItemThemeConstants.NextMonthButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemThemeConstants.PreviousMonthButtonPart, typeof(AvaloniaButton))]
-[TemplatePart(CalendarItemThemeConstants.YearViewPart, typeof(Grid))]
+[TemplatePart("PART_HeaderButton", typeof(AvaloniaButton))]
+[TemplatePart("PART_MonthView", typeof(Grid))]
+[TemplatePart("PART_NextMonthButton", typeof(AvaloniaButton))]
+[TemplatePart("PART_PreviousMonthButton", typeof(AvaloniaButton))]
+[TemplatePart("PART_YearView", typeof(Grid))]
 [PseudoClasses(CalendarDisabledPC)]
 internal class CalendarItem : TemplatedControl
 {
@@ -366,14 +365,14 @@ internal class CalendarItem : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        HeaderButton        = e.NameScope.Find<HeadTextButton>(CalendarItemThemeConstants.HeaderButtonPart);
-        PreviousButton      = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.PreviousButtonPart);
-        PreviousMonthButton = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.PreviousMonthButtonPart);
-        NextButton          = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.NextButtonPart);
-        NextMonthButton     = e.NameScope.Find<IconButton>(CalendarItemThemeConstants.NextMonthButtonPart);
-        MonthView           = e.NameScope.Find<Grid>(CalendarItemThemeConstants.MonthViewPart);
-        YearView            = e.NameScope.Find<Grid>(CalendarItemThemeConstants.YearViewPart);
-        _headerLayout       = e.NameScope.Get<Grid>(CalendarItemThemeConstants.HeaderLayoutPart);
+        HeaderButton        = e.NameScope.Find<HeadTextButton>("PART_HeaderButton");
+        PreviousButton      = e.NameScope.Find<IconButton>("PART_PreviousButton");
+        PreviousMonthButton = e.NameScope.Find<IconButton>("PART_PreviousMonthButton");
+        NextButton          = e.NameScope.Find<IconButton>("PART_NextButton");
+        NextMonthButton     = e.NameScope.Find<IconButton>("PART_NextMonthButton");
+        MonthView           = e.NameScope.Find<Grid>("PART_MonthView");
+        YearView            = e.NameScope.Find<Grid>("PART_YearView");
+        _headerLayout       = e.NameScope.Get<Grid>("PART_HeaderLayout");
         
         if (Owner != null)
         {

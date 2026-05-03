@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter
-                    Name="{x:Static atom:HeadTextButtonThemeConstants.ContentPart}"
+                    Name="PART_Content"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Content="{TemplateBinding Content}"
