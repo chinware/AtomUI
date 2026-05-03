@@ -35,8 +35,9 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         }   
         MenuFlyout = new MenuFlyout
         {
-            IsShowArrow              = false,
-            ShouldUseOverlayLayer = true
+            IsShowArrow           = false,
+            ShouldUseOverlayLayer = true,
+            IsLightDismissEnabled = true,
         };
         MenuFlyout.Closed += (o, eventArgs) =>
         {
