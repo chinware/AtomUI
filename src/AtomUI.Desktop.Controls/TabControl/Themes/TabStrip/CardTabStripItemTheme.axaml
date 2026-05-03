@@ -4,7 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Static atom:TabStripThemeConstants.CardTabStripItemThemeId}" TargetType="atom:TabStripItem">
+    <ControlTheme x:Key="CardTabStripItemTheme" TargetType="atom:TabStripItem">
         <ControlTheme.BasedOn>
             <themes:BaseTabStripItemTheme TargetType="atom:TabStripItem" />
         </ControlTheme.BasedOn>
@@ -24,7 +24,7 @@
                         <ContentPresenter Name="ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
-                        <atom:IconButton Name="{x:Static atom:TabStripItemThemeConstants.ItemCloseButtonPart}"
+                        <atom:IconButton Name="PART_ItemCloseButton"
                                          Icon="{TemplateBinding CloseIcon}"
                                          Opacity="{TemplateBinding CloseButtonOpacity}"
                                          VerticalAlignment="Center" />

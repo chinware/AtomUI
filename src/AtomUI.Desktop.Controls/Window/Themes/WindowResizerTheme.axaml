@@ -6,7 +6,7 @@
     <ControlTheme x:Key="{x:Type atom:WindowResizer}" TargetType="atom:WindowResizer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel Name="{x:Static atom:WindowResizerThemeConstants.RootLayoutPart}">
+                <Panel Name="PART_RootLayout">
                     <Border Tag="{x:Static atom:ResizeHandleLocation.North}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"

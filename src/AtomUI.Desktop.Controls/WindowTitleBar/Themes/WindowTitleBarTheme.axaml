@@ -13,18 +13,18 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
                                     DockPanel.Dock="Left">
-                            <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LogoPart}"
+                            <ContentPresenter Name="PART_Logo"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
                                               HorizontalContentAlignment="Center"
                                               VerticalContentAlignment="Center"
                                               Content="{TemplateBinding Logo}"
                                               ContentTemplate="{TemplateBinding LogoTemplate}"/>
-                            <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LeftAddOnPart}"
+                            <ContentPresenter Name="PART_LeftAddOn"
                                               Content="{TemplateBinding LeftAddOn}"
                                               ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                                               IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                            <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.ContentPresenterPart}"
+                            <ContentPresenter Name="PART_ContentPresenter"
                                               HorizontalAlignment="Left"
                                               VerticalAlignment="Center"
                                               IsHitTestVisible="False"
@@ -34,10 +34,10 @@
                         </StackPanel>
                         <DockPanel LastChildFill="True">
                             <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                                     Name="{x:Static atom:TitleBarThemeConstants.CaptionButtonGroupPart}"
+                                                     Name="PART_CaptionButtonGroup"
                                                      IsWindowActive="{TemplateBinding IsWindowActive}"
                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                            <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.RightAddOnPart}"
+                            <ContentPresenter Name="PART_RightAddOn"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -53,7 +53,7 @@
             <ControlTemplate TargetType="atom:WindowTitleBar">
                 <DockPanel LastChildFill="True">
                     <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                             Name="{x:Static atom:TitleBarThemeConstants.CaptionButtonGroupPart}"
+                                             Name="PART_CaptionButtonGroup"
                                              IsWindowActive="{TemplateBinding IsWindowActive}"
                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     <Border Name="Frame" Background="{TemplateBinding Background}"
@@ -62,19 +62,19 @@
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
                                         DockPanel.Dock="Left">
-                                <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LogoPart}"
+                                <ContentPresenter Name="PART_Logo"
                                                   HorizontalAlignment="Left"
                                                   VerticalAlignment="Center"
                                                   HorizontalContentAlignment="Center"
                                                   VerticalContentAlignment="Center"
                                                   Content="{TemplateBinding Logo}"
                                                   ContentTemplate="{TemplateBinding LogoTemplate}"/>
-                                <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LeftAddOnPart}"
+                                <ContentPresenter Name="PART_LeftAddOn"
                                                   Content="{TemplateBinding LeftAddOn}"
                                                   ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                                                   IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                 <ContentPresenter
-                                    Name="{x:Static atom:TitleBarThemeConstants.ContentPresenterPart}"
+                                    Name="PART_ContentPresenter"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     IsHitTestVisible="False"
@@ -82,7 +82,7 @@
                                     ContentTemplate="{TemplateBinding TitleTemplate}"
                                     IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             </StackPanel>
-                            <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.RightAddOnPart}"
+                            <ContentPresenter Name="PART_RightAddOn"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -99,7 +99,7 @@
                 <Border Name="Frame" Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True" VerticalAlignment="Center">
-                        <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LeftAddOnPart}"
+                        <ContentPresenter Name="PART_LeftAddOn"
                                           DockPanel.Dock="Left"
                                           Content="{TemplateBinding LeftAddOn}"
                                           ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
@@ -108,10 +108,10 @@
                         <DockPanel LastChildFill="True"
                                    DockPanel.Dock="Right">
                             <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                                     Name="{x:Static atom:TitleBarThemeConstants.CaptionButtonGroupPart}"
+                                                     Name="PART_CaptionButtonGroup"
                                                      IsWindowActive="{TemplateBinding IsWindowActive}"
                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                            <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.RightAddOnPart}"
+                            <ContentPresenter Name="PART_RightAddOn"
                                               Content="{TemplateBinding RightAddOn}"
                                               ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                                               IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -122,13 +122,13 @@
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}">
-                                <ContentPresenter Name="{x:Static atom:TitleBarThemeConstants.LogoPart}"
+                                <ContentPresenter Name="PART_Logo"
                                                   HorizontalContentAlignment="Center"
                                                   VerticalContentAlignment="Center"
                                                   Content="{TemplateBinding Logo}"
                                                   ContentTemplate="{TemplateBinding LogoTemplate}"/>
                                 <ContentPresenter
-                                    Name="{x:Static atom:TitleBarThemeConstants.ContentPresenterPart}"
+                                    Name="PART_ContentPresenter"
                                     IsHitTestVisible="False"
                                     Content="{TemplateBinding Title}"
                                     ContentTemplate="{TemplateBinding TitleTemplate}"

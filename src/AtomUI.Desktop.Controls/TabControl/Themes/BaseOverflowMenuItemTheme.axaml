@@ -26,7 +26,7 @@
                                           IsHitTestVisible="False"
                                           Content="{TemplateBinding Header, Converter={StaticResource StringToTextBlockConverter}}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                        <atom:IconButton Name="{x:Static atom:OverflowMenuItemThemeConstants.ItemCloseButtonPart}"
+                        <atom:IconButton Name="PART_ItemCloseButton"
                                          Grid.Column="1"
                                          HorizontalAlignment="Right"
                                          VerticalAlignment="Center"

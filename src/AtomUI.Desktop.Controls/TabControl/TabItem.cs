@@ -2,7 +2,6 @@ using AtomUI.Animations;
 using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Automation;
@@ -166,7 +165,7 @@ public class TabItem : HeaderedContentControl, ISelectable
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _closeButton   = e.NameScope.Find<IconButton>(TabItemThemeConstants.ItemCloseButtonPart);
+        _closeButton   = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
 
         if (_closeButton is not null)
         {
@@ -212,11 +211,11 @@ public class TabItem : HeaderedContentControl, ISelectable
             string? resourceKey = null;
             if (Shape == TabSharp.Line)
             {
-                resourceKey = TabItemThemeConstants.TabItemThemeId;
+                resourceKey = "TabItemTheme";
             }
             else
             {
-                resourceKey = TabItemThemeConstants.CardTabItemThemeId;
+                resourceKey = "CardTabItemTheme";
             }
             if (Application.Current != null)
             {

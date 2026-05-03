@@ -1,6 +1,5 @@
 using System.Runtime.Versioning;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Media;
 using AtomUI.Native;
 using AtomUI.Utils;
@@ -379,7 +378,7 @@ public class Window : AvaloniaWindow,
             mediaQueryIndicator.OwnerWindow = this;
         }
 
-        _windowResizer = e.NameScope.Find<WindowResizer>(WindowThemeConstants.WindowResizerPart);
+        _windowResizer = e.NameScope.Find<WindowResizer>("PART_WindowResizer");
         if (_windowResizer != null)
         {
             _windowResizer.TargetWindow = this;

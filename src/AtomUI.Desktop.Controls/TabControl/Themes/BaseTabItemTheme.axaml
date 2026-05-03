@@ -17,7 +17,7 @@
                     <ContentPresenter Name="ContentPresenter"
                                       Content="{TemplateBinding Header}"
                                       ContentTemplate="{TemplateBinding HeaderTemplate, Converter={x:Static atom:BaseTabItemTheme.StringToTextBlockConverter}}" />
-                    <atom:IconButton Name="{x:Static atom:TabItemThemeConstants.ItemCloseButtonPart}"
+                    <atom:IconButton Name="PART_ItemCloseButton"
                                      Icon="{TemplateBinding CloseIcon}"
                                      Opacity="{TemplateBinding CloseButtonOpacity}" 
                                      VerticalAlignment="Center"/>

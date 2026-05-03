@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
@@ -178,9 +177,9 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        MenuIndicator      = e.NameScope.Find<IconButton>(TabScrollViewerThemeConstants.ScrollMenuIndicatorPart);
-        StartEdgeIndicator = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart);
-        EndEdgeIndicator   = e.NameScope.Find<Border>(TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart);
+        MenuIndicator      = e.NameScope.Find<IconButton>("PART_ScrollMenuIndicator");
+        StartEdgeIndicator = e.NameScope.Find<Border>("PART_ScrollStartEdgeIndicator");
+        EndEdgeIndicator   = e.NameScope.Find<Border>("PART_ScrollEndEdgeIndicator");
 
         SetupIndicatorsVisibility();
     }

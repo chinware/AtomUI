@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using Avalonia.Threading;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -155,7 +154,7 @@ public class WindowTitleBar : TemplatedControl,
     {
         base.OnApplyTemplate(e);
         _captionButtonGroup?.Detach();
-        _captionButtonGroup = e.NameScope.Find<CaptionButtonGroup>(TitleBarThemeConstants.CaptionButtonGroupPart);
+        _captionButtonGroup = e.NameScope.Find<CaptionButtonGroup>("PART_CaptionButtonGroup");
         if (_window != null)
         {
             _captionButtonGroup?.Attach(_window);

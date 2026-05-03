@@ -4,7 +4,7 @@
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Static atom:TabStripThemeConstants.TabStripItemThemeId}" TargetType="atom:TabStripItem">
+    <ControlTheme x:Key="TabStripItemTheme" TargetType="atom:TabStripItem">
         <ControlTheme.BasedOn>
             <themes:BaseTabStripItemTheme TargetType="atom:TabStripItem" />
         </ControlTheme.BasedOn>

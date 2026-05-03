@@ -14,7 +14,7 @@
                 <Border Name="Frame"
                         BorderThickness="{TemplateBinding BorderThickness}">
                     <DockPanel>
-                        <Panel Name="{x:Static atom:TabControlThemeConstants.AlignWrapperPart}"
+                        <Panel Name="PART_AlignWrapper"
                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"
                                Margin="{TemplateBinding TabStripMargin}">
                             <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
@@ -26,22 +26,22 @@
                                                       Content="{TemplateBinding HeaderEndExtraContent}"
                                                       ContentTemplate="{TemplateBinding HeaderEndExtraContentTemplate}" />
                                     <atom:TabsContainerPanel
-                                        Name="{x:Static atom:TabControlThemeConstants.TabsContainerPart}"
+                                        Name="PART_TabsContainer"
                                         TabStripPlacement="{TemplateBinding TabStripPlacement}">
                                         <atom:TabsContainerPanel.TabScrollViewer>
                                             <atom:TabControlScrollViewer
-                                                Name="{x:Static atom:TabControlThemeConstants.CardTabStripScrollViewerPart}"
+                                                Name="PART_CardTabStripScrollViewer"
                                                 IsScrollChainingEnabled="False"
                                                 TabStripPlacement="{TemplateBinding TabStripPlacement}"
                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                                 <ItemsPresenter
-                                                    Name="{x:Static atom:TabControlThemeConstants.ItemsPresenterPart}"
+                                                    Name="PART_ItemsPresenter"
                                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
                                             </atom:TabControlScrollViewer>
                                         </atom:TabsContainerPanel.TabScrollViewer>
                                         <atom:TabsContainerPanel.AddTabButton>
                                             <atom:IconButton
-                                                Name="{x:Static atom:TabControlThemeConstants.AddTabButtonPart}"
+                                                Name="PART_AddTabButton"
                                                 Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
                                                 BorderThickness="{TemplateBinding CardBorderThickness}"
                                                 CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"

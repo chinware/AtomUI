@@ -8,13 +8,13 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="RootLayout">
-                    <Border Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollStartEdgeIndicatorPart}"
+                    <Border Name="PART_ScrollStartEdgeIndicator"
                             IsHitTestVisible="False" />
-                    <Border Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollEndEdgeIndicatorPart}"
+                    <Border Name="PART_ScrollEndEdgeIndicator"
                             IsHitTestVisible="False" />
 
                     <DockPanel Name="ScrollViewLayout">
-                        <atom:IconButton Name="{x:Static atom:TabScrollViewerThemeConstants.ScrollMenuIndicatorPart}"
+                        <atom:IconButton Name="PART_ScrollMenuIndicator"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Stretch"
                                          Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}" />

@@ -75,7 +75,7 @@
                                             VerticalAlignment="Center"
                                             Orientation="Horizontal">
                                     <atom:CaptionButton
-                                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
+                                        Name="PART_FullScreenButton"
                                         NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
                                         CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                                         IsChecked="True"
@@ -83,7 +83,7 @@
                                     </atom:CaptionButton>
                                     
                                     <atom:CaptionButton
-                                        Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
+                                        Name="PART_CloseButton"
                                         NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
                                         WindowDecorationProperties.ElementRole="CloseButton"/>
                                 </StackPanel>

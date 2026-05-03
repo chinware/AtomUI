@@ -70,7 +70,7 @@
 
                         <atom:FullscreenPopoverLayer Name="PART_FullscreenPopoverLayer" />
 
-                        <atom:WindowResizer Name="{x:Static atom:WindowThemeConstants.WindowResizerPart}"
+                        <atom:WindowResizer Name="PART_WindowResizer"
                                             IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}"
                                             Margin="{TemplateBinding FrameShadowThickness}" />
                     </Panel>

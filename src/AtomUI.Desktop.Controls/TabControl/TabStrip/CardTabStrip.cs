@@ -1,5 +1,4 @@
-﻿using AtomUI.Desktop.Controls.Themes;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -100,13 +99,13 @@ public class CardTabStrip : BaseTabStrip
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _addTabButton   = e.NameScope.Find<IconButton>(TabStripThemeConstants.AddTabButtonPart);
-        _itemsPresenter = e.NameScope.Find<ItemsPresenter>(TabStripThemeConstants.ItemsPresenterPart);
+        _addTabButton   = e.NameScope.Find<IconButton>("PART_AddTabButton");
+        _itemsPresenter = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
         if (_addTabButton is not null)
         {
             _addTabButton.Click += HandleAddButtonClicked;
         }
-        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>(TabStripThemeConstants.CardTabStripScrollViewerPart);
+        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>("PART_CardTabStripScrollViewer");
         if (_scrollViewer != null)
         {
             _scrollViewer.TabStrip = this;

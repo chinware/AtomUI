@@ -1,5 +1,4 @@
 ﻿using AtomUI.Animations;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -129,9 +128,9 @@ public class TabStrip : BaseTabStrip
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _selectedIndicator = e.NameScope.Find<Border>(TabStripThemeConstants.SelectedItemIndicatorPart);
-        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(TabStripThemeConstants.ItemsPresenterPart);
-        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>(TabStripThemeConstants.TabsContainerPart);
+        _selectedIndicator = e.NameScope.Find<Border>("PART_SelectedItemIndicator");
+        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
+        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>("PART_TabsContainer");
         if (_scrollViewer != null)
         {
             _scrollViewer.TabStrip = this;

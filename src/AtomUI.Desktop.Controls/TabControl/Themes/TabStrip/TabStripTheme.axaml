@@ -21,15 +21,15 @@
                                                   Content="{TemplateBinding HeaderEndExtraContent}"
                                                   ContentTemplate="{TemplateBinding HeaderEndExtraContentTemplate}" />
                                 <atom:TabStripScrollViewer
-                                    Name="{x:Static atom:TabStripThemeConstants.TabsContainerPart}"
+                                    Name="PART_TabsContainer"
                                     IsScrollChainingEnabled="False"
                                     TabStripPlacement="{TemplateBinding TabStripPlacement}"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                     <Panel>
                                         <ItemsPresenter
-                                            Name="{x:Static atom:TabStripThemeConstants.ItemsPresenterPart}"
+                                            Name="PART_ItemsPresenter"
                                             ItemsPanel="{TemplateBinding ItemsPanel}" />
-                                        <Border Name="{x:Static atom:TabStripThemeConstants.SelectedItemIndicatorPart}"
+                                        <Border Name="PART_SelectedItemIndicator"
                                                 RenderTransform="{TemplateBinding SelectedIndicatorRenderTransform}"/>
                                     </Panel>
                                 </atom:TabStripScrollViewer>

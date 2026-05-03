@@ -2,7 +2,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
@@ -139,7 +138,7 @@ public class TabStripItem : AvaloniaTabStripItem
         SetupDefaultCloseIcon();
 
         base.OnApplyTemplate(e);
-        _closeButton   = e.NameScope.Find<IconButton>(TabStripItemThemeConstants.ItemCloseButtonPart);
+        _closeButton   = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
 
         if (_closeButton is not null)
         {
@@ -183,11 +182,11 @@ public class TabStripItem : AvaloniaTabStripItem
             string? resourceKey = null;
             if (Shape == TabSharp.Line)
             {
-                resourceKey = TabStripThemeConstants.TabStripItemThemeId;
+                resourceKey = "TabStripItemTheme";
             }
             else
             {
-                resourceKey = TabStripThemeConstants.CardTabStripItemThemeId;
+                resourceKey = "CardTabStripItemTheme";
             }
             
             if (Application.Current != null)

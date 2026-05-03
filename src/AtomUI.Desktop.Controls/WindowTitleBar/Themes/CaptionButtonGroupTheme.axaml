@@ -14,7 +14,7 @@
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:CaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
+                            Name="PART_FullScreenButton"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
@@ -31,7 +31,7 @@
                             </atom:CaptionButton.IsVisible>
                         </atom:CaptionButton>
                         <atom:CaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.PinButtonPart}"
+                            Name="PART_PinButton"
                             IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -40,7 +40,7 @@
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowPinned}" />
                         <atom:CaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.MinimizeButtonPart}"
+                            Name="PART_MinimizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
@@ -55,7 +55,7 @@
                             </atom:CaptionButton.IsVisible>
                         </atom:CaptionButton>
                         <atom:CaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.MaximizeButtonPart}"
+                            Name="PART_MaximizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -72,7 +72,7 @@
                             </atom:CaptionButton.IsVisible>
                         </atom:CaptionButton>
                         <atom:CaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
+                            Name="PART_CloseButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
@@ -87,7 +87,7 @@
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:CaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.PinButtonPart}"
+                            Name="PART_PinButton"
                             IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -105,7 +105,7 @@
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal" Name="RootLayout">
                         <atom:WindowsCaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.FullScreenButtonPart}"
+                            Name="PART_FullScreenButton"
                             IsEnabled="{TemplateBinding IsFullScreenCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
@@ -122,7 +122,7 @@
                             </atom:CaptionButton.IsVisible>
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.PinButtonPart}"
+                            Name="PART_PinButton"
                             IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsEnabled="{TemplateBinding IsPinCaptionButtonVisible}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -131,7 +131,7 @@
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsChecked="{TemplateBinding IsWindowPinned}" />
                         <atom:WindowsCaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.MinimizeButtonPart}"
+                            Name="PART_MinimizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
@@ -146,7 +146,7 @@
                             </atom:CaptionButton.IsVisible>
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.MaximizeButtonPart}"
+                            Name="PART_MaximizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
@@ -163,7 +163,7 @@
                             </atom:CaptionButton.IsVisible>
                         </atom:WindowsCaptionButton>
                         <atom:WindowsCaptionButton
-                            Name="{x:Static atom:CaptionButtonGroupThemeConstants.CloseButtonPart}"
+                            Name="PART_CloseButton"
                             IsCloseButton="True"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"

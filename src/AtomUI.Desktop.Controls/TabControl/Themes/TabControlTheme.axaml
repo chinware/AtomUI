@@ -12,7 +12,7 @@
             <ControlTemplate>
                 <Border Name="Frame">
                     <DockPanel>
-                        <Panel Name="{x:Static atom:TabControlThemeConstants.AlignWrapperPart}"
+                        <Panel Name="PART_AlignWrapper"
                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"
                                Margin="{TemplateBinding TabStripMargin}">
                             <Border Padding="{TemplateBinding EffectiveHeaderPadding}">
@@ -24,16 +24,16 @@
                                                       Content="{TemplateBinding HeaderEndExtraContent}"
                                                       ContentTemplate="{TemplateBinding HeaderEndExtraContentTemplate}" />
                                     <atom:TabControlScrollViewer
-                                        Name="{x:Static atom:TabControlThemeConstants.TabsContainerPart}"
+                                        Name="PART_TabsContainer"
                                         IsScrollChainingEnabled="False"
                                         TabStripPlacement="{TemplateBinding TabStripPlacement}"
                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                         <Panel>
                                             <ItemsPresenter
-                                                Name="{x:Static atom:TabControlThemeConstants.ItemsPresenterPart}"
+                                                Name="PART_ItemsPresenter"
                                                 ItemsPanel="{TemplateBinding ItemsPanel}" />
                                             <Border
-                                                Name="{x:Static atom:TabControlThemeConstants.SelectedItemIndicatorPart}"
+                                                Name="PART_SelectedItemIndicator"
                                                 RenderTransform="{TemplateBinding SelectedIndicatorRenderTransform}"/>
                                         </Panel>
                                     </atom:TabControlScrollViewer>

@@ -21,21 +21,21 @@
                                 <ContentPresenter Name="HeaderEndExtraContent"
                                                   Content="{TemplateBinding HeaderEndExtraContent}"
                                                   ContentTemplate="{TemplateBinding HeaderEndExtraContentTemplate}" />
-                                <atom:TabsContainerPanel Name="{x:Static atom:TabStripThemeConstants.TabsContainerPart}"
+                                <atom:TabsContainerPanel Name="PART_TabsContainer"
                                                          TabStripPlacement="{TemplateBinding TabStripPlacement}">
                                 <atom:TabsContainerPanel.TabScrollViewer>
                                     <atom:TabStripScrollViewer
-                                        Name="{x:Static atom:TabStripThemeConstants.CardTabStripScrollViewerPart}"
+                                        Name="PART_CardTabStripScrollViewer"
                                         IsScrollChainingEnabled="False"
                                         TabStripPlacement="{TemplateBinding TabStripPlacement}"
                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                                         <ItemsPresenter
-                                            Name="{x:Static atom:TabStripThemeConstants.ItemsPresenterPart}"
+                                            Name="PART_ItemsPresenter"
                                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                                     </atom:TabStripScrollViewer>
                                 </atom:TabsContainerPanel.TabScrollViewer>
                                 <atom:TabsContainerPanel.AddTabButton>
-                                    <atom:IconButton Name="{x:Static atom:TabStripThemeConstants.AddTabButtonPart}"
+                                    <atom:IconButton Name="PART_AddTabButton"
                                                      Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
                                                      BorderThickness="{TemplateBinding CardBorderThickness}"
                                                      CornerRadius="{TemplateBinding EffectiveCardBorderRadius}"

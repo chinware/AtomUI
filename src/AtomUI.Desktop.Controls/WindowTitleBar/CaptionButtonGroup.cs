@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using System.Runtime.Versioning;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Native.Windows;
 using Avalonia;
 using Avalonia.Controls;
@@ -221,11 +220,11 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         }
         _disposeActions.Clear();
         
-        _closeButton      = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.CloseButtonPart);
-        _maximizeButton   = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.MaximizeButtonPart);
-        _minimizeButton   = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.MinimizeButtonPart);
-        _pinButton        = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.PinButtonPart);
-        _fullScreenButton = e.NameScope.Find<CaptionButton>(CaptionButtonGroupThemeConstants.FullScreenButtonPart);
+        _closeButton      = e.NameScope.Find<CaptionButton>("PART_CloseButton");
+        _maximizeButton   = e.NameScope.Find<CaptionButton>("PART_MaximizeButton");
+        _minimizeButton   = e.NameScope.Find<CaptionButton>("PART_MinimizeButton");
+        _pinButton        = e.NameScope.Find<CaptionButton>("PART_PinButton");
+        _fullScreenButton = e.NameScope.Find<CaptionButton>("PART_FullScreenButton");
 
         if (_closeButton != null)
         {

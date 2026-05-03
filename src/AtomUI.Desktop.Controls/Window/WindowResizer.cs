@@ -1,5 +1,4 @@
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -22,7 +21,7 @@ internal class WindowResizer : TemplatedControl
             }
         }
 
-        _rootLayout = e.NameScope.Find<Panel>(WindowResizerThemeConstants.RootLayoutPart);
+        _rootLayout = e.NameScope.Find<Panel>("PART_RootLayout");
         if (_rootLayout != null)
         {
             foreach (var child in _rootLayout.Children)

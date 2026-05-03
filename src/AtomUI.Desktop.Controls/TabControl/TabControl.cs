@@ -1,5 +1,4 @@
 ﻿using AtomUI.Animations;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia.Threading;
 using Avalonia;
 using Avalonia.Controls;
@@ -131,15 +130,15 @@ public class TabControl : BaseTabControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _selectedIndicator = e.NameScope.Find<Border>(TabControlThemeConstants.SelectedItemIndicatorPart);
-        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>(TabControlThemeConstants.ItemsPresenterPart);
-        
+        _selectedIndicator = e.NameScope.Find<Border>("PART_SelectedItemIndicator");
+        _itemsPresenter    = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
+
         if (_scrollViewer != null)
         {
             _scrollViewer.PropertyChanged -= HandleScrollViewerPropertyChanged;
         }
 
-        _scrollViewer = e.NameScope.Find<TabControlScrollViewer>(TabControlThemeConstants.TabsContainerPart);
+        _scrollViewer = e.NameScope.Find<TabControlScrollViewer>("PART_TabsContainer");
         if (_scrollViewer != null)
         {
             _scrollViewer.TabControl      = this;
