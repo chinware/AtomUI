@@ -2,7 +2,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using Avalonia;
@@ -276,14 +275,14 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _clearButton      = e.NameScope.Find<IconButton>(NumericUpDownThemeConstants.ClearButtonPart);
+        _clearButton      = e.NameScope.Find<IconButton>("PART_ClearButton");
         if (_clearButton is not null)
         {
             _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
         }
         SetTextBoxPart(e.NameScope.Find<TextBox>("PART_TextBox"));
         ConfigureEffectiveShowClearButton();
-        _buttonSpinner =  e.NameScope.Find<ButtonSpinner>(NumericUpDownThemeConstants.SpinnerPart);
+        _buttonSpinner =  e.NameScope.Find<ButtonSpinner>("PART_Spinner");
         SetupContentRightAddOnBindings(e);
     }
 

@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:ButtonSpinner
-                    Name="{x:Static atom:NumericUpDownThemeConstants.SpinnerPart}"
+                    Name="PART_Spinner"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     SizeType="{TemplateBinding SizeType}"
                     StyleVariant="{TemplateBinding StyleVariant}"
