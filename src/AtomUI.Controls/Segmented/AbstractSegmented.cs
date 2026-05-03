@@ -228,6 +228,18 @@ public abstract class AbstractSegmented : SelectingItemsControl,
     {
         return UpdateSelectionFromEvent(source, e);
     }
+
+    protected override bool ShouldTriggerSelection(Visual selectable, PointerEventArgs eventArgs)
+    {
+        // Segmented should trigger selection on pointer release for better UX
+        if (eventArgs.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased &&
+            eventArgs.Pointer.Type == PointerType.Mouse)
+        {
+            return true;
+        }
+
+        return base.ShouldTriggerSelection(selectable, eventArgs);
+    }
     
     public sealed override void Render(DrawingContext context)
     {

@@ -73,6 +73,8 @@
                               ItemKey="{x:Static viewmodels:CollapseViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Tag}"
                               ItemKey="{x:Static viewmodels:TagViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Segmented}"
+                              ItemKey="{x:Static viewmodels:SegmentedViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"

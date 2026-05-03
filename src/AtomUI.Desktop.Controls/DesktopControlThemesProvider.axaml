@@ -53,7 +53,7 @@
         <ResourceInclude Source="Rate/Themes/RateThemes.axaml" />
         <!-- <ResourceInclude Source="Result/Themes/ResultTheme.axaml" /> -->
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
-        <!-- <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" /> -->
+        <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
         <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" />
         <!-- <ResourceInclude Source="Select/Themes/SelectThemes.axaml" /> -->

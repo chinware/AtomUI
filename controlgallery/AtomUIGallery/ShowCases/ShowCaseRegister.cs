@@ -37,5 +37,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<RateViewModel, RateShowCase>(() => new RateShowCase());
         locator.Map<SliderViewModel, SliderShowCase>(() => new SliderShowCase());
         locator.Map<TagViewModel, TagShowCase>(() => new TagShowCase());
+        locator.Map<SegmentedViewModel, SegmentedShowCase>(() => new SegmentedShowCase());
     }
 }

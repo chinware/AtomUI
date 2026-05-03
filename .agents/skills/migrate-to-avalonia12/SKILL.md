@@ -372,13 +372,14 @@ Check all 50+ categories:
 46. ReflectionExtensions pattern for AOT (DynamicDependency, Lazy<T> caching)
 47. Internal API extraction strategy (extract vs reflect for internal APIs)
 
-**AtomUI-Specific (5 categories)**
+**AtomUI-Specific (6 categories)**
 48. PlacementMode usage in PopupUtils (property renamed, refactor needed)
 49. IInputRoot is [PrivateApi] but still public — use directly, only use reflection for truly internal members
 50. ReflectionExtensions for internal members (wrap internal/private access)
 51. Windows ExtendClientAreaToDecorationsHint behavior improved
 52. Popup.MotionAwareOpen/MotionAwareClose removed in AtomUI 6.0 — use Popup.IsOpen directly
 53. SelectingItemsControl.UpdateSelection obsolete — prefer UpdateSelectionFromEvent, fall back to Selection.Select/Deselect for non-input events
+54. SelectingItemsControl selection trigger timing changed — override ShouldTriggerSelection for custom pointer event handling
 
 ### Step 3: Categorize by severity and platform
 
