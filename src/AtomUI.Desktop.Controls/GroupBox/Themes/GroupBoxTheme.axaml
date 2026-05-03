@@ -6,20 +6,20 @@
     <ControlTheme x:Key="{x:Type atom:GroupBox}" TargetType="atom:GroupBox">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:GroupBoxThemeConstants.FramePart}"
+                <Border Name="PART_Frame"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Margin="{TemplateBinding Margin}">
                     <DockPanel LastChildFill="True">
-                        <Panel Name="{x:Static atom:GroupBoxThemeConstants.HeaderContainerPart}"
+                        <Panel Name="PART_HeaderContainer"
                                DockPanel.Dock="Top">
-                            <Decorator Name="{x:Static atom:GroupBoxThemeConstants.HeaderContentPart}"
+                            <Decorator Name="PART_HeaderContent"
                                        VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal">
                                     <atom:IconPresenter
-                                        Name="{x:Static atom:GroupBoxThemeConstants.HeaderIconPresenterPart}"
+                                        Name="PART_HeaderIconPresenter"
                                         IsVisible="{TemplateBinding HeaderIcon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                         Icon="{TemplateBinding HeaderIcon}" />
-                                    <atom:TextBlock Name="{x:Static atom:GroupBoxThemeConstants.HeaderPresenterPart}"
+                                    <atom:TextBlock Name="PART_HeaderPresenter"
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Text="{TemplateBinding HeaderTitle}"
@@ -31,9 +31,9 @@
                             </Decorator>
                         </Panel>
 
-                        <ContentPresenter Name="{x:Static atom:GroupBoxThemeConstants.ContentPresenterPart}"
+                        <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Margin="{TemplateBinding Padding}"/>
                     </DockPanel>
                 </Border>

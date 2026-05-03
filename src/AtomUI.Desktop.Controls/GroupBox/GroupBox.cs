@@ -1,5 +1,4 @@
 ﻿using AtomUI.Controls.Utils;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -105,8 +104,8 @@ public class GroupBox : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _headerContentContainer = e.NameScope.Find<Decorator>(GroupBoxThemeConstants.HeaderContentPart);
-        _frame                  = e.NameScope.Find<Border>(GroupBoxThemeConstants.FramePart);
+        _headerContentContainer = e.NameScope.Find<Decorator>("PART_HeaderContent");
+        _frame                  = e.NameScope.Find<Border>("PART_Frame");
     }
 
     // protected override Size MeasureOverride(Size availableSize)
