@@ -9,22 +9,22 @@
                 <Border Background="Transparent"
                         ClipToBounds="False">
                     <Grid>
-                        <Border Name="{x:Static atom:SplitterThemeConstants.HandleLinePart}"
+                        <Border Name="PART_HandleLine"
                                 Background="{TemplateBinding LineBrush}" />
-                        <Border Name="{x:Static atom:SplitterThemeConstants.HandleGripPart}"
+                        <Border Name="PART_HandleGrip"
                                 Background="{atom:SharedTokenResource ColorFill}"
                                 CornerRadius="{atom:SharedTokenResource BorderRadiusXS}" />
-                        <Canvas Name="{x:Static atom:SplitterThemeConstants.CollapseIconsHostPart}"
+                        <Canvas Name="PART_CollapseIconsHost"
                                 Width="0"
                                 Height="0"
                                 ClipToBounds="False"
                                 ZIndex="{atom:SharedTokenResource ZIndexPopupBase}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
-                            <atom:IconButton Name="{x:Static atom:SplitterThemeConstants.CollapsePrevButtonPart}"
+                            <atom:IconButton Name="PART_CollapsePrevButton"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center" />
-                            <atom:IconButton Name="{x:Static atom:SplitterThemeConstants.CollapseNextButtonPart}"
+                            <atom:IconButton Name="PART_CollapseNextButton"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center" />
                         </Canvas>

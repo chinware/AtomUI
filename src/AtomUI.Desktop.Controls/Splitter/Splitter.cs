@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -211,7 +210,7 @@ public class Splitter : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _splitterPanel = e.NameScope.Find<SplitterPanel>(SplitterThemeConstants.SplitterPanelPart);
+        _splitterPanel = e.NameScope.Find<SplitterPanel>("PART_SplitterPanel");
         if (_splitterPanel != null)
         {
             _splitterPanel.OwnerSplitter = this;

@@ -1,7 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUIThumb = AtomUI.Controls.Primitives.Thumb;
 using Avalonia;
@@ -14,10 +13,10 @@ using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
-[TemplatePart(SplitterThemeConstants.HandleLinePart, typeof(Border))]
-[TemplatePart(SplitterThemeConstants.HandleGripPart, typeof(Border))]
-[TemplatePart(SplitterThemeConstants.CollapsePrevButtonPart, typeof(IconButton))]
-[TemplatePart(SplitterThemeConstants.CollapseNextButtonPart, typeof(IconButton))]
+[TemplatePart("PART_HandleLine", typeof(Border))]
+[TemplatePart("PART_HandleGrip", typeof(Border))]
+[TemplatePart("PART_CollapsePrevButton", typeof(IconButton))]
+[TemplatePart("PART_CollapseNextButton", typeof(IconButton))]
 internal class SplitterHandle : AtomUIThumb
 {
     public static readonly StyledProperty<Orientation> OrientationProperty =
@@ -107,8 +106,8 @@ internal class SplitterHandle : AtomUIThumb
             _collapseNextButton.Click -= HandleCollapseNextClick;
         }
 
-        _collapsePrevButton = e.NameScope.Find<IconButton>(SplitterThemeConstants.CollapsePrevButtonPart);
-        _collapseNextButton = e.NameScope.Find<IconButton>(SplitterThemeConstants.CollapseNextButtonPart);
+        _collapsePrevButton = e.NameScope.Find<IconButton>("PART_CollapsePrevButton");
+        _collapseNextButton = e.NameScope.Find<IconButton>("PART_CollapseNextButton");
 
         if (_collapsePrevButton != null)
         {
