@@ -83,6 +83,8 @@
                               ItemKey="{x:Static viewmodels:GroupBoxViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Badge}"
                               ItemKey="{x:Static viewmodels:BadgeViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Timeline}"
+                              ItemKey="{x:Static viewmodels:TimelineViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"

@@ -43,5 +43,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<GroupBoxViewModel, GroupBoxShowCase>(() => new GroupBoxShowCase());
         locator.Map<ResultViewModel, ResultShowCase>(() => new ResultShowCase());
         locator.Map<BadgeViewModel, BadgeShowCase>(() => new BadgeShowCase());
+        locator.Map<TimelineViewModel, TimelineShowCase>(() => new TimelineShowCase());
     }
 }
