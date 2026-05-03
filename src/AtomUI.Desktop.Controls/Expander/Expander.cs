@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
@@ -203,9 +202,9 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _motionActor     = e.NameScope.Find<BaseMotionActor>(ExpanderThemeConstants.ContentMotionActorPart);
-        _headerDecorator = e.NameScope.Find<Border>(ExpanderThemeConstants.HeaderDecoratorPart);
-        _expandButton    = e.NameScope.Find<IconButton>(ExpanderThemeConstants.ExpandButtonPart);
+        _motionActor     = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
+        _headerDecorator = e.NameScope.Find<Border>("PART_HeaderDecorator");
+        _expandButton    = e.NameScope.Find<IconButton>("PART_ExpandButton");
 
         _tempAnimationDisabled = true;
         HandleExpandedChanged();

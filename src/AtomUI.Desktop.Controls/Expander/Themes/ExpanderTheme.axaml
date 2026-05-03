@@ -7,19 +7,19 @@
     <ControlTheme x:Key="{x:Type atom:Expander}" TargetType="atom:Expander">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:ExpanderThemeConstants.FramePart}"
+                <Border Name="PART_Frame"
                         ClipToBounds="True"
                         BorderThickness="{TemplateBinding EffectiveBorderThickness}">
-                    <DockPanel Name="{x:Static atom:ExpanderThemeConstants.MainLayoutPart}"
+                    <DockPanel Name="PART_MainLayout"
                                LastChildFill="True">
-                        <LayoutTransformControl Name="{x:Static atom:ExpanderThemeConstants.HeaderLayoutTransformPart}">
-                            <Border Name="{x:Static atom:ExpanderThemeConstants.HeaderDecoratorPart}"
+                        <LayoutTransformControl Name="PART_HeaderLayoutTransform">
+                            <Border Name="PART_HeaderDecorator"
                                     BorderThickness="{TemplateBinding HeaderBorderThickness}"
                                     Padding="{TemplateBinding HeaderPadding}">
-                                <Grid Name="{x:Static atom:ExpanderThemeConstants.HeaderLayoutPart}"
+                                <Grid Name="PART_HeaderLayout"
                                       ColumnDefinitions="Auto, *, Auto, Auto">
                                     <atom:IconButton
-                                        Name="{x:Static atom:ExpanderThemeConstants.ExpandButtonPart}"
+                                        Name="PART_ExpandButton"
                                         Grid.Column="0"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
@@ -27,7 +27,7 @@
                                         Icon="{TemplateBinding ExpandIcon}"
                                         IsVisible="{TemplateBinding IsShowExpandIcon}"
                                         IsEnabled="{TemplateBinding IsEnabled}" />
-                                    <ContentPresenter Name="{x:Static atom:ExpanderThemeConstants.HeaderPresenterPart}"
+                                    <ContentPresenter Name="PART_HeaderPresenter"
                                                       HorizontalAlignment="Stretch"
                                                       VerticalAlignment="Center"
                                                       HorizontalContentAlignment="Left"
@@ -37,7 +37,7 @@
                                                       ContentTemplate="{TemplateBinding HeaderTemplate}"
                                                       Grid.Column="1" />
                                     <ContentPresenter
-                                        Name="{x:Static atom:ExpanderThemeConstants.AddOnContentPresenterPart}"
+                                        Name="PART_AddOnContentPresenter"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         HorizontalContentAlignment="Left"
@@ -50,12 +50,12 @@
                         </LayoutTransformControl>
 
                         <atom:LayoutAwareMotionActor
-                            Name="{x:Static atom:ExpanderThemeConstants.ContentMotionActorPart}"
+                            Name="PART_ContentMotionActor"
                             ClipToBounds="True"
                             IsVisible="False">
-                            <ContentPresenter Name="{x:Static atom:ExpanderThemeConstants.ContentPresenterPart}"
+                            <ContentPresenter Name="PART_ContentPresenter"
                                               Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Padding="{TemplateBinding ContentPadding}"/>
                         </atom:LayoutAwareMotionActor>
                     </DockPanel>
