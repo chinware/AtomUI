@@ -30,7 +30,7 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
                             <atom:InputClearIconButton
-                                Name="{x:Static atom:TextBoxThemeConstants.ClearButtonPart}"
+                                Name="PART_ClearButton"
                                 IsPassthroughMouseEvent="False" />
                             <ContentPresenter
                                 Name="PART_InnerRightContentPresenter"

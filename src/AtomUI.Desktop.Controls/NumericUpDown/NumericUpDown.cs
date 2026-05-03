@@ -292,7 +292,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = new CompositeDisposable();
 
-        if (e.NameScope.Find<InputClearIconButton>(TextBoxThemeConstants.ClearButtonPart) is { } clearButton)
+        if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
             _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
                 new Binding(nameof(ClearIcon)) { Source = this }));
