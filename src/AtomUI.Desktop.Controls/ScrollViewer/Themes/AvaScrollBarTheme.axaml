@@ -10,7 +10,7 @@
                 <ControlTemplate>
                     <Border Name="Frame" UseLayoutRounding="False">
                         <Grid Name="RootLayout" RowDefinitions="*">
-                            <Track Name="{x:Static atom:ScrollViewerThemeConstants.TrackPart}"
+                            <Track Name="PART_Track"
                                    IsDirectionReversed="True"
                                    Minimum="{TemplateBinding Minimum}"
                                    Maximum="{TemplateBinding Maximum}"
@@ -19,12 +19,12 @@
                                    ViewportSize="{TemplateBinding ViewportSize}"
                                    Orientation="{TemplateBinding Orientation}">
                                 <Track.Thumb>
-                                    <atom:ScrollBarThumb Name="{x:Static atom:ScrollViewerThemeConstants.ThumbPart}"
+                                    <atom:ScrollBarThumb Name="PART_Thumb"
                                                          Orientation="Vertical" />
                                 </Track.Thumb>
                                 <Track.DecreaseButton>
                                     <atomc:ScrollBarRepeatButton
-                                        Name="{x:Static atom:ScrollViewerThemeConstants.PageUpButtonPart}"
+                                        Name="PART_PageUpButton"
                                         MinHeight="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
@@ -33,7 +33,7 @@
                                 </Track.DecreaseButton>
                                 <Track.IncreaseButton>
                                     <atomc:ScrollBarRepeatButton
-                                        Name="{x:Static atom:ScrollViewerThemeConstants.PageDownButtonPart}"
+                                        Name="PART_PageDownButton"
                                         MinHeight="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
@@ -54,7 +54,7 @@
                             UseLayoutRounding="False">
                         <Grid Name="RootLayout"
                               ColumnDefinitions="*">
-                            <Track Name="{x:Static atom:ScrollViewerThemeConstants.TrackPart}"
+                            <Track Name="PART_Track"
                                    Minimum="{TemplateBinding Minimum}"
                                    Maximum="{TemplateBinding Maximum}"
                                    Value="{TemplateBinding RangeBase.Value, Mode=TwoWay}"
@@ -62,12 +62,12 @@
                                    ViewportSize="{TemplateBinding ViewportSize}"
                                    Orientation="{TemplateBinding Orientation}">
                                 <Track.Thumb>
-                                    <atom:ScrollBarThumb Name="{x:Static atom:ScrollViewerThemeConstants.ThumbPart}"
+                                    <atom:ScrollBarThumb Name="PART_Thumb"
                                                          Orientation="Horizontal" />
                                 </Track.Thumb>
                                 <Track.DecreaseButton>
                                     <atomc:ScrollBarRepeatButton
-                                        Name="{x:Static atom:ScrollViewerThemeConstants.PageUpButtonPart}"
+                                        Name="PART_PageUpButton"
                                         MinHeight="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
@@ -76,7 +76,7 @@
                                 </Track.DecreaseButton>
                                 <Track.IncreaseButton>
                                     <atomc:ScrollBarRepeatButton
-                                        Name="{x:Static atom:ScrollViewerThemeConstants.PageDownButtonPart}"
+                                        Name="PART_PageDownButton"
                                         MinHeight="0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
