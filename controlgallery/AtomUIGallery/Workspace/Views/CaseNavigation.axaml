@@ -81,6 +81,8 @@
                               ItemKey="{x:Static viewmodels:SegmentedViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_GroupBox}"
                               ItemKey="{x:Static viewmodels:GroupBoxViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Badge}"
+                              ItemKey="{x:Static viewmodels:BadgeViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"

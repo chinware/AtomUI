@@ -13,6 +13,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AlertToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ArrowDecoratedBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.AvatarToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.BadgeToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.BreadcrumbToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonSpinnerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ButtonToken));
@@ -49,6 +50,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpaceToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SpinToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitViewToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));

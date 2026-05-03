@@ -8,7 +8,7 @@
         <!-- <ResourceInclude Source="AutoComplete/Themes/AutoCompleteThemes.axaml" /> -->
         <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
-        <!-- <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" /> -->
+        <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" /> 
@@ -29,8 +29,8 @@
         <ResourceInclude Source="Flyouts/Themes/FlyoutThemes.axaml" />
         <!-- <ResourceInclude Source="FloatButton/Themes/FloatButtonThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Form/Themes/FormThemes.axaml" /> -->
-        <!-- <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" /> -->
-        <!-- <ResourceInclude Source="HeaderedContentControl/Themes/HeaderedContentControlTheme.axaml" /> -->
+        <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
+        <ResourceInclude Source="HeaderedContentControl/Themes/HeaderedContentControlTheme.axaml" />
         <!-- <ResourceInclude Source="ImagePreviewer/Themes/ImagePreviewerThemes.axaml" /> -->
         <!-- <ResourceInclude Source="Input/Themes/InputThemes.axaml" /> -->
         <!-- <ResourceInclude Source="ListView/Themes/ListViewThemes.axaml" /> -->
@@ -51,7 +51,7 @@
         <!-- <ResourceInclude Source="QRCode/Themes/QRCodeTheme.axaml" /> -->
         <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <ResourceInclude Source="Rate/Themes/RateThemes.axaml" />
-        <!-- <ResourceInclude Source="Result/Themes/ResultTheme.axaml" /> -->
+        <ResourceInclude Source="Result/Themes/ResultTheme.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />

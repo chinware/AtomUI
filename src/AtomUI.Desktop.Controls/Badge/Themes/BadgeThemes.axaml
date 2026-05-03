@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="CountBadgeAdornerTheme.axaml" />
+        <ResourceInclude Source="DotBadgeAdornerTheme.axaml" />
+        <ResourceInclude Source="RibbonBadgeAdornerTheme.axaml" />
+        <ResourceInclude Source="DotBadgeIndicatorTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

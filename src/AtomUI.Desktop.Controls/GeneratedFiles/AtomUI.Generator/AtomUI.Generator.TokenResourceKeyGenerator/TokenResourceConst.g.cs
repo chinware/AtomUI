@@ -66,6 +66,32 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextFontSizeSM
     }
 
+    public enum BadgeTokenKind
+    {
+        BadgeColor,
+        BadgeColorHover,
+        BadgeFontHeight,
+        BadgeProcessingDuration,
+        BadgeRibbonCornerDarkenAmount,
+        BadgeRibbonCornerTransform,
+        BadgeRibbonOffset,
+        BadgeRibbonTextPadding,
+        BadgeShadowColor,
+        BadgeShadowSize,
+        BadgeTextColor,
+        CountBadgeCornerRadius,
+        CountBadgeCornerRadiusSM,
+        CountBadgeTextPadding,
+        DotBadgeLabelMargin,
+        DotSize,
+        IndicatorHeight,
+        IndicatorHeightSM,
+        StatusSize,
+        TextFontSize,
+        TextFontSizeSM,
+        TextFontWeight
+    }
+
     public enum BreadcrumbTokenKind
     {
         BreadcrumbItemContentPadding,
@@ -724,6 +750,15 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         SplitTriggerSize
     }
 
+    public enum SplitViewTokenKind
+    {
+        CompactPaneThemeLength,
+        OpenPaneThemeLength,
+        PaneCloseMotionDuration,
+        PaneMotionEasing,
+        PaneOpenMotionDuration
+    }
+
     public enum StepsTokenKind
     {
         CustomIconFontSize,
@@ -997,6 +1032,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public AvatarTokenResourceExtension(AvatarTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class BadgeTokenResourceExtension : TokenResourceExtension<BadgeTokenKind>
+    {
+        public BadgeTokenResourceExtension()
+        {
+        }
+
+        public BadgeTokenResourceExtension(BadgeTokenKind kind) : base(kind)
         {
         }
     }
@@ -1393,6 +1439,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplitterTokenResourceExtension(SplitterTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class SplitViewTokenResourceExtension : TokenResourceExtension<SplitViewTokenKind>
+    {
+        public SplitViewTokenResourceExtension()
+        {
+        }
+
+        public SplitViewTokenResourceExtension(SplitViewTokenKind kind) : base(kind)
         {
         }
     }
