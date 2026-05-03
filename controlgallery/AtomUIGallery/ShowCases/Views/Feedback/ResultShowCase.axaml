@@ -3,7 +3,9 @@
              x:Class="AtomUIGallery.ShowCases.Views.ResultShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
+             x:DataType="vm:ResultViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
             Title="Success"
