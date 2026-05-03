@@ -46,6 +46,7 @@ internal class en_US : LanguageProvider
     public const string Feedback_PopupConfirm = "PopupConfirm";
     public const string Feedback_Skeleton = "Skeleton";
     public const string Feedback_Spin = "Spin";
+    public const string Feedback_Result = "Result";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

@@ -97,6 +97,8 @@
                               ItemKey="{x:Static viewmodels:SkeletonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Spin}"
                               ItemKey="{x:Static viewmodels:SpinViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Result}"
+                              ItemKey="{x:Static viewmodels:ResultViewModel.ID}" />
         </atom:NavMenuNode>
     </atom:NavMenu>
 </UserControl>

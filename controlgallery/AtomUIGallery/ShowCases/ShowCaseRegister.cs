@@ -41,5 +41,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<TagViewModel, TagShowCase>(() => new TagShowCase());
         locator.Map<SegmentedViewModel, SegmentedShowCase>(() => new SegmentedShowCase());
         locator.Map<GroupBoxViewModel, GroupBoxShowCase>(() => new GroupBoxShowCase());
+        locator.Map<ResultViewModel, ResultShowCase>(() => new ResultShowCase());
     }
 }
