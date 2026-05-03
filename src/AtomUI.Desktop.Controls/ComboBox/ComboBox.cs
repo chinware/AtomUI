@@ -224,6 +224,16 @@ public class ComboBox : AvaloniaComboBox,
     {
         this.RegisterTokenResourceScope(ComboBoxToken.ScopeProvider);
         SelectionBoxItemProperty.Changed.AddClassHandler<ComboBox>((box, args) => box.NotifyFormValueChanged(args.NewValue));
+
+        // 阻止下拉框打开时的 BringIntoView 行为，防止触发页面滚动
+        AddHandler(RequestBringIntoViewEvent, (sender, e) =>
+        {
+            // 如果是下拉框内的元素触发的 BringIntoView，则取消事件
+            if (IsDropDownOpen && e.TargetObject != this)
+            {
+                e.Handled = true;
+            }
+        }, handledEventsToo: true);
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

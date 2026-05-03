@@ -50,5 +50,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<InfoFlyoutViewModel, InfoFlyoutShowCase>(() => new InfoFlyoutShowCase());
         locator.Map<WatermarkViewModel, WatermarkShowCase>(() => new WatermarkShowCase());
         locator.Map<ProgressBarViewModel, ProgressBarShowCase>(() => new ProgressBarShowCase());
+        locator.Map<PaginationViewModel, PaginationShowCase>(() => new PaginationShowCase());
     }
 }

@@ -544,6 +544,24 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PaddingSM
     }
 
+    public enum PaginationTokenKind
+    {
+        InputOutlineOffset,
+        ItemActiveBg,
+        ItemActiveBgDisabled,
+        ItemActiveColorDisabled,
+        ItemBg,
+        ItemInputBg,
+        ItemLinkBg,
+        ItemSize,
+        ItemSizeSM,
+        PaginationItemPaddingInline,
+        PaginationLayoutMiniSpacing,
+        PaginationLayoutSpacing,
+        PaginationMiniQuickJumperInputWidth,
+        PaginationQuickJumperInputWidth
+    }
+
     public enum PopupConfirmTokenKind
     {
         ButtonContainerMargin,
@@ -1291,6 +1309,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public OptionButtonTokenResourceExtension(OptionButtonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class PaginationTokenResourceExtension : TokenResourceExtension<PaginationTokenKind>
+    {
+        public PaginationTokenResourceExtension()
+        {
+        }
+
+        public PaginationTokenResourceExtension(PaginationTokenKind kind) : base(kind)
         {
         }
     }

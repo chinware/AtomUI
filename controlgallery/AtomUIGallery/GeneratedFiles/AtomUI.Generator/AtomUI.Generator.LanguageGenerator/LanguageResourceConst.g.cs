@@ -52,6 +52,7 @@ namespace AtomUIGallery.Localization
         Navigation_ButtonSpinner,
         Navigation_ComboBox,
         Navigation_DropdownButton,
+        Navigation_Pagination,
         Navigation_TabControl
     }
 
