@@ -6,7 +6,7 @@
     <ControlTheme x:Key="{x:Type atom:Slider}" TargetType="atom:Slider">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:SliderTrack Name="{x:Static atom:SliderThemeConstants.TrackPart}"
+                <atom:SliderTrack Name="PART_Track"
                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                   IsEnabled="{TemplateBinding IsEnabled}"
                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
@@ -21,13 +21,13 @@
                                   Marks="{TemplateBinding Marks}"
                                   Included="{TemplateBinding Included}">
                     <atom:SliderTrack.StartSliderThumb>
-                        <atom:SliderThumb Name="{x:Static atom:SliderThemeConstants.StartThumbPart}"
+                        <atom:SliderThumb Name="PART_StartThumb"
                                           IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"
                                           atom:ToolTip.Placement="Top"
                                           atom:ToolTip.ShowDelay="20" />
                     </atom:SliderTrack.StartSliderThumb>
                     <atom:SliderTrack.EndSliderThumb>
-                        <atom:SliderThumb Name="{x:Static atom:SliderThemeConstants.EndThumbPart}"
+                        <atom:SliderThumb Name="PART_EndThumb"
                                           IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"
                                           atom:ToolTip.Placement="Top"
                                           atom:ToolTip.ShowDelay="20" />

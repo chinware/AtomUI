@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Input;
 using AtomUI.Media;
 using AtomUI.Theme;
@@ -236,7 +235,7 @@ public class Slider : RangeBase,
         _pointerPressDispose?.Dispose();
         _pointerReleaseDispose?.Dispose();
 
-        SliderTrack = e.NameScope.Find<SliderTrack>(SliderThemeConstants.TrackPart);
+        SliderTrack = e.NameScope.Find<SliderTrack>("PART_Track");
 
         if (SliderTrack != null)
         {
