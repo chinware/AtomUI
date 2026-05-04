@@ -1,0 +1,136 @@
+using System.Reactive;
+using System.Reactive.Linq;
+using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls;
+using Avalonia.Interactivity;
+using ReactiveUI;
+
+namespace AtomUIGallery.ShowCases.ViewModels;
+
+public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableViewModel
+{
+    public static EntityKey ID = "Menu";
+
+    public IScreen HostScreen { get; }
+    public ViewModelActivator Activator { get; }
+
+    public string UrlPathSegment { get; } = ID.ToString();
+
+    private List<IMenuItemData>? _menuItems;
+
+    public List<IMenuItemData>? MenuItems
+    {
+        get => _menuItems;
+        set => this.RaiseAndSetIfChanged(ref _menuItems, value);
+    }
+
+    private List<IMenuItemData>? _menuFlyoutItems;
+
+    public List<IMenuItemData>? MenuFlyoutItems
+    {
+        get => _menuFlyoutItems;
+        set => this.RaiseAndSetIfChanged(ref _menuFlyoutItems, value);
+    }
+
+    private List<IMenuItemData>? _contextMenuItems;
+
+    public List<IMenuItemData>? ContextMenuItems
+    {
+        get => _contextMenuItems;
+        set => this.RaiseAndSetIfChanged(ref _contextMenuItems, value);
+    }
+
+    private bool _isDark;
+
+    public bool IsDark
+    {
+        get => _isDark;
+        set => this.RaiseAndSetIfChanged(ref _isDark, value);
+    }
+
+    private NavMenuMode _mode = NavMenuMode.Inline;
+
+    public NavMenuMode Mode
+    {
+        get => _mode;
+        set => this.RaiseAndSetIfChanged(ref _mode, value);
+    }
+
+    private IList<TreeNodePath>? _defaultOpenPaths;
+
+    public IList<TreeNodePath>? DefaultOpenPaths
+    {
+        get => _defaultOpenPaths;
+        set => this.RaiseAndSetIfChanged(ref _defaultOpenPaths, value);
+    }
+
+    private TreeNodePath? _defaultSelectedPath;
+
+    public TreeNodePath? DefaultSelectedPath
+    {
+        get => _defaultSelectedPath;
+        set => this.RaiseAndSetIfChanged(ref _defaultSelectedPath, value);
+    }
+
+    private INavMenuNode? _defaultSelectedNode;
+
+    public INavMenuNode? DefaultSelectedNode
+    {
+        get => _defaultSelectedNode;
+        set => this.RaiseAndSetIfChanged(ref _defaultSelectedNode, value);
+    }
+
+    private List<INavMenuNode>? _inlineNavMenuNodes;
+
+    public List<INavMenuNode>? InlineNavMenuNodes
+    {
+        get => _inlineNavMenuNodes;
+        set => this.RaiseAndSetIfChanged(ref _inlineNavMenuNodes, value);
+    }
+
+    private List<INavMenuNode>? _itemsSourceDemoNavMenuNodes;
+
+    public List<INavMenuNode>? ItemsSourceDemoNavMenuNodes
+    {
+        get => _itemsSourceDemoNavMenuNodes;
+        set => this.RaiseAndSetIfChanged(ref _itemsSourceDemoNavMenuNodes, value);
+    }
+
+    public ReactiveCommand<string, Unit> NavigateCommand { get; }
+
+    public MenuViewModel(IScreen screen)
+    {
+        HostScreen      = screen;
+        Activator       = new ViewModelActivator();
+        NavigateCommand = ReactiveCommand.CreateFromTask<string>(OnNavigate, Observable.Return(true));
+    }
+
+    private async Task OnNavigate(string? itemKey)
+    {
+        await Task.Delay(100);
+    }
+
+    public void HandleChangeModeCheckChanged(object? sender, RoutedEventArgs? args)
+    {
+        if (sender is ToggleSwitch changeModeSwitch)
+        {
+            if (changeModeSwitch.IsChecked.HasValue)
+            {
+                Mode = changeModeSwitch.IsChecked.Value ? NavMenuMode.Vertical : NavMenuMode.Inline;
+            }
+            else
+            {
+                Mode = NavMenuMode.Inline;
+            }
+        }
+    }
+
+    public void HandleChangeStyleCheckChanged(object? sender, RoutedEventArgs? args)
+    {
+        if (sender is ToggleSwitch changeStyleSwitch)
+        {
+            IsDark = changeStyleSwitch.IsChecked.GetValueOrDefault();
+        }
+    }
+}

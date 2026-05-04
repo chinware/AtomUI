@@ -24,6 +24,7 @@ internal class zh_CN : LanguageProvider
     public const string Navigation_DropdownButton = "DropdownButton 下拉按钮";
     public const string Navigation_TabControl = "TabControl 标签页";
     public const string Navigation_Pagination = "Pagination 分页";
+    public const string Navigation_Menu = "Menu 导航菜单";
     public const string DataEntry = "数据录入";
     public const string DataEntry_CheckBox = "CheckBox 多选框";
     public const string DataEntry_ToggleSwitch = "ToggleSwitch 开关";

@@ -1,11 +1,12 @@
 using System.ComponentModel;
 using AtomUI.Controls;
+using AtomUI.MotionScene;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -16,7 +17,12 @@ public class ContextMenu : AvaloniaContextMenu,
                            IMotionAwareControl
 {
     #region 公共属性定义
-
+    public static readonly StyledProperty<BoxShadows> PopupRootShadowProperty =
+        Popup.PopupRootShadowProperty.AddOwner<ContextMenu>();
+    
+    public static readonly StyledProperty<BoxShadows> OverlayHostShadowProperty =
+        Popup.OverlayHostShadowProperty.AddOwner<ContextMenu>();
+    
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<ContextMenu>();
 
@@ -28,6 +34,27 @@ public class ContextMenu : AvaloniaContextMenu,
 
     public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
         Menu.ShouldUseOverlayLayerProperty.AddOwner<ContextMenu>();
+    
+    public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
+        MotionAwareControlProperty.MotionDurationProperty.AddOwner<ContextMenu>();
+    
+    public static readonly StyledProperty<AbstractMotion?> OpenMotionProperty = 
+        Popup.OpenMotionProperty.AddOwner<ContextMenu>();
+        
+    public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
+        Popup.CloseMotionProperty.AddOwner<ContextMenu>();
+    
+    public BoxShadows PopupRootShadow
+    {
+        get => GetValue(PopupRootShadowProperty);
+        set => SetValue(PopupRootShadowProperty, value);
+    }
+    
+    public BoxShadows OverlayHostShadow
+    {
+        get => GetValue(OverlayHostShadowProperty);
+        set => SetValue(OverlayHostShadowProperty, value);
+    }
 
     public SizeType SizeType
     {
@@ -51,6 +78,24 @@ public class ContextMenu : AvaloniaContextMenu,
     {
         get => GetValue(ShouldUseOverlayLayerProperty);
         set => SetValue(ShouldUseOverlayLayerProperty, value);
+    }
+    
+    public TimeSpan MotionDuration
+    {
+        get => GetValue(MotionDurationProperty);
+        set => SetValue(MotionDurationProperty, value);
+    }
+    
+    public AbstractMotion? OpenMotion
+    {
+        get => GetValue(OpenMotionProperty);
+        set => SetValue(OpenMotionProperty, value);
+    }
+
+    public AbstractMotion? CloseMotion
+    {
+        get => GetValue(CloseMotionProperty);
+        set => SetValue(CloseMotionProperty, value);
     }
 
     #endregion
@@ -83,28 +128,52 @@ public class ContextMenu : AvaloniaContextMenu,
     public ContextMenu()
     {
         this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
+        CreatePopup();
+    }
+
+    private Popup CreatePopup()
+    {
         _popup = new Popup
         {
-            WindowManagerAddShadowHint = false,
-            IsLightDismissEnabled      = false,
+            IsLightDismissEnabled          = true,
+            OverlayDismissEventPassThrough = true,
+            TakesFocusFromNativeControl    = Popup.GetTakesFocusFromNativeControl(this),
         };
-
-        VerticalOffset   = 10;
-        HorizontalOffset = 10;
-        _popup.Opened  += this.CreateEventHandler("PopupOpened");
-        _popup.Opened  += HandlePopupOpened;
-        _popup.Closed  += this.CreateEventHandler<EventArgs>("PopupClosed");
-        _popup.AddClosingEventHandler(this.CreateEventHandler<CancelEventArgs>("PopupClosing")!);
-        _popup.KeyUp += this.CreateEventHandler<KeyEventArgs>("PopupKeyUp");
-
+        CustomPopupPlacementCallback =  _popup.HandleCustomPlacement;
+        _popup.Opened                += HandlePopupOpened;
+        _popup.Closed                += this.OnPopupClosed;
+        _popup.AddClosingEventHandler(HandlePopupClosing);
+        _popup.KeyUp += this.OnPopupClosing;
+        
+        _popup[!Popup.PopupRootShadowProperty]       = this[!PopupRootShadowProperty];
+        _popup[!Popup.OverlayHostShadowProperty]     = this[!OverlayHostShadowProperty];
+        _popup[!Popup.MotionDurationProperty]        = this[!MotionDurationProperty];
+        _popup[!Popup.OpenMotionProperty]            = this[!OpenMotionProperty];
+        _popup[!Popup.CloseMotionProperty]           = this[!CloseMotionProperty];
+        _popup[!Popup.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
         _popup[!Popup.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
-        _popup[!Popup.IsMotionEnabledProperty]        = this[!IsMotionEnabledProperty];
 
         this.SetPopup(_popup);
+        return _popup;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        CustomPopupPlacementCallback =  _popup!.HandleCustomPlacement;
+    }
+
+    private void HandlePopupClosing(object? sender, CancelEventArgs e)
+    {
+        if (!e.Cancel)
+        {
+            this.OnPopupClosing(sender, e);
+        }
     }
 
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
+        this.OnPopupOpened(sender, e);
         if (_popup?.PlacementTarget is { } target)
         {
             var topLevel = TopLevel.GetTopLevel(target);
@@ -209,11 +278,11 @@ public class ContextMenu : AvaloniaContextMenu,
 
     public override void Close()
     {
-        if (!IsOpen || _popup == null)
+        if (!IsOpen)
         {
             return;
         }
-
+        
         for (var i = 0; i < ItemCount; i++)
         {
             var container = ContainerFromIndex(i);
@@ -223,7 +292,7 @@ public class ContextMenu : AvaloniaContextMenu,
             }
         }
 
-        _popup.IsOpen = false;
+        _popup!.IsOpen = false;
 
         if (_attachedWindow != null)
         {
