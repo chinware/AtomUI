@@ -19,10 +19,10 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"
-                                                  SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
+                                                  SharedSizeGroup="IconPresenter" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto"
-                                                  SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
+                                                  SharedSizeGroup="MenuIndicatorIcon" />
                             </Grid.ColumnDefinitions>
                             <atom:IconPresenter
                                 Name="ItemIconPresenter"
@@ -51,7 +51,7 @@
                         </Grid>
 
                         <Rectangle
-                            Name="{x:Static atom:TopLevelHorizontalNavMenuItemThemeConstants.ActiveIndicatorPart}"
+                            Name="PART_ActiveIndicator"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
                             Fill="{TemplateBinding ActiveBarColor}"

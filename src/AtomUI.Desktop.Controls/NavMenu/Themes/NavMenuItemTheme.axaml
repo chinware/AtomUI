@@ -10,7 +10,7 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel>
-                        <atom:HorizontalNavMenuItemHeader Name="{x:Static atom:NavMenuItemThemeConstants.HeaderPart}"
+                        <atom:HorizontalNavMenuItemHeader Name="PART_Header"
                                                            Icon="{TemplateBinding Icon}"
                                                            Header="{TemplateBinding Header}"
                                                            HeaderTemplate="{TemplateBinding HeaderTemplate}"
@@ -22,7 +22,7 @@
                                                            IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                            IsTopLevel="{TemplateBinding IsTopLevel}" />
-                        <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
+                        <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
@@ -33,14 +33,14 @@
                                     <Binding Path="HasSubMenu" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </atom:Popup.IsOpen>
-                            <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}"
+                            <Border Name="PART_PopupFrame"
                                     MinWidth="{TemplateBinding EffectivePopupMinWidth}">
                                 <atom:ScrollViewer IsScrollChainingEnabled="False"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                    IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
                                                    AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
                                     <ItemsPresenter
-                                        Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
+                                        Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
                                         Grid.IsSharedSizeScope="True"
                                         KeyboardNavigation.TabNavigation="Continue" />
@@ -56,7 +56,7 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Panel>
-                        <atom:VerticalNavMenuItemHeader Name="{x:Static atom:NavMenuItemThemeConstants.HeaderPart}"
+                        <atom:VerticalNavMenuItemHeader Name="PART_Header"
                                                          Icon="{TemplateBinding Icon}"
                                                          Header="{TemplateBinding Header}"
                                                          HeaderTemplate="{TemplateBinding HeaderTemplate}"
@@ -67,7 +67,7 @@
                                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                          IsInSelectedPath="{TemplateBinding IsInSelectedPath}" />
-                        <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
+                        <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
@@ -79,12 +79,12 @@
                                 </MultiBinding>
                             </atom:Popup.IsOpen>
 
-                            <Border Name="{x:Static atom:NavMenuItemThemeConstants.PopupFramePart}">
+                            <Border Name="PART_PopupFrame">
                                 <atom:ScrollViewer IsScrollChainingEnabled="False"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                    IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
                                                    AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
-                                    <ItemsPresenter Name="{x:Static atom:NavMenuItemThemeConstants.ItemsPresenterPart}"
+                                    <ItemsPresenter Name="PART_ItemsPresenter"
                                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                                     Grid.IsSharedSizeScope="True" />
                                 </atom:ScrollViewer>
@@ -100,7 +100,7 @@
                 <ControlTemplate>
                     <StackPanel Orientation="Vertical">
                         <atom:InlineNavMenuItemHeader
-                            Name="{x:Static atom:NavMenuItemThemeConstants.HeaderPart}"
+                            Name="PART_Header"
                             Icon="{TemplateBinding Icon}"
                             Header="{TemplateBinding Header}"
                             HeaderTemplate="{TemplateBinding HeaderTemplate}"
@@ -115,7 +115,7 @@
                             IsInSelectedPath="{TemplateBinding IsInSelectedPath}" />
 
                         <atom:LayoutAwareMotionActor
-                            Name="{x:Static atom:InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart}">
+                            Name="PART_ChildItemsLayoutTransform">
                             <ItemsPresenter Name="ChildItemsPresenter"
                                             Focusable="False"
                                             ItemsPanel="{TemplateBinding ItemsPanel}" />

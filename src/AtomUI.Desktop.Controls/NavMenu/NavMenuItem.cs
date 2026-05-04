@@ -948,20 +948,20 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             _popup.DependencyResolver =  null;
         }
 
-        _popup = e.NameScope.Find<Popup>(NavMenuItemThemeConstants.PopupPart);
-        
+        _popup = e.NameScope.Find<Popup>("PART_Popup");
+
         if (_popup != null)
         {
             _popup.Opened += PopupOpened;
             _popup.Closed += PopupClosed;
         }
 
-        _itemHeader = e.NameScope.Find<Control>(NavMenuItemThemeConstants.HeaderPart);
+        _itemHeader = e.NameScope.Find<Control>("PART_Header");
         
         if (Mode == NavMenuMode.Inline)
         {
             _childItemsLayoutTransform =
-                e.NameScope.Find<BaseMotionActor>(InlineNavMenuItemThemeConstants.ChildItemsLayoutTransformPart);
+                e.NameScope.Find<BaseMotionActor>("PART_ChildItemsLayoutTransform");
             if (_childItemsLayoutTransform is not null)
             {
                 _childItemsLayoutTransform.SetCurrentValue(IsVisibleProperty, IsSubMenuOpen && HasSubMenu);

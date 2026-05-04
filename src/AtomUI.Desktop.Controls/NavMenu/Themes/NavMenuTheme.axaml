@@ -20,7 +20,7 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 CornerRadius="{TemplateBinding CornerRadius}">
-                            <ItemsPresenter Name="{x:Static atom:NavMenuThemeConstants.ItemsPresenterPart}"
+                            <ItemsPresenter Name="PART_ItemsPresenter"
                                             KeyboardNavigation.TabNavigation="Continue">
                                 <ItemsPresenter.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -38,7 +38,7 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <DockPanel LastChildFill="True">
-                        <Rectangle Name="{x:Static atom:NavMenuThemeConstants.HorizontalLinePart}"
+                        <Rectangle Name="PART_HorizontalLine"
                                    DockPanel.Dock="Bottom"
                                    Height="{atom:SharedTokenResource LineWidth}" />
                         <Border HorizontalAlignment="Stretch"
@@ -48,7 +48,7 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 CornerRadius="{TemplateBinding CornerRadius}">
-                            <ItemsPresenter Name="{x:Static atom:NavMenuThemeConstants.ItemsPresenterPart}"
+                            <ItemsPresenter Name="PART_ItemsPresenter"
                                             KeyboardNavigation.TabNavigation="Continue">
                                 <ItemsPresenter.ItemsPanel>
                                     <ItemsPanelTemplate>

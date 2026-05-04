@@ -69,7 +69,7 @@ public class HorizontalNavMenuItemHeader : BaseNavMenuItemHeader
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _activeIndicator =  e.NameScope.Find<Rectangle>(TopLevelHorizontalNavMenuItemThemeConstants.ActiveIndicatorPart);
+        _activeIndicator =  e.NameScope.Find<Rectangle>("PART_ActiveIndicator");
         ConfigureActiveIndicator();
     }
 

@@ -28,10 +28,10 @@
                         </Grid.Margin>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"
-                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.IconPresenterSizeGroup}" />
+                                              SharedSizeGroup="IconPresenter" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto"
-                                              SharedSizeGroup="{x:Static atom:NavMenuThemeConstants.MenuIndicatorIconSizeGroup}" />
+                                              SharedSizeGroup="MenuIndicatorIcon" />
                         </Grid.ColumnDefinitions>
                         <atom:IconPresenter
                             Name="ItemIconPresenter"
