@@ -357,7 +357,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<NavMenuItem>(false);
     }
     
-    protected override bool IsEnabledCore => base.IsEnabledCore && (HasSubMenu || _commandCanExecute);
+    protected override bool IsEnabledCore => base.IsEnabledCore && _commandCanExecute;
     
     public void Open()
     {
@@ -401,7 +401,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             if (navMenuItem._popup != null && navMenuItem._popup.IsOpen)
             {
                 navMenuItem._popup.IsOpen = false;
-                await Task.Delay(50);
             }
 
             navMenuItem.IsSubMenuOpen = false;
@@ -516,9 +515,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         else if (change.Property == ItemCountProperty)
         {
             HasSubMenu = ItemCount > 0;
-            var (o, n) = change.GetOldAndNewValue<int>();
-            if (o == 0 || n == 0)
-                UpdateIsEffectivelyEnabled();
         }
         else if (change.Property == BoundsProperty ||
                  change.Property == PopupMinWidthProperty)
@@ -612,10 +608,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         var isSelected = change.GetNewValue<bool>();
         if (isSelected)
         {
-            if (Mode != NavMenuMode.Inline)
-            {
-                Focus();
-            }
+            Focus();
         }
     }
     
@@ -653,13 +646,11 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
                 {
                     item.TryUpdateCanExecute();
                 }
-                SetCurrentValue(IsSelectedProperty, true);
                 RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
             }
             else
             {
                 CloseSubmenus();
-                SelectedIndex = -1;
             }
         }
     }
@@ -727,7 +718,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         // If we're using overlay popups, there's a chance we need to do a layout pass before
         // the child items are added to the visual tree. If we don't do this here, then
         // selection breaks.
-        if (Presenter?.IsAttachedToVisualTree() == false)
+        if (Presenter?.GetVisualRoot() != null)
         {
             UpdateLayout();
         }
@@ -743,7 +734,6 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     private void PopupClosed(object? sender, EventArgs e)
     {
-        SelectedItem = null;
     }
     
     void ICommandSource.CanExecuteChanged(object sender, EventArgs e) => CanExecuteChangedHandler(sender, e);
@@ -983,18 +973,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         child.SetCurrentValue(IsSelectedProperty, isSelected);
     }
-
-    protected override void OnGotFocus(FocusChangedEventArgs e)
-    {
-        base.OnGotFocus(e);
-        ItemsControlFromItemContainer(this)?.UpdateSelectionFromEvent(this, e);
-    }
-
-    protected override void OnKeyDown(KeyEventArgs e)
-    {
-        // Don't handle here: let event bubble up to the NavMenu's interaction handler.
-    }
-
+    
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);

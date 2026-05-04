@@ -21,7 +21,11 @@ description: Comprehensive Avalonia 12 migration tool for AtomUI. Detects and fi
 
 ## Core Principle
 
+> **CRITICAL: Avalonia 12 migration is ONLY about API compatibility, NOT about changing functionality.**
+>
 > Avalonia 12 is a major version with significant breaking changes across binding system, focus handling, clipboard API, window decorations, TopLevel architecture, Popup positioning, extension methods, dispatcher model, obsolete member removals, renamed APIs, and platform support. This skill automates detection and fixing of the most common issues while providing guidance for complex migrations and AOT-safe reflection patterns.
+>
+> **The ONLY goal of migration is to make the code compile and run on Avalonia 12 with IDENTICAL behavior to the original. Any change in control behavior, logic, or functionality is a migration error, not an improvement.**
 
 ## Trigger Conditions
 
@@ -41,6 +45,55 @@ Use this skill when the user:
 - Any cross-branch file migration request that mentions "Avalonia 12 标准" or "Avalonia 12 standard"
 
 ## Fundamental Rules
+
+### 0. NEVER change control behavior or logic (MOST IMPORTANT)
+
+**ABSOLUTE RULE:** Migration to Avalonia 12 MUST NOT change any control behavior, logic, or functionality. The ONLY purpose of migration is to replace Avalonia 11 APIs with Avalonia 12 equivalents while preserving 100% identical behavior.
+
+**Examples of FORBIDDEN changes during migration:**
+- ❌ Adding new logic in event handlers (e.g., adding `SetCurrentValue(IsSelectedProperty, true)` in `HandleSubMenuOpenChanged`)
+- ❌ Removing existing logic "because it seems redundant"
+- ❌ Changing conditional logic (e.g., adding `if (menuItem.IsTopLevel)` checks that didn't exist before)
+- ❌ Adding new methods (e.g., `PointerMoved`, `KeyDown`) that didn't exist in the original
+- ❌ Changing when events fire or in what order
+- ❌ Modifying state management logic
+- ❌ "Simplifying" or "cleaning up" code that changes behavior
+
+**ONLY allowed changes:**
+- ✅ Replace removed Avalonia 11 APIs with Avalonia 12 equivalents (e.g., `IRenderRoot` → `TopLevel`, `GotFocusEventArgs` → `FocusChangedEventArgs`)
+- ✅ Update namespace imports (e.g., remove `using Avalonia.Rendering` if no longer needed)
+- ✅ Use ReflectionExtensions for internalized APIs
+- ✅ Fix compilation errors caused by API changes
+
+**Verification before committing:**
+1. Compare line-by-line with release/5.0 source code
+2. Every logic change must be justified by an Avalonia 12 API breaking change
+3. If you added/removed logic that's not directly caused by an API change, you did it wrong
+4. When in doubt, copy the exact logic from release/5.0 and ONLY change the API calls
+
+**Real-world example of migration error:**
+```csharp
+// ❌ WRONG - Added logic that didn't exist in release/5.0
+if (value)
+{
+    foreach (var item in ItemsView.OfType<NavMenuItem>())
+    {
+        item.TryUpdateCanExecute();
+    }
+    SetCurrentValue(IsSelectedProperty, true);  // ← This is NEW logic, NOT an API change!
+    RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
+}
+
+// ✅ CORRECT - Only API changes, logic unchanged
+if (value)
+{
+    foreach (var item in ItemsView.OfType<NavMenuItem>())
+    {
+        item.TryUpdateCanExecute();
+    }
+    RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
+}
+```
 
 ### 1. Comprehensive scanning
 
@@ -1782,6 +1835,12 @@ for (int i = 0; i < count; i++)
 
 ## Prohibited
 
+- **MOST CRITICAL: Changing control behavior, logic, or functionality during migration** — Migration is ONLY about API compatibility, NOT about improving/simplifying/refactoring code
+- **Adding new logic that didn't exist in the original code** — Every line of logic must have existed in release/5.0 or be directly required by an Avalonia 12 API change
+- **Removing existing logic "because it seems redundant"** — If it was in release/5.0, it stays unless an Avalonia 12 API change makes it impossible
+- **Adding new methods or event handlers** — Only add if required by Avalonia 12 API changes (e.g., replacing obsolete methods)
+- **Changing conditional logic or control flow** — If/else structure must match release/5.0 unless API changes force it
+- **"Simplifying" or "cleaning up" code** — Code style/structure must match release/5.0 exactly
 - Fixing without user consent
 - Modifying code without showing diff
 - Ignoring any of 50+ categories
@@ -1802,8 +1861,8 @@ for (int i = 0; i < count; i++)
 - Missing checks for renamed members (Watermark→PlaceholderText, etc.)
 - Missing checks for internalized classes (Gestures, BindingPlugins, IPopupHost, KeyboardNavigationHandler)
 - Writing new reflection code when an existing ReflectionExtension already covers the target member (check the catalog first)
-- ALWAYS run `dotnet build` to verify compilation
-- migration is only complete when code compiles successfully
+- Skipping `dotnet build` verification after code changes
+- Considering migration complete when code doesn't compile
 
 ## AtomUI ReflectionExtensions Catalog
 

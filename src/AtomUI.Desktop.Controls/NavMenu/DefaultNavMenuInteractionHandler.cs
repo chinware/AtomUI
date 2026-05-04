@@ -63,19 +63,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         _currentOpenDelayRunDisposable?.Dispose();
         _currentCloseDelayRunDisposable?.Dispose();
-
-        if (menuItem.IsTopLevel)
-        {
-            var currentOpen = menuItem.Parent.SubItems
-                .FirstOrDefault(s => s != menuItem && s.IsSubMenuOpen);
-            if (currentOpen != null)
-            {
-                currentOpen.Close();
-                if (menuItem.HasSubMenu)
-                    menuItem.Open();
-            }
-        }
-        else if (menuItem.HasSubMenu)
+        if (menuItem.HasSubMenu)
         {
             OpenWithDelay(menuItem);
         }
@@ -103,7 +91,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         _currentOpenDelayRunDisposable?.Dispose();
         _currentCloseDelayRunDisposable?.Dispose();
 
-        if (!menuItem.IsTopLevel && menuItem.HasSubMenu && !menuItem.IsPointerOverSubMenu)
+        if (!menuItem.IsPointerOverSubMenu)
         {
             _currentCloseDelayRunDisposable = DelayRun(() =>
             {
@@ -138,7 +126,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     
     protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (_latestClickedItem is null || !_currentPressedIsValid)
+        if (_latestClickedItem is null || !_currentPressedIsValid) 
         {
             return;
         }
@@ -149,113 +137,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             Click(_latestClickedItem);
             e.Handled = true;
-        }
-    }
-
-    protected virtual void PointerMoved(object? sender, PointerEventArgs e)
-    {
-        var item = GetMenuItemCore(e.Source as Control);
-        if (item == null)
-            return;
-
-        var transformedBounds = item.GetTransformedBounds();
-        if (transformedBounds == null)
-            return;
-
-        var point = e.GetCurrentPoint(null);
-        if (point.Properties.IsLeftButtonPressed
-            && transformedBounds.Value.Contains(point.Position) == false)
-        {
-            e.Pointer.Capture(null);
-        }
-    }
-
-    protected virtual void KeyDown(object? sender, KeyEventArgs e)
-    {
-        var item = GetMenuItemCore(e.Source as Control);
-        HandleKeyDown(item, e);
-    }
-
-    internal void HandleKeyDown(NavMenuItem? item, KeyEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case Key.Up:
-            case Key.Down:
-            {
-                if (item?.IsTopLevel == true && item.HasSubMenu)
-                {
-                    if (!item.IsSubMenuOpen)
-                        item.Open();
-                    e.Handled = true;
-                }
-                break;
-            }
-
-            case Key.Left:
-            {
-                if (item is { IsSubMenuOpen: true, IsTopLevel: false })
-                {
-                    item.Close();
-                    item.Focus();
-                    e.Handled = true;
-                }
-                else if (item?.Parent is NavMenuItem { IsTopLevel: false, IsSubMenuOpen: true } parent)
-                {
-                    parent.Close();
-                    parent.Focus();
-                    e.Handled = true;
-                }
-                break;
-            }
-
-            case Key.Right:
-            {
-                if (item != null && !item.IsTopLevel && item.HasSubMenu)
-                {
-                    item.Open();
-                    e.Handled = true;
-                }
-                break;
-            }
-
-            case Key.Enter:
-            {
-                if (item != null)
-                {
-                    if (!item.HasSubMenu)
-                    {
-                        Select(item);
-                        Click(item);
-                    }
-                    else
-                    {
-                        item.Open();
-                    }
-                    e.Handled = true;
-                }
-                break;
-            }
-
-            case Key.Escape:
-            {
-                if (item?.Parent is NavMenuItem parentItem)
-                {
-                    parentItem.Close();
-                    parentItem.Focus();
-                }
-                else
-                {
-                    CloseAllTopLevelMenuItems();
-                }
-                e.Handled = true;
-                break;
-            }
-        }
-
-        if (!e.Handled && item?.Parent is NavMenuItem parentMenuItem)
-        {
-            HandleKeyDown(parentMenuItem, e);
         }
     }
 
@@ -273,19 +154,20 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             // 判断当前选中的是不是自己
             if (!ReferenceEquals(_latestSelectedItem, menuItem))
             {
-                ISet<NavMenuItem> oldSelectedPaths = new HashSet<NavMenuItem>();
+                var newItems = NavMenu.CollectSelectPathItems(menuItem);
+                var newSelectedPaths = newItems.ToHashSet();
+
+                ISet<NavMenuItem> oldSelectedPaths;
                 if (_latestSelectedItem != null)
                 {
                     var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-                    foreach (var oldItem in oldItems)
-                    {
-                        oldSelectedPaths.Add(oldItem);
-                    }
+                    oldSelectedPaths = oldItems.ToHashSet();
                 }
-                
-                var newItems         = NavMenu.CollectSelectPathItems(menuItem);
-                var newSelectedPaths = newItems.ToHashSet();
-                
+                else
+                {
+                    oldSelectedPaths = new HashSet<NavMenuItem>();
+                }
+
                 var delta = oldSelectedPaths.Except(newSelectedPaths);
 
                 var navMenu = Menu as NavMenu;
@@ -374,17 +256,15 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             throw new NotSupportedException("DefaultMenuInteractionHandler is already attached.");
         }
-        
+
         Menu                 =  navMenu;
         Menu.GotFocus        += GotFocus;
         Menu.LostFocus       += LostFocus;
-        Menu.KeyDown         += KeyDown;
         Menu.PointerPressed  += PointerPressed;
         Menu.PointerReleased += PointerReleased;
 
         Menu.AddHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
         Menu.AddHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
-        Menu.AddHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         if (Menu is Visual visual)
         {
@@ -395,18 +275,18 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         {
             inputRoot.AddHandler(InputElement.PointerPressedEvent, RootPointerPressed, RoutingStrategies.Tunnel);
         }
-        
+
         if (_root is WindowBase window)
         {
             _attachedWindow    =  window;
             window.Deactivated += WindowDeactivated;
         }
-        
+
         if (_root is TopLevel tl && tl.PlatformImpl != null)
         {
             tl.PlatformImpl.LostFocus += TopLevelLostPlatformFocus;
         }
-        
+
         _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
     }
 
@@ -419,13 +299,11 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         Menu.GotFocus        -= GotFocus;
         Menu.LostFocus       -= LostFocus;
-        Menu.KeyDown         -= KeyDown;
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
-
+       
         Menu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
         Menu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
-        Menu.RemoveHandler(InputElement.PointerMovedEvent, PointerMoved);
 
         if (_root is InputElement inputRoot)
         {

@@ -2,7 +2,7 @@ using AtomUI.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-public interface INavMenuItem : INavMenuElement
+public interface INavMenuItem: INavMenuElement
 {
     /// <summary>
     /// Gets or sets a value that item key.

@@ -62,6 +62,7 @@
             </Setter>
         </Style>
         
+        <Setter Property="ShouldUseOverlayLayer" Value="True" />
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />

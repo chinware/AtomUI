@@ -70,7 +70,6 @@
                         <atom:Popup Name="{x:Static atom:NavMenuItemThemeConstants.PopupPart}"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
-                                    Placement="RightEdgeAlignedTop"
                                     ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <atom:Popup.IsOpen>
@@ -156,9 +155,11 @@
             </Style>
         </Style>
 
-        <Style Selector="^[Mode=Horizontal]">
+        <Style Selector="^[Mode=Horizontal],^[Mode=Vertical]">
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <Setter Property="Placement" Value="RightEdgeAlignedTop" />
+                <Setter Property="HorizontalOffset" Value="{atom:SharedTokenResource SpacingXS}" />
+                <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
             </Style>
         </Style>
 
@@ -166,6 +167,8 @@
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
                 <Setter Property="Placement" Value="Bottom" />
+                <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
+                <Setter Property="HorizontalOffset" Value="0" />
             </Style>
         </Style>
 
