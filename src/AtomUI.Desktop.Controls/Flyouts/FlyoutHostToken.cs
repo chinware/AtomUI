@@ -10,6 +10,7 @@ namespace AtomUI.Desktop.Controls;
 internal class FlyoutHostToken : AbstractControlDesignToken
 {
     public const string ID = "FlyoutHost";
+    
     public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
     
     /// <summary>
@@ -26,6 +27,16 @@ internal class FlyoutHostToken : AbstractControlDesignToken
     /// PopupRoot 类型的阴影
     /// </summary>
     public BoxShadows PopupRootShadow { get; set; }
+    
+    /// <summary>
+    /// Flyout 水平偏移
+    /// </summary>
+    public double HorizontalOffset { get; set; }
+    
+    /// <summary>
+    /// Flyout 垂直偏移
+    /// </summary>
+    public double VerticalOffset { get; set; }
 
     public FlyoutHostToken()
         : base(ID)
@@ -52,6 +63,8 @@ internal class FlyoutHostToken : AbstractControlDesignToken
             Spread  = 0,
             Color   = ColorUtils.FromRgbF(0.10, 0, 0, 0)
         }]);
+        HorizontalOffset = SharedToken.UniformlyMarginXS;
+        VerticalOffset   = SharedToken.UniformlyMarginXS;
     }
     
     protected override Type GetTokenKindType() => typeof(FlyoutHostTokenKind);

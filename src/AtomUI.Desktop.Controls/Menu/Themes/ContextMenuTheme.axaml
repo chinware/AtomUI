@@ -36,6 +36,12 @@
         <Setter Property="MaxWidth" Value="{atom:MenuTokenResource MenuPopupMaxWidth}" />
         <Setter Property="ItemHeight" Value="{atom:MenuTokenResource ItemHeight}" />
         <Setter Property="DisplayPageSize" Value="8" />
+        <Setter Property="ShouldUseOverlayLayer" Value="True" />
+        <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}"/>
+        <Setter Property="PopupRootShadow"
+                Value="{atom:PopupHostTokenResource PopupRootShadow}" />
+        <Setter Property="OverlayHostShadow"
+                Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
 
     </ControlTheme>
 </ResourceDictionary>

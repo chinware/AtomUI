@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -60,10 +62,17 @@ public class MenuFlyout : Flyout
     private protected MenuFlyoutPresenter? Presenter;
     private CompositeDisposable? _presenterBindingDisposables;
 
+    static MenuFlyout()
+    {
+        ShouldUseOverlayLayerProperty.OverrideDefaultValue<MenuFlyout>(true);
+    }
+
     public MenuFlyout()
     {
         var itemCollectionType = typeof(ItemCollection);
         Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
+        TokenResourceBinder.CreateGlobalTokenBinding(this, HorizontalOffsetProperty, FlyoutHostTokenKind.HorizontalOffset);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, VerticalOffsetProperty, FlyoutHostTokenKind.VerticalOffset);
     }
 
     protected override Control CreatePresenter()

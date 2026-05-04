@@ -310,7 +310,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
     }
 
-    private void HandleCustomPlacement(CustomPopupPlacement placement)
+    internal void HandleCustomPlacement(CustomPopupPlacement placement)
     {
         var target = PlacementTarget ?? Parent as Control;
         if (target is null)

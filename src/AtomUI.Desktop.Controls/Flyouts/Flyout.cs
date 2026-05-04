@@ -184,7 +184,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     {
         TokenResourceBinder.CreateGlobalTokenBinding(this, PopupRootShadowProperty, FlyoutHostTokenKind.PopupRootShadow);
         TokenResourceBinder.CreateGlobalTokenBinding(this, OverlayHostShadowProperty, FlyoutHostTokenKind.OverlayHostShadow);
-        TokenResourceBinder.CreateTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
+        TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
         this.SetPopupLazy(new Lazy<AvaloniaPopup>(CreatePopup));
     }
     

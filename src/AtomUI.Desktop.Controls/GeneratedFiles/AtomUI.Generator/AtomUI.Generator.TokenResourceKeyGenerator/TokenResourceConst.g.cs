@@ -314,9 +314,11 @@ namespace AtomUI.Desktop.Controls.DesignTokens
 
     public enum FlyoutHostTokenKind
     {
+        HorizontalOffset,
         MarginToAnchor,
         OverlayHostShadow,
-        PopupRootShadow
+        PopupRootShadow,
+        VerticalOffset
     }
 
     public enum GroupBoxTokenKind

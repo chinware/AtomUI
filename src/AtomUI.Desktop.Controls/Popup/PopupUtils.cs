@@ -623,8 +623,13 @@ internal static class PopupUtils
 
         if (requestedPlacement == PlacementMode.Pointer)
         {
-            hOffset += shadowThickness.Left + marginToAnchor;
-            vOffset += shadowThickness.Top + marginToAnchor;
+            hOffset += marginToAnchor;
+            vOffset += marginToAnchor;
+            if (!isUseOverlayHost)
+            {
+                hOffset += shadowThickness.Left;
+                vOffset += shadowThickness.Top;
+            }
         }
         else
         {
