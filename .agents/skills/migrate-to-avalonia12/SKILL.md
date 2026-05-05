@@ -1139,6 +1139,7 @@ var args = ResourcesChangedEventArgs.Create();
 ```csharp
 Gestures.TappedEvent
 Gestures.DoubleTappedEvent
+Gestures.ScrollGestureEndedEvent
 ```
 
 **Fix:**
@@ -1148,7 +1149,32 @@ Gestures.DoubleTappedEvent
 ```csharp
 InputElement.TappedEvent
 InputElement.DoubleTappedEvent
+InputElement.ScrollGestureEndedEvent
 ```
+
+#### 28.1. MathUtilities Class Now Internal (MEDIUM)
+
+**What changed:** `Avalonia.Utilities.MathUtilities` class is now `internal`. All floating-point comparison methods (`AreClose`, `LessThan`, `GreaterThan`, `IsZero`, `IsOne`, etc.) are no longer accessible from external assemblies.
+
+**Detection:**
+```csharp
+using Avalonia.Utilities;
+
+if (MathUtilities.AreClose(value1, value2))
+if (MathUtilities.LessThan(a, b))
+if (MathUtilities.IsZero(value))
+```
+
+**Fix:**
+```csharp
+using AtomUI.Utils;
+
+if (MathUtils.AreClose(value1, value2))
+if (MathUtils.LessThan(a, b))
+if (MathUtils.IsZero(value))
+```
+
+**Why:** AtomUI provides `AtomUI.Utils.MathUtils` as a public wrapper around the internal `MathUtilities` class. This class contains the same floating-point comparison methods with identical epsilon-based logic. Use `MathUtils` instead of attempting to access the internal `MathUtilities` via reflection.
 
 #### 29. Window.WindowState (MEDIUM)
 
