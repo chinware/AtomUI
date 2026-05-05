@@ -1,0 +1,67 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:OverlayDialogHeader}" TargetType="atom:OverlayDialogHeader">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="HeaderFrame" Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}">
+                    <DockPanel LastChildFill="True" 
+                               HorizontalSpacing="{atom:SharedTokenResource SpacingSM}">
+                        <atom:IconPresenter Name="IconPresenter" DockPanel.Dock="Left"
+                                             Icon="{TemplateBinding Logo}"
+                                             IsVisible="{TemplateBinding Logo, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <StackPanel Orientation="Horizontal" Name="ButtonGroup" DockPanel.Dock="Right">
+                            <atom:DialogCaptionButton
+                                Name="{x:Static atom:OverlayDialogHeaderThemeConstants.MaximizeButtonPart}"
+                                NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
+                                CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                IsChecked="{TemplateBinding IsDialogMaximized}"
+                                IsVisible="{TemplateBinding IsMaximizeButtonEnabled}">
+                            </atom:DialogCaptionButton>
+                            <atom:DialogCaptionButton
+                                Name="{x:Static atom:OverlayDialogHeaderThemeConstants.CloseButtonPart}"
+                                NormalIcon="{antdicons:AntDesignIconProvider Kind=CloseOutlined}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                IsVisible="{TemplateBinding IsCloseButtonEnabled}" />
+                        </StackPanel>
+                        <TextBlock Name="Title" Text="{TemplateBinding Title}"
+                                   FontSize="{TemplateBinding TitleFontSize}"
+                                   FontWeight="{TemplateBinding TitleFontWeight}"/>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Padding" Value="{atom:DialogTokenResource HeaderPadding}" />
+        <Setter Property="Background" Value="{atom:DialogTokenResource HeaderBg}" />
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+            <Setter Property="Width" Value="{atom:DialogTokenResource LogoSize}" />
+            <Setter Property="Height" Value="{atom:DialogTokenResource LogoSize}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|DialogCaptionButton">
+            <Setter Property="Width" Value="{atom:DialogTokenResource CloseBtnSize}"/>
+            <Setter Property="Height" Value="{atom:DialogTokenResource CloseBtnSize}"/>
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}"/>
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ TextBlock#Title">
+            <Setter Property="Foreground" Value="{atom:DialogTokenResource HeaderColor}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

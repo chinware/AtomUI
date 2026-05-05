@@ -6,6 +6,7 @@
     <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:CollapseItem}" TargetType="atom:CollapseItem">
         <Setter Property="Template">
+            
             <ControlTemplate>
                 <DockPanel Name="PART_MainLayout"
                            LastChildFill="True">

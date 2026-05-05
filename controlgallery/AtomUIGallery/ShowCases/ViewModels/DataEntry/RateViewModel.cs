@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using System.Collections.Generic;
 using ReactiveUI;
 
@@ -5,11 +6,11 @@ namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class RateViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "Rate";
+    public static EntityKey ID = "Rate";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     private IList<string>? _tooltips;
 

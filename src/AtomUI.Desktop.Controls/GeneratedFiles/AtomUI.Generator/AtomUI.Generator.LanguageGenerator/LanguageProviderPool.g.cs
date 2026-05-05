@@ -11,12 +11,16 @@ namespace AtomUI.Theme.Language
             List<LanguageProvider> languageProviders = new List<LanguageProvider>();
             languageProviders.Add(new AtomUI.Desktop.Controls.DatePickerLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.DatePickerLang.zh_CN());
+            languageProviders.Add(new AtomUI.Desktop.Controls.DialogLang.en_US());
+            languageProviders.Add(new AtomUI.Desktop.Controls.DialogLang.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.PaginationLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.PaginationLang.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.QRCodeLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.QRCodeLang.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.TimePickerLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.TimePickerLang.zh_CN());
+            languageProviders.Add(new AtomUI.Desktop.Controls.TourLang.en_US());
+            languageProviders.Add(new AtomUI.Desktop.Controls.TourLang.zh_CN());
             return languageProviders;
         }
     }

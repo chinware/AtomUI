@@ -1,14 +1,15 @@
-﻿using ReactiveUI;
+﻿using AtomUI.Controls;
+using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class ToggleSwitchViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "ToggleSwitch";
+    public static EntityKey ID = "ToggleSwitch";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     public ToggleSwitchViewModel(IScreen screen)
     {

@@ -288,7 +288,8 @@ using AtomUI.Controls;
 - Add `xmlns:vm="using:..."` and `x:DataType="vm:XxxViewModel"` for compiled bindings
 - Change ViewModel base class from `ShowCaseViewModelBase` to `ReactiveObject, IRoutableViewModel` (release/6.0 pattern)
 - Remove `IActivatableViewModel` and `ViewModelActivator` (release/6.0 doesn't use them)
-- Change `EntityKey ID` to `const string ID` (release/6.0 pattern)
+- **IMPORTANT:** Keep `public static EntityKey ID` unchanged (release/6.0 pattern) — do NOT change to `public const string ID`
+- Change `public string UrlPathSegment { get; } = ID;` to `public string? UrlPathSegment => ID.ToString();` (release/6.0 pattern)
 - Change `ReactiveCommand<Button, Unit>` to `ReactiveCommand<Unit, Unit>` and remove sender parameters (Avalonia 12 optimization)
 - Add `using ReactiveUI.Avalonia` and `using System.Reactive.Disposables.Fluent` if needed
 - Adjust namespace imports for Avalonia 12 compatibility
@@ -509,7 +510,7 @@ public class YourViewModel : ReactiveObject, IRoutableViewModel
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID.ToString();
+    public string? UrlPathSegment => ID.ToString();
 
     public YourViewModel(IScreen screen)
     {
@@ -517,6 +518,11 @@ public class YourViewModel : ReactiveObject, IRoutableViewModel
     }
 }
 ```
+
+**IMPORTANT:** ViewModel ID pattern in release/6.0:
+- Use `public static EntityKey ID = "YourControl";` (NOT `public const string ID`)
+- Use `public string? UrlPathSegment => ID.ToString();` (expression-bodied property, NOT `{ get; } = ID;`)
+- This pattern is standard in release/6.0 and must be preserved during migration
 
 #### Step 7.2: Create View (AXAML + Code-behind)
 Location: `controlgallery/AtomUIGallery/ShowCases/Views/{Category}/`

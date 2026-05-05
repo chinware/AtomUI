@@ -1,0 +1,28 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              TargetType="atom:DialogHost"
+              x:Class="AtomUI.Desktop.Controls.Themes.DialogHostTheme"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <atom:WindowTheme TargetType="atom:DialogHost" />
+    </ControlTheme.BasedOn>
+
+    <Style Selector="^:is(atom|DialogHost)">
+        <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
+        <Setter Property="SizeToContent" Value="WidthAndHeight" />
+        <Setter Property="IsFullScreenCaptionButtonVisible" Value="False" />
+
+        <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
+            <Setter Property="VerticalSpacing"
+                    Value="{atom:SharedTokenResource UniformlyMarginXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#FooterFrame">
+            <Setter Property="Background" Value="{atom:DialogTokenResource FooterBg}" />
+            <Setter Property="Margin" Value="{atom:DialogTokenResource FooterMarginTop}" />
+            <Setter Property="Padding" Value="{atom:DialogTokenResource FooterPadding}" />
+        </Style>
+    </Style>
+
+</ControlTheme>

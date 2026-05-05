@@ -1,0 +1,61 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Tour}" TargetType="atom:Tour">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:Tour">
+                <atom:Popup Name="PART_Popup"
+                            WindowManagerAddShadowHint="False"
+                            IsLightDismissEnabled="False"
+                            IsMotionEnabled="False"
+                            ShouldUseOverlayLayer="True">
+                    <atom:ArrowDecoratedBox Name="{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}"
+                                            IsShowArrow="{TemplateBinding CurrentShowArrow}"
+                                            ArrowPosition="{TemplateBinding ArrowPosition}">
+                        <atom:TourStepsView Name="StepsView"
+                                            ItemsSource="{Binding Steps, RelativeSource={RelativeSource TemplatedParent}}"
+                                            SelectedIndex="{TemplateBinding CurrentIndex, Mode=TwoWay}"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                            StyleType="{TemplateBinding StyleType}"
+                                            IsShowArrow="{TemplateBinding IsShowArrow}"
+                                            IsPointAtCenter="{TemplateBinding IsPointAtCenter}"
+                                            Placement="{TemplateBinding Placement}"
+                                            IsShowMask="{TemplateBinding IsShowMask}"
+                                            MaskColor="{TemplateBinding MaskColor}"
+                                            CloseIcon="{TemplateBinding CloseIcon}"
+                                            IsScrollIntoView="{TemplateBinding IsScrollIntoView}"
+                                            CurrentStyleType="{TemplateBinding CurrentStyleType}"
+                                            Indicator="{TemplateBinding Indicator}"/>
+                    </atom:ArrowDecoratedBox>
+                </atom:Popup>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Placement" Value="Bottom" />
+        <Setter Property="MaskColor" Value="{atom:SharedTokenResource ColorBgMask}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        
+        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
+            <Setter Property="CornerRadius" Value="{atom:TourTokenResource TourBorderRadius}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+        </Style>
+        
+        <Style Selector="^[StyleType=Primary]">
+            <Style Selector="^ /template/ atom|ArrowDecoratedBox#PART_ArrowDecorator">
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+        </Style>
+                
+        <Setter Property="CloseIcon">
+            <atom:IconTemplate><antdicons:CloseOutlined/></atom:IconTemplate>
+        </Setter>
+        
+    </ControlTheme>
+</ResourceDictionary>

@@ -309,6 +309,25 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         WithoutTimeCellHeight
     }
 
+    public enum DialogTokenKind
+    {
+        ButtonGroupSpacing,
+        CloseBtnSize,
+        ContentBg,
+        ContentPadding,
+        FooterBg,
+        FooterMarginTop,
+        FooterPadding,
+        HeaderBg,
+        HeaderColor,
+        HeaderFontSize,
+        HeaderMarginBottom,
+        HeaderPadding,
+        LogoSize,
+        MinHeight,
+        MinWidth
+    }
+
     public enum EmptyTokenKind
     {
         DescriptionMargin,
@@ -1002,6 +1021,19 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         ToolTipMaxWidth
     }
 
+    public enum TourTokenKind
+    {
+        CloseBtnSize,
+        HeaderColor,
+        IndicatorSize,
+        PopupMarginToAnchor,
+        PrimaryNextBtnHoverBg,
+        PrimaryPrevBtnBg,
+        TourBorderRadius,
+        TourViewMinHeight,
+        TourViewMinWidth
+    }
+
     public enum TreeFlyoutTokenKind
     {
         PopupBgColor,
@@ -1224,6 +1256,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public DatePickerTokenResourceExtension(DatePickerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class DialogTokenResourceExtension : TokenResourceExtension<DialogTokenKind>
+    {
+        public DialogTokenResourceExtension()
+        {
+        }
+
+        public DialogTokenResourceExtension(DialogTokenKind kind) : base(kind)
         {
         }
     }
@@ -1653,6 +1696,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ToolTipTokenResourceExtension(ToolTipTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TourTokenResourceExtension : TokenResourceExtension<TourTokenKind>
+    {
+        public TourTokenResourceExtension()
+        {
+        }
+
+        public TourTokenResourceExtension(TourTokenKind kind) : base(kind)
         {
         }
     }

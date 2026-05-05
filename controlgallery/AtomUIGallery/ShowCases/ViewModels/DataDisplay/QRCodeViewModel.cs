@@ -7,11 +7,11 @@ namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "QRCode";
+    public static EntityKey ID = "QRCode";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
     private const double MinSize = 48;
     private const double MaxSize = 300;
 

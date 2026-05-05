@@ -1,14 +1,15 @@
-﻿using ReactiveUI;
+﻿using AtomUI.Controls;
+using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class DropdownButtonViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "DropdownButton";
+    public static EntityKey ID = "DropdownButton";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     public DropdownButtonViewModel(IScreen screen)
     {

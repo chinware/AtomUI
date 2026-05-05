@@ -1,15 +1,15 @@
-using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class BadgeViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "Badge";
+    public static EntityKey ID = "Badge";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     private double _dynamicBadgeCount = 5;
 

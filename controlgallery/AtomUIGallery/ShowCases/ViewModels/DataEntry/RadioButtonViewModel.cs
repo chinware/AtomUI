@@ -7,11 +7,11 @@ namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class RadioButtonViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "RadioButton";
+    public static EntityKey ID = "RadioButton";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     private IList<RadioButtonOption>? _radioOptions;
 

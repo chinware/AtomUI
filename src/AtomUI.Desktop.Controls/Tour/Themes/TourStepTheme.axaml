@@ -1,0 +1,84 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TourStep}" TargetType="atom:TourStep">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame" Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}">
+                    <DockPanel LastChildFill="True" Name="RootLayout">
+                        <DockPanel LastChildFill="True"
+                                   DockPanel.Dock="Top">
+                            <atom:DialogCaptionButton
+                                Name="CloseButton"
+                                DockPanel.Dock="Right"
+                                NormalIcon="{TemplateBinding CloseIcon}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                            <ContentPresenter Name="Title"
+                                              Content="{TemplateBinding Title}"
+                                              ContentTemplate="{TemplateBinding TitleTemplate}" />
+                        </DockPanel>
+                        <StackPanel Orientation="Vertical" Name="ContentLayout">
+                            <ContentPresenter Name="CoverPresenter"
+                                              Content="{TemplateBinding Cover}"
+                                              ContentTemplate="{TemplateBinding CoverTemplate}" />
+                            <ContentPresenter Name="DescriptionPresenter"
+                                              Content="{TemplateBinding Description}"
+                                              ContentTemplate="{TemplateBinding DescriptionTemplate}" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|DialogCaptionButton">
+            <Setter Property="Width" Value="{atom:TourTokenResource CloseBtnSize}" />
+            <Setter Property="Height" Value="{atom:TourTokenResource CloseBtnSize}" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#Title">
+            <Setter Property="Foreground" Value="{atom:TourTokenResource HeaderColor}" />
+            <Setter Property="FontWeight" Value="{atom:SharedTokenResource FontWeightStrong}" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+           
+        <Style Selector="^[StyleType=Primary]">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+            
+            <Style Selector="^ /template/ ContentPresenter#Title">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|DialogCaptionButton#CloseButton">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|DialogCaptionButton#CloseButton:pointerover">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+            </Style>
+        
+            <Style Selector="^ /template/ atom|DialogCaptionButton#CloseButton:pressed">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+            </Style>
+            
+        </Style>
+
+        <Style Selector="^ /template/ DockPanel#RootLayout">
+            <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        </Style>
+        
+        <Style Selector="^ /template/ StackPanel#ContentLayout">
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        </Style>
+
+        <Setter Property="IsVisible" Value="False" />
+        <Style Selector="^[IsSelected=True]">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

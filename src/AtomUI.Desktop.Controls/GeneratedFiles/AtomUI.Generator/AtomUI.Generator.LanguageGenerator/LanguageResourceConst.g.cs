@@ -23,6 +23,43 @@ namespace AtomUI.Desktop.Controls.Localization
 
 namespace AtomUI.Desktop.Controls.Localization
 {
+    public enum DialogLangResourceKind
+    {
+        Abort,
+        Apply,
+        Cancel,
+        Close,
+        Discard,
+        Help,
+        Ignore,
+        No,
+        NoToAll,
+        Ok,
+        Open,
+        Reload,
+        Reset,
+        RestoreDefaults,
+        Retry,
+        Save,
+        SaveAll,
+        Yes,
+        YesToAll
+    }
+
+    public class DialogLangResourceExtension : LanguageResourceExtension<DialogLangResourceKind>
+    {
+        public DialogLangResourceExtension()
+        {
+        }
+
+        public DialogLangResourceExtension(DialogLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUI.Desktop.Controls.Localization
+{
     public enum PaginationLangResourceKind
     {
         JumpToText,
@@ -79,6 +116,27 @@ namespace AtomUI.Desktop.Controls.Localization
         }
 
         public TimePickerLangResourceExtension(TimePickerLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUI.Desktop.Controls.Localization
+{
+    public enum TourLangResourceKind
+    {
+        Finish,
+        Next,
+        Previous
+    }
+
+    public class TourLangResourceExtension : LanguageResourceExtension<TourLangResourceKind>
+    {
+        public TourLangResourceExtension()
+        {
+        }
+
+        public TourLangResourceExtension(TourLangResourceKind kind) : base(kind)
         {
         }
     }

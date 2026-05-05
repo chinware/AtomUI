@@ -6,11 +6,11 @@ namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class SliderViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "Slider";
+    public static EntityKey ID = "Slider";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     private List<SliderMark>? _sliderMarks;
 

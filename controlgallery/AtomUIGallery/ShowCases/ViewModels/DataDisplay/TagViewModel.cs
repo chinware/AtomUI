@@ -1,14 +1,15 @@
+using AtomUI.Controls;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class TagViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "Tag";
+    public static EntityKey ID = "Tag";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     public TagViewModel(IScreen screen)
     {

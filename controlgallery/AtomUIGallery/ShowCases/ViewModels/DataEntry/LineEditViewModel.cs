@@ -5,11 +5,11 @@ namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class LineEditViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "LineEdit";
+    public static EntityKey ID = "LineEdit";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     public LineEditViewModel(IScreen screen)
     {

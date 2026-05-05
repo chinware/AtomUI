@@ -1,0 +1,15 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Dialog}" TargetType="atom:Dialog">
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="MinHeight" Value="{atom:DialogTokenResource MinHeight}" />
+        <Setter Property="MinWidth" Value="{atom:DialogTokenResource MinWidth}" />
+        
+        <Style Selector="^[IsModal=True]">
+            <Setter Property="IsMinimizable" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

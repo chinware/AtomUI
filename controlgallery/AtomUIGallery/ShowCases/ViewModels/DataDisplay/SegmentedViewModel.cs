@@ -1,14 +1,15 @@
+using AtomUI.Controls;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class SegmentedViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "Segmented";
+    public static EntityKey ID = "Segmented";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string? UrlPathSegment => ID.ToString();
 
     public SegmentedViewModel(IScreen screen)
     {

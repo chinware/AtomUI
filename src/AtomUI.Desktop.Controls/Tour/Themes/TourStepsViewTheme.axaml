@@ -1,0 +1,120 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TourStepsView}" TargetType="atom:TourStepsView">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        ClipToBounds="True" 
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}">
+                    <DockPanel Name="RootLayout" LastChildFill="True">
+                        <Border Name="FooterFrame" DockPanel.Dock="Bottom">
+                            <DockPanel LastChildFill="True" HorizontalSpacing="{atom:SharedTokenResource SpacingXS}">
+                                <ContentPresenter Name="IndicatorPresenter"
+                                                  DockPanel.Dock="Left"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding Indicator}"/>
+                                <Panel>
+                                    <StackPanel Orientation="Horizontal" Name="ActionsLayout" HorizontalAlignment="Right">
+                                        <atom:Button SizeType="Small"
+                                                     Name="PreviousButton"
+                                                     IsVisible="False"
+                                                     Tag="{x:Static atom:TourStepNavType.Previous}"
+                                                     Classes="previous-btn"
+                                                     Content="{atom:TourLangResource Previous}"/>
+                                        <atom:Button SizeType="Small" 
+                                                     ButtonType="Primary" 
+                                                     Name="NextButton" 
+                                                     Classes="next-btn"
+                                                     IsVisible="False"
+                                                     Tag="{x:Static atom:TourStepNavType.Next}"
+                                                     Content="{atom:TourLangResource Next}"/>
+                                        <atom:Button SizeType="Small"
+                                                     ButtonType="Primary"
+                                                     Name="FinishButton"
+                                                     IsVisible="False"
+                                                     Classes="next-btn"
+                                                     Tag="{x:Static atom:TourStepNavType.Finished}"
+                                                     Content="{atom:TourLangResource Finish}"/>
+                                    </StackPanel>
+                                </Panel>
+                            </DockPanel>
+                        </Border>
+                        <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="MinWidth" Value="{atom:TourTokenResource TourViewMinWidth}" />
+        <Setter Property="MinHeight" Value="{atom:TourTokenResource TourViewMinHeight}" />
+        <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
+        <Style Selector="^ /template/ DockPanel#RootLayout">
+            <Setter Property="VerticalSpacing" Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+        
+        <Style Selector="^ /template/ StackPanel#ActionsLayout">
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        </Style>
+        
+        <Style Selector="^[IndexPosition=OnePage]">
+            <Style Selector="^ /template/ atom|Button#FinishButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+                    
+            <Style Selector="^ /template/ ContentPresenter#IndicatorPresenter">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IndexPosition=First]">
+            <Style Selector="^ /template/ atom|Button#NextButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IndexPosition=Middle]">
+            <Style Selector="^ /template/ atom|Button#PreviousButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#NextButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IndexPosition=Last]">
+            <Style Selector="^ /template/ atom|Button#PreviousButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button#FinishButton">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[StyleType=Primary]">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+            <Style Selector="^ /template/ atom|Button.previous-btn">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLightSolid}" />
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="BorderBrush" Value="{atom:TourTokenResource PrimaryPrevBtnBg}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button.previous-btn:pointerover">
+                <Setter Property="Background" Value="{atom:TourTokenResource PrimaryPrevBtnBg}" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+            </Style>
+            
+            <Style Selector="^ /template/ atom|Button.next-btn">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}" />
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorWhite}" />
+            </Style>
+            <Style Selector="^ /template/ atom|Button.next-btn:pointerover">
+                <Setter Property="Background" Value="{atom:TourTokenResource PrimaryNextBtnHoverBg}" />
+            </Style>
+            
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>
