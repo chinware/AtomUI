@@ -8,8 +8,7 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TimePickerPresenter">
                 <Border>
-                    <DockPanel Name="PART_MainLayout"
-                               LastChildFill="True">
+                    <DockPanel Name="PART_MainLayout" LastChildFill="True">
                         <Border Name="PART_ButtonsFrame"
                                 BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
                                 IsVisible="{TemplateBinding ButtonsPanelVisible}"

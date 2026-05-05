@@ -2,7 +2,6 @@
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
-using AtomUI.Desktop.Controls.TimePickerLang;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;

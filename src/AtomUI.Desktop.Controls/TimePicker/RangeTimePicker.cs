@@ -2,7 +2,6 @@
 using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Primitives;
-using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Media;
 using AtomUI.Theme;

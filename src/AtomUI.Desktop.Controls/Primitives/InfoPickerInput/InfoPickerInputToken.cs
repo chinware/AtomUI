@@ -26,11 +26,17 @@ internal class InfoPickerInputToken : AbstractControlDesignToken
     /// </summary>
     public double RangePickerIndicatorThickness { get; set; }
     
+    /// <summary>
+    /// 范围选择与锚点的间距，在 RangePicker 模式下
+    /// </summary>
+    public double RangeMarginToAnchor { get; set; }
+    
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
         RangePickerArrowMargin        = new Thickness(SharedToken.UniformlyMarginXS, 0);
         RangePickerIndicatorThickness = SharedToken.LineWidthFocus;
+        RangeMarginToAnchor           = SharedToken.UniformlyMarginXS;
     }
     
     protected override Type GetTokenKindType() => typeof(InfoPickerInputTokenKind);

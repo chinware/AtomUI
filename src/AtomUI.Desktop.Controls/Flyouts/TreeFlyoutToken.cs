@@ -49,7 +49,7 @@ internal class TreeFlyoutToken : AbstractControlDesignToken
 
     public override void CalculateTokenValues(bool isDarkMode)
     {
-        PopupMinWidth     = 120;
+        PopupMinWidth = 120;
         PopupMaxWidth = 800;
 
         PopupMinHeight = SharedToken.ControlHeightSM * 3;

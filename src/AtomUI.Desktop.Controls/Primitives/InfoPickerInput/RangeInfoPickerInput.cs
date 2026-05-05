@@ -2,10 +2,9 @@
 using AtomUI.Desktop.Controls.Primitives.Themes;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
-using Avalonia.Input.Raw;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls.Primitives;
@@ -86,7 +85,6 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     private protected Rectangle? RangePickerIndicator;
     private protected PathIcon? RangePickerArrow;
     private protected TextBox? SecondaryInfoInputBox;
-    private TopLevel? _topLevel;
 
     public override void Clear()
     {
@@ -100,28 +98,20 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
         RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
         RangePickerArrow = e.NameScope.Get<PathIcon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _topLevel = TopLevel.GetTopLevel(this);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _topLevel = null;
+        if (PickerPopup != null)
+        {
+            PickerPopup.OverlayInputPassThroughElement = DecoratedBox;
+        }
     }
 
     private bool IsPointerInInfoInputBox(Point position)
     {
-        if (InfoInputBox is null || _topLevel is null)
+        if (InfoInputBox is null)
         {
             return false;
         }
 
-        var pos = InfoInputBox.TranslatePoint(new Point(0, 0), _topLevel);
+        var pos = InfoInputBox.TranslatePoint(new Point(0, 0), this);
         if (!pos.HasValue)
         {
             return false;
@@ -134,7 +124,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         var offsetY      = pos.Value.Y;
         if (ContentLeftAddOn is Control leftContent)
         {
-            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), _topLevel);
+            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), this);
             if (leftContentPos.HasValue)
             {
                 startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
@@ -153,12 +143,12 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
 
     private bool IsPointerInSecondaryTextBox(Point position)
     {
-        if (SecondaryInfoInputBox is null || _topLevel is null)
+        if (SecondaryInfoInputBox is null)
         {
             return false;
         }
 
-        var pos = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), _topLevel);
+        var pos = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), this);
         if (!pos.HasValue)
         {
             return false;
@@ -171,7 +161,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         var offsetY      = pos.Value.Y;
         if (ContentLeftAddOn is Control leftContent)
         {
-            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), _topLevel);
+            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), this);
             if (leftContentPos.HasValue)
             {
                 startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
@@ -195,12 +185,39 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         {
             HandleRangeActivatedPartChanged();
         }
-
-        if (IsLoaded)
+    }
+    
+    protected override void OnPointerReleased(PointerReleasedEventArgs args)
+    {
+        if (args.Source == this
+            && !args.Handled
+            && args.InitialPressMouseButton == MouseButton.Right)
         {
-            if (change.Property == IsMotionEnabledProperty)
+            var contextRequestedEventArgs = new ContextRequestedEventArgs(args);
+            RaiseEvent(contextRequestedEventArgs);
+            args.Handled = contextRequestedEventArgs.Handled;
+        }
+
+        if (!args.Handled && !IsReadOnly && args.Source is Visual source)
+        {
+            // Check if click is inside the input area (not in popup)
+            if (PickerPopup?.IsInsidePopup(source) != true)
             {
-                // Transitions now handled by XAML theme
+                if (IsPointerInInfoInputBox(args.GetPosition(this)))
+                {
+                    RangeActivatedPart = RangeActivatedPart.Start;
+                    SetCurrentValue(IsPickerOpenProperty, true);
+                }
+                else if (IsPointerInSecondaryTextBox(args.GetPosition(this)) || !ClickInClearUpButtonWithClearMode(args))
+                {
+                    RangeActivatedPart = RangeActivatedPart.End;
+                    SetCurrentValue(IsPickerOpenProperty, true);
+                }
+                else
+                {
+                    SetCurrentValue(IsPickerOpenProperty, false);
+                }
+                args.Handled = true;
             }
         }
     }
@@ -248,10 +265,18 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {
             PickerPlacement = PlacementMode.BottomEdgeAlignedLeft;
+            if (PickerPopup != null)
+            {
+                PickerPopup.PlacementTarget = InfoInputBox;
+            }
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
             PickerPlacement = PlacementMode.BottomEdgeAlignedRight;
+            if (PickerPopup != null)
+            {
+                PickerPopup.PlacementTarget = SecondaryInfoInputBox;
+            }
         }
 
         SetupPickerIndicatorPosition();

@@ -1695,6 +1695,7 @@ namespace AtomUI.Desktop.Controls.Primitives.DesignTokens
 {
     public enum InfoPickerInputTokenKind
     {
+        RangeMarginToAnchor,
         RangePickerArrowMargin,
         RangePickerIndicatorThickness
     }

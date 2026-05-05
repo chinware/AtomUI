@@ -79,17 +79,33 @@
                             PlaceholderText="{TemplateBinding SecondaryPlaceholderText}" />
                     </Grid>
                 </atom:AddOnDecoratedBox>
-
                 <Canvas>
                     <Rectangle Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart}"
                                Opacity="{TemplateBinding RangePickerIndicatorOpacity}" />
                 </Canvas>
+                <atom:Popup Name="PART_Popup"
+                            WindowManagerAddShadowHint="False"
+                            IsLightDismissEnabled="True"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                            ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
+                            RequestedPlacement="{TemplateBinding PickerPlacement}"
+                            IsPointAtCenter="{TemplateBinding IsPointAtCenter}"
+                            OverlayDismissEventPassThrough="True"
+                            IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
+                            IsFlipped="{TemplateBinding IsPopupFlipped, Mode=TwoWay}"
+                            MarginToAnchor="{TemplateBinding MarginToAnchor}">
+                    <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
+                                            IsShowArrow="{TemplateBinding IsShowArrowEffective}"
+                                            ArrowPosition="{TemplateBinding ArrowPosition}"
+                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                </atom:Popup>
             </Panel>
         </ControlTemplate>
     </Setter>
 
     <Style Selector="^:is(atom|RangeInfoPickerInput)">
 
+        <Setter Property="MarginToAnchor" Value="{atom:InfoPickerInputTokenResource RangeMarginToAnchor}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />
