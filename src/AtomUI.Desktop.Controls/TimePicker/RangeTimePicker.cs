@@ -198,6 +198,7 @@ public class RangeTimePicker : RangeInfoPickerInput
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerFlyout, TimePickerPresenter.ClockIdentifierProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerFlyout, TimePickerPresenter.IsNeedConfirmProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, timePickerFlyout, TimePickerPresenter.IsShowNowProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, timePickerFlyout, TimePickerFlyout.ShouldUseOverlayPopupProperty));
         return timePickerFlyout;
     }
     

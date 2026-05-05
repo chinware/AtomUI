@@ -10,7 +10,7 @@
                     <VisualLayerManager ClipToBounds="False">
                         <atom:ShadowsAwareContainer IsOverlayMode="True">
                             <ContentPresenter Content="{TemplateBinding Content}"
-                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>
                         </atom:ShadowsAwareContainer>
                     </VisualLayerManager>
                 </atom:PopupMotionActor>

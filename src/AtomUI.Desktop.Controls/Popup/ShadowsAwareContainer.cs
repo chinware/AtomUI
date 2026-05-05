@@ -5,7 +5,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
-using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -131,18 +130,11 @@ internal class ShadowsAwareContainer : Decorator
         {
             var shadowThickness = BoxShadow.Thickness();
             var effectiveShadowThickness = GetEffectiveShadowThickness(shadowThickness);
-            var shadowRendererSize       = GetShadowRendererSize(size);
 
             if (!IsOverlayMode)
             {
                 width  += effectiveShadowThickness.Left + effectiveShadowThickness.Right;
                 height += effectiveShadowThickness.Top  + effectiveShadowThickness.Bottom;
-            }
-
-            if (_shadowsRenderer != null)
-            {
-                _shadowsRenderer.Width  = shadowRendererSize.Width;
-                _shadowsRenderer.Height = shadowRendererSize.Height;
             }
         }
 
@@ -151,8 +143,6 @@ internal class ShadowsAwareContainer : Decorator
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var shadowRendererOffsetX = 0.0d;
-        var shadowRendererOffsetY = 0.0d;
         var offsetX               = 0.0d;
         var offsetY               = 0.0d;
         if (!IsOverlayMode)
@@ -160,25 +150,19 @@ internal class ShadowsAwareContainer : Decorator
             if (HasBoxShadow)
             {
                 var shadowThickness = BoxShadow.Thickness();
-                shadowRendererOffsetX = shadowThickness.Left;
-                shadowRendererOffsetY = shadowThickness.Top;
-                offsetX               = shadowRendererOffsetX;
-                offsetY               = shadowRendererOffsetY;
+                offsetX = shadowThickness.Left;
+                offsetY = shadowThickness.Top;
 
                 if (IsShowArrow)
                 {
                     if (ArrowDirection == Direction.Left)
                     {
-                        offsetX = Math.Max(shadowRendererOffsetX - ArrowSize, 0);
+                        offsetX = Math.Max(offsetX - ArrowIndicatorLayoutBounds.Width, 0);
                     }
                     else if (ArrowDirection == Direction.Top)
                     {
-                        offsetY = Math.Max(shadowRendererOffsetY - ArrowSize, 0);
+                        offsetY = Math.Max(offsetY - ArrowIndicatorLayoutBounds.Height, 0);
                     }
-                }
-                if (_shadowsRenderer != null)
-                {
-                    _shadowsRenderer.Arrange(new Rect(shadowRendererOffsetX, shadowRendererOffsetY, _shadowsRenderer.DesiredSize.Width, _shadowsRenderer.DesiredSize.Height));
                 }
             }
             if (Child != null)
@@ -189,23 +173,33 @@ internal class ShadowsAwareContainer : Decorator
         else
         {
             finalSize = base.ArrangeOverride(finalSize);
+        }
+        if (HasBoxShadow && _shadowsRenderer != null)
+        {
+            var shadowBounds = Child?.Bounds ?? default;
             if (IsShowArrow)
             {
                 var effectiveDirection = ArrowDirection;
                 if (effectiveDirection == Direction.Top)
                 {
-                    shadowRendererOffsetY = ArrowSize;
+                    shadowBounds = shadowBounds.WithY(ArrowIndicatorLayoutBounds.Height)
+                                               .WithHeight(shadowBounds.Height - ArrowIndicatorLayoutBounds.Height);
+                }
+                else if (effectiveDirection == Direction.Bottom)
+                {
+                    shadowBounds = shadowBounds.WithHeight(shadowBounds.Height - ArrowIndicatorLayoutBounds.Height);
                 }
                 else if (effectiveDirection == Direction.Left)
                 {
-                    shadowRendererOffsetX = ArrowSize;
+                    shadowBounds = shadowBounds.WithX(ArrowIndicatorLayoutBounds.Width)
+                                               .WithWidth(shadowBounds.Width - ArrowIndicatorLayoutBounds.Width);
+                }
+                else
+                {
+                    shadowBounds = shadowBounds.WithWidth(shadowBounds.Width - ArrowIndicatorLayoutBounds.Width);
                 }
             }
-        }
-        if (_shadowsRenderer != null)
-        {
-            _shadowsRenderer.Arrange(new Rect(new Point(shadowRendererOffsetX, shadowRendererOffsetY),
-                _shadowsRenderer.DesiredSize));
+            _shadowsRenderer.Arrange(shadowBounds);
         }
         return finalSize;
     }
@@ -261,30 +255,6 @@ internal class ShadowsAwareContainer : Decorator
         return new Thickness(left, top, right, bottom);
     }
 
-    private Size GetShadowRendererSize(Size size)
-    {
-        var width  = size.Width;
-        var height = size.Height;
-        if (!IsShowArrow)
-        {
-            return size;
-        }
-
-        switch (ArrowDirection)
-        {
-            case Direction.Left:
-            case Direction.Right:
-                width -= ArrowSize / 2;
-                break;
-            case Direction.Top:
-            case Direction.Bottom:
-                height -= ArrowSize / 2;
-                break;
-        }
-
-        return new Size(width, height);
-    }
-
     private void EnsureShadowsRenderer()
     {
         if (_shadowsRenderer != null)
@@ -292,11 +262,7 @@ internal class ShadowsAwareContainer : Decorator
             return;
         }
 
-        _shadowsRenderer = new Border
-        {
-            HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment   = VerticalAlignment.Top
-        };
+        _shadowsRenderer                        = new Border();
         _shadowsRenderer[!BoxShadowProperty]    = this[!BoxShadowProperty];
         _shadowsRenderer[!CornerRadiusProperty] = this[!CornerRadiusProperty];
         ((ISetLogicalParent)_shadowsRenderer).SetParent(this);

@@ -2,41 +2,43 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:timePickerLang="using:AtomUI.Desktop.Controls.TimePickerLang"
     x:ClassModifier="internal">
     <atom:BorderThicknessFilterConverter x:Key="BorderThicknessFilterConverter" Left="False" Right="False" Bottom="False"/>
     <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TimePickerPresenter">
-                <DockPanel Name="PART_MainLayout"
-                           LastChildFill="True">
-                    <Border Name="PART_ButtonsFrame"
-                            BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
-                            IsVisible="{TemplateBinding ButtonsPanelVisible}"
-                            DockPanel.Dock="Bottom">
-                        <Panel Name="PART_ButtonsLayout">
-                            <atom:Button
-                                Name="PART_NowButton"
-                                ButtonType="Link"
-                                HorizontalAlignment="Left"
-                                SizeType="Small"
-                                Content="{atom:TimePickerLangResource Now}" />
-                            <atom:Button
-                                Name="PART_ConfirmButton"
-                                ButtonType="Primary"
-                                HorizontalAlignment="Right"
-                                SizeType="Small"
-                                Content="{atom:CommonLangResource Ok}" />
-                        </Panel>
-                    </Border>
-                    <atom:TimeView Name="PART_TimeView"
-                                   IsShowHeader="False"
-                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                   MinuteIncrement="{TemplateBinding MinuteIncrement}"
-                                   SecondIncrement="{TemplateBinding SecondIncrement}"
-                                   SelectedTime="{TemplateBinding SelectedTime}"
-                                   ClockIdentifier="{TemplateBinding ClockIdentifier}"/>
-                </DockPanel>
+                <Border>
+                    <DockPanel Name="PART_MainLayout"
+                               LastChildFill="True">
+                        <Border Name="PART_ButtonsFrame"
+                                BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
+                                IsVisible="{TemplateBinding ButtonsPanelVisible}"
+                                DockPanel.Dock="Bottom">
+                            <Panel Name="PART_ButtonsLayout">
+                                <atom:Button
+                                    Name="PART_NowButton"
+                                    ButtonType="Link"
+                                    HorizontalAlignment="Left"
+                                    SizeType="Small"
+                                    Content="{atom:TimePickerLangResource Now}" />
+                                <atom:Button
+                                    Name="PART_ConfirmButton"
+                                    ButtonType="Primary"
+                                    HorizontalAlignment="Right"
+                                    SizeType="Small"
+                                    Content="{atom:CommonLangResource Ok}" />
+                            </Panel>
+                        </Border>
+                        <atom:TimeView Name="PART_TimeView"
+                                       IsShowHeader="False"
+                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                       MinuteIncrement="{TemplateBinding MinuteIncrement}"
+                                       SecondIncrement="{TemplateBinding SecondIncrement}"
+                                       SelectedTime="{TemplateBinding SelectedTime}"
+                                       ClockIdentifier="{TemplateBinding ClockIdentifier}"/>
+                    </DockPanel>
+                </Border>
+                
             </ControlTemplate>
         </Setter>
         
