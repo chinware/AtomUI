@@ -124,53 +124,51 @@ public class RangeDatePicker : RangeInfoPickerInput
         RangeEndSelectedDateProperty.Changed.AddClassHandler<RangeDatePicker>((picker, args) => picker.HandleSelectedValueChanged(args));
     }
     
-    protected override Flyout CreatePickerFlyout()
+    protected override Control CreatePickerPresenter()
     {
-        var flyout = new RangeDatePickerFlyout();
-        flyout[!RangeDatePickerFlyout.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
-        flyout[!RangeDatePickerFlyout.SelectedDateTimeProperty]          = this[!RangeStartSelectedDateProperty];
-        flyout[!RangeDatePickerFlyout.SecondarySelectedDateTimeProperty] = this[!RangeEndSelectedDateProperty];
-        flyout[!RangeDatePickerFlyout.ClockIdentifierProperty]           = this[!ClockIdentifierProperty];
-        flyout[!RangeDatePickerFlyout.IsNeedConfirmProperty]             = this[!IsNeedConfirmProperty];
-        flyout[!RangeDatePickerFlyout.IsShowNowProperty]                 = this[!IsShowNowProperty];
-        flyout[!RangeDatePickerFlyout.IsShowTimeProperty]                = this[!IsShowTimeProperty];
-        
-        return flyout;
+        var presenter = new RangeDatePickerPresenter();
+        presenter[!RangeDatePickerPresenter.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
+        presenter[!RangeDatePickerPresenter.SelectedDateTimeProperty]          = this[!RangeStartSelectedDateProperty];
+        presenter[!RangeDatePickerPresenter.SecondarySelectedDateTimeProperty] = this[!RangeEndSelectedDateProperty];
+        presenter[!RangeDatePickerPresenter.ClockIdentifierProperty]           = this[!ClockIdentifierProperty];
+        presenter[!RangeDatePickerPresenter.IsNeedConfirmProperty]             = this[!IsNeedConfirmProperty];
+        presenter[!RangeDatePickerPresenter.IsShowNowProperty]                 = this[!IsShowNowProperty];
+        presenter[!RangeDatePickerPresenter.IsShowTimeProperty]                = this[!IsShowTimeProperty];
+
+        return presenter;
     }
-    
+
     public override void Clear()
     {
         base.Clear();
-        
+
         RangeStartSelectedDate = null;
         RangeEndSelectedDate   = null;
     }
-    
+
     public void Reset()
     {
         RangeStartSelectedDate = RangeStartDefaultDate;
         RangeEndSelectedDate   = RangeEndDefaultDate;
     }
-    
-    protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
+
+    protected override void NotifyPickerPresenterCreated(Control pickerPresenter)
     {
-        if (PickerFlyout is RangeDatePickerFlyout datePickerFlyout)
-        {
-            _pickerPresenter = datePickerFlyout.DatePickerPresenter as RangeDatePickerPresenter;
-            _pickerPresenter?.NotifyRepairReverseRange(true);
-        }
+        base.NotifyPickerPresenterCreated(pickerPresenter);
+        _pickerPresenter = pickerPresenter as RangeDatePickerPresenter;
+        _pickerPresenter?.NotifyRepairReverseRange(true);
     }
-    
-    protected override void NotifyFlyoutOpened()
+
+    protected override void NotifyPickerOpened()
     {
-        base.NotifyFlyoutOpened();
+        base.NotifyPickerOpened();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
             _pickerPresenter.HoverDateTimeChanged  += HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
             _pickerPresenter.RangePartConfirmed    += HandleRangePartConfirmed;
-            
+
             _pickerPresenter.SelectedDateTime          = RangeStartSelectedDate;
             _pickerPresenter.SecondarySelectedDateTime = RangeEndSelectedDate;
             if (RangeActivatedPart == RangeActivatedPart.Start)
@@ -183,10 +181,10 @@ public class RangeDatePicker : RangeInfoPickerInput
             }
         }
     }
-    
-    protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
+
+    protected override void NotifyPickerClosed()
     {
-        base.NotifyFlyoutAboutToClose(selectedIsValid);
+        base.NotifyPickerClosed();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;

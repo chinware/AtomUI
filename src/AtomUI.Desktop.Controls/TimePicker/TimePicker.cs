@@ -123,46 +123,43 @@ public class TimePicker : InfoPickerInput
     #endregion
     
     private TimePickerPresenter? _pickerPresenter;
-    private CompositeDisposable? _flyoutBindingDisposables;
-    
+    private CompositeDisposable? _presenterBindingDisposables;
+
     public TimePicker()
     {
         this.RegisterTokenResourceScope(TimePickerToken.ScopeProvider);
     }
-    
+
     static TimePicker()
     {
         SelectedTimeProperty.Changed.AddClassHandler<TimePicker>((timePicker, args) => timePicker.NotifyFormValueChanged(args.NewValue));
     }
 
-    protected override Flyout CreatePickerFlyout()
+    protected override Control CreatePickerPresenter()
     {
-        var timePickerFlyout = new TimePickerFlyout();
-        _flyoutBindingDisposables?.Dispose();
-        _flyoutBindingDisposables = new CompositeDisposable(7);
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerFlyout, TimePickerFlyout.IsMotionEnabledProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerFlyout, TimePickerFlyout.MinuteIncrementProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SecondIncrementProperty, timePickerFlyout, TimePickerFlyout.SecondIncrementProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerFlyout, TimePickerFlyout.ClockIdentifierProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SelectedTimeProperty, timePickerFlyout, TimePickerFlyout.SelectedTimeProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerFlyout, TimePickerFlyout.IsNeedConfirmProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, timePickerFlyout, TimePickerFlyout.IsShowNowProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, timePickerFlyout, TimePickerFlyout.ShouldUseOverlayPopupProperty));
-        
-        return timePickerFlyout;
+        var timePickerPresenter = new TimePickerPresenter();
+        _presenterBindingDisposables?.Dispose();
+        _presenterBindingDisposables = new CompositeDisposable(7);
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerPresenter, TimePickerPresenter.IsMotionEnabledProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerPresenter, TimePickerPresenter.MinuteIncrementProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SecondIncrementProperty, timePickerPresenter, TimePickerPresenter.SecondIncrementProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerPresenter, TimePickerPresenter.ClockIdentifierProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, SelectedTimeProperty, timePickerPresenter, TimePickerPresenter.SelectedTimeProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerPresenter, TimePickerPresenter.IsNeedConfirmProperty));
+        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, timePickerPresenter, TimePickerPresenter.IsShowNowProperty));
+
+        return timePickerPresenter;
     }
 
-    protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
+    protected override void NotifyPickerPresenterCreated(Control pickerPresenter)
     {
-        if (PickerFlyout is TimePickerFlyout timePickerFlyout)
-        {
-            _pickerPresenter = timePickerFlyout.TimePickerPresenter;
-        }
+        base.NotifyPickerPresenterCreated(pickerPresenter);
+        _pickerPresenter = pickerPresenter as TimePickerPresenter;
     }
 
-    protected override void NotifyFlyoutOpened()
+    protected override void NotifyPickerOpened()
     {
-        base.NotifyFlyoutOpened();
+        base.NotifyPickerOpened();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
@@ -171,9 +168,9 @@ public class TimePicker : InfoPickerInput
         }
     }
 
-    protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
+    protected override void NotifyPickerClosed()
     {
-        base.NotifyFlyoutAboutToClose(selectedIsValid);
+        base.NotifyPickerClosed();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;

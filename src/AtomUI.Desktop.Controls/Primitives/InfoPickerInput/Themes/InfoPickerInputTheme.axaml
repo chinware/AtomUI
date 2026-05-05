@@ -49,6 +49,16 @@
                                   SizeType="{TemplateBinding SizeType}"
                                   IsReadOnly="{TemplateBinding IsReadOnly}" />
                 </atom:AddOnDecoratedBox>
+
+                <atom:Popup Name="PART_Popup"
+                            WindowManagerAddShadowHint="False"
+                            IsLightDismissEnabled="True"
+                            ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
+                            Placement="{TemplateBinding PickerPlacement}"
+                            IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
+                            MarginToAnchor="{TemplateBinding MarginToAnchor}">
+                    <ContentPresenter Name="PART_PickerPresenter" />
+                </atom:Popup>
             </Panel>
         </ControlTemplate>
     </Setter>

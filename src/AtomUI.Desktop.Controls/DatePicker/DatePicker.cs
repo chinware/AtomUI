@@ -156,31 +156,29 @@ public class DatePicker : InfoPickerInput
         return dateTime.Value.ToString(format);
     }
 
-    protected override Flyout CreatePickerFlyout()
+    protected override Control CreatePickerPresenter()
     {
-        var flyout = new DatePickerFlyout();
+        var presenter = new DatePickerPresenter();
 
-        flyout[!DatePickerFlyout.IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
-        flyout[!DatePickerFlyout.SelectedDateTimeProperty] = this[!SelectedDateTimeProperty];
-        flyout[!DatePickerFlyout.IsNeedConfirmProperty]    = this[!IsNeedConfirmProperty];
-        flyout[!DatePickerFlyout.IsShowNowProperty]        = this[!IsShowNowProperty];
-        flyout[!DatePickerFlyout.IsShowTimeProperty]       = this[!IsShowTimeProperty];
-        flyout[!DatePickerFlyout.ClockIdentifierProperty]  = this[!ClockIdentifierProperty];
+        presenter[!DatePickerPresenter.IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
+        presenter[!DatePickerPresenter.SelectedDateTimeProperty] = this[!SelectedDateTimeProperty];
+        presenter[!DatePickerPresenter.IsNeedConfirmProperty]    = this[!IsNeedConfirmProperty];
+        presenter[!DatePickerPresenter.IsShowNowProperty]        = this[!IsShowNowProperty];
+        presenter[!DatePickerPresenter.IsShowTimeProperty]       = this[!IsShowTimeProperty];
+        presenter[!DatePickerPresenter.ClockIdentifierProperty]  = this[!ClockIdentifierProperty];
 
-        return flyout;
+        return presenter;
     }
 
-    protected override void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
+    protected override void NotifyPickerPresenterCreated(Control pickerPresenter)
     {
-        if (PickerFlyout is DatePickerFlyout datePickerFlyout)
-        {
-            _pickerPresenter = datePickerFlyout.DatePickerPresenter;
-        }
+        base.NotifyPickerPresenterCreated(pickerPresenter);
+        _pickerPresenter = pickerPresenter as DatePickerPresenter;
     }
-    
-    protected override void NotifyFlyoutOpened()
+
+    protected override void NotifyPickerOpened()
     {
-        base.NotifyFlyoutOpened();
+        base.NotifyPickerOpened();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
@@ -189,9 +187,9 @@ public class DatePicker : InfoPickerInput
         }
     }
 
-    protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
+    protected override void NotifyPickerClosed()
     {
-        base.NotifyFlyoutAboutToClose(selectedIsValid);
+        base.NotifyPickerClosed();
         if (_pickerPresenter is not null)
         {
             _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
