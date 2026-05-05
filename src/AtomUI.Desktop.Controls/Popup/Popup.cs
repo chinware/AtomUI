@@ -320,7 +320,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
         var shadowThickness    = FrameShadow.Thickness();
         var requestedPlacement = RequestedPlacement!.Value;
-        var isUseOverlayHost   = IsUsingOverlayLayer;
+        var isUseOverlayHost   = ShouldUseOverlayLayer;
         var hOffset            = HorizontalOffset;
         var vOffset            = VerticalOffset;
         var marginToAnchor     = MarginToAnchor;
@@ -349,7 +349,13 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var arrowIndicatorLayoutBounds = default(Rect);
         if (Child is IArrowAwareShadowMaskInfoProvider provider)
         {
-            arrowIndicatorLayoutBounds = provider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
+            // If ArrowIndicatorLayoutBounds is not initialized yet, force a layout pass
+            if (provider.IsShowArrow())
+            {
+                Child.Measure(Size.Infinity);
+                Child.Arrange(new Rect(Child.DesiredSize));
+                arrowIndicatorLayoutBounds = provider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
+            }
 
             if (IsPointAtCenter && provider.IsShowArrow())
             {
@@ -359,7 +365,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 vOffset += delta.Y;
             }
         }
-        
+
         var isFlipped = PopupUtils.ApplyCustomPlacement(
             placement,
             requestedPlacement,
