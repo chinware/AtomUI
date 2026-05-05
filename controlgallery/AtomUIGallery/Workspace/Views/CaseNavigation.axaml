@@ -67,6 +67,8 @@
                               ItemKey="{x:Static viewmodels:LineEditViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_TimePicker}"
                               ItemKey="{x:Static viewmodels:TimePickerViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_DatePicker}"
+                              ItemKey="{x:Static viewmodels:DatePickerViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"

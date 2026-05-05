@@ -33,6 +33,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry_Slider = "Slider 滑动输入条";
     public const string DataEntry_LineEdit = "LineEdit 输入框";
     public const string DataEntry_TimePicker = "TimePicker 时间选择框";
+    public const string DataEntry_DatePicker = "DatePicker 日期选择框";
     public const string DataDisplay = "数据展示";
     public const string DataDisplay_Avatar = "Avatar 头像";
     public const string DataDisplay_Calendar = "Calendar 日历";

@@ -1,14 +1,13 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     xmlns:atom="https://atomui.net"
     xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DualMonthRangeDatePickerPresenter}"
                   TargetType="atom:DualMonthRangeDatePickerPresenter">
         <ControlTheme.BasedOn>
-            <themes:DatePickerPresenterTheme TargetType="atom:DualMonthRangeDatePickerPresenter" />
+            <atom:DatePickerPresenterTheme TargetType="atom:DualMonthRangeDatePickerPresenter" />
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:DualMonthRangeDatePickerPresenter">

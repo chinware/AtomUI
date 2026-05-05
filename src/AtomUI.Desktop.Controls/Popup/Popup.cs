@@ -30,10 +30,15 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Popup>();
 
-    public static readonly DirectProperty<Popup, bool> IsFlippedProperty =
-        AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsFlipped),
-            o => o.IsFlipped,
-            (o, v) => o.IsFlipped = v);
+    public static readonly DirectProperty<Popup, bool> IsHorizontalFlippedProperty =
+        AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsHorizontalFlipped),
+            o => o.IsHorizontalFlipped,
+            (o, v) => o.IsHorizontalFlipped = v);
+    
+    public static readonly DirectProperty<Popup, bool> IsVerticalFlippedProperty =
+        AvaloniaProperty.RegisterDirect<Popup, bool>(nameof(IsVerticalFlipped),
+            o => o.IsVerticalFlipped,
+            (o, v) => o.IsVerticalFlipped = v);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Popup>();
@@ -74,12 +79,20 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         set => SetValue(MotionDurationProperty, value);
     }
 
-    private bool _isFlipped;
+    private bool _isHorizontalFlipped;
 
-    public bool IsFlipped
+    public bool IsHorizontalFlipped
     {
-        get => _isFlipped;
-        private set => SetAndRaise(IsFlippedProperty, ref _isFlipped, value);
+        get => _isHorizontalFlipped;
+        private set => SetAndRaise(IsHorizontalFlippedProperty, ref _isHorizontalFlipped, value);
+    }
+    
+    private bool _isVerticalFlipped;
+
+    public bool IsVerticalFlipped
+    {
+        get => _isVerticalFlipped;
+        private set => SetAndRaise(IsVerticalFlippedProperty, ref _isVerticalFlipped, value);
     }
 
     public bool IsMotionEnabled
@@ -260,10 +273,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         IsOpen = true;
     }
 
-    internal void NotifyFlipped(bool flipped)
+    internal void NotifyFlipped(bool horizontalFlipped,  bool verticalFlipped)
     {
-        IsFlipped = flipped;
-        PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(flipped));
+        IsHorizontalFlipped = horizontalFlipped;
+        IsVerticalFlipped   = verticalFlipped;
+        PositionFlipped?.Invoke(this, new PopupFlippedEventArgs(horizontalFlipped, verticalFlipped));
     }
 
     internal void NotifyMotionActorReady(PopupMotionActor actor)
@@ -366,7 +380,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             }
         }
 
-        var isFlipped = PopupUtils.ApplyCustomPlacement(
+        var (flipX, flipY) = PopupUtils.ApplyCustomPlacement(
             placement,
             requestedPlacement,
             isUseOverlayHost,
@@ -378,7 +392,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             gravity,
             arrowIndicatorLayoutBounds);
 
-        NotifyFlipped(isFlipped);
+        NotifyFlipped(flipX, flipY);
     }
 
     #endregion
@@ -404,10 +418,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
 public class PopupFlippedEventArgs : EventArgs
 {
-    public bool Flipped { get; set; }
+    public bool HorizontalFlipped { get; set; }
+    public bool VerticalFlipped { get; set; }
 
-    public PopupFlippedEventArgs(bool flipped)
+    public PopupFlippedEventArgs(bool horizontalFlipped, bool verticalFlipped)
     {
-        Flipped = flipped;
+        HorizontalFlipped = horizontalFlipped;
+        VerticalFlipped = verticalFlipped;
     }
 }

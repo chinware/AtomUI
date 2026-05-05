@@ -1,6 +1,4 @@
-﻿using System.Reactive.Disposables;
-using AtomUI.Controls.Utils;
-using AtomUI.Data;
+﻿using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Media;
@@ -150,9 +148,8 @@ public class RangeTimePicker : RangeInfoPickerInput
     }
 
     #endregion
-    
+
     private TimePickerPresenter? _pickerPresenter;
-    private CompositeDisposable? _flyoutBindingDisposables;
     
     static RangeTimePicker()
     {
@@ -189,14 +186,12 @@ public class RangeTimePicker : RangeInfoPickerInput
     protected override Control CreatePickerPresenter()
     {
         var timePickerPresenter = new TimePickerPresenter();
-        _flyoutBindingDisposables?.Dispose();
-        _flyoutBindingDisposables = new CompositeDisposable(6);
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, timePickerPresenter, TimePickerPresenter.IsMotionEnabledProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MinuteIncrementProperty, timePickerPresenter, TimePickerPresenter.MinuteIncrementProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, SecondIncrementProperty, timePickerPresenter, TimePickerPresenter.SecondIncrementProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ClockIdentifierProperty, timePickerPresenter, TimePickerPresenter.ClockIdentifierProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsNeedConfirmProperty, timePickerPresenter, TimePickerPresenter.IsNeedConfirmProperty));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowNowProperty, timePickerPresenter, TimePickerPresenter.IsShowNowProperty));
+        timePickerPresenter[!TimePickerPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        timePickerPresenter[!TimePickerPresenter.MinuteIncrementProperty] = this[!MinuteIncrementProperty];
+        timePickerPresenter[!TimePickerPresenter.SecondIncrementProperty] = this[!SecondIncrementProperty];
+        timePickerPresenter[!TimePickerPresenter.ClockIdentifierProperty] = this[!ClockIdentifierProperty];
+        timePickerPresenter[!TimePickerPresenter.IsNeedConfirmProperty]   = this[!IsNeedConfirmProperty];
+        timePickerPresenter[!TimePickerPresenter.IsShowNowProperty]       = this[!IsShowNowProperty];
         return timePickerPresenter;
     }
 

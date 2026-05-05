@@ -159,7 +159,6 @@ public class DatePicker : InfoPickerInput
     protected override Control CreatePickerPresenter()
     {
         var presenter = new DatePickerPresenter();
-
         presenter[!DatePickerPresenter.IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
         presenter[!DatePickerPresenter.SelectedDateTimeProperty] = this[!SelectedDateTimeProperty];
         presenter[!DatePickerPresenter.IsNeedConfirmProperty]    = this[!IsNeedConfirmProperty];

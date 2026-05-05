@@ -7,7 +7,7 @@
         <ControlTheme.BasedOn>
             <atom:RangeInfoPickerInputTheme TargetType="atom:RangeTimePicker" />
         </ControlTheme.BasedOn>
-        
+        <Setter Property="MarginToAnchor" Value="{atom:InfoPickerInputTokenResource RangeMarginToAnchor}" />
         <Setter Property="AmText" Value="{atom:TimePickerLangResource AMText}" />
         <Setter Property="PmText" Value="{atom:TimePickerLangResource PMText}" />
     </ControlTheme>

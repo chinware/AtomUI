@@ -109,7 +109,7 @@ public class RangeDatePicker : RangeInfoPickerInput
     }
     
     #endregion
-    
+
     private RangeDatePickerPresenter? _pickerPresenter;
     private bool? _isNeedConfirmedBackup;
 
@@ -126,7 +126,18 @@ public class RangeDatePicker : RangeInfoPickerInput
     
     protected override Control CreatePickerPresenter()
     {
-        var presenter = new RangeDatePickerPresenter();
+        RangeDatePickerPresenter? presenter = null;
+        if (IsShowTime)
+        {
+            presenter = new TimedRangeDatePickerPresenter()
+            {
+                IsShowTime = true
+            };
+        }
+        else
+        {
+            presenter = new DualMonthRangeDatePickerPresenter();
+        }
         presenter[!RangeDatePickerPresenter.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
         presenter[!RangeDatePickerPresenter.SelectedDateTimeProperty]          = this[!RangeStartSelectedDateProperty];
         presenter[!RangeDatePickerPresenter.SecondarySelectedDateTimeProperty] = this[!RangeEndSelectedDateProperty];

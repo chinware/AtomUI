@@ -142,10 +142,15 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
             o => o.IsShowArrowEffective,
             (o, v) => o.IsShowArrowEffective = v);
     
-    internal static readonly DirectProperty<Flyout, bool> IsPopupFlippedProperty =
-        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsPopupFlipped),
-            o => o.IsPopupFlipped,
-            (o, v) => o.IsPopupFlipped = v);
+    internal static readonly DirectProperty<Flyout, bool> IsPopupHorizontalFlippedProperty =
+        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsPopupHorizontalFlipped),
+            o => o.IsPopupHorizontalFlipped,
+            (o, v) => o.IsPopupHorizontalFlipped = v);
+    
+    internal static readonly DirectProperty<Flyout, bool> IsPopupVerticalFlippedProperty =
+        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsPopupVerticalFlipped),
+            o => o.IsPopupVerticalFlipped,
+            (o, v) => o.IsPopupVerticalFlipped = v);
     
     internal static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<Flyout>();
@@ -158,12 +163,20 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         private set => SetAndRaise(IsShowArrowEffectiveProperty, ref _isShowArrowEffective, value);
     }
     
-    private bool _isPopupFlipped;
+    private bool _isPopupHorizontalFlipped;
 
-    internal bool IsPopupFlipped
+    internal bool IsPopupHorizontalFlipped
     {
-        get => _isPopupFlipped;
-        private set => SetAndRaise(IsPopupFlippedProperty, ref _isPopupFlipped, value);
+        get => _isPopupHorizontalFlipped;
+        private set => SetAndRaise(IsPopupHorizontalFlippedProperty, ref _isPopupHorizontalFlipped, value);
+    }
+    
+    private bool _isPopupVerticalFlipped;
+
+    internal bool IsPopupVerticalFlipped
+    {
+        get => _isPopupVerticalFlipped;
+        private set => SetAndRaise(IsPopupVerticalFlippedProperty, ref _isPopupVerticalFlipped, value);
     }
     
     internal ArrowPosition ArrowPosition
@@ -208,7 +221,8 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup[!PopupControl.IsPointAtCenterProperty]        = this[!IsPointAtCenterProperty];
         popup[!PopupControl.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayPopupProperty];
         popup[!AvaloniaPopup.IsLightDismissEnabledProperty] = this[!IsLightDismissEnabledProperty];
-        this[!IsPopupFlippedProperty]                       = popup[!PopupControl.IsFlippedProperty];
+        this[!IsPopupHorizontalFlippedProperty]             = popup[!PopupControl.IsHorizontalFlippedProperty];
+        this[!IsPopupVerticalFlippedProperty]               = popup[!PopupControl.IsVerticalFlippedProperty];
 
         popup.Opened += this.OnPopupOpened;
         popup.Closed += this.OnPopupClosed;
@@ -260,7 +274,8 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         }
 
         if (change.Property == PlacementProperty ||
-            change.Property == IsPopupFlippedProperty)
+            change.Property == IsPopupHorizontalFlippedProperty ||
+            change.Property == IsPopupVerticalFlippedProperty)
         {
             ConfigureArrowPosition();
         }
@@ -283,10 +298,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         var arrowPosition = PopupUtils.CalculateArrowPosition(Placement, PlacementAnchor, PlacementGravity);
         if (arrowPosition.HasValue)
         {
-            if (IsPopupFlipped)
-            {
-                arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value);
-            }
+            arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, IsPopupHorizontalFlipped, IsPopupVerticalFlipped);
             SetCurrentValue(ArrowPositionProperty, arrowPosition);
         }
     }

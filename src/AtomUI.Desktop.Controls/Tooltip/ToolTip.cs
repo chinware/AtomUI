@@ -451,7 +451,7 @@ public class ToolTip : ContentControl,
     {
         if (sender is Popup popup && popup.PlacementTarget != null)
         {
-            SetupArrowPosition(GetPlacement(popup.PlacementTarget), args.Flipped);
+            SetupArrowPosition(GetPlacement(popup.PlacementTarget), args.HorizontalFlipped, args.VerticalFlipped);
         }
     }
 
@@ -555,17 +555,17 @@ public class ToolTip : ContentControl,
                 }));
             if (_popup is not null)
             {
-                SetupArrowPosition(GetPlacement(control), false);
+                SetupArrowPosition(GetPlacement(control), false, false);
             }
         }
     }
     
-    private void SetupArrowPosition(PlacementMode placement, bool isFlipped, PopupAnchor? anchor = null, PopupGravity? gravity = null)
+    private void SetupArrowPosition(PlacementMode placement, bool isHorizontalFlipped, bool isVerticalFlipped, PopupAnchor? anchor = null, PopupGravity? gravity = null)
     {
         var arrowPosition = PopupUtils.CalculateArrowPosition(placement, anchor, gravity);
         if (_arrowDecoratedBox is not null && arrowPosition is not null)
         {
-            _arrowDecoratedBox.ArrowPosition = isFlipped ? ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value) : arrowPosition.Value;
+            _arrowDecoratedBox.ArrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, isHorizontalFlipped, isVerticalFlipped);
         }
     }
     

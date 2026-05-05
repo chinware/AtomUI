@@ -92,7 +92,8 @@
                             IsPointAtCenter="{TemplateBinding IsPointAtCenter}"
                             OverlayDismissEventPassThrough="True"
                             IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
-                            IsFlipped="{TemplateBinding IsPopupFlipped, Mode=TwoWay}"
+                            IsHorizontalFlipped="{TemplateBinding IsPopupHorizontalFlipped, Mode=TwoWay}"
+                            IsVerticalFlipped="{TemplateBinding IsPopupVerticalFlipped, Mode=TwoWay}"
                             MarginToAnchor="{TemplateBinding MarginToAnchor}">
                     <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
                                             IsShowArrow="{TemplateBinding IsShowArrowEffective}"
@@ -104,8 +105,6 @@
     </Setter>
 
     <Style Selector="^:is(atom|RangeInfoPickerInput)">
-
-        <Setter Property="MarginToAnchor" Value="{atom:InfoPickerInputTokenResource RangeMarginToAnchor}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Once" />

@@ -301,23 +301,30 @@ internal static class PopupUtils
         };
     }
 
-    internal static Direction FlipDirection(Direction direction)
+    internal static Direction FlipDirection(Direction direction, bool isHorizontalFlip, bool isVerticalFlip)
     {
-        if (direction == Direction.Left)
+        if (isHorizontalFlip)
         {
-            direction = Direction.Right;
+            if (direction == Direction.Left)
+            {
+                direction = Direction.Right;
+            }
+            else if (direction == Direction.Right)
+            {
+                direction = Direction.Left;
+            }
         }
-        else if (direction == Direction.Right)
+
+        if (isVerticalFlip)
         {
-            direction = Direction.Left;
-        }
-        else if (direction == Direction.Top)
-        {
-            direction = Direction.Bottom;
-        }
-        else if (direction == Direction.Bottom)
-        {
-            direction = Direction.Top;
+            if (direction == Direction.Top)
+            {
+                direction = Direction.Bottom;
+            }
+            else if (direction == Direction.Bottom)
+            {
+                direction = Direction.Top;
+            }
         }
         return direction;
     }
@@ -602,7 +609,7 @@ internal static class PopupUtils
         return (shadowOffsetX, shadowOffsetY);
     }
 
-    internal static bool ApplyCustomPlacement(
+    internal static (bool flipX, bool flipY) ApplyCustomPlacement(
         CustomPopupPlacement placement,
         PlacementMode requestedPlacement,
         bool isUseOverlayHost,
@@ -620,7 +627,6 @@ internal static class PopupUtils
         var (flipX, flipY) = isUseOverlayHost
             ? CalculateOverlayPopupHostFlipInfo(placement)
             : CalculatePopupRootFlipInfo(placement);
-
         if (requestedPlacement == PlacementMode.Pointer)
         {
             hOffset += marginToAnchor;
@@ -634,21 +640,15 @@ internal static class PopupUtils
         else
         {
             var direction = GetDirection(requestedPlacement);
-            if (flipX || flipY)
-            {
-                direction = FlipDirection(direction);
-            }
-
+            direction = FlipDirection(direction, flipX, flipY);
+            
             if (!isUseOverlayHost)
             {
                 var arrowPosition = CalculateArrowPosition(requestedPlacement, anchor, gravity);
                 if (arrowPosition != null)
                 {
-                    if (flipX || flipY)
-                    {
-                        arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value);
-                    }
-
+                    arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, flipX, flipY);
+                    
                     var (shadowOffsetX, shadowOffsetY) = CalculateShadowOffset(arrowPosition.Value,
                         shadowThickness, arrowIndicatorLayoutBounds);
 
@@ -678,7 +678,7 @@ internal static class PopupUtils
         }
         
         placement.Offset = new Point(hOffset, vOffset);
-        return flipX || flipY;
+        return (flipX, flipY);
     }
 
     private static void ApplyMarginToAnchor(Direction direction, double marginToAnchor, ref double hOffset, ref double vOffset)

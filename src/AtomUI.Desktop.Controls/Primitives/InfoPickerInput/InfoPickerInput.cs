@@ -248,10 +248,15 @@ public abstract class InfoPickerInput : TemplatedControl,
             o => o.IsShowArrowEffective,
             (o, v) => o.IsShowArrowEffective = v);
     
-    internal static readonly DirectProperty<InfoPickerInput, bool> IsPopupFlippedProperty =
-        AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsPopupFlipped),
-            o => o.IsPopupFlipped,
-            (o, v) => o.IsPopupFlipped = v);
+    internal static readonly DirectProperty<InfoPickerInput, bool> IsPopupHorizontalFlippedProperty =
+        AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsPopupHorizontalFlipped),
+            o => o.IsPopupHorizontalFlipped,
+            (o, v) => o.IsPopupHorizontalFlipped = v);
+    
+    internal static readonly DirectProperty<InfoPickerInput, bool> IsPopupVerticalFlippedProperty =
+        AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsPopupVerticalFlipped),
+            o => o.IsPopupVerticalFlipped,
+            (o, v) => o.IsPopupVerticalFlipped = v);
     
     internal static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<InfoPickerInput>();
@@ -322,12 +327,20 @@ public abstract class InfoPickerInput : TemplatedControl,
         private set => SetAndRaise(IsShowArrowEffectiveProperty, ref _isShowArrowEffective, value);
     }
 
-    private bool _isPopupFlipped;
+    private bool _isPopupHorizontalFlipped;
 
-    internal bool IsPopupFlipped
+    internal bool IsPopupHorizontalFlipped
     {
-        get => _isPopupFlipped;
-        private set => SetAndRaise(IsPopupFlippedProperty, ref _isPopupFlipped, value);
+        get => _isPopupHorizontalFlipped;
+        private set => SetAndRaise(IsPopupHorizontalFlippedProperty, ref _isPopupHorizontalFlipped, value);
+    }
+    
+    private bool _isPopupVerticalFlipped;
+
+    internal bool IsPopupVerticalFlipped
+    {
+        get => _isPopupVerticalFlipped;
+        private set => SetAndRaise(IsPopupVerticalFlippedProperty, ref _isPopupVerticalFlipped, value);
     }
     
     internal ArrowPosition ArrowPosition
@@ -737,7 +750,8 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         if (change.Property == PickerPlacementProperty ||
-            change.Property == IsPopupFlippedProperty)
+            change.Property == IsPopupHorizontalFlippedProperty ||
+            change.Property == IsPopupVerticalFlippedProperty)
         {
             ConfigureArrowPosition();
         }
@@ -760,10 +774,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         var arrowPosition = PopupUtils.CalculateArrowPosition(PickerPlacement, null, null);
         if (arrowPosition.HasValue)
         {
-            if (IsPopupFlipped)
-            {
-                arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value);
-            }
+            arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, IsPopupHorizontalFlipped, IsPopupVerticalFlipped);
             SetCurrentValue(ArrowPositionProperty, arrowPosition);
         }
     }
