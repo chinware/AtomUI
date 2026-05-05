@@ -13,9 +13,7 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -66,14 +64,14 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NumericUpDown>();
 
-    public static readonly StyledProperty<bool> StringModeProperty =
-        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(StringMode));
+    public static readonly StyledProperty<bool> IsStringModeProperty =
+        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsStringMode));
     
     public static readonly StyledProperty<bool> KeyboardProperty =
         AvaloniaProperty.Register<NumericUpDown, bool>(nameof(Keyboard), true);
 
-    public static readonly StyledProperty<bool> MouseWheelProperty =
-        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(MouseWheel), true);
+    public static readonly StyledProperty<bool> IsWheelEnabledProperty =
+        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsWheelEnabled), true);
 
     public static readonly StyledProperty<string?> StringValueProperty =
         AvaloniaProperty.Register<NumericUpDown, string?>(nameof(StringValue));
@@ -152,10 +150,10 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public bool StringMode
+    public bool IsStringMode
     {
-        get => GetValue(StringModeProperty);
-        set => SetValue(StringModeProperty, value);
+        get => GetValue(IsStringModeProperty);
+        set => SetValue(IsStringModeProperty, value);
     }
 
     public bool Keyboard
@@ -164,10 +162,10 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         set => SetValue(KeyboardProperty, value);
     }
 
-    public bool MouseWheel
+    public bool IsWheelEnabled
     {
-        get => GetValue(MouseWheelProperty);
-        set => SetValue(MouseWheelProperty, value);
+        get => GetValue(IsWheelEnabledProperty);
+        set => SetValue(IsWheelEnabledProperty, value);
     }
 
     public string? StringValue
@@ -345,9 +343,9 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             }
         }
 
-        if (change.Property == StringModeProperty)
+        if (change.Property == IsStringModeProperty)
         {
-            if (change.Property == StringModeProperty && StringMode)
+            if (change.Property == IsStringModeProperty && IsStringMode)
             {
                 UpdateStringValueFromValue(Value, CultureInfo.CurrentCulture);
             }
@@ -355,7 +353,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             RefreshDisplayedText();
         }
 
-        if (change.Property == StringValueProperty && StringMode && !_isUpdatingFromText && !_isUpdatingFromValue)
+        if (change.Property == StringValueProperty && IsStringMode && !_isUpdatingFromText && !_isUpdatingFromValue)
         {
             ApplyStringValue(change.NewValue as string);
         }
@@ -367,7 +365,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         base.OnTextChanged(oldValue, newValue);
         _isParsingText = false;
 
-        if (StringMode)
+        if (IsStringMode)
         {
             UpdateStringValueFromText(newValue);
         }
@@ -376,7 +374,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     protected override void OnValueChanged(decimal? oldValue, decimal? newValue)
     {
         base.OnValueChanged(oldValue, newValue);
-        if (!StringMode || _isUpdatingFromText || _isParsingText)
+        if (!IsStringMode || _isUpdatingFromText || _isParsingText)
         {
             return;
         }
@@ -403,12 +401,11 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
     {
-        if (!MouseWheel)
+        if (!IsWheelEnabled)
         {
             e.Handled = true;
             return;
         }
-
         base.OnPointerWheelChanged(e);
     }
 
@@ -445,7 +442,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     private void HandleTextBoxPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        if (!MouseWheel)
+        if (!IsWheelEnabled)
         {
             e.Handled = true;
         }
@@ -464,7 +461,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     private void UpdateTextConverter()
     {
-        var needsConverter = StringMode;
+        var needsConverter = IsStringMode;
         if (needsConverter)
         {
             if (TextConverter != _textConverter)
@@ -502,7 +499,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     private void ApplyStringValue(string? raw)
     {
-        if (!StringMode)
+        if (!IsStringMode)
         {
             return;
         }
@@ -541,7 +538,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             return string.Empty;
         }
 
-        if (StringMode)
+        if (IsStringMode)
         {
             return raw;
         }
@@ -590,7 +587,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     private void UpdateStringValueFromText(string? raw)
     {
-        if (!StringMode)
+        if (!IsStringMode)
         {
             return;
         }
@@ -602,7 +599,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     private void UpdateStringValueFromValue(decimal? value, CultureInfo culture)
     {
-        if (!StringMode)
+        if (!IsStringMode)
         {
             return;
         }
@@ -640,7 +637,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         {
             string? raw = null;
 
-            if (_owner.StringMode)
+            if (_owner.IsStringMode)
             {
                 raw = _owner.StringValue;
             }

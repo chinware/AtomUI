@@ -1,0 +1,176 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
+             x:Class="AtomUIGallery.ShowCases.Views.NumberUpDownShowCase"
+             x:DataType="vm:NumberUpDownViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
+            Title="Basic usage"
+            Description="Numeric-only NumberUpDown.">
+            <atom:NumericUpDown Value="3" HorizontalAlignment="Stretch"/>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="String mode (high precision)"
+            Description="Keep a high-precision value as a string.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown IsStringMode="True"
+                                    StringValue="{Binding StringModeValue, Mode=TwoWay}"
+                                    Increment="0.0001"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    PlaceholderText="Input weight" />
+                <TextBlock Text="{Binding StringModeValue, StringFormat=Raw: {0}}"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Keyboard behavior"
+            Description="Disable keyboard spin with the Keyboard property.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:CheckBox Content="Keyboard enabled"
+                          IsChecked="{Binding KeyboardEnabled}"/>
+                <atom:NumericUpDown Value="1.2"
+                                    Increment="0.1"
+                                    Keyboard="{Binding KeyboardEnabled}"
+                                    PlaceholderText="Keyboard disabled" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Mouse wheel behavior"
+            Description="Disable mouse wheel spin with the MouseWheel property.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:CheckBox Content="Mouse wheel enabled"
+                          IsChecked="{Binding MouseWheelEnabled}"/>
+                <atom:NumericUpDown Value="2.5"
+                                    Increment="0.5"
+                                    IsWheelEnabled="{Binding MouseWheelEnabled}"
+                                    PlaceholderText="Mouse wheel disabled" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Min / Max"
+            Description="Restrict the input value range.">
+            <atom:NumericUpDown Minimum="0"
+                                Maximum="10"
+                                Value="3"
+                                Increment="1" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Step (decimal)"
+            Description="Use decimal steps with Increment.">
+            <atom:NumericUpDown Value="1.2"
+                                Increment="0.25"
+                                Minimum="0"
+                                Maximum="2" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Three sizes of NumberUpDown"
+            Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown SizeType="Large" Value="3" />
+                <atom:NumericUpDown SizeType="Middle" Value="3" />
+                <atom:NumericUpDown SizeType="Small" Value="3" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Variants"
+            Description="Variants of NumberUpDown.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outlined" />
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" />
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" />
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Disabled"
+            Description="Variants of NumberUpDown of disabled style.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outlined" IsEnabled="False"/>
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" IsEnabled="False"/>
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" IsEnabled="False"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Pre / Post tab"
+            Description="Using pre and post tabs example.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown LeftAddOn="http://" RightAddOn=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown LeftAddOn="http://" InnerRightContent=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="With clear icon"
+            Description="Input box with the remove icon, click the icon to delete everything.">
+            <atom:NumericUpDown PlaceholderText="input with clear icon" Width="400" HorizontalAlignment="Left"
+                                IsAllowClear="True" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="prefix and suffix"
+            Description="Add a prefix or suffix icons inside input.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown PlaceholderText="Enter your value"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
+                                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Status"
+            Description="Add status to Input with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown PlaceholderText="Error" Status="Error" />
+                <atom:NumericUpDown PlaceholderText="Warning" Status="Warning" />
+                <atom:NumericUpDown PlaceholderText="Error with prefix"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Error" />
+                <atom:NumericUpDown PlaceholderText="Warning with prefix"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Warning" />
+
+                <atom:NumericUpDown PlaceholderText="Error" Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+                <atom:NumericUpDown PlaceholderText="Warning" Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+
+                <atom:NumericUpDown PlaceholderText="Error" Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+                <atom:NumericUpDown PlaceholderText="Warning" Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+    </gallery:ShowCasePanel>
+</UserControl>
