@@ -10,7 +10,7 @@
             Title="Basic"
             Description="The most basic example. The size of the floating layer depends on the contents region.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayLayer="False">
+                <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
@@ -25,7 +25,7 @@
             Title="Three ways to trigger"
             Description="Mouse to click, focus and move in.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayLayer="False">
+                <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>
@@ -33,7 +33,7 @@
                     </atom:FlyoutHost.Flyout>
                     <atom:Button>Hover me</atom:Button>
                 </atom:FlyoutHost>
-                <atom:FlyoutHost Trigger="Focus" ShouldUseOverlayLayer="False">
+                <atom:FlyoutHost Trigger="Focus" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="220" Height="100" Padding="20">The most basic example.</TextBlock>
@@ -41,7 +41,7 @@
                     </atom:FlyoutHost.Flyout>
                     <atom:Button>Focus me</atom:Button>
                 </atom:FlyoutHost>
-                <atom:FlyoutHost Trigger="Click" ShouldUseOverlayLayer="False">
+                <atom:FlyoutHost Trigger="Click" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
                         <atom:Flyout>
                             <TextBlock Width="200" Height="100" Padding="20">The most basic example.</TextBlock>

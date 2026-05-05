@@ -54,8 +54,8 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<Flyout>();
     
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        PopupControl.ShouldUseOverlayLayerProperty.AddOwner<Flyout>();
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<Flyout, bool>(nameof(ShouldUseOverlayPopup), true);
 
     public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
         AvaloniaPopup.IsLightDismissEnabledProperty.AddOwner<Flyout>();
@@ -121,10 +121,10 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         set => SetValue(MotionDurationProperty, value);
     }
     
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     public bool IsLightDismissEnabled
@@ -206,7 +206,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup[!PopupControl.IsMotionEnabledProperty]        = this[!IsMotionEnabledProperty];
         popup[!PopupControl.MarginToAnchorProperty]         = this[!MarginToAnchorProperty];
         popup[!PopupControl.IsPointAtCenterProperty]        = this[!IsPointAtCenterProperty];
-        popup[!PopupControl.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayLayerProperty];
+        popup[!PopupControl.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayPopupProperty];
         popup[!AvaloniaPopup.IsLightDismissEnabledProperty] = this[!IsLightDismissEnabledProperty];
         this[!IsPopupFlippedProperty]                       = popup[!PopupControl.IsFlippedProperty];
 

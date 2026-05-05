@@ -25,7 +25,7 @@
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
-                                    ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
+                                    ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <atom:Popup.IsOpen>
                                 <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">
@@ -70,7 +70,7 @@
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
-                                    ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayLayer}"
+                                    ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                             <atom:Popup.IsOpen>
                                 <MultiBinding Converter="{StaticResource IsSubMenuOpenConverter}">

@@ -101,8 +101,8 @@ public class ToolTip : ContentControl,
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<ToolTip>();
     
-    internal static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        Popup.ShouldUseOverlayLayerProperty.AddOwner<ToolTip>();
+    internal static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        Flyout.ShouldUseOverlayPopupProperty.AddOwner<ToolTip>();
     
     internal TimeSpan MotionDuration
     {
@@ -110,10 +110,10 @@ public class ToolTip : ContentControl,
         set => SetValue(MotionDurationProperty, value);
     }
     
-    internal bool ShouldUseOverlayLayer
+    internal bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     
     #endregion
@@ -377,8 +377,8 @@ public class ToolTip : ContentControl,
         }
 
         _subscriptions = new CompositeDisposable([
-            Bind(ShouldUseOverlayLayerProperty, control.GetBindingObservable(IsUseOverlayHostProperty)),
-            _popup.Bind(Popup.ShouldUseOverlayLayerProperty, this.GetObservable(ShouldUseOverlayLayerProperty)),
+            Bind(ShouldUseOverlayPopupProperty, control.GetBindingObservable(IsUseOverlayHostProperty)),
+            _popup.Bind(Popup.ShouldUseOverlayLayerProperty, this.GetObservable(ShouldUseOverlayPopupProperty)),
             _popup.Bind(Popup.MotionDurationProperty, this.GetObservable(MotionDurationProperty)),
             _popup.Bind(Popup.IsMotionEnabledProperty, this.GetObservable(IsMotionEnabledProperty)),
             _popup.Bind(Popup.HorizontalOffsetProperty, control.GetBindingObservable(HorizontalOffsetProperty)),

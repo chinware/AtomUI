@@ -255,8 +255,8 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
     
-    internal static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty = 
-        AvaloniaProperty.Register<NavMenuItem, bool>(nameof (ShouldUseOverlayLayer));
+    internal static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty = 
+        AvaloniaProperty.Register<NavMenuItem, bool>(nameof (ShouldUseOverlayPopup));
     
     internal static readonly StyledProperty<bool> IsInSelectedPathProperty = 
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof (IsInSelectedPath));
@@ -303,10 +303,10 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
         
-    internal bool ShouldUseOverlayLayer
+    internal bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     
     // 是否在选择路径中
@@ -810,7 +810,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
             menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
             menuItem[!NavMenuItem.ItemContainerThemeProperty]    = this[!ItemContainerThemeProperty];
-            menuItem[!NavMenuItem.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+            menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
             
             PrepareNavMenuItem(menuItem, item, index);
         }

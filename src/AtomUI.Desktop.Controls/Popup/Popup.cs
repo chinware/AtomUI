@@ -304,7 +304,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
         else if (change.Property == PopupRootShadowProperty ||
                  change.Property == OverlayHostShadowProperty ||
-                 change.Property == ShouldUseOverlayLayerProperty)
+                 change.Property == IsUsingOverlayLayerProperty)
         {
             ConfigureFrameShadow();
         }
@@ -320,7 +320,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
         var shadowThickness    = FrameShadow.Thickness();
         var requestedPlacement = RequestedPlacement!.Value;
-        var isUseOverlayHost   = ShouldUseOverlayLayer;
+        var isUseOverlayHost   = IsUsingOverlayLayer;
         var hOffset            = HorizontalOffset;
         var vOffset            = VerticalOffset;
         var marginToAnchor     = MarginToAnchor;
@@ -385,7 +385,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     private void ConfigureFrameShadow()
     {
-        if (ShouldUseOverlayLayer)
+        if (IsUsingOverlayLayer)
         {
             FrameShadow = OverlayHostShadow;
         }

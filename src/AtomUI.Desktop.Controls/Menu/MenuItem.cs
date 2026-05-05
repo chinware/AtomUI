@@ -77,8 +77,8 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     internal static readonly StyledProperty<Thickness> PopupPaddingProperty =
         AvaloniaProperty.Register<MenuItem, Thickness>(nameof(PopupPadding));
 
-    internal static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        AvaloniaProperty.Register<MenuItem, bool>(nameof(ShouldUseOverlayLayer));
+    internal static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<MenuItem, bool>(nameof(ShouldUseOverlayPopup));
 
     internal bool IsMotionEnabled
     {
@@ -104,10 +104,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         set => SetValue(PopupPaddingProperty, value);
     }
 
-    internal bool ShouldUseOverlayLayer
+    internal bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     #endregion
@@ -220,7 +220,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
             menuItem[!ItemTemplateProperty]          = this[!ItemTemplateProperty];
             menuItem[!SizeTypeProperty]              = this[!SizeTypeProperty];
             menuItem[!IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-            menuItem[!ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+            menuItem[!ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
             PrepareMenuItem(menuItem, item, index);
         }
         else if (container is MenuSeparator menuSeparator)

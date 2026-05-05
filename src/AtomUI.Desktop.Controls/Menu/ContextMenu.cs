@@ -32,8 +32,8 @@ public class ContextMenu : AvaloniaContextMenu,
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         Menu.DisplayPageSizeProperty.AddOwner<ContextMenu>();
 
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        Menu.ShouldUseOverlayLayerProperty.AddOwner<ContextMenu>();
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        Menu.ShouldUseOverlayPopupProperty.AddOwner<ContextMenu>();
     
     public static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<ContextMenu>();
@@ -74,10 +74,10 @@ public class ContextMenu : AvaloniaContextMenu,
         set => SetValue(DisplayPageSizeProperty, value);
     }
 
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     
     public TimeSpan MotionDuration
@@ -151,7 +151,7 @@ public class ContextMenu : AvaloniaContextMenu,
         _popup[!Popup.OpenMotionProperty]            = this[!OpenMotionProperty];
         _popup[!Popup.CloseMotionProperty]           = this[!CloseMotionProperty];
         _popup[!Popup.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-        _popup[!Popup.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+        _popup[!Popup.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayPopupProperty];
 
         this.SetPopup(_popup);
         return _popup;
@@ -257,7 +257,7 @@ public class ContextMenu : AvaloniaContextMenu,
             menuItem[!ItemTemplateProperty]                   = this[!ItemTemplateProperty];
             menuItem[!SizeTypeProperty]                       = this[!SizeTypeProperty];
             menuItem[!MenuItem.DisplayPageSizeProperty]       = this[!DisplayPageSizeProperty];
-            menuItem[!MenuItem.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+            menuItem[!MenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
 
             PrepareMenuItem(menuItem, item, index);
         }

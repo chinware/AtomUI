@@ -39,8 +39,8 @@ public class MenuFlyoutPresenter : MenuBase,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<MenuFlyoutPresenter>();
 
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        Menu.ShouldUseOverlayLayerProperty.AddOwner<MenuFlyoutPresenter>();
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        Menu.ShouldUseOverlayPopupProperty.AddOwner<MenuFlyoutPresenter>();
 
     public bool IsShowArrow
     {
@@ -78,10 +78,10 @@ public class MenuFlyoutPresenter : MenuBase,
         remove => RemoveHandler(MenuItemClickedEvent, value);
     }
 
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     public MenuFlyout? MenuFlyout { get; set; }
@@ -217,7 +217,7 @@ public class MenuFlyoutPresenter : MenuBase,
             menuItem[!MenuItem.ItemTemplateProperty]           = this[!ItemTemplateProperty];
             menuItem[!MenuItem.SizeTypeProperty]               = this[!SizeTypeProperty];
             menuItem[!MenuItem.DisplayPageSizeProperty]        = this[!DisplayPageSizeProperty];
-            menuItem[!MenuItem.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayLayerProperty];
+            menuItem[!MenuItem.ShouldUseOverlayPopupProperty]  = this[!ShouldUseOverlayPopupProperty];
 
             PrepareMenuItem(menuItem, item, index);
         }

@@ -62,8 +62,8 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<AbstractMotion?> CloseMotionProperty = 
         Popup.CloseMotionProperty.AddOwner<FlyoutHost>();
     
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        Popup.ShouldUseOverlayLayerProperty.AddOwner<FlyoutHost>();
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        Flyout.ShouldUseOverlayPopupProperty.AddOwner<FlyoutHost>();
 
     /// <summary>
     /// 距离 anchor 的边距，根据垂直和水平进行设置
@@ -175,10 +175,10 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         set => SetValue(CloseMotionProperty, value);
     }
 
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     #endregion
     
@@ -234,7 +234,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
             _flyoutDisposables.Add(BindUtils.RelayBind(this, CloseMotionProperty, Flyout, FlyoutControl.CloseMotionProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PopupRootShadowProperty, Flyout, FlyoutControl.PopupRootShadowProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, OverlayHostShadowProperty, Flyout, FlyoutControl.OverlayHostShadowProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayLayerProperty, Flyout, FlyoutControl.ShouldUseOverlayLayerProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, Flyout, FlyoutControl.ShouldUseOverlayPopupProperty));
             ConfigureMotion(Placement);
         }
     }

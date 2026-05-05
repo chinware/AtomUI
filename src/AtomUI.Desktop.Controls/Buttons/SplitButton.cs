@@ -88,8 +88,8 @@ public class SplitButton : ContentControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        Popup.ShouldUseOverlayLayerProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        Flyout.ShouldUseOverlayPopupProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<SplitButton>();
@@ -229,10 +229,10 @@ public class SplitButton : ContentControl,
         set => SetValue(IsWaveSpiritEnabledProperty, value);
     }
 
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     #endregion
@@ -403,7 +403,7 @@ public class SplitButton : ContentControl,
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, GutterToFlyoutProperty, flyout, MenuFlyout.MarginToAnchorProperty));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayLayerProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, flyout));
 
             _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Popup
                                                     .PlacementProperty)

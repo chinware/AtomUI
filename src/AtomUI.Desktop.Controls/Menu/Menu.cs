@@ -25,8 +25,8 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         AvaloniaProperty.Register<Menu, int>(nameof(DisplayPageSize), 10);
 
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty =
-        Popup.ShouldUseOverlayLayerProperty.AddOwner<Menu>();
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        Flyout.ShouldUseOverlayPopupProperty.AddOwner<Menu>();
 
     public SizeType SizeType
     {
@@ -46,10 +46,10 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
         set => SetValue(DisplayPageSizeProperty, value);
     }
 
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     #endregion
@@ -129,7 +129,7 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
             menuItem[!MenuItem.ItemTemplateProperty]           = this[!ItemTemplateProperty];
             menuItem[!SizeTypeProperty]                        = this[!SizeTypeProperty];
             menuItem[!IsMotionEnabledProperty]                 = this[!IsMotionEnabledProperty];
-            menuItem[!MenuItem.ShouldUseOverlayLayerProperty]  = this[!ShouldUseOverlayLayerProperty];
+            menuItem[!MenuItem.ShouldUseOverlayPopupProperty]  = this[!ShouldUseOverlayPopupProperty];
 
             PrepareMenuItem(menuItem, item, index);
         }

@@ -11,7 +11,7 @@
             <atom:PopupConfirm
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?"
-                ShouldUseOverlayLayer="False"
+                ShouldUseOverlayPopup="False"
                 OkText="Ok"
                 CancelText="Cancel"
                 Placement="Top"
@@ -24,7 +24,7 @@
             Title="Locale text"
             Description="Set okText and cancelText props to customize the button's labels.">
             <atom:PopupConfirm
-                ShouldUseOverlayLayer="False"
+                ShouldUseOverlayPopup="False"
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>

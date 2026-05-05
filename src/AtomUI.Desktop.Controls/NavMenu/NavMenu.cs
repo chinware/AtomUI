@@ -66,8 +66,8 @@ public class NavMenu : ItemsControl,
             o => o.DefaultOpenPaths,
             (o, v) => o.DefaultOpenPaths = v);
     
-    public static readonly StyledProperty<bool> ShouldUseOverlayLayerProperty = 
-        AvaloniaProperty.Register<NavMenu, bool>(nameof (ShouldUseOverlayLayer));
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty = 
+        AvaloniaProperty.Register<NavMenu, bool>(nameof (ShouldUseOverlayPopup));
     
     private INavMenuNode? _selectedItem;
 
@@ -117,10 +117,10 @@ public class NavMenu : ItemsControl,
         set => SetValue(IsDarkStyleProperty, value);
     }
     
-    public bool ShouldUseOverlayLayer
+    public bool ShouldUseOverlayPopup
     {
-        get => GetValue(ShouldUseOverlayLayerProperty);
-        set => SetValue(ShouldUseOverlayLayerProperty, value);
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     #endregion
     
@@ -295,7 +295,7 @@ public class NavMenu : ItemsControl,
             menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
             menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
             menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-            menuItem[!NavMenuItem.ShouldUseOverlayLayerProperty] = this[!ShouldUseOverlayLayerProperty];
+            menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
            
             PrepareNavMenuItem(menuItem, item, index);
         }

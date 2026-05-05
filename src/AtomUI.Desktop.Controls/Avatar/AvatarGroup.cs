@@ -282,7 +282,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
             _foldCountFlyout                       = new FlyoutHost();
             _foldCountFlyout.ZIndex                = Int32.MaxValue;
             _foldCountFlyout.Content               = foldCountAvatar;
-            _foldCountFlyout.ShouldUseOverlayLayer = true;
+            _foldCountFlyout.ShouldUseOverlayPopup = true;
             _foldCountStackPanel                   = new StackPanel();
             _foldCountStackPanel.Orientation       = Orientation.Horizontal;
             

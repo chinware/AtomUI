@@ -4,7 +4,6 @@ using AtomUI.Desktop.Controls.Primitives.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
@@ -12,9 +11,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
-using Avalonia.Input.Raw;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
@@ -249,6 +246,9 @@ public abstract class InfoPickerInput : TemplatedControl,
     public static readonly StyledProperty<IFormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<InfoPickerInput, IFormValidateFeedback?>(nameof (FormFeedback));
     
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(ShouldUseOverlayPopup), true);
+    
     protected string? Text
     {
         get => GetValue(TextProperty);
@@ -293,6 +293,12 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
+    }
+    
+    public bool ShouldUseOverlayPopup
+    {
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     #endregion

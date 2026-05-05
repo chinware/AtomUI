@@ -15,7 +15,7 @@ internal class PopupConfirmFlyout : Flyout
     {
         PopupConfirmRef = new WeakReference<PopupConfirm>(popupConfirm);
         Popup.IsLightDismissEnabled = true;
-        BindUtils.RelayBind(popupConfirm, FlyoutHost.ShouldUseOverlayLayerProperty, this, ShouldUseOverlayLayerProperty);
+        BindUtils.RelayBind(popupConfirm, FlyoutHost.ShouldUseOverlayPopupProperty, this, ShouldUseOverlayPopupProperty);
     }
 
     protected override Control CreatePresenter()

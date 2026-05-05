@@ -64,7 +64,7 @@ public class MenuFlyout : Flyout
 
     static MenuFlyout()
     {
-        ShouldUseOverlayLayerProperty.OverrideDefaultValue<MenuFlyout>(true);
+        ShouldUseOverlayPopupProperty.OverrideDefaultValue<MenuFlyout>(true);
     }
 
     public MenuFlyout()
@@ -104,8 +104,8 @@ public class MenuFlyout : Flyout
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter,
                 MenuFlyoutPresenter.IsMotionEnabledProperty));
         _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, ShouldUseOverlayLayerProperty, Presenter,
-                MenuFlyoutPresenter.ShouldUseOverlayLayerProperty));
+            BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, Presenter,
+                MenuFlyoutPresenter.ShouldUseOverlayPopupProperty));
         _presenterBindingDisposables.Add(
             BindUtils.RelayBind(this, ArrowPositionProperty, Presenter,
                 MenuFlyoutPresenter.ArrowPositionProperty));
