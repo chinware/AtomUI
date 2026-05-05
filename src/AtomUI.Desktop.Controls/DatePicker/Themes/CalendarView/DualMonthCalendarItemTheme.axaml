@@ -12,38 +12,38 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border
-                    Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemFramePart}"
+                    Name="PART_ItemFrame"
                     MinWidth="{TemplateBinding MinWidth}"
                     MinHeight="{TemplateBinding MinHeight}">
                     <DockPanel
-                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.ItemRootLayoutPart}"
+                        Name="PART_ItemRootLayout"
                         LastChildFill="True">
-                        <Border Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderFramePart}"
+                        <Border Name="PART_HeaderFrame"
                                 DockPanel.Dock="Top">
-                            <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderLayoutPart}"
+                            <UniformGrid Name="PART_HeaderLayout"
                                          Columns="2">
                                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                     <atom:IconButton
-                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousButtonPart}"
+                                        Name="PART_PreviousButton"
                                         Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="0" />
                                     <atom:IconButton
-                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.PreviousMonthButtonPart}"
+                                        Name="PART_PreviousMonthButton"
                                         Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                         Grid.Column="1" />
 
                                     <atom:HeadTextButton
-                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.HeaderButtonPart}"
+                                        Name="PART_HeaderButton"
                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                         Grid.Column="2" />
 
                                     <atom:IconButton
-                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextMonthButtonPart}"
+                                        Name="PART_NextMonthButton"
                                         Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
-                                        Name="{x:Static atom:DatePickerCalendarItemThemeConstants.NextButtonPart}"
+                                        Name="PART_NextButton"
                                         Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />
@@ -51,26 +51,26 @@
 
                                 <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
                                     <atom:IconButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousButtonPart}"
+                                        Name="PART_SecondaryPreviousButton"
                                         Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="0" />
                                     <atom:IconButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryPreviousMonthButtonPart}"
+                                        Name="PART_SecondaryPreviousMonthButton"
                                         Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                         Grid.Column="1" />
 
                                     <atom:HeadTextButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryHeaderButtonPart}"
+                                        Name="PART_SecondaryHeaderButton"
                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                         Grid.Column="2" />
 
                                     <atom:IconButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart}"
+                                        Name="PART_SecondaryNextMonthButton"
                                         Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                         Grid.Column="3" />
                                     <atom:IconButton
-                                        Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart}"
+                                        Name="PART_SecondaryNextButton"
                                         Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
                                         IsVisible="{TemplateBinding IsMonthViewMode}"
                                         Grid.Column="4" />
@@ -78,10 +78,10 @@
                             </UniformGrid>
                         </Border>
 
-                        <UniformGrid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewLayoutPart}"
+                        <UniformGrid Name="PART_MonthViewLayout"
                                      Columns="2"
                                      IsVisible="False">
-                            <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.MonthViewPart}"
+                            <Grid Name="PART_MonthView"
                                   HorizontalAlignment="Stretch"
                                   IsVisible="{TemplateBinding IsVisible}"
                                   Width="250">
@@ -105,7 +105,7 @@
                                 </Grid.ColumnDefinitions>
                             </Grid>
 
-                            <Grid Name="{x:Static atom:DualMonthCalendarItemThemeConstants.SecondaryMonthViewPart}"
+                            <Grid Name="PART_SecondaryMonthView"
                                   HorizontalAlignment="Stretch"
                                   IsVisible="{TemplateBinding IsVisible}">
                                 <Grid.RowDefinitions>
@@ -129,7 +129,7 @@
                             </Grid>
                         </UniformGrid>
 
-                        <Grid Name="{x:Static atom:DatePickerCalendarItemThemeConstants.YearViewPart}"
+                        <Grid Name="PART_YearView"
                               IsVisible="False">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />

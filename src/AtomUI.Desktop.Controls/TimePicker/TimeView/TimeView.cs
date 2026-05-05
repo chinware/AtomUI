@@ -26,13 +26,13 @@ internal class TimeSelectedEventArgs : EventArgs
     }
 }
 
-[TemplatePart(TimeViewThemeConstants.HourSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewThemeConstants.MinuteSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewThemeConstants.SecondSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewThemeConstants.PeriodHostPart, typeof(Panel), IsRequired = true)]
-[TemplatePart(TimeViewThemeConstants.PeriodSelectorPart, typeof(DateTimePickerPanel), IsRequired = true)]
-[TemplatePart(TimeViewThemeConstants.PickerSelectorContainerPart, typeof(Grid), IsRequired = true)]
-[TemplatePart(TimeViewThemeConstants.SecondSpacerPart, typeof(Rectangle), IsRequired = true)]
+[TemplatePart("PART_HourSelector", typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart("PART_MinuteSelector", typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart("PART_SecondSelector", typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart("PART_PeriodHost", typeof(Panel), IsRequired = true)]
+[TemplatePart("PART_PeriodSelector", typeof(DateTimePickerPanel), IsRequired = true)]
+[TemplatePart("PART_PickerContainer", typeof(Grid), IsRequired = true)]
+[TemplatePart("PART_ThirdSpacer", typeof(Rectangle), IsRequired = true)]
 internal class TimeView : TemplatedControl
 {
     #region 公共属性定义
@@ -273,17 +273,17 @@ internal class TimeView : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
-        _pickerSelectorContainer = e.NameScope.Get<Grid>(TimeViewThemeConstants.PickerSelectorContainerPart);
-        _periodHost              = e.NameScope.Get<Panel>(TimeViewThemeConstants.PeriodHostPart);
-        _headerText              = e.NameScope.Get<TextBlock>(TimeViewThemeConstants.HeaderTextPart);
+        _pickerSelectorContainer = e.NameScope.Get<Grid>("PART_PickerContainer");
+        _periodHost              = e.NameScope.Get<Panel>("PART_PeriodHost");
+        _headerText              = e.NameScope.Get<TextBlock>("PART_HeaderText");
 
-        _hourSelector   = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.HourSelectorPart);
-        _minuteSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.MinuteSelectorPart);
-        _secondSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.SecondSelectorPart);
-        _periodSelector = e.NameScope.Get<DateTimePickerPanel>(TimeViewThemeConstants.PeriodSelectorPart);
+        _hourSelector   = e.NameScope.Get<DateTimePickerPanel>("PART_HourSelector");
+        _minuteSelector = e.NameScope.Get<DateTimePickerPanel>("PART_MinuteSelector");
+        _secondSelector = e.NameScope.Get<DateTimePickerPanel>("PART_SecondSelector");
+        _periodSelector = e.NameScope.Get<DateTimePickerPanel>("PART_PeriodSelector");
         SetupPickerSelectorContainerHeight();
 
-        _spacer3 = e.NameScope.Get<Rectangle>(TimeViewThemeConstants.ThirdSpacerPart);
+        _spacer3 = e.NameScope.Get<Rectangle>("PART_ThirdSpacer");
         InitPicker();
 
         if (_hourSelector is not null)

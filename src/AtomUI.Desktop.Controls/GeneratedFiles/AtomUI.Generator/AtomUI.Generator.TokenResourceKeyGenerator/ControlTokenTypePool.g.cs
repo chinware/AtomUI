@@ -23,12 +23,14 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CheckBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.CollapseToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ComboBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DatePickerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ExpanderToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.FlyoutHostToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.GroupBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.LineEditToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ListBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ListViewToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MarqueeLabelToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MenuToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.MessageToken));
@@ -39,6 +41,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PaginationToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupConfirmToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.PopupHostToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.Primitives.InfoPickerInputToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ProgressBarToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.QRCodeToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.RadioButtonToken));
@@ -58,6 +61,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TextAreaToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TimelineToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TimePickerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToggleSwitchToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ToolTipToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TreeFlyoutToken));

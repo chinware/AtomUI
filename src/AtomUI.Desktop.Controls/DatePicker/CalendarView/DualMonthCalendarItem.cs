@@ -159,12 +159,12 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        SecondaryMonthView    = e.NameScope.Get<Grid>(DualMonthCalendarItemThemeConstants.SecondaryMonthViewPart);
-        SecondaryHeaderButton = e.NameScope.Get<HeadTextButton>(DualMonthCalendarItemThemeConstants.SecondaryHeaderButtonPart);
-        SecondaryPreviousButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryPreviousButtonPart);
-        SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryPreviousMonthButtonPart);
-        SecondaryNextButton      = e.NameScope.Get<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryNextButtonPart);
-        SecondaryNextMonthButton = e.NameScope.Get<IconButton>(DualMonthCalendarItemThemeConstants.SecondaryNextMonthButtonPart);
+        SecondaryMonthView    = e.NameScope.Get<Grid>("PART_SecondaryMonthView");
+        SecondaryHeaderButton = e.NameScope.Get<HeadTextButton>("PART_SecondaryHeaderButton");
+        SecondaryPreviousButton = e.NameScope.Get<IconButton>("PART_SecondaryPreviousButton");
+        SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>("PART_SecondaryPreviousMonthButton");
+        SecondaryNextButton      = e.NameScope.Get<IconButton>("PART_SecondaryNextButton");
+        SecondaryNextMonthButton = e.NameScope.Get<IconButton>("PART_SecondaryNextMonthButton");
         
         base.OnApplyTemplate(e);
         SetupMonthViewMode();

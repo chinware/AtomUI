@@ -174,9 +174,9 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _nowButton     = e.NameScope.Get<Button>(TimePickerPresenterThemeConstants.NowButtonPart);
-        _confirmButton = e.NameScope.Get<Button>(TimePickerPresenterThemeConstants.ConfirmButtonPart);
-        _timeView      = e.NameScope.Get<TimeView>(TimePickerPresenterThemeConstants.TimeViewPart);
+        _nowButton     = e.NameScope.Get<Button>("PART_NowButton");
+        _confirmButton = e.NameScope.Get<Button>("PART_ConfirmButton");
+        _timeView      = e.NameScope.Get<TimeView>("PART_TimeView");
         SetupButtonStatus();
         if (_timeView is not null)
         {

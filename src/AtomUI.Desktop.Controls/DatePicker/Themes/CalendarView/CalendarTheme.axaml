@@ -13,7 +13,7 @@
                     Background="{TemplateBinding Background}"
                     MinWidth="{TemplateBinding MinWidth}"
                     MinHeight="{TemplateBinding MinHeight}">
-                <calendarView:CalendarItem Name="{x:Static atom:DatePickerCalendarThemeConstants.CalendarItemPart}"
+                <calendarView:CalendarItem Name="PART_CalendarItem"
                                            HorizontalAlignment="Stretch"
                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
             </Border>

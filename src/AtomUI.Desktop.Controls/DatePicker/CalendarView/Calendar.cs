@@ -22,7 +22,7 @@ public class DateSelectedEventArgs : EventArgs
     }
 }
 
-[TemplatePart(CalendarThemeConstants.CalendarItemPart, typeof(CalendarItem))]
+[TemplatePart("PART_CalendarItem", typeof(CalendarItem))]
 internal class Calendar : TemplatedControl
 {
     internal const int RowsPerMonth = 7;
@@ -1428,7 +1428,7 @@ internal class Calendar : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        CalendarItem = e.NameScope.Find<CalendarItem>(CalendarThemeConstants.CalendarItemPart);
+        CalendarItem = e.NameScope.Find<CalendarItem>("PART_CalendarItem");
 
         if (SelectedDate is not null)
         {

@@ -21,19 +21,19 @@
                             DockPanel.Dock="Bottom">
                         <Panel Name="ButtonsLayout">
                             <atom:Button
-                                Name="{x:Static atom:DatePickerPresenterThemeConstants.NowButtonPart}"
+                                Name="PART_NowButton"
                                 ButtonType="Link"
                                 HorizontalAlignment="Left"
                                 SizeType="Small"
                                 Content="{atom:DatePickerLangResource Now}" />
                             <atom:Button
-                                Name="{x:Static atom:DatePickerPresenterThemeConstants.TodayButtonPart}"
+                                Name="PART_TodayButton"
                                 ButtonType="Link"
                                 HorizontalAlignment="Left"
                                 SizeType="Small"
                                 Content="{atom:DatePickerLangResource Today}" />
                             <atom:Button
-                                Name="{x:Static atom:DatePickerPresenterThemeConstants.ConfirmButtonPart}"
+                                Name="PART_ConfirmButton"
                                 ButtonType="Primary"
                                 HorizontalAlignment="Right"
                                 SizeType="Small"
@@ -42,7 +42,7 @@
                     </Border>
                     <StackPanel Orientation="Horizontal">
                         <calendarview:DualMonthRangeCalendar
-                            Name="{x:Static atom:DatePickerPresenterThemeConstants.CalendarViewPart}"
+                            Name="PART_CalendarView"
                             SelectedDate="{TemplateBinding SelectedDateTime}"
                             SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />

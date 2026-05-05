@@ -17,7 +17,7 @@
                         MinWidth="{TemplateBinding MinWidth}"
                         MinHeight="{TemplateBinding MinHeight}">
                     <calendarView:DualMonthCalendarItem
-                        Name="{x:Static atom:DatePickerCalendarThemeConstants.CalendarItemPart}"
+                        Name="PART_CalendarItem"
                         HorizontalAlignment="Stretch"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                 </Border>

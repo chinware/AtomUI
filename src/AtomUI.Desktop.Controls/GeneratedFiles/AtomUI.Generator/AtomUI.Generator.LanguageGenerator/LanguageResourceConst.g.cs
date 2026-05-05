@@ -3,6 +3,26 @@ using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.Localization
 {
+    public enum DatePickerLangResourceKind
+    {
+        Now,
+        Today
+    }
+
+    public class DatePickerLangResourceExtension : LanguageResourceExtension<DatePickerLangResourceKind>
+    {
+        public DatePickerLangResourceExtension()
+        {
+        }
+
+        public DatePickerLangResourceExtension(DatePickerLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUI.Desktop.Controls.Localization
+{
     public enum PaginationLangResourceKind
     {
         JumpToText,
@@ -38,6 +58,27 @@ namespace AtomUI.Desktop.Controls.Localization
         }
 
         public QRCodeLangResourceExtension(QRCodeLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUI.Desktop.Controls.Localization
+{
+    public enum TimePickerLangResourceKind
+    {
+        AMText,
+        Now,
+        PMText
+    }
+
+    public class TimePickerLangResourceExtension : LanguageResourceExtension<TimePickerLangResourceKind>
+    {
+        public TimePickerLangResourceExtension()
+        {
+        }
+
+        public TimePickerLangResourceExtension(TimePickerLangResourceKind kind) : base(kind)
         {
         }
     }

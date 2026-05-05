@@ -286,6 +286,29 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PopupContentPadding
     }
 
+    public enum DatePickerTokenKind
+    {
+        ButtonsPanelMargin,
+        CellActiveWithRangeBg,
+        CellBgDisabled,
+        CellHeight,
+        CellHoverBg,
+        CellHoverWithRangeBg,
+        CellMargin,
+        CellRangeBorderColor,
+        CellWidth,
+        DayTitleHeight,
+        HeaderMargin,
+        HeaderPadding,
+        ItemPanelMinHeight,
+        ItemPanelMinWidth,
+        MonthViewMinWidth,
+        PanelContentPadding,
+        RangeCalendarSpacing,
+        TextHeight,
+        WithoutTimeCellHeight
+    }
+
     public enum EmptyTokenKind
     {
         DescriptionMargin,
@@ -355,6 +378,16 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         ItemSelectedBgColor,
         ItemSelectedColor,
         SelectedIndicatorMargin
+    }
+
+    public enum ListViewTokenKind
+    {
+        ItemBgColor,
+        ItemColor,
+        ItemHoverBgColor,
+        ItemHoverColor,
+        ItemSelectedBgColor,
+        ItemSelectedColor
     }
 
     public enum MarqueeLabelTokenKind
@@ -922,6 +955,18 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         LastItemContentMinHeight
     }
 
+    public enum TimePickerTokenKind
+    {
+        ButtonsMargin,
+        HeaderMargin,
+        ItemHeight,
+        ItemPadding,
+        ItemWidth,
+        PeriodHostWidth,
+        RangePickerArrowMargin,
+        RangePickerIndicatorThickness
+    }
+
     public enum ToggleSwitchTokenKind
     {
         ExtraInfoFontSize,
@@ -1172,6 +1217,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class DatePickerTokenResourceExtension : TokenResourceExtension<DatePickerTokenKind>
+    {
+        public DatePickerTokenResourceExtension()
+        {
+        }
+
+        public DatePickerTokenResourceExtension(DatePickerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class EmptyTokenResourceExtension : TokenResourceExtension<EmptyTokenKind>
     {
         public EmptyTokenResourceExtension()
@@ -1234,6 +1290,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ListBoxTokenResourceExtension(ListBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ListViewTokenResourceExtension : TokenResourceExtension<ListViewTokenKind>
+    {
+        public ListViewTokenResourceExtension()
+        {
+        }
+
+        public ListViewTokenResourceExtension(ListViewTokenKind kind) : base(kind)
         {
         }
     }
@@ -1557,6 +1624,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
     }
 
+    public class TimePickerTokenResourceExtension : TokenResourceExtension<TimePickerTokenKind>
+    {
+        public TimePickerTokenResourceExtension()
+        {
+        }
+
+        public TimePickerTokenResourceExtension(TimePickerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
     public class ToggleSwitchTokenResourceExtension : TokenResourceExtension<ToggleSwitchTokenKind>
     {
         public ToggleSwitchTokenResourceExtension()
@@ -1608,6 +1686,26 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public WindowTokenResourceExtension(WindowTokenKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUI.Desktop.Controls.Primitives.DesignTokens
+{
+    public enum InfoPickerInputTokenKind
+    {
+        RangePickerArrowMargin,
+        RangePickerIndicatorThickness
+    }
+
+    public class InfoPickerInputTokenResourceExtension : TokenResourceExtension<InfoPickerInputTokenKind>
+    {
+        public InfoPickerInputTokenResourceExtension()
+        {
+        }
+
+        public InfoPickerInputTokenResourceExtension(InfoPickerInputTokenKind kind) : base(kind)
         {
         }
     }

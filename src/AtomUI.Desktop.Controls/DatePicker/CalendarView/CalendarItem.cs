@@ -17,13 +17,13 @@ using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls.CalendarView;
 
-[TemplatePart(CalendarItemThemeConstants.HeaderButtonPart, typeof(HeadTextButton))]
-[TemplatePart(CalendarItemThemeConstants.MonthViewPart, typeof(Grid))]
-[TemplatePart(CalendarItemThemeConstants.PreviousButtonPart, typeof(IconButton))]
-[TemplatePart(CalendarItemThemeConstants.PreviousMonthButtonPart, typeof(IconButton))]
-[TemplatePart(CalendarItemThemeConstants.NextButtonPart, typeof(IconButton))]
-[TemplatePart(CalendarItemThemeConstants.NextMonthButtonPart, typeof(IconButton))]
-[TemplatePart(CalendarItemThemeConstants.YearViewPart, typeof(Grid))]
+[TemplatePart("PART_HeaderButton", typeof(HeadTextButton))]
+[TemplatePart("PART_MonthView", typeof(Grid))]
+[TemplatePart("PART_PreviousButton", typeof(IconButton))]
+[TemplatePart("PART_PreviousMonthButton", typeof(IconButton))]
+[TemplatePart("PART_NextButton", typeof(IconButton))]
+[TemplatePart("PART_NextMonthButton", typeof(IconButton))]
+[TemplatePart("PART_YearView", typeof(Grid))]
 internal class CalendarItem : TemplatedControl
 {
     internal const string CalendarDisabledPC = ":calendardisabled";
@@ -352,17 +352,17 @@ internal class CalendarItem : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        HeaderButton   = e.NameScope.Get<HeadTextButton>(CalendarItemThemeConstants.HeaderButtonPart);
-        PreviousButton = e.NameScope.Get<IconButton>(CalendarItemThemeConstants.PreviousButtonPart);
+        HeaderButton   = e.NameScope.Get<HeadTextButton>("PART_HeaderButton");
+        PreviousButton = e.NameScope.Get<IconButton>("PART_PreviousButton");
         PreviousMonthButton =
-            e.NameScope.Get<IconButton>(CalendarItemThemeConstants.PreviousMonthButtonPart);
-        NextButton      = e.NameScope.Get<IconButton>(CalendarItemThemeConstants.NextButtonPart);
-        NextMonthButton = e.NameScope.Get<IconButton>(CalendarItemThemeConstants.NextMonthButtonPart);
+            e.NameScope.Get<IconButton>("PART_PreviousMonthButton");
+        NextButton      = e.NameScope.Get<IconButton>("PART_NextButton");
+        NextMonthButton = e.NameScope.Get<IconButton>("PART_NextMonthButton");
 
-        MonthViewLayout = e.NameScope.Get<UniformGrid>(CalendarItemThemeConstants.MonthViewLayoutPart);
-        MonthView       = e.NameScope.Get<Grid>(CalendarItemThemeConstants.MonthViewPart);
-        YearView        = e.NameScope.Get<Grid>(CalendarItemThemeConstants.YearViewPart);
-        _headerLayout   = e.NameScope.Get<UniformGrid>(CalendarItemThemeConstants.HeaderLayoutPart);
+        MonthViewLayout = e.NameScope.Get<UniformGrid>("PART_MonthViewLayout");
+        MonthView       = e.NameScope.Get<Grid>("PART_MonthView");
+        YearView        = e.NameScope.Get<Grid>("PART_YearView");
+        _headerLayout   = e.NameScope.Get<UniformGrid>("PART_HeaderLayout");
 
         if (Owner != null)
         {

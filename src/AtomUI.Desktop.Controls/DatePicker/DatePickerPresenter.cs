@@ -179,11 +179,11 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        NowButton     = e.NameScope.Get<Button>(DatePickerPresenterThemeConstants.NowButtonPart);
-        TodayButton   = e.NameScope.Get<Button>(DatePickerPresenterThemeConstants.TodayButtonPart);
-        ConfirmButton = e.NameScope.Get<Button>(DatePickerPresenterThemeConstants.ConfirmButtonPart);
-        CalendarView  = e.NameScope.Get<PickerCalendar>(DatePickerPresenterThemeConstants.CalendarViewPart);
-        TimeView      = e.NameScope.Find<TimeView>(DatePickerPresenterThemeConstants.TimeViewPart);
+        NowButton     = e.NameScope.Get<Button>("PART_NowButton");
+        TodayButton   = e.NameScope.Get<Button>("PART_TodayButton");
+        ConfirmButton = e.NameScope.Get<Button>("PART_ConfirmButton");
+        CalendarView  = e.NameScope.Get<PickerCalendar>("PART_CalendarView");
+        TimeView      = e.NameScope.Find<TimeView>("PART_TimeView");
         SetupButtonStatus();
         if (CalendarView is not null)
         {
