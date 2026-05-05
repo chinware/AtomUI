@@ -4,7 +4,6 @@
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     xmlns:atom="https://atomui.net"
     xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
-    xmlns:datePickerLang="using:AtomUI.Desktop.Controls.DatePickerLang"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:DualMonthRangeDatePickerPresenter}"
                   TargetType="atom:DualMonthRangeDatePickerPresenter">

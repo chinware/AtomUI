@@ -2,7 +2,6 @@
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
               xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
-              xmlns:datePickerLang="using:AtomUI.Desktop.Controls.DatePickerLang"
               x:Class="AtomUI.Desktop.Controls.Themes.DatePickerPresenterTheme"
               TargetType="atom:DatePickerPresenter"
               x:ClassModifier="internal">
