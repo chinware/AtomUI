@@ -1,0 +1,74 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:calendarView="using:AtomUI.Desktop.Controls.CalendarView"
+    x:ClassModifier="internal">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
+    <ControlTheme x:Key="{x:Type calendarView:CalendarButton}"
+                  TargetType="calendarView:CalendarButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="Content"
+                                  Padding="{TemplateBinding Padding}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  Background="{TemplateBinding Background}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClickMode" Value="Release" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
+        <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+        <Setter Property="Margin" Value="{atom:CalendarTokenResource CellMargin}" />
+
+        <Style Selector="^ /template/ ContentPresenter#Content">
+            <Setter Property="LineHeight" Value="{atom:CalendarTokenResource CellLineHeight}" />
+        </Style>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
+        </Style>
+
+        <Style Selector="^:inactive">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+
+        <Style Selector="^:today">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+        </Style>
+
+        <Style Selector="^:selected:not(:inactive)">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationFast}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

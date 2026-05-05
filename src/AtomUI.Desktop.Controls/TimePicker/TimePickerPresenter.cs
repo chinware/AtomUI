@@ -145,15 +145,6 @@ internal class TimePickerPresenter : PickerPresenterBase
                 OnDismiss();
                 e.Handled = true;
                 break;
-            case Key.Tab:
-                if (FocusUtils.GetFocusManager(this)?.GetFocusedElement() is { } focus)
-                {
-                    var nextFocus = KeyboardNavigationHandler.GetNext(focus, NavigationDirection.Next);
-                    nextFocus?.Focus(NavigationMethod.Tab);
-                    e.Handled = true;
-                }
-
-                break;
             case Key.Enter:
                 OnConfirmed();
                 e.Handled = true;

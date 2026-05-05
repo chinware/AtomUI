@@ -3,6 +3,7 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
 using AtomUI.Desktop.Controls.TimePickerLang;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -11,7 +12,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -448,13 +448,13 @@ internal class DateTimePickerPanel : Panel,
     {
         base.OnAttachedToVisualTree(e);
         _parentScroller             = this.GetVisualParent() as ScrollContentPresenter;
-        _parentScroller?.AddHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
+        _parentScroller?.AddHandler(InputElement.ScrollGestureEndedEvent, OnScrollGestureEnded);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _parentScroller?.RemoveHandler(Gestures.ScrollGestureEndedEvent, OnScrollGestureEnded);
+        _parentScroller?.RemoveHandler(InputElement.ScrollGestureEndedEvent, OnScrollGestureEnded);
         _parentScroller = null;
     }
 
@@ -734,7 +734,7 @@ internal class DateTimePickerPanel : Panel,
     {
         var snapY = Math.Round(Offset.Y / ItemHeight) * ItemHeight;
 
-        if (!MathUtilities.AreClose(snapY, Offset.Y))
+        if (!MathUtils.AreClose(snapY, Offset.Y))
         {
             Offset = Offset.WithY(snapY);
         }

@@ -329,8 +329,6 @@ public abstract class InfoPickerInput : TemplatedControl,
         FlyoutStateHelper.FlyoutClosed                                += HandleFlyoutClosed;
         FlyoutStateHelper[!FlyoutStateHelper.MouseEnterDelayProperty] =  this[!MouseEnterDelayProperty];
         FlyoutStateHelper[!FlyoutStateHelper.MouseLeaveDelayProperty] =  this[!MouseLeaveDelayProperty];
-        FlyoutStateHelper.OpenFlyoutPredicate                         =  FlyoutOpenPredicate;
-        FlyoutStateHelper.ClickHideFlyoutPredicate                    =  ClickHideFlyoutPredicate;
     }
 
     public virtual void Clear()
@@ -380,74 +378,6 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
     }
 
-    protected virtual bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
-    {
-        if (hostProvider.PopupHost != args.Root)
-        {
-            if (!IsPointerInInfoInputBox(args.Position) || ClickInClearUpButtonWithClearMode(args))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected virtual bool FlyoutOpenPredicate(RawPointerEventArgs args)
-    {
-        if (!IsEnabled)
-        {
-            return false;
-        }
-        
-        return IsPointerInInfoInputBox(args.Position) && !ClickInClearUpButtonWithClearMode(args);
-    }
-    
-    protected bool ClickInClearUpButtonWithClearMode(RawPointerEventArgs args)
-    {
-        if (PickerClearUpButton != null)
-        {
-            var sourceControl = args.GetInputHitTestResult().element as Control;
-            return sourceControl.FindLogicalAncestorOfType<InputClearIconButton>() is not null;
-        }
-        return false;
-    }
-
-    private bool IsPointerInInfoInputBox(Point position)
-    {
-        if (PickerInnerBox is not null)
-        {
-            var pos = PickerInnerBox.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-            if (!pos.HasValue)
-            {
-                return false;
-            }
-        
-            var targetWidth  = PickerInnerBox.Bounds.Width;
-            var targetHeight = PickerInnerBox.Bounds.Height;
-            var startOffsetX = pos.Value.X;
-            var endOffsetX   = startOffsetX + targetWidth;
-            var offsetY      = pos.Value.Y;
-            if (ContentLeftAddOn is Control leftContent)
-            {
-                var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
-                if (leftContentPos.HasValue)
-                {
-                    startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
-                }
-            }
-            
-            targetWidth = endOffsetX - startOffsetX;
-            var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-            if (bounds.Contains(position))
-            {
-                return true;
-            }
-        }
-    
-        return false;
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         if (DecoratedBox != null)
@@ -467,7 +397,6 @@ public abstract class InfoPickerInput : TemplatedControl,
             PickerFlyout                  =  CreatePickerFlyout();
             PickerFlyout.Opened           += HandlePickerFlyoutOpened;
             PickerFlyout.Closed           += HandlePickerFlyoutClosed;
-            PickerFlyout.PresenterCreated += HandlePickerFlyoutPresenterCreated;
             FlyoutStateHelper.Flyout      =  PickerFlyout;
         }
 
@@ -543,11 +472,11 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (PickerFlyout is not null)
         {
-            PickerFlyout[!Flyout.PlacementProperty]                = this[!PickerPlacementProperty];
-            PickerFlyout[!Flyout.IsShowArrowProperty]              = this[!IsShowArrowProperty];
-            PickerFlyout[!Flyout.IsPointAtCenterProperty]          = this[!IsPointAtCenterProperty];
-            PickerFlyout[!PopupFlyoutBase.MarginToAnchorProperty]  = this[!MarginToAnchorProperty];
-            PickerFlyout[!PopupFlyoutBase.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+            PickerFlyout[!Flyout.PlacementProperty]       = this[!PickerPlacementProperty];
+            PickerFlyout[!Flyout.IsShowArrowProperty]     = this[!IsShowArrowProperty];
+            PickerFlyout[!Flyout.IsPointAtCenterProperty] = this[!IsPointAtCenterProperty];
+            PickerFlyout[!Flyout.MarginToAnchorProperty]  = this[!MarginToAnchorProperty];
+            PickerFlyout[!Flyout.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
         }
     }
 
@@ -594,11 +523,6 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         IsFlyoutOpen = false;
         UpdatePseudoClasses();
-    }
-
-    private void HandlePickerFlyoutPresenterCreated(object? sender, FlyoutPresenterCreatedEventArgs args)
-    {
-        NotifyFlyoutPresenterCreated(args.Presenter);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

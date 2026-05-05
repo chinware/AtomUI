@@ -114,29 +114,6 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         _topLevel = null;
     }
 
-    protected override bool FlyoutOpenPredicate(RawPointerEventArgs args)
-    {
-        if (!IsEnabled)
-        {
-            return false;
-        }
-
-        var position = args.Position;
-        if (IsPointerInInfoInputBox(position))
-        {
-            RangeActivatedPart = RangeActivatedPart.Start;
-            return true;
-        }
-        
-        if (IsPointerInSecondaryTextBox(position) || !ClickInClearUpButtonWithClearMode(args))
-        {
-            RangeActivatedPart = RangeActivatedPart.End;
-            return true;
-        }
-
-        return false;
-    }
-    
     private bool IsPointerInInfoInputBox(Point position)
     {
         if (InfoInputBox is null || _topLevel is null)
@@ -206,32 +183,6 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         if (bounds.Contains(position))
         {
             return true;
-        }
-
-        return false;
-    }
-     
-    protected override bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
-    {
-        if (hostProvider.PopupHost != null && hostProvider.PopupHost != args.Root)
-        {
-            var inRangeStart = IsPointerInInfoInputBox(args.Position);
-            var inRangeEnd   = IsPointerInSecondaryTextBox(args.Position);
-
-            if (inRangeStart)
-            {
-                RangeActivatedPart = RangeActivatedPart.Start;
-            }
-
-            if (inRangeEnd)
-            {
-                RangeActivatedPart = RangeActivatedPart.End;
-            }
-
-            if ((!inRangeStart && !inRangeEnd) || ClickInClearUpButtonWithClearMode(args))
-            {
-                return true;
-            }
         }
 
         return false;
