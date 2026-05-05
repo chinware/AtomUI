@@ -52,5 +52,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<ProgressBarViewModel, ProgressBarShowCase>(() => new ProgressBarShowCase());
         locator.Map<PaginationViewModel, PaginationShowCase>(() => new PaginationShowCase());
         locator.Map<MenuViewModel, MenuShowCase>(() => new MenuShowCase());
+        locator.Map<TimePickerViewModel, TimePickerShowCase>(() => new TimePickerShowCase());
     }
 }
