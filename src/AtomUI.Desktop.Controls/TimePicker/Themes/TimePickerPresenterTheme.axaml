@@ -1,0 +1,53 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:timePickerLang="using:AtomUI.Desktop.Controls.TimePickerLang"
+    x:ClassModifier="internal">
+    <atom:BorderThicknessFilterConverter x:Key="BorderThicknessFilterConverter" Left="False" Right="False" Bottom="False"/>
+    <ControlTheme x:Key="{x:Type atom:TimePickerPresenter}" TargetType="atom:TimePickerPresenter">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:TimePickerPresenter">
+                <DockPanel Name="{x:Static atom:TimePickerPresenterThemeConstants.MainLayoutPart}"
+                           LastChildFill="True">
+                    <Border Name="{x:Static atom:TimePickerPresenterThemeConstants.ButtonsFramePart}"
+                            BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
+                            IsVisible="{TemplateBinding ButtonsPanelVisible}"
+                            DockPanel.Dock="Bottom">
+                        <Panel Name="{x:Static atom:TimePickerPresenterThemeConstants.ButtonsLayoutPart}">
+                            <atom:Button
+                                Name="{x:Static atom:TimePickerPresenterThemeConstants.NowButtonPart}"
+                                ButtonType="Link"
+                                HorizontalAlignment="Left"
+                                SizeType="Small"
+                                Content="{atom:TimePickerLangResource Now}" />
+                            <atom:Button
+                                Name="{x:Static atom:TimePickerPresenterThemeConstants.ConfirmButtonPart}"
+                                ButtonType="Primary"
+                                HorizontalAlignment="Right"
+                                SizeType="Small"
+                                Content="{atom:CommonLangResource Ok}" />
+                        </Panel>
+                    </Border>
+                    <atom:TimeView Name="{x:Static atom:TimePickerPresenterThemeConstants.TimeViewPart}"
+                                   IsShowHeader="False"
+                                   IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                   MinuteIncrement="{TemplateBinding MinuteIncrement}"
+                                   SecondIncrement="{TemplateBinding SecondIncrement}"
+                                   SelectedTime="{TemplateBinding SelectedTime}"
+                                   ClockIdentifier="{TemplateBinding ClockIdentifier}"/>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Style Selector="^ /template/ Border#PART_ButtonsFrame">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+        </Style>
+        
+        <Style Selector="^ /template/ Panel#PART_ButtonsLayout">
+            <Setter Property="Margin" Value="{atom:DatePickerTokenResource ButtonsPanelMargin}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

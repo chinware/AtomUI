@@ -1,0 +1,54 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter"/>
+    <ControlTheme x:Key="{x:Type atom:TimeViewCell}" TargetType="atom:TimeViewCell">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="ContentPresenter"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  Background="{TemplateBinding Background}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  MinHeight="{TemplateBinding MinHeight}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Foreground" Value="{atom:ListViewTokenResource ItemColor}" />
+        <Setter Property="Background" Value="{atom:ListViewTokenResource ItemBgColor}" />
+        <Setter Property="MinHeight" Value="{atom:TimePickerTokenResource ItemHeight}" />
+        <Setter Property="Padding" Value="{atom:TimePickerTokenResource ItemPadding}" />
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Foreground" Value="{atom:ListViewTokenResource ItemHoverColor}" />
+            <Setter Property="Background" Value="{atom:ListViewTokenResource ItemHoverBgColor}" />
+        </Style>
+        
+        <Style Selector="^:selected">
+            <Setter Property="Foreground" Value="{atom:ListViewTokenResource ItemSelectedColor}" />
+            <Setter Property="Background" Value="{atom:ListViewTokenResource ItemSelectedBgColor}" />
+        </Style>
+        
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
