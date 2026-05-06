@@ -757,6 +757,32 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TrackPadding
     }
 
+    public enum SelectTokenKind
+    {
+        FixedItemMargin,
+        MultiModePadding,
+        MultiModePaddingLG,
+        MultiModePaddingSM,
+        MultipleItemBg,
+        MultipleItemColorDisabled,
+        MultipleItemHeight,
+        MultipleItemHeightLG,
+        MultipleItemHeightSM,
+        MultipleSelectorBgDisabled,
+        OptionActiveBg,
+        OptionFontSize,
+        OptionHeight,
+        OptionPadding,
+        OptionSelectedBg,
+        OptionSelectedColor,
+        OptionSelectedFontWeight,
+        Padding,
+        PaddingLG,
+        PaddingSM,
+        PopupContentPadding,
+        SelectAffixPadding
+    }
+
     public enum SeparatorTokenKind
     {
         HorizontalMarginBlock,
@@ -1598,6 +1624,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SegmentedTokenResourceExtension(SegmentedTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class SelectTokenResourceExtension : TokenResourceExtension<SelectTokenKind>
+    {
+        public SelectTokenResourceExtension()
+        {
+        }
+
+        public SelectTokenResourceExtension(SelectTokenKind kind) : base(kind)
         {
         }
     }

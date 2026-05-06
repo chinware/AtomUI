@@ -31,6 +31,7 @@ namespace AtomUIGallery.Localization
         DataEntry_NumberUpDown,
         DataEntry_RadioButton,
         DataEntry_Rate,
+        DataEntry_Select,
         DataEntry_Slider,
         DataEntry_TimePicker,
         DataEntry_ToggleSwitch,

@@ -11,7 +11,7 @@
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/ButtonThemes.axaml" />
-        <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" /> 
+        <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <!-- <ResourceInclude Source="Cascader/Themes/CascaderThemes.axaml" /> -->
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
@@ -56,7 +56,7 @@
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
         <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" />
-        <!-- <ResourceInclude Source="Select/Themes/SelectThemes.axaml" /> -->
+        <ResourceInclude Source="Select/Themes/SelectThemes.axaml" />
         <ResourceInclude Source="Slider/Themes/SliderThemes.axaml" />
         <ResourceInclude Source="Space/Themes/SpaceThemes.axaml" />
         <ResourceInclude Source="Spin/Themes/SpinThemes.axaml" />
