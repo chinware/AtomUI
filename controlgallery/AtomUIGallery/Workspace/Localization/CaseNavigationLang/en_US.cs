@@ -35,6 +35,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry_LineEdit = "LineEdit";
     public const string DataEntry_AutoComplete = "AutoComplete";
     public const string DataEntry_Select = "Select";
+    public const string DataEntry_TreeSelect = "TreeSelect";
     public const string DataEntry_NumberUpDown = "NumberUpDown";
     public const string DataEntry_TimePicker = "TimePicker";
     public const string DataEntry_DatePicker = "DatePicker";

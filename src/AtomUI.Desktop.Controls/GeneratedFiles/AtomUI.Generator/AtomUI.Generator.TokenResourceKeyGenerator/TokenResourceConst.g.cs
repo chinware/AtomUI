@@ -1099,6 +1099,11 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PopupMinWidth
     }
 
+    public enum TreeSelectTokenKind
+    {
+        MinPopupWidth
+    }
+
     public enum TreeViewTokenKind
     {
         DirectoryNodeSelectedBg,
@@ -1822,6 +1827,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TreeFlyoutTokenResourceExtension(TreeFlyoutTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TreeSelectTokenResourceExtension : TokenResourceExtension<TreeSelectTokenKind>
+    {
+        public TreeSelectTokenResourceExtension()
+        {
+        }
+
+        public TreeSelectTokenResourceExtension(TreeSelectTokenKind kind) : base(kind)
         {
         }
     }
