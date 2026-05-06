@@ -1,6 +1,7 @@
-using AtomUI.Desktop.Controls.DesignTokens;
+﻿using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme;
 using AtomUI.Theme.TokenSystem;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -10,11 +11,21 @@ internal class ListViewToken : AbstractControlDesignToken
 {
     public const string ID = "ListView";
     public static readonly ControlTokenResourceScopeProvider ScopeProvider = new(ID);
-
+    
     public ListViewToken()
-        : base(ID)
+        : this(ID)
     {
     }
+
+    protected ListViewToken(string id)
+        : base(id)
+    {
+    }
+
+    /// <summary>
+    /// List 内边距
+    /// </summary>
+    public Thickness ContentPadding { get; set; }
 
     /// <summary>
     /// 列表项文字颜色
@@ -32,6 +43,11 @@ internal class ListViewToken : AbstractControlDesignToken
     public Color ItemSelectedColor { get; set; }
 
     /// <summary>
+    /// 列表项文字禁用颜色
+    /// </summary>
+    public Color ItemDisabledColor { get; set; }
+
+    /// <summary>
     /// 列表项背景色
     /// </summary>
     public Color ItemBgColor { get; set; }
@@ -46,16 +62,68 @@ internal class ListViewToken : AbstractControlDesignToken
     /// </summary>
     public Color ItemSelectedBgColor { get; set; }
 
+    /// <summary>
+    /// 列表项小号内间距
+    /// </summary>
+    public Thickness ItemPaddingSM { get; set; }
+
+    /// <summary>
+    /// 列表项内间距
+    /// </summary>
+    public Thickness ItemPadding { get; set; }
+
+    /// <summary>
+    /// 列表项大号内间距
+    /// </summary>
+    public Thickness ItemPaddingLG { get; set; }
+
+    /// <summary>
+    /// 列表项外边距
+    /// </summary>
+    public Thickness ItemMargin { get; set; }
+
+    /// <summary>
+    /// 分页器的外边距
+    /// </summary>
+    public Thickness PaginationMargin { get; set; }
+    
+    /// <summary>
+    /// 分组标题的颜色
+    /// </summary>
+    public Color GroupHeaderColor { get; set; }
+    
+    /// <summary>
+    /// 列表项选中标记的外间距
+    /// </summary>
+    public Thickness SelectedIndicatorMargin { get; set; }
+    
     public override void CalculateTokenValues(bool isDarkMode)
     {
         base.CalculateTokenValues(isDarkMode);
-        ItemColor           = SharedToken.ColorText;
-        ItemHoverColor      = SharedToken.ColorText;
-        ItemSelectedColor   = SharedToken.ColorText;
-        ItemBgColor         = Colors.Transparent;
-        ItemHoverBgColor    = SharedToken.ControlItemBgHover;
-        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
-    }
+        var colorTextDisabled  = SharedToken.ColorTextDisabled;
+        var colorTextSecondary = SharedToken.ColorTextSecondary;
+        var colorBgTextHover   = SharedToken.ColorBgTextHover;
 
+        ItemColor         = colorTextSecondary;
+        ItemHoverColor    = colorTextSecondary;
+        ItemSelectedColor = SharedToken.ColorText;
+
+        ItemBgColor         = SharedToken.ColorTransparent;
+        ItemHoverBgColor    = colorBgTextHover;
+        ItemSelectedBgColor = SharedToken.ControlItemBgActive;
+
+        ItemDisabledColor = colorTextDisabled;
+
+        ItemPaddingLG = new Thickness(SharedToken.UniformlyPadding, 0);
+        ItemPaddingSM = new Thickness(SharedToken.UniformlyPaddingXS, 0);
+        ItemPadding   = new Thickness(SharedToken.UniformlyPaddingSM, 0);
+
+        ContentPadding          = new Thickness(SharedToken.UniformlyPaddingXXS / 2);
+        ItemMargin              = new Thickness(0, 0.5);
+        PaginationMargin        = new Thickness(0, SharedToken.UniformlyMarginXS);
+        GroupHeaderColor        = SharedToken.ColorTextDescription;
+        SelectedIndicatorMargin = new Thickness(SharedToken.UniformlyMarginXXS, 0, 0, 0);
+    }
+    
     protected override Type GetTokenKindType() => typeof(ListViewTokenKind);
 }

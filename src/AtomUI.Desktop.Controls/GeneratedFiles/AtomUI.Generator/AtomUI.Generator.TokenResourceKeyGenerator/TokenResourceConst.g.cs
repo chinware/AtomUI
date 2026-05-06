@@ -401,12 +401,21 @@ namespace AtomUI.Desktop.Controls.DesignTokens
 
     public enum ListViewTokenKind
     {
+        ContentPadding,
+        GroupHeaderColor,
         ItemBgColor,
         ItemColor,
+        ItemDisabledColor,
         ItemHoverBgColor,
         ItemHoverColor,
+        ItemMargin,
+        ItemPadding,
+        ItemPaddingLG,
+        ItemPaddingSM,
         ItemSelectedBgColor,
-        ItemSelectedColor
+        ItemSelectedColor,
+        PaginationMargin,
+        SelectedIndicatorMargin
     }
 
     public enum MarqueeLabelTokenKind

@@ -55,5 +55,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<TimePickerViewModel, TimePickerShowCase>(() => new TimePickerShowCase());
         locator.Map<DatePickerViewModel, DatePickerShowCase>(() => new DatePickerShowCase());
         locator.Map<NumberUpDownViewModel, NumberUpDownShowCase>(() => new NumberUpDownShowCase());
+        locator.Map<ListViewModel, ListShowCase>(() => new ListShowCase());
     }
 }

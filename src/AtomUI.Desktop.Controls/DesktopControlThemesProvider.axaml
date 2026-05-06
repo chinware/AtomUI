@@ -33,8 +33,8 @@
         <ResourceInclude Source="HeaderedContentControl/Themes/HeaderedContentControlTheme.axaml" />
         <!-- <ResourceInclude Source="ImagePreviewer/Themes/ImagePreviewerThemes.axaml" /> -->
         <ResourceInclude Source="Input/Themes/InputThemes.axaml" />
-        <!-- <ResourceInclude Source="ListView/Themes/ListViewThemes.axaml" /> -->
-        <!-- <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" /> -->
+        <ResourceInclude Source="ListView/Themes/ListViewThemes.axaml" />
+        <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />
         <!-- <ResourceInclude Source="Mentions/Themes/MentionsThemes.axaml" /> -->
         <ResourceInclude Source="Menu/Themes/MenuThemes.axaml" />
         <ResourceInclude Source="Message/Themes/MessageThemes.axaml" />

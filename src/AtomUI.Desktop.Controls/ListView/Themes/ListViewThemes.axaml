@@ -1,0 +1,8 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:ClassModifier="internal"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Desktop.Controls.Themes">
+    <themes:ListViewTheme x:Key="{x:Type atom:ListView}" TargetType="atom:ListView" />
+    <themes:ListViewItemTheme x:Key="{x:Type atom:ListViewItem}" TargetType="atom:ListViewItem" />
+</ResourceDictionary>
