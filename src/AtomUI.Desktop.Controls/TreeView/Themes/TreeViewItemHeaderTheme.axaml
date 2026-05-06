@@ -1,0 +1,257 @@
+<ControlTheme TargetType="atom:TreeViewItemHeader"
+              xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Desktop.Controls.Themes.TreeViewItemHeaderTheme"
+              x:ClassModifier="internal">
+    <Setter Property="Template">
+        <ControlTemplate TargetType="atom:TreeViewItemHeader">
+            <Border Name="Frame"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Background="{TemplateBinding Background}">
+                <Grid Name="ItemsLayout"
+                      ColumnDefinitions="Auto, Auto, Auto, *"
+                      Margin="{TemplateBinding Level, Mode=OneWay, Converter={x:Static atom:TreeViewItemTheme.MarginMultiplierConverter}}">
+                    <atom:NodeSwitcherButton
+                        Name="PART_NodeSwitcherButton"
+                        Grid.Column="0"
+                        Focusable="False"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                        IconMode="{TemplateBinding SwitcherMode}"
+                        CollapseIcon="{TemplateBinding SwitcherCollapseIcon}"
+                        ExpandIcon="{TemplateBinding SwitcherExpandIcon}"
+                        LoadingIcon="{TemplateBinding SwitcherLoadingIcon}"
+                        RotationIcon="{TemplateBinding SwitcherRotationIcon}"
+                        LeafIcon="{TemplateBinding SwitcherLeafIcon}"
+                        IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}"
+                        IsLoading="{TemplateBinding IsLoading}" />
+
+                    <atom:CheckBox Name="ToggleCheckbox"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Grid.Column="1"
+                                   IsChecked="{TemplateBinding IsChecked, Mode=TwoWay}"
+                                   IsVisible="False">
+                        <atom:RadioButton.IsEnabled>
+                            <MultiBinding
+                                Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemIndicatorEnabledConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsEnabled" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Path="IsIndicatorEnabled" />
+                            </MultiBinding>
+                        </atom:RadioButton.IsEnabled>
+                    </atom:CheckBox>
+                    <atom:RadioButton Name="ToggleRadio"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      Grid.Column="1"
+                                      IsChecked="{TemplateBinding IsChecked}"
+                                      GroupName="{TemplateBinding GroupName}"
+                                      IsVisible="False">
+                        <atom:RadioButton.IsEnabled>
+                            <MultiBinding
+                                Converter="{x:Static atom:TreeViewItemTheme.TreeViewItemIndicatorEnabledConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsEnabled" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                         Path="IsIndicatorEnabled" />
+                            </MultiBinding>
+                        </atom:RadioButton.IsEnabled>
+                    </atom:RadioButton>
+
+                    <atom:IconPresenter Name="PART_IconPresenter"
+                                        Grid.Column="2"
+                                        Icon="{TemplateBinding Icon}"
+                                        IsEnabled="{TemplateBinding IsEnabled}"
+                                        IsVisible="{TemplateBinding IconEffectiveVisible}" />
+                    <Border Name="PART_HeaderContentFrame"
+                            Grid.Column="3" IsEnabled="{TemplateBinding IsEnabled}"
+                            Background="{TemplateBinding ContentFrameBackground}">
+                        <Panel>
+                            <ContentPresenter Name="HeaderPresenter"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              IsVisible="False" />
+                            <TextBlock Name="FilterHighlighter"
+                                       VerticalAlignment="Center"
+                                       IsVisible="False"
+                                       Inlines="{TemplateBinding FilterHighlightRuns}" />
+                        </Panel>
+                    </Border>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </Setter>
+
+    <Style Selector="^:is(atom|TreeViewItemHeader)">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="MinHeight" Value="{atom:TreeViewTokenResource HeaderHeight}" />
+        <Setter Property="Margin" Value="{atom:TreeViewTokenResource TreeItemMargin}" />
+        <Setter Property="CornerRadius"
+                Value="{atom:SharedTokenResource BorderRadius}" />
+
+        <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Margin" Value="{atom:TreeViewTokenResource TreeNodeIconMargin}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
+            <Setter Property="CornerRadius"
+                    Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="Margin" Value="{atom:TreeViewTokenResource TreeItemHeaderMargin}" />
+            <Setter Property="Padding" Value="{atom:TreeViewTokenResource TreeItemHeaderPadding}" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="^[NodeHoverMode=Default]">
+            <Setter Property="ContentFrameBackground" Value="Transparent" />
+            <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[NodeHoverMode=Block]">
+            <Setter Property="ContentFrameBackground" Value="Transparent" />
+            <Style Selector="^ /template/ Border#PART_HeaderContentFrame">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[NodeHoverMode=Default], ^[NodeHoverMode=Block]">
+            <Style Selector="^[IsHover=True]">
+                <Setter Property="ContentFrameBackground"
+                        Value="{atom:TreeViewTokenResource NodeHoverBg}" />
+            </Style>
+
+            <Style Selector="^[IsSelectable=True]">
+                <Style Selector="^[IsSelected=True]">
+                    <Setter Property="ContentFrameBackground"
+                            Value="{atom:TreeViewTokenResource NodeSelectedBg}" />
+                </Style>
+
+                <Style Selector="^[IsPressed=True]">
+                    <Setter Property="ContentFrameBackground"
+                            Value="{atom:TreeViewTokenResource NodeSelectedBg}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[NodeHoverMode=WholeLine]">
+            <Setter Property="Background" Value="Transparent" />
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+            <Style Selector="^[IsHover=True]">
+                <Setter Property="Background"
+                        Value="{atom:TreeViewTokenResource NodeHoverBg}" />
+            </Style>
+
+            <Style Selector="^[IsSelectable=True]">
+                <Style Selector="^[IsSelected=True]">
+                    <Setter Property="Background"
+                            Value="{atom:TreeViewTokenResource NodeSelectedBg}" />
+                </Style>
+                <Style Selector="^[IsPressed=True]">
+                    <Setter Property="Background"
+                            Value="{atom:TreeViewTokenResource NodeSelectedBg}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[ToggleType=CheckBox]">
+            <Style Selector="^ /template/ atom|CheckBox#ToggleCheckbox">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ToggleType=Radio][IsLeaf=True]">
+            <Style Selector="^ /template/ atom|RadioButton#ToggleRadio">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|NodeSwitcherButton#PART_NodeSwitcherButton">
+            <Setter Property="Width" Value="{atom:TreeViewTokenResource HeaderHeight}" />
+            <Setter Property="Height" Value="{atom:TreeViewTokenResource HeaderHeight}" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="^[IsLeaf=True]">
+            <Style Selector="^ /template/ atom|NodeSwitcherButton#PART_NodeSwitcherButton">
+                <Setter Property="Cursor" Value="Arrow" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsLeaf=True][IsShowLeafIcon=False], ^[IsLeaf=False]">
+            <Style Selector="^ /template/ atom|NodeSwitcherButton#PART_NodeSwitcherButton">
+                <Setter Property="IsLeafIconVisible" Value="False" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ToggleType=CheckBox], ^[ToggleType=Radio]">
+            <Style Selector="^ /template/ atom|NodeSwitcherButton#PART_NodeSwitcherButton">
+                <Setter Property="Margin"
+                        Value="{atom:TreeViewTokenResource TreeNodeSwitcherMargin}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsDragging=True]">
+            <Style Selector="^ /template/ Border#Frame">
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
+            <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
+                <Setter Property="Opacity" Value="0.3" />
+            </Style>
+            <Style Selector="^ /template/ atom|NodeSwitcherButton#PART_NodeSwitcherButton">
+                <Setter Property="Opacity" Value="0.3" />
+            </Style>
+
+            <Style Selector="^[NodeHoverMode=Default], ^[NodeHoverMode=Block]">
+                <Style Selector="^[IsSelectable=True]">
+                    <Style Selector="^[IsSelected=True]">
+                        <Setter Property="ContentFrameBackground"
+                                Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+                    </Style>
+                </Style>
+            </Style>
+
+            <Style Selector="^[NodeHoverMode=WholeLine]">
+                <Style Selector="^[IsSelectable=True]">
+                    <Style Selector="^[IsSelected=True]">
+                        <Setter Property="Background"
+                                Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+                    </Style>
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsFilterMatch=True]">
+            <Style Selector="^ /template/ TextBlock#FilterHighlighter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+        <Style Selector="^[IsFilterMatch=False]">
+            <Style Selector="^ /template/ ContentPresenter#HeaderPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="ContentFrameBackground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+    </Style>
+</ControlTheme>

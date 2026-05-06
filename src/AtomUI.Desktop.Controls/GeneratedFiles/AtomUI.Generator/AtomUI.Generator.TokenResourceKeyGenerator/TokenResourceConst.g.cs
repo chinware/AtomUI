@@ -1053,6 +1053,22 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PopupMinWidth
     }
 
+    public enum TreeViewTokenKind
+    {
+        DirectoryNodeSelectedBg,
+        DirectoryNodeSelectedColor,
+        DragIndicatorLineWidth,
+        FilterHighlightColor,
+        HeaderHeight,
+        NodeHoverBg,
+        NodeSelectedBg,
+        TreeItemHeaderMargin,
+        TreeItemHeaderPadding,
+        TreeItemMargin,
+        TreeNodeIconMargin,
+        TreeNodeSwitcherMargin
+    }
+
     public enum WindowTitleBarTokenKind
     {
         ActiveBgColor,
@@ -1727,6 +1743,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TreeFlyoutTokenResourceExtension(TreeFlyoutTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TreeViewTokenResourceExtension : TokenResourceExtension<TreeViewTokenKind>
+    {
+        public TreeViewTokenResourceExtension()
+        {
+        }
+
+        public TreeViewTokenResourceExtension(TreeViewTokenKind kind) : base(kind)
         {
         }
     }
