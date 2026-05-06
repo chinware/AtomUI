@@ -242,6 +242,22 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PaginationOffset
     }
 
+    public enum CascaderTokenKind
+    {
+        ControlItemWidth,
+        ControlWidth,
+        DropdownHeight,
+        FilterHighlightColor,
+        HeaderHeight,
+        ItemHeaderSpacing,
+        MenuPadding,
+        OptionHoverBg,
+        OptionPadding,
+        OptionSelectedBg,
+        OptionSelectedColor,
+        OptionSelectedFontWeight
+    }
+
     public enum CheckBoxTokenKind
     {
         CheckedMarkSize,
@@ -1299,6 +1315,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public CarouselTokenResourceExtension(CarouselTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class CascaderTokenResourceExtension : TokenResourceExtension<CascaderTokenKind>
+    {
+        public CascaderTokenResourceExtension()
+        {
+        }
+
+        public CascaderTokenResourceExtension(CascaderTokenKind kind) : base(kind)
         {
         }
     }

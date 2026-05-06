@@ -50,6 +50,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<LineEditViewModel, LineEditShowCase>(() => new LineEditShowCase());
         locator.Map<AutoCompleteViewModel, AutoCompleteShowCase>(() => new AutoCompleteShowCase());
         locator.Map<SelectViewModel, SelectShowCase>(() => new SelectShowCase());
+        locator.Map<CascaderViewModel, CascaderShowCase>(() => new CascaderShowCase());
         locator.Map<TreeSelectViewModel, TreeSelectShowCase>(() => new TreeSelectShowCase());
         locator.Map<TabControlViewModel, TabControlShowCase>(() => new TabControlShowCase());
         locator.Map<InfoFlyoutViewModel, InfoFlyoutShowCase>(() => new InfoFlyoutShowCase());

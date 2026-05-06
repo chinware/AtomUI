@@ -73,6 +73,8 @@
                               ItemKey="{x:Static viewmodels:AutoCompleteViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Select}"
                               ItemKey="{x:Static viewmodels:SelectViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Cascader}"
+                              ItemKey="{x:Static viewmodels:CascaderViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_TreeSelect}"
                               ItemKey="{x:Static viewmodels:TreeSelectViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_NumberUpDown}"
