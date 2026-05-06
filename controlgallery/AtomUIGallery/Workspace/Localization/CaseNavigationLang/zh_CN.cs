@@ -17,6 +17,7 @@ internal class zh_CN : LanguageProvider
     public const string General_Separator = "Separator 分割线";
     public const string Layout = "布局";
     public const string Layout_FlexPanel = "FlexPanel 弹性布局";
+    public const string Layout_Grid = "Grid 栅格";
     public const string Layout_Splitter = "Splitter 分割面板";
     public const string Navigation = "导航";
     public const string Navigation_Breadcrumb = "Breadcrumb 面包屑";

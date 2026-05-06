@@ -1,8 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Views.FlexPanelShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
              xmlns:atom="https://atomui.net"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:FlexPanelViewModel">
 
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem Title="Basic Layout" Description="The basic usage." IsOccupyEntireRow="True">

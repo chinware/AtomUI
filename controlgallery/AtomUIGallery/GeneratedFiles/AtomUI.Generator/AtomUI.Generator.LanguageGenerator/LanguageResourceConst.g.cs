@@ -56,6 +56,7 @@ namespace AtomUIGallery.Localization
         General_SplitButton,
         Layout,
         Layout_FlexPanel,
+        Layout_Grid,
         Layout_Splitter,
         Navigation,
         Navigation_Breadcrumb,
