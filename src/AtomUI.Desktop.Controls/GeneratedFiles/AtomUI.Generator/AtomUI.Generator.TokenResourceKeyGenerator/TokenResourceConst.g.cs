@@ -51,6 +51,14 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         Padding
     }
 
+    public enum AutoCompleteTokenKind
+    {
+        MaxPopupWidth,
+        MinPopupWidth,
+        OptionHeight,
+        PopupContentPadding
+    }
+
     public enum AvatarTokenKind
     {
         AvatarBg,
@@ -1149,6 +1157,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ArrowDecoratedBoxTokenResourceExtension(ArrowDecoratedBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class AutoCompleteTokenResourceExtension : TokenResourceExtension<AutoCompleteTokenKind>
+    {
+        public AutoCompleteTokenResourceExtension()
+        {
+        }
+
+        public AutoCompleteTokenResourceExtension(AutoCompleteTokenKind kind) : base(kind)
         {
         }
     }

@@ -24,6 +24,7 @@ namespace AtomUIGallery.Localization
         DataDisplay_Tour,
         DataDisplay_TreeView,
         DataEntry,
+        DataEntry_AutoComplete,
         DataEntry_CheckBox,
         DataEntry_DatePicker,
         DataEntry_LineEdit,

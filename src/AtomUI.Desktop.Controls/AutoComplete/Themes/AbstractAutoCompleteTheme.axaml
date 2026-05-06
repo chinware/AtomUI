@@ -1,0 +1,49 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              x:Class="AtomUI.Desktop.Controls.Themes.AbstractAutoCompleteTheme"
+              TargetType="atom:AbstractAutoComplete"
+              x:ClassModifier="internal">
+
+    <Style Selector="^:is(atom|AbstractAutoComplete)">
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="PlaceholderForeground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+        <Setter Property="ItemHeight" Value="{atom:AutoCompleteTokenResource OptionHeight}" />
+        <Setter Property="PopupContentPadding"
+                Value="{atom:AutoCompleteTokenResource PopupContentPadding}" />
+        <Setter Property="MinPopupWidth" Value="{atom:AutoCompleteTokenResource MinPopupWidth}" />
+        <Style Selector="^ /template/ atom|Popup#PART_Popup">
+            <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}" />
+            <Setter Property="PopupRootShadow" Value="{atom:PopupHostTokenResource PopupRootShadow}" />
+            <Setter Property="OverlayHostShadow" Value="{atom:PopupHostTokenResource OverlayHostShadow}" />
+        </Style>
+        <Style Selector="^ /template/ Border#PopupFrame">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="CornerRadius"
+                    Value="{atom:PopupHostTokenResource BorderRadius}" />
+        </Style>
+        
+        <Style Selector="^[IsPopupMatchSelectWidth=True]">
+            <Style Selector="^ /template/ atom|Popup#PART_Popup">
+                <Setter Property="Width" Value="{Binding EffectivePopupWidth, RelativeSource={RelativeSource TemplatedParent}}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsPopupMatchSelectWidth=False]">
+            <Style Selector="^ /template/ atom|Popup#PART_Popup">
+                <Setter Property="MaxWidth" Value="{atom:AutoCompleteTokenResource MaxPopupWidth}" />
+            </Style>
+        </Style>
+        
+        <Setter Property="OptionTemplate">
+            <DataTemplate x:DataType="atom:IAutoCompleteOption">
+                <TextBlock Text="{Binding Header}"
+                           TextTrimming="CharacterEllipsis"/>
+            </DataTemplate>
+        </Setter>
+
+    </Style>
+</ControlTheme>

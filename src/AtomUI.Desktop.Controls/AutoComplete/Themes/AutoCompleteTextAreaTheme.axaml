@@ -1,0 +1,58 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:AutoCompleteTextArea}" TargetType="atom:AutoCompleteTextArea">
+        <ControlTheme.BasedOn>
+            <atom:AbstractAutoCompleteTheme TargetType="atom:AutoCompleteTextArea" />
+        </ControlTheme.BasedOn>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <atom:AutoCompleteTextAreaBox Name="{x:Static atom:AutoCompleteThemeConstants.TextBoxPart}"
+                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                  IsAllowClear="{TemplateBinding IsAllowClear}"
+                                                  StyleVariant="{TemplateBinding StyleVariant}"
+                                                  Status="{TemplateBinding Status}"
+                                                  CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
+                                                  InnerLeftContent="{TemplateBinding ContentLeftAddOn}"
+                                                  InnerLeftContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
+                                                  InnerRightContent="{TemplateBinding ContentRightAddOn}"
+                                                  InnerRightContentTemplate="{TemplateBinding ContentRightAddOnTemplate}"
+                                                  SizeType="{TemplateBinding SizeType}"
+                                                  PlaceholderText="{TemplateBinding PlaceholderText}"
+                                                  IsReadOnly="{TemplateBinding IsReadOnly}"
+                                                  Focusable="{TemplateBinding IsReadOnly, Converter={x:Static BoolConverters.Not}}"
+                                                  Lines="{TemplateBinding Lines}"
+                                                  IsAutoSize="{TemplateBinding IsAutoSize}"
+                                                  IsShowCount="{TemplateBinding IsShowCount}"
+                                                  IsResizable="{TemplateBinding IsResizable}"
+                                                  IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
+                                                  ClearIcon="{TemplateBinding ClearIcon}" 
+                                                  FormFeedback="{TemplateBinding FormFeedback}"/>
+
+                    <atom:Popup Name="{x:Static atom:AutoCompleteThemeConstants.PopupPart}"
+                                 WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="True"
+                                OverlayDismissEventPassThrough="True"
+                                ShouldUseOverlayLayer="True"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                Placement="{TemplateBinding PopupPlacement}"
+                                MaxHeight="{TemplateBinding MaxPopupHeight}"
+                                MinWidth="{TemplateBinding MinPopupWidth}">
+
+                        <Border Name="PopupFrame"
+                                Padding="{TemplateBinding PopupContentPadding}">
+                            <atom:CandidateList Name="{x:Static atom:AutoCompleteThemeConstants.CandidateListPart}"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                SelectionMode="Single"
+                                                ItemTemplate="{TemplateBinding OptionTemplate}" />
+                        </Border>
+                    </atom:Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

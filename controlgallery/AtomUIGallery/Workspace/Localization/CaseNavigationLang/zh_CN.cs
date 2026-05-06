@@ -32,6 +32,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry_Rate = "Rate 评分";
     public const string DataEntry_Slider = "Slider 滑动输入条";
     public const string DataEntry_LineEdit = "LineEdit 输入框";
+    public const string DataEntry_AutoComplete = "AutoComplete 自动完成";
     public const string DataEntry_NumberUpDown = "NumberUpDown 数字输入框";
     public const string DataEntry_TimePicker = "TimePicker 时间选择框";
     public const string DataEntry_DatePicker = "DatePicker 日期选择框";

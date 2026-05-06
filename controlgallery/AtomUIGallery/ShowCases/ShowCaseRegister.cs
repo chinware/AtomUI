@@ -46,6 +46,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<TimelineViewModel, TimelineShowCase>(() => new TimelineShowCase());
         locator.Map<QRCodeViewModel, QRCodeShowCase>(() => new QRCodeShowCase());
         locator.Map<LineEditViewModel, LineEditShowCase>(() => new LineEditShowCase());
+        locator.Map<AutoCompleteViewModel, AutoCompleteShowCase>(() => new AutoCompleteShowCase());
         locator.Map<TabControlViewModel, TabControlShowCase>(() => new TabControlShowCase());
         locator.Map<InfoFlyoutViewModel, InfoFlyoutShowCase>(() => new InfoFlyoutShowCase());
         locator.Map<WatermarkViewModel, WatermarkShowCase>(() => new WatermarkShowCase());
