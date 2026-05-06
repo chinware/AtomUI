@@ -19,6 +19,8 @@
                               ItemKey="{x:Static viewmodels:IconViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Button}"
                               ItemKey="{x:Static viewmodels:ButtonViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_FloatButton}"
+                              ItemKey="{x:Static viewmodels:FloatButtonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_SplitButton}"
                               ItemKey="{x:Static viewmodels:SplitButtonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Separator}"

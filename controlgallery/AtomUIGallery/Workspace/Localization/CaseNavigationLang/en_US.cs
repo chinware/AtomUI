@@ -12,6 +12,7 @@ internal class en_US : LanguageProvider
     public const string General_Palette = "Palette";
     public const string General_Icons = "Icons";
     public const string General_Button = "Button";
+    public const string General_FloatButton = "FloatButton";
     public const string General_SplitButton = "SplitButton";
     public const string General_Separator = "Separator";
     public const string Layout = "Layout";

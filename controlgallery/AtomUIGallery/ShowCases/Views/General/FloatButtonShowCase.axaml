@@ -1,0 +1,280 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.FloatButtonShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
+             x:DataType="vm:FloatButtonViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="Basic"
+            Description="The most basic usage.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost />
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="Type"
+            Description="Change the type of the FloatButton with the type property.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost ButtonType="Default"
+                                              Icon="{antdicons:AntDesignIconProvider QuestionCircleOutlined}"
+                                              FloatOffsetX="80" />
+                        <atom:FloatButtonHost ButtonType="Primary"
+                                              Icon="{antdicons:AntDesignIconProvider QuestionCircleOutlined}" />
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="Shape"
+            Description="Change the shape of the FloatButton with the shape property.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost ButtonType="Primary"
+                                              Shape="Circle"
+                                              Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                              FloatOffsetX="80" />
+                        <atom:FloatButtonHost ButtonType="Primary"
+                                              Shape="Square"
+                                              Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}" />
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="FloatButton with tooltip"
+            Description="Setting the tooltip property shows the FloatButton with a tooltip.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost FloatOffsetX="80"
+                                              Tooltip="Since 5.25.0+" TooltipColor="blue" />
+                        <atom:FloatButtonHost Tooltip="Documents" />
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="Description"
+            Description="Setting the description property allows you to show a FloatButton with a description.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost Shape="Square"
+                                              Icon="{antdicons:AntDesignIconProvider FileTextOutlined}" Margin="0"
+                                              FloatOffsetX="145"
+                                              Description="HELP INFO" />
+                        <atom:FloatButtonHost Shape="Square"
+                                              FloatOffsetX="80"
+                                              Description="HELP INFO" />
+                        <atom:FloatButtonHost Shape="Square"
+                                              Icon="{antdicons:AntDesignIconProvider FileTextOutlined}"
+                                              Description="HELP INFO" />
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="FloatButton Group"
+            Description="When multiple buttons are used together, FloatButtonGroup is recommended. By setting the shape property of FloatButton.Group, you can change the shape of group. The shape of the FloatButton.Group will override the shape of FloatButtons inside.">
+        
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonGroupHost Shape="Square" FloatOffsetX="80">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QuestionCircleOutlined}" />
+                            <atom:FloatButton />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider SyncOutlined}" />
+                            <atom:BackTopFloatButton />
+                        </atom:FloatButtonGroupHost>
+                        <atom:FloatButtonGroupHost Shape="Circle">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QuestionCircleOutlined}" />
+                            <atom:FloatButton />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider SyncOutlined}" />
+                            <atom:BackTopFloatButton />
+                        </atom:FloatButtonGroupHost>
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="Menu mode"
+            Description="Open menu mode with trigger, which could be hover or click.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Hover"
+                                                   Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                                   ButtonType="Primary"
+                                                   FloatOffsetX="80">
+                            <atom:FloatButton />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider CommentOutlined}" />
+                        </atom:FloatButtonGroupHost>
+        
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Click"
+                                                   Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                                   ButtonType="Primary">
+                            <atom:FloatButton />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider CommentOutlined}" />
+                        </atom:FloatButtonGroupHost>
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="Controlled mode"
+            Description="Set the component to controlled mode through open, which need to be used together with trigger.">
+            <StackPanel Spacing="10">
+                <atom:ToggleSwitch HorizontalContentAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   IsChecked="{Binding IsOpened, Mode=TwoWay}" />
+                <atom:ScrollViewer Height="300">
+                    <Border Background="White">
+                        <Panel Height="500">
+                            <atom:FloatButtonGroupHost Shape="Square"
+                                                       FloatOffsetX="80"
+                                                       Trigger="Hover"
+                                                       Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                                       IsOpen="{Binding IsOpened}">
+                                <atom:FloatButton Icon="{antdicons:AntDesignIconProvider WechatOutlined}" />
+                                <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
+                                <atom:FloatButton Icon="{antdicons:AntDesignIconProvider TwitterOutlined}" />
+                            </atom:FloatButtonGroupHost>
+        
+                            <atom:FloatButtonGroupHost Shape="Circle"
+                                                       Trigger="Click"
+                                                       Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                                       IsOpen="{Binding IsOpened}">
+                                <atom:FloatButton Icon="{antdicons:AntDesignIconProvider WechatOutlined}" />
+                                <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
+                                <atom:FloatButton Icon="{antdicons:AntDesignIconProvider TwitterOutlined}" />
+                            </atom:FloatButtonGroupHost>
+                        </Panel>
+                    </Border>
+                </atom:ScrollViewer>
+        
+            </StackPanel>
+        
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="placement"
+            IsOccupyEntireRow="True"
+            Description="Customize animation placement, providing four preset placement: top, right, bottom, left, the top position by default.">
+            <atom:ScrollViewer Height="400">
+                <Border Background="White">
+                    <Panel Height="600">
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Click"
+                                                   Placement="Center"
+                                                   MenuPlacement="Top"
+                                                   FloatOffsetY="-60"
+                                                   Icon="{antdicons:AntDesignIconProvider UpOutlined}">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider WechatOutlined}" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
+                        </atom:FloatButtonGroupHost>
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Click"
+                                                   Placement="Center"
+                                                   MenuPlacement="Left"
+                                                   FloatOffsetX="-60"
+                                                   Icon="{antdicons:AntDesignIconProvider LeftOutlined}">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider WechatOutlined}" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
+                        </atom:FloatButtonGroupHost>
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Click"
+                                                   Icon="{antdicons:AntDesignIconProvider DownOutlined}"
+                                                   Placement="Center"
+                                                   MenuPlacement="Bottom"
+                                                   FloatOffsetY="60">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider WechatOutlined}" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
+                        </atom:FloatButtonGroupHost>
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Click"
+                                                   Icon="{antdicons:AntDesignIconProvider RightOutlined}"
+                                                   Placement="Center"
+                                                   FloatOffsetX="60"
+                                                   MenuPlacement="Right">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider WechatOutlined}" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
+                        </atom:FloatButtonGroupHost>
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="badge"
+            Description="FloatButton with Badge.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost FloatOffsetX="145" IsBadgeEnabled="True" IsDotBadge="True" />
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                                   ButtonType="Primary"
+                                                   FloatOffsetX="80">
+                            <atom:FloatButton IsBadgeEnabled="True" IsDotBadge="False" BadgeCount="5" BadgeColor="blue" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider CommentOutlined}"
+                                              IsBadgeEnabled="True" IsDotBadge="False" BadgeCount="5" />
+                        </atom:FloatButtonGroupHost>
+        
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
+                                                   ButtonType="Primary">
+                            <atom:FloatButton IsBadgeEnabled="True" IsDotBadge="False" BadgeCount="12" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider CommentOutlined}"
+                                              IsBadgeEnabled="True" IsDotBadge="False" BadgeCount="123" />
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider ToTopOutlined}"
+                                              IsBadgeEnabled="True" IsDotBadge="False" BadgeCount="1230"
+                                              BadgeOverflowCount="" />
+                        </atom:FloatButtonGroupHost>
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="BackTop"
+            Description="BackTop makes it easy to go back to the top of the page.">
+            <atom:ScrollViewer Height="300">
+                <Border Background="White">
+                    <Panel Height="1000">
+                        <StackPanel>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock>Scroll to bottom</TextBlock>
+                        </StackPanel>
+                        <atom:BackTopFloatButtonHost ButtonType="Default" />
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

@@ -1,0 +1,95 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:atomc="https://atomui.net/common-controls"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:FloatButtonItemsControl}" TargetType="atom:FloatButtonItemsControl">
+        <Style Selector="^[IsTriggerMode=True]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Frame" Background="Transparent">
+                        <DockPanel Name="RootLayout" LastChildFill="True">
+                            <Control Name="EmptyControl" />
+                            <Border Name="ContentFrame"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    BoxShadow="{TemplateBinding BoxShadow}"
+                                    Background="{TemplateBinding Background}">
+                                <Panel>
+                                    <atomc:FloatButtonSeparatorLayer Orientation="{TemplateBinding Orientation}"
+                                                                     Lines="{TemplateBinding Lines}" />
+                                    <StackPanel Name="ItemsLayout" Orientation="{TemplateBinding Orientation}" />
+                                </Panel>
+                            </Border>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[IsTriggerMode=False]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ContentFrame"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BoxShadow="{TemplateBinding BoxShadow}"
+                            Background="{TemplateBinding Background}">
+                        <Panel>
+                            <atomc:FloatButtonSeparatorLayer Orientation="{TemplateBinding Orientation}"
+                                                             Lines="{TemplateBinding Lines}" />
+                            <StackPanel Name="ItemsLayout" Orientation="{TemplateBinding Orientation}" />
+                        </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Setter Property="ClipToBounds" Value="False" />
+
+        <Style Selector="^[Shape=Square]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
+            <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadowsSecondary}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+        </Style>
+        <Style Selector="^ /template/ atomc|FloatButtonSeparatorLayer">
+            <Setter Property="SeparatorBrush" Value="{atom:SharedTokenResource ColorSplit}" />
+        </Style>
+        
+        <Style Selector="^[Shape=Circle]">
+            <Style Selector="^ /template/ StackPanel#ItemsLayout">
+                <Setter Property="Spacing" Value="{atom:SharedTokenResource Spacing}" />
+            </Style>
+            <Style Selector="^ /template/ atomc|FloatButtonSeparatorLayer">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsTriggerMode=True]">
+            <Style Selector="^[MenuPlacement=Top]">
+                <Style Selector="^ /template/ Control#EmptyControl">
+                    <Setter Property="DockPanel.Dock" Value="Bottom" />
+                    <Setter Property="Height" Value="{atom:SharedTokenResource Spacing}" />
+                </Style>
+            </Style>
+            <Style Selector="^[MenuPlacement=Bottom]">
+                <Style Selector="^ /template/ Control#EmptyControl">
+                    <Setter Property="DockPanel.Dock" Value="Top" />
+                    <Setter Property="Height" Value="{atom:SharedTokenResource Spacing}" />
+                </Style>
+            </Style>
+            <Style Selector="^[MenuPlacement=Left]">
+                <Style Selector="^ /template/ Control#EmptyControl">
+                    <Setter Property="DockPanel.Dock" Value="Right" />
+                    <Setter Property="Width" Value="{atom:SharedTokenResource Spacing}" />
+                </Style>
+            </Style>
+            <Style Selector="^[MenuPlacement=Right]">
+                <Style Selector="^ /template/ Control#EmptyControl">
+                    <Setter Property="DockPanel.Dock" Value="Left" />
+                    <Setter Property="Width" Value="{atom:SharedTokenResource Spacing}" />
+                </Style>
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

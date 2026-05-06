@@ -1,0 +1,19 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:FloatButtonGroupHost}" TargetType="atom:FloatButtonGroupHost">
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="Placement" Value="BottomRight" />
+        
+        <Style Selector="^:not(^[Placement=Center])">
+            <Setter Property="FloatOffsetX" Value="{atom:FloatButtonTokenResource FloatOffsetX}" />
+            <Setter Property="FloatOffsetY" Value="{atom:FloatButtonTokenResource FloatOffsetY}" />
+        </Style>
+        
+        <Style Selector="^[Shape=Square]">
+            <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadowsSecondary}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

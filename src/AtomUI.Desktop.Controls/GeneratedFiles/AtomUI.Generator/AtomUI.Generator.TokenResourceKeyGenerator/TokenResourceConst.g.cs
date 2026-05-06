@@ -362,6 +362,18 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         RightExpandButtonVMargin
     }
 
+    public enum FloatButtonTokenKind
+    {
+        CircleBadgeOffset,
+        DescriptionLineHeight,
+        FloatButtonIconSize,
+        FloatButtonSize,
+        FloatOffsetX,
+        FloatOffsetY,
+        PrimaryColor,
+        SquareBadgeOffset
+    }
+
     public enum FlyoutHostTokenKind
     {
         HorizontalOffset,
@@ -1333,6 +1345,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public ExpanderTokenResourceExtension(ExpanderTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class FloatButtonTokenResourceExtension : TokenResourceExtension<FloatButtonTokenKind>
+    {
+        public FloatButtonTokenResourceExtension()
+        {
+        }
+
+        public FloatButtonTokenResourceExtension(FloatButtonTokenKind kind) : base(kind)
         {
         }
     }
