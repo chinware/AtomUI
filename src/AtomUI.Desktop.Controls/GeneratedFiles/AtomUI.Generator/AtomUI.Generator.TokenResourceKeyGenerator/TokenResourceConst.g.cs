@@ -1783,11 +1783,30 @@ namespace AtomUI.Desktop.Controls.DesignTokens
 
 namespace AtomUI.Desktop.Controls.Primitives.DesignTokens
 {
+    public enum IndicatorScrollViewerTokenKind
+    {
+        ScrollBarThickness,
+        ThumbBg,
+        ThumbCornerRadius,
+        ThumbThickness
+    }
+
     public enum InfoPickerInputTokenKind
     {
         RangeMarginToAnchor,
         RangePickerArrowMargin,
         RangePickerIndicatorThickness
+    }
+
+    public class IndicatorScrollViewerTokenResourceExtension : TokenResourceExtension<IndicatorScrollViewerTokenKind>
+    {
+        public IndicatorScrollViewerTokenResourceExtension()
+        {
+        }
+
+        public IndicatorScrollViewerTokenResourceExtension(IndicatorScrollViewerTokenKind kind) : base(kind)
+        {
+        }
     }
 
     public class InfoPickerInputTokenResourceExtension : TokenResourceExtension<InfoPickerInputTokenKind>
