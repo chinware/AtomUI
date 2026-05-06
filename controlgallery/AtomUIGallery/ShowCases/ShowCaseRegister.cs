@@ -56,5 +56,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<DatePickerViewModel, DatePickerShowCase>(() => new DatePickerShowCase());
         locator.Map<NumberUpDownViewModel, NumberUpDownShowCase>(() => new NumberUpDownShowCase());
         locator.Map<ListViewModel, ListShowCase>(() => new ListShowCase());
+        locator.Map<TreeViewViewModel, TreeViewShowCase>(() => new TreeViewShowCase());
     }
 }

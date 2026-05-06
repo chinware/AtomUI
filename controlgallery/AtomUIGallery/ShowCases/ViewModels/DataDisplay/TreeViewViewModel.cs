@@ -1,0 +1,140 @@
+using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls;
+using ReactiveUI;
+
+namespace AtomUIGallery.ShowCases.ViewModels;
+
+public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
+{
+    public static EntityKey ID = "TreeView";
+
+    public IScreen HostScreen { get; }
+
+    public string? UrlPathSegment => ID.ToString();
+
+    private IList<TreeNodePath>? _basicTreeViewDefaultExpandedPaths;
+    public IList<TreeNodePath>? BasicTreeViewDefaultExpandedPaths
+    {
+        get => _basicTreeViewDefaultExpandedPaths;
+        set => this.RaiseAndSetIfChanged(ref _basicTreeViewDefaultExpandedPaths, value);
+    }
+
+    private IList<TreeNodePath>? _basicTreeViewDefaultSelectedPaths;
+    public IList<TreeNodePath>? BasicTreeViewDefaultSelectedPaths
+    {
+        get => _basicTreeViewDefaultSelectedPaths;
+        set => this.RaiseAndSetIfChanged(ref _basicTreeViewDefaultSelectedPaths, value);
+    }
+
+    private IList<TreeNodePath>? _basicTreeViewDefaultCheckedPaths;
+    public IList<TreeNodePath>? BasicTreeViewDefaultCheckedPaths
+    {
+        get => _basicTreeViewDefaultCheckedPaths;
+        set => this.RaiseAndSetIfChanged(ref _basicTreeViewDefaultCheckedPaths, value);
+    }
+
+    private IList<ITreeItemNode>? _basicTreeNodes;
+    public IList<ITreeItemNode>? BasicTreeNodes
+    {
+        get => _basicTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _basicTreeNodes, value);
+    }
+
+    private IList<TreeNodePath>? _customizeCollapseExpandTreeDefaultExpandedPaths;
+    public IList<TreeNodePath>? CustomizeCollapseExpandTreeDefaultExpandedPaths
+    {
+        get => _customizeCollapseExpandTreeDefaultExpandedPaths;
+        set => this.RaiseAndSetIfChanged(ref _customizeCollapseExpandTreeDefaultExpandedPaths, value);
+    }
+
+    private IList<ITreeItemNode>? _asyncLoadTreeNodes;
+    public IList<ITreeItemNode>? AsyncLoadTreeNodes
+    {
+        get => _asyncLoadTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _asyncLoadTreeNodes, value);
+    }
+
+    private ITreeItemNodeLoader? _asyncLoadTreeNodeLoader;
+    public ITreeItemNodeLoader? AsyncLoadTreeNodeLoader
+    {
+        get => _asyncLoadTreeNodeLoader;
+        set => this.RaiseAndSetIfChanged(ref _asyncLoadTreeNodeLoader, value);
+    }
+
+    private IList<ITreeItemNode>? _filterTreeNodes;
+    public IList<ITreeItemNode>? FilterTreeNodes
+    {
+        get => _filterTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _filterTreeNodes, value);
+    }
+
+    private bool _showLineSwitchChecked = true;
+    public bool ShowLineSwitchChecked
+    {
+        get => _showLineSwitchChecked;
+        set => this.RaiseAndSetIfChanged(ref _showLineSwitchChecked, value);
+    }
+
+    private bool _showIconSwitchChecked;
+    public bool ShowIconSwitchChecked
+    {
+        get => _showIconSwitchChecked;
+        set => this.RaiseAndSetIfChanged(ref _showIconSwitchChecked, value);
+    }
+
+    private bool _showLeafIconSwitchChecked;
+    public bool ShowLeafIconSwitchChecked
+    {
+        get => _showLeafIconSwitchChecked;
+        set => this.RaiseAndSetIfChanged(ref _showLeafIconSwitchChecked, value);
+    }
+
+    private TreeItemHoverMode _treeViewNodeHoverMode = TreeItemHoverMode.Default;
+    public TreeItemHoverMode TreeViewNodeHoverMode
+    {
+        get => _treeViewNodeHoverMode;
+        set => this.RaiseAndSetIfChanged(ref _treeViewNodeHoverMode, value);
+    }
+
+    public TreeViewViewModel(IScreen screen)
+    {
+        HostScreen = screen;
+    }
+}
+
+public class TreeItemDataLoader : ITreeItemNodeLoader
+{
+    public async Task<TreeItemLoadResult> LoadAsync(ITreeItemNode targetTreeItemData, CancellationToken token)
+    {
+        var level = 0;
+        ITreeNode<ITreeItemNode>? current = targetTreeItemData;
+        while (current != null)
+        {
+            level++;
+            current = current.ParentNode;
+        }
+        await Task.Delay(TimeSpan.FromMilliseconds(600), token);
+        var children = new List<TreeItemNode>();
+        if (level < 3)
+        {
+            children.AddRange([
+                new TreeItemNode()
+                {
+                    ItemKey = $"{targetTreeItemData.ItemKey}-0",
+                    Header  = "Child Node"
+                },
+                new TreeItemNode()
+                {
+                    ItemKey = $"{targetTreeItemData.ItemKey}-1",
+                    Header  = "Child Node"
+                }
+            ]);
+        }
+        return new TreeItemLoadResult()
+        {
+            IsSuccess = true,
+            Data = children
+        };
+    }
+}

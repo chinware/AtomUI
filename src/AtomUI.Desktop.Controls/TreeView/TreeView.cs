@@ -1582,6 +1582,7 @@ public partial class TreeView : AvaloniaTreeView,
         {
             e.Handled  = true;
             _lastPoint = e.GetPosition(this);
+            e.Pointer.Capture(this);
             e.PreventGestureRecognition();
         }
     }

@@ -101,6 +101,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(DatePickerViewModel.ID, () => new DatePickerViewModel(HostScreen));
         _showCaseViewModelFactories.Add(NumberUpDownViewModel.ID, () => new NumberUpDownViewModel(HostScreen));
         _showCaseViewModelFactories.Add(ListViewModel.ID, () => new ListViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(TreeViewViewModel.ID, () => new TreeViewViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

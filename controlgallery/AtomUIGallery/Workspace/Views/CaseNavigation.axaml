@@ -105,6 +105,8 @@
                               ItemKey="{x:Static viewmodels:InfoFlyoutViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_List}"
                               ItemKey="{x:Static viewmodels:ListViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_TreeView}"
+                              ItemKey="{x:Static viewmodels:TreeViewViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"

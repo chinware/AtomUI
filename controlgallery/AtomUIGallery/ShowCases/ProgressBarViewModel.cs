@@ -1,18 +1,16 @@
 using AtomUI.Controls;
 using Avalonia.Media;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 
 namespace AtomUIGallery.ShowCases.ViewModels;
 
 public class ProgressBarViewModel : ReactiveObject, IRoutableViewModel
 {
-    public const string ID = "ProgressBar";
+    public static EntityKey ID = "ProgressBar";
 
     public IScreen HostScreen { get; }
 
-    public string UrlPathSegment { get; } = ID;
+    public string UrlPathSegment { get; } = ID.ToString();
 
     private LinearGradientBrush _twoStopsGradientStrokeColor;
 

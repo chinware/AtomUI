@@ -1,0 +1,334 @@
+﻿using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls;
+using AtomUIGallery.ShowCases.ViewModels;
+using Avalonia.Interactivity;
+using ReactiveUI;
+using ReactiveUI.Avalonia;
+
+namespace AtomUIGallery.ShowCases.Views;
+
+public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
+{
+    public TreeViewShowCase()
+    {
+        this.WhenActivated(disposables =>
+        {
+            if (DataContext is TreeViewViewModel viewModel)
+            {
+                InitBasicTreeViewData(viewModel);
+                viewModel.TreeViewNodeHoverMode = TreeItemHoverMode.Default;
+                InitBasicTreeNodes(viewModel);
+                InitCustomizeCollapseExpandTreeDefaultExpandedPaths(viewModel);
+                InitAsyncLoadTreeNodes(viewModel);
+                InitFilterTreeNodes(viewModel);
+                viewModel.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
+
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultExpandedPaths, v => v.BasicTree.DefaultExpandedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultSelectedPaths, v => v.BasicTree.DefaultSelectedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultCheckedPaths, v => v.BasicTree.DefaultCheckedPaths)
+                    .DisposeWith(disposables);
+
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultExpandedPaths, v => v.BasicTplTree.DefaultExpandedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultSelectedPaths, v => v.BasicTplTree.DefaultSelectedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultCheckedPaths, v => v.BasicTplTree.DefaultCheckedPaths)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.BasicTreeNodes, v => v.BasicTplTree.ItemsSource)
+                    .DisposeWith(disposables);
+
+                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodes, v => v.AsyncLoadTree.ItemsSource)
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodeLoader, v => v.AsyncLoadTree.DataLoader)
+                    .DisposeWith(disposables);
+
+                this.OneWayBind(ViewModel, vm => vm.FilterTreeNodes, v => v.SearchTreeViewByItemsSource.ItemsSource)
+                    .DisposeWith(disposables);
+
+                Disposable.Create(() =>
+                {
+                    viewModel.BasicTreeViewDefaultExpandedPaths = null;
+                    viewModel.BasicTreeViewDefaultSelectedPaths = null;
+                    viewModel.BasicTreeViewDefaultCheckedPaths  = null;
+                    viewModel.BasicTreeNodes                    = null;
+                    viewModel.AsyncLoadTreeNodes                = null;
+                    viewModel.AsyncLoadTreeNodeLoader           = null;
+                    viewModel.FilterTreeNodes                   = null;
+                }).DisposeWith(disposables);
+            }
+        });
+        InitializeComponent();
+    }
+
+    private void InitBasicTreeViewData(TreeViewViewModel viewModel)
+    {
+        viewModel.BasicTreeViewDefaultExpandedPaths = [
+            new TreeNodePath("0-0/0-0-0"),
+            new TreeNodePath("0-0/0-0-1/0-0-1-1")
+        ];
+        
+        viewModel.BasicTreeViewDefaultSelectedPaths =
+        [
+            new TreeNodePath("0-0/0-0-1")
+        ];
+        
+        viewModel.BasicTreeViewDefaultCheckedPaths =
+        [
+            new TreeNodePath("0-0/0-0-1/0-0-1-1")
+        ];
+    }
+
+    private void HandleHoverModeChanged(object? sender, RoutedEventArgs e)
+    {
+        if (sender is AtomUI.Desktop.Controls.RadioButton radioButton)
+        {
+            if (radioButton.IsChecked == true)
+            {
+                if (radioButton.Tag is TreeItemHoverMode hoverMode)
+                {
+                    if (DataContext is TreeViewViewModel viewModel)
+                    {
+                        viewModel.TreeViewNodeHoverMode = hoverMode;
+                    }
+                }
+            }
+        }
+    }
+    
+    private void InitBasicTreeNodes(TreeViewViewModel viewModel)
+    {
+        viewModel.BasicTreeNodes = [
+            new TreeItemNode()
+            {
+                Header  = "parent 1",
+                ItemKey = "0-0",
+                Children = [
+                    new TreeItemNode()
+                    {
+                        Header  = "parent 1-0",
+                        ItemKey = "0-0-0",
+                        Children = [
+                            new TreeItemNode()
+                            {
+                                Header    = "leaf 1",
+                                ItemKey   = "0-0-0-0",
+                                IsEnabled = false
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "leaf 2",
+                                ItemKey = "0-0-0-1"
+                            }
+                        ]
+                    },
+                    new TreeItemNode()
+                    {
+                        Header  = "parent 1-1",
+                        ItemKey = "0-0-1",
+                        Children = [
+                            new TreeItemNode()
+                            {
+                                Header  = "sss",
+                                ItemKey = "0-0-1-0",
+                                Children = [
+                                    new TreeItemNode()
+                                    {
+                                        Header  = "ccc",
+                                        ItemKey = "0-0-1-0-0"
+                                    }
+                                ]
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "xxx",
+                                ItemKey = "0-0-1-1",
+                                Children = [
+                                    new TreeItemNode()
+                                    {
+                                        Header  = "aaaa",
+                                        ItemKey = "0-0-1-1-0"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+    }
+
+    private void InitCustomizeCollapseExpandTreeDefaultExpandedPaths(TreeViewViewModel viewModel)
+    {
+        viewModel.CustomizeCollapseExpandTreeDefaultExpandedPaths = [
+            new TreeNodePath("0-0/0-0-0")
+        ];
+    }
+
+    private void InitAsyncLoadTreeNodes(TreeViewViewModel viewModel)
+    {
+        viewModel.AsyncLoadTreeNodes =
+        [
+            new TreeItemNode()
+            {
+                Header  = "Expand to load",
+                ItemKey = "0",
+            },
+            new TreeItemNode()
+            {
+                Header  = "Expand to load",
+                ItemKey = "1",
+            },
+            new TreeItemNode()
+            {
+                Header  = "Tree Node",
+                ItemKey = "2",
+                IsLeaf  = true
+            }
+        ];
+    }
+
+    private void InitFilterTreeNodes(TreeViewViewModel viewModel)
+    {
+        viewModel.FilterTreeNodes =
+        [
+            new TreeItemNode()
+            {
+                Header  = "0-0",
+                ItemKey = "0-0",
+                Children = [
+                    new TreeItemNode()
+                    {
+                        Header  = "0-0-0",
+                        ItemKey = "0-0-0",
+                        Children = [
+                            new TreeItemNode()
+                            {
+                                Header  = "0-0-0-0",
+                                ItemKey = "0-0-0-0",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-0-0-1",
+                                ItemKey = "0-0-0-1",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-0-0-2",
+                                ItemKey = "0-0-0-2",
+                            }
+                        ]
+                    },
+                    new TreeItemNode()
+                    {
+                        Header  = "0-0-1",
+                        ItemKey = "0-0-1",
+                        Children = [
+                            new TreeItemNode()
+                            {
+                                Header  = "0-0-1-0",
+                                ItemKey = "0-0-1-0",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-0-1-1",
+                                ItemKey = "0-0-1-1",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-0-1-2",
+                                ItemKey = "0-0-1-2",
+                            }
+                        ]
+                    },
+                    new TreeItemNode()
+                    {
+                        Header  ="0-0-2",
+                        ItemKey ="0-0-2",
+                    },
+                ]
+            },
+            new TreeItemNode()
+            {
+                Header  = "0-1",
+                ItemKey = "0-1",
+                Children = [
+                    new TreeItemNode()
+                    {
+                        Header  = "0-1-0",
+                        ItemKey = "0-1-0",
+                        Children = [
+                            new TreeItemNode()
+                            {
+                                Header  = "0-1-0-0",
+                                ItemKey = "0-1-0-0",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-1-0-1",
+                                ItemKey = "0-1-0-1",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-1-0-2",
+                                ItemKey = "0-1-0-2",
+                            }
+                        ]
+                    },
+                    new TreeItemNode()
+                    {
+                        Header  = "0-1-1",
+                        ItemKey = "0-1-1",
+                        Children = [
+                            new TreeItemNode()
+                            {
+                                Header  = "0-1-1-0",
+                                ItemKey = "0-1-1-0",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-1-1-1",
+                                ItemKey = "0-1-1-1",
+                            },
+                            new TreeItemNode()
+                            {
+                                Header  = "0-1-1-2",
+                                ItemKey = "0-1-1-2",
+                            }
+                        ]
+                    },
+                    new TreeItemNode()
+                    {
+                        Header  ="0-1-2",
+                        ItemKey ="0-1-2",
+                    },
+                ]
+            },
+            new TreeItemNode()
+            {
+                Header  = "0-2",
+                ItemKey = "0-2",
+            }
+        ];
+    }
+
+    private void HandleFilterItemsSourceTreeClicked(object? sender, RoutedEventArgs e)
+    {
+        if (sender is SearchEdit searchEdit)
+        {
+            SearchTreeViewByItemsSource.FilterValue = searchEdit.Text?.Trim();
+        }
+    }
+    
+    private void HandleFilterTreeClicked(object? sender, RoutedEventArgs e)
+    {
+        if (sender is SearchEdit searchEdit)
+        {
+            SearchTreeView.FilterValue = searchEdit.Text?.Trim();
+        }
+    }
+}
+
