@@ -52,6 +52,7 @@ internal class zh_CN : LanguageProvider
     public const string DataDisplay_InfoFlyout = "InfoFlyout 信息浮层";
     public const string DataDisplay_List = "List 列表";
     public const string DataDisplay_TreeView = "TreeView 树形控件";
+    public const string DataDisplay_Tour = "Tour 漫游式引导";
     public const string Feedback = "反馈";
     public const string Feedback_Alert = "Alert 警告提示";
     public const string Feedback_Message = "Message 全局提示";

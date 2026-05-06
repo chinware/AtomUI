@@ -1,0 +1,245 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.TourShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ViewModels"
+             xmlns:views="using:AtomUIGallery.ShowCases.Views"
+             x:DataType="vm:TourViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="Basic"
+            Description="The most basic usage.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Button ButtonType="Primary" Click="HandleBasicBeginTour">Begin Tour</atom:Button>
+                <atom:Separator />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button Name="BasicCaseUpload">Upload</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="BasicCaseSave">Save</atom:Button>
+                    <atom:Button Name="BasicCaseEllipsis"
+                                 Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}" />
+                </StackPanel>
+                <atom:Tour IsOpen="{Binding BasicCaseTourOpened, Mode=TwoWay}">
+                    <atom:TourStep Target="{Binding ElementName=BasicCaseUpload}"
+                                   Title="Upload File"
+                                   Description="Put your files here.">
+                        <atom:TourStep.Cover>
+                            <Image Source="/Assets/TourShowCase/Cover.png"
+                                   Width="400" />
+                        </atom:TourStep.Cover>
+                    </atom:TourStep>
+                    <atom:TourStep Target="{Binding ElementName=BasicCaseSave}"
+                                   Title="Save"
+                                   Description="Save your changes." />
+                    <atom:TourStep Target="{Binding ElementName=BasicCaseEllipsis}"
+                                   Title="Other Actions"
+                                   Description="Click to see other actions." />
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Non-modal"
+            Description="Use mask={false} to make Tour non-modal. At the meantime it is recommended to use with type=primary to emphasize the guide itself.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Button ButtonType="Primary" Click="HandleNonMaskBeginTour">Begin non-modal Tour</atom:Button>
+                <atom:Separator />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button Name="NonMaskCaseUpload">Upload</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="NonMaskSave">Save</atom:Button>
+                    <atom:Button Name="NonMaskEllipsis"
+                                 Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}" />
+                </StackPanel>
+                <atom:Tour IsOpen="{Binding NonMaskTourOpened, Mode=TwoWay}" IsShowMask="False" StyleType="Primary">
+                    <atom:TourStep Target="{Binding ElementName=NonMaskCaseUpload}"
+                                   Title="Upload File"
+                                   Description="Put your files here.">
+                        <atom:TourStep.Cover>
+                            <Image Source="/Assets/TourShowCase/Cover.png"
+                                   Width="400" />
+                        </atom:TourStep.Cover>
+                    </atom:TourStep>
+                    <atom:TourStep Target="{Binding ElementName=NonMaskSave}"
+                                   Title="Save"
+                                   Description="Save your changes." />
+                    <atom:TourStep Target="{Binding ElementName=NonMaskEllipsis}"
+                                   Title="Other Actions"
+                                   Description="Click to see other actions." />
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Placement"
+            Description="Change the placement of the guide relative to the target, there are 12 placements available. When target={null} the guide will show in the center.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Button ButtonType="Primary" Click="HandlePlacementBeginTour" Name="PlacementBeginTour">Begin Tour</atom:Button>
+                <atom:Tour IsOpen="{Binding PlacementTourOpened, Mode=TwoWay}" IsShowMask="True">
+                    <atom:TourStep Title="Center"
+                                   Description="Displayed in the center of screen." />
+                    <atom:TourStep Title="Right"
+                                   Description="On the right of target."
+                                   Placement="Right"
+                                   Target="{Binding ElementName=PlacementBeginTour}" />
+                    <atom:TourStep Title="Top"
+                                   Description="On the top of target."
+                                   Placement="Top"
+                                   Target="{Binding ElementName=PlacementBeginTour}" />
+                    <atom:TourStep Title="Left"
+                                   Description="On the left of target."
+                                   Placement="Left"
+                                   Target="{Binding ElementName=PlacementBeginTour}" />
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Custom indicator"
+            Description="Custom indicator.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Button ButtonType="Primary" Click="HandleCustomIndicatorBeginTour">Begin Tour</atom:Button>
+                <atom:Separator />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button Name="CustomIndicatorUpload">Upload</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="CustomIndicatorSave">Save</atom:Button>
+                    <atom:Button Name="CustomIndicatorEllipsis"
+                                 Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}" />
+                </StackPanel>
+                <atom:Tour IsOpen="{Binding CustomIndicatorTourOpened, Mode=TwoWay}">
+                    <atom:Tour.Indicator>
+                        <atom:TextTourIndicator />
+                    </atom:Tour.Indicator>
+                    <atom:TourStep Target="{Binding ElementName=CustomIndicatorUpload}"
+                                   Title="Upload File"
+                                   Description="Put your files here.">
+                        <atom:TourStep.Cover>
+                            <Image Source="/Assets/TourShowCase/Cover.png"
+                                   Width="400" />
+                        </atom:TourStep.Cover>
+                    </atom:TourStep>
+                    <atom:TourStep Target="{Binding ElementName=CustomIndicatorSave}"
+                                   Title="Save"
+                                   Description="Save your changes." />
+                    <atom:TourStep Target="{Binding ElementName=CustomIndicatorEllipsis}"
+                                   Title="Other Actions"
+                                   Description="Click to see other actions." />
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Custom indicator"
+            Description="Custom indicator.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Button ButtonType="Primary" Click="HandleCustomMaskBeginTour">Begin Tour</atom:Button>
+                <atom:Separator />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button Name="CustomMaskUpload">Upload</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="CustomMaskSave">Save</atom:Button>
+                    <atom:Button Name="CustomMaskEllipsis"
+                                 Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}" />
+                </StackPanel>
+                <atom:Tour IsOpen="{Binding CustomMaskTourOpened, Mode=TwoWay}"
+                           MaskColor="#6650FFFF">
+                    <atom:TourStep Target="{Binding ElementName=CustomMaskUpload}"
+                                   Title="Upload File"
+                                   Description="Put your files here.">
+                        <atom:TourStep.Cover>
+                            <Image Source="/Assets/TourShowCase/Cover.png"
+                                   Width="400" />
+                        </atom:TourStep.Cover>
+                    </atom:TourStep>
+                    <atom:TourStep Target="{Binding ElementName=CustomMaskSave}"
+                                   Title="Save"
+                                   Description="Save your changes."
+                                   MaskColor="#662800FF"/>
+                    <atom:TourStep Target="{Binding ElementName=CustomMaskEllipsis}"
+                                   Title="Other Actions"
+                                   Description="Click to see other actions."
+                                   IsShowMask="False"/>
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Custom action"
+            Description="Custom action.">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Button ButtonType="Primary" Click="HandleCustomActionBeginTour">Begin Tour</atom:Button>
+                <atom:Separator />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button Name="CustomActionUpload">Upload</atom:Button>
+                    <atom:Button ButtonType="Primary" Name="CustomActionSave">Save</atom:Button>
+                    <atom:Button Name="CustomActionEllipsis"
+                                 Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}" />
+                </StackPanel>
+                <atom:Tour IsOpen="{Binding CustomActionTourOpened, Mode=TwoWay}">
+                    <atom:Tour.CustomActions>
+                        <views:SkipTourActionButton>Skip</views:SkipTourActionButton>
+                    </atom:Tour.CustomActions>
+                    <atom:TourStep Target="{Binding ElementName=CustomActionUpload}"
+                                   Title="Upload File"
+                                   Description="Put your files here.">
+                        <atom:TourStep.Cover>
+                            <Image Source="/Assets/TourShowCase/Cover.png"
+                                   Width="400" />
+                        </atom:TourStep.Cover>
+                    </atom:TourStep>
+                    <atom:TourStep Target="{Binding ElementName=CustomActionSave}"
+                                   Title="Save"
+                                   Description="Save your changes." />
+                    <atom:TourStep Target="{Binding ElementName=CustomActionEllipsis}"
+                                   Title="Other Actions"
+                                   Description="Click to see other actions." />
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="Custom highlighted area style"
+            Description="Using gap to control the radius of highlight area and the offset between highlight area and the element."
+            IsOccupyEntireRow="True">
+            <StackPanel Orientation="Vertical" Margin="50, 0, 50, 0">
+                <StackPanel Orientation="Vertical" Spacing="10" Name="CustomGapControl">
+                    <atom:Button ButtonType="Primary" Click="HandleCustomGapBeginTour">Begin Tour</atom:Button>
+                    <DockPanel LastChildFill="True">
+                        <TextBlock Width="200" DockPanel.Dock="Left">Radius:</TextBlock>
+                        <atom:Slider Minimum="0" Maximum="100" Value="{Binding CustomGapRadius, Mode=TwoWay}"/>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True">
+                        <TextBlock Width="200" DockPanel.Dock="Left">Horizontal offset:</TextBlock>
+                        <atom:Slider Minimum="1" Maximum="50" Value="{Binding CustomGapOffsetX, Mode=TwoWay}"/>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True">
+                        <TextBlock Width="200" DockPanel.Dock="Left">Vertical offset:</TextBlock>
+                        <atom:Slider Minimum="1" Maximum="50" Value="{Binding CustomGapOffsetY, Mode=TwoWay}"/>
+                    </DockPanel>
+                </StackPanel>
+
+                <atom:Tour IsOpen="{Binding CustomGapTourOpened, Mode=TwoWay}" Placement="Top"
+                           GapRadius="{Binding CustomGapRadius}"
+                           GapOffsetX="{Binding CustomGapOffsetX}"
+                           GapOffsetY="{Binding CustomGapOffsetY}">
+                    <atom:TourStep Target="{Binding ElementName=CustomGapControl}"
+                                   Title="Upload File"
+                                   Description="Put your files here.">
+                        <atom:TourStep.Cover>
+                            <Image Source="/Assets/TourShowCase/Cover.png"
+                                   Width="400" />
+                        </atom:TourStep.Cover>
+                    </atom:TourStep>
+                </atom:Tour>
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+
+    </gallery:ShowCasePanel>
+</UserControl>

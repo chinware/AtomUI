@@ -637,10 +637,14 @@ internal static class PopupUtils
                 vOffset += shadowThickness.Top;
             }
         }
-        else
+        else if (requestedPlacement != PlacementMode.Center)
         {
-            var direction = GetDirection(requestedPlacement);
-            direction = FlipDirection(direction, flipX, flipY);
+            Direction? direction = null;
+            if (CanEnabledArrow(requestedPlacement))
+            {
+                direction = GetDirection(requestedPlacement);
+                direction = FlipDirection(direction.Value, flipX, flipY);
+            }
             
             if (!isUseOverlayHost)
             {
@@ -681,22 +685,31 @@ internal static class PopupUtils
         return (flipX, flipY);
     }
 
-    private static void ApplyMarginToAnchor(Direction direction, double marginToAnchor, ref double hOffset, ref double vOffset)
+    private static void ApplyMarginToAnchor(Direction? direction, double marginToAnchor, ref double hOffset, ref double vOffset)
     {
-        switch (direction)
+        if (direction != null)
         {
-            case Direction.Left:
-                hOffset -= marginToAnchor;
-                break;
-            case Direction.Right:
-                hOffset += marginToAnchor;
-                break;
-            case Direction.Top:
-                vOffset -= marginToAnchor;
-                break;
-            case Direction.Bottom:
-                vOffset += marginToAnchor;
-                break;
+            switch (direction)
+            {
+                case Direction.Left:
+                    hOffset -= marginToAnchor;
+                    break;
+                case Direction.Right:
+                    hOffset += marginToAnchor;
+                    break;
+                case Direction.Top:
+                    vOffset -= marginToAnchor;
+                    break;
+                case Direction.Bottom:
+                    vOffset += marginToAnchor;
+                    break;
+            }
         }
+        else
+        {
+            vOffset += marginToAnchor;
+            hOffset += marginToAnchor;
+        }
+      
     }
 }

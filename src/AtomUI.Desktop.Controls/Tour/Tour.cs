@@ -2,19 +2,16 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -313,6 +310,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
     private TourLayer? _layer;
     private TourStepsView? _stepsView;
     private CompositeDisposable? _indicatorDisposables;
+    private Control? _scrollBlockedTarget;
 
     static Tour()
     {
@@ -410,12 +408,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
         {
             ConfigurePopupOffset();
         }
-        if (change.Property == IsPopupHorizontalFlippedProperty ||
-            change.Property == IsPopupVerticalFlippedProperty)
-        {
-            ConfigureArrowPosition();
-        }
-        else if (change.Property == CurrentIndexProperty)
+        if (change.Property == CurrentIndexProperty)
         {
             if (!_ignorePropertyChanged)
             {
@@ -442,75 +435,28 @@ public class Tour : TemplatedControl, IMotionAwareControl
         }
     }
     
-    private void ConfigureArrowPosition()
+    private void ConfigureArrowPosition(bool isHorizontalFlipped = false, bool isVerticalFlipped = false)
     {
         if (_popup == null)
         {
             return;
         }
-        var arrowPosition = PopupUtils.CalculateArrowPosition(_popup.Placement, null, null);
+        var requestedPlacement = _popup.RequestedPlacement;
+        if (requestedPlacement == null)
+        {
+            return;
+        }
+        var arrowPosition = PopupUtils.CalculateArrowPosition(requestedPlacement.Value, null, null);
         if (arrowPosition.HasValue)
         {
-            // Handle vertical flipping (Top <-> Bottom)
-            if (IsPopupVerticalFlipped)
-            {
-                if (arrowPosition == ArrowPosition.Top)
-                {
-                    arrowPosition = ArrowPosition.Bottom;
-                }
-                else if (arrowPosition == ArrowPosition.Bottom)
-                {
-                    arrowPosition = ArrowPosition.Top;
-                }
-                else if (arrowPosition == ArrowPosition.TopEdgeAlignedLeft)
-                {
-                    arrowPosition = ArrowPosition.BottomEdgeAlignedLeft;
-                }
-                else if (arrowPosition == ArrowPosition.TopEdgeAlignedRight)
-                {
-                    arrowPosition = ArrowPosition.BottomEdgeAlignedRight;
-                }
-                else if (arrowPosition == ArrowPosition.BottomEdgeAlignedLeft)
-                {
-                    arrowPosition = ArrowPosition.TopEdgeAlignedLeft;
-                }
-                else if (arrowPosition == ArrowPosition.BottomEdgeAlignedRight)
-                {
-                    arrowPosition = ArrowPosition.TopEdgeAlignedRight;
-                }
-            }
-
-            // Handle horizontal flipping (Left <-> Right)
-            if (IsPopupHorizontalFlipped)
-            {
-                if (arrowPosition == ArrowPosition.Left)
-                {
-                    arrowPosition = ArrowPosition.Right;
-                }
-                else if (arrowPosition == ArrowPosition.Right)
-                {
-                    arrowPosition = ArrowPosition.Left;
-                }
-                else if (arrowPosition == ArrowPosition.LeftEdgeAlignedTop)
-                {
-                    arrowPosition = ArrowPosition.RightEdgeAlignedTop;
-                }
-                else if (arrowPosition == ArrowPosition.LeftEdgeAlignedBottom)
-                {
-                    arrowPosition = ArrowPosition.RightEdgeAlignedBottom;
-                }
-                else if (arrowPosition == ArrowPosition.RightEdgeAlignedTop)
-                {
-                    arrowPosition = ArrowPosition.LeftEdgeAlignedTop;
-                }
-                else if (arrowPosition == ArrowPosition.RightEdgeAlignedBottom)
-                {
-                    arrowPosition = ArrowPosition.LeftEdgeAlignedBottom;
-                }
-            }
-
-            SetCurrentValue(ArrowPositionProperty, arrowPosition);
+            SetCurrentValue(ArrowPositionProperty,
+                ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, isHorizontalFlipped, isVerticalFlipped));
         }
+    }
+
+    private void HandlePositionFlipped(object? sender, PopupFlippedEventArgs args)
+    {
+        ConfigureArrowPosition(args.HorizontalFlipped, args.VerticalFlipped);
     }
 
     private void HandleStepsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -537,14 +483,15 @@ public class Tour : TemplatedControl, IMotionAwareControl
         {
             this[!IsPopupHorizontalFlippedProperty] = _popup[!Popup.IsHorizontalFlippedProperty];
             this[!IsPopupVerticalFlippedProperty] = _popup[!Popup.IsVerticalFlippedProperty];
-            _popup.CustomPopupPlacementCallback = parameters =>
-            {
-                var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel != null)
-                {
-                    parameters.AnchorRectangle = new Rect(topLevel.DesiredSize);
-                }
-            };
+            _popup.PositionFlipped += HandlePositionFlipped;
+            // _popup.CustomPlacementCallback = parameters =>
+            // {
+            //     var topLevel = TopLevel.GetTopLevel(this);
+            //     if (topLevel != null)
+            //     {
+            //         parameters.AnchorRectangle = new Rect(topLevel.DesiredSize);
+            //     }
+            // };
         }
         if (_stepsView != null)
         {
@@ -614,6 +561,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
         {
             return;
         }
+        BlockTargetScroll(null);
         if (_layer != null)
         {
             _layer.IsVisible = false;
@@ -659,7 +607,6 @@ public class Tour : TemplatedControl, IMotionAwareControl
         }
         
         var target = GetCurrentTarget();
-        _popup.PlacementTarget = target;
 
         var      step   = Steps[CurrentIndex];
         if (step is ITourStepOption stepOption)
@@ -674,16 +621,20 @@ public class Tour : TemplatedControl, IMotionAwareControl
 
             if (target == null)
             {
-                _popup.Placement = GetPopupPlacement(TourPlacementMode.Center);
-                CurrentShowArrow = false;;
+                _popup.RequestedPlacement = GetPopupPlacement(TourPlacementMode.Center);
+                CurrentShowArrow = false;
             }
             else
             {
-                _popup.Placement = GetPopupPlacement(stepOption.Placement ?? Placement);
+                // Set placement BEFORE PlacementTarget so that when UpdateHostPosition fires
+                // (triggered by PlacementTarget change), RequestedPlacement already has the
+                // correct value and the arrow direction is computed correctly.
+                _popup.RequestedPlacement = GetPopupPlacement(stepOption.Placement ?? Placement);
             }
-         
-            ConfigureArrowPosition();
         }
+
+        _popup.PlacementTarget = target;
+        BlockTargetScroll(target);
         
         ConfigurePopupOffset();
         CalculateTargetClipBounds();
@@ -738,36 +689,39 @@ public class Tour : TemplatedControl, IMotionAwareControl
             TourPlacementMode.Bottom => PlacementMode.Bottom,
             TourPlacementMode.BottomLeft => PlacementMode.BottomEdgeAlignedLeft,
             TourPlacementMode.BottomRight => PlacementMode.BottomEdgeAlignedRight,
-            TourPlacementMode.Center => PlacementMode.Custom,
+            TourPlacementMode.Center => PlacementMode.Center,
             _ => PlacementMode.Bottom
         };
     }
 
     private void ConfigurePopupOffset()
     {
-        var target = GetCurrentTarget();
-        if (target == null || _popup == null)
+        if (_popup == null)
         {
             return;
         }
-        if (_popup.Child!.DesiredSize == default)
-        {
-            LayoutHelper.MeasureChild(_popup.Child, Size.Infinity, new Thickness());
-        }
-        var pointAtCenterOffset =
-            CalculatePopupPositionDelta(target, _popup.Child, _popup.Placement, _popup.PlacementAnchor,
-                _popup.PlacementGravity);
         AdjustForGap(Placement);
-        var offsetX = 0.0d;
-        var offsetY = 0.0d;
-        if (IsPointAtCenter)
+        _popup.HorizontalOffset = 0;
+        _popup.VerticalOffset   = 0;
+    }
+
+    private void BlockTargetScroll(Control? target)
+    {
+        if (_scrollBlockedTarget != null)
         {
-            offsetX += pointAtCenterOffset.X;
-            offsetY += pointAtCenterOffset.Y;
+            _scrollBlockedTarget.RemoveHandler(PointerWheelChangedEvent, HandleTargetPointerWheelChanged);
+            _scrollBlockedTarget = null;
         }
-        
-        _popup.HorizontalOffset = offsetX;
-        _popup.VerticalOffset   = offsetY;
+        if (target != null)
+        {
+            target.AddHandler(PointerWheelChangedEvent, HandleTargetPointerWheelChanged, RoutingStrategies.Bubble);
+            _scrollBlockedTarget = target;
+        }
+    }
+
+    private static void HandleTargetPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        e.Handled = true;
     }
 
     private void AdjustForGap(TourPlacementMode placement)
@@ -793,57 +747,11 @@ public class Tour : TemplatedControl, IMotionAwareControl
         _popup.MarginToAnchor = value + defaultMarginToAnchor;
     }
     
-    private Point CalculatePopupPositionDelta(Control anchorTarget,
-                                              Control? flyoutPresenter,
-                                              PlacementMode placement,
-                                              PopupAnchor? anchor = null,
-                                              PopupGravity? gravity = null)
-    {
-        var offsetX = 0d;
-        var offsetY = 0d;
-        if (IsShowArrow && IsPointAtCenter)
-        {
-            if (PopupUtils.CanEnabledArrow(placement, anchor, gravity))
-            {
-                if (flyoutPresenter is ArrowDecoratedBox arrowDecoratedBox)
-                {
-                    var arrowVertexPoint = arrowDecoratedBox.ArrowVertexPoint;
-
-                    var anchorSize = anchorTarget.Bounds.Size;
-                    var centerX    = anchorSize.Width / 2;
-                    var centerY    = anchorSize.Height / 2;
-                    // 这里计算不需要全局坐标
-                    if (placement == PlacementMode.TopEdgeAlignedLeft ||
-                        placement == PlacementMode.BottomEdgeAlignedLeft)
-                    {
-                        offsetX += centerX - arrowVertexPoint.Item1;
-                    }
-                    else if (placement == PlacementMode.TopEdgeAlignedRight ||
-                             placement == PlacementMode.BottomEdgeAlignedRight)
-                    {
-                        offsetX -= centerX - arrowVertexPoint.Item2;
-                    }
-                    else if (placement == PlacementMode.RightEdgeAlignedTop ||
-                             placement == PlacementMode.LeftEdgeAlignedTop)
-                    {
-                        offsetY += centerY - arrowVertexPoint.Item1;
-                    }
-                    else if (placement == PlacementMode.RightEdgeAlignedBottom ||
-                             placement == PlacementMode.LeftEdgeAlignedBottom)
-                    {
-                        offsetY -= centerY - arrowVertexPoint.Item2;
-                    }
-                }
-            }
-        }
-
-        return new Point(offsetX, offsetY);
-    }
-    
      protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
      {
          base.OnDetachedFromVisualTree(e);
          
+         BlockTargetScroll(null);
          Steps.CollectionChanged -= HandleItemsViewCollectionChanged;
          CustomActions.CollectionChanged -= HandleCustomActionsChanged;
          
@@ -871,4 +779,10 @@ public class Tour : TemplatedControl, IMotionAwareControl
      
          public void Dispose() => _owner._ignorePropertyChanged = false;
      }
- }
+
+     protected override void OnPointerWheelChanged(PointerWheelEventArgs args)
+     {
+         base.OnPointerWheelChanged(args);
+         args.Handled = true;
+     }
+}

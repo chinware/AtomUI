@@ -57,5 +57,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<NumberUpDownViewModel, NumberUpDownShowCase>(() => new NumberUpDownShowCase());
         locator.Map<ListViewModel, ListShowCase>(() => new ListShowCase());
         locator.Map<TreeViewViewModel, TreeViewShowCase>(() => new TreeViewShowCase());
+        locator.Map<TourViewModel, TourShowCase>(() => new TourShowCase());
     }
 }

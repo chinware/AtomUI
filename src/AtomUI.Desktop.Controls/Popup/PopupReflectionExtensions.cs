@@ -27,6 +27,11 @@ internal static class PopupReflectionExtensions
         typeof(AvaloniaPopup).GetMethodInfoOrThrow("SetPopupParent",
             BindingFlags.Instance | BindingFlags.NonPublic));
 
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaPopup))]
+    private static readonly Lazy<MethodInfo> HandlePositionChangeMethodInfo = new Lazy<MethodInfo>(() =>
+        typeof(AvaloniaPopup).GetMethodInfoOrThrow("HandlePositionChange",
+            BindingFlags.Instance | BindingFlags.NonPublic));
+
     #endregion
     
     public static void AddClosingEventHandler(this AvaloniaPopup popup, EventHandler<CancelEventArgs> handler)
@@ -56,5 +61,10 @@ internal static class PopupReflectionExtensions
     public static void SetPopupParent(this AvaloniaPopup popup, Control? newParent)
     {
         SetPopupParentMethodInfo.Value.Invoke(popup, [newParent]);
+    }
+
+    public static void HandlePositionChange(this AvaloniaPopup popup)
+    {
+        HandlePositionChangeMethodInfo.Value.Invoke(popup, null);
     }
 }

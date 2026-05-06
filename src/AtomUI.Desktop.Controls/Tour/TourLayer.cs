@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -57,13 +58,19 @@ internal class TourLayer : Control
         
         context.DrawGeometry(Background, null, combinedGeometry);
     }
+
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        base.OnPointerWheelChanged(e);
+        e.Handled = true;
+    }
     
     public static TourLayer? GetTourLayer(Visual visual)
     {
         VisualLayerManager? manager;
         if (visual is TopLevel topLevel)
         {
-            manager = topLevel.GetTemplateChildren()
+            manager = topLevel.GetTemplateDescendants()
                               .OfType<VisualLayerManager>()
                               .FirstOrDefault();
         }
@@ -78,7 +85,7 @@ internal class TourLayer : Control
         }
 
         var tourLayer = VisualLayerManagerUtils.FindLayer<TourLayer>(manager);
-        if (tourLayer == null && manager != null)
+        if (tourLayer == null)
         {
             tourLayer = new TourLayer()
             {

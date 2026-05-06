@@ -61,6 +61,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         AvaloniaProperty.Register<Popup, bool>(nameof(IsPointAtCenter));
     
+    public static readonly StyledProperty<CustomPlacementCallback?> CustomPlacementCallbackProperty =
+        AvaloniaProperty.Register<Popup, CustomPlacementCallback?>(nameof(CustomPlacementCallback));
+    
     public BoxShadows PopupRootShadow
     {
         get => GetValue(PopupRootShadowProperty);
@@ -135,6 +138,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         get => GetValue(IsPointAtCenterProperty);
         set => SetValue(IsPointAtCenterProperty, value);
+    }
+    
+    public CustomPlacementCallback? CustomPlacementCallback
+    {
+        get => GetValue(CustomPlacementCallbackProperty);
+        set => SetValue(CustomPlacementCallbackProperty, value);
     }
     #endregion
 
@@ -296,8 +305,13 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             var requestedPlacement = change.GetNewValue<PlacementMode?>();
             if (requestedPlacement is not null)
             {
+                var originalPlacement = Placement;
                 CustomPopupPlacementCallback = HandleCustomPlacement;
                 Placement = PlacementMode.Custom;
+                if (originalPlacement == PlacementMode.Custom)
+                {
+                    this.HandlePositionChange();
+                }
             }
             else
             {
@@ -326,12 +340,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     internal void HandleCustomPlacement(CustomPopupPlacement placement)
     {
-        var target = PlacementTarget ?? Parent as Control;
-        if (target is null)
-        {
-            return;
-        }
-
         var shadowThickness    = FrameShadow.Thickness();
         var requestedPlacement = RequestedPlacement!.Value;
         var isUseOverlayHost   = ShouldUseOverlayLayer;
@@ -342,57 +350,104 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         PopupAnchor anchor;
         PopupGravity gravity;
 
-        if (requestedPlacement == PlacementMode.Pointer)
+        if (requestedPlacement == PlacementMode.Center)
         {
-            var topLevel = TopLevel.GetTopLevel(target);
+            // Center 不依赖具体的 PlacementTarget，直接从 Popup 自身向上找 TopLevel。
+            var referenceControl = (PlacementTarget ?? Parent as Control) ?? this;
+            var topLevel         = TopLevel.GetTopLevel(referenceControl);
             if (topLevel == null)
             {
                 return;
             }
 
-            var position = topLevel.PointToClient(topLevel.GetLastPointerPosition() ?? default);
-            placement.AnchorRectangle = new Rect(position, new Size(1, 1));
-            anchor  = PopupAnchor.TopLeft;
-            gravity = PopupGravity.BottomRight;
+            if (isUseOverlayHost)
+            {
+                // Overlay 模式：popup 渲染在覆盖整个窗口的 OverlayLayer 中，坐标系为窗口客户区逻辑坐标。
+                // 将 AnchorRectangle 设为整个客户区，使 Anchor=None / Gravity=None 的定位器
+                // 自动将 popup 居中于窗口。
+                placement.AnchorRectangle = new Rect(default, topLevel.ClientSize);
+            }
+            else
+            {
+                // Popup Root 模式：popup 是独立的 OS 窗口。
+                // ManagedPopupPositioner 会将 AnchorRectangle（窗口客户区逻辑坐标）自动加上
+                // parentGeometry.TopLeft 转换为屏幕坐标，flip 约束边界为 screen.WorkingArea。
+                // 设为整个窗口客户区，popup 最终居中于父窗口所在屏幕区域内。
+                placement.AnchorRectangle = new Rect(default, topLevel.ClientSize);
+            }
+
+            anchor  = PopupAnchor.None;
+            gravity = PopupGravity.None;
         }
         else
         {
-            (anchor, gravity) = PopupUtils.GetAnchorAndGravity(requestedPlacement);
-        }
-
-        var arrowIndicatorLayoutBounds = default(Rect);
-        if (Child is IArrowAwareShadowMaskInfoProvider provider)
-        {
-            // If ArrowIndicatorLayoutBounds is not initialized yet, force a layout pass
-            if (provider.IsShowArrow())
+            var target = PlacementTarget ?? Parent as Control;
+            if (target is null)
             {
-                Child.Measure(Size.Infinity);
-                Child.Arrange(new Rect(Child.DesiredSize));
-                arrowIndicatorLayoutBounds = provider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
+                return;
             }
 
-            if (IsPointAtCenter && provider.IsShowArrow())
+            if (requestedPlacement == PlacementMode.Pointer)
             {
-                var delta = PopupUtils.CalculatePointAtCenterDelta(
-                    target, provider.GetArrowDecoratedBox(), requestedPlacement, anchor, gravity);
-                hOffset += delta.X;
-                vOffset += delta.Y;
+                var topLevel = TopLevel.GetTopLevel(target);
+                if (topLevel == null)
+                {
+                    return;
+                }
+
+                var position = topLevel.PointToClient(topLevel.GetLastPointerPosition() ?? default);
+                placement.AnchorRectangle = new Rect(position, new Size(1, 1));
+                anchor  = PopupAnchor.TopLeft;
+                gravity = PopupGravity.BottomRight;
             }
+            else
+            {
+                (anchor, gravity) = PopupUtils.GetAnchorAndGravity(requestedPlacement);
+            }
+
+            var arrowIndicatorLayoutBounds = default(Rect);
+            if (Child is IArrowAwareShadowMaskInfoProvider provider)
+            {
+                // If ArrowIndicatorLayoutBounds is not initialized yet, force a layout pass
+                if (provider.IsShowArrow() && PopupUtils.CanEnabledArrow(requestedPlacement))
+                {
+                    Child.Measure(Size.Infinity);
+                    Child.Arrange(new Rect(Child.DesiredSize));
+                    arrowIndicatorLayoutBounds = provider.GetArrowDecoratedBox().ArrowIndicatorLayoutBounds;
+
+                    if (IsPointAtCenter)
+                    {
+                        var delta = PopupUtils.CalculatePointAtCenterDelta(
+                            target, provider.GetArrowDecoratedBox(), requestedPlacement, anchor, gravity);
+                        hOffset += delta.X;
+                        vOffset += delta.Y;
+                    }
+                }
+            }
+
+            var (flipX, flipY) = PopupUtils.ApplyCustomPlacement(
+                placement,
+                requestedPlacement,
+                isUseOverlayHost,
+                hOffset,
+                vOffset,
+                marginToAnchor,
+                shadowThickness,
+                anchor,
+                gravity,
+                arrowIndicatorLayoutBounds);
+            NotifyFlipped(flipX, flipY);
+            CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, flipX, flipY);
+            return;
         }
 
-        var (flipX, flipY) = PopupUtils.ApplyCustomPlacement(
-            placement,
-            requestedPlacement,
-            isUseOverlayHost,
-            hOffset,
-            vOffset,
-            marginToAnchor,
-            shadowThickness,
-            anchor,
-            gravity,
-            arrowIndicatorLayoutBounds);
-
-        NotifyFlipped(flipX, flipY);
+        // Center 走到这里：AnchorRectangle 已设为整个窗口客户区，Anchor/Gravity=None 定位器自动居中。
+        // 居中不存在翻转，直接设置 Offset 并通知 (false, false)。
+        placement.Anchor  = anchor;
+        placement.Gravity = gravity;
+        placement.Offset  = new Point(hOffset, vOffset);
+        NotifyFlipped(false, false);
+        CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, false, false);
     }
 
     #endregion
