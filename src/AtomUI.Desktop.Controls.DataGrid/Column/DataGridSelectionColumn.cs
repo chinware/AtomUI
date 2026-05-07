@@ -1,9 +1,8 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Reactive.Disposables;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -17,7 +16,7 @@ public class DataGridSelectionColumn : DataGridColumn
 
     public override bool IsReadOnly => true;
     
-    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? editBinding)
+    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase? editBinding)
     {
         editBinding = null;
         return null;

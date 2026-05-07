@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
@@ -38,7 +39,7 @@ internal class DataGridFillerColumn : DataGridColumn
         return null;
     }
 
-    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? editBinding)
+    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase? editBinding)
     {
         editBinding = null;
         return null;

@@ -100,7 +100,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     
     internal double LayoutRoundedWidth { get; private set; }
 
-    internal ICellEditBinding? CellEditBinding => _editBinding;
+    internal BindingExpressionBase? CellEditBinding => _editBinding;
 
     IDataGridColumnGroupItem? IDataGridColumnGroupItem.GroupParent { get; set; }
     ObservableCollection<IDataGridColumnGroupItem> IDataGridColumnGroupItem.GroupChildren { get; } = new();
@@ -124,7 +124,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     private IDataTemplate? _headerTemplate;
     private DataGridColumnHeader? _headerCell;
     private Control? _editingElement;
-    private ICellEditBinding? _editBinding;
+    private BindingExpressionBase? _editBinding;
     private BindingBase? _clipboardContentBinding;
     private ControlTheme? _cellTheme;
     private Classes? _cellStyleClasses;

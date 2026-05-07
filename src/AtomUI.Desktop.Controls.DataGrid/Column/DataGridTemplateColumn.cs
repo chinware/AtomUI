@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
 
@@ -103,7 +104,7 @@ public class DataGridTemplateColumn : DataGridColumn
         throw DataGridError.DataGridTemplateColumn.MissingTemplateForType(typeof(DataGridTemplateColumn));
     }
 
-    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? binding)
+    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase? binding)
     {
         binding = null;
         if(CellEditingTemplate != null)

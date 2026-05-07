@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
-using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Utils;
@@ -261,9 +260,6 @@ public partial class DataGrid
     internal const double DefaultRowGroupSublevelIndent = 20;
     private const double DefaultMinColumnWidth = 20;
     private const double DefaultMaxColumnWidth = double.PositiveInfinity;
-
-    private List<Exception> _bindingValidationErrors = [];
-    private IDisposable? _validationSubscription;
 
     private INotifyCollectionChanged? _topLevelGroup;
     private ContentControl? _clipboardContentControl;
@@ -2512,12 +2508,11 @@ public partial class DataGrid
         // If we're committing, explicitly update the source but watch out for any validation errors
         if (editAction == DataGridEditAction.Commit)
         {
-            void SetValidationStatus(ICellEditBinding binding)
+            void SetValidationStatus(BindingExpressionBase binding)
             {
-                if (binding.IsValid)
+                if (!DataValidationErrors.GetHasErrors(editingElement))
                 {
                     ResetValidationStatus();
-                    DataValidationErrors.ClearErrors(editingElement);
                 }
                 else
                 {
@@ -2532,20 +2527,14 @@ public partial class DataGrid
                         editingRow.IsValid = false;
                         editingRow.ApplyState();
                     }
-
-                    DataValidationErrors.SetError(editingElement,
-                        new AggregateException(binding.ValidationErrors));
                 }
             }
 
             var editBinding = CurrentColumn?.CellEditBinding;
-            if (editBinding != null && !editBinding.CommitEdit())
+            if (editBinding != null && DataValidationErrors.GetHasErrors(editingElement))
             {
+                editBinding.UpdateSource();
                 SetValidationStatus(editBinding);
-                _validationSubscription?.Dispose();
-                _validationSubscription =
-                    editBinding.ValidationChanged.Subscribe(v => SetValidationStatus(editBinding));
-
                 ScrollSlotIntoView(CurrentColumnIndex, CurrentSlot, forCurrentCellChange: false,
                     forceHorizontalScroll: true);
                 return false;
@@ -4711,8 +4700,6 @@ public partial class DataGrid
 
         IsValid = true;
 
-        _validationSubscription?.Dispose();
-        _validationSubscription = null;
     }
 
     private void ConfigureFrameBorderThickness()

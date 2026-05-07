@@ -720,7 +720,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <returns>
     /// A new editing element that is bound to the column's <see cref="P:AtomUI.Desktop.Controls.DataGridBoundColumn.Binding" /> property value.
     /// </returns>
-    protected abstract Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? binding);
+    protected abstract Control? GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase? binding);
 
     /// <summary>
     /// When overridden in a derived class, gets a read-only element that is bound to the column's

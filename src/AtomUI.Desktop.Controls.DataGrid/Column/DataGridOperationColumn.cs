@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
@@ -14,7 +15,7 @@ internal class DataGridOperationColumn : DataGridColumn
         IsReadOnly = true;
     }
 
-    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? editBinding)
+    protected override Control? GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase? editBinding)
     {
         editBinding = null;
         return null;

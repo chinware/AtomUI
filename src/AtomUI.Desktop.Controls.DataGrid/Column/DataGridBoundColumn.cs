@@ -5,12 +5,10 @@
 
 using System.Diagnostics;
 using AtomUI.Desktop.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
@@ -85,7 +83,7 @@ public abstract class DataGridBoundColumn : DataGridColumn
 
     //TODO Rename
     //TODO Validation
-    protected sealed override Control GenerateEditingElement(DataGridCell cell, object dataItem, out ICellEditBinding? editBinding)
+    protected sealed override Control GenerateEditingElement(DataGridCell cell, object dataItem, out BindingExpressionBase? editBinding)
     {
         Control element = GenerateEditingElementDirect(cell, dataItem);
         editBinding = null;
@@ -93,19 +91,11 @@ public abstract class DataGridBoundColumn : DataGridColumn
         if (Binding != null)
         {
             Debug.Assert(BindingTarget != null);
-            editBinding = BindEditingElement(element, BindingTarget, Binding);
+            editBinding = element.Bind(BindingTarget, Binding);
         }
 
         return element;
     } 
-
-    private static ICellEditBinding? BindEditingElement(AvaloniaObject target, AvaloniaProperty property, BindingBase binding)
-    {
-        var bindingExpression = target.Bind(property, binding);
-        return target is Control control
-            ? new CellEditBinding(bindingExpression, control)
-            : new CellEditBinding(bindingExpression);
-    }
 
     protected abstract Control GenerateEditingElementDirect(DataGridCell cell, object dataItem);
 
