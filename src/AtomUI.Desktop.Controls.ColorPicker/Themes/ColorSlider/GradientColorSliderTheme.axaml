@@ -1,0 +1,48 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:GradientColorSlider}" TargetType="atom:GradientColorSlider">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border CornerRadius="{TemplateBinding CornerRadius}"
+                        Margin="{TemplateBinding Padding}">
+                    <Panel>
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{atom:ColorPickerTokenResource ColorPickerSliderTrackSize}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding TransparentBgBrush}" />
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{atom:ColorPickerTokenResource ColorPickerSliderTrackSize}"
+                                Background="{TemplateBinding GradientValue}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{atom:ColorPickerTokenResource ColorPickerInsetShadow}" />
+                        <atom:GradientColorPickerTrack Name="PART_Track"
+                                                       Height="{atom:ColorPickerTokenResource ColorPickerSliderTrackSize}"
+                                                       HorizontalAlignment="Stretch"
+                                                       VerticalAlignment="Center"
+                                                       Minimum="{TemplateBinding Minimum}"
+                                                       Maximum="{TemplateBinding Maximum}"
+                                                       Value="{TemplateBinding Value, Mode=TwoWay}"
+                                                       GradientValue="{TemplateBinding GradientValue, Mode=TwoWay}"
+                                                       ClipToBounds="False">
+                        </atom:GradientColorPickerTrack>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Minimum" Value="0.0" />
+        <Setter Property="Maximum" Value="1.0" />
+        <Setter Property="TransparentBgIntervalColor"
+                Value="{atom:SharedTokenResource ColorFillSecondary}" />
+        <Setter Property="TransparentBgSize"
+                Value="{atom:ColorPickerTokenResource TransparentBgSize}" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Height" Value="{atom:ColorPickerTokenResource ColorPickerSliderSize}" />
+    </ControlTheme>
+</ResourceDictionary>

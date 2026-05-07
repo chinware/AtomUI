@@ -1,0 +1,78 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ColorBlock}" TargetType="atom:ColorBlock">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="ColorPreviewFrame"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Background="{TemplateBinding TransparentBgBrush}"
+                            IsVisible="{TemplateBinding IsEmptyColorMode, Converter={x:Static BoolConverters.Not}}">
+                        <Border Name="ColorPreview"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{atom:ColorPickerTokenResource ColorBlockInnerShadows}"/>
+                    </Border>
+                    <Border Name="EmptyColorFrame" 
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            IsVisible="{TemplateBinding IsEmptyColorMode}"
+                            Background="Transparent"/>
+                </Panel>
+                
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="TransparentBgIntervalColor" Value="{atom:SharedTokenResource ColorFillSecondary}" />
+        <Setter Property="TransparentBgSize" Value="{atom:ColorPickerTokenResource TransparentBgSize}" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        
+        <Style Selector="^[IsEmptyColorMode=True]">
+            <Setter Property="Cursor" Value="Hand" />
+            <Style Selector="^ /template/ Border#EmptyColorFrame">
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillSecondary}" />
+            </Style>
+            
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#EmptyColorFrame">
+                    <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+                </Style>
+            </Style>
+        </Style>
+        
+        <Style Selector="^[IsCustomSize=False]">
+            <Style Selector="^[SizeType=Large]">
+                <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeight}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Middle]">
+                <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+            </Style>
+
+            <Style Selector="^[SizeType=Small]">
+                <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightXS}" />
+                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightXS}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

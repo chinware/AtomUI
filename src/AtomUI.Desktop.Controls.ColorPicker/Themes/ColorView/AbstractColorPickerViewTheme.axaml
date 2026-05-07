@@ -1,0 +1,52 @@
+<ControlTheme
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:Class="AtomUI.Desktop.Controls.Themes.AbstractColorPickerViewTheme"
+    TargetType="atom:AbstractColorPickerView"
+    x:ClassModifier="internal">
+
+    <Style Selector="^:is(atom|AbstractColorPickerView)">
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
+        <Style Selector="^ /template/ atom|GradientColorSlider#PART_GradientColorSlider">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="^ /template/ atom|ColorSpectrum#ColorSpectrum">
+            <Setter Property="MinHeight"
+                    Value="{atom:ColorPickerTokenResource ColorSpectrumHeight}" />
+            <Setter Property="MinWidth" Value="{atom:ColorPickerTokenResource ColorPickerWidth}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|ColorBlock#ColorPreview">
+            <Setter Property="Size"
+                    Value="{atom:ColorPickerTokenResource ColorPickerPreviewSize}" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#ColorPickerContainer">
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingSM}" />
+        </Style>
+
+        <Style Selector="^ /template/ Panel#SliderContainer">
+            <Setter Property="Margin"
+                    Value="{atom:ColorPickerTokenResource SliderContainerMargin}" />
+        </Style>
+
+        <Style Selector="^[IsAlphaEffectiveVisible=False]">
+            <Style Selector="^ /template/ atom|ColorSlider#ColorSpectrumThirdComponentSlider">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Style>
+        
+        <Style Selector="^ /template/ Rectangle#Separator">
+            <Setter Property="Fill" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ StackPanel#PART_LayoutRoot">
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}"/>
+        </Style>
+    </Style>
+</ControlTheme>

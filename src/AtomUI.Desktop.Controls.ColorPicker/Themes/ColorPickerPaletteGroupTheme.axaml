@@ -1,0 +1,44 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ColorPickerPaletteGroup}" TargetType="atom:ColorPickerPaletteGroup">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:ColorPickerCollapse ItemsSource="{TemplateBinding PaletteGroup}"
+                                          ItemContentPadding="{atom:ColorPickerTokenResource ColorPickerPresetColorGroupPadding}"
+                                          ItemHeaderPadding="0"
+                                          SizeType="Small"
+                                          IsGhostStyle="True"
+                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                    <atom:ColorPickerCollapse.ItemTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding Colors}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel
+                                            ItemSpacing="{atom:SharedTokenResource SpacingXXS}"
+                                            LineSpacing="{atom:SharedTokenResource SpacingXXS}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <atom:PaletteColorItem
+                                            Color="{Binding}"
+                                            GroupName="{Binding GroupName, RelativeSource={RelativeSource AncestorType=atom:ColorPickerPaletteGroup}}"
+                                            IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:CollapseItem}}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </atom:ColorPickerCollapse.ItemTemplate>
+                </atom:ColorPickerCollapse>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Width"
+                Value="{atom:ColorPickerTokenResource ColorPickerPresetPanelWidth}" />
+
+    </ControlTheme>
+</ResourceDictionary>
