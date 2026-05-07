@@ -34,6 +34,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry_RadioButton = "RadioButton";
     public const string DataEntry_Rate = "Rate";
     public const string DataEntry_Slider = "Slider";
+    public const string DataEntry_ColorPicker = "ColorPicker";
     public const string DataEntry_LineEdit = "LineEdit";
     public const string DataEntry_AutoComplete = "AutoComplete";
     public const string DataEntry_Mentions = "Mentions";

@@ -17,6 +17,7 @@
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
         <PackageReference Include="AtomUI.Desktop.Controls"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker"/>
         <PackageReference Include="AtomUI.Generator"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
@@ -25,6 +26,7 @@
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"

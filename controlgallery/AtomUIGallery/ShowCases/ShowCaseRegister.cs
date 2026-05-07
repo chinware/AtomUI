@@ -42,6 +42,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<RadioButtonViewModel, RadioButtonShowCase>(() => new RadioButtonShowCase());
         locator.Map<RateViewModel, RateShowCase>(() => new RateShowCase());
         locator.Map<SliderViewModel, SliderShowCase>(() => new SliderShowCase());
+        locator.Map<ColorPickerViewModel, ColorPickerShowCase>(() => new ColorPickerShowCase());
         locator.Map<TagViewModel, TagShowCase>(() => new TagShowCase());
         locator.Map<SegmentedViewModel, SegmentedShowCase>(() => new SegmentedShowCase());
         locator.Map<GroupBoxViewModel, GroupBoxShowCase>(() => new GroupBoxShowCase());

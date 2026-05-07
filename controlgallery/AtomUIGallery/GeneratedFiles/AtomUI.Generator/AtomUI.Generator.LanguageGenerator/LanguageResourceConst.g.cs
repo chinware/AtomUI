@@ -29,6 +29,7 @@ namespace AtomUIGallery.Localization
         DataEntry_AutoComplete,
         DataEntry_Cascader,
         DataEntry_CheckBox,
+        DataEntry_ColorPicker,
         DataEntry_DatePicker,
         DataEntry_LineEdit,
         DataEntry_Mentions,
