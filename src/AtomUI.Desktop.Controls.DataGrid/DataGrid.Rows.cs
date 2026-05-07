@@ -163,11 +163,13 @@ public partial class DataGrid
             {
                 if (element is DataGridRow row)
                 {
-                    totalRowsHeight += row.TargetHeight;
+                    totalRowsHeight += IsInvalidSlotElementHeight(row.TargetHeight)
+                        ? GetDisplayedElementHeight(row)
+                        : row.TargetHeight;
                 }
                 else
                 {
-                    totalRowsHeight += element.DesiredSize.Height;
+                    totalRowsHeight += GetDisplayedElementHeight(element);
                 }
             }
 
@@ -1106,7 +1108,7 @@ public partial class DataGrid
             for (int i = startSlot; (i <= endSlot) && (currentHeightChange < availableHeight); i++)
             {
                 Control insertedElement = InsertDisplayedElement(i, updateSlotInformation: false);
-                currentHeightChange += insertedElement.DesiredSize.Height;
+                currentHeightChange += GetMeasuredSlotElementHeight(i, insertedElement);
                 if (i > DisplayData.LastScrollingSlot)
                 {
                     DisplayData.LastScrollingSlot = i;
@@ -1190,12 +1192,12 @@ public partial class DataGrid
         if (IsSlotVisible(slot))
         {
             Debug.Assert(DisplayData.GetDisplayedElement(slot) != null);
-            return DisplayData.GetDisplayedElement(slot).DesiredSize.Height;
+            return GetMeasuredSlotElementHeight(slot, DisplayData.GetDisplayedElement(slot));
         }
 
         Control slotElement = InsertDisplayedElement(slot, true /*updateSlotInformation*/);
         Debug.Assert(slotElement != null);
-        return slotElement.DesiredSize.Height;
+        return GetMeasuredSlotElementHeight(slot, slotElement);
     }
 
     // Returns an estimate for the height of the slots between fromSlot and toSlot
@@ -1218,16 +1220,54 @@ public partial class DataGrid
         if (IsSlotVisible(slot))
         {
             Debug.Assert(DisplayData.GetDisplayedElement(slot) != null);
-            return DisplayData.GetDisplayedElement(slot).DesiredSize.Height;
+            return GetMeasuredSlotElementHeight(slot, DisplayData.GetDisplayedElement(slot));
         }
+        
+        return GetEstimatedSlotElementHeight(slot);
+    }
+
+    private static bool IsInvalidSlotElementHeight(double height)
+    {
+        return double.IsNaN(height) || double.IsInfinity(height) || height < 0;
+    }
+
+    private double GetEstimatedSlotElementHeight(int slot)
+    {
         DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
         if (rowGroupInfo != null)
         {
-            return _rowGroupHeightsByLevel[rowGroupInfo.Level];
+            double groupHeaderHeight = _rowGroupHeightsByLevel[rowGroupInfo.Level];
+            if (!IsInvalidSlotElementHeight(groupHeaderHeight))
+            {
+                return groupHeaderHeight;
+            }
+
+            return !IsInvalidSlotElementHeight(RowGroupHeaderHeightEstimate)
+                ? RowGroupHeaderHeightEstimate
+                : DefaultRowHeight;
         }
 
-        // Assume it's a row since we're either not grouping or it wasn't a RowGroupHeader
-        return RowHeightEstimate + (GetRowDetailsVisibility(slot) ? RowDetailsHeightEstimate : 0);
+        double rowHeight = RowHeightEstimate + (GetRowDetailsVisibility(slot) ? RowDetailsHeightEstimate : 0);
+        return !IsInvalidSlotElementHeight(rowHeight) ? rowHeight : DefaultRowHeight;
+    }
+
+    private double GetMeasuredSlotElementHeight(int slot, Control slotElement)
+    {
+        double desiredHeight = slotElement.DesiredSize.Height;
+        return !IsInvalidSlotElementHeight(desiredHeight)
+            ? desiredHeight
+            : GetEstimatedSlotElementHeight(slot);
+    }
+
+    internal double GetDisplayedElementHeight(Control element)
+    {
+        return element switch
+        {
+            DataGridRow row => GetMeasuredSlotElementHeight(row.Slot, row),
+            DataGridRowGroupHeader { RowGroupInfo: not null } groupHeader =>
+                GetMeasuredSlotElementHeight(groupHeader.RowGroupInfo.Slot, groupHeader),
+            _ => IsInvalidSlotElementHeight(element.DesiredSize.Height) ? 0 : element.DesiredSize.Height
+        };
     }
 
     /// <summary>
@@ -1355,16 +1395,17 @@ public partial class DataGrid
 
             // Measure the element and update AvailableRowRoom
             element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            AvailableSlotElementRoom -= element.DesiredSize.Height;
+            double measuredHeight = GetMeasuredSlotElementHeight(slot, element);
+            AvailableSlotElementRoom -= measuredHeight;
 
             if (groupHeader != null)
             {
-                _rowGroupHeightsByLevel[groupHeader.Level] = groupHeader.DesiredSize.Height;
+                _rowGroupHeightsByLevel[groupHeader.Level] = measuredHeight;
             }
 
             if (row != null && MathUtils.AreClose(RowHeightEstimate, DefaultRowHeight) && double.IsNaN(row.Height))
             {
-                RowHeightEstimate = element.DesiredSize.Height;
+                RowHeightEstimate = measuredHeight;
             }
         }
 
@@ -1588,7 +1629,7 @@ public partial class DataGrid
                 if (elementDeleted != null)
                 {
                     // Deleted Row is within our Viewport, update the AvailableRowRoom
-                    AvailableSlotElementRoom += elementDeleted.DesiredSize.Height;
+                    AvailableSlotElementRoom += GetDisplayedElementHeight(elementDeleted);
                 }
                 else
                 {

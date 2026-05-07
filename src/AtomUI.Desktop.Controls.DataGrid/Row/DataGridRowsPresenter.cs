@@ -100,6 +100,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         
         foreach (Control element in visibleRows)
         {
+            double elementHeight = OwningGrid.GetDisplayedElementHeight(element);
             if (element is DataGridRow row)
             {
                 Debug.Assert(row.Index != -1); // A displayed row should always have its index
@@ -109,20 +110,20 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
                 row.EnsureFillerVisibility();
                 if (_dragIndicator == row)
                 {
-                    row.Arrange(new Rect(0, DragRowOffset, rowDesiredWidth, element.DesiredSize.Height));
+                    row.Arrange(new Rect(0, DragRowOffset, rowDesiredWidth, elementHeight));
                 }
                 else
                 {
-                    row.Arrange(new Rect(0, topEdge, rowDesiredWidth, element.DesiredSize.Height));
+                    row.Arrange(new Rect(0, topEdge, rowDesiredWidth, elementHeight));
                 }
             }
             else if (element is DataGridRowGroupHeader groupHeader)
             {
                 double leftEdge = (OwningGrid.IsRowGroupHeadersFrozen) ? 0 : -OwningGrid.HorizontalOffset;
-                groupHeader.Arrange(new Rect(leftEdge, topEdge, rowDesiredWidth - leftEdge, element.DesiredSize.Height));
+                groupHeader.Arrange(new Rect(leftEdge, topEdge, rowDesiredWidth - leftEdge, elementHeight));
             }
 
-            topEdge += element.DesiredSize.Height;
+            topEdge += elementHeight;
         }
 
         double finalHeight = Math.Max(topEdge + OwningGrid.NegVerticalOffset, finalSize.Height);
@@ -211,7 +212,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
             
             if (element != _dragIndicator)
             {
-                totalHeight += element.DesiredSize.Height;
+                totalHeight += OwningGrid.GetDisplayedElementHeight(element);
             }
         }
 
