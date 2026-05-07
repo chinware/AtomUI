@@ -9,7 +9,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
@@ -223,7 +222,7 @@ internal static class ColorPickerHelpers
                         {
                             // Sweep hue
                             newRgbColor = HsvColor.ToRgb(
-                                MathUtilities.Clamp(componentValue, 0.0, 360.0),
+                                Math.Clamp(componentValue, 0.0, 360.0),
                                 baseHsvColor.S,
                                 baseHsvColor.V,
                                 baseHsvColor.A);
@@ -233,7 +232,7 @@ internal static class ColorPickerHelpers
                             // Sweep red
                             newRgbColor = new Color(
                                 baseRgbColor.A,
-                                Convert.ToByte(MathUtilities.Clamp(componentValue, 0.0, 255.0)),
+                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
                                 baseRgbColor.G,
                                 baseRgbColor.B);
                         }
@@ -247,7 +246,7 @@ internal static class ColorPickerHelpers
                             // Sweep saturation
                             newRgbColor = HsvColor.ToRgb(
                                 baseHsvColor.H,
-                                MathUtilities.Clamp(componentValue, 0.0, 1.0),
+                                Math.Clamp(componentValue, 0.0, 1.0),
                                 baseHsvColor.V,
                                 baseHsvColor.A);
                         }
@@ -257,7 +256,7 @@ internal static class ColorPickerHelpers
                             newRgbColor = new Color(
                                 baseRgbColor.A,
                                 baseRgbColor.R,
-                                Convert.ToByte(MathUtilities.Clamp(componentValue, 0.0, 255.0)),
+                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
                                 baseRgbColor.B);
                         }
 
@@ -271,7 +270,7 @@ internal static class ColorPickerHelpers
                             newRgbColor = HsvColor.ToRgb(
                                 baseHsvColor.H,
                                 baseHsvColor.S,
-                                MathUtilities.Clamp(componentValue, 0.0, 1.0),
+                                Math.Clamp(componentValue, 0.0, 1.0),
                                 baseHsvColor.A);
                         }
                         else
@@ -281,7 +280,7 @@ internal static class ColorPickerHelpers
                                 baseRgbColor.A,
                                 baseRgbColor.R,
                                 baseRgbColor.G,
-                                Convert.ToByte(MathUtilities.Clamp(componentValue, 0.0, 255.0)));
+                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)));
                         }
 
                         break;
@@ -295,13 +294,13 @@ internal static class ColorPickerHelpers
                                 baseHsvColor.H,
                                 baseHsvColor.S,
                                 baseHsvColor.V,
-                                MathUtilities.Clamp(componentValue, 0.0, 1.0));
+                                Math.Clamp(componentValue, 0.0, 1.0));
                         }
                         else
                         {
                             // Sweep alpha
                             newRgbColor = new Color(
-                                Convert.ToByte(MathUtilities.Clamp(componentValue, 0.0, 255.0)),
+                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
                                 baseRgbColor.R,
                                 baseRgbColor.G,
                                 baseRgbColor.B);

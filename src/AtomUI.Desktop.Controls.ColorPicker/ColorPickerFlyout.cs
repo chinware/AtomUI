@@ -34,6 +34,7 @@ internal class ColorPickerFlyout : AbstractColorPickerFlyout
         Presenter[!ColorPickerView.PaletteGroupProperty]          = this[!PaletteGroupProperty];
         
         flyoutPresenter.Content = Presenter;
+        NotifyPresenterCreated(flyoutPresenter);
         return flyoutPresenter;
     }
 }

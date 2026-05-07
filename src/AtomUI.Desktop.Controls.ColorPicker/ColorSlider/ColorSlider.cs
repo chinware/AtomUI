@@ -10,7 +10,6 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Utilities;
 using Avalonia.VisualTree;
 using AvaloniaButton = Avalonia.Controls.Button;
 
@@ -401,7 +400,7 @@ internal class ColorSlider : AbstractColorSlider
         {
             var baseRgbColor = Color;
 
-            byte componentValue = Convert.ToByte(MathUtilities.Clamp(sliderPercent * 255, 0, 255));
+            byte componentValue = Convert.ToByte(Math.Clamp(sliderPercent * 255, 0, 255));
 
             switch (component)
             {

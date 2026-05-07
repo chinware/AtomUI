@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -56,6 +57,13 @@ internal abstract class AbstractColorPickerFlyout : Flyout
     {
         get => GetValue(IsPaletteGroupEnabledProperty);
         set => SetValue(IsPaletteGroupEnabledProperty, value);
+    }
+    
+    internal event EventHandler<Control>? PresenterCreated;
+    
+    protected void NotifyPresenterCreated(Control presenter)
+    {
+        PresenterCreated?.Invoke(this, presenter);
     }
 
 }

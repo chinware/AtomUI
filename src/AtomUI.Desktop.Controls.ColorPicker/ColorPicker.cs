@@ -169,7 +169,6 @@ public class ColorPicker : AbstractColorPicker
     protected override Flyout CreatePickerFlyout()
     {
         var flyout = new ColorPickerFlyout();
-        flyout.IsDetectMouseClickEnabled = false;
         flyout[!ColorPickerFlyout.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
         flyout[!ColorPickerFlyout.IsClearEnabledProperty]        = this[!IsClearEnabledProperty];
         flyout[!ColorPickerFlyout.FormatProperty]                = this[!FormatProperty];

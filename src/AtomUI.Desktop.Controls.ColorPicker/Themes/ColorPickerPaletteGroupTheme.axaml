@@ -13,7 +13,7 @@
                                           IsGhostStyle="True"
                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                     <atom:ColorPickerCollapse.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="atom:ColorPickerPalette">
                             <ItemsControl ItemsSource="{Binding Colors}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>

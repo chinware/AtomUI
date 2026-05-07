@@ -5,14 +5,12 @@ using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
-using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -294,9 +292,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         _flyoutStateHelper.FlyoutAboutToClose       += HandleFlyoutAboutToClose;
         _flyoutStateHelper.FlyoutOpened             += HandleFlyoutOpened;
         _flyoutStateHelper.FlyoutClosed             += HandleFlyoutClosed;
-        _flyoutStateHelper.OpenFlyoutPredicate      =  FlyoutOpenPredicate;
-        _flyoutStateHelper.ClickHideFlyoutPredicate =  ClickHideFlyoutPredicate;
-        
         _flyoutStateHelper[!FlyoutStateHelper.TriggerTypeProperty]     = this[!TriggerTypeProperty];
         _flyoutStateHelper[!FlyoutStateHelper.MouseEnterDelayProperty] = this[!MouseEnterDelayProperty];
         _flyoutStateHelper[!FlyoutStateHelper.MouseLeaveDelayProperty] = this[!MouseLeaveDelayProperty];
@@ -341,7 +336,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             PickerFlyout                    =  CreatePickerFlyout();
             PickerFlyout.Opened            += HandlePickerFlyoutOpened;
             PickerFlyout.Closed            += HandlePickerFlyoutClosed;
-            PickerFlyout.PresenterCreated  += HandlePickerFlyoutPresenterCreated;
+            if (PickerFlyout is AbstractColorPickerFlyout colorPickerFlyout)
+            {
+                colorPickerFlyout.PresenterCreated += HandlePickerFlyoutPresenterCreated;
+            }
             _flyoutStateHelper.Flyout       =  PickerFlyout;
         }
         _flyoutStateHelper.AnchorTarget = this;
@@ -392,9 +390,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         UpdatePseudoClasses();
     }
 
-    private void HandlePickerFlyoutPresenterCreated(object? sender, FlyoutPresenterCreatedEventArgs args)
+    private void HandlePickerFlyoutPresenterCreated(object? sender, Control presenter)
     {
-        NotifyFlyoutPresenterCreated(args.Presenter);
+        NotifyFlyoutPresenterCreated(presenter);
     }
 
     protected virtual void NotifyFlyoutOpened()
@@ -438,33 +436,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
         var region = new Rect(pos.Value, Bounds.Size);
         return region.Contains(args.Position);
-    }
-    
-    protected virtual bool ClickHideFlyoutPredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
-    {
-        if (hostProvider.PopupHost != args.Root)
-        {
-            if (args.Root is PopupRoot root)
-            {
-                var parent = root.Parent;
-                while (parent != null)
-                {
-                    if (parent == hostProvider.PopupHost)
-                    {
-                        return false;
-                    }
-
-                    if (parent is Control parentControl && parentControl.GetVisualRoot() == hostProvider.PopupHost)
-                    {
-                        return false;
-                    }
-                    parent = parent.Parent;
-                }
-            }
-  
-            return true;
-        }
-        return false;
     }
     
     protected virtual void UpdatePseudoClasses()
@@ -571,6 +542,6 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

@@ -15,7 +15,6 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -383,7 +382,7 @@ internal class ColorSpectrum : TemplatedControl
         //  See discussion: https://github.com/AvaloniaUI/Avalonia/discussions/9077
         //
         // To work-around this issue the selection ellipse is refreshed here.
-        Dispatcher.UIThread.Post(UpdateEllipse);
+        Dispatcher.Post(UpdateEllipse);
 
         // OnAttachedToVisualTree is called after OnApplyTemplate so events cannot be connected here
     }
@@ -539,7 +538,7 @@ internal class ColorSpectrum : TemplatedControl
     }
 
     /// <inheritdoc/>
-    protected override void OnGotFocus(GotFocusEventArgs e)
+    protected override void OnGotFocus(FocusChangedEventArgs e)
     {
         // We only want to bother with the color name tool tip if we can provide color names.
         if (_selectionEllipsePanel != null &&
@@ -554,7 +553,7 @@ internal class ColorSpectrum : TemplatedControl
     }
 
     /// <inheritdoc/>
-    protected override void OnLostFocus(RoutedEventArgs e)
+    protected override void OnLostFocus(FocusChangedEventArgs e)
     {
         // We only want to bother with the color name tool tip if we can provide color names.
         if (_selectionEllipsePanel != null &&
@@ -943,7 +942,7 @@ internal class ColorSpectrum : TemplatedControl
         // The gradient image contains two dimensions of HSL information, but not the third.
         // We should keep the third where it already was.
         // Note: This can sometimes cause a crash -- possibly due to differences in c# rounding. Therefore, index is now clamped.
-        Hsv hsvAtPoint = _hsvValues[MathUtilities.Clamp((y * width + x), 0, _hsvValues.Count - 1)];
+        Hsv hsvAtPoint = _hsvValues[Math.Clamp((y * width + x), 0, _hsvValues.Count - 1)];
 
         var hsvColor = HsvColor;
 
@@ -992,9 +991,9 @@ internal class ColorSpectrum : TemplatedControl
 
         Hsv hsvColor = new Hsv(HsvColor);
 
-        hsvColor.H = MathUtilities.Clamp(hsvColor.H, _minHueFromLastBitmapCreation, _maxHueFromLastBitmapCreation);
-        hsvColor.S = MathUtilities.Clamp(hsvColor.S, _minSaturationFromLastBitmapCreation / 100.0, _maxSaturationFromLastBitmapCreation / 100.0);
-        hsvColor.V = MathUtilities.Clamp(hsvColor.V, _minValueFromLastBitmapCreation / 100.0, _maxValueFromLastBitmapCreation / 100.0);
+        hsvColor.H = Math.Clamp(hsvColor.H, _minHueFromLastBitmapCreation, _maxHueFromLastBitmapCreation);
+        hsvColor.S = Math.Clamp(hsvColor.S, _minSaturationFromLastBitmapCreation / 100.0, _maxSaturationFromLastBitmapCreation / 100.0);
+        hsvColor.V = Math.Clamp(hsvColor.V, _minValueFromLastBitmapCreation / 100.0, _maxValueFromLastBitmapCreation / 100.0);
 
         double xPercent = 0;
         double yPercent = 0;
@@ -1239,7 +1238,7 @@ internal class ColorSpectrum : TemplatedControl
                 }
             });
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.InvokeAsync(() =>
             {
                 ColorSpectrumComponents components2 = Components;
                 _minBitmap = ColorPickerHelpers.CreateBitmapFromPixelData(bgraMinPixelData, pixelWidth, pixelHeight);

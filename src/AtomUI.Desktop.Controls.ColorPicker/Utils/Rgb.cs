@@ -3,7 +3,6 @@
 
 using AtomUI.Media;
 using Avalonia.Media;
-using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
@@ -68,10 +67,10 @@ internal struct Rgb
     public Color ToColor(double alpha = 1.0)
     {
         return Color.FromArgb(
-            (byte)MathUtilities.Clamp(alpha * 255.0, 0x00, 0xFF),
-            (byte)MathUtilities.Clamp(R * 255.0, 0x00, 0xFF),
-            (byte)MathUtilities.Clamp(G * 255.0, 0x00, 0xFF),
-            (byte)MathUtilities.Clamp(B * 255.0, 0x00, 0xFF));
+            (byte)Math.Clamp(alpha * 255.0, 0x00, 0xFF),
+            (byte)Math.Clamp(R * 255.0, 0x00, 0xFF),
+            (byte)Math.Clamp(G * 255.0, 0x00, 0xFF),
+            (byte)Math.Clamp(B * 255.0, 0x00, 0xFF));
     }
 
     /// <summary>
@@ -83,9 +82,9 @@ internal struct Rgb
         // Instantiating an HsvColor is unfortunately necessary to use existing conversions
         // Clamping must be done here as it isn't done in the conversion method (internal-use only)
         HsvColor hsvColor = ColorUtils.ToHsv(
-            MathUtilities.Clamp(R, 0.0, 1.0),
-            MathUtilities.Clamp(G, 0.0, 1.0),
-            MathUtilities.Clamp(B, 0.0, 1.0));
+            Math.Clamp(R, 0.0, 1.0),
+            Math.Clamp(G, 0.0, 1.0),
+            Math.Clamp(B, 0.0, 1.0));
 
         return new Hsv(hsvColor);
     }

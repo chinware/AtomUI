@@ -227,7 +227,6 @@ public class GradientColorPicker : AbstractColorPicker
     protected override Flyout CreatePickerFlyout()
     {
         var flyout = new GradientColorPickerFlyout();
-        flyout.IsDetectMouseClickEnabled = false;
 
         flyout[!GradientColorPickerFlyout.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
         flyout[!GradientColorPickerFlyout.IsClearEnabledProperty]        = this[!IsClearEnabledProperty];

@@ -7,7 +7,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Utilities;
 using Avalonia.VisualTree;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
 
@@ -174,7 +173,7 @@ internal abstract class AbstractColorSlider : RangeBase
         var thumbLength = ThumbSize + double.Epsilon;
         var trackLength = Track.Bounds.Width - thumbLength;
         var trackPos    = posOnTrack.Position.X;
-        var logicalPos  = MathUtilities.Clamp((trackPos - thumbLength * 0.5) / trackLength, 0.0d, 1.0d);
+        var logicalPos  = Math.Clamp((trackPos - thumbLength * 0.5) / trackLength, 0.0d, 1.0d);
         var calcVal     = Math.Abs(-logicalPos);
         var range       = Maximum - Minimum;
         var finalValue  = calcVal * range + Minimum;

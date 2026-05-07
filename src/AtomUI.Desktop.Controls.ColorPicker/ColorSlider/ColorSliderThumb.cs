@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using AtomUI.Desktop.Controls.Themes;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Utilities;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
 
 namespace AtomUI.Desktop.Controls;
@@ -38,7 +38,7 @@ internal class ColorSliderThumb : Thumb
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
-        Debug.Assert(MathUtilities.AreClose(e.NewSize.Width, e.NewSize.Height));
+        Debug.Assert(MathUtils.AreClose(e.NewSize.Width, e.NewSize.Height));
         CornerRadius = new CornerRadius(e.NewSize.Width / 2);
     }
 

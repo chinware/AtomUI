@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Utilities;
 using Thumb = AtomUI.Controls.Primitives.Thumb;
 
 namespace AtomUI.Desktop.Controls;
@@ -130,7 +129,7 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
         var factor   = e.Vector / delta;
         var oldValue = Value;
 
-        SetCurrentValue(ValueProperty, MathUtilities.Clamp(
+        SetCurrentValue(ValueProperty, Math.Clamp(
             Value + delta,
             Minimum,
             Maximum));

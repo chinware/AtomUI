@@ -4,6 +4,7 @@
   <Project Path="src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj" />
   <Project Path="src/AtomUI.Controls/AtomUI.Controls.csproj" />
   <Project Path="src/AtomUI.Core/AtomUI.Core.csproj" />
+  <Project Path="src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
   <Project Path="src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
   <Project Path="src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj" />
   <Project Path="src/AtomUI.Generator/AtomUI.Generator.csproj" />
