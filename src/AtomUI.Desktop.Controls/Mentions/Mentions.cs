@@ -16,12 +16,10 @@ using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Diagnostics;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
-using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
 using Avalonia.Threading;
@@ -510,7 +508,6 @@ public class Mentions : TemplatedControl,
 
     private MentionTextArea? _textArea;
     private Popup? _popup;
-    private bool _ignorePopupClose;
     private CompositeDisposable? _subscriptionsOnOpen;
     private ICandidateList? _candidateList;
     private DispatcherTimer? _delayTimer;
@@ -699,10 +696,9 @@ public class Mentions : TemplatedControl,
 
         if (_popup != null)
         {
-            _popup.ClickHidePredicate  =  PopupClosePredicate;
-            _popup.IgnoreFirstDetected =  false;
             _popup.Opened              += HandlePopupOpened;
             _popup.Closed              += HandlePopupClosed;
+            _popup.OverlayInputPassThroughElement = _textArea;
         }
         
         ConfigurePopupPlacement();
@@ -732,32 +728,6 @@ public class Mentions : TemplatedControl,
         _textArea?.InsertMentionOption(value, Split);
     }
     
-    protected bool PopupClosePredicate(IPopupHostProvider hostProvider, RawPointerEventArgs args)
-    {
-        if (_ignorePopupClose)
-        {
-            _ignorePopupClose = false;
-            return false;
-        }
-        if (hostProvider.PopupHost is OverlayPopupHost overlayPopupHost && args.Root is Control root)
-        {
-            var offset = overlayPopupHost.TranslatePoint(default, root);
-            if (offset.HasValue)
-            {
-                var bounds = new Rect(offset.Value, overlayPopupHost.Bounds.Size);
-                return !bounds.Contains(args.Position);
-            }
-        }
-        else if (hostProvider.PopupHost is PopupRoot popupRoot)
-        {
-            var popupRoots = new HashSet<PopupRoot>();
-            popupRoots.Add(popupRoot);
-            return !popupRoots.Contains(args.Root);
-        }
-        
-        return false;
-    }
-
     private void HandleCandidateOpenRequest(object? sender, ShowMentionCandidateRequestEventArgs eventArgs)
     {
         CandidateTriggered?.Invoke(this, new MentionCandidateTriggeredEventArgs(eventArgs.TriggerChar));
@@ -853,7 +823,7 @@ public class Mentions : TemplatedControl,
                 return;
             }
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.InvokeAsync(() =>
             {
                 if (!cancellationToken.IsCancellationRequested)
                 {
@@ -935,7 +905,7 @@ public class Mentions : TemplatedControl,
         base.OnLoaded(e);
         if (IsAutoFocus)
         {
-            Dispatcher.UIThread.Post(() => _textArea?.Focus());
+            Dispatcher.Post(() => _textArea?.Focus());
         }
 
         UpdatePseudoClasses();
@@ -1118,7 +1088,6 @@ public class Mentions : TemplatedControl,
                 var textArea = sourceControl.FindAncestorOfType<MentionTextArea>();
                 if (textArea != null)
                 {
-                    _ignorePopupClose = true;
                     return;
                 }
             }
@@ -1256,7 +1225,7 @@ public class Mentions : TemplatedControl,
         {
             if (_popup != null)
             {
-                _popup.IsMotionAwareOpen = false;
+                _popup.IsOpen = false;
             }
             NotifyDropDownClosed(EventArgs.Empty);
         }
@@ -1286,7 +1255,7 @@ public class Mentions : TemplatedControl,
     {
         if (_popup != null)
         {
-            _popup.IsMotionAwareOpen = true;
+            _popup.IsOpen = true;
         }
         _popupHasOpened = true;
         NotifyDropDownOpened(EventArgs.Empty);

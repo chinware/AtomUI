@@ -491,6 +491,13 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         DefaultSpeed
     }
 
+    public enum MentionsTokenKind
+    {
+        MinPopupWidth,
+        OptionHeight,
+        PopupContentPadding
+    }
+
     public enum MenuTokenKind
     {
         ContextMenuOffsetX,
@@ -1539,6 +1546,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public MarqueeLabelTokenResourceExtension(MarqueeLabelTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class MentionsTokenResourceExtension : TokenResourceExtension<MentionsTokenKind>
+    {
+        public MentionsTokenResourceExtension()
+        {
+        }
+
+        public MentionsTokenResourceExtension(MentionsTokenKind kind) : base(kind)
         {
         }
     }

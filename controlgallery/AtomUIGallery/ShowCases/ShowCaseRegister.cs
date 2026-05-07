@@ -52,6 +52,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<QRCodeViewModel, QRCodeShowCase>(() => new QRCodeShowCase());
         locator.Map<LineEditViewModel, LineEditShowCase>(() => new LineEditShowCase());
         locator.Map<AutoCompleteViewModel, AutoCompleteShowCase>(() => new AutoCompleteShowCase());
+        locator.Map<MentionsViewModel, MentionsShowCase>(() => new MentionsShowCase());
         locator.Map<SelectViewModel, SelectShowCase>(() => new SelectShowCase());
         locator.Map<CascaderViewModel, CascaderShowCase>(() => new CascaderShowCase());
         locator.Map<TreeSelectViewModel, TreeSelectShowCase>(() => new TreeSelectShowCase());

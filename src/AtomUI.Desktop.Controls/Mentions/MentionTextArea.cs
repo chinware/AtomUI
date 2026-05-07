@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Desktop.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -85,7 +84,7 @@ internal class MentionTextArea : TextArea
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _textPresenter = e.NameScope.Find<TextPresenter>(TextAreaThemeConstants.TextPresenterPart);
+        _textPresenter = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

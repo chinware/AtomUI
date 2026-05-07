@@ -97,6 +97,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(QRCodeViewModel.ID, () => new QRCodeViewModel(HostScreen));
         _showCaseViewModelFactories.Add(LineEditViewModel.ID, () => new LineEditViewModel(HostScreen));
         _showCaseViewModelFactories.Add(AutoCompleteViewModel.ID, () => new AutoCompleteViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(MentionsViewModel.ID, () => new MentionsViewModel(HostScreen));
         _showCaseViewModelFactories.Add(SelectViewModel.ID, () => new SelectViewModel(HostScreen));
         _showCaseViewModelFactories.Add(CascaderViewModel.ID, () => new CascaderViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TreeSelectViewModel.ID, () => new TreeSelectViewModel(HostScreen));

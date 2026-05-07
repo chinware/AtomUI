@@ -73,6 +73,8 @@
                               ItemKey="{x:Static viewmodels:LineEditViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_AutoComplete}"
                               ItemKey="{x:Static viewmodels:AutoCompleteViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Mentions}"
+                              ItemKey="{x:Static viewmodels:MentionsViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Select}"
                               ItemKey="{x:Static viewmodels:SelectViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Cascader}"

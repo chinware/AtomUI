@@ -36,6 +36,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry_Slider = "Slider 滑动输入条";
     public const string DataEntry_LineEdit = "LineEdit 输入框";
     public const string DataEntry_AutoComplete = "AutoComplete 自动完成";
+    public const string DataEntry_Mentions = "Mentions 提及";
     public const string DataEntry_Select = "Select 选择器";
     public const string DataEntry_Cascader = "Cascader 级联选择";
     public const string DataEntry_TreeSelect = "TreeSelect 树选择";

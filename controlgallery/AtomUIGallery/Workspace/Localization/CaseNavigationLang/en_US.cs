@@ -36,6 +36,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry_Slider = "Slider";
     public const string DataEntry_LineEdit = "LineEdit";
     public const string DataEntry_AutoComplete = "AutoComplete";
+    public const string DataEntry_Mentions = "Mentions";
     public const string DataEntry_Select = "Select";
     public const string DataEntry_Cascader = "Cascader";
     public const string DataEntry_TreeSelect = "TreeSelect";
