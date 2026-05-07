@@ -203,6 +203,6 @@ public sealed class CalendarBlackoutDatesCollection : ObservableCollection<Calen
 
     private static void EnsureValidThread()
     {
-        Dispatcher.UIThread.VerifyAccess();
+        Dispatcher.CurrentDispatcher.VerifyAccess();
     }
 }

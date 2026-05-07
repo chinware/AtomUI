@@ -207,6 +207,6 @@ internal sealed class CalendarButton : AvaloniaButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

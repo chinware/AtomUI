@@ -250,7 +250,7 @@ public class Button : AvaloniaButton,
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -305,7 +305,7 @@ public class Button : AvaloniaButton,
                     _waveSpiritDecorator.WaveBrush = waveBrush;
                 }
      
-                Dispatcher.UIThread.Post(() =>
+                Dispatcher.Post(() =>
                 {
                     _waveSpiritDecorator?.Play();
                 });

@@ -368,7 +368,7 @@ public class NavMenu : ItemsControl,
     {
         if (DefaultOpenPaths != null && !_defaultOpenPathsApplied)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 foreach (var defaultOpenPath in DefaultOpenPaths)
                 {
@@ -388,7 +388,7 @@ public class NavMenu : ItemsControl,
         }
         else if (DefaultSelectedPath != null)
         {
-            Dispatcher.UIThread.InvokeAsync(async () => await TraverNavMenuPathAsync(DefaultSelectedPath, (menuItem, i) =>
+            Dispatcher.InvokeAsync(async () => await TraverNavMenuPathAsync(DefaultSelectedPath, (menuItem, i) =>
             {
                 if (i == DefaultSelectedPath.Length - 1)
                 {
@@ -403,7 +403,7 @@ public class NavMenu : ItemsControl,
         var selectPathNodes = CollectPathNodes(node);
         if (selectPathNodes.Count > 0)
         {
-            Dispatcher.UIThread.InvokeAsync(async () => await TraverNavMenuPathAsync(selectPathNodes, (menuItem, i) =>
+            Dispatcher.InvokeAsync(async () => await TraverNavMenuPathAsync(selectPathNodes, (menuItem, i) =>
             {
                 if (i == selectPathNodes.Count - 1)
                 {

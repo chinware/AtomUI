@@ -544,7 +544,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
 
         var motion = OwnerTreeView.OpenMotion ?? new ExpandMotion(Direction.Top, null, new CubicEaseOut());
         motion.Duration = OwnerTreeView.MotionDuration;
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.InvokeAsync(async () =>
         {
             await motion.RunAsync(_itemsPresenterMotionActor,
                 () => { _itemsPresenterMotionActor.IsVisible = true; });
@@ -585,7 +585,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         var motion = OwnerTreeView.CloseMotion ?? new CollapseMotion(Direction.Top, null, new CubicEaseIn());
         motion.Duration = OwnerTreeView.MotionDuration;
 
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.InvokeAsync(async () =>
         {
             await motion.RunAsync(_itemsPresenterMotionActor);
             _itemsPresenterMotionActor.IsVisible = false;

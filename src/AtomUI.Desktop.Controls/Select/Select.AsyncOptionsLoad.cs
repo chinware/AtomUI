@@ -73,7 +73,7 @@ public partial class Select
                 return;
             }
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.InvokeAsync(() =>
             {
                 if (!cancellationToken.IsCancellationRequested)
                 {

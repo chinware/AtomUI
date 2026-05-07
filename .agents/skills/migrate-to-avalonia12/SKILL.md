@@ -103,6 +103,30 @@ Check all 50+ categories of breaking changes, not just the most common ones. Pay
 - Internal utility classes that may need updating
 - Reflection-based access to private/internal members
 
+### 1.1. Scope closure and zero-residual validation
+
+For any migration scoped to a file, folder, module, project, or branch port, you MUST treat the requested scope as a closed set and verify it end-to-end:
+
+1. Determine the exact migration scope first (single file, control folder, project, or directory tree)
+2. Run broad pre-change scans across the entire requested scope, not just the files you expect to touch
+3. After edits, rerun the same scans across the entire scope
+4. Do NOT consider the migration complete until the critical residual patterns for that scope are reduced to zero or explicitly explained as out-of-scope
+
+**Why:** Avalonia 12 migration often leaves behind APIs that still compile but violate the migration goal. Build success alone is not a sufficient completion signal.
+
+**Minimum residual scan set for Avalonia 12 migrations:**
+- `Dispatcher\\.UIThread`
+- `PlacementMode\\s*=`
+- `MotionAwareOpen|MotionAwareClose`
+- `Gestures\\.`
+- `KeyboardNavigationHandler`
+- `BindingPlugins`
+- `DataFormats\\.`
+- `\\bWatermark\\b|UseFloatingWatermark`
+- `\\bSystemDecorations\\b|ExtendClientAreaChromeHints`
+
+Add more patterns as needed based on the target module. The important rule is: **scan the full requested scope, not only edited files.**
+
 ### 2. Platform-aware migration
 
 Consider target platforms (Desktop, Android, iOS, Browser, Headless) when suggesting fixes.
@@ -457,6 +481,27 @@ Include:
 ### Step 5: Apply fixes (if requested)
 
 Only auto-fix safe transformations. Flag complex changes for manual review.
+
+### Step 5.5: Residual pattern scan (MANDATORY after code changes)
+
+After applying code changes during migration, you MUST rerun full-scope scans for the critical Avalonia 12 patterns relevant to the target:
+
+1. **Use the full requested scope** — scan the whole target directory/project, not just touched files
+2. **Rerun the key patterns** — at minimum include the residual scan set defined in Rule 1.1, plus any task-specific patterns discovered during the migration
+3. **Require zero unexplained matches** — if a pattern still matches, either fix it or explicitly explain why it is intentionally left unchanged
+4. **Do NOT stop at the first clean subset** — the verification target is the full requested scope
+
+**Example residual scan commands:**
+```bash
+rg "Dispatcher\\.UIThread|MotionAwareOpen|MotionAwareClose|KeyboardNavigationHandler" src/AtomUI.Desktop.Controls
+rg "PlacementMode\\s*=|Gestures\\.|BindingPlugins|DataFormats\\." src/AtomUI.Desktop.Controls
+```
+
+**Residual scan is NOT optional** — it catches:
+- APIs that still compile but violate Avalonia 12 migration standards
+- untouched files in the requested scope that were skipped by file-by-file editing
+- partial migrations where only the currently inspected files were updated
+- regressions caused by new code copying old Avalonia 11 patterns
 
 ### Step 6: Build verification (MANDATORY after code changes)
 
@@ -1825,7 +1870,12 @@ string? key = accessText.AccessKey;
 2. Preserve formatting and comments
 3. Update imports if necessary
 4. Verify no new issues introduced
-5. **MANDATORY: Build verification after code changes**
+5. **MANDATORY: Full-scope residual scan after code changes**
+   - Rerun the critical pattern scans across the entire requested scope
+   - Do NOT limit verification to edited files
+   - Residual matches must be zero or explicitly justified
+   - Do NOT consider migration complete if deprecated Avalonia 11 patterns remain in scope
+6. **MANDATORY: Build verification after code changes**
    - After applying any code changes, run `dotnet build <project-file>` to verify compilation
    - If build fails, read error messages, fix issues, and rebuild
    - Report build status in final summary
@@ -1864,6 +1914,9 @@ for (int i = 0; i < count; i++)
 3. Explain why changed
 4. Indicate auto-fixability
 5. Group by severity and platform
+6. State the exact migration scope that was verified
+7. Report the post-migration residual scan results, not just build status
+8. If any critical pattern remains in scope, explain it explicitly instead of implying completion
 
 ## Prohibited
 

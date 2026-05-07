@@ -181,7 +181,7 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
         _isClosing = true;
         if (IsMotionEnabled)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 for (var i = 0; i < ItemCount; i++)
                 {

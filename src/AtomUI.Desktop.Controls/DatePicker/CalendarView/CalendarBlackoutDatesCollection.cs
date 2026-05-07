@@ -201,6 +201,6 @@ internal sealed class CalendarBlackoutDatesCollection : ObservableCollection<Cal
 
     private static void EnsureValidThread()
     {
-        Dispatcher.UIThread.VerifyAccess();
+        Dispatcher.CurrentDispatcher.VerifyAccess();
     }
 }

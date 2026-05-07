@@ -364,6 +364,6 @@ public sealed class SelectedDatesCollection : ObservableCollection<DateTime>
 
     private static void EnsureValidThread()
     {
-        Dispatcher.UIThread.VerifyAccess();
+        Dispatcher.CurrentDispatcher.VerifyAccess();
     }
 }

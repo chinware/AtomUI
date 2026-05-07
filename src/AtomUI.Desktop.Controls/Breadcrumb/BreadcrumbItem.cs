@@ -152,7 +152,7 @@ public class BreadcrumbItem : AvaloniaButton
             Uri? uri = NavigateUri;
             if (uri is not null)
             {
-                Dispatcher.UIThread.InvokeAsync(async () =>
+                Dispatcher.InvokeAsync(async () =>
                 {
                     await TopLevel.GetTopLevel(this)!.Launcher.LaunchUriAsync(uri);
                 });
@@ -169,6 +169,6 @@ public class BreadcrumbItem : AvaloniaButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

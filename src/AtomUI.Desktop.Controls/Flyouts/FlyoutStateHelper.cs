@@ -99,7 +99,7 @@ internal class FlyoutStateHelper : AvaloniaObject
         if (TriggerType == FlyoutTriggerType.Focus)
         {
             RegisterRootPointerHandler();
-            Dispatcher.UIThread.Post(() => _isFlyoutShowing = false);
+            Dispatcher.Post(() => _isFlyoutShowing = false);
         }
         else if (TriggerType == FlyoutTriggerType.Hover)
         {
@@ -462,7 +462,7 @@ internal class FlyoutStateHelper : AvaloniaObject
             return;
         }
 
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.Post(() =>
         {
             if (Flyout is { IsOpen: true } && !_isFlyoutShowing && !IsFocusWithinFlyoutScope())
             {

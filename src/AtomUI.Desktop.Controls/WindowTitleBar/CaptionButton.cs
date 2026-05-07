@@ -130,7 +130,7 @@ internal class CaptionButton : AvaloniaButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 
     protected override Size MeasureOverride(Size availableSize)

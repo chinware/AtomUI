@@ -1375,7 +1375,7 @@ public partial class TreeView : AvaloniaTreeView,
         
         if (IsDefaultExpandAll)
         {
-            Dispatcher.UIThread.Post(() => ExpandAll(false));
+            Dispatcher.Post(() => ExpandAll(false));
         }
         else
         {

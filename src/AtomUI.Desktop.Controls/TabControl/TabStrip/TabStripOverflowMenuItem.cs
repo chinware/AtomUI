@@ -20,7 +20,7 @@ internal class TabStripOverflowMenuItem : BaseOverflowMenuItem
                 menuFlyout?.Items.Remove(this);
                 if (menuFlyout?.Items.Count == 0)
                 {
-                    Dispatcher.UIThread.Post(() => { menu.Close(); });
+                    Dispatcher.Post(() => { menu.Close(); });
                 }
             }
         }

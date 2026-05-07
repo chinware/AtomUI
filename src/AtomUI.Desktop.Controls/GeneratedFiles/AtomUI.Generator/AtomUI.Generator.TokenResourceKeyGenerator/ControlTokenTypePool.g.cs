@@ -65,6 +65,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitViewToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StatisticToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TextAreaToken));

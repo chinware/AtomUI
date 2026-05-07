@@ -200,7 +200,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var motion = OpenMotion;
         motion.Duration      = MotionDuration;
         _motionActor.Opacity = 0.0d;
-        Dispatcher.UIThread.InvokeAsync(() => PlayMotionAsync(motion, _motionActor, _motionCts.Token));
+        Dispatcher.InvokeAsync(() => PlayMotionAsync(motion, _motionActor, _motionCts.Token));
     }
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)
@@ -218,7 +218,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
 
         e.Cancel = true;
-        Dispatcher.UIThread.InvokeAsync(() => PlayCloseMotionAndCloseAsync(_motionActor));
+        Dispatcher.InvokeAsync(() => PlayCloseMotionAndCloseAsync(_motionActor));
     }
 
     private async Task PlayMotionAsync(AbstractMotion motion, BaseMotionActor actor, CancellationToken cancellationToken)
@@ -258,7 +258,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
         _isPlayingCloseMotion = false;
         _isClosingAnimating = true;
-        Dispatcher.UIThread.Post(Close);
+        Dispatcher.Post(Close);
     }
 
     #endregion

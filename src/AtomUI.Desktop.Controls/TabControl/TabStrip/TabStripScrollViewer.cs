@@ -121,7 +121,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
     {
         if (TabStrip is not null)
         {
-            Dispatcher.UIThread.Post(sender =>
+            Dispatcher.Post(sender =>
             {
                 if (sender is TabStripOverflowMenuItem tabStripMenuItem)
                 {

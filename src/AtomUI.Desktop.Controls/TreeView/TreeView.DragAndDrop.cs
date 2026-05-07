@@ -291,7 +291,7 @@ public partial class TreeView
         _beingDraggedTreeItem = GetNodeByPositionSelfFirst(_lastPoint!.Value);
         if (_beingDraggedTreeItem is not null)
         {
-            Dispatcher.UIThread.Post(() => { _beingDraggedTreeItem.IsDragging = true; });
+            Dispatcher.Post(() => { _beingDraggedTreeItem.IsDragging = true; });
         }
 
         var adornerLayer = AdornerLayer.GetAdornerLayer(this);

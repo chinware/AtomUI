@@ -844,7 +844,7 @@ public partial class Select : AbstractSelect
                 };
                 Options.Add(_addNewOption);
             }
-            Dispatcher.UIThread.Post(SyncSelectionToCandidateList);
+            Dispatcher.Post(SyncSelectionToCandidateList);
         }
         e.Handled = true;
     }

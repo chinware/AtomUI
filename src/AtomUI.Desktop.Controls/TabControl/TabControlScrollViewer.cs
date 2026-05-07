@@ -121,7 +121,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
     {
         if (TabControl is not null)
         {
-            Dispatcher.UIThread.Post(sender =>
+            Dispatcher.Post(sender =>
             {
                 if (sender is TabControlOverflowMenuItem tabControlMenuItem)
                 {

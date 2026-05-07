@@ -605,8 +605,7 @@ public class Window : AvaloniaWindow,
         if (_wasFullScreen)
         {
             _wasFullScreen = false;
-            Avalonia.Threading.Dispatcher.UIThread.Post(this.ApplyWinDwmShadow,
-                Avalonia.Threading.DispatcherPriority.Send);
+            Dispatcher.Post(this.ApplyWinDwmShadow, Avalonia.Threading.DispatcherPriority.Send);
         }
     }
 

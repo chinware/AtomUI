@@ -197,7 +197,7 @@ internal class DrawerContainer : ContentControl
         {
             ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
             layer.Children.Add(this);
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 // 让 layer 更新
                 if (_motionActor is null || _openAnimating)
@@ -261,7 +261,7 @@ internal class DrawerContainer : ContentControl
             }
 
             var motion = BuildMotionByPlacement(Placement, MotionDuration, false);
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 await Task.WhenAll(motion.RunAsync(_motionActor), Task.Delay(duration));
                 _closeAnimating      = false;

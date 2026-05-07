@@ -382,7 +382,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             }                                       
         }
         
-        Dispatcher.UIThread.InvokeAsync(async () => await CloseItemAsync(this));
+        Dispatcher.InvokeAsync(async () => await CloseItemAsync(this));
     }
     
     public async Task CloseItemAsync(INavMenuItem menuItem)
@@ -618,7 +618,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         
         if (Mode == NavMenuMode.Inline)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 // 在这里我们有一个动画的效果
                 if (value)

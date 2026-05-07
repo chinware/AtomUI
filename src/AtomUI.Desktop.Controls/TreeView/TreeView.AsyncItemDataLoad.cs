@@ -56,7 +56,7 @@ public partial class TreeView
             _loadingTokens.Add(cts);
             
             viewItem.IsLoading = true;
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 try
                 {
