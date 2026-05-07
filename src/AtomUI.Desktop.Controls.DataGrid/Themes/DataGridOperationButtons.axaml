@@ -1,0 +1,50 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:DataGridOperationButtons}"
+                  TargetType="atom:DataGridOperationButtons">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <StackPanel Name="NormalPanel"
+                                Orientation="Horizontal"
+                                IsVisible="{TemplateBinding IsEditing, Converter={x:Static BoolConverters.Not}}">
+                        <atom:HyperLinkTextBlock
+                            Text="{atom:CommonLangResource Edit}"
+                            Name="{x:Static atom:DataGridOperationButtonsThemeConstants.EditActionPart}" />
+                        <atom:PopupConfirm
+                            Name="{x:Static atom:DataGridOperationButtonsThemeConstants.DeleteActionPart}"
+                            Title="{atom:DataGridLangResource DeleteConfirmText}">
+                            <atom:HyperLinkTextBlock
+                                Text="{atom:CommonLangResource Delete}"
+                                IsEnabled="{TemplateBinding IsEditing, Converter={x:Static BoolConverters.Not}}"/>
+                        </atom:PopupConfirm>
+                    </StackPanel>
+                    <StackPanel Name="EditingPanel"
+                                Orientation="Horizontal"
+                                IsVisible="{TemplateBinding IsEditing}">
+
+                        <atom:HyperLinkTextBlock
+                            Text="{atom:CommonLangResource Save}"
+                            Name="{x:Static atom:DataGridOperationButtonsThemeConstants.SaveActionPart}" />
+
+                        <atom:PopupConfirm
+                            Name="{x:Static atom:DataGridOperationButtonsThemeConstants.CancelActionPart}"
+                            Title="{atom:DataGridLangResource CancelConfirmText}">
+                            <atom:HyperLinkTextBlock
+                                Text="{atom:CommonLangResource Cancel}"
+                                IsEnabled="{TemplateBinding IsEditing}"/>
+                        </atom:PopupConfirm>
+                    </StackPanel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ StackPanel">
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

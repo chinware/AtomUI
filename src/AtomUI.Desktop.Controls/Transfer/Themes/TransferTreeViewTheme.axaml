@@ -1,0 +1,14 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TransferTreeView}" TargetType="atom:TransferTreeView">
+        <ControlTheme.BasedOn>
+            <atom:TreeViewTheme TargetType="atom:TransferTreeView"/>
+        </ControlTheme.BasedOn>
+        
+        <Setter Property="ToggleType" Value="CheckBox"/>
+        <Setter Property="IsCheckStrictly" Value="True"/>
+    </ControlTheme>
+</ResourceDictionary>

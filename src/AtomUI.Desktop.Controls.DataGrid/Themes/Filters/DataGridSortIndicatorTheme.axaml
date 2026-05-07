@@ -1,0 +1,74 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:DataGridSortIndicator}" TargetType="atom:DataGridSortIndicator">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Vertical">
+                    <Border IsVisible="{TemplateBinding AscendingIndicatorVisible}">
+                        <Border.RenderTransform>
+                            <TranslateTransform Y="1" />
+                        </Border.RenderTransform>
+                        <antdicons:CaretUpOutlined
+                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.AscendingPart}" />
+                    </Border>
+                    <Border IsVisible="{TemplateBinding DescendingIndicatorVisible}">
+                        <Border.RenderTransform>
+                            <TranslateTransform Y="-1" />
+                        </Border.RenderTransform>
+                        <antdicons:CaretDownOutlined
+                            Name="{x:Static atom:DataGridSortIndicatorThemeConstants.DescendingPart}" />
+                    </Border>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|Icon">
+            <Setter Property="Width" Value="{atom:DataGridTokenResource SortIconSize}" />
+            <Setter Property="Height" Value="{atom:DataGridTokenResource SortIconSize}" />
+            <Setter Property="StrokeBrush"
+                    Value="{atom:DataGridTokenResource HeaderIconColor}" />
+        </Style>
+        
+        <Style Selector="^[CurrentSortDirection=Ascending]">
+            <Style Selector="^ /template/ atom|Icon#PART_Ascending">
+                <Setter Property="StrokeBrush"
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+        </Style>
+        <Style Selector="^:not(^[CurrentSortDirection=Ascending])">
+            <Style Selector="^ /template/ atom|Icon#PART_Ascending">
+                <Setter Property="StrokeBrush"
+                        Value="{atom:DataGridTokenResource HeaderIconColor}" />
+            </Style>
+            <Style Selector="^[IsHoverMode=True]">
+                <Style Selector="^ /template/ atom|Icon#PART_Ascending">
+                    <Setter Property="StrokeBrush"
+                            Value="{atom:DataGridTokenResource HeaderIconHoverColor}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^[CurrentSortDirection=Descending]">
+            <Style Selector="^ /template/ atom|Icon#PART_Descending">
+                <Setter Property="StrokeBrush"
+                        Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
+        </Style>
+        <Style Selector="^:not(^[CurrentSortDirection=Descending])">
+            <Style Selector="^ /template/ atom|Icon#PART_Descending">
+                <Setter Property="StrokeBrush"
+                        Value="{atom:DataGridTokenResource HeaderIconColor}" />
+            </Style>
+            <Style Selector="^[IsHoverMode=True]">
+                <Style Selector="^ /template/ atom|Icon#PART_Descending">
+                    <Setter Property="StrokeBrush"
+                            Value="{atom:DataGridTokenResource HeaderIconHoverColor}" />
+                </Style>
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

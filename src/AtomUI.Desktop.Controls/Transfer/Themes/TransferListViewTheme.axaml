@@ -1,0 +1,34 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:TransferListView}" TargetType="atom:TransferListView">
+        <ControlTheme.BasedOn>
+            <atom:ListViewTheme TargetType="atom:TransferListView" />
+        </ControlTheme.BasedOn>
+
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="PaginationVisibility" Value="Bottom" />
+        <Setter Property="BottomPaginationAlign" Value="Start" />
+        <Setter Property="IsHideOnSinglePage" Value="False" />
+        <Style Selector="^ /template/ ContentPresenter#TopPaginationPresenter">
+            <Setter Property="Margin" Value="{atom:TransferTokenResource PaginationMargin}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ ContentPresenter#BottomPaginationPresenter">
+            <Setter Property="Margin" Value="{atom:TransferTokenResource PaginationMargin}"/>
+        </Style>
+        
+        <Style Selector="^[IsPaginationEnabled=False]">
+            <Style Selector="^ /template/ ContentPresenter#TopPaginationPresenter">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+        
+            <Style Selector="^ /template/ ContentPresenter#BottomPaginationPresenter">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>
