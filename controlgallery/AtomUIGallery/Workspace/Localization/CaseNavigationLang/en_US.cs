@@ -54,6 +54,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay_Segmented = "Segmented";
     public const string DataDisplay_GroupBox = "GroupBox";
     public const string DataDisplay_Badge = "Badge";
+    public const string DataDisplay_Statistic = "Statistic";
     public const string DataDisplay_Timeline = "Timeline";
     public const string DataDisplay_QRCode = "QRCode";
     public const string DataDisplay_InfoFlyout = "InfoFlyout";

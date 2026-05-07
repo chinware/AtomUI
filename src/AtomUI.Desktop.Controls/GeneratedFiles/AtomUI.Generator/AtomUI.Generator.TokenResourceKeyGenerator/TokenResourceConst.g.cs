@@ -922,6 +922,12 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PaneOpenMotionDuration
     }
 
+    public enum StatisticTokenKind
+    {
+        ContentFontSize,
+        TitleFontSize
+    }
+
     public enum StepsTokenKind
     {
         CustomIconFontSize,
@@ -1769,6 +1775,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public SplitViewTokenResourceExtension(SplitViewTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class StatisticTokenResourceExtension : TokenResourceExtension<StatisticTokenKind>
+    {
+        public StatisticTokenResourceExtension()
+        {
+        }
+
+        public StatisticTokenResourceExtension(StatisticTokenKind kind) : base(kind)
         {
         }
     }

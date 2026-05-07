@@ -62,7 +62,7 @@
         <ResourceInclude Source="Spin/Themes/SpinThemes.axaml" />
         <ResourceInclude Source="Splitter/Themes/SplitterThemes.axaml" />
         <ResourceInclude Source="SplitView/Themes/SplitViewTheme.axaml" />
-        <!-- <ResourceInclude Source="Statistic/Themes/StatisticThemes.axaml" /> -->
+        <ResourceInclude Source="Statistic/Themes/StatisticThemes.axaml" />
         <!-- <ResourceInclude Source="Steps/Themes/StepsThemes.axaml" /> -->
         <ResourceInclude Source="Switch/Themes/ToggleSwitchThemes.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />

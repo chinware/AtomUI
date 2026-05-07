@@ -20,6 +20,7 @@ namespace AtomUIGallery.Localization
         DataDisplay_List,
         DataDisplay_QRCode,
         DataDisplay_Segmented,
+        DataDisplay_Statistic,
         DataDisplay_Tag,
         DataDisplay_Timeline,
         DataDisplay_Tour,
