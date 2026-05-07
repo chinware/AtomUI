@@ -115,6 +115,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(ListViewModel.ID, () => new ListViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TreeViewViewModel.ID, () => new TreeViewViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TourViewModel.ID, () => new TourViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(DataGridViewModel.ID, () => new DataGridViewModel(HostScreen));
     }
 
     private void DoNavigateTo(EntityKey showCaseId)

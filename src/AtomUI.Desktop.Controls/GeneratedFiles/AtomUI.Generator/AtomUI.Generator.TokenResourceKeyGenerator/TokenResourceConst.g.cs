@@ -1149,6 +1149,19 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TourViewMinWidth
     }
 
+    public enum TransferTokenKind
+    {
+        DataGridSelectionHeaderMargin,
+        HeaderHeight,
+        HeaderPadding,
+        ItemHeight,
+        ItemPadding,
+        ListHeight,
+        ListWidth,
+        ListWidthLG,
+        PaginationMargin
+    }
+
     public enum TreeFlyoutTokenKind
     {
         PopupBgColor,
@@ -1931,6 +1944,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TourTokenResourceExtension(TourTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class TransferTokenResourceExtension : TokenResourceExtension<TransferTokenKind>
+    {
+        public TransferTokenResourceExtension()
+        {
+        }
+
+        public TransferTokenResourceExtension(TransferTokenKind kind) : base(kind)
         {
         }
     }

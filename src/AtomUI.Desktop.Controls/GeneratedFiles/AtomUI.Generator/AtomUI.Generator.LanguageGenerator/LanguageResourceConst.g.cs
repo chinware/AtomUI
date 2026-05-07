@@ -141,3 +141,29 @@ namespace AtomUI.Desktop.Controls.Localization
         }
     }
 }
+
+namespace AtomUI.Desktop.Controls.Localization
+{
+    public enum TransferLangResourceKind
+    {
+        DeSelectAll,
+        InvertSelectCurrentPage,
+        Item,
+        Items,
+        RemoveAll,
+        RemoveCurrentPage,
+        SelectAll,
+        SelectCurrentPage
+    }
+
+    public class TransferLangResourceExtension : LanguageResourceExtension<TransferLangResourceKind>
+    {
+        public TransferLangResourceExtension()
+        {
+        }
+
+        public TransferLangResourceExtension(TransferLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}

@@ -22,6 +22,7 @@ public class GalleryApplication : BaseGalleryApplication
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
             builder.UseDesktopColorPicker();
+            builder.UseDesktopDataGrid();
             builder.UseGalleryControls();
         });
     }

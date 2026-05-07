@@ -131,6 +131,8 @@
                               ItemKey="{x:Static viewmodels:TreeViewViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Tour}"
                               ItemKey="{x:Static viewmodels:TourViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_DataGrid}"
+                              ItemKey="{x:Static viewmodels:DataGridViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback}"
