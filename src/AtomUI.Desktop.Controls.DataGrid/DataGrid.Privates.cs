@@ -480,21 +480,16 @@ public partial class DataGrid
             }
         }
 
-        // Keep track of which row contains the newly focused element
-        DataGridRow? focusedRow     = null;
-        Visual?      focusedElement = e.Source as Visual;
+        // Keep track of which row contains the newly focused element.
+        // 使用 FindAncestorOfType 替代手写 visual tree walk，避免在 Avalonia 12 下
+        // 撞到窗口装饰系统形成的循环边导致 CPU spin（参见 datagrid-cross-instance-rowdetails-hang.md）。
+        var focusedElement = e.Source as Visual;
         _focusedObject = focusedElement;
-        while (focusedElement != null)
+        var focusedRow = focusedElement?.FindAncestorOfType<DataGridRow>(includeSelf: true);
+        if (focusedRow != null && focusedRow.OwningGrid == this && _focusedRow != focusedRow)
         {
-            focusedRow = focusedElement as DataGridRow;
-            if (focusedRow != null && focusedRow.OwningGrid == this && _focusedRow != focusedRow)
-            {
-                ResetFocusedRow();
-                _focusedRow = focusedRow.IsVisible ? focusedRow : null;
-                break;
-            }
-
-            focusedElement = focusedElement.GetVisualParent();
+            ResetFocusedRow();
+            _focusedRow = focusedRow.IsVisible ? focusedRow : null;
         }
     }
 
@@ -1214,7 +1209,7 @@ public partial class DataGrid
         {
             DataGridColumn editingColumn  = ColumnsItemsInternal[EditingColumnIndex];
             Control?       editingElement = editingColumn.GetCellContent(EditingRow);
-            if (editingElement != null && editingElement.ContainsChild(_focusedObject))
+            if (editingElement != null && _focusedObject is Visual focusedVisual && editingElement.IsVisualAncestorOf(focusedVisual))
             {
                 Debug.Assert(_lostFocusActions != null);
                 _lostFocusActions.Enqueue(action);

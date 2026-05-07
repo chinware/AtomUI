@@ -54,7 +54,8 @@
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>
-                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="IndicatorFill" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                 </Transitions>
             </Setter>
         </Style>

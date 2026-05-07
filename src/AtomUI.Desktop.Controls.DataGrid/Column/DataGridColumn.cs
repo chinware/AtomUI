@@ -646,21 +646,10 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// </returns>
     public static DataGridColumn? GetColumnContainingElement(Control element)
     {
-        // Walk up the tree to find the DataGridCell or DataGridColumnHeader that contains the element
-        Visual? parent = element;
-        while (parent != null)
-        {
-            if (parent is DataGridCell cell)
-            {
-                return cell.OwningColumn;
-            }
-            if (parent is DataGridColumnHeader columnHeader)
-            {
-                return columnHeader.OwningColumn;
-            }
-            parent = parent.GetVisualParent();
-        }
-        return null;
+        // 使用 FindAncestorOfType 替代手写 visual tree walk，避免在 Avalonia 12 下
+        // 撞到窗口装饰系统形成的循环边导致 CPU spin（参见 datagrid-cross-instance-rowdetails-hang.md）。
+        return element.FindAncestorOfType<DataGridCell>(includeSelf: true)?.OwningColumn
+               ?? element.FindAncestorOfType<DataGridColumnHeader>(includeSelf: true)?.OwningColumn;
     }
 
     /// <summary>
