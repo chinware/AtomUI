@@ -336,29 +336,11 @@ public partial class DataGridRow
 
                 _detailsContent         = ActualDetailsTemplate.Build(DataContext);
                 _appliedDetailsTemplate = ActualDetailsTemplate;
+            }
 
-                if (_detailsContent != null)
-                {
-                    if (_detailsContent is Layoutable layoutableContent)
-                    {
-                        layoutableContent.LayoutUpdated += HandleLayoutUpdated;
-
-                        _detailsContentSizeSubscription = new CompositeDisposable(2)
-                        {
-                            Disposable.Create(() => layoutableContent.LayoutUpdated -= HandleLayoutUpdated),
-                            _detailsContent.GetObservable(MarginProperty).Subscribe(NotifyMarginChanged)
-                        };
-                    }
-                    else
-                    {
-                        _detailsContentSizeSubscription =
-                            _detailsContent.GetObservable(MarginProperty)
-                                           .Subscribe(NotifyMarginChanged);
-
-                    }
-
-                    _detailsElement.Children.Add(_detailsContent);
-                }
+            if (_detailsContent != null)
+            {
+                AttachDetailsContent();
             }
 
             if (_detailsContent != null && !_detailsLoaded)
@@ -379,6 +361,65 @@ public partial class DataGridRow
                 _detailsElement.ContentHeight = _detailsDesiredHeight;
             }
         }
+    }
+
+    private void AttachDetailsContent()
+    {
+        if (_detailsElement == null || _detailsContent == null)
+        {
+            return;
+        }
+
+        if (!_detailsElement.Children.Contains(_detailsContent))
+        {
+            _detailsElement.Children.Add(_detailsContent);
+        }
+
+        AttachDetailsContentSizeSubscription();
+    }
+
+    private void DetachDetailsContent()
+    {
+        DetachDetailsContentSizeSubscription();
+
+        if (_detailsElement != null && _detailsContent != null)
+        {
+            _detailsElement.Children.Remove(_detailsContent);
+        }
+    }
+
+    private void AttachDetailsContentSizeSubscription()
+    {
+        _detailsContentSizeSubscription?.Dispose();
+        _detailsContentSizeSubscription = null;
+
+        if (_detailsContent == null)
+        {
+            return;
+        }
+
+        if (_detailsContent is Layoutable layoutableContent)
+        {
+            layoutableContent.LayoutUpdated += HandleLayoutUpdated;
+
+            _detailsContentSizeSubscription = new CompositeDisposable(2)
+            {
+                Disposable.Create(() => layoutableContent.LayoutUpdated -= HandleLayoutUpdated),
+                _detailsContent.GetObservable(MarginProperty).Subscribe(NotifyMarginChanged)
+            };
+        }
+        else
+        {
+            _detailsContentSizeSubscription =
+                _detailsContent.GetObservable(MarginProperty)
+                               .Subscribe(NotifyMarginChanged);
+        }
+    }
+
+    private void DetachDetailsContentSizeSubscription()
+    {
+        _detailsContentSizeSubscription?.Dispose();
+        _detailsContentSizeSubscription = null;
     }
     
     private void HandleHeaderContentTemplateChanged(AvaloniaPropertyChangedEventArgs change)
@@ -610,10 +651,9 @@ public partial class DataGridRow
                     OwningGrid.NotifyUnloadingRowDetails(this, _detailsContent);
                 }
                 _detailsContent.DataContext = null;
+                DetachDetailsContent();
                 if (!recycle)
                 {
-                    _detailsContentSizeSubscription?.Dispose();
-                    _detailsContentSizeSubscription = null;
                     _detailsContent                 = null;
                 }
             }
@@ -771,12 +811,14 @@ public partial class DataGridRow
 
             if (IsDetailsVisible)
             {
+                AttachDetailsContent();
                 // Set the details height directly
                 _detailsElement.ContentHeight = _detailsDesiredHeight;
                 _checkDetailsContentHeight    = true;
             }
             else
             {
+                DetachDetailsContent();
                 _detailsElement.ContentHeight = 0;
             }
 

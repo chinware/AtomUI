@@ -104,7 +104,7 @@
                                         <ScrollGestureRecognizer
                                             CanHorizontallyScroll="True"
                                             CanVerticallyScroll="True"
-                                        IsScrollInertiaEnabled="{ReflectionBinding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_RowPresenter}" />
+                                            IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}" />
                                     </atom:DataGridRowsPresenter.GestureRecognizers>
                                 </atom:DataGridRowsPresenter>
 

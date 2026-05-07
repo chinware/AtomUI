@@ -503,43 +503,13 @@ public partial class DataGrid
         _focusedObject = null;
         if (ContainsFocus)
         {
-            bool            focusLeftDataGrid = true;
-            bool            dataGridWillReceiveRoutedEvent = true;
-            Visual?         focusedObject = TopLevel.GetTopLevel(this)?.FocusManager.GetFocusedElement() as Visual;
-            DataGridColumn? editingColumn = null;
-
-            while (focusedObject != null)
-            {
-                if (focusedObject == this)
-                {
-                    focusLeftDataGrid = false;
-                    break;
-                }
-
-                // Walk up the visual tree.  If we hit the root, try using the framework element's
-                // parent.  We do this because Popups behave differently with respect to the visual tree,
-                // and it could have a parent even if the VisualTreeHelper doesn't find it.
-                var parent = focusedObject.Parent as Visual;
-                if (parent == null)
-                {
-                    parent = focusedObject.GetVisualParent();
-                }
-                else
-                {
-                    dataGridWillReceiveRoutedEvent = false;
-                }
-
-                focusedObject = parent;
-            }
+            Visual?         focusedObject     = TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() as Visual;
+            bool            focusLeftDataGrid = !this.IsVisualAncestorOf(focusedObject);
+            DataGridColumn? editingColumn     = null;
 
             if (EditingRow != null && EditingColumnIndex != -1)
             {
                 editingColumn = ColumnsItemsInternal[EditingColumnIndex];
-
-                if (focusLeftDataGrid && editingColumn is DataGridTemplateColumn)
-                {
-                    dataGridWillReceiveRoutedEvent = false;
-                }
             }
 
             if (focusLeftDataGrid && !(editingColumn is DataGridTemplateColumn))
@@ -560,7 +530,7 @@ public partial class DataGrid
                     }
                 }
             }
-            else if (!dataGridWillReceiveRoutedEvent)
+            else if (focusLeftDataGrid)
             {
                 if (focusedObject is Control focusedElement)
                 {

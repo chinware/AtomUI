@@ -8,7 +8,6 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -66,6 +65,7 @@ internal class DataGridRowExpander : ToggleButton
 
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
+    private IDisposable? _detailsVisibilityBinding;
 
     protected override Size ArrangeOverride(Size finalSize)
     {
@@ -100,7 +100,7 @@ internal class DataGridRowExpander : ToggleButton
             IndicatorThickness = BorderThickness.Left;
         }
     }
-    
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -110,11 +110,19 @@ internal class DataGridRowExpander : ToggleButton
 
     internal void NotifyLoadingRow(DataGridRow row)
     {
-        BindUtils.RelayBind(this, IsCheckedProperty, row, DataGridRow.IsDetailsVisibleProperty, BindingMode.TwoWay);
+        _detailsVisibilityBinding?.Dispose();
+        _detailsVisibilityBinding = BindUtils.RelayBind(
+            this,
+            IsCheckedProperty,
+            row,
+            DataGridRow.IsDetailsVisibleProperty,
+            BindingMode.TwoWay);
     }
 
     internal void NotifyUnLoadingRow(DataGridRow row)
     {
+        _detailsVisibilityBinding?.Dispose();
+        _detailsVisibilityBinding = null;
     }
 
     protected override void OnInitialized()
@@ -126,6 +134,6 @@ internal class DataGridRowExpander : ToggleButton
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.Post(() => this.EnableTransitions());
+        Dispatcher.Post(this.EnableTransitions);
     }
 }
