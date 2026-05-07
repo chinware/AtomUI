@@ -23,7 +23,7 @@
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
         <ResourceInclude Source="Descriptions/Themes/DescriptionsThemes.axaml" />
         <ResourceInclude Source="Dialog/Themes/DialogThemes.axaml" />
-        <!-- <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" /> -->
+        <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
         <ResourceInclude Source="Empty/Themes/EmptyTheme.axaml" />
         <ResourceInclude Source="Expander/Themes/ExpanderTheme.axaml" />
         <ResourceInclude Source="Flyouts/Themes/FlyoutThemes.axaml" />

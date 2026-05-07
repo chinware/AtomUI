@@ -366,6 +366,23 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         MinWidth
     }
 
+    public enum DrawerTokenKind
+    {
+        BoxShadowDrawerDown,
+        BoxShadowDrawerLeft,
+        BoxShadowDrawerRight,
+        BoxShadowDrawerUp,
+        CloseIconMargin,
+        CloseIconPadding,
+        ContentPadding,
+        FooterPadding,
+        HeaderMargin,
+        LargeSize,
+        MiddleSize,
+        PushOffsetPercent,
+        SmallSize
+    }
+
     public enum EmptyTokenKind
     {
         DescriptionMargin,
@@ -1412,6 +1429,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public DialogTokenResourceExtension(DialogTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class DrawerTokenResourceExtension : TokenResourceExtension<DrawerTokenKind>
+    {
+        public DrawerTokenResourceExtension()
+        {
+        }
+
+        public DrawerTokenResourceExtension(DrawerTokenKind kind) : base(kind)
         {
         }
     }

@@ -41,6 +41,7 @@ namespace AtomUIGallery.Localization
         DataEntry_TreeSelect,
         Feedback,
         Feedback_Alert,
+        Feedback_Drawer,
         Feedback_Message,
         Feedback_Notification,
         Feedback_PopupConfirm,

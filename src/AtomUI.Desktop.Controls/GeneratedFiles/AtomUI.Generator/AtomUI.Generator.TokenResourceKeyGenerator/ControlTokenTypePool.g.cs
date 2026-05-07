@@ -28,6 +28,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DatePickerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DescriptionsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DialogToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.DrawerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.EmptyToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ExpanderToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.FloatButtonToken));
@@ -64,7 +65,6 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitterToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.SplitViewToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StatisticToken));
-            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.StepsToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TabControlToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TagToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.TextAreaToken));
