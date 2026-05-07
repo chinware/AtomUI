@@ -47,6 +47,7 @@ internal class zh_CN : LanguageProvider
     public const string DataDisplay_Card = "Card 卡片";
     public const string DataDisplay_Carousel = "Carousel 走马灯";
     public const string DataDisplay_Collapse = "Collapse 折叠面板";
+    public const string DataDisplay_Descriptions = "Descriptions 描述列表";
     public const string DataDisplay_Empty = "Empty 空状态";
     public const string DataDisplay_Expander = "Expander 折叠面板";
     public const string DataDisplay_Tag = "Tag 标签";

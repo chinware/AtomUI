@@ -1,0 +1,39 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:DescriptionBorderedItemLabel}" TargetType="atom:DescriptionBorderedItemLabel">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="ContentPresenter"
+                                  Content="{TemplateBinding Content}"
+                                  LineHeight="{TemplateBinding LineHeight}"
+                                  TextWrapping="Wrap"
+                                  VerticalContentAlignment="Center"
+                                  BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  Background="{TemplateBinding Background}"
+                                  Padding="{TemplateBinding Padding}"/>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="RelativeLineHeight" Value="{atom:SharedTokenResource RelativeLineHeight}"/>
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextSecondary}"/>
+        <Setter Property="Background" Value="{atom:DescriptionsTokenResource LabelBg}"/>
+        <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}"/>
+        
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Padding" Value="{atom:DescriptionsTokenResource ItemPaddingLG}"/>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Setter Property="Padding" Value="{atom:DescriptionsTokenResource ItemPadding}"/>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Padding" Value="{atom:DescriptionsTokenResource ItemPaddingSM}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

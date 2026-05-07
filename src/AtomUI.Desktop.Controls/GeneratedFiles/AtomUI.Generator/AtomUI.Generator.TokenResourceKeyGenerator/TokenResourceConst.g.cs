@@ -333,6 +333,20 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         WithoutTimeCellHeight
     }
 
+    public enum DescriptionsTokenKind
+    {
+        ColonMargin,
+        ContentColor,
+        ExtraColor,
+        HeaderMargin,
+        ItemPadding,
+        ItemPaddingLG,
+        ItemPaddingSM,
+        LabelBg,
+        LabelColor,
+        TitleColor
+    }
+
     public enum DialogTokenKind
     {
         ButtonGroupSpacing,
@@ -1370,6 +1384,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public DatePickerTokenResourceExtension(DatePickerTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class DescriptionsTokenResourceExtension : TokenResourceExtension<DescriptionsTokenKind>
+    {
+        public DescriptionsTokenResourceExtension()
+        {
+        }
+
+        public DescriptionsTokenResourceExtension(DescriptionsTokenKind kind) : base(kind)
         {
         }
     }

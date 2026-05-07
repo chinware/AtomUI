@@ -97,6 +97,8 @@
                               ItemKey="{x:Static viewmodels:CarouselViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Collapse}"
                               ItemKey="{x:Static viewmodels:CollapseViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Descriptions}"
+                              ItemKey="{x:Static viewmodels:DescriptionsViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Empty}"
                               ItemKey="{x:Static viewmodels:EmptyViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Expander}"
