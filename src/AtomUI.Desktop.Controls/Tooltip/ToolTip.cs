@@ -363,6 +363,7 @@ public class ToolTip : ContentControl,
     private void Open(Control control)
     {
         Close();
+        ApplyTemplate();
         
         if (_popup is null)
         {
@@ -467,14 +468,12 @@ public class ToolTip : ContentControl,
 
     CornerRadius IShadowMaskInfoProvider.GetMaskCornerRadius()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.GetMaskCornerRadius();
+        return EnsureArrowDecoratedBox().GetMaskCornerRadius();
     }
     
     Rect IShadowMaskInfoProvider.GetMaskBounds()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.GetMaskBounds();
+        return EnsureArrowDecoratedBox().GetMaskBounds();
     }
 
     IBrush? IShadowMaskInfoProvider.GetMaskBackground()
@@ -484,38 +483,32 @@ public class ToolTip : ContentControl,
     
     ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.ArrowPosition;
+        return EnsureArrowDecoratedBox().ArrowPosition;
     }
     
     bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.IsShowArrow;
+        return EnsureArrowDecoratedBox().IsShowArrow;
     }
 
     void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        _arrowDecoratedBox.ArrowOpacity = opacity;
+        EnsureArrowDecoratedBox().ArrowOpacity = opacity;
     }
 
     Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.ArrowIndicatorBounds;
+        return EnsureArrowDecoratedBox().ArrowIndicatorBounds;
     }
     
     Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorLayoutBounds()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.ArrowIndicatorLayoutBounds;
+        return EnsureArrowDecoratedBox().ArrowIndicatorLayoutBounds;
     }
     
     AbstractArrowDecoratedBox IArrowAwareShadowMaskInfoProvider.GetArrowDecoratedBox()
     {
-        Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox;
+        return EnsureArrowDecoratedBox();
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -558,6 +551,17 @@ public class ToolTip : ContentControl,
                 SetupArrowPosition(GetPlacement(control), false, false);
             }
         }
+    }
+
+    private ArrowDecoratedBox EnsureArrowDecoratedBox()
+    {
+        if (_arrowDecoratedBox is null)
+        {
+            ApplyTemplate();
+        }
+
+        Debug.Assert(_arrowDecoratedBox != null);
+        return _arrowDecoratedBox;
     }
     
     private void SetupArrowPosition(PlacementMode placement, bool isHorizontalFlipped, bool isVerticalFlipped, PopupAnchor? anchor = null, PopupGravity? gravity = null)
