@@ -49,6 +49,8 @@
                               ItemKey="{x:Static viewmodels:DropdownButtonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_TabControl}"
                               ItemKey="{x:Static viewmodels:TabControlViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_Steps}"
+                              ItemKey="{x:Static viewmodels:StepsViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_Pagination}"
                               ItemKey="{x:Static viewmodels:PaginationViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_Menu}"

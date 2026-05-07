@@ -253,6 +253,6 @@ internal class StepsItemIndicator : TemplatedControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.Dispatcher.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

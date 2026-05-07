@@ -69,6 +69,7 @@ namespace AtomUIGallery.Localization
         Navigation_DropdownButton,
         Navigation_Menu,
         Navigation_Pagination,
+        Navigation_Steps,
         Navigation_TabControl
     }
 

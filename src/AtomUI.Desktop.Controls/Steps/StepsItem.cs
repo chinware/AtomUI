@@ -1,5 +1,4 @@
 using AtomUI.Animations;
-using Avalonia.Threading;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -363,6 +362,6 @@ public class StepsItem : HeaderedContentControl, ISelectable
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.Dispatcher.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

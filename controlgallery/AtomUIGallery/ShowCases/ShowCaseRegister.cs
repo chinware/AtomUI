@@ -56,6 +56,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<CascaderViewModel, CascaderShowCase>(() => new CascaderShowCase());
         locator.Map<TreeSelectViewModel, TreeSelectShowCase>(() => new TreeSelectShowCase());
         locator.Map<TabControlViewModel, TabControlShowCase>(() => new TabControlShowCase());
+        locator.Map<StepsViewModel, StepsShowCase>(() => new StepsShowCase());
         locator.Map<InfoFlyoutViewModel, InfoFlyoutShowCase>(() => new InfoFlyoutShowCase());
         locator.Map<WatermarkViewModel, WatermarkShowCase>(() => new WatermarkShowCase());
         locator.Map<ProgressBarViewModel, ProgressBarShowCase>(() => new ProgressBarShowCase());
