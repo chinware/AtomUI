@@ -163,17 +163,6 @@ internal class DialogHost : Window,
 
     public void UpdateSizing()
     {
-        var sizeToContent = SizeToContent.Manual;
-        if (double.IsNaN(_dialog.Width))
-        {
-            sizeToContent |= SizeToContent.Width;
-        }
-        if (double.IsNaN(_dialog.Height))
-        {
-            sizeToContent |= SizeToContent.Height;
-        }
-
-        SizeToContent = sizeToContent;
         Width     = _dialog.Width;
         MinWidth  = _dialog.MinWidth;
         MaxWidth  = _dialog.MaxWidth;

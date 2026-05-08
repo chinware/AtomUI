@@ -41,7 +41,7 @@
                                  IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
                                  Title="Basic Window Modal"
                                  IsModal="True"
-                                 IsResizable="False"
+                                 IsResizable="True"
                                  IsClosable="True"
                                  IsDragMovable="True"
                                  IsMaximizable="False"
