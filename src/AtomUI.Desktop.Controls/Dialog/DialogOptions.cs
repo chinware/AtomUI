@@ -10,12 +10,12 @@ public record DialogOptions
     public bool IsClosable { get; init; } = true;
     public bool IsMaximizable { get; init; }
     
-    public double MaxHeight { get; init; } = double.PositiveInfinity;
-    public double MaxWidth { get; init; } = double.PositiveInfinity;
-    public double MinHeight { get; init; } = 0d;
-    public double MinWidth { get; init; } = 0d;
-    public double Width { get; init; } = double.NaN;
-    public double Height { get; init; } = double.NaN;
+    public double HostMaxHeight { get; init; } = double.PositiveInfinity;
+    public double HostMaxWidth { get; init; } = double.PositiveInfinity;
+    public double HostMinHeight { get; init; } = 0d;
+    public double HostMinWidth { get; init; } = 0d;
+    public double HostWidth { get; init; } = double.NaN;
+    public double HostHeight { get; init; } = double.NaN;
 
     /// <summary>
     /// 次选项仅 Window Host 类型的弹窗有效

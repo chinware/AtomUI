@@ -102,6 +102,28 @@ public partial class Dialog : TemplatedControl,
     public static readonly StyledProperty<bool> IsConfirmLoadingProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsConfirmLoading));
 
+    // Dialog 控件自身（TemplatedControl）从 Layoutable 继承的 Width / MinWidth 等尺寸属性
+    // 在这里语义上是死属性 —— Dialog 仅作为状态持有者，不直接参与可视布局。下面 6 个
+    // Host* 属性用于声明"希望 host（DialogHost / OverlayDialogHost）采用的尺寸约束"，
+    // 所有 host 的 sizing 逻辑都从这 6 个读取。
+    public static readonly StyledProperty<double> HostWidthProperty =
+        AvaloniaProperty.Register<Dialog, double>(nameof(HostWidth), double.NaN);
+
+    public static readonly StyledProperty<double> HostHeightProperty =
+        AvaloniaProperty.Register<Dialog, double>(nameof(HostHeight), double.NaN);
+
+    public static readonly StyledProperty<double> HostMinWidthProperty =
+        AvaloniaProperty.Register<Dialog, double>(nameof(HostMinWidth), 0d);
+
+    public static readonly StyledProperty<double> HostMinHeightProperty =
+        AvaloniaProperty.Register<Dialog, double>(nameof(HostMinHeight), 0d);
+
+    public static readonly StyledProperty<double> HostMaxWidthProperty =
+        AvaloniaProperty.Register<Dialog, double>(nameof(HostMaxWidth), double.PositiveInfinity);
+
+    public static readonly StyledProperty<double> HostMaxHeightProperty =
+        AvaloniaProperty.Register<Dialog, double>(nameof(HostMaxHeight), double.PositiveInfinity);
+
     public string? Title
     {
         get => GetValue(TitleProperty);
@@ -261,6 +283,42 @@ public partial class Dialog : TemplatedControl,
     {
         get => GetValue(IsConfirmLoadingProperty);
         set => SetValue(IsConfirmLoadingProperty, value);
+    }
+
+    public double HostWidth
+    {
+        get => GetValue(HostWidthProperty);
+        set => SetValue(HostWidthProperty, value);
+    }
+
+    public double HostHeight
+    {
+        get => GetValue(HostHeightProperty);
+        set => SetValue(HostHeightProperty, value);
+    }
+
+    public double HostMinWidth
+    {
+        get => GetValue(HostMinWidthProperty);
+        set => SetValue(HostMinWidthProperty, value);
+    }
+
+    public double HostMinHeight
+    {
+        get => GetValue(HostMinHeightProperty);
+        set => SetValue(HostMinHeightProperty, value);
+    }
+
+    public double HostMaxWidth
+    {
+        get => GetValue(HostMaxWidthProperty);
+        set => SetValue(HostMaxWidthProperty, value);
+    }
+
+    public double HostMaxHeight
+    {
+        get => GetValue(HostMaxHeightProperty);
+        set => SetValue(HostMaxHeightProperty, value);
     }
 
     public IDialogHost? Host => _openState?.DialogHost;
@@ -448,12 +506,23 @@ public partial class Dialog : TemplatedControl,
                 SetCurrentValue(IsOpenProperty, true);
             }
 
-            dialogHost.Show();
-            Opened?.Invoke(this, EventArgs.Empty);
-
-            if (IsModal)
+            if (dialogHost is DialogHost windowDialog && IsModal && topLevel is Window ownerWindow)
             {
-                await openState.ClosedTask.WaitAsync(cancellationToken);
+                // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
+                // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
+                // 仅用 Show() 再 await ClosedTask 只是应用层等待，父窗仍然可交互。
+                Opened?.Invoke(this, EventArgs.Empty);
+                await windowDialog.ShowDialog(ownerWindow).WaitAsync(cancellationToken);
+            }
+            else
+            {
+                dialogHost.Show();
+                Opened?.Invoke(this, EventArgs.Empty);
+
+                if (IsModal)
+                {
+                    await openState.ClosedTask.WaitAsync(cancellationToken);
+                }
             }
         }
         finally
@@ -556,12 +625,12 @@ public partial class Dialog : TemplatedControl,
 
         if (_openState is not null)
         {
-            if (change.Property == WidthProperty ||
-                change.Property == MinWidthProperty ||
-                change.Property == MaxWidthProperty ||
-                change.Property == HeightProperty ||
-                change.Property == MinHeightProperty ||
-                change.Property == MaxHeightProperty)
+            if (change.Property == HostWidthProperty ||
+                change.Property == HostMinWidthProperty ||
+                change.Property == HostMaxWidthProperty ||
+                change.Property == HostHeightProperty ||
+                change.Property == HostMinHeightProperty ||
+                change.Property == HostMaxHeightProperty)
             {
                 _openState.DialogHost.UpdateSizing();
             }

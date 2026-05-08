@@ -293,12 +293,12 @@ internal class OverlayDialogHost : ContentControl,
 
     public void UpdateSizing()
     {
-        Width     = _dialog.Width;
-        MinWidth  = _dialog.MinWidth;
-        MaxWidth  = _dialog.MaxWidth;
-        Height    = _dialog.Height;
-        MinHeight = _dialog.MinHeight;
-        MaxHeight = _dialog.MaxHeight;
+        Width     = _dialog.HostWidth;
+        MinWidth  = _dialog.HostMinWidth;
+        MaxWidth  = _dialog.HostMaxWidth;
+        Height    = _dialog.HostHeight;
+        MinHeight = _dialog.HostMinHeight;
+        MaxHeight = _dialog.HostMaxHeight;
     }
 
     public void UpdatePlacement()

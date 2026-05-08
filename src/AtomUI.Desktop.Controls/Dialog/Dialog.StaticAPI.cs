@@ -105,12 +105,12 @@ public partial class Dialog
             VerticalStartupLocation   = options?.VerticalStartupLocation ?? DialogVerticalAnchor.Center,
             Content                   = content,
             DataContext               = dataContext,
-            Width                     = options?.Width ?? double.NaN,
-            Height                    = options?.Height ?? double.NaN,
-            MinWidth                  = options?.MinWidth ?? 0d,
-            MinHeight                 = options?.MinHeight ?? 0d,
-            MaxWidth                  = options?.MaxWidth ?? double.PositiveInfinity,
-            MaxHeight                 = options?.MaxHeight ?? double.PositiveInfinity
+            HostWidth                 = options?.HostWidth ?? double.NaN,
+            HostHeight                = options?.HostHeight ?? double.NaN,
+            HostMinWidth              = options?.HostMinWidth ?? 0d,
+            HostMinHeight             = options?.HostMinHeight ?? 0d,
+            HostMaxWidth              = options?.HostMaxWidth ?? double.PositiveInfinity,
+            HostMaxHeight             = options?.HostMaxHeight ?? double.PositiveInfinity
         };
     }
 

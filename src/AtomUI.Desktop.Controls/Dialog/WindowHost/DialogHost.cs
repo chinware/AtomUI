@@ -162,12 +162,12 @@ internal class DialogHost : Window,
     {
         var measuredSize = MeasureDialogContent();
         SizeToContent = SizeToContent.Manual;
-        Width     = double.IsNaN(_dialog.Width) ? measuredSize.Width : _dialog.Width;
-        MinWidth  = _dialog.MinWidth;
-        MaxWidth  = _dialog.MaxWidth;
-        Height    = double.IsNaN(_dialog.Height) ? measuredSize.Height : _dialog.Height;
-        MinHeight = _dialog.MinHeight;
-        MaxHeight = _dialog.MaxHeight;
+        Width     = double.IsNaN(_dialog.HostWidth) ? measuredSize.Width : _dialog.HostWidth;
+        MinWidth  = _dialog.HostMinWidth;
+        MaxWidth  = _dialog.HostMaxWidth;
+        Height    = double.IsNaN(_dialog.HostHeight) ? measuredSize.Height : _dialog.HostHeight;
+        MinHeight = _dialog.HostMinHeight;
+        MaxHeight = _dialog.HostMaxHeight;
     }
 
     private Size MeasureDialogContent()
@@ -177,13 +177,13 @@ internal class DialogHost : Window,
 
         var ownerSize = GetOwnerBounds(ParentTopLevel).Size;
         var availableSize = new Size(
-            ResolveAvailableMeasureSize(ownerSize.Width, _dialog.MaxWidth),
-            ResolveAvailableMeasureSize(ownerSize.Height, _dialog.MaxHeight));
+            ResolveAvailableMeasureSize(ownerSize.Width, _dialog.HostMaxWidth),
+            ResolveAvailableMeasureSize(ownerSize.Height, _dialog.HostMaxHeight));
 
         _dialogContent.Measure(availableSize);
         return new Size(
-            ResolveMeasuredSize(_dialogContent.DesiredSize.Width, _dialog.MinWidth, _dialog.MaxWidth),
-            ResolveMeasuredSize(_dialogContent.DesiredSize.Height, _dialog.MinHeight, _dialog.MaxHeight));
+            ResolveMeasuredSize(_dialogContent.DesiredSize.Width, _dialog.HostMinWidth, _dialog.HostMaxWidth),
+            ResolveMeasuredSize(_dialogContent.DesiredSize.Height, _dialog.HostMinHeight, _dialog.HostMaxHeight));
     }
 
     private static double ResolveAvailableMeasureSize(double ownerSize, double maxSize)

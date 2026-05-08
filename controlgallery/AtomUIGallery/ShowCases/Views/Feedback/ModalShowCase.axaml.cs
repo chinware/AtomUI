@@ -161,7 +161,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
                 DefaultStandardButton     = DialogStandardButton.Ok,
                 HorizontalStartupLocation = DialogHorizontalAnchor.Center,
                 VerticalOffset            = new Dimension(30, DimensionUnitType.Percentage),
-                MinWidth                  = 400
+                HostMinWidth              = 400
             };
             await Dialog.ShowDialogModalAsync(content, null, options);
         }
@@ -186,7 +186,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
                 DefaultStandardButton     = DialogStandardButton.Ok,
                 HorizontalStartupLocation = DialogHorizontalAnchor.Center,
                 VerticalOffset            = new Dimension(30, DimensionUnitType.Percentage),
-                MinWidth                  = 400
+                HostMinWidth              = 400
             };
             await Dialog.ShowDialogModalAsync(content, null, options);
         }
@@ -210,7 +210,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
                 DefaultStandardButton     = DialogStandardButton.Ok,
                 HorizontalStartupLocation = DialogHorizontalAnchor.Center,
                 VerticalOffset            = new Dimension(30, DimensionUnitType.Percentage),
-                MinWidth                  = 400
+                HostMinWidth              = 400
             };
             var viewModel = new ModalUserControlViewModel()
             {
