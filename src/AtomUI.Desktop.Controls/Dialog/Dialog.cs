@@ -416,9 +416,9 @@ public partial class Dialog : TemplatedControl,
             dialogHost.BindDialog(this, disposables);
             dialogHost.CustomButtons.AddRange(CustomButtons);
 
-            dialogHost.UpdateSizing();
             dialogHost.Content         = Content;
             dialogHost.ContentTemplate = ContentTemplate;
+            dialogHost.UpdateSizing();
             dialogHost.Topmost         = Topmost;
 
             SubscribeToEventHandler<IDialogHost, EventHandler<TemplateAppliedEventArgs>>(dialogHost, RootTemplateApplied,

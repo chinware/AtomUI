@@ -12,7 +12,6 @@ namespace AtomUI.Desktop.Controls;
 
 internal class DialogHost : Window,
                             IDialogHost,
-                            IStyleHost,
                             IMotionAwareControl
 {
     public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
@@ -96,8 +95,6 @@ internal class DialogHost : Window,
         set => SetValue(DialogContentTemplateProperty, value);
     }
 
-    IStyleHost? IStyleHost.StylingParent => Parent;
-
     public TopLevel ParentTopLevel { get; }
     public AvaloniaList<DialogButton> CustomButtons { get; } = new();
     object? IDialogHost.Content
@@ -111,7 +108,7 @@ internal class DialogHost : Window,
         set => DialogContentTemplate = value;
     }
 
-    protected override Type StyleKeyOverride { get; } = typeof(DialogHost);
+    protected override Type StyleKeyOverride { get; } = typeof(Window);
 
     private readonly Dialog _dialog;
     private readonly DialogWindowContent _dialogContent;
@@ -163,12 +160,57 @@ internal class DialogHost : Window,
 
     public void UpdateSizing()
     {
-        Width     = _dialog.Width;
+        var measuredSize = MeasureDialogContent();
+        SizeToContent = SizeToContent.Manual;
+        Width     = double.IsNaN(_dialog.Width) ? measuredSize.Width : _dialog.Width;
         MinWidth  = _dialog.MinWidth;
         MaxWidth  = _dialog.MaxWidth;
-        Height    = _dialog.Height;
+        Height    = double.IsNaN(_dialog.Height) ? measuredSize.Height : _dialog.Height;
         MinHeight = _dialog.MinHeight;
         MaxHeight = _dialog.MaxHeight;
+    }
+
+    private Size MeasureDialogContent()
+    {
+        _dialogContent.ApplyStyling();
+        _dialogContent.ApplyTemplate();
+
+        var ownerSize = GetOwnerBounds(ParentTopLevel).Size;
+        var availableSize = new Size(
+            ResolveAvailableMeasureSize(ownerSize.Width, _dialog.MaxWidth),
+            ResolveAvailableMeasureSize(ownerSize.Height, _dialog.MaxHeight));
+
+        _dialogContent.Measure(availableSize);
+        return new Size(
+            ResolveMeasuredSize(_dialogContent.DesiredSize.Width, _dialog.MinWidth, _dialog.MaxWidth),
+            ResolveMeasuredSize(_dialogContent.DesiredSize.Height, _dialog.MinHeight, _dialog.MaxHeight));
+    }
+
+    private static double ResolveAvailableMeasureSize(double ownerSize, double maxSize)
+    {
+        if (!double.IsNaN(maxSize) && !double.IsInfinity(maxSize))
+        {
+            return maxSize;
+        }
+
+        return ownerSize > 0 ? ownerSize : double.PositiveInfinity;
+    }
+
+    private static double ResolveMeasuredSize(double measuredSize, double minSize, double maxSize)
+    {
+        var size = measuredSize;
+        if (double.IsNaN(size) || double.IsInfinity(size))
+        {
+            size = 0;
+        }
+
+        size = Math.Max(size, minSize);
+        if (!double.IsNaN(maxSize) && !double.IsInfinity(maxSize))
+        {
+            size = Math.Min(size, maxSize);
+        }
+
+        return size;
     }
 
     public void UpdatePlacement()
