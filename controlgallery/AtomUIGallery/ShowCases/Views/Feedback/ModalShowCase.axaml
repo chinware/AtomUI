@@ -10,50 +10,54 @@
             Title="Basic"
             Description="Basic modal.">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:Button ButtonType="Primary" Name="BasicOpenModalButton">
-                    Open Modal Overlay
-                </atom:Button>
-                <atom:Dialog PlacementTarget="BasicOpenModalButton"
-                             IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
-                             Title="Basic Modal"
-                             IsModal="False"
-                             IsResizable="False"
-                             IsDragMovable="True"
-                             IsMaximizable="False"
-                             StandardButtons="Cancel,Ok"
-                             DefaultStandardButton="Ok"
-                             HorizontalStartupLocation="Center"
-                             VerticalOffset="30%"
-                             HostMinWidth="300">
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock>Some contents...</TextBlock>
-                        <TextBlock>Some contents...</TextBlock>
-                        <TextBlock>Some contents...</TextBlock>
-                    </StackPanel>
-                </atom:Dialog>
-                <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton">
-                    Open Modal Window
-                </atom:Button>
-                <atom:Dialog PlacementTarget="BasicWindowOpenModalButton"
-                             IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
-                             Title="Basic Window Modal"
-                             IsModal="True"
-                             IsResizable="True"
-                             IsClosable="True"
-                             IsDragMovable="True"
-                             IsMaximizable="False"
-                             DialogHostType="Window"
-                             HorizontalStartupLocation="Center"
-                             VerticalOffset="30%"
-                             StandardButtons="Yes"
-                             DefaultStandardButton="Yes"
-                             HostMinWidth="300">
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock>Some contents...</TextBlock>
-                        <TextBlock>Some contents...</TextBlock>
-                        <TextBlock>Some contents...</TextBlock>
-                    </StackPanel>
-                </atom:Dialog>
+                <Panel>
+                    <atom:Button ButtonType="Primary" Name="BasicOpenModalButton">
+                        Open Modal Overlay
+                    </atom:Button>
+                    <atom:Dialog PlacementTarget="BasicOpenModalButton"
+                                 IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
+                                 Title="Basic Modal"
+                                 IsModal="False"
+                                 IsResizable="False"
+                                 IsDragMovable="True"
+                                 IsMaximizable="False"
+                                 StandardButtons="Cancel,Ok"
+                                 DefaultStandardButton="Ok"
+                                 HorizontalStartupLocation="Center"
+                                 VerticalOffset="30%"
+                                 HostMinWidth="300">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock>Some contents...</TextBlock>
+                        </StackPanel>
+                    </atom:Dialog>
+                </Panel>
+                <Panel>
+                    <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton">
+                        Open Modal Window
+                    </atom:Button>
+                    <atom:Dialog PlacementTarget="BasicWindowOpenModalButton"
+                                 IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
+                                 Title="Basic Window Modal"
+                                 IsModal="True"
+                                 IsResizable="True"
+                                 IsClosable="True"
+                                 IsDragMovable="True"
+                                 IsMaximizable="False"
+                                 DialogHostType="Window"
+                                 HorizontalStartupLocation="Center"
+                                 VerticalOffset="30%"
+                                 StandardButtons="Yes"
+                                 DefaultStandardButton="Yes"
+                                 HostMinWidth="300">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock>Some contents...</TextBlock>
+                        </StackPanel>
+                    </atom:Dialog>
+                </Panel>
             </StackPanel>
         </gallery:ShowCaseItem>
         

@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Native;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -181,9 +182,22 @@ internal class DialogHost : Window,
             ResolveAvailableMeasureSize(ownerSize.Height, _dialog.HostMaxHeight));
 
         _dialogContent.Measure(availableSize);
+
+        // Window 模板里 PART_ContentPresenter 的 Margin 绑到 Padding；_dialogContent 作为
+        // 该 ContentPresenter 的内容，它的 DesiredSize 不包含这部分 chrome 开销。另外
+        // Avalonia 的 Window.Height 是外框高度：CSD 模式下模板里 AtomUI 自绘的 TitleBarPanel
+        // 占据 TitleBarHeight；非 CSD 模式下系统原生标题栏贴在客户区之上。两条路径下都要把
+        // 标题栏贡献加回去，否则 Window.Height 比实际需要小，内容被挤出可视区。
+        var padding          = Padding;
+        var titleBarOverhead = IsCsdEnabled
+            ? (IsTitleBarVisible ? TitleBarHeight : 0)
+            : (this.GetSystemTitleBarHeight() ?? 0);
+        var contentWidth  = _dialogContent.DesiredSize.Width + padding.Left + padding.Right;
+        var contentHeight = _dialogContent.DesiredSize.Height + padding.Top + padding.Bottom + titleBarOverhead;
+
         return new Size(
-            ResolveMeasuredSize(_dialogContent.DesiredSize.Width, _dialog.HostMinWidth, _dialog.HostMaxWidth),
-            ResolveMeasuredSize(_dialogContent.DesiredSize.Height, _dialog.HostMinHeight, _dialog.HostMaxHeight));
+            ResolveMeasuredSize(contentWidth, _dialog.HostMinWidth, _dialog.HostMaxWidth),
+            ResolveMeasuredSize(contentHeight, _dialog.HostMinHeight, _dialog.HostMaxHeight));
     }
 
     private static double ResolveAvailableMeasureSize(double ownerSize, double maxSize)

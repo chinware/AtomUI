@@ -12,13 +12,13 @@ public record DialogOptions
     
     public double HostMaxHeight { get; init; } = double.PositiveInfinity;
     public double HostMaxWidth { get; init; } = double.PositiveInfinity;
-    public double HostMinHeight { get; init; } = 0d;
-    public double HostMinWidth { get; init; } = 0d;
+    public double HostMinHeight { get; init; } = 0.0d;
+    public double HostMinWidth { get; init; } = 0.0d;
     public double HostWidth { get; init; } = double.NaN;
     public double HostHeight { get; init; } = double.NaN;
 
     /// <summary>
-    /// 次选项仅 Window Host 类型的弹窗有效
+    /// 此选项仅 Window Host 类型的弹窗有效
     /// </summary>
     public bool IsMinimizable { get; init; } = true;
     
