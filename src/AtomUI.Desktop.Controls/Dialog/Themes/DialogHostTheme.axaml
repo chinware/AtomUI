@@ -7,8 +7,7 @@
     <ControlTheme.BasedOn>
         <atom:WindowTheme TargetType="atom:DialogHost" />
     </ControlTheme.BasedOn>
-
-    <Setter Property="SizeToContent" Value="WidthAndHeight" />
+    
     <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
     <Setter Property="IsFullScreenCaptionButtonVisible" Value="False" />
     <Setter Property="IsPinCaptionButtonVisible" Value="False" />

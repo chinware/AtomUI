@@ -2,15 +2,11 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Styling;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -107,7 +103,7 @@ internal class DialogHost : Window,
     object? IDialogHost.Content
     {
         get => _dialogContent.DialogContent;
-        set => _dialogContent.DialogContent = value as Control;
+        set => _dialogContent.DialogContent = value;
     }
     IDataTemplate? IDialogHost.ContentTemplate
     {
@@ -122,6 +118,7 @@ internal class DialogHost : Window,
     private CompositeDisposable? _confirmLoadingBindings;
     private Rect _ownerBounds;
     private Size _hostSize;
+    private bool _hasAppliedInitialPlacement;
 
     public DialogHost(TopLevel parent, Dialog dialog)
     {
@@ -151,6 +148,7 @@ internal class DialogHost : Window,
         this[!StandardButtonsProperty]                    = dialog[!Dialog.StandardButtonsProperty];
         this[!DefaultStandardButtonProperty]              = dialog[!Dialog.DefaultStandardButtonProperty];
         this[!EscapeStandardButtonProperty]               = dialog[!Dialog.EscapeStandardButtonProperty];
+        this[!Window.CanResizeProperty]                   = dialog[!Dialog.IsResizableProperty];
         this[!Window.CanMinimizeProperty]                 = dialog[!Dialog.EffectiveMinimizableProperty];
         this[!Window.CanMaximizeProperty]                 = dialog[!Dialog.IsMaximizableProperty];
         this[!Window.IsCloseCaptionButtonVisibleProperty] = dialog[!Dialog.IsClosableProperty];
@@ -160,10 +158,22 @@ internal class DialogHost : Window,
     public void AttachPlacement(Control placementTarget)
     {
         _ownerBounds = GetOwnerBounds(ParentTopLevel);
+        _hasAppliedInitialPlacement = false;
     }
 
     public void UpdateSizing()
     {
+        var sizeToContent = SizeToContent.Manual;
+        if (double.IsNaN(_dialog.Width))
+        {
+            sizeToContent |= SizeToContent.Width;
+        }
+        if (double.IsNaN(_dialog.Height))
+        {
+            sizeToContent |= SizeToContent.Height;
+        }
+
+        SizeToContent = sizeToContent;
         Width     = _dialog.Width;
         MinWidth  = _dialog.MinWidth;
         MaxWidth  = _dialog.MaxWidth;
@@ -191,7 +201,11 @@ internal class DialogHost : Window,
         base.ArrangeCore(finalRect);
         _hostSize    = finalRect.Size;
         _ownerBounds = GetOwnerBounds(ParentTopLevel);
-        UpdatePlacement();
+        if (!_hasAppliedInitialPlacement)
+        {
+            UpdatePlacement();
+            _hasAppliedInitialPlacement = true;
+        }
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -209,6 +223,8 @@ internal class DialogHost : Window,
 
     public void Close(Action? callback = null)
     {
+        _confirmLoadingBindings?.Dispose();
+        _confirmLoadingBindings = null;
         base.Close();
         callback?.Invoke();
     }
@@ -274,7 +290,8 @@ internal class DialogHost : Window,
                 button.Role == DialogButtonRole.YesRole ||
                 button.Role == DialogButtonRole.ApplyRole)
             {
-                button[!Button.IsLoadingProperty] = this[!IsConfirmLoadingProperty];
+                _confirmLoadingBindings.Add(button.Bind(Button.IsLoadingProperty,
+                    this.GetObservable(IsConfirmLoadingProperty)));
             }
         }
     }

@@ -17,8 +17,8 @@ namespace AtomUI.Desktop.Controls;
 using AtomUIPopup = Popup;
 
 internal class OverlayDialogHost : ContentControl,
-                                    IDialogHost,
-                                    IMotionAwareControl
+                                   IDialogHost,
+                                   IMotionAwareControl
 {
     public static readonly StyledProperty<string?> TitleProperty =
         AvaloniaProperty.Register<OverlayDialogHost, string?>(nameof(Title));
@@ -188,6 +188,7 @@ internal class OverlayDialogHost : ContentControl,
     private DialogButtonBox? _buttonBox;
     private OverlayDialogHeader? _header;
     private OverlayDialogResizer? _resizer;
+    private CompositeDisposable? _confirmLoadingBindings;
     private Rect _ownerBounds;
     private Point _popupOffset;
     private Size _hostSize;
@@ -202,19 +203,19 @@ internal class OverlayDialogHost : ContentControl,
     {
         _popup = new AtomUIPopup
         {
-            PlacementTarget                = placementTarget,
-            Placement                      = PlacementMode.Custom,
-            PlacementConstraintAdjustment  = PopupPositionerConstraintAdjustment.None,
-            DependencyResolver             = dependencyResolver,
-            ShouldUseOverlayLayer          = true,
-            CustomPopupPlacementCallback   = HandlePlacePopup,
+            PlacementTarget               = placementTarget,
+            Placement                     = PlacementMode.Custom,
+            PlacementConstraintAdjustment = PopupPositionerConstraintAdjustment.None,
+            DependencyResolver            = dependencyResolver,
+            ShouldUseOverlayLayer         = true,
+            CustomPopupPlacementCallback  = HandlePlacePopup,
         };
         TokenResourceBinder.CreateTokenBinding(_popup, AtomUIPopup.OverlayHostShadowProperty, SharedTokenKind.BoxShadows);
         _popup.SetPopupParent(placementTarget);
-        _popup.Closed += HandlePopupClosed;
-        _popupRoot  = new Canvas { ClipToBounds = false };
-        _dialogMask = new OverlayDialogMask();
-        _dialog = dialog;
+        _popup.Closed                   += HandlePopupClosed;
+        _popupRoot                      =  new Canvas { ClipToBounds = false };
+        _dialogMask                     =  new OverlayDialogMask();
+        _dialog                         =  dialog;
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
 
@@ -270,6 +271,8 @@ internal class OverlayDialogHost : ContentControl,
     private void CleanupPopup()
     {
         _popup.Closed          -= HandlePopupClosed;
+        _confirmLoadingBindings?.Dispose();
+        _confirmLoadingBindings = null;
         _popupRoot.Children.Clear();
         _popup.Child           = null;
         _popup.PlacementTarget = null;
@@ -447,8 +450,8 @@ internal class OverlayDialogHost : ContentControl,
 
         if (_resizer != null)
         {
-            _resizer.TargetDialog    = this;
-            _resizer.ResizeRequest  += HandleResizeRequest;
+            _resizer.TargetDialog  =  this;
+            _resizer.ResizeRequest += HandleResizeRequest;
         }
 
         ConfigureEffectiveFooterVisible();
@@ -631,19 +634,25 @@ internal class OverlayDialogHost : ContentControl,
     private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
     {
         _dialog.NotifyDialogButtonSynchronized(args.Buttons);
+        _confirmLoadingBindings?.Dispose();
+        _confirmLoadingBindings = new CompositeDisposable(args.Buttons.Count);
         foreach (var button in args.Buttons)
         {
             if (button.Role == DialogButtonRole.AcceptRole ||
                 button.Role == DialogButtonRole.YesRole ||
                 button.Role == DialogButtonRole.ApplyRole)
             {
-                button[!Button.IsLoadingProperty] = this[!IsConfirmLoadingProperty];
+                _confirmLoadingBindings.Add(button.Bind(Button.IsLoadingProperty,
+                    this.GetObservable(IsConfirmLoadingProperty)));
             }
         }
     }
 
     private void DetachTemplateHandlers()
     {
+        _confirmLoadingBindings?.Dispose();
+        _confirmLoadingBindings = null;
+
         if (_buttonBox != null)
         {
             _buttonBox.CustomButtons.Clear();
