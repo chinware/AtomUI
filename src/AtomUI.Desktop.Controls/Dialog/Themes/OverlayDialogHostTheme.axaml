@@ -84,15 +84,6 @@
         <Style Selector="^[WindowState=Maximized]">
             <Setter Property="CornerRadius" Value="0" />
         </Style>
-        
-        <Style Selector="^[IsMotionEnabled=True]">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <DoubleTransition Property="Opacity" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" Easing="CircularEaseOut" />
-                    <TransformOperationsTransition Property="RenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" Easing="CircularEaseOut" />
-                </Transitions>
-            </Setter>
-        </Style>
     </Style>
-    
+
 </ControlTheme>

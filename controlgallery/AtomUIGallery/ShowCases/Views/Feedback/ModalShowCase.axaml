@@ -72,7 +72,7 @@
                     <atom:Dialog PlacementTarget="AsyncDialogOpenModalButton"
                                  IsOpen="{Binding IsAsyncDialogOpened, Mode=TwoWay}"
                                  Title="Asynchronously close Modal"
-                                 IsModal="False"
+                                 IsModal="True"
                                  IsDragMovable="True"
                                  IsResizable="False"
                                  IsMaximizable="False"

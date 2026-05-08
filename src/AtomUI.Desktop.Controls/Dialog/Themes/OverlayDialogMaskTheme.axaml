@@ -12,5 +12,15 @@
         <Setter Property="Opacity" Value="1"/>
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgMask}"/>
         <Setter Property="AnimationDuration" Value="{atom:SharedTokenResource MotionDurationMid}"/>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}"
+                                      Easing="CircularEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

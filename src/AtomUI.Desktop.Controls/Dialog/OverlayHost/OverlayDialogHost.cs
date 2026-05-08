@@ -5,11 +5,15 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
+using Avalonia.Media.Transformation;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -183,7 +187,6 @@ internal class OverlayDialogHost : ContentControl,
 
     private readonly AtomUIPopup _popup;
     private readonly Dialog _dialog;
-    private readonly Canvas _popupRoot;
     private readonly OverlayDialogMask _dialogMask;
     private DialogButtonBox? _buttonBox;
     private OverlayDialogHeader? _header;
@@ -195,6 +198,8 @@ internal class OverlayDialogHost : ContentControl,
     private Size? _restoreSize;
     private bool _isCloseRequested;
     private Action? _closeCallback;
+    private OverlayPopupHost? _animatedOverlayHost;
+    private Panel? _animatedOverlayLayer;
 
     private const double MinVisibleX = 100;
     private const double MinVisibleY = 40;
@@ -213,7 +218,6 @@ internal class OverlayDialogHost : ContentControl,
         TokenResourceBinder.CreateTokenBinding(_popup, AtomUIPopup.OverlayHostShadowProperty, SharedTokenKind.BoxShadows);
         _popup.SetPopupParent(placementTarget);
         _popup.Closed                   += HandlePopupClosed;
-        _popupRoot                      =  new Canvas { ClipToBounds = false };
         _dialogMask                     =  new OverlayDialogMask();
         _dialog                         =  dialog;
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
@@ -237,11 +241,78 @@ internal class OverlayDialogHost : ContentControl,
         this[!EscapeStandardButtonProperty]  = dialog[!Dialog.EscapeStandardButtonProperty];
     }
 
+    private const double CollapsedScale = 0.75;
+
     public void Show()
     {
         ConfigurePopupChild();
+
         _popup.IsOpen = true;
         BringToFront();
+
+        if (!IsMotionEnabled)
+        {
+            // 非动画路径：仍需把 mask 挂到 OverlayLayer，否则 modal 遮罩出不来。
+            Dispatcher.UIThread.Post(AttachMaskToOverlayLayer);
+            return;
+        }
+
+        // 防 flash：Popup 打开是同步的，OverlayPopupHost 此时已可 FindAncestorOfType 找到。
+        // 立即清 transitions + Opacity=0，首帧就渲染为完全透明。offset 还算不出
+        // （layout 没跑），留到下一 tick 补完初始态 transform。
+        var initialHost = this.FindAncestorOfType<OverlayPopupHost>();
+        if (initialHost is not null)
+        {
+            initialHost.Transitions = null;
+            initialHost.Opacity     = 0.0;
+        }
+
+        // OverlayPopupHost 的 layout 要等到下一 tick 才稳定，offset 需要它的屏幕坐标。
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (_isCloseRequested)
+            {
+                return;
+            }
+
+            AttachMaskToOverlayLayer();
+            var overlayHost = initialHost ?? this.FindAncestorOfType<OverlayPopupHost>();
+            if (overlayHost is null)
+            {
+                return;
+            }
+
+            _animatedOverlayHost = overlayHost;
+
+            // 清 transitions 让起始态瞬时生效，装回 transitions 后下一 Post 设目标态才会
+            // 被 transitions 抓到这一次"起始→目标"变化去插值。若不清空，起始态本身也会触发
+            // 一次被 Post2 立刻打断的动画，实际看起来像没动画。
+            var offset = CalculateOffsetFromPlacement();
+            overlayHost.Transitions     = null;
+            overlayHost.Opacity         = 0.0;
+            overlayHost.RenderTransform = BuildCollapsedTransform(offset);
+            EnsureTransitionsOn(overlayHost);
+
+            if (IsModal)
+            {
+                ResetMaskOpacityWithoutTransition(0.0);
+            }
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (_isCloseRequested)
+                {
+                    return;
+                }
+                overlayHost.Opacity         = 1.0;
+                overlayHost.RenderTransform = BuildIdentityTransform();
+
+                if (IsModal)
+                {
+                    _dialogMask.Opacity = 1.0;
+                }
+            });
+        });
     }
 
     public void Close(Action? callback = null)
@@ -253,14 +324,148 @@ internal class OverlayDialogHost : ContentControl,
         }
 
         _isCloseRequested = true;
-        if (_popup.IsOpen)
+        if (!_popup.IsOpen)
         {
-            _popup.IsOpen = false;
+            CleanupPopup();
+            return;
+        }
+
+        if (IsMotionEnabled && _animatedOverlayHost is { } overlayHost)
+        {
+            var offset = CalculateOffsetFromPlacement();
+            overlayHost.Opacity         = 0.0;
+            overlayHost.RenderTransform = BuildCollapsedTransform(offset);
+
+            if (IsModal)
+            {
+                _dialogMask.Opacity = 0.0;
+            }
+
+            DispatcherTimer.RunOnce(() =>
+            {
+                if (_popup.IsOpen)
+                {
+                    _popup.IsOpen = false;
+                }
+                else
+                {
+                    CleanupPopup();
+                }
+            }, AnimationDuration);
         }
         else
         {
-            CleanupPopup();
+            _popup.IsOpen = false;
         }
+    }
+
+    private static void EnsureTransitionsOn(OverlayPopupHost host)
+    {
+        if (host.Transitions is { Count: > 0 })
+        {
+            return;
+        }
+        host.Transitions =
+        [
+            TransitionUtils.CreateTransition<DoubleTransition>(
+                Visual.OpacityProperty,
+                SharedTokenKind.MotionDurationMid,
+                new CircularEaseOut()),
+            TransitionUtils.CreateTransition<TransformOperationsTransition>(
+                Visual.RenderTransformProperty,
+                SharedTokenKind.MotionDurationMid,
+                new CircularEaseOut())
+        ];
+    }
+
+    private void ResetMaskOpacityWithoutTransition(double value)
+    {
+        // mask 的 Opacity transition 由主题装配；这里瞬时归位，套"清空 → 赋值 → 装回"。
+        var maskTransitions = _dialogMask.Transitions;
+        _dialogMask.Transitions = null;
+        _dialogMask.Opacity     = value;
+        _dialogMask.Transitions = maskTransitions;
+    }
+
+    private static TransformOperations BuildCollapsedTransform(Point offset)
+    {
+        var builder = new TransformOperations.Builder(2);
+        builder.AppendScale(CollapsedScale, CollapsedScale);
+        builder.AppendTranslate(-offset.X, -offset.Y);
+        return builder.Build();
+    }
+
+    private static TransformOperations BuildIdentityTransform()
+    {
+        var builder = new TransformOperations.Builder(2);
+        builder.AppendScale(1.0, 1.0);
+        builder.AppendTranslate(0, 0);
+        return builder.Build();
+    }
+
+    private void AttachMaskToOverlayLayer()
+    {
+        if (!IsModal)
+        {
+            return;
+        }
+
+        var overlayHost = this.FindAncestorOfType<OverlayPopupHost>();
+        if (overlayHost?.GetPopupOverlayLayer() is not Panel overlayLayer)
+        {
+            return;
+        }
+
+        _animatedOverlayLayer = overlayLayer;
+
+        // mask 与 popupHost 是兄弟节点，Z 序在 popupHost 之前（作为底层被覆盖）。
+        var hostIndex = overlayLayer.Children.IndexOf(overlayHost);
+        if (hostIndex < 0)
+        {
+            return;
+        }
+
+        if (_dialogMask.Parent is Panel oldParent)
+        {
+            oldParent.Children.Remove(_dialogMask);
+        }
+
+        overlayLayer.Children.Insert(hostIndex, _dialogMask);
+        SyncMaskBounds();
+    }
+
+    private void SyncMaskBounds()
+    {
+        _dialogMask.Width  = _ownerBounds.Width;
+        _dialogMask.Height = _ownerBounds.Height;
+    }
+
+    private Point CalculateOffsetFromPlacement()
+    {
+        var offset = new Point();
+        if (_dialog.PlacementTarget is not { } target)
+        {
+            return offset;
+        }
+
+        // Popup 是独立的 TopLevel 可视树，无法靠 TranslatePoint 在 PlacementTarget 与 host
+        // 之间做坐标换算；改用屏幕像素点再按 RenderScaling 回到 DIP。
+        var targetRoot = target.GetVisualRoot();
+        var hostRoot   = this.GetVisualRoot();
+        if (targetRoot is null || hostRoot is null)
+        {
+            return offset;
+        }
+
+        var sourceScreen = target.PointToScreen(default);
+        var hostScreen   = this.PointToScreen(default);
+        var scaling      = (hostRoot as TopLevel)?.RenderScaling
+                           ?? (targetRoot as TopLevel)?.RenderScaling
+                           ?? 1.0;
+
+        var dx = (hostScreen.X - sourceScreen.X) / scaling;
+        var dy = (hostScreen.Y - sourceScreen.Y) / scaling;
+        return new Point(dx, dy);
     }
 
     private void HandlePopupClosed(object? sender, EventArgs e)
@@ -273,10 +478,16 @@ internal class OverlayDialogHost : ContentControl,
         _popup.Closed          -= HandlePopupClosed;
         _confirmLoadingBindings?.Dispose();
         _confirmLoadingBindings = null;
-        _popupRoot.Children.Clear();
         _popup.Child           = null;
         _popup.PlacementTarget = null;
         _popup.SetPopupParent(null);
+        if (_animatedOverlayLayer is { } overlayLayer)
+        {
+            overlayLayer.Children.Remove(_dialogMask);
+        }
+        _animatedOverlayHost  = null;
+        _animatedOverlayLayer = null;
+        _isCloseRequested     = false;
         _closeCallback?.Invoke();
         _closeCallback = null;
     }
@@ -315,18 +526,14 @@ internal class OverlayDialogHost : ContentControl,
             ConfigureModalRootSize();
         }
 
+        // 拆掉 _popupRoot Canvas 后，this 直接作为 _popup.Child，不再有 Canvas 座标层；
+        // modal 和非 modal 都走 _popupOffset + popup 原生 placement 定位。
         var offset = _dialog.CalculatePlacementOffset(_hostSize, _ownerBounds.Size);
         if (IsModal)
         {
             offset = ConstrainOffset(offset, _hostSize);
-            Canvas.SetLeft(this, offset.X);
-            Canvas.SetTop(this, offset.Y);
-            _popupOffset = default;
         }
-        else
-        {
-            _popupOffset = offset;
-        }
+        _popupOffset = offset;
         _popup.HandlePositionChange();
     }
 
@@ -335,14 +542,9 @@ internal class OverlayDialogHost : ContentControl,
         placement.AnchorRectangle = new Rect(default, new Size(1, 1));
         placement.Anchor          = PopupAnchor.TopLeft;
         placement.Gravity         = PopupGravity.BottomRight;
-
-        if (IsModal)
-        {
-            placement.Offset = default;
-            return;
-        }
-
-        placement.Offset = ConstrainOffset(_popupOffset, placement.PopupSize);
+        placement.Offset          = IsModal
+            ? _popupOffset
+            : ConstrainOffset(_popupOffset, placement.PopupSize);
     }
 
     private Point ConstrainOffset(Point offset, Size popupSize)
@@ -374,18 +576,9 @@ internal class OverlayDialogHost : ContentControl,
 
     private void ConfigurePopupChild()
     {
-        if (IsModal)
-        {
-            ConfigureModalRootSize();
-            _popupRoot.Children.Clear();
-            _popupRoot.Children.Add(_dialogMask);
-            _popupRoot.Children.Add(this);
-            _popup.Child = _popupRoot;
-        }
-        else
-        {
-            _popup.Child = this;
-        }
+        // Popup 只装 dialog；mask 走 OverlayLayer 做 popupHost 的兄弟节点（见 AttachMaskToOverlayLayer），
+        // 避免被 OverlayPopupHost 的 scale/translate 动画带着一起缩放。
+        _popup.Child = this;
     }
 
     private void ConfigureModalRootSize()
@@ -395,10 +588,7 @@ internal class OverlayDialogHost : ContentControl,
             return;
         }
 
-        _popupRoot.Width   = _ownerBounds.Width;
-        _popupRoot.Height  = _ownerBounds.Height;
-        _dialogMask.Width  = _ownerBounds.Width;
-        _dialogMask.Height = _ownerBounds.Height;
+        SyncMaskBounds();
     }
 
     protected override Size MeasureOverride(Size availableSize)
