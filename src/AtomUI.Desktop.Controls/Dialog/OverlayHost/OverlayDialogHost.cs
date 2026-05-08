@@ -1,140 +1,137 @@
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.Reactive.Disposables;
-using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Utils;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Media.Transformation;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
-using AtomUI.Desktop.Controls.Themes;
 
 namespace AtomUI.Desktop.Controls;
 
+using AtomUIPopup = Popup;
+
 internal class OverlayDialogHost : ContentControl,
-                                   IDialogHost,
-                                   IMotionAwareControl
+                                    IDialogHost,
+                                    IMotionAwareControl
 {
-    #region 公共属性定义
     public static readonly StyledProperty<string?> TitleProperty =
-        AvaloniaProperty.Register<OverlayDialogHost, string?>(nameof (Title));
-    
+        AvaloniaProperty.Register<OverlayDialogHost, string?>(nameof(Title));
+
     public static readonly StyledProperty<PathIcon?> TitleIconProperty =
-        AvaloniaProperty.Register<OverlayDialogHost, PathIcon?>(nameof (TitleIcon));
-    
+        AvaloniaProperty.Register<OverlayDialogHost, PathIcon?>(nameof(TitleIcon));
+
     public static readonly StyledProperty<bool> IsResizableProperty =
         Dialog.IsResizableProperty.AddOwner<OverlayDialogHost>();
-        
+
     public static readonly StyledProperty<bool> IsClosableProperty =
         Dialog.IsClosableProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<bool> IsMaximizableProperty =
         Dialog.IsMaximizableProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<bool> IsDragMovableProperty =
         Dialog.IsDragMovableProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<bool> IsModalProperty =
         Dialog.IsModalProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<OverlayDialogState> WindowStateProperty =
         AvaloniaProperty.Register<OverlayDialogHost, OverlayDialogState>(nameof(WindowState));
-    
-    public static readonly StyledProperty<Transform?> TransformProperty =
-        AvaloniaProperty.Register<OverlayDialogHost, Transform?>(nameof (Transform));
-    
+
     public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
         DialogButtonBox.StandardButtonsProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<DialogStandardButton> DefaultStandardButtonProperty =
         DialogButtonBox.DefaultStandardButtonProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<DialogStandardButton> EscapeStandardButtonProperty =
         DialogButtonBox.EscapeStandardButtonProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<bool> IsFooterVisibleProperty =
         Dialog.IsFooterVisibleProperty.AddOwner<OverlayDialogHost>();
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<OverlayDialogHost>();
-    
-    public static readonly StyledProperty<bool> IsLoadingProperty = Dialog.IsLoadingProperty.AddOwner<OverlayDialogHost>();
-    public static readonly StyledProperty<bool> IsConfirmLoadingProperty = Dialog.IsConfirmLoadingProperty.AddOwner<OverlayDialogHost>();
-    
+
+    public static readonly StyledProperty<bool> IsLoadingProperty =
+        Dialog.IsLoadingProperty.AddOwner<OverlayDialogHost>();
+
+    public static readonly StyledProperty<bool> IsConfirmLoadingProperty =
+        Dialog.IsConfirmLoadingProperty.AddOwner<OverlayDialogHost>();
+
+    internal static readonly DirectProperty<OverlayDialogHost, bool> IsEffectiveFooterVisibleProperty =
+        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(
+            nameof(IsEffectiveFooterVisible),
+            o => o.IsEffectiveFooterVisible,
+            (o, v) => o.IsEffectiveFooterVisible = v);
+
+    internal static readonly StyledProperty<TimeSpan> AnimationDurationProperty =
+        AvaloniaProperty.Register<OverlayDialogHost, TimeSpan>(nameof(AnimationDuration));
+
     public string? Title
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
     }
-    
+
     public PathIcon? TitleIcon
     {
         get => GetValue(TitleIconProperty);
         set => SetValue(TitleIconProperty, value);
     }
-    
+
     public bool IsResizable
     {
         get => GetValue(IsResizableProperty);
         set => SetValue(IsResizableProperty, value);
     }
-    
+
     public bool IsMaximizable
     {
         get => GetValue(IsMaximizableProperty);
         set => SetValue(IsMaximizableProperty, value);
     }
-    
+
     public bool IsClosable
     {
         get => GetValue(IsClosableProperty);
         set => SetValue(IsClosableProperty, value);
     }
-    
+
     public bool IsDragMovable
     {
         get => GetValue(IsDragMovableProperty);
         set => SetValue(IsDragMovableProperty, value);
     }
-    
+
     public bool IsModal
     {
         get => GetValue(IsModalProperty);
         set => SetValue(IsModalProperty, value);
     }
-    
+
     public OverlayDialogState WindowState
     {
         get => GetValue(WindowStateProperty);
         set => SetValue(WindowStateProperty, value);
     }
-    
-    public Transform? Transform
-    {
-        get => GetValue(TransformProperty);
-        set => SetValue(TransformProperty, value);
-    }
-    
+
     public DialogStandardButtons StandardButtons
     {
         get => GetValue(StandardButtonsProperty);
         set => SetValue(StandardButtonsProperty, value);
     }
-    
+
     public DialogStandardButton DefaultStandardButton
     {
         get => GetValue(DefaultStandardButtonProperty);
         set => SetValue(DefaultStandardButtonProperty, value);
     }
-    
+
     public DialogStandardButton EscapeStandardButton
     {
         get => GetValue(EscapeStandardButtonProperty);
@@ -146,61 +143,25 @@ internal class OverlayDialogHost : ContentControl,
         get => GetValue(IsFooterVisibleProperty);
         set => SetValue(IsFooterVisibleProperty, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
     public bool IsLoading
     {
         get => GetValue(IsLoadingProperty);
         set => SetValue(IsLoadingProperty, value);
     }
-    
+
     public bool IsConfirmLoading
     {
         get => GetValue(IsConfirmLoadingProperty);
         set => SetValue(IsConfirmLoadingProperty, value);
     }
-    
-    public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
-    
-    #endregion
-    
-    internal event EventHandler? HeaderPressed;
-    
-    #region 内部属性定义
-    
-    internal static readonly DirectProperty<OverlayDialogHost, bool> IsDraggingProperty =
-        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(nameof(IsDragging),
-            o => o.IsDragging,
-            (o, v) => o.IsDragging = v);
-    
-    internal static readonly DirectProperty<OverlayDialogHost, bool> IsEffectiveFooterVisibleProperty =
-        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(
-            nameof(IsEffectiveFooterVisible),
-            o => o.IsEffectiveFooterVisible,
-            (o, v) => o.IsEffectiveFooterVisible = v);
-    
-    internal static readonly StyledProperty<TimeSpan> AnimationDurationProperty =
-        AvaloniaProperty.Register<OverlayDialogHost, TimeSpan>(nameof(AnimationDuration));
-    
-    internal static readonly DirectProperty<OverlayDialogHost, bool> IsHostAnimatingProperty =
-        AvaloniaProperty.RegisterDirect<OverlayDialogHost, bool>(
-            nameof(IsHostAnimating),
-            o => o.IsHostAnimating,
-            (o, v) => o.IsHostAnimating = v);
-    
-    private bool _isDragging;
 
-    internal bool IsDragging
-    {
-        get => _isDragging;
-        set => SetAndRaise(IsDraggingProperty, ref _isDragging, value);
-    }
-    
     private bool _isEffectiveFooterVisible;
 
     internal bool IsEffectiveFooterVisible
@@ -208,330 +169,354 @@ internal class OverlayDialogHost : ContentControl,
         get => _isEffectiveFooterVisible;
         set => SetAndRaise(IsEffectiveFooterVisibleProperty, ref _isEffectiveFooterVisible, value);
     }
-    
+
     internal TimeSpan AnimationDuration
     {
         get => GetValue(AnimationDurationProperty);
         set => SetValue(AnimationDurationProperty, value);
     }
-    
-    private bool _isHostAnimating;
 
-    internal bool IsHostAnimating
-    {
-        get => _isHostAnimating;
-        set => SetAndRaise(IsHostAnimatingProperty, ref _isHostAnimating, value);
-    }
-    
-    internal bool IsHidden => _dialogLayer.Children.Contains(this);
-    
-    #endregion
-    
-    private Point _lastRequestedPosition;
-    private Size _dialogSize;
-    private bool _needsUpdate;
-    private OverlayDialogMask _dialogMask;
-    
-    // 用于最大化
-    private Point _originPosition;
+    bool IDialogHost.Topmost { get; set; }
+    public AvaloniaList<DialogButton> CustomButtons { get; } = new();
+
+    private readonly AtomUIPopup _popup;
+    private readonly Dialog _dialog;
+    private DialogButtonBox? _buttonBox;
     private OverlayDialogHeader? _header;
     private OverlayDialogResizer? _resizer;
-    private Dialog _dialog;
-    private DialogButtonBox? _buttonBox;
     private CompositeDisposable? _confirmLoadingBindings;
-    
-    // 拖动
-    private Size? _lastestSize;
-    private Point? _lastestPoint;
-    private OverlayLayer _dialogLayer;
-    static OverlayDialogHost()
+    private Rect _ownerBounds;
+    private Point _popupOffset;
+    private Size _hostSize;
+    private Size? _restoreSize;
+
+    private const double MinVisibleX = 100;
+    private const double MinVisibleY = 40;
+
+    public OverlayDialogHost(Control placementTarget, Dialog dialog, IAvaloniaDependencyResolver? dependencyResolver)
     {
-        KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue<OverlayDialogHost>(KeyboardNavigationMode.Cycle);
-        AffectsMeasure<OverlayDialogHost>(WindowStateProperty);
+        _popup = new AtomUIPopup
+        {
+            PlacementTarget                = placementTarget,
+            Placement                      = PlacementMode.Custom,
+            PlacementConstraintAdjustment  = PopupPositionerConstraintAdjustment.None,
+            DependencyResolver             = dependencyResolver,
+            ShouldUseOverlayLayer          = true,
+            IsLightDismissEnabled          = dialog.IsLightDismissEnabled,
+            CustomPopupPlacementCallback   = HandlePlacePopup,
+        };
+        TokenResourceBinder.CreateTokenBinding(_popup, AtomUIPopup.OverlayHostShadowProperty, SharedTokenKind.BoxShadows);
+        _popup.SetPopupParent(placementTarget);
+        _popup.Child = this;
+        _dialog = dialog;
+        CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
 
-    public OverlayDialogHost(OverlayLayer dialogLayer, Dialog dialog)
+    public void BindDialog(Dialog dialog, CompositeDisposable disposables)
     {
-        _dialog                    = dialog;
-        _dialogLayer               = dialogLayer;
-        CustomButtons.CollectionChanged +=  new(HandleCustomButtonsChanged);
-        _dialogMask                     ??= new OverlayDialogMask(_dialogLayer, _dialog);
+        this[!TitleProperty]                 = dialog[!Dialog.TitleProperty];
+        this[!TitleIconProperty]             = dialog[!Dialog.TitleIconProperty];
+        this[!IsResizableProperty]           = dialog[!Dialog.IsResizableProperty];
+        this[!IsClosableProperty]            = dialog[!Dialog.IsClosableProperty];
+        this[!IsMaximizableProperty]         = dialog[!Dialog.IsMaximizableProperty];
+        this[!IsDragMovableProperty]         = dialog[!Dialog.IsDragMovableProperty];
+        this[!IsModalProperty]               = dialog[!Dialog.IsModalProperty];
+        this[!IsMotionEnabledProperty]       = dialog[!Dialog.IsMotionEnabledProperty];
+        this[!IsLoadingProperty]             = dialog[!Dialog.IsLoadingProperty];
+        this[!IsConfirmLoadingProperty]      = dialog[!Dialog.IsConfirmLoadingProperty];
+        this[!IsFooterVisibleProperty]       = dialog[!Dialog.IsFooterVisibleProperty];
+        this[!StandardButtonsProperty]       = dialog[!Dialog.StandardButtonsProperty];
+        this[!DefaultStandardButtonProperty] = dialog[!Dialog.DefaultStandardButtonProperty];
+        this[!EscapeStandardButtonProperty]  = dialog[!Dialog.EscapeStandardButtonProperty];
     }
-
-    public void SetChild(Control? control)
-    {
-        Content = control;
-    }
-    
-    public Visual? HostedVisualTreeRoot => null;
-    
-    // 多个 overlay 中始终置顶也可以有的
-    bool IDialogHost.Topmost { get; set; }
 
     public void Show()
     {
-        _dialogLayer.Children.Add(this);
-        _dialogLayer.SizeChanged +=  HandleDialogLayerSizeChanged;
-        if (IsModal)
-        {
-
-            _dialogMask.Show(this);
-        }
-        if (Content is Visual visual && !visual.IsAttachedToVisualTree())
-        {
-            // We need to force a measure pass so any descendants are built, for focus to work.
-            UpdateLayout();
-        }
-
-        IsHostAnimating = false;
-        if (IsMotionEnabled)
-        {
-            Opacity     =   0.0;
-            {
-                var builder = new TransformOperations.Builder(2);
-                var offset  = CalculateOffsetFromPlacement();
-                builder.AppendScale(0.75, 0.75);
-                builder.AppendTranslate(-offset.X, -offset.Y);
-           
-                RenderTransform = builder.Build();
-            }
-            
-            Dispatcher.Post(() =>
-            {
-                IsHostAnimating = true;
-                Opacity         = 1.0;
-                {
-                    var builder = new TransformOperations.Builder(2);
-                    builder.AppendScale(1.0, 1.0);
-                    builder.AppendTranslate(0, 0);
-                    RenderTransform = builder.Build();
-                }
-                DispatcherTimer.RunOnce(() =>
-                {
-                    IsHostAnimating = false;
-                }, AnimationDuration);
-            });
-        }
-    }
-
-    private Point CalculateOffsetFromPlacement()
-    {
-        var offset = new Point();
-        if (_dialog.PlacementTarget != null)
-        {
-            var sourceOffset = _dialog.PlacementTarget.TranslatePoint(new Point(0, 0), _dialogLayer);
-            var targetOffset = Bounds.TopLeft;
-            if (sourceOffset != null)
-            {
-                var offsetX = targetOffset.X - sourceOffset.Value.X;
-                var offsetY = targetOffset.Y - sourceOffset.Value.Y;
-                offset = new Point(offsetX, offsetY);
-            }
-        }
-        return offset;
+        _popup.IsOpen = true;
     }
 
     public void Close(Action? callback = null)
     {
-        IsHostAnimating = false;
-        if (IsMotionEnabled)
+        _popup.IsOpen          = false;
+        _popup.Child           = null;
+        _popup.PlacementTarget = null;
+        _popup.SetPopupParent(null);
+        callback?.Invoke();
+    }
+
+    public void AttachPlacement(Control placementTarget)
+    {
+        var topLevel = TopLevel.GetTopLevel(placementTarget);
+        if (topLevel != null)
         {
-            IsHostAnimating = true;
-            Opacity         = 0.0;
-            
-            {
-                var builder = new TransformOperations.Builder(2);
-                var offset  = CalculateOffsetFromPlacement();
-                builder.AppendTranslate(-offset.X, -offset.Y);
-                builder.AppendScale(0.75, 0.75);
-                RenderTransform = builder.Build();
-            }
-            DispatcherTimer.RunOnce(() =>
-            {
-                IsHostAnimating = false;
-                HandleClosed();
-                callback?.Invoke();
-            }, AnimationDuration * 1.1);
-        }
-        else
-        {
-            HandleClosed();
-            callback?.Invoke();
-        }
-        if (IsModal)
-        {
-            Debug.Assert(_dialogMask != null);
-            _dialogMask.Hide();
+            _ownerBounds = new Rect(default, topLevel.ClientSize);
         }
     }
 
-    private void HandleClosed()
+    public void UpdateSizing()
     {
-        _dialogLayer.SizeChanged -= HandleDialogLayerSizeChanged;
-        _dialogLayer.Children.Remove(this);
-        _dialog.ClearValue(Dialog.OffsetXProperty);
-        _dialog.ClearValue(Dialog.OffsetYProperty);
+        Width     = _dialog.Width;
+        MinWidth  = _dialog.MinWidth;
+        MaxWidth  = _dialog.MaxWidth;
+        Height    = _dialog.Height;
+        MinHeight = _dialog.MinHeight;
+        MaxHeight = _dialog.MaxHeight;
     }
 
-    private void HandleDialogLayerSizeChanged(object? sender, SizeChangedEventArgs e)
+    public void UpdatePlacement()
     {
-        _needsUpdate = true;
-        
-        var offsetX = Canvas.GetLeft(this);
-        var offsetY = Canvas.GetTop(this);
-
-        var bounds     = _dialogLayer.Bounds;
-        var maxOffsetX = bounds.Width - DesiredSize.Width;
-        var maxOffsetY =  bounds.Height - DesiredSize.Height;
-        
-        var deltaX = maxOffsetX - offsetX;
-        if (deltaX < 0)
+        if (_hostSize == default)
         {
-            offsetX += deltaX;
+            return;
         }
-        
-        _dialog.SetCurrentValue(Dialog.OffsetXProperty, Math.Min(Math.Max(offsetX, 0), maxOffsetX));
-        _dialog.SetCurrentValue(Dialog.OffsetYProperty, Math.Min(Math.Max(offsetY, 0), maxOffsetY));
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel != null)
+        {
+            _ownerBounds = new Rect(default, topLevel.ClientSize);
+        }
+
+        _popupOffset = _dialog.CalculatePlacementOffset(_hostSize, _ownerBounds.Size);
+        _popup.HandlePositionChange();
+    }
+
+    private void HandlePlacePopup(CustomPopupPlacement placement)
+    {
+        var ownerSize = _ownerBounds.Size;
+        var popupSize = placement.PopupSize;
+
+        placement.AnchorRectangle = new Rect(default, new Size(1, 1));
+        placement.Anchor          = PopupAnchor.TopLeft;
+        placement.Gravity         = PopupGravity.BottomRight;
+
+        var offset = _popupOffset;
+
+        var minVisX = Math.Min(MinVisibleX, popupSize.Width);
+        var minVisY = Math.Min(MinVisibleY, popupSize.Height);
+
+        // 上边界：硬约束
+        offset = offset.WithY(Math.Max(0, offset.Y));
+
+        // 左边界：保留 minVisX 可见
+        offset = offset.WithX(Math.Max(-(popupSize.Width - minVisX), offset.X));
+
+        // 右边界：保留 minVisX 可见
+        if (offset.X > ownerSize.Width - minVisX)
+        {
+            offset = offset.WithX(ownerSize.Width - minVisX);
+        }
+
+        // 下边界：保留 minVisY（标题栏）可见
+        if (offset.Y > ownerSize.Height - minVisY)
+        {
+            offset = offset.WithY(ownerSize.Height - minVisY);
+        }
+
+        placement.Offset = offset;
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
-        if (WindowState == OverlayDialogState.Maximized)
-        {
-            return _dialogLayer.Bounds.Size;
-        }
-        return size;
+        return new Size(Math.Max(size.Width, MinWidth), Math.Max(size.Height, MinHeight));
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (_dialogSize != finalSize)
-        {
-            _dialogSize  = finalSize;
-            _dialog.NotifyDialogHostMeasured(_dialogSize, new Rect(_dialogLayer.DesiredSize));
-            _needsUpdate = true;
-        }
-        return base.ArrangeOverride(finalSize);
-    }
+        var size = base.ArrangeOverride(finalSize);
+        _hostSize = size;
+        UpdatePlacement();
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsModalProperty)
+        if (WindowState == OverlayDialogState.Maximized)
         {
-            if (!IsHidden)
-            {
-                if (change.OldValue is bool oldValue && oldValue)
-                {
-                    _dialogMask.Hide();
-                }
+            Width  = _ownerBounds.Width;
+            Height = _ownerBounds.Height;
+        }
 
-                if (change.NewValue is bool newValue && newValue)
-                {
-                    _dialogMask.Show(this);
-                }
-            }
-        }
-        else if (change.Property == WindowStateProperty)
-        {
-            HandleWindowStateChanged(change.GetOldValue<OverlayDialogState>(), change.GetNewValue<OverlayDialogState>());
-        }
-        else if (change.Property == StandardButtonsProperty ||
-                 change.Property == IsLoadingProperty)
-        {
-            ConfigureEffectiveFooterVisible();
-        }
-    }
-
-    private void ConfigureEffectiveFooterVisible()
-    {
-        if (IsFooterVisible)
-        {
-            if (!IsLoading)
-            {
-                SetCurrentValue(IsEffectiveFooterVisibleProperty, StandardButtons.Count > 0 || CustomButtons.Count > 0);
-            }
-            else
-            {
-                SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
-            }
-        }
-        else
-        {
-            SetCurrentValue(IsEffectiveFooterVisibleProperty, false);
-        }
+        return size;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        DetachTemplateHandlers();
 
-        if (_resizer != null)
-        {
-            _resizer.ResizeRequest -= HandleResizeRequest;
-            _resizer.AboutToResize -= HandleAboutToResize;
-        }
+        _buttonBox = e.NameScope.Find<DialogButtonBox>("PART_ButtonBox");
+        _header    = e.NameScope.Find<OverlayDialogHeader>("PART_Header");
+        _resizer   = e.NameScope.Find<OverlayDialogResizer>("PART_Resizer");
 
-        _resizer = e.NameScope.Find<OverlayDialogResizer>(OverlayDialogThemeConstants.ResizerPart);
-        if (_resizer != null)
-        {
-            _resizer.TargetDialog  =  this;
-            _resizer.ResizeRequest += HandleResizeRequest;
-            _resizer.AboutToResize += HandleAboutToResize;
-        }
-
-        if (_header != null)
-        {
-            _header.Pressed          -= HandleHeaderPressed;
-            _header.DoubleTapped     -= HandleHeaderDoubleClicked;
-            _header.MaximizeRequest  -= HandleHeaderMaximizeRequest;
-            _header.NormalizeRequest -= HandleHeaderNormalizeRequest;
-            _header.CloseRequest     -= HandleHeaderCloseRequest;
-            _header.PointerPressed   -= HandleHeaderPointerPressed;
-            _header.PointerReleased  -= HandleHeaderPointerReleased;
-            _header.PointerMoved     -= HandleHeaderPointerMoved;
-        }
-        
-        _header    = e.NameScope.Find<OverlayDialogHeader>(OverlayDialogThemeConstants.HeaderPart);
-        if (_header != null)
-        {
-            _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
-            _header.Pressed          += HandleHeaderPressed;
-            _header.DoubleTapped     += HandleHeaderDoubleClicked;
-            _header.MaximizeRequest  += HandleHeaderMaximizeRequest;
-            _header.NormalizeRequest += HandleHeaderNormalizeRequest;
-            _header.CloseRequest     += HandleHeaderCloseRequest;
-            _header.PointerPressed   += HandleHeaderPointerPressed;
-            _header.PointerReleased  += HandleHeaderPointerReleased;
-            _header.PointerMoved     += HandleHeaderPointerMoved;
-        }
-        
-        if (_buttonBox != null)
-        {
-            _buttonBox.Clicked             -= HandleButtonBoxClicked;
-            _buttonBox.ButtonsSynchronized -= HandleButtonsSynchronized;
-        }
-
-        _buttonBox = e.NameScope.Find<DialogButtonBox>(DialogThemeConstants.ButtonBoxPart);
         if (_buttonBox != null)
         {
             _buttonBox.CustomButtons.AddRange(CustomButtons);
             _buttonBox.Clicked             += HandleButtonBoxClicked;
             _buttonBox.ButtonsSynchronized += HandleButtonsSynchronized;
         }
+
+        if (_header != null)
+        {
+            _header.CloseRequest     += HandleHeaderCloseRequest;
+            _header.MaximizeRequest  += HandleHeaderMaximizeRequest;
+            _header.NormalizeRequest += HandleHeaderNormalizeRequest;
+            _header.PointerPressed   += HandleHeaderPointerPressed;
+            _header.PointerReleased  += HandleHeaderPointerReleased;
+            _header.PointerMoved     += HandleHeaderPointerMoved;
+        }
+
+        if (_resizer != null)
+        {
+            _resizer.TargetDialog    = this;
+            _resizer.ResizeRequest  += HandleResizeRequest;
+        }
+
+        ConfigureEffectiveFooterVisible();
     }
 
-    private void HandleHeaderPressed(object? sender, EventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        HeaderPressed?.Invoke(this, EventArgs.Empty);
+        base.OnPropertyChanged(change);
+        if (change.Property == StandardButtonsProperty ||
+            change.Property == IsLoadingProperty ||
+            change.Property == IsFooterVisibleProperty)
+        {
+            ConfigureEffectiveFooterVisible();
+        }
+    }
+
+    private Point? _dragStart;
+
+    private void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (!IsDragMovable || WindowState == OverlayDialogState.Maximized || !e.Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        _dragStart = e.GetPosition(TopLevel.GetTopLevel(this));
+        e.Pointer.Capture(_header);
+    }
+
+    private void HandleHeaderPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_dragStart is null || !e.Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        var position = e.GetPosition(TopLevel.GetTopLevel(this));
+        var delta    = position - _dragStart.Value;
+        _dragStart = position;
+        _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX + delta.X);
+        _dialog.SetCurrentValue(Dialog.OffsetYProperty, _dialog.OffsetY + delta.Y);
+    }
+
+    private void HandleHeaderPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        _dragStart = null;
+        e.Pointer.Capture(null);
+    }
+
+    private void HandleHeaderCloseRequest(object? sender, EventArgs e)
+    {
+        if (IsClosable)
+        {
+            _dialog.NotifyDialogHostCloseRequest();
+        }
+    }
+
+    private void HandleHeaderMaximizeRequest(object? sender, EventArgs e)
+    {
+        _restoreSize = Bounds.Size;
+        WindowState  = OverlayDialogState.Maximized;
+        Width        = _ownerBounds.Width;
+        Height       = _ownerBounds.Height;
+        _dialog.SetCurrentValue(Dialog.OffsetXProperty, 0);
+        _dialog.SetCurrentValue(Dialog.OffsetYProperty, 0);
+    }
+
+    private void HandleHeaderNormalizeRequest(object? sender, EventArgs e)
+    {
+        WindowState = OverlayDialogState.Normal;
+        if (_restoreSize is { } restoreSize)
+        {
+            Width  = restoreSize.Width;
+            Height = restoreSize.Height;
+        }
+    }
+
+    private void HandleResizeRequest(object? sender, OverlayDialogResizeEventArgs args)
+    {
+        if (WindowState == OverlayDialogState.Maximized)
+        {
+            return;
+        }
+
+        var location  = args.Location;
+        var deltaX    = args.DeltaOffsetX;
+        var deltaY    = args.DeltaOffsetY;
+        var newWidth  = Bounds.Width;
+        var newHeight = Bounds.Height;
+
+        if (location.HasFlag(ResizeHandleLocation.East))
+        {
+            newWidth = Math.Max(MinWidth, Bounds.Width + deltaX);
+        }
+        else if (location.HasFlag(ResizeHandleLocation.West))
+        {
+            var candidate   = Math.Max(MinWidth, Bounds.Width - deltaX);
+            var actualDelta = candidate - Bounds.Width;
+            newWidth = candidate;
+            _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX - actualDelta);
+        }
+
+        if (location.HasFlag(ResizeHandleLocation.South))
+        {
+            newHeight = Math.Max(MinHeight, Bounds.Height + deltaY);
+        }
+        else if (location.HasFlag(ResizeHandleLocation.North))
+        {
+            var candidate   = Math.Max(MinHeight, Bounds.Height - deltaY);
+            var actualDelta = candidate - Bounds.Height;
+            newHeight = candidate;
+            _dialog.SetCurrentValue(Dialog.OffsetYProperty, _dialog.OffsetY - actualDelta);
+        }
+
+        Width  = newWidth;
+        Height = newHeight;
+    }
+
+    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_buttonBox != null)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    _buttonBox.CustomButtons.AddRange(e.NewItems!.OfType<DialogButton>());
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    _buttonBox.CustomButtons.RemoveAll(e.OldItems!.OfType<DialogButton>());
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Reset:
+                    throw new NotSupportedException();
+            }
+        }
+
+        ConfigureEffectiveFooterVisible();
+    }
+
+    private void ConfigureEffectiveFooterVisible()
+    {
+        SetCurrentValue(IsEffectiveFooterVisibleProperty,
+            IsFooterVisible && !IsLoading && (StandardButtons.Count > 0 || CustomButtons.Count > 0));
     }
 
     private void HandleButtonBoxClicked(object? sender, DialogButtonClickedEventArgs args)
     {
         _dialog.NotifyDialogButtonBoxClicked(args.SourceButton);
     }
-    
+
     private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
     {
         _dialog.NotifyDialogButtonSynchronized(args.Buttons);
@@ -543,260 +528,33 @@ internal class OverlayDialogHost : ContentControl,
                 button.Role == DialogButtonRole.YesRole ||
                 button.Role == DialogButtonRole.ApplyRole)
             {
-                _confirmLoadingBindings.Add(BindUtils.RelayBind(this, IsConfirmLoadingProperty, button, Button.IsLoadingProperty));
+                button[!Button.IsLoadingProperty] = this[!IsConfirmLoadingProperty];
             }
         }
     }
 
-    private void HandleAboutToResize(object? sender, OverlayDialogResizeEventArgs args)
-    {
-        _lastestSize  = DesiredSize;
-        _lastestPoint = _lastRequestedPosition;
-    }
-
-    private void HandleResizeRequest(object? sender, OverlayDialogResizeEventArgs args)
-    {
-        if (_lastestSize != null && _lastestPoint != null)
-        {
-            var originWidth  = _lastestSize.Value.Width;
-            var originHeight = _lastestSize.Value.Height;
-            if (args.Location == ResizeHandleLocation.East)
-            {
-                var width    = originWidth + args.DeltaOffsetX;
-                var minWidth = 0d;
-                if (_dialog.IsSet(Dialog.MinWidthProperty))
-                {
-                    minWidth =  _dialog.MinWidth;
-                }
-                width = Math.Max(width, minWidth);
-                if (_dialog.IsSet(Dialog.MaxWidthProperty))
-                {
-                    width = Math.Min(width, MaxWidth);
-                }
-                _dialog.SetCurrentValue(Dialog.WidthProperty, width);
-            }
-            else if (args.Location == ResizeHandleLocation.West)
-            {
-                var minWidthReached = false;
-                var width           = originWidth - args.DeltaOffsetX;
-                if (_dialog.IsSet(Dialog.MinWidthProperty))
-                {
-                    if (MathUtils.LessThanOrClose(width, _dialog.MinWidth))
-                    {
-                        minWidthReached = true;
-                    }
-                    width = Math.Max(width, _dialog.MinWidth);
-                }
-                
-                if (_dialog.IsSet(Dialog.MaxWidthProperty))
-                {
-                    width = Math.Min(width, MaxWidth);
-                }
-                
-                if (!minWidthReached)
-                {
-                    _dialog.SetCurrentValue(Dialog.OffsetXProperty, _lastestPoint.Value.X + args.DeltaOffsetX);
-                    _dialog.SetCurrentValue(Dialog.WidthProperty, width);
-                }
-            }
-            else if (args.Location == ResizeHandleLocation.North)
-            {
-                var minHeightReached = false;
-                var height           = originHeight - args.DeltaOffsetY;
-                if (_dialog.IsSet(Dialog.MinWidthProperty))
-                {
-                    if (MathUtils.LessThanOrClose(height, _dialog.MinHeight))
-                    {
-                        minHeightReached = true;
-                    }
-                    height = Math.Max(height, _dialog.MinHeight);
-                }
-                
-                if (_dialog.IsSet(Dialog.MaxHeightProperty))
-                {
-                    height = Math.Min(height, MaxHeight);
-                }
-                
-                if (!minHeightReached)
-                {
-                    _dialog.SetCurrentValue(Dialog.OffsetYProperty, _lastestPoint.Value.Y + args.DeltaOffsetY);
-                    _dialog.SetCurrentValue(Dialog.HeightProperty, height);
-                }
-                
-            }
-            else if (args.Location == ResizeHandleLocation.South)
-            {
-                var height    = originHeight + args.DeltaOffsetY;
-                var minHeight = 0d;
-                if (_dialog.IsSet(MinHeightProperty))
-                {
-                    minHeight =  _dialog.MinHeight;
-                }
-                height = Math.Max(height, minHeight);
-                if (_dialog.IsSet(MaxHeightProperty))
-                {
-                    height = Math.Min(height, MaxHeight);
-                }
-                _dialog.SetCurrentValue(HeightProperty, height);
-            }
-        }
-    }
-    
-    private void HandleHeaderDoubleClicked(object? sender, RoutedEventArgs e)
-    {
-        if (!IsMaximizable || !IsResizable)
-        {
-            return;
-        }
-
-        WindowState = WindowState == OverlayDialogState.Normal ? OverlayDialogState.Maximized : OverlayDialogState.Normal;
-    }
-    
-    private void HandleHeaderNormalizeRequest(object? sender, EventArgs e)
-    {
-        SetCurrentValue(WindowStateProperty, OverlayDialogState.Normal);
-    }
-
-    private void HandleHeaderMaximizeRequest(object? sender, EventArgs e)
-    {
-        SetCurrentValue(WindowStateProperty, OverlayDialogState.Maximized);
-    }
-    
-    private void HandleHeaderCloseRequest(object? sender, EventArgs e)
-    {
-        if (Parent is Dialog dialog)
-        {
-            dialog.Done();
-        }
-    }
-
-    private void HandleHeaderPointerPressed(object? sender, PointerEventArgs e)
-    {
-        if (IsDragMovable && e.Properties.IsLeftButtonPressed)
-        {
-            e.Handled     = true;
-            _lastestPoint = e.GetPosition(this);
-            e.PreventGestureRecognition();
-        }
-    }
-
-    private void HandleHeaderPointerReleased(object? sender, PointerEventArgs e)
-    {
-        if (_lastestPoint.HasValue)
-        {
-            e.Handled     = true;
-            _lastestPoint = null;
-            SetCurrentValue(IsDraggingProperty, false);
-        }
-    }
-
-    private void HandleHeaderPointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (_lastestPoint.HasValue && e.Properties.IsLeftButtonPressed)
-        {
-            var delta             = e.GetPosition(this) - _lastestPoint.Value;
-            var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
-            if (manhattanDistance > Constants.DragThreshold)
-            {
-                if (!IsDragging)
-                {
-                    SetCurrentValue(IsDraggingProperty, true);
-                }
-
-                HandleDragging(e.GetPosition(this), delta);
-            }
-        }
-    }
-    
-    private void HandleDragging(Point position, Point delta)
-    {
-        var offsetX = Canvas.GetLeft(this);
-        var offsetY = Canvas.GetTop(this);
-
-        offsetX += delta.X;
-        offsetY += delta.Y;
-
-        var bounds     = _dialogLayer.Bounds;
-        var maxOffsetX = bounds.Width - DesiredSize.Width;
-        var maxOffsetY =  bounds.Height - DesiredSize.Height;
-        
-        _dialog.SetCurrentValue(Dialog.OffsetXProperty, Math.Min(Math.Max(offsetX, 0), maxOffsetX));
-        _dialog.SetCurrentValue(Dialog.OffsetYProperty, Math.Min(Math.Max(offsetY, 0), maxOffsetY));
-    }
-    
-    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
-    {
-        if (_lastestPoint.HasValue)
-        {
-            _lastestPoint = null;
-            IsDragging    = false;
-        }
-
-        base.OnPointerCaptureLost(e);
-    }
-
-    private void HandleWindowStateChanged(OverlayDialogState oldState, OverlayDialogState newState)
-    {
-        if (oldState == OverlayDialogState.Normal)
-        {
-            _originPosition = new Point(Canvas.GetLeft(this), Canvas.GetTop(this));
-        }
-
-        if (newState == OverlayDialogState.Maximized)
-        {
-            _dialog.SetCurrentValue(Dialog.OffsetXProperty, 0);
-            _dialog.SetCurrentValue(Dialog.OffsetYProperty, 0);
-        }
-        else if (newState == OverlayDialogState.Normal)
-        {
-            _dialog.SetCurrentValue(Dialog.OffsetXProperty, _originPosition.X);
-            _dialog.SetCurrentValue(Dialog.OffsetYProperty, _originPosition.Y);
-        }
-        if (_header != null)
-        {
-            _header.SetCurrentValue(OverlayDialogHeader.IsDialogMaximizedProperty, WindowState == OverlayDialogState.Maximized);
-        }
-    }
-    
-    private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void DetachTemplateHandlers()
     {
         if (_buttonBox != null)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<DialogButton>();
-                    _buttonBox.CustomButtons.AddRange(newItems);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<DialogButton>();
-                    _buttonBox.CustomButtons.RemoveAll(oldItems);
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Reset:
-                    throw new NotSupportedException();
-            }
+            _buttonBox.CustomButtons.Clear();
+            _buttonBox.Clicked             -= HandleButtonBoxClicked;
+            _buttonBox.ButtonsSynchronized -= HandleButtonsSynchronized;
         }
 
-        ConfigureEffectiveFooterVisible();
-    }
-    
-    internal void NotifyChangeZIndex(int zindex)
-    {
-        _dialogMask.SetCurrentValue(OverlayDialogMask.ZIndexProperty, zindex - 1);
-        SetCurrentValue(ZIndexProperty, zindex);
-    }
+        if (_header != null)
+        {
+            _header.CloseRequest     -= HandleHeaderCloseRequest;
+            _header.MaximizeRequest  -= HandleHeaderMaximizeRequest;
+            _header.NormalizeRequest -= HandleHeaderNormalizeRequest;
+            _header.PointerPressed   -= HandleHeaderPointerPressed;
+            _header.PointerReleased  -= HandleHeaderPointerReleased;
+            _header.PointerMoved     -= HandleHeaderPointerMoved;
+        }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
+        if (_resizer != null)
+        {
+            _resizer.ResizeRequest -= HandleResizeRequest;
+        }
     }
 }

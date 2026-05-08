@@ -67,6 +67,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(ComboBoxViewModel.ID, () => new ComboBoxViewModel(HostScreen));
         _showCaseViewModelFactories.Add(DropdownButtonViewModel.ID, () => new DropdownButtonViewModel(HostScreen));
         _showCaseViewModelFactories.Add(MessageViewModel.ID, () => new MessageViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(ModalViewModel.ID, () => new ModalViewModel(HostScreen));
         _showCaseViewModelFactories.Add(NotificationViewModel.ID, () => new NotificationViewModel(HostScreen));
         _showCaseViewModelFactories.Add(PopupConfirmViewModel.ID, () => new PopupConfirmViewModel(HostScreen));
         _showCaseViewModelFactories.Add(DrawerViewModel.ID, () => new DrawerViewModel(HostScreen));

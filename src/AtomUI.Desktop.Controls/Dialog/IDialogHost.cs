@@ -1,26 +1,23 @@
-using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
-using Avalonia.Media;
+using System.Reactive.Disposables;
 
 namespace AtomUI.Desktop.Controls;
 
 public interface IDialogHost : IFocusScope
 {
-    double Width { get; set; }
-    double MinWidth { get; set; }
-    double MaxWidth { get; set; }
-    double Height { get; set; }
-    double MinHeight { get; set; }
-    double MaxHeight { get; set; }
     bool Topmost { get; set; }
-    ContentPresenter? Presenter { get; }
-    Transform? Transform { get; set; }
-    object? Content { get; }
-    IDataTemplate? ContentTemplate { get; }
-    void SetChild(Control? control);
+    object? Content { get; set; }
+    IDataTemplate? ContentTemplate { get; set; }
+    AvaloniaList<DialogButton> CustomButtons { get; }
+    event EventHandler<TemplateAppliedEventArgs>? TemplateApplied;
+    void BindDialog(Dialog dialog, CompositeDisposable disposables);
+    void AttachPlacement(Control placementTarget);
+    void UpdateSizing();
+    void UpdatePlacement();
     void Show();
     void Close(Action? callback = null);
 }

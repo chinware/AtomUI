@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
@@ -278,9 +277,9 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _leftGroup   = e.NameScope.Find<DockPanel>(DialogButtonBoxThemeConstants.LeftGroupPart);
-        _centerGroup = e.NameScope.Find<DockPanel>(DialogButtonBoxThemeConstants.CenterGroupPart);
-        _rightGroup  = e.NameScope.Find<DockPanel>(DialogButtonBoxThemeConstants.RightGroupPart);
+        _leftGroup   = e.NameScope.Find<DockPanel>("PART_LeftGroup");
+        _centerGroup = e.NameScope.Find<DockPanel>("PART_CenterGroup");
+        _rightGroup  = e.NameScope.Find<DockPanel>("PART_RightGroup");
         BuildStandardButtons();
         SyncButtonsToGroup();
     }

@@ -1,7 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -147,11 +146,11 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
         _disposables?.Dispose();
         _disposables = null;
 
-        if (VisualRoot is Window window)
+        if (TemplatedParent is OverlayDialogHost host)
         {
-            _disposables = new CompositeDisposable(6)
+            _disposables = new CompositeDisposable(1)
             {
-                window.GetObservable(OverlayDialogHost.WindowStateProperty).Subscribe(x =>
+                host.GetObservable(OverlayDialogHost.WindowStateProperty).Subscribe(x =>
                 {
                     PseudoClasses.Set(StdPseudoClass.Normal, x == OverlayDialogState.Normal);
                     PseudoClasses.Set(StdPseudoClass.Maximized, x == OverlayDialogState.Maximized);
@@ -174,8 +173,8 @@ internal class OverlayDialogHeader : TemplatedControl, IMotionAwareControl
             _maximizeButton.Click -= HandleMaximizeButtonClicked;
         }
         
-        _closeButton    = e.NameScope.Find<DialogCaptionButton>(OverlayDialogHeaderThemeConstants.CloseButtonPart);
-        _maximizeButton = e.NameScope.Find<DialogCaptionButton>(OverlayDialogHeaderThemeConstants.MaximizeButtonPart);
+        _closeButton    = e.NameScope.Find<DialogCaptionButton>("PART_CloseButton");
+        _maximizeButton = e.NameScope.Find<DialogCaptionButton>("PART_MaximizeButton");
         
         if (_closeButton != null)
         {

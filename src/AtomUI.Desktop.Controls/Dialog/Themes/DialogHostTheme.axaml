@@ -8,21 +8,8 @@
         <atom:WindowTheme TargetType="atom:DialogHost" />
     </ControlTheme.BasedOn>
 
-    <Style Selector="^:is(atom|DialogHost)">
-        <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
-        <Setter Property="SizeToContent" Value="WidthAndHeight" />
-        <Setter Property="IsFullScreenCaptionButtonVisible" Value="False" />
-
-        <Style Selector="^ /template/ DockPanel#PART_ContentLayout">
-            <Setter Property="VerticalSpacing"
-                    Value="{atom:SharedTokenResource UniformlyMarginXS}" />
-        </Style>
-
-        <Style Selector="^ /template/ Border#FooterFrame">
-            <Setter Property="Background" Value="{atom:DialogTokenResource FooterBg}" />
-            <Setter Property="Margin" Value="{atom:DialogTokenResource FooterMarginTop}" />
-            <Setter Property="Padding" Value="{atom:DialogTokenResource FooterPadding}" />
-        </Style>
-    </Style>
-
+    <Setter Property="SizeToContent" Value="WidthAndHeight" />
+    <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
+    <Setter Property="IsFullScreenCaptionButtonVisible" Value="False" />
+    <Setter Property="IsPinCaptionButtonVisible" Value="False" />
 </ControlTheme>
