@@ -161,7 +161,8 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
                 DefaultStandardButton     = DialogStandardButton.Ok,
                 HorizontalStartupLocation = DialogHorizontalAnchor.Center,
                 VerticalOffset            = new Dimension(30, DimensionUnitType.Percentage),
-                HostMinWidth              = 400
+                HostMinWidth              = 400,
+                PlacementTarget = OpenOverlayDialogAPIButton
             };
             await Dialog.ShowDialogModalAsync(content, null, options);
         }

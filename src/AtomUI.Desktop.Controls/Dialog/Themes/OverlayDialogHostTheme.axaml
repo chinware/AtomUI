@@ -74,6 +74,10 @@
         <Style Selector="^ /template/ Border#ContentFrame">
             <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
         </Style>
+        
+        <Style Selector="^ /template/ atom|Skeleton">
+            <Setter Property="Margin" Value="{atom:DialogTokenResource LoadingIndicatorMargin}" />
+        </Style>
 
         <Style Selector="^ /template/ Border#FooterFrame">
             <Setter Property="Background" Value="{atom:DialogTokenResource FooterBg}" />

@@ -38,5 +38,9 @@
             <Setter Property="Margin" Value="{atom:DialogTokenResource FooterMarginTop}" />
             <Setter Property="Padding" Value="{atom:DialogTokenResource FooterPadding}" />
         </Style>
+        
+        <Style Selector="^ /template/ atom|Skeleton">
+            <Setter Property="Margin" Value="{atom:DialogTokenResource LoadingIndicatorMargin}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

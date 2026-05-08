@@ -241,7 +241,7 @@ internal class OverlayDialogHost : ContentControl,
         this[!EscapeStandardButtonProperty]  = dialog[!Dialog.EscapeStandardButtonProperty];
     }
 
-    private const double CollapsedScale = 0.75;
+    private const double CollapsedScale = 0.35;
 
     public void Show()
     {
@@ -253,7 +253,7 @@ internal class OverlayDialogHost : ContentControl,
         if (!IsMotionEnabled)
         {
             // 非动画路径：仍需把 mask 挂到 OverlayLayer，否则 modal 遮罩出不来。
-            Dispatcher.UIThread.Post(AttachMaskToOverlayLayer);
+            Dispatcher.Post(AttachMaskToOverlayLayer);
             return;
         }
 
@@ -268,7 +268,7 @@ internal class OverlayDialogHost : ContentControl,
         }
 
         // OverlayPopupHost 的 layout 要等到下一 tick 才稳定，offset 需要它的屏幕坐标。
-        Dispatcher.UIThread.Post(() =>
+        Dispatcher.Post(() =>
         {
             if (_isCloseRequested)
             {
@@ -287,10 +287,11 @@ internal class OverlayDialogHost : ContentControl,
             // 清 transitions 让起始态瞬时生效，装回 transitions 后下一 Post 设目标态才会
             // 被 transitions 抓到这一次"起始→目标"变化去插值。若不清空，起始态本身也会触发
             // 一次被 Post2 立刻打断的动画，实际看起来像没动画。
-            var offset = CalculateOffsetFromPlacement();
-            overlayHost.Transitions     = null;
-            overlayHost.Opacity         = 0.0;
-            overlayHost.RenderTransform = BuildCollapsedTransform(offset);
+            var (origin, translate)           = CalculateCollapsedTransformState(overlayHost);
+            overlayHost.Transitions           = null;
+            overlayHost.Opacity               = 0.0;
+            overlayHost.RenderTransformOrigin = origin;
+            overlayHost.RenderTransform       = BuildCollapsedTransform(translate);
             EnsureTransitionsOn(overlayHost);
 
             if (IsModal)
@@ -298,7 +299,7 @@ internal class OverlayDialogHost : ContentControl,
                 ResetMaskOpacityWithoutTransition(0.0);
             }
 
-            Dispatcher.UIThread.Post(() =>
+            Dispatcher.Post(() =>
             {
                 if (_isCloseRequested)
                 {
@@ -332,9 +333,10 @@ internal class OverlayDialogHost : ContentControl,
 
         if (IsMotionEnabled && _animatedOverlayHost is { } overlayHost)
         {
-            var offset = CalculateOffsetFromPlacement();
-            overlayHost.Opacity         = 0.0;
-            overlayHost.RenderTransform = BuildCollapsedTransform(offset);
+            var (origin, translate)           = CalculateCollapsedTransformState(overlayHost);
+            overlayHost.RenderTransformOrigin = origin;
+            overlayHost.Opacity               = 0.0;
+            overlayHost.RenderTransform       = BuildCollapsedTransform(translate);
 
             if (IsModal)
             {
@@ -368,11 +370,11 @@ internal class OverlayDialogHost : ContentControl,
         host.Transitions =
         [
             TransitionUtils.CreateTransition<DoubleTransition>(
-                Visual.OpacityProperty,
+                OpacityProperty,
                 SharedTokenKind.MotionDurationMid,
                 new CircularEaseOut()),
             TransitionUtils.CreateTransition<TransformOperationsTransition>(
-                Visual.RenderTransformProperty,
+                RenderTransformProperty,
                 SharedTokenKind.MotionDurationMid,
                 new CircularEaseOut())
         ];
@@ -387,11 +389,11 @@ internal class OverlayDialogHost : ContentControl,
         _dialogMask.Transitions = maskTransitions;
     }
 
-    private static TransformOperations BuildCollapsedTransform(Point offset)
+    private static TransformOperations BuildCollapsedTransform(Point translate)
     {
         var builder = new TransformOperations.Builder(2);
         builder.AppendScale(CollapsedScale, CollapsedScale);
-        builder.AppendTranslate(-offset.X, -offset.Y);
+        builder.AppendTranslate(translate.X, translate.Y);
         return builder.Build();
     }
 
@@ -440,32 +442,61 @@ internal class OverlayDialogHost : ContentControl,
         _dialogMask.Height = _ownerBounds.Height;
     }
 
-    private Point CalculateOffsetFromPlacement()
+    private (RelativePoint origin, Point translate) CalculateCollapsedTransformState(Visual host)
     {
-        var offset = new Point();
+        var hostWidth  = host.Bounds.Width;
+        var hostHeight = host.Bounds.Height;
+        if (hostWidth <= 0 || hostHeight <= 0)
+        {
+            return (RelativePoint.Center, default);
+        }
+
         if (_dialog.PlacementTarget is not { } target)
         {
-            return offset;
+            return (RelativePoint.Center, default);
         }
 
-        // Popup 是独立的 TopLevel 可视树，无法靠 TranslatePoint 在 PlacementTarget 与 host
-        // 之间做坐标换算；改用屏幕像素点再按 RenderScaling 回到 DIP。
+        // Popup 与 PlacementTarget 通常在不同的 TopLevel 可视树，不能 TranslatePoint；
+        // 走屏幕像素再按 RenderScaling 回到 DIP。
+        var hostRoot   = host.GetVisualRoot();
         var targetRoot = target.GetVisualRoot();
-        var hostRoot   = this.GetVisualRoot();
-        if (targetRoot is null || hostRoot is null)
+        if (hostRoot is null || targetRoot is null)
         {
-            return offset;
+            return (RelativePoint.Center, default);
         }
 
-        var sourceScreen = target.PointToScreen(default);
-        var hostScreen   = this.PointToScreen(default);
-        var scaling      = (hostRoot as TopLevel)?.RenderScaling
-                           ?? (targetRoot as TopLevel)?.RenderScaling
-                           ?? 1.0;
+        var scaling = (hostRoot as TopLevel)?.RenderScaling
+                      ?? (targetRoot as TopLevel)?.RenderScaling
+                      ?? 1.0;
 
-        var dx = (hostScreen.X - sourceScreen.X) / scaling;
-        var dy = (hostScreen.Y - sourceScreen.Y) / scaling;
-        return new Point(dx, dy);
+        var hostTopLeft  = host.PointToScreen(default);
+        var targetCenter = target.PointToScreen(
+            new Point(target.Bounds.Width / 2, target.Bounds.Height / 2));
+
+        // R: target 中点投影到 host 本地 DIP
+        var rx = (targetCenter.X - hostTopLeft.X) / scaling;
+        var ry = (targetCenter.Y - hostTopLeft.Y) / scaling;
+
+        var cx = hostWidth  / 2;
+        var cy = hostHeight / 2;
+
+        // Origin：scale 锚点。"靠 target 方向"——按 X/Y 分别相对 host 中心的方向吸到
+        // 0 或 1，四个角之一。target 与 host 中心重合时退化到 center。
+        var originRelX = rx < cx ? 0.0 : (rx > cx ? 1.0 : 0.5);
+        var originRelY = ry < cy ? 0.0 : (ry > cy ? 1.0 : 0.5);
+
+        var ox = originRelX * hostWidth;
+        var oy = originRelY * hostHeight;
+
+        // Translate：想让 collapsed 态的 host 中点落到 R。
+        // 变换综合是 s*(p - O) + O + t，令 host 中心 c 经变换后得 R：
+        //   t = R - s*c - (1 - s)*O
+        const double s = CollapsedScale;
+        var translate = new Point(
+            rx - s * cx - (1 - s) * ox,
+            ry - s * cy - (1 - s) * oy);
+
+        return (new RelativePoint(originRelX, originRelY, RelativeUnit.Relative), translate);
     }
 
     private void HandlePopupClosed(object? sender, EventArgs e)

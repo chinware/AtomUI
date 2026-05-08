@@ -1,5 +1,6 @@
+using AtomUI.Controls.Primitives;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -26,8 +27,17 @@ public partial class Dialog
                                      DialogOptions? options = null,
                                      TopLevel? topLevel = null)
     {
-        var dialog = CreateDialog(content, dataContext, options, ResolvePlacementTarget(options, topLevel));
-        return dialog.Open();
+        var overlayLayer = ResolveOverlayLayer(options, topLevel);
+        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
+        overlayLayer.Children.Add(dialog);
+        try
+        {
+            return dialog.Open();
+        }
+        finally
+        {
+            overlayLayer.Children.Remove(dialog);
+        }
     }
 
     public static object? ShowDialogModal(Control content,
@@ -35,9 +45,18 @@ public partial class Dialog
                                           DialogOptions? options = null,
                                           TopLevel? topLevel = null)
     {
-        var dialog = CreateDialog(content, dataContext, options, ResolvePlacementTarget(options, topLevel));
+        var overlayLayer = ResolveOverlayLayer(options, topLevel);
+        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
         dialog.IsModal = true;
-        return dialog.Open();
+        overlayLayer.Children.Add(dialog);
+        try
+        {
+            return dialog.Open();
+        }
+        finally
+        {
+            overlayLayer.Children.Remove(dialog);
+        }
     }
 
     public static async Task ShowDialogAsync<TView, TViewModel>(TViewModel? dataContext,
@@ -66,8 +85,14 @@ public partial class Dialog
                                              TopLevel? topLevel = null,
                                              CancellationToken cancellationToken = default)
     {
-        var dialog = CreateDialog(content, dataContext, options, ResolvePlacementTarget(options, topLevel));
-        dialog.Closed += (_, _) => closed?.Invoke(new DialogActionResult(dialog.Result));
+        var overlayLayer = ResolveOverlayLayer(options, topLevel);
+        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
+        dialog.Closed += (_, _) =>
+        {
+            closed?.Invoke(new DialogActionResult(dialog.Result));
+            overlayLayer.Children.Remove(dialog);
+        };
+        overlayLayer.Children.Add(dialog);
         await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
     }
 
@@ -77,10 +102,19 @@ public partial class Dialog
                                                            TopLevel? topLevel = null,
                                                            CancellationToken cancellationToken = default)
     {
-        var dialog = CreateDialog(content, dataContext, options, ResolvePlacementTarget(options, topLevel));
+        var overlayLayer = ResolveOverlayLayer(options, topLevel);
+        var dialog       = CreateDialog(content, dataContext, options, overlayLayer);
         dialog.IsModal = true;
-        await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
-        return dialog.Result;
+        overlayLayer.Children.Add(dialog);
+        try
+        {
+            await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
+            return dialog.Result;
+        }
+        finally
+        {
+            overlayLayer.Children.Remove(dialog);
+        }
     }
 
     private static Dialog CreateDialog(Control content, object? dataContext, DialogOptions? options, Control placementTarget)
@@ -114,24 +148,20 @@ public partial class Dialog
         };
     }
 
-    private static Control ResolvePlacementTarget(DialogOptions? options, TopLevel? topLevel)
+    private static Panel ResolveOverlayLayer(DialogOptions? options, TopLevel? topLevel)
     {
-        if (options?.PlacementTarget is not null)
-        {
-            return options.PlacementTarget;
-        }
-
-        var resolvedTopLevel = topLevel ?? Window.GetMainWindow();
-        if (resolvedTopLevel is null)
+        Visual? anchor = options?.PlacementTarget ?? topLevel ?? Window.GetMainWindow();
+        if (anchor is null)
         {
             throw new InvalidOperationException("Unable to resolve TopLevel for Dialog.");
         }
 
-        if (resolvedTopLevel.Content is Control contentControl)
+        if (anchor.GetPopupOverlayLayer() is not Panel overlayLayer)
         {
-            return contentControl;
+            throw new InvalidOperationException(
+                "Unable to resolve overlay layer for Dialog; ensure the TopLevel is an atom:Window.");
         }
 
-        return resolvedTopLevel;
+        return overlayLayer;
     }
 }

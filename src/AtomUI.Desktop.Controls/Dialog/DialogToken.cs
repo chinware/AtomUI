@@ -92,6 +92,11 @@ internal class DialogToken : AbstractControlDesignToken
     /// </summary>
     public double ButtonGroupSpacing { get; set; }
     
+    /// <summary>
+    /// 加载器的外间距
+    /// </summary>
+    public Thickness LoadingIndicatorMargin { get; set; }
+    
     public DialogToken()
         : base(ID)
     {
@@ -105,7 +110,7 @@ internal class DialogToken : AbstractControlDesignToken
         ContentBg      = SharedToken.ColorBgElevated;
         HeaderColor    = SharedToken.ColorTextHeading;
         ContentPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, 0,
-            SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingMD);
+            SharedToken.PaddingContentHorizontalLG, 0);
         HeaderPadding = new Thickness(SharedToken.PaddingContentHorizontalLG, SharedToken.UniformlyPaddingSM,
             SharedToken.PaddingContentHorizontalSM, 0);
         HeaderMarginBottom = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
@@ -119,6 +124,7 @@ internal class DialogToken : AbstractControlDesignToken
         FooterMarginTop    = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
         FooterBg           = Colors.Transparent;
         ButtonGroupSpacing = SharedToken.SpacingXS;
+        LoadingIndicatorMargin = new Thickness(0, 0, 0, SharedToken.UniformlyMargin);
     }
     
     protected override Type GetTokenKindType() => typeof(DialogTokenKind);

@@ -216,7 +216,7 @@
             Title="Static Dialog API"
             Description="Creating a Dialog using the static method of Dialog.">
             <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
-                <atom:Button ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick">
+                <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick">
                     Open Overlay Dialog
                 </atom:Button>
         

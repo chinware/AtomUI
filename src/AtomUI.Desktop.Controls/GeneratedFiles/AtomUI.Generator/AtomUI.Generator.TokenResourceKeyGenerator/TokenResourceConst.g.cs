@@ -361,6 +361,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         HeaderFontSize,
         HeaderMarginBottom,
         HeaderPadding,
+        LoadingIndicatorMargin,
         LogoSize,
         MinHeight,
         MinWidth

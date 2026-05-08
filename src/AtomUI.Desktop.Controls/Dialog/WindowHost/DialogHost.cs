@@ -7,7 +7,6 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -109,7 +108,7 @@ internal class DialogHost : Window,
         set => DialogContentTemplate = value;
     }
 
-    protected override Type StyleKeyOverride { get; } = typeof(Window);
+    protected override Type StyleKeyOverride { get; } = typeof(DialogHost);
 
     private readonly Dialog _dialog;
     private readonly DialogWindowContent _dialogContent;
@@ -190,11 +189,10 @@ internal class DialogHost : Window,
         // 标题栏贡献加回去，否则 Window.Height 比实际需要小，内容被挤出可视区。
         var padding          = Padding;
         var titleBarOverhead = IsCsdEnabled
-            ? (IsTitleBarVisible ? TitleBarHeight : 0)
-            : (this.GetSystemTitleBarHeight() ?? 0);
+            ? IsTitleBarVisible ? TitleBarHeight : 0
+            : this.GetSystemTitleBarHeight() ?? 0;
         var contentWidth  = _dialogContent.DesiredSize.Width + padding.Left + padding.Right;
-        var contentHeight = _dialogContent.DesiredSize.Height + padding.Top + padding.Bottom + titleBarOverhead;
-
+        var contentHeight = _dialogContent.DesiredSize.Height + padding.Top + padding.Bottom + titleBarOverhead * 1.1;
         return new Size(
             ResolveMeasuredSize(contentWidth, _dialog.HostMinWidth, _dialog.HostMaxWidth),
             ResolveMeasuredSize(contentHeight, _dialog.HostMinHeight, _dialog.HostMaxHeight));
