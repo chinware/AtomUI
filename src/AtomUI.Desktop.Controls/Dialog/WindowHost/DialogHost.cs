@@ -269,6 +269,9 @@ internal class DialogHost : Window,
         _confirmLoadingBindings?.Dispose();
         _confirmLoadingBindings = null;
         base.Close();
+        // 与 BindDialog 里 SetParent(dialog) 对称：释放 Dialog ↔ DialogHost 的 logical
+        // parent/child 引用，避免关闭后双方互锁无法 GC。
+        ((ISetLogicalParent)this).SetParent(null);
         callback?.Invoke();
     }
 

@@ -93,7 +93,17 @@ public partial class Dialog
             overlayLayer.Children.Remove(dialog);
         };
         overlayLayer.Children.Add(dialog);
-        await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
+        try
+        {
+            await dialog.Dispatcher.InvokeAsync(async () => await dialog.OpenAsync(cancellationToken));
+        }
+        catch
+        {
+            // OpenAsync 抛异常或被 cancel 时 Closed 不会触发，手动摘除避免 overlayLayer 残留
+            // dialog。Remove 对不存在项是 no-op，Closed 已经跑过的场景不会双删。
+            overlayLayer.Children.Remove(dialog);
+            throw;
+        }
     }
 
     public static async Task<object?> ShowDialogModalAsync(Control content,

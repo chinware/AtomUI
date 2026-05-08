@@ -466,63 +466,75 @@ public partial class Dialog : TemplatedControl,
                 throw new InvalidOperationException("Unable to resolve TopLevel for Dialog.");
             }
 
-            var disposables = new CompositeDisposable();
-            var dialogHost = DialogHostType == DialogHostType.Window
-                ? CreateDialogHost(topLevel, this)
-                : CreateOverlayDialogHost(placementTarget, this);
-
-            dialogHost.BindDialog(this, disposables);
-            dialogHost.CustomButtons.AddRange(CustomButtons);
-
-            dialogHost.Content         = Content;
-            dialogHost.ContentTemplate = ContentTemplate;
-            dialogHost.UpdateSizing();
-            dialogHost.Topmost         = Topmost;
-
-            SubscribeToEventHandler<IDialogHost, EventHandler<TemplateAppliedEventArgs>>(dialogHost, RootTemplateApplied,
-                (x, handler) => x.TemplateApplied += handler,
-                (x, handler) => x.TemplateApplied -= handler).DisposeWith(disposables);
-
-            SubscribeToEventHandler<Control, EventHandler<VisualTreeAttachmentEventArgs>>(placementTarget, TargetDetached,
-                (x, handler) => x.DetachedFromVisualTree += handler,
-                (x, handler) => x.DetachedFromVisualTree -= handler).DisposeWith(disposables);
-
-            if (topLevel is Window parentWindow)
+            var disposables          = new CompositeDisposable();
+            var ownershipTransferred = false;
+            try
             {
-                SubscribeToEventHandler<Window, EventHandler>(parentWindow, ParentClosed,
-                (x, handler) => x.Closed += handler,
-                (x, handler) => x.Closed -= handler).DisposeWith(disposables);
-            }
+                var dialogHost = DialogHostType == DialogHostType.Window
+                    ? CreateDialogHost(topLevel, this)
+                    : CreateOverlayDialogHost(placementTarget, this);
 
-            dialogHost.AttachPlacement(placementTarget);
+                dialogHost.BindDialog(this, disposables);
+                dialogHost.CustomButtons.AddRange(CustomButtons);
 
-            var openState = new DialogOpenState(dialogHost,
-                disposables);
-            _openState = openState;
-            _dialogHostChangedHandler?.Invoke(dialogHost);
+                dialogHost.Content         = Content;
+                dialogHost.ContentTemplate = ContentTemplate;
+                dialogHost.UpdateSizing();
+                dialogHost.Topmost         = Topmost;
 
-            using (BeginIgnoringIsOpen())
-            {
-                SetCurrentValue(IsOpenProperty, true);
-            }
+                SubscribeToEventHandler<IDialogHost, EventHandler<TemplateAppliedEventArgs>>(dialogHost, RootTemplateApplied,
+                    (x, handler) => x.TemplateApplied += handler,
+                    (x, handler) => x.TemplateApplied -= handler).DisposeWith(disposables);
 
-            if (dialogHost is DialogHost windowDialog && IsModal && topLevel is Window ownerWindow)
-            {
-                // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
-                // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
-                // 仅用 Show() 再 await ClosedTask 只是应用层等待，父窗仍然可交互。
-                Opened?.Invoke(this, EventArgs.Empty);
-                await windowDialog.ShowDialog(ownerWindow).WaitAsync(cancellationToken);
-            }
-            else
-            {
-                dialogHost.Show();
-                Opened?.Invoke(this, EventArgs.Empty);
+                SubscribeToEventHandler<Control, EventHandler<VisualTreeAttachmentEventArgs>>(placementTarget, TargetDetached,
+                    (x, handler) => x.DetachedFromVisualTree += handler,
+                    (x, handler) => x.DetachedFromVisualTree -= handler).DisposeWith(disposables);
 
-                if (IsModal)
+                if (topLevel is Window parentWindow)
                 {
-                    await openState.ClosedTask.WaitAsync(cancellationToken);
+                    SubscribeToEventHandler<Window, EventHandler>(parentWindow, ParentClosed,
+                    (x, handler) => x.Closed += handler,
+                    (x, handler) => x.Closed -= handler).DisposeWith(disposables);
                 }
+
+                dialogHost.AttachPlacement(placementTarget);
+
+                var openState = new DialogOpenState(dialogHost,
+                    disposables);
+                _openState           = openState;
+                ownershipTransferred = true;
+                _dialogHostChangedHandler?.Invoke(dialogHost);
+
+                using (BeginIgnoringIsOpen())
+                {
+                    SetCurrentValue(IsOpenProperty, true);
+                }
+
+                if (dialogHost is DialogHost windowDialog && IsModal && topLevel is Window ownerWindow)
+                {
+                    // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
+                    // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
+                    // 仅用 Show() 再 await ClosedTask 只是应用层等待，父窗仍然可交互。
+                    Opened?.Invoke(this, EventArgs.Empty);
+                    await windowDialog.ShowDialog(ownerWindow).WaitAsync(cancellationToken);
+                }
+                else
+                {
+                    dialogHost.Show();
+                    Opened?.Invoke(this, EventArgs.Empty);
+
+                    if (IsModal)
+                    {
+                        await openState.ClosedTask.WaitAsync(cancellationToken);
+                    }
+                }
+            }
+            catch when (!ownershipTransferred)
+            {
+                // openState 还没接管 disposables；这里手动释放避免事件订阅 / binding 残留。
+                // ownershipTransferred 之后抛异常的分支不走这里，由 _openState.Dispose() 负责清理。
+                disposables.Dispose();
+                throw;
             }
         }
         finally
@@ -611,6 +623,8 @@ public partial class Dialog : TemplatedControl,
 
             Closed?.Invoke(this, EventArgs.Empty);
             _frameCancellationTokenSource?.Cancel();
+            _frameCancellationTokenSource?.Dispose();
+            _frameCancellationTokenSource = null;
             openState?.SetClosed(Result);
         }
         finally
