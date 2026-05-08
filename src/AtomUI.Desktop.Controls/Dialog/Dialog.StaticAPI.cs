@@ -93,7 +93,7 @@ public partial class Dialog
             IsClosable                = options?.IsClosable ?? true,
             IsMaximizable             = options?.IsMaximizable ?? false,
             IsMinimizable             = options?.IsMinimizable ?? true,
-            IsDragMovable             = options?.IsDragMovable ?? false,
+            IsDragMovable             = options?.IsDragMovable ?? true,
             IsFooterVisible           = options?.IsFooterVisible ?? true,
             PlacementTarget           = options?.PlacementTarget ?? placementTarget,
             HorizontalOffset          = options?.HorizontalOffset,

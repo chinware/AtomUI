@@ -22,7 +22,7 @@ public record DialogOptions
     /// </summary>
     public bool IsMinimizable { get; init; } = true;
     
-    public bool IsDragMovable { get; init; }
+    public bool IsDragMovable { get; init; } = true;
     public bool IsFooterVisible { get; init; } = true;
     public Control? PlacementTarget { get; init; }
     public Dimension? HorizontalOffset { get; init; }

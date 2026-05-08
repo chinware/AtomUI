@@ -21,7 +21,7 @@ internal static class PopupReflectionExtensions
     private static readonly Lazy<FieldInfo> IgnoreIsOpenChangedFieldInfo = new Lazy<FieldInfo>(() =>
         typeof(AvaloniaPopup).GetFieldInfoOrThrow("_ignoreIsOpenChanged",
             BindingFlags.Instance | BindingFlags.NonPublic));
-    
+
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicMethods, typeof(AvaloniaPopup))]
     private static readonly Lazy<MethodInfo> SetPopupParentMethodInfo = new Lazy<MethodInfo>(() =>
         typeof(AvaloniaPopup).GetMethodInfoOrThrow("SetPopupParent",
@@ -57,7 +57,7 @@ internal static class PopupReflectionExtensions
         Debug.Assert(value != null);
         return value.Value;
     }
-    
+
     public static void SetPopupParent(this AvaloniaPopup popup, Control? newParent)
     {
         SetPopupParentMethodInfo.Value.Invoke(popup, [newParent]);

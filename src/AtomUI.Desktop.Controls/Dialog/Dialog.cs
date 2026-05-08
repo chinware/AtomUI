@@ -53,7 +53,7 @@ public partial class Dialog : TemplatedControl,
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsMinimizable), true);
 
     public static readonly StyledProperty<bool> IsDragMovableProperty =
-        AvaloniaProperty.Register<Dialog, bool>(nameof(IsDragMovable));
+        AvaloniaProperty.Register<Dialog, bool>(nameof(IsDragMovable), true);
 
     public static readonly StyledProperty<Control?> PlacementTargetProperty =
         AvaloniaProperty.Register<Dialog, Control?>(nameof(PlacementTarget));

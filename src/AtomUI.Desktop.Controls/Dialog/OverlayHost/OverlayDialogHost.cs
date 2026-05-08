@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -9,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -186,7 +188,6 @@ internal class OverlayDialogHost : ContentControl,
     private DialogButtonBox? _buttonBox;
     private OverlayDialogHeader? _header;
     private OverlayDialogResizer? _resizer;
-    private CompositeDisposable? _confirmLoadingBindings;
     private Rect _ownerBounds;
     private Point _popupOffset;
     private Size _hostSize;
@@ -239,6 +240,7 @@ internal class OverlayDialogHost : ContentControl,
     {
         ConfigurePopupChild();
         _popup.IsOpen = true;
+        BringToFront();
     }
 
     public void Close(Action? callback = null)
@@ -467,13 +469,35 @@ internal class OverlayDialogHost : ContentControl,
 
     private void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!IsDragMovable || WindowState == OverlayDialogState.Maximized || !e.Properties.IsLeftButtonPressed)
+        BringToFront();
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (!IsDragMovable ||
+            WindowState == OverlayDialogState.Maximized ||
+            !e.Properties.IsLeftButtonPressed ||
+            topLevel is null)
         {
             return;
         }
 
-        _dragStart = e.GetPosition(TopLevel.GetTopLevel(this));
+        _dragStart = e.GetPosition(topLevel);
         e.Pointer.Capture(_header);
+    }
+
+    private void BringToFront()
+    {
+        if (this.FindAncestorOfType<OverlayPopupHost>() is { } popupHost)
+        {
+            if (popupHost.GetPopupOverlayLayer() is Panel popupOverlayLayer)
+            {
+                var children = popupOverlayLayer.Children;
+                var index    = children.IndexOf(popupHost);
+                if (index >= 0 && index < children.Count - 1)
+                {
+                    children.RemoveAt(index);
+                    children.Add(popupHost);
+                }
+            }
+        }
     }
 
     private void HandleHeaderPointerMoved(object? sender, PointerEventArgs e)
@@ -483,7 +507,13 @@ internal class OverlayDialogHost : ContentControl,
             return;
         }
 
-        var position = e.GetPosition(TopLevel.GetTopLevel(this));
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return;
+        }
+
+        var position = e.GetPosition(topLevel);
         var delta    = position - _dragStart.Value;
         _dragStart = position;
         _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX + delta.X);
@@ -601,8 +631,6 @@ internal class OverlayDialogHost : ContentControl,
     private void HandleButtonsSynchronized(object? sender, DialogBoxButtonSyncEventArgs args)
     {
         _dialog.NotifyDialogButtonSynchronized(args.Buttons);
-        _confirmLoadingBindings?.Dispose();
-        _confirmLoadingBindings = new CompositeDisposable(args.Buttons.Count);
         foreach (var button in args.Buttons)
         {
             if (button.Role == DialogButtonRole.AcceptRole ||

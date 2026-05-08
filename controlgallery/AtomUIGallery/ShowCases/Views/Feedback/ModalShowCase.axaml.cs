@@ -18,23 +18,23 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
     {
         this.WhenActivated(disposables =>
         {
-            // BasicOpenModalButton.Click       += HandleBasicModalButtonClick;
-            // BasicWindowOpenModalButton.Click += HandleBasicWindowModalButtonClick;
-            //
-            // LoadingDialogOpenModalButton.Click       += HandleLoadingDialogOpenModalButtonClick;
-            // AsyncDialogOpenModalButton.Click         += HandleAsyncDialogOpenModalButtonClick;
+            BasicOpenModalButton.Click       += HandleBasicModalButtonClick;
+            BasicWindowOpenModalButton.Click += HandleBasicWindowModalButtonClick;
+            
+            LoadingDialogOpenModalButton.Click       += HandleLoadingDialogOpenModalButtonClick;
+            AsyncDialogOpenModalButton.Click         += HandleAsyncDialogOpenModalButtonClick;
             CustomFooterDialogOpenButton.Click       += HandleCustomFooterDialogOpenButtonClick;
-            // DraggableDialogOpenButton.Click          += HandleDraggableMsgBoxOpenButtonClick;
-            // ConfigureButtonsDialogOpenButton.Click   += HandleConfigureButtonsDialogButtonClick;
+            DraggableDialogOpenButton.Click          += HandleDraggableMsgBoxOpenButtonClick;
+            ConfigureButtonsDialogOpenButton.Click   += HandleConfigureButtonsDialogButtonClick;
 
-            // disposables.Add(Disposable.Create(() => BasicOpenModalButton.Click -= HandleBasicModalButtonClick));
-            // disposables.Add(Disposable.Create(() => BasicWindowOpenModalButton.Click -= HandleBasicWindowModalButtonClick));
-            // disposables.Add(Disposable.Create(() => LoadingDialogOpenModalButton.Click -= HandleLoadingDialogOpenModalButtonClick));
+            disposables.Add(Disposable.Create(() => BasicOpenModalButton.Click -= HandleBasicModalButtonClick));
+            disposables.Add(Disposable.Create(() => BasicWindowOpenModalButton.Click -= HandleBasicWindowModalButtonClick));
+            disposables.Add(Disposable.Create(() => LoadingDialogOpenModalButton.Click -= HandleLoadingDialogOpenModalButtonClick));
             disposables.Add(Disposable.Create(() => CustomFooterDialogOpenButton.Click -= HandleCustomFooterDialogOpenButtonClick));
-            // disposables.Add(Disposable.Create(() => DraggableDialogOpenButton.Click -= HandleDraggableMsgBoxOpenButtonClick));
-            // disposables.Add(Disposable.Create(() => ConfigureButtonsDialogOpenButton.Click -= HandleConfigureButtonsDialogButtonClick));
-            //
-            // ConfigureButtonPropertiesDialog.ButtonsConfigure = ConfigureButtonProperties;
+            disposables.Add(Disposable.Create(() => DraggableDialogOpenButton.Click -= HandleDraggableMsgBoxOpenButtonClick));
+            disposables.Add(Disposable.Create(() => ConfigureButtonsDialogOpenButton.Click -= HandleConfigureButtonsDialogButtonClick));
+            
+            ConfigureButtonPropertiesDialog.ButtonsConfigure = ConfigureButtonProperties;
             
             if (DataContext is ModalViewModel viewModel)
             {
@@ -114,10 +114,8 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
 
     private void HandleCustomFooterDialogOpenButtonClick(object? sender, EventArgs e)
     {
-
         if (DataContext is ModalViewModel viewModel)
         {
-            Console.WriteLine(viewModel.IsCustomFooterDialogOpened);
             viewModel.IsCustomFooterDialogOpened = true;
         }
     }
