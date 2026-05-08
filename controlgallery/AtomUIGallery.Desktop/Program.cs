@@ -1,5 +1,5 @@
+using AtomUI;
 using Avalonia;
-using Avalonia.Media;
 using AtomUIGallery.ShowCases;
 using ReactiveUI.Avalonia;
 
@@ -13,13 +13,6 @@ internal class Program
         try
         {
             BuildAvaloniaApp()
-                .With(new FontManagerOptions
-                {
-                    FontFallbacks = [new FontFallback
-                    {
-                        FontFamily = new FontFamily("Microsoft YaHei")
-                    }]
-                })
                 .StartWithClassicDesktopLifetime(args);
         }
         catch (Exception ex)
@@ -51,11 +44,8 @@ internal class Program
         return AppBuilder.Configure<GalleryApplication>()
                          .UseReactiveUI(build =>
                              build.ConfigureViewLocator(locator => new ShowCaseViewModule().RegisterViews(locator)))
-                         .With(new X11PlatformOptions
-                         {
-                             EnableDrawnDecorations = true
-                         })
                          .UsePlatformDetect()
+                         .WithAtomUIDefaultOptions()
                          .WithDeveloperTools()
                          .LogToTrace();
     }

@@ -1,10 +1,11 @@
+using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Data;
 using Avalonia.Styling;
 
-namespace AtomUI.Theme;
+namespace AtomUI;
 
 public static class ApplicationExtensions
 {

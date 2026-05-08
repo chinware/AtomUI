@@ -7,6 +7,8 @@
         <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
+        <PackageVersion Include="Avalonia.X11" Version="$(AvaloniaVersion)"/>
+        <PackageVersion Include="Avalonia.Native" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="ReactiveUI.Avalonia" Version="12.0.1"/>
         <PackageVersion Include="Svg.Controls.Avalonia" Version="12.0.0.5"/>
         <PackageVersion Include="SkiaSharp.QrCode" Version="0.12.0"/>

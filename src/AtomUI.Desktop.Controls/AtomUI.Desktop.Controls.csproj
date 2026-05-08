@@ -30,8 +30,4 @@
                           PrivateAssets="all" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Primitives\" />
-    </ItemGroup>
-
 </Project>
