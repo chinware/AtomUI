@@ -58,9 +58,6 @@ public partial class Dialog : TemplatedControl,
     public static readonly StyledProperty<Control?> PlacementTargetProperty =
         AvaloniaProperty.Register<Dialog, Control?>(nameof(PlacementTarget));
 
-    public static readonly StyledProperty<bool> IsLightDismissEnabledProperty =
-        AvaloniaProperty.Register<Dialog, bool>(nameof(IsLightDismissEnabled));
-
     public static readonly StyledProperty<DialogHorizontalAnchor> HorizontalStartupLocationProperty =
         AvaloniaProperty.Register<Dialog, DialogHorizontalAnchor>(nameof(HorizontalStartupLocation),
             DialogHorizontalAnchor.Custom);
@@ -132,12 +129,6 @@ public partial class Dialog : TemplatedControl,
     }
 
     public IAvaloniaDependencyResolver? DependencyResolver { get; set; }
-
-    public bool IsLightDismissEnabled
-    {
-        get => GetValue(IsLightDismissEnabledProperty);
-        set => SetValue(IsLightDismissEnabledProperty, value);
-    }
 
     public bool IsOpen
     {
@@ -751,8 +742,7 @@ public partial class Dialog : TemplatedControl,
         public void Dispose()
         {
             _cleanup.Dispose();
-            DialogHost.Content = null;
-            DialogHost.Close();
+            DialogHost.Close(() => DialogHost.Content = null);
         }
     }
 

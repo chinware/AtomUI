@@ -6,10 +6,6 @@ public record DialogOptions
 {
     public string? Title { get; init; }
     public PathIcon? TitleIcon { get; init; }
-    /// <summary>
-    /// 次选项仅 Overlay Host 类型的弹窗有效
-    /// </summary>
-    public bool IsLightDismissEnabled { get; init; }
     public bool IsResizable { get; init; }
     public bool IsClosable { get; init; } = true;
     public bool IsMaximizable { get; init; }

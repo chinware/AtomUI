@@ -181,6 +181,8 @@ internal class OverlayDialogHost : ContentControl,
 
     private readonly AtomUIPopup _popup;
     private readonly Dialog _dialog;
+    private readonly Canvas _popupRoot;
+    private readonly OverlayDialogMask _dialogMask;
     private DialogButtonBox? _buttonBox;
     private OverlayDialogHeader? _header;
     private OverlayDialogResizer? _resizer;
@@ -189,6 +191,8 @@ internal class OverlayDialogHost : ContentControl,
     private Point _popupOffset;
     private Size _hostSize;
     private Size? _restoreSize;
+    private bool _isCloseRequested;
+    private Action? _closeCallback;
 
     private const double MinVisibleX = 100;
     private const double MinVisibleY = 40;
@@ -202,12 +206,13 @@ internal class OverlayDialogHost : ContentControl,
             PlacementConstraintAdjustment  = PopupPositionerConstraintAdjustment.None,
             DependencyResolver             = dependencyResolver,
             ShouldUseOverlayLayer          = true,
-            IsLightDismissEnabled          = dialog.IsLightDismissEnabled,
             CustomPopupPlacementCallback   = HandlePlacePopup,
         };
         TokenResourceBinder.CreateTokenBinding(_popup, AtomUIPopup.OverlayHostShadowProperty, SharedTokenKind.BoxShadows);
         _popup.SetPopupParent(placementTarget);
-        _popup.Child = this;
+        _popup.Closed += HandlePopupClosed;
+        _popupRoot  = new Canvas { ClipToBounds = false };
+        _dialogMask = new OverlayDialogMask();
         _dialog = dialog;
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
@@ -232,16 +237,43 @@ internal class OverlayDialogHost : ContentControl,
 
     public void Show()
     {
+        ConfigurePopupChild();
         _popup.IsOpen = true;
     }
 
     public void Close(Action? callback = null)
     {
-        _popup.IsOpen          = false;
+        _closeCallback = callback;
+        if (_isCloseRequested)
+        {
+            return;
+        }
+
+        _isCloseRequested = true;
+        if (_popup.IsOpen)
+        {
+            _popup.IsOpen = false;
+        }
+        else
+        {
+            CleanupPopup();
+        }
+    }
+
+    private void HandlePopupClosed(object? sender, EventArgs e)
+    {
+        CleanupPopup();
+    }
+
+    private void CleanupPopup()
+    {
+        _popup.Closed          -= HandlePopupClosed;
+        _popupRoot.Children.Clear();
         _popup.Child           = null;
         _popup.PlacementTarget = null;
         _popup.SetPopupParent(null);
-        callback?.Invoke();
+        _closeCallback?.Invoke();
+        _closeCallback = null;
     }
 
     public void AttachPlacement(Control placementTarget)
@@ -250,6 +282,7 @@ internal class OverlayDialogHost : ContentControl,
         if (topLevel != null)
         {
             _ownerBounds = new Rect(default, topLevel.ClientSize);
+            ConfigureModalRootSize();
         }
     }
 
@@ -274,26 +307,45 @@ internal class OverlayDialogHost : ContentControl,
         if (topLevel != null)
         {
             _ownerBounds = new Rect(default, topLevel.ClientSize);
+            ConfigureModalRootSize();
         }
 
-        _popupOffset = _dialog.CalculatePlacementOffset(_hostSize, _ownerBounds.Size);
+        var offset = _dialog.CalculatePlacementOffset(_hostSize, _ownerBounds.Size);
+        if (IsModal)
+        {
+            offset = ConstrainOffset(offset, _hostSize);
+            Canvas.SetLeft(this, offset.X);
+            Canvas.SetTop(this, offset.Y);
+            _popupOffset = default;
+        }
+        else
+        {
+            _popupOffset = offset;
+        }
         _popup.HandlePositionChange();
     }
 
     private void HandlePlacePopup(CustomPopupPlacement placement)
     {
-        var ownerSize = _ownerBounds.Size;
-        var popupSize = placement.PopupSize;
-
         placement.AnchorRectangle = new Rect(default, new Size(1, 1));
         placement.Anchor          = PopupAnchor.TopLeft;
         placement.Gravity         = PopupGravity.BottomRight;
 
-        var offset = _popupOffset;
+        if (IsModal)
+        {
+            placement.Offset = default;
+            return;
+        }
 
-        var minVisX = Math.Min(MinVisibleX, popupSize.Width);
-        var minVisY = Math.Min(MinVisibleY, popupSize.Height);
+        placement.Offset = ConstrainOffset(_popupOffset, placement.PopupSize);
+    }
 
+    private Point ConstrainOffset(Point offset, Size popupSize)
+    {
+        var ownerSize = _ownerBounds.Size;
+        var minVisX   = Math.Min(MinVisibleX, popupSize.Width);
+        var minVisY   = Math.Min(MinVisibleY, popupSize.Height);
+        
         // 上边界：硬约束
         offset = offset.WithY(Math.Max(0, offset.Y));
 
@@ -312,7 +364,36 @@ internal class OverlayDialogHost : ContentControl,
             offset = offset.WithY(ownerSize.Height - minVisY);
         }
 
-        placement.Offset = offset;
+        return offset;
+    }
+
+    private void ConfigurePopupChild()
+    {
+        if (IsModal)
+        {
+            ConfigureModalRootSize();
+            _popupRoot.Children.Clear();
+            _popupRoot.Children.Add(_dialogMask);
+            _popupRoot.Children.Add(this);
+            _popup.Child = _popupRoot;
+        }
+        else
+        {
+            _popup.Child = this;
+        }
+    }
+
+    private void ConfigureModalRootSize()
+    {
+        if (!IsModal)
+        {
+            return;
+        }
+
+        _popupRoot.Width   = _ownerBounds.Width;
+        _popupRoot.Height  = _ownerBounds.Height;
+        _dialogMask.Width  = _ownerBounds.Width;
+        _dialogMask.Height = _ownerBounds.Height;
     }
 
     protected override Size MeasureOverride(Size availableSize)

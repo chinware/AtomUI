@@ -89,7 +89,6 @@ public partial class Dialog
         {
             Title                     = options?.Title,
             TitleIcon                 = options?.TitleIcon,
-            IsLightDismissEnabled     = options?.IsLightDismissEnabled ?? false,
             IsResizable               = options?.IsResizable ?? false,
             IsClosable                = options?.IsClosable ?? true,
             IsMaximizable             = options?.IsMaximizable ?? false,
