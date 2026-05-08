@@ -304,6 +304,13 @@ public class Window : AvaloniaWindow,
     private bool _wasFullScreen;
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
+
+    // macOS 下 ConfigureMacOsWindow 的输入缓存，用于在 live resize 时短路，避免重复 P/Invoke
+    private double? _macOsCachedTitleBarHeight;
+    private double? _macOsCachedOffsetX;
+    private double? _macOsCachedSpacing;
+    private Size _macOsCachedClientSize;
+    private bool _macOsCacheValid;
     
     static Window()
     {
@@ -458,7 +465,8 @@ public class Window : AvaloniaWindow,
         {
             return;
         }
-        Point mousePosition       = e.GetPosition(this);
+
+        Point mousePosition = e.GetPosition(this);
         if (_lastMousePressedPoint != null)
         {
             var   distanceFromInitial = (Vector)(mousePosition - _lastMousePressedPoint);
@@ -518,6 +526,12 @@ public class Window : AvaloniaWindow,
     [SupportedOSPlatform("macos")]
     private void ConfigureMacOsWindow()
     {
+        if (!ExtendClientAreaToDecorationsHint)
+        {
+            TitleBarOffsetMargin = default;
+            return;
+        }
+
         double? titleBarHeight = null;
         if (!MathUtils.AreClose(ExtendClientAreaTitleBarHeightHint, -1))
         {
@@ -537,9 +551,30 @@ public class Window : AvaloniaWindow,
         }
 
         var effectSpacing = spacing ?? 20;
+        var currentClientSize = ClientSize;
+
+        // live resize 期间，除 ClientSize 外的输入都不变化；即使高度变了，AppKit 的 autoresizing
+        // 会把按钮维持在相对标题栏的同一视觉位置。当 4 个输入都和上次完全一致时，
+        // 底层 SetStandardWindowButtonsLayout 的 GetFrame 短路也会命中，这里提前返回，
+        // 避免一次 P/Invoke 往返。
+        if (_macOsCacheValid &&
+            Nullable.Equals(_macOsCachedTitleBarHeight, titleBarHeight) &&
+            Nullable.Equals(_macOsCachedOffsetX, offsetX) &&
+            Nullable.Equals(_macOsCachedSpacing, spacing) &&
+            _macOsCachedClientSize == currentClientSize)
+        {
+            return;
+        }
+
         MacStandardWindowButtons.SetStandardWindowButtonsLayout(this, titleBarHeight, offsetX, null, effectSpacing);
         var offset = this.GetRecommendedTitleBarContentLeftMargin(effectSpacing) ?? 0;
         TitleBarOffsetMargin = new Thickness(offset, 0, 0, 0);
+
+        _macOsCachedTitleBarHeight = titleBarHeight;
+        _macOsCachedOffsetX        = offsetX;
+        _macOsCachedSpacing        = spacing;
+        _macOsCachedClientSize     = currentClientSize;
+        _macOsCacheValid           = true;
     }
 
     protected override void OnOpened(EventArgs e)
@@ -574,6 +609,10 @@ public class Window : AvaloniaWindow,
         {
             if (OperatingSystem.IsMacOS())
             {
+                // WindowState 切换（最大化/最小化/全屏）会让 macOS 重置按钮位置，
+                // 此时即使输入参数相同也必须重新下发一次布局，否则缓存会把重置后的
+                // 错误位置误判为“已是目标位置”而跳过修正。
+                _macOsCacheValid = false;
                 ConfigureMacOsWindow();
             }
         }

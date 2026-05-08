@@ -262,21 +262,33 @@ internal static class WindowUtilsMacOS
             return;
         }
 
+        var ns = GetNSWindow(window);
+        var closeBtn = GetButton(ns, WindowUtilsInterop.NSWindowButton.CloseButton);
+        if (closeBtn == IntPtr.Zero)
+        {
+            return;
+        }
+
+        // live resize 期间 AppKit 的 autoresizing 会自动把按钮维持在相同位置，
+        // 这时再触发按钮移动 + tracking area 刷新会和 macOS 的 resize 渲染路径竞争，
+        // 造成标题栏/内容区可见抖动。若按钮已在目标位置，直接跳过。
+        var currentFrame = WindowUtilsInterop.GetFrame(closeBtn);
+        if (Math.Abs(currentFrame.Origin.X - x) <= 0.5 &&
+            Math.Abs(currentFrame.Origin.Y - y) <= 0.5)
+        {
+            return;
+        }
+
         for (int i = 0; i <= 2; i++)
         {
             window.SetStandardWindowButtonOrigin((WindowUtilsInterop.NSWindowButton)i, x + spacing * i, y);
         }
 
-        // 移动按钮后，需要刷新 superview 的 tracking areas 和显示，
-        // 否则鼠标 hover 事件仍然在旧位置触发
-        var ns = GetNSWindow(window);
-        var closeBtn = GetButton(ns, WindowUtilsInterop.NSWindowButton.CloseButton);
-        if (closeBtn != IntPtr.Zero)
-        {
-            var superview = WindowUtilsInterop.GetSuperview(closeBtn);
-            WindowUtilsInterop.UpdateTrackingAreas(superview);
-            WindowUtilsInterop.SetNeedsDisplay(superview, true);
-        }
+        // 按钮确实被移动了才刷新 tracking areas，保证 hover 事件命中新位置。
+        // setFrameOrigin 已经正确 invalidate 了按钮的新旧 frame，不再额外对 superview
+        // (NSThemeFrame，覆盖整个窗体) 做 setNeedsDisplay:YES — 那是 6.0 resize 抖动根因。
+        var superview = WindowUtilsInterop.GetSuperview(closeBtn);
+        WindowUtilsInterop.UpdateTrackingAreas(superview);
     }
 
     /// <summary>

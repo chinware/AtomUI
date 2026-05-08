@@ -43,13 +43,6 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
         });
     }
 
-    public override void Show()
-    {
-        base.Show();
-        Height = double.NaN;
-        Width  = double.NaN;
-    }
-
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
