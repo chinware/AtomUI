@@ -197,7 +197,7 @@
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>
-                    <TransformOperationsTransition Property="SelectedIndicatorRenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationSlow}" />
+                    <TransformOperationsTransition Property="SelectedIndicatorRenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationSlow}" Easing="CubicEaseOut" />
                 </Transitions>
             </Setter>
         </Style>
