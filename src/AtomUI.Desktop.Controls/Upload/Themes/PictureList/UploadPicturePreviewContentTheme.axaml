@@ -1,0 +1,71 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:UploadPicturePreviewContent}" TargetType="atom:UploadPicturePreviewContent">
+        <ControlTheme.BasedOn>
+            <atom:AbstractUploadPictureContentTheme TargetType="atom:UploadPicturePreviewContent" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <DockPanel LastChildFill="True" Name="ContentLayout">
+                        <atom:UploadImagePreviewer Name="{x:Static atom:UploadThemeConstants.ImagePreviewerPart}"
+                                                   IsShowCoverMask="False"
+                                                   DockPanel.Dock="Left"
+                                                   ItemsSource="{TemplateBinding Sources}"
+                                                   VerticalAlignment="Stretch" />
+                        <atom:IconButton Icon="{antdicons:AntDesignIconProvider DeleteOutlined}"
+                                         DockPanel.Dock="Right"
+                                         VerticalAlignment="Center"
+                                         Tag="{x:Static atom:UploadListActions.Remove}" />
+                        <atom:HyperLinkTextBlock Name="{x:Static atom:UploadThemeConstants.FileNamePart}"
+                                                 Text="{TemplateBinding FileName}"
+                                                 VerticalAlignment="Center"
+                                                 TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|ImagePreviewer#PART_ImagePreviewer">
+            <Setter Property="Width" Value="{atom:UploadTokenResource PictureListPreviewerSize}" />
+            <Setter Property="Height" Value="{atom:UploadTokenResource PictureListPreviewerSize}" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="^ /template/ DockPanel#ContentLayout">
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton:pointerover">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
+        </Style>
+
+        <Style Selector="^[Status=Failed]">
+            <Style Selector="^ /template/ atom|IconButton">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Status=Cancelled]">
+            <Style Selector="^ /template/ atom|IconButton">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
+            </Style>
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>

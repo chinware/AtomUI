@@ -1,0 +1,55 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    xmlns:uploadlang="using:AtomUI.Desktop.Controls.UploadLang"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:UploadPicturePendingContent}" TargetType="atom:UploadPicturePendingContent">
+        <ControlTheme.BasedOn>
+            <atom:AbstractUploadPictureContentTheme TargetType="atom:UploadPicturePendingContent" />
+        </ControlTheme.BasedOn>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="Frame"
+                                   Background="{TemplateBinding Background}"
+                                   BorderBrush="{TemplateBinding BorderBrush}"
+                                   BorderThickness="{TemplateBinding BorderThickness}"
+                                   CornerRadius="{TemplateBinding CornerRadius}"
+                                   Padding="{TemplateBinding Padding}">
+                    <DockPanel LastChildFill="True" Name="ContentLayout">
+                        <antdicons:HistoryOutlined Name="Indicator" DockPanel.Dock="Left"/>
+                        <atom:IconButton Icon="{antdicons:AntDesignIconProvider DeleteOutlined}"
+                                         DockPanel.Dock="Right"
+                                         Tag="{x:Static atom:UploadListActions.Remove}" 
+                                         VerticalAlignment="Center"/>
+                        <TextBlock Text="{atom:UploadLangResource Pending}"
+                                   VerticalAlignment="Center" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Style Selector="^ /template/ DockPanel#ContentLayout">
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+            <Setter Property="Height" Value="{atom:UploadTokenResource PictureListPreviewerSize}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|Icon#Indicator">
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Width" Value="{atom:UploadTokenResource UploadThumbnailSize}" />
+            <Setter Property="Height" Value="{atom:UploadTokenResource UploadThumbnailSize}" />
+        </Style>
+        
+        <Style Selector="^ /template/ atom|IconButton:pointerover">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
+        </Style>
+        
+    </ControlTheme>
+</ResourceDictionary>
