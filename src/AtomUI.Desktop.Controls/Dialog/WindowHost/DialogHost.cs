@@ -175,13 +175,6 @@ internal class DialogHost : Window,
         _dialogContent.ApplyStyling();
         _dialogContent.ApplyTemplate();
 
-        var ownerSize = GetOwnerBounds(ParentTopLevel).Size;
-        var availableSize = new Size(
-            ResolveAvailableMeasureSize(ownerSize.Width, _dialog.HostMaxWidth),
-            ResolveAvailableMeasureSize(ownerSize.Height, _dialog.HostMaxHeight));
-
-        _dialogContent.Measure(availableSize);
-
         // 把从 Window 外框到 DialogWindowContent 之间的 chrome 开销加回去：
         //   - Padding：ContentFrame.Padding 对内容的内缩
         //   - TitleBarHeight：CSD 模式下 AtomUI 自绘；非 CSD 下为系统原生标题栏
@@ -192,11 +185,39 @@ internal class DialogHost : Window,
         var titleBarOverhead = IsCsdEnabled
             ? IsTitleBarVisible ? TitleBarHeight : 0
             : this.GetSystemTitleBarHeight() ?? 0;
-        var contentWidth  = _dialogContent.DesiredSize.Width + padding.Left + padding.Right + shadow.Left + shadow.Right;
-        var contentHeight = _dialogContent.DesiredSize.Height + padding.Top + padding.Bottom + shadow.Top + shadow.Bottom + titleBarOverhead;
-        return new Size(
-            ResolveMeasuredSize(contentWidth, _dialog.HostMinWidth, _dialog.HostMaxWidth),
-            ResolveMeasuredSize(contentHeight, _dialog.HostMinHeight, _dialog.HostMaxHeight));
+        var horizontalChrome = padding.Left + padding.Right + shadow.Left + shadow.Right;
+        var verticalChrome   = padding.Top + padding.Bottom + shadow.Top + shadow.Bottom + titleBarOverhead;
+
+        var ownerSize = GetOwnerBounds(ParentTopLevel).Size;
+
+        // 先在最宽可用空间下量一次，得到 content 的自然宽度和高度上限。
+        var loose = new Size(
+            ResolveAvailableMeasureSize(ownerSize.Width, _dialog.HostMaxWidth),
+            ResolveAvailableMeasureSize(ownerSize.Height, _dialog.HostMaxHeight));
+        _dialogContent.Measure(loose);
+        var naturalContent = _dialogContent.DesiredSize;
+
+        // Width：HostWidth 硬写优先；否则取自然宽度并被 HostMinWidth/HostMaxWidth 夹住，
+        // 保证窗口宽度落在用户指定的区间。
+        double windowWidth;
+        if (!double.IsNaN(_dialog.HostWidth))
+        {
+            windowWidth = _dialog.HostWidth;
+        }
+        else
+        {
+            var natural = naturalContent.Width + horizontalChrome;
+            windowWidth = ResolveMeasuredSize(natural, _dialog.HostMinWidth, _dialog.HostMaxWidth);
+        }
+
+        // 反推给 content 的可用宽度，再测一遍让 content（比如可换行文本）在这个宽度下
+        // 自己算出真实高度。
+        var contentAvailableWidth = Math.Max(0, windowWidth - horizontalChrome);
+        _dialogContent.Measure(new Size(contentAvailableWidth, loose.Height));
+        var constrainedHeight = _dialogContent.DesiredSize.Height + verticalChrome + 8; // 不知道为啥会少 8 px
+        var windowHeight      = ResolveMeasuredSize(constrainedHeight, _dialog.HostMinHeight, _dialog.HostMaxHeight);
+
+        return new Size(windowWidth, windowHeight);
     }
 
     private static double ResolveAvailableMeasureSize(double ownerSize, double maxSize)
