@@ -55,7 +55,7 @@
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="True"
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                                Placement="BottomEdgeAlignedLeft"
+                                RequestedPlacement="BottomEdgeAlignedLeft"
                                 IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border
                             Name="PopupFrame"

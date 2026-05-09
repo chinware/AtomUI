@@ -6,7 +6,6 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -55,6 +54,11 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     #endregion
 
     private bool _isClosing;
+
+    static Menu()
+    {
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<Menu>(false);
+    }
 
     public Menu()
         : base(new DefaultMenuInteractionHandler(false))

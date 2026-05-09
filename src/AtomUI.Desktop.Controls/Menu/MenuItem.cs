@@ -116,6 +116,7 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     {
         AffectsRender<MenuItem>(BackgroundProperty);
         AffectsMeasure<MenuItem>(IconProperty);
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<MenuItem>(false);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

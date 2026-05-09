@@ -21,7 +21,7 @@
                     <atom:Popup Name="PART_Popup"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
-                                Placement="BottomEdgeAlignedLeft"
+                                RequestedPlacement="BottomEdgeAlignedLeft"
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                 IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
                         <Border Name="PopupFrame"

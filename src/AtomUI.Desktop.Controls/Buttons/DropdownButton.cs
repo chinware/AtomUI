@@ -216,7 +216,7 @@ public class DropdownButton : Button
     {
         _flyoutBindingDisposables?.Dispose();
         _flyoutBindingDisposables = new CompositeDisposable(9);
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, menuFlyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, menuFlyout, FlyoutControl.RequestedPlacementProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, menuFlyout));

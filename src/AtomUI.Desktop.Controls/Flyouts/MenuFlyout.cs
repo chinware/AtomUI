@@ -4,7 +4,6 @@ using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
-using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;

@@ -125,6 +125,11 @@ public class ContextMenu : AvaloniaContextMenu,
     private Popup? _popup;
     private WindowBase? _attachedWindow;
 
+    static ContextMenu()
+    {
+        AutoScrollToSelectedItemProperty.OverrideDefaultValue<ContextMenu>(false);
+    }
+
     public ContextMenu()
     {
         this.RegisterTokenResourceScope(MenuToken.ScopeProvider);

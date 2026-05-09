@@ -10,16 +10,12 @@ using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
-using Avalonia.Rendering;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -178,6 +174,19 @@ public class NavMenu : ItemsControl,
         this.RegisterTokenResourceScope(NavMenuToken.ScopeProvider);
         UpdatePseudoClasses();
         Items.CollectionChanged += HandleItemsViewCollectionChanged;
+
+        // 阻止弹出式子菜单内的元素把 BringIntoView 冒泡到外层 ScrollViewer，避免
+        // 再次打开选中菜单项时触发页面滚动。Inline 模式下子菜单在视觉树内，
+        // 让 NavMenu 自己的 ScrollViewer 正常响应即可。
+        AddHandler(RequestBringIntoViewEvent, (_, e) =>
+        {
+            if (Mode == NavMenuMode.Inline || e.TargetObject == this)
+            {
+                return;
+            }
+
+            e.Handled = true;
+        }, handledEventsToo: true);
     }
     
     private protected virtual void HandleItemsViewCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
