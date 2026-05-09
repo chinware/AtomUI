@@ -544,6 +544,11 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TopLevelItemSelectedColor
     }
 
+    public enum MessageBoxTokenKind
+    {
+        StyleIconSize
+    }
+
     public enum MessageTokenKind
     {
         CardHeight,
@@ -1582,6 +1587,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public MenuTokenResourceExtension(MenuTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class MessageBoxTokenResourceExtension : TokenResourceExtension<MessageBoxTokenKind>
+    {
+        public MessageBoxTokenResourceExtension()
+        {
+        }
+
+        public MessageBoxTokenResourceExtension(MessageBoxTokenKind kind) : base(kind)
         {
         }
     }

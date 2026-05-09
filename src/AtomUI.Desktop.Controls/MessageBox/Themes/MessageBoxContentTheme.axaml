@@ -1,0 +1,59 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:MessageBoxContent}" TargetType="atom:MessageBoxContent">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:MessageBoxContent">
+                <DockPanel LastChildFill="True"
+                           HorizontalSpacing="{atom:SharedTokenResource SpacingSM}">
+                    <atom:IconPresenter Name="StyleIconPresenter"
+                                        Icon="{TemplateBinding StyleIcon}"
+                                        VerticalAlignment="Top"
+                                        IsVisible="{TemplateBinding StyleIcon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+            <Setter Property="Width" Value="{atom:MessageBoxTokenResource StyleIconSize}" />
+            <Setter Property="Height" Value="{atom:MessageBoxTokenResource StyleIconSize}" />
+        </Style>
+
+        <Style Selector="^[Style=Confirm]">
+            <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorWarning}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Information]">
+            <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorInfo}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Success]">
+            <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorSuccess}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Error]">
+            <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Style=Warning]">
+            <Style Selector="^ /template/ atom|IconPresenter#StyleIconPresenter">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorWarning}" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

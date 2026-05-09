@@ -135,6 +135,7 @@
                                  IsOpen="{Binding IsCustomFooterDialogOpened, Mode=TwoWay}"
                                  Title="Title"
                                  IsModal="True"
+                                 DialogHostType="Window"
                                  StandardButtons="Ok, Cancel"
                                  HorizontalStartupLocation="Center"
                                  VerticalStartupLocation="Center"

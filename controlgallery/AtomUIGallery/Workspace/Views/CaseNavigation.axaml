@@ -143,6 +143,8 @@
                               ItemKey="{x:Static viewmodels:MessageViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Modal}"
                               ItemKey="{x:Static viewmodels:ModalViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_MessageBox}"
+                              ItemKey="{x:Static viewmodels:MessageBoxViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Notification}"
                               ItemKey="{x:Static viewmodels:NotificationViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_PopupConfirm}"

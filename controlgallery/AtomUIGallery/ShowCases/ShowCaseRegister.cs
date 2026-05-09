@@ -23,6 +23,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<DropdownButtonViewModel, DropdownButtonShowCase>(() => new DropdownButtonShowCase());
         locator.Map<MessageViewModel, MessageShowCase>(() => new MessageShowCase());
         locator.Map<ModalViewModel, ModalShowCase>(() => new ModalShowCase());
+        locator.Map<MessageBoxViewModel, MessageBoxShowCase>(() => new MessageBoxShowCase());
         locator.Map<NotificationViewModel, NotificationShowCase>(() => new NotificationShowCase());
         locator.Map<PopupConfirmViewModel, PopupConfirmShowCase>(() => new PopupConfirmShowCase());
         locator.Map<DrawerViewModel, DrawerShowCase>(() => new DrawerShowCase());

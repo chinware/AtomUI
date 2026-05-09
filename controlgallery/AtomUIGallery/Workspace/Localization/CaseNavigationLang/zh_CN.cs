@@ -69,6 +69,7 @@ internal class zh_CN : LanguageProvider
     public const string Feedback_Alert = "Alert 警告提示";
     public const string Feedback_Message = "Message 全局提示";
     public const string Feedback_Modal = "Modal 对话框";
+    public const string Feedback_MessageBox = "MessageBox 消息框";
     public const string Feedback_Notification = "Notification 通知提醒框";
     public const string Feedback_PopupConfirm = "PopupConfirm 气泡确认框";
     public const string Feedback_Drawer = "Drawer 抽屉";

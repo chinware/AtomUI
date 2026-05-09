@@ -58,7 +58,6 @@
                                             <ContentPresenter Name="PART_ContentPresenter"
                                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                                               Content="{TemplateBinding Content}"
-                                                              Margin="{TemplateBinding Padding}"
                                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                             <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
@@ -130,7 +129,6 @@
                                             <ContentPresenter Name="PART_ContentPresenter"
                                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                                               Content="{TemplateBinding Content}"
-                                                              Margin="{TemplateBinding Padding}"
                                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                             <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
@@ -197,7 +195,6 @@
                                             <ContentPresenter Name="PART_ContentPresenter"
                                                               ContentTemplate="{TemplateBinding ContentTemplate}"
                                                               Content="{TemplateBinding Content}"
-                                                              Margin="{TemplateBinding Padding}"
                                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                             <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
@@ -244,7 +241,6 @@
                                         <ContentPresenter Name="PART_ContentPresenter"
                                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                                           Content="{TemplateBinding Content}"
-                                                          Margin="{TemplateBinding Padding}"
                                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                         <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />

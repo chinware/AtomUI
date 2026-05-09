@@ -1,0 +1,33 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:MessageBox}" TargetType="atom:MessageBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <atom:Dialog Name="PART_Dialog"
+                             Title="{TemplateBinding Title}"
+                             IsModal="{TemplateBinding IsModal}"
+                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                             DialogHostType="{TemplateBinding DialogHostType}"
+                             IsDragMovable="{TemplateBinding IsDragMovable}"
+                             PlacementTarget="{TemplateBinding PlacementTarget}"
+                             HorizontalOffset="{TemplateBinding HorizontalOffset, Mode=TwoWay}"
+                             VerticalOffset="{TemplateBinding VerticalOffset, Mode=TwoWay}"
+                             IsOpen="{TemplateBinding IsOpen, Mode=TwoWay}"
+                             HostWidth="{TemplateBinding HostWidth}"
+                             HostMinWidth="{TemplateBinding HostMinWidth}"
+                             HostMaxWidth="{TemplateBinding HostMaxWidth}"
+                             HostHeight="{TemplateBinding HostHeight}"
+                             HostMinHeight="{TemplateBinding HostMinHeight}"
+                             HostMaxHeight="{TemplateBinding HostMaxHeight}"
+                             IsLoading="{TemplateBinding IsLoading}"
+                             IsConfirmLoading="{TemplateBinding IsConfirmLoading}"
+                             Result="{TemplateBinding Result, Mode=TwoWay}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}"/>
+    </ControlTheme>
+</ResourceDictionary>
