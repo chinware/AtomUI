@@ -71,6 +71,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<UploadViewModel, UploadShowCase>(() => new UploadShowCase());
         locator.Map<TransferViewModel, TransferShowCase>(() => new TransferShowCase());
         locator.Map<FormViewModel, FormShowCase>(() => new FormShowCase());
+        locator.Map<SpaceViewModel, SpaceShowCase>(() => new SpaceShowCase());
         locator.Map<NumberUpDownViewModel, NumberUpDownShowCase>(() => new NumberUpDownShowCase());
         locator.Map<ListViewModel, ListShowCase>(() => new ListShowCase());
         locator.Map<TreeViewViewModel, TreeViewShowCase>(() => new TreeViewShowCase());

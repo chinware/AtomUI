@@ -70,6 +70,7 @@ namespace AtomUIGallery.Localization
         Layout,
         Layout_FlexPanel,
         Layout_Grid,
+        Layout_Space,
         Layout_Splitter,
         Navigation,
         Navigation_Breadcrumb,

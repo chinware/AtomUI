@@ -35,6 +35,8 @@
                               ItemKey="{x:Static viewmodels:GridViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout_Splitter}"
                               ItemKey="{x:Static viewmodels:SplitterViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Layout_Space}"
+                              ItemKey="{x:Static viewmodels:SpaceViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation}"

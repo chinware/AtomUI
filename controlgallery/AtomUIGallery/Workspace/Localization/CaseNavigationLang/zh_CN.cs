@@ -19,6 +19,7 @@ internal class zh_CN : LanguageProvider
     public const string Layout_FlexPanel = "FlexPanel 弹性布局";
     public const string Layout_Grid = "Grid 栅格";
     public const string Layout_Splitter = "Splitter 分割面板";
+    public const string Layout_Space = "Space 间距";
     public const string Navigation = "导航";
     public const string Navigation_Breadcrumb = "Breadcrumb 面包屑";
     public const string Navigation_ButtonSpinner = "ButtonSpinner 按钮微调器";
