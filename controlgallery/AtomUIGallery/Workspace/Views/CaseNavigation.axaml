@@ -17,6 +17,8 @@
                               ItemKey="{x:Static viewmodels:PaletteViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Icons}"
                               ItemKey="{x:Static viewmodels:IconViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_CustomizeTheme}"
+                              ItemKey="{x:Static viewmodels:CustomizeThemeViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_Button}"
                               ItemKey="{x:Static viewmodels:ButtonViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource General_FloatButton}"

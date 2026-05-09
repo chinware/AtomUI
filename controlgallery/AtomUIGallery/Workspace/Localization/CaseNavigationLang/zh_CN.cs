@@ -11,6 +11,7 @@ internal class zh_CN : LanguageProvider
     public const string General_AboutUs = "关于我们";
     public const string General_Palette = "调色板";
     public const string General_Icons = "Icons 图标";
+    public const string General_CustomizeTheme = "自定义主题";
     public const string General_Button = "Button 按钮";
     public const string General_FloatButton = "FloatButton 悬浮按钮";
     public const string General_SplitButton = "SplitButton 分割按钮";

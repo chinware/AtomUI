@@ -62,6 +62,7 @@ namespace AtomUIGallery.Localization
         General,
         General_AboutUs,
         General_Button,
+        General_CustomizeTheme,
         General_FloatButton,
         General_Icons,
         General_Palette,
