@@ -28,18 +28,19 @@
                                                     SearchButtonStyle="{TemplateBinding SearchButtonStyle}"
                                                     SearchButtonText="{TemplateBinding SearchButtonText}"
                                                     IsOperating="{TemplateBinding IsOperating}"
-                                                    ClearIcon="{TemplateBinding ClearIcon}" 
+                                                    ClearIcon="{TemplateBinding ClearIcon}"
                                                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                                                     CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
-                                                    IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}"/>
+                                                    IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}" />
 
                     <atom:Popup Name="{x:Static atom:AutoCompleteThemeConstants.PopupPart}"
-                                 WindowManagerAddShadowHint="False"
+                                WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"
                                 ShouldUseOverlayLayer="True"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 Placement="{TemplateBinding PopupPlacement}"
+                                RequestedPlacement="{TemplateBinding PopupPlacement}"
                                 MaxHeight="{TemplateBinding MaxPopupHeight}"
                                 MinWidth="{TemplateBinding MinPopupWidth}">
                         <Border Name="PopupFrame"

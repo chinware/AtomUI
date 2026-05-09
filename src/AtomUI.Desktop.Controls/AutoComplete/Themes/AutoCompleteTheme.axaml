@@ -36,7 +36,7 @@
                                  OverlayDismissEventPassThrough="True"
                                  ShouldUseOverlayLayer="True"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                Placement="{TemplateBinding PopupPlacement}"
+                                RequestedPlacement="{TemplateBinding PopupPlacement}"
                                 MaxHeight="{TemplateBinding MaxPopupHeight}"
                                 MinWidth="{TemplateBinding MinPopupWidth}">
                         <Border Name="PopupFrame"

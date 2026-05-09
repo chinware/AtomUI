@@ -141,7 +141,6 @@ public class SearchEditOptionsAsyncLoader : ICompleteOptionsAsyncLoader
         if (!string.IsNullOrWhiteSpace(context))
         {
             var count = random.Next(5);
-
             for (var i = 0; i < count; i++)
             {
                 var newValue = $"{context}{i}";

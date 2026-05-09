@@ -23,7 +23,8 @@
                               Description="Demonstration of Lookup Patterns: Uncertain Category.">
             <atom:AutoCompleteSearchEdit Name="SearchAutoComplete" PlaceholderText="input here" Width="300"
                                          SizeType="Large"
-                                         SearchButtonStyle="Primary">
+                                         SearchButtonStyle="Primary"
+                                         Filter="{atom:ValueFilterProvider Contains}">
                 <atom:AutoCompleteSearchEdit.OptionTemplate>
                     <DataTemplate x:DataType="vm:CustomAutoCompleteOption">
                         <DockPanel LastChildFill="True">

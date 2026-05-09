@@ -679,6 +679,10 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         {
             ConfigurePopupMinWith(DesiredSize.Width);
         }
+        else if (change.Property == PopupPlacementProperty)
+        {
+            ConfigurePopupMotion();
+        }
     }
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)
@@ -690,6 +694,18 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     protected virtual void ConfigureMaxPopupHeight()
     {
         MaxPopupHeight = ItemHeight * DisplayCandidateCount + PopupContentPadding.Top + PopupContentPadding.Bottom;
+    }
+
+    private void ConfigurePopupMotion()
+    {
+        if (_popup == null)
+        {
+            return;
+        }
+
+        var (openMotion, closeMotion) = PopupUtils.CreateMotionForPlacement(PopupPlacement);
+        _popup.OpenMotion  = openMotion;
+        _popup.CloseMotion = closeMotion;
     }
 
     protected bool HasFocus() => IsKeyboardFocusWithin;
@@ -1280,6 +1296,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             _popup.Opened              += HandlePopupOpened;
             _popup.Closed              += HandlePopupClosed;
             _popup.OverlayInputPassThroughElement = TextInputBox;
+            ConfigurePopupMotion();
         }
         
         // If the drop down property indicates that the popup is open,
