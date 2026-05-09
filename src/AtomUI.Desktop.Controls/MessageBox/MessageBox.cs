@@ -484,7 +484,6 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             _dialogContent = new MessageBoxContent();
             BindUtils.RelayBind(this, IconProperty, _dialogContent, MessageBoxContent.StyleIconProperty);
             BindUtils.RelayBind(this, StyleProperty, _dialogContent, MessageBoxContent.StyleProperty);
-            BindUtils.RelayBind(this, TitleProperty, _dialogContent, MessageBoxContent.TitleProperty);
             BindUtils.RelayBind(this, ContentProperty, _dialogContent, ContentControl.ContentProperty);
             BindUtils.RelayBind(this, ContentTemplateProperty, _dialogContent, ContentControl.ContentTemplateProperty);
             _dialog.Content          =  _dialogContent;

@@ -546,6 +546,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
 
     public enum MessageBoxTokenKind
     {
+        MinWidth,
         StyleIconSize
     }
 

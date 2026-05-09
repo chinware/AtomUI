@@ -182,16 +182,18 @@ internal class DialogHost : Window,
 
         _dialogContent.Measure(availableSize);
 
-        // Window 模板里 ContentFrame 的 Padding 把内容从外框向内缩进一圈，_dialogContent 作为
-        // ContentPresenter 的内容不包含这份开销。CSD 模式下模板里 AtomUI 自绘的 TitleBarPanel
-        // 占 TitleBarHeight；非 CSD 模式下系统原生标题栏贴在客户区之上。两条路径下都要把
-        // 标题栏贡献加回去，否则 Window.Height 比实际需要小，内容被挤出可视区。
+        // 把从 Window 外框到 DialogWindowContent 之间的 chrome 开销加回去：
+        //   - Padding：ContentFrame.Padding 对内容的内缩
+        //   - TitleBarHeight：CSD 模式下 AtomUI 自绘；非 CSD 下为系统原生标题栏
+        //   - FrameShadowThickness：VisualLayerManager 为阴影预留的外边距，
+        //     Window 外框尺寸包含这份空间，否则内容会被挤出可视区。
         var padding          = Padding;
+        var shadow           = FrameShadowThickness;
         var titleBarOverhead = IsCsdEnabled
             ? IsTitleBarVisible ? TitleBarHeight : 0
             : this.GetSystemTitleBarHeight() ?? 0;
-        var contentWidth  = _dialogContent.DesiredSize.Width + padding.Left + padding.Right;
-        var contentHeight = _dialogContent.DesiredSize.Height + padding.Top + padding.Bottom + titleBarOverhead;
+        var contentWidth  = _dialogContent.DesiredSize.Width + padding.Left + padding.Right + shadow.Left + shadow.Right;
+        var contentHeight = _dialogContent.DesiredSize.Height + padding.Top + padding.Bottom + shadow.Top + shadow.Bottom + titleBarOverhead;
         return new Size(
             ResolveMeasuredSize(contentWidth, _dialog.HostMinWidth, _dialog.HostMaxWidth),
             ResolveMeasuredSize(contentHeight, _dialog.HostMinHeight, _dialog.HostMaxHeight));

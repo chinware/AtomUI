@@ -15,6 +15,11 @@ internal class MessageBoxToken : AbstractControlDesignToken
     /// Style Icon 的大小
     /// </summary>
     public double StyleIconSize { get; set; }
+    
+    /// <summary>
+    /// 最小宽度
+    /// </summary>
+    public double MinWidth { get; set; }
 
     public MessageBoxToken()
         : base(ID)
@@ -25,6 +30,7 @@ internal class MessageBoxToken : AbstractControlDesignToken
     {
         base.CalculateTokenValues(isDarkMode);
         StyleIconSize = SharedToken.SizeLG * 1.2;
+        MinWidth      = 410;
     }
 
     protected override Type GetTokenKindType() => typeof(MessageBoxTokenKind);
