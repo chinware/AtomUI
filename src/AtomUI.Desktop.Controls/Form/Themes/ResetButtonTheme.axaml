@@ -1,0 +1,13 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:ResetButton}" TargetType="atom:ResetButton">
+        <ControlTheme.BasedOn>
+            <atom:ButtonTheme TargetType="{x:Type atom:ResetButton}" />
+        </ControlTheme.BasedOn>
+        
+        <Setter Property="ButtonType" Value="Default"/>
+        <Setter Property="Content" Value="{atom:CommonLangResource Reset}"/>
+    </ControlTheme>
+</ResourceDictionary>

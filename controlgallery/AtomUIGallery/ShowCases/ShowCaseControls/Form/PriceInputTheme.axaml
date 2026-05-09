@@ -1,0 +1,32 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/oss-controls/gallery"
+                    xmlns:atom="https://atomui.net"
+                    x:CompileBindings="True">
+    <ControlTheme x:Key="{x:Type gallery:PriceInput}" TargetType="gallery:PriceInput">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:NumericUpDown SizeType="{TemplateBinding SizeType}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                        Status="{TemplateBinding Status}"
+                                        StyleVariant="{TemplateBinding StyleVariant}"
+                                        Width="120"
+                                        Value="0"
+                                        Name="NumberInput"
+                                        Minimum="0"/>
+                    <atom:Select SizeType="{TemplateBinding SizeType}"
+                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                 Status="{TemplateBinding Status}"
+                                 StyleVariant="{TemplateBinding StyleVariant}"
+                                 DefaultValues="RMB"
+                                 Name="UnitInput">
+                        <atom:SelectOption Header="RMB" Content="RMB"/>
+                        <atom:SelectOption Header="Dollar" Content="Dollar"/>
+                    </atom:Select>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        
+    </ControlTheme>
+</ResourceDictionary>

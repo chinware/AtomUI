@@ -431,6 +431,18 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         VerticalOffset
     }
 
+    public enum FormTokenKind
+    {
+        FormItemSpacing,
+        InlineItemSpacing,
+        LabelColonMargin,
+        LabelColor,
+        LabelFontSize,
+        LabelRequiredMarkColor,
+        VerticalLabelMargin,
+        VerticalLabelPadding
+    }
+
     public enum GroupBoxTokenKind
     {
         ContentPadding,
@@ -1543,6 +1555,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public FlyoutHostTokenResourceExtension(FlyoutHostTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class FormTokenResourceExtension : TokenResourceExtension<FormTokenKind>
+    {
+        public FormTokenResourceExtension()
+        {
+        }
+
+        public FormTokenResourceExtension(FormTokenKind kind) : base(kind)
         {
         }
     }

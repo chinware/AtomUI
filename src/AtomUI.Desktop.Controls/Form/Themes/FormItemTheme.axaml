@@ -1,0 +1,251 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net">
+    <ControlTheme x:Key="{x:Type atom:FormItem}" TargetType="atom:FormItem">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel LastChildFill="True" Name="PART_RootLayout">
+                    <Panel DockPanel.Dock="Right" Name="ItemDeleteButtonLayout"
+                           VerticalAlignment="Top"
+                           IsVisible="False">
+                        <atom:ItemDeleteButton Name="ItemDeleteButton"
+                                               Icon="{TemplateBinding ItemDeleteButtonIcon}"
+                                               VerticalAlignment="Center"
+                                               IsVisible="False" />
+                    </Panel>
+                    <Grid Name="PART_BodyLayout">
+                        <Panel Name="PART_LabelLayout"
+                               VerticalAlignment="Top"
+                               IsVisible="{TemplateBinding LabelText, Converter={x:Static ObjectConverters.IsNotNull}}"
+                               ClipToBounds="True">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <ContentPresenter Name="CustomRequiredMarkPresenter"
+                                                  Content="{TemplateBinding CustomRequireMark}"
+                                                  ContentTemplate="{TemplateBinding CustomRequireMarkTemplate}"
+                                                  IsVisible="False"
+                                                  VerticalAlignment="Center" />
+                                <ContentPresenter Name="CustomOptionalMarkPresenter"
+                                                  Content="{TemplateBinding CustomOptionalMark}"
+                                                  ContentTemplate="{TemplateBinding CustomOptionalMarkTemplate}"
+                                                  IsVisible="False"
+                                                  VerticalAlignment="Center" />
+                                <TextBlock Text="*"
+                                           Name="PART_DefaultRequireMark"
+                                           IsVisible="False"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Name="PART_Label"
+                                           Text="{TemplateBinding LabelText}"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="{TemplateBinding LabelWrapping}"
+                                           MaxWidth="{TemplateBinding LabelMaxWidth}" />
+                                <atom:IconPresenter Name="TooltipIconPresenter"
+                                                    Icon="{TemplateBinding TooltipIcon}"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    atom:ToolTip.Tip="{TemplateBinding Tooltip}"
+                                                    IsVisible="{TemplateBinding Tooltip, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <TextBlock Text="{atom:CommonLangResource Optional}"
+                                           Name="OptionalMark"
+                                           IsVisible="False"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text=":" Name="PART_Colon"
+                                           IsVisible="{TemplateBinding IsColonVisible}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Panel>
+
+                        <StackPanel Name="PART_ContentLayout"
+                                    Orientation="Vertical">
+                            <Border MinHeight="{Binding #PART_LabelLayout.Bounds.Height}"
+                                    Name="ContentFrame">
+                                <DockPanel LastChildFill="True">
+                                    <ContentPresenter Name="ExtraPresenter" DockPanel.Dock="Right"
+                                                      Content="{TemplateBinding Extra}"
+                                                      ContentTemplate="{TemplateBinding ExtraTemplate}" />
+                                    <ContentPresenter Name="ContentPresenter"
+                                                      Content="{TemplateBinding Content}"
+                                                      VerticalAlignment="Center"
+                                                      MaxWidth="{TemplateBinding ContentPresenterMaxWidth}" />
+                                </DockPanel>
+                            </Border>
+                            <StackPanel Name="ExtraInfoLayout" Orientation="Vertical">
+                                <TextBlock Name="PART_ErrorMsg"
+                                           Inlines="{TemplateBinding ErrorMessageInlines}"
+                                           IsVisible="{TemplateBinding ErrorMessageInlines, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <TextBlock Name="HelpText" Text="{TemplateBinding Help}"
+                                           IsVisible="{TemplateBinding Help, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+
+        <Style Selector="^[ValidateStatus=Error]">
+            <Style Selector="^ /template/ TextBlock#PART_ErrorMsg">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorErrorText}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ValidateStatus=Warning]">
+            <Style Selector="^ /template/ TextBlock#PART_ErrorMsg">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWarningText}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ TextBlock#PART_Colon">
+            <Setter Property="Margin" Value="{atom:FormTokenResource LabelColonMargin}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextBlock#PART_DefaultRequireMark">
+            <Setter Property="Foreground" Value="{atom:FormTokenResource LabelRequiredMarkColor}" />
+        </Style>
+
+        <Style Selector="^[Layout=Vertical]">
+            <Style Selector="^ /template/ Panel#PART_LabelLayout">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="Margin" Value="{atom:FormTokenResource VerticalLabelMargin}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ DockPanel#PART_RootLayout">
+            <Setter Property="HorizontalSpacing" Value="{atom:SharedTokenResource SpacingXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ TextBlock#PART_Label">
+            <Setter Property="Foreground" Value="{atom:FormTokenResource LabelColor}" />
+            <Setter Property="FontSize" Value="{atom:FormTokenResource LabelFontSize}" />
+        </Style>
+
+        <Style Selector="^ /template/ Panel#PART_LabelLayout StackPanel">
+            <Setter Property="Spacing"
+                    Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+
+        <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
+            <Setter Property="Width"
+                    Value="{atom:SharedTokenResource IconSize}" />
+        </Style>
+        <Style Selector="^ /template/ atom|IconButton#ItemDeleteButton">
+            <Setter Property="IconWidth"
+                    Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight"
+                    Value="{atom:SharedTokenResource IconSize}" />
+        </Style>
+
+        <Style Selector="^[IsValueItem=True][IsEffectiveShowItemDeleteButton=True]">
+            <Style Selector="^ /template/ atom|IconButton#ItemDeleteButton">
+                <Setter Property="IsVisible"
+                        Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsShowItemDeleteButton=True]">
+            <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
+                <Setter Property="IsVisible"
+                        Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconPresenter#TooltipIconPresenter">
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorIcon}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Style Selector="^ /template/ Panel#PART_LabelLayout">
+                <Setter Property="MinHeight"
+                        Value="{atom:SharedTokenResource ControlHeightLG}" />
+            </Style>
+            <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
+                <Setter Property="Height"
+                        Value="{atom:SharedTokenResource ControlHeightLG}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^ /template/ Panel#PART_LabelLayout">
+                <Setter Property="MinHeight"
+                        Value="{atom:SharedTokenResource ControlHeight}" />
+            </Style>
+            <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
+                <Setter Property="Height"
+                        Value="{atom:SharedTokenResource ControlHeight}" />
+            </Style>
+        </Style>
+        <Style Selector="^[SizeType=Small]">
+            <Style Selector="^ /template/ Panel#PART_LabelLayout">
+                <Setter Property="MinHeight"
+                        Value="{atom:SharedTokenResource ControlHeightSM}" />
+            </Style>
+            <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">
+                <Setter Property="Height"
+                        Value="{atom:SharedTokenResource ControlHeightSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[RequiredMark=Default][IsRequired=True][IsValueItem=True]">
+            <Style Selector="^ /template/ TextBlock#PART_DefaultRequireMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[RequiredMark=Optional][IsRequired=False][IsValueItem=True]">
+            <Style Selector="^ /template/ TextBlock#OptionalMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[RequiredMark=Customize][HasCustomRequireMark=True][IsValueItem=True][IsRequired=True]">
+            <Style Selector="^ /template/ ContentPresenter#CustomRequiredMarkPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[RequiredMark=Customize][HasCustomOptionalMark=True][IsValueItem=True][IsRequired=False]">
+            <Style Selector="^ /template/ ContentPresenter#CustomOptionalMarkPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[HasErrorOrWarningMsg=False]">
+            <Style Selector="^ /template/ StackPanel#PART_ContentLayout">
+                <Setter Property="Spacing"
+                        Value="{atom:FormTokenResource FormItemSpacing}" />
+            </Style>
+            <Style Selector="^ /template/ StackPanel#ExtraInfoLayout">
+                <Setter Property="MaxHeight" Value="0" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[HasErrorOrWarningMsg=True]">
+            <Style Selector="^ /template/ StackPanel#ExtraInfoLayout">
+                <Setter Property="MinHeight" Value="{atom:FormTokenResource FormItemSpacing}" />
+            </Style>
+
+        </Style>
+
+        <Style Selector="^[ValidateStatus=Default],^[ValidateStatus=Success],^[ValidateStatus=Validating]">
+            <Style Selector="^ /template/ TextBlock#HelpText">
+                <Setter Property="Foreground"
+                        Value="{atom:SharedTokenResource ColorTextDescription}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ValidateStatus=Warning]">
+            <Style Selector="^ /template/ TextBlock#HelpText">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWarningText}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[ValidateStatus=Error]">
+            <Style Selector="^ /template/ TextBlock#HelpText">
+                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorErrorText}" />
+            </Style>
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>
