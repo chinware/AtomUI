@@ -10,10 +10,13 @@
                         ClipToBounds="False">
                     <Grid>
                         <Border Name="PART_HandleLine"
-                                Background="{TemplateBinding LineBrush}" />
-                        <Border Name="PART_HandleGrip"
-                                Background="{atom:SharedTokenResource ColorFill}"
-                                CornerRadius="{atom:SharedTokenResource BorderRadiusXS}" />
+                                Background="{TemplateBinding LineBrush}"
+                                IsHitTestVisible="False" />
+                        <atom:SplitterDragBar Name="PART_DragBar"
+                                              Orientation="{TemplateBinding Orientation}"
+                                              LineBrush="{atom:SharedTokenResource ColorFill}"
+                                              LineThickness="{TemplateBinding LineThickness}"
+                                              IsDragEnabled="{TemplateBinding IsDragEnabled}" />
                         <Canvas Name="PART_CollapseIconsHost"
                                 Width="0"
                                 Height="0"
@@ -98,11 +101,9 @@
             <Setter Property="VerticalAlignment" Value="Stretch" />
         </Style>
 
-        <Style Selector="^[Orientation=Vertical] /template/ Border#PART_HandleGrip">
-            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarSize}" />
-            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+        <Style Selector="^[Orientation=Vertical] /template/ atom|SplitterDragBar#PART_DragBar">
             <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
         </Style>
 
         <Style Selector="^[Orientation=Horizontal] /template/ Border#PART_HandleLine">
@@ -111,11 +112,9 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
 
-        <Style Selector="^[Orientation=Horizontal] /template/ Border#PART_HandleGrip">
-            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarSize}" />
-            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
+        <Style Selector="^[Orientation=Horizontal] /template/ atom|SplitterDragBar#PART_DragBar">
             <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
 
         <Style Selector="^[Orientation=Vertical] /template/ atom|IconButton#PART_CollapsePrevButton">
@@ -156,9 +155,6 @@
 
         <Style Selector="^[IsDragEnabled=False]">
             <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
-            <Style Selector="^ /template/ Border#PART_HandleGrip">
-                <Setter Property="IsVisible" Value="False" />
-            </Style>
         </Style>
 
         <Style Selector="^[IsDragEnabled=False]:pointerover">

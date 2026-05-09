@@ -272,11 +272,6 @@ internal class SplitterPanel : Panel
             }
         }
         handle.IsDragEnabled = canDrag;
-        handle.Cursor = canDrag
-            ? Orientation == Orientation.Vertical
-                ? new Cursor(StandardCursorType.SizeWestEast)
-                : new Cursor(StandardCursorType.SizeNorthSouth)
-            : Cursor.Default;
 
         handle.PreviousButtonControlsNext = false;
         handle.NextButtonControlsPrevious = false;

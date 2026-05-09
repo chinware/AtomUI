@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -119,13 +118,11 @@ public class Thumb : TemplatedControl
         var ev = new VectorEventArgs
         {
             RoutedEvent = DragStartedEvent,
-            Vector      = (Vector)_dragStartPoint.Value,
+            Vector      = _dragStartPoint.Value,
         };
 
         PseudoClasses.Add(StdPseudoClass.Pressed);
-
         e.PreventGestureRecognition();
-
         RaiseEvent(ev);
     }
 

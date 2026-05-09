@@ -1,23 +1,21 @@
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Icons.AntDesign;
-using AtomUIThumb = AtomUI.Controls.Primitives.Thumb;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
 [TemplatePart("PART_HandleLine", typeof(Border))]
-[TemplatePart("PART_HandleGrip", typeof(Border))]
+[TemplatePart("PART_DragBar", typeof(SplitterDragBar))]
 [TemplatePart("PART_CollapsePrevButton", typeof(IconButton))]
 [TemplatePart("PART_CollapseNextButton", typeof(IconButton))]
-internal class SplitterHandle : AtomUIThumb
+internal class SplitterHandle : TemplatedControl
 {
     public static readonly StyledProperty<Orientation> OrientationProperty =
         AvaloniaProperty.Register<SplitterHandle, Orientation>(nameof(Orientation), Orientation.Vertical);
@@ -55,25 +53,7 @@ internal class SplitterHandle : AtomUIThumb
         set => SetValue(IsDragEnabledProperty, value);
     }
 
-
     public int HandleIndex { get; set; }
-
-    private IconButton? _collapsePrevButton;
-    private IconButton? _collapseNextButton;
-    private bool _isPointerOver;
-    private bool _isPointerPressed;
-    private HoverSide _hoverSide = HoverSide.None;
-    private Point _lastPointerPosition;
-    private bool _hasPointerPosition;
-    private bool _isDragging;
-    internal bool IsPointerInDragZone { get; private set; }
-
-    private enum HoverSide
-    {
-        None,
-        Previous,
-        Next
-    }
 
     internal bool IsPreviousCollapsible { get; set; }
     internal bool IsNextCollapsible { get; set; }
@@ -86,37 +66,53 @@ internal class SplitterHandle : AtomUIThumb
     internal bool NextButtonControlsPrevious { get; set; }
     internal IIconTemplate? PreviousIconTemplate { get; set; }
     internal IIconTemplate? NextIconTemplate { get; set; }
+
     internal SplitterCollapsibleIconDisplayMode PreviousShowMode { get; set; } =
         SplitterCollapsibleIconDisplayMode.Hover;
+
     internal SplitterCollapsibleIconDisplayMode NextShowMode { get; set; } =
         SplitterCollapsibleIconDisplayMode.Hover;
 
+    internal bool IsPointerInDragZone => _dragBar?.IsPointerOver == true;
+
+    public event EventHandler<VectorEventArgs>? DragStarted;
+    public event EventHandler<VectorEventArgs>? DragDelta;
+    public event EventHandler<VectorEventArgs>? DragCompleted;
     public event EventHandler? CollapsePreviousRequested;
     public event EventHandler? CollapseNextRequested;
+
+    private SplitterDragBar? _dragBar;
+    private IconButton? _collapsePrevButton;
+    private IconButton? _collapseNextButton;
+    private HoverSide _hoverSide = HoverSide.None;
+
+    private enum HoverSide
+    {
+        None,
+        Previous,
+        Next
+    }
+
+    static SplitterHandle()
+    {
+        OrientationProperty.Changed.AddClassHandler<SplitterHandle>((x, _) => x.OnOrientationChanged());
+    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_collapsePrevButton != null)
-        {
-            _collapsePrevButton.Click -= HandleCollapsePrevClick;
-        }
-        if (_collapseNextButton != null)
-        {
-            _collapseNextButton.Click -= HandleCollapseNextClick;
-        }
 
+        DetachDragBar();
+        DetachCollapseButton(ref _collapsePrevButton, HandleCollapsePrevClick);
+        DetachCollapseButton(ref _collapseNextButton, HandleCollapseNextClick);
+
+        _dragBar            = e.NameScope.Find<SplitterDragBar>("PART_DragBar");
         _collapsePrevButton = e.NameScope.Find<IconButton>("PART_CollapsePrevButton");
         _collapseNextButton = e.NameScope.Find<IconButton>("PART_CollapseNextButton");
 
-        if (_collapsePrevButton != null)
-        {
-            _collapsePrevButton.Click += HandleCollapsePrevClick;
-        }
-        if (_collapseNextButton != null)
-        {
-            _collapseNextButton.Click += HandleCollapseNextClick;
-        }
+        AttachDragBar();
+        AttachCollapseButton(_collapsePrevButton, HandleCollapsePrevClick);
+        AttachCollapseButton(_collapseNextButton, HandleCollapseNextClick);
 
         UpdateCollapseButtons();
     }
@@ -124,182 +120,149 @@ internal class SplitterHandle : AtomUIThumb
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
-        _isPointerOver = true;
-        CachePointerPosition(e);
         UpdateHoverSide(e);
-        UpdateCursor(_lastPointerPosition);
         UpdateCollapseButtons();
+    }
+
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+        UpdateHoverSide(e);
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
     {
         base.OnPointerExited(e);
-        _isPointerOver = false;
-        if (!_isPointerPressed && !_isDragging)
-        {
-            _hoverSide = HoverSide.None;
-        }
-        _hasPointerPosition = false;
-        IsPointerInDragZone = false;
-        if (!_isDragging)
-        {
-            Cursor = Cursor.Default;
-        }
+        _hoverSide = HoverSide.None;
         UpdateCollapseButtons();
-    }
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        if (!IsDragEnabled)
-        {
-            return;
-        }
-        CachePointerPosition(e);
-        if (!IsPointerInDragArea(e))
-        {
-            UpdateCursor(_lastPointerPosition);
-            return;
-        }
-        _isPointerPressed = true;
-        UpdateCursor(_lastPointerPosition);
-        base.OnPointerPressed(e);
-    }
-
-    protected override void OnPointerMoved(PointerEventArgs e)
-    {
-        CachePointerPosition(e);
-        UpdateHoverSide(e);
-        UpdateCursor(_lastPointerPosition);
-        if (IsDragEnabled)
-        {
-            base.OnPointerMoved(e);
-        }
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        if (!IsDragEnabled)
-        {
-            return;
-        }
-        CachePointerPosition(e);
-        UpdateCursor(_lastPointerPosition);
-        base.OnPointerReleased(e);
-        _isPointerPressed = false;
-        if (!_isPointerOver)
-        {
-            _hoverSide = HoverSide.None;
-        }
-        UpdateCollapseButtons();
-    }
-
-    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
-    {
-        if (!IsDragEnabled)
-        {
-            return;
-        }
-        _hasPointerPosition = false;
-        IsPointerInDragZone = false;
-        _isPointerPressed = false;
-        Cursor = Cursor.Default;
-        base.OnPointerCaptureLost(e);
-        if (!_isPointerOver)
-        {
-            _hoverSide = HoverSide.None;
-        }
-        UpdateCollapseButtons();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsDragEnabledProperty || change.Property == OrientationProperty)
-        {
-            if (_isPointerOver && _hasPointerPosition)
-            {
-                UpdateCursor(_lastPointerPosition);
-            }
-            else if (!IsDragEnabled)
-            {
-                Cursor = Cursor.Default;
-            }
-        }
-    }
-
-    private void HandleCollapsePrevClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (PreviousButtonControlsNext)
-        {
-            CollapseNextRequested?.Invoke(this, EventArgs.Empty);
-            return;
-        }
-
-        CollapsePreviousRequested?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void HandleCollapseNextClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        if (NextButtonControlsPrevious)
-        {
-            CollapsePreviousRequested?.Invoke(this, EventArgs.Empty);
-            return;
-        }
-
-        CollapseNextRequested?.Invoke(this, EventArgs.Empty);
     }
 
     internal void SetDragging(bool isDragging)
     {
-        _isDragging = isDragging;
         PseudoClasses.Set(StdPseudoClass.Dragging, isDragging);
-        Cursor = isDragging ? GetDragCursor() : Cursor.Default;
+        _dragBar?.SetDragging(isDragging);
+    }
+
+    internal void AdjustDrag(Vector vector)
+    {
+        _dragBar?.AdjustDrag(vector);
     }
 
     internal void UpdateCollapseButtons()
     {
-        var hasPrevious = ShowPreviousButton && IsPreviousCollapsible;
-        var hasNext = ShowNextButton && IsNextCollapsible;
+        var hasPrevious  = ShowPreviousButton && IsPreviousCollapsible;
+        var hasNext      = ShowNextButton && IsNextCollapsible;
         var onlyPrevious = hasPrevious && !hasNext;
-        var onlyNext = hasNext && !hasPrevious;
+        var onlyNext     = hasNext && !hasPrevious;
 
         if (_collapsePrevButton != null)
         {
             ApplyCustomIconBackground(_collapsePrevButton, PreviousIconTemplate != null);
-            _collapsePrevButton.IsVisible = hasPrevious &&
-                                            ShouldShowIcon(PreviousShowMode, true, onlyPrevious);
-            _collapsePrevButton.Icon = CreatePrevIcon();
+            _collapsePrevButton.IsVisible = hasPrevious && ShouldShowIcon(PreviousShowMode, true, onlyPrevious);
+            _collapsePrevButton.Icon      = CreatePrevIcon();
         }
 
         if (_collapseNextButton != null)
         {
             ApplyCustomIconBackground(_collapseNextButton, NextIconTemplate != null);
-            _collapseNextButton.IsVisible = hasNext &&
-                                            ShouldShowIcon(NextShowMode, false, onlyNext);
-            _collapseNextButton.Icon = CreateNextIcon();
+            _collapseNextButton.IsVisible = hasNext && ShouldShowIcon(NextShowMode, false, onlyNext);
+            _collapseNextButton.Icon      = CreateNextIcon();
         }
+    }
+
+    private void OnOrientationChanged()
+    {
+        UpdateCollapseButtons();
+    }
+
+    private void AttachDragBar()
+    {
+        if (_dragBar == null)
+        {
+            return;
+        }
+
+        _dragBar.DragStarted   += HandleDragBarStarted;
+        _dragBar.DragDelta     += HandleDragBarDelta;
+        _dragBar.DragCompleted += HandleDragBarCompleted;
+    }
+
+    private void DetachDragBar()
+    {
+        if (_dragBar == null)
+        {
+            return;
+        }
+
+        _dragBar.DragStarted   -= HandleDragBarStarted;
+        _dragBar.DragDelta     -= HandleDragBarDelta;
+        _dragBar.DragCompleted -= HandleDragBarCompleted;
+    }
+
+    private void HandleDragBarStarted(object? sender, VectorEventArgs e)
+    {
+        DragStarted?.Invoke(this, new VectorEventArgs { RoutedEvent = e.RoutedEvent, Vector = e.Vector });
+    }
+
+    private void HandleDragBarDelta(object? sender, VectorEventArgs e)
+    {
+        DragDelta?.Invoke(this, new VectorEventArgs { RoutedEvent = e.RoutedEvent, Vector = e.Vector });
+    }
+
+    private void HandleDragBarCompleted(object? sender, VectorEventArgs e)
+    {
+        DragCompleted?.Invoke(this, new VectorEventArgs { RoutedEvent = e.RoutedEvent, Vector = e.Vector });
+    }
+
+    private static void AttachCollapseButton(IconButton? button, EventHandler<RoutedEventArgs> handler)
+    {
+        if (button != null)
+        {
+            button.Click += handler;
+        }
+    }
+
+    private static void DetachCollapseButton(ref IconButton? button, EventHandler<RoutedEventArgs> handler)
+    {
+        if (button != null)
+        {
+            button.Click -= handler;
+        }
+
+        button = null;
+    }
+
+    private void HandleCollapsePrevClick(object? sender, RoutedEventArgs e)
+    {
+        var target = PreviousButtonControlsNext ? CollapseNextRequested : CollapsePreviousRequested;
+        target?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void HandleCollapseNextClick(object? sender, RoutedEventArgs e)
+    {
+        var target = NextButtonControlsPrevious ? CollapsePreviousRequested : CollapseNextRequested;
+        target?.Invoke(this, EventArgs.Empty);
     }
 
     private static void ApplyCustomIconBackground(IconButton button, bool isCustom)
     {
         if (isCustom)
         {
-            button.SetCurrentValue(TemplatedControl.BackgroundProperty, Brushes.Transparent);
+            button.SetCurrentValue(BackgroundProperty, Brushes.Transparent);
         }
         else
         {
-            button.ClearValue(TemplatedControl.BackgroundProperty);
+            button.ClearValue(BackgroundProperty);
         }
     }
 
     private bool ShouldShowIcon(SplitterCollapsibleIconDisplayMode mode, bool isPrevious, bool isOnly)
     {
-        var isPointerOver = _isPointerOver || _isPointerPressed;
         return mode switch
         {
             SplitterCollapsibleIconDisplayMode.Always => true,
             SplitterCollapsibleIconDisplayMode.Hidden => false,
-            SplitterCollapsibleIconDisplayMode.Hover => isPointerOver &&
+            SplitterCollapsibleIconDisplayMode.Hover => IsPointerOver &&
                                                         (ShowBothButtonsOnHover ||
                                                          isOnly ||
                                                          _hoverSide == (isPrevious ? HoverSide.Previous : HoverSide.Next)),
@@ -309,15 +272,16 @@ internal class SplitterHandle : AtomUIThumb
 
     private void UpdateHoverSide(PointerEventArgs e)
     {
-        if (!_isPointerOver)
+        if (!IsPointerOver)
         {
             return;
         }
 
         var position = e.GetPosition(this);
-        var compare  = Orientation == Orientation.Vertical ? position.X : position.Y;
-        var center   = Orientation == Orientation.Vertical ? Bounds.Width * 0.5 : Bounds.Height * 0.5;
-        var newSide  = compare < center ? HoverSide.Previous : HoverSide.Next;
+        var isVertical = Orientation == Orientation.Vertical;
+        var compare    = isVertical ? position.X : position.Y;
+        var center     = isVertical ? Bounds.Width * 0.5 : Bounds.Height * 0.5;
+        var newSide    = compare < center ? HoverSide.Previous : HoverSide.Next;
 
         if (_hoverSide == newSide)
         {
@@ -332,38 +296,6 @@ internal class SplitterHandle : AtomUIThumb
         }
     }
 
-    private void CachePointerPosition(PointerEventArgs e)
-    {
-        var currentPosition = e.GetPosition(this);
-        _lastPointerPosition = currentPosition;
-        _hasPointerPosition = true;
-        IsPointerInDragZone = IsPointerInDragArea(_lastPointerPosition);
-    }
-
-    private void UpdateCursor(Point position)
-    {
-        if (_isDragging || _isPointerPressed)
-        {
-            Cursor = GetDragCursor();
-            return;
-        }
-
-        if (!IsDragEnabled)
-        {
-            Cursor = Cursor.Default;
-            return;
-        }
-
-        Cursor = Cursor.Default;
-    }
-
-    private Cursor GetDragCursor()
-    {
-        return Orientation == Orientation.Vertical
-            ? new Cursor(StandardCursorType.SizeWestEast)
-            : new Cursor(StandardCursorType.SizeNorthSouth);
-    }
-
     private PathIcon? CreatePrevIcon()
     {
         if (PreviousIconTemplate != null)
@@ -373,9 +305,9 @@ internal class SplitterHandle : AtomUIThumb
 
         return Orientation switch
         {
-            Orientation.Vertical => new LeftOutlined(),
+            Orientation.Vertical   => new LeftOutlined(),
             Orientation.Horizontal => new UpOutlined(),
-            _ => new LeftOutlined()
+            _                      => new LeftOutlined()
         };
     }
 
@@ -388,53 +320,9 @@ internal class SplitterHandle : AtomUIThumb
 
         return Orientation switch
         {
-            Orientation.Vertical => new RightOutlined(),
+            Orientation.Vertical   => new RightOutlined(),
             Orientation.Horizontal => new DownOutlined(),
-            _ => new RightOutlined()
+            _                      => new RightOutlined()
         };
-    }
-
-    private bool IsPointerInDragArea(PointerEventArgs e)
-    {
-        return IsPointerInDragArea(e.GetPosition(this));
-    }
-
-    private bool IsPointerInDragArea(Point position)
-    {
-        var triggerSize = GetDragTriggerSize();
-        if (triggerSize <= 0)
-        {
-            return true;
-        }
-
-        var half = triggerSize * 0.5;
-        if (Orientation == Orientation.Vertical)
-        {
-            return Math.Abs(position.X - Bounds.Width * 0.5) <= half;
-        }
-
-        return Math.Abs(position.Y - Bounds.Height * 0.5) <= half;
-    }
-
-    private double GetDragTriggerSize()
-    {
-        var value = TokenResourceUtils.FindTokenResource(this, SplitterTokenKind.SplitTriggerSize);
-        if (value is double size && !double.IsNaN(size) && !double.IsInfinity(size))
-        {
-            return Math.Max(0, size);
-        }
-
-        value = TokenResourceUtils.FindTokenResource(this, SplitterTokenKind.SplitBarSize);
-        if (value is double fallback && !double.IsNaN(fallback) && !double.IsInfinity(fallback))
-        {
-            return Math.Max(0, fallback);
-        }
-
-        if (!double.IsNaN(LineThickness) && !double.IsInfinity(LineThickness))
-        {
-            return Math.Max(0.0, LineThickness);
-        }
-
-        return 0.0;
     }
 }

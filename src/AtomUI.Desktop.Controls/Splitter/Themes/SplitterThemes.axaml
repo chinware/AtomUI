@@ -3,6 +3,7 @@
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="SplitterTheme.axaml" />
+        <ResourceInclude Source="SplitterDragBarTheme.axaml" />
         <ResourceInclude Source="SplitterHandleTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

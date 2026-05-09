@@ -1,0 +1,44 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:SplitterDragBar}" TargetType="atom:SplitterDragBar">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <Border Name="PART_Grip"
+                            Background="{TemplateBinding LineBrush}"
+                            CornerRadius="{atom:SharedTokenResource BorderRadiusXS}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[Orientation=Vertical]">
+            <Setter Property="Cursor" Value="SizeWestEast" />
+            <Setter Property="Width" Value="{atom:SplitterTokenResource SplitTriggerSize}" />
+            <Style Selector="^ /template/ Border#PART_Grip">
+                <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarSize}" />
+                <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[Orientation=Horizontal]">
+            <Setter Property="Cursor" Value="SizeNorthSouth" />
+            <Setter Property="Height" Value="{atom:SplitterTokenResource SplitTriggerSize}" />
+            <Style Selector="^ /template/ Border#PART_Grip">
+                <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarSize}" />
+                <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsDragEnabled=False]">
+            <Style Selector="^ /template/ Border#PART_Grip">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
