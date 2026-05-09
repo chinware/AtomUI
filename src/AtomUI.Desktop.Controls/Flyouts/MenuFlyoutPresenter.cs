@@ -214,10 +214,10 @@ public class MenuFlyoutPresenter : MenuBase,
             }
 
             menuItem[!MenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-            menuItem[!MenuItem.ItemTemplateProperty]           = this[!ItemTemplateProperty];
-            menuItem[!MenuItem.SizeTypeProperty]               = this[!SizeTypeProperty];
-            menuItem[!MenuItem.DisplayPageSizeProperty]        = this[!DisplayPageSizeProperty];
-            menuItem[!MenuItem.ShouldUseOverlayPopupProperty]  = this[!ShouldUseOverlayPopupProperty];
+            menuItem[!MenuItem.ItemTemplateProperty]          = this[!ItemTemplateProperty];
+            menuItem[!MenuItem.SizeTypeProperty]              = this[!SizeTypeProperty];
+            menuItem[!MenuItem.DisplayPageSizeProperty]       = this[!DisplayPageSizeProperty];
+            menuItem[!MenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
 
             PrepareMenuItem(menuItem, item, index);
         }

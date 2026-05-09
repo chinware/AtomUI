@@ -32,7 +32,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         if (MenuFlyout != null)
         {
             return;
-        }   
+        }
         MenuFlyout = new MenuFlyout
         {
             IsShowArrow           = false,
@@ -45,7 +45,7 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
         };
         _flyoutBindingDisposable?.Dispose();
         _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
- 
+
         if (TabStripPlacement == Dock.Top)
         {
             MenuFlyout.RequestedPlacement = PlacementMode.BottomEdgeAlignedLeft;
