@@ -71,8 +71,7 @@ public class MenuFlyout : Flyout
     {
         var itemCollectionType = typeof(ItemCollection);
         Items = (ItemCollection)Activator.CreateInstance(itemCollectionType, true)!;
-        TokenResourceBinder.CreateGlobalTokenBinding(this, HorizontalOffsetProperty, FlyoutHostTokenKind.HorizontalOffset);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, VerticalOffsetProperty, FlyoutHostTokenKind.VerticalOffset);
+        BindPointerPlacementOffsets(FlyoutHostTokenKind.HorizontalOffset, FlyoutHostTokenKind.VerticalOffset);
     }
 
     protected override Control CreatePresenter()

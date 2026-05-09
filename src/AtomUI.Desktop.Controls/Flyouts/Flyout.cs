@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -201,6 +202,11 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     }
 
     #endregion
+    
+    private object? _pointerHorizontalOffsetTokenKey;
+    private object? _pointerVerticalOffsetTokenKey;
+    private IDisposable? _pointerHorizontalOffsetBinding;
+    private IDisposable? _pointerVerticalOffsetBinding;
 
     static Flyout()
     {
@@ -326,6 +332,11 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         {
             ConfigureArrowPosition();
         }
+
+        if (change.Property == RequestedPlacementProperty)
+        {
+            ConfigurePointerPlacementOffsets();
+        }
     }
 
     protected void ConfigureShowArrowEffective()
@@ -349,6 +360,37 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         {
             arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, IsPopupHorizontalFlipped, IsPopupVerticalFlipped);
             SetCurrentValue(ArrowPositionProperty, arrowPosition);
+        }
+    }
+
+    /// <summary>
+    /// Bind <see cref="PopupFlyoutBase.HorizontalOffsetProperty"/> / <see cref="PopupFlyoutBase.VerticalOffsetProperty"/>
+    /// to the given tokens only while <see cref="RequestedPlacement"/> is <see cref="PlacementMode.Pointer"/>.
+    /// For non-pointer placements the offsets stay at their default values so edge-aligned placements
+    /// (e.g. <c>BottomEdgeAlignedRight</c>) aren't shifted off anchor.
+    /// </summary>
+    protected void BindPointerPlacementOffsets(object horizontalOffsetTokenKey, object verticalOffsetTokenKey)
+    {
+        _pointerHorizontalOffsetTokenKey = horizontalOffsetTokenKey;
+        _pointerVerticalOffsetTokenKey   = verticalOffsetTokenKey;
+        ConfigurePointerPlacementOffsets();
+    }
+
+    private void ConfigurePointerPlacementOffsets()
+    {
+        _pointerHorizontalOffsetBinding?.Dispose();
+        _pointerVerticalOffsetBinding?.Dispose();
+        _pointerHorizontalOffsetBinding = null;
+        _pointerVerticalOffsetBinding   = null;
+
+        if (RequestedPlacement == PlacementMode.Pointer &&
+            _pointerHorizontalOffsetTokenKey != null &&
+            _pointerVerticalOffsetTokenKey != null)
+        {
+            _pointerHorizontalOffsetBinding = TokenResourceBinder.CreateGlobalResourceBinding(
+                this, HorizontalOffsetProperty, _pointerHorizontalOffsetTokenKey, BindingPriority.Style);
+            _pointerVerticalOffsetBinding = TokenResourceBinder.CreateGlobalResourceBinding(
+                this, VerticalOffsetProperty, _pointerVerticalOffsetTokenKey, BindingPriority.Style);
         }
     }
 }

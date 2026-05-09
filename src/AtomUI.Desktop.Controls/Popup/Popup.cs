@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
@@ -237,11 +236,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     {
         if (_motionCts != null)
         {
-           await _motionCts.CancelAsync();
+            await _motionCts.CancelAsync();
         }
 
         _isPlayingCloseMotion = true;
-        _motionCts = new CancellationTokenSource();
+        _motionCts            = new CancellationTokenSource();
 
         var motion = CloseMotion!;
         motion.Duration = MotionDuration;
@@ -257,7 +256,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
 
         _isPlayingCloseMotion = false;
-        _isClosingAnimating = true;
+        _isClosingAnimating   = true;
         Dispatcher.Post(Close);
     }
 
@@ -306,7 +305,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             {
                 var originalPlacement = Placement;
                 CustomPopupPlacementCallback = HandleCustomPlacement;
-                Placement = PlacementMode.Custom;
+                Placement                    = PlacementMode.Custom;
                 if (originalPlacement == PlacementMode.Custom)
                 {
                     this.HandlePositionChange();
@@ -327,13 +326,13 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     internal void HandleCustomPlacement(CustomPopupPlacement placement)
     {
-        var shadowThickness    = FrameShadow.Thickness();
-        var requestedPlacement = RequestedPlacement!.Value;
-        var isUseOverlayHost   = ShouldUseOverlayLayer;
-        var hOffset            = HorizontalOffset;
-        var vOffset            = VerticalOffset;
-        var marginToAnchor     = MarginToAnchor;
-        PopupAnchor anchor;
+        var          shadowThickness    = FrameShadow.Thickness();
+        var          requestedPlacement = RequestedPlacement!.Value;
+        var          isUseOverlayHost   = ShouldUseOverlayLayer;
+        var          hOffset            = HorizontalOffset;
+        var          vOffset            = VerticalOffset;
+        var          marginToAnchor     = MarginToAnchor;
+        PopupAnchor  anchor;
         PopupGravity gravity;
 
         if (requestedPlacement == PlacementMode.Center)
@@ -383,8 +382,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
                 var position = topLevel.PointToClient(topLevel.GetLastPointerPosition() ?? default);
                 placement.AnchorRectangle = new Rect(position, new Size(1, 1));
-                anchor  = PopupAnchor.TopLeft;
-                gravity = PopupGravity.BottomRight;
+                anchor                    = PopupAnchor.TopLeft;
+                gravity                   = PopupGravity.BottomRight;
             }
             else
             {
@@ -496,6 +495,6 @@ public class PopupFlippedEventArgs : EventArgs
     public PopupFlippedEventArgs(bool horizontalFlipped, bool verticalFlipped)
     {
         HorizontalFlipped = horizontalFlipped;
-        VerticalFlipped = verticalFlipped;
+        VerticalFlipped   = verticalFlipped;
     }
 }
