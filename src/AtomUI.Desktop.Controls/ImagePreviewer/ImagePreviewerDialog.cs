@@ -401,32 +401,38 @@ internal class ImagePreviewerDialog : Window,
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        EnsureInitialClientSize();
         HandleCurrentIndexChanged();
     }
 
-    private void EnsureInitialClientSize()
+    protected override Size MeasureOverride(Size availableSize)
     {
-        if (_firstSizeCalculated)
-        {
-            return;
-        }
+        var calculatedSize = CalculateWindowSize();
+        base.MeasureOverride(calculatedSize);
+        return calculatedSize;
+    }
 
-        var screen = Screens.ScreenFromWindow(this) ?? Screens.Primary;
-        if (screen is null)
+    private Size CalculateWindowSize()
+    {
+        if (!_firstSizeCalculated)
         {
-            _firstSizeCalculated = true;
-            return;
-        }
+            var screen = Screens.ScreenFromWindow(this) ?? Screens.Primary;
+            if (screen is null)
+            {
+                _firstSizeCalculated = true;
+                return ClientSize;
+            }
 
-        const double ratio     = 0.70d;
-        var workingArea        = screen.WorkingArea;
-        var scale              = DesktopScaling;
-        var logicalWorkingSize = new Size(workingArea.Width / scale, workingArea.Height / scale);
-        var width              = logicalWorkingSize.Width * ratio;
-        var height             = logicalWorkingSize.Height * ratio;
-        ClientSize            = new Size(width, height);
-        _firstSizeCalculated  = true;
+            const double ratio     = 0.70d;
+            var workingArea        = screen.WorkingArea;
+            var scale              = DesktopScaling;
+            var logicalWorkingSize = new Size(workingArea.Width / scale, workingArea.Height / scale);
+            var width              = logicalWorkingSize.Width * ratio;
+            var height             = logicalWorkingSize.Height * ratio;
+            ClientSize             = new Size(width, height);
+            _firstSizeCalculated   = true;
+            return new Size(width, height);
+        }
+        return ClientSize;
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -457,6 +463,10 @@ internal class ImagePreviewerDialog : Window,
             }
             SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
             Count = ItemsSource?.Count ?? 0;
+            // SetCurrentValue(CurrentIndexProperty, 0) 在 CurrentIndex 已经是 0(默认值)时不会
+            // 触发 PropertyChanged,HandleCurrentIndexChanged 永远不被调用 → 首次 layout 时
+            // CurrentImage 仍为 null,图片无法居中。这里直接再调一次保证 CurrentImage 被设上。
+            HandleCurrentIndexChanged();
         }
 
         if (change.Property == ImageScaleXProperty ||
