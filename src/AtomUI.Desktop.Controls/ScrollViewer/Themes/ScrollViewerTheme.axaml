@@ -83,6 +83,9 @@
         <Style Selector="^[IsLiteMode=True]">
             <Setter Property="ScrollBarOpacity" Value="0" />
         </Style>
+        <Style Selector="^[IsLiteMode=True]:pointerover">
+            <Setter Property="ScrollBarOpacity" Value="1" />
+        </Style>
         
     </ControlTheme>
 </ResourceDictionary>
