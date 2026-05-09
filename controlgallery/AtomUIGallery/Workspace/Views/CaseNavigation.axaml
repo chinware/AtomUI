@@ -91,6 +91,8 @@
                               ItemKey="{x:Static viewmodels:DatePickerViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Upload}"
                               ItemKey="{x:Static viewmodels:UploadViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry_Transfer}"
+                              ItemKey="{x:Static viewmodels:TransferViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay}"

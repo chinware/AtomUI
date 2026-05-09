@@ -45,6 +45,7 @@ internal class en_US : LanguageProvider
     public const string DataEntry_TimePicker = "TimePicker";
     public const string DataEntry_DatePicker = "DatePicker";
     public const string DataEntry_Upload = "Upload";
+    public const string DataEntry_Transfer = "Transfer";
     public const string DataDisplay = "Data Display";
     public const string DataDisplay_Avatar = "Avatar";
     public const string DataDisplay_Calendar = "Calendar";

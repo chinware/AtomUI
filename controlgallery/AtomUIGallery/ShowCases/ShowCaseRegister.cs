@@ -69,6 +69,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<TimePickerViewModel, TimePickerShowCase>(() => new TimePickerShowCase());
         locator.Map<DatePickerViewModel, DatePickerShowCase>(() => new DatePickerShowCase());
         locator.Map<UploadViewModel, UploadShowCase>(() => new UploadShowCase());
+        locator.Map<TransferViewModel, TransferShowCase>(() => new TransferShowCase());
         locator.Map<NumberUpDownViewModel, NumberUpDownShowCase>(() => new NumberUpDownShowCase());
         locator.Map<ListViewModel, ListShowCase>(() => new ListShowCase());
         locator.Map<TreeViewViewModel, TreeViewShowCase>(() => new TreeViewShowCase());
