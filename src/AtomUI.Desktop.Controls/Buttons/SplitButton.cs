@@ -396,7 +396,7 @@ public class SplitButton : ContentControl,
             _flyoutBindingDisposables?.Dispose();
             _flyoutBindingDisposables = new CompositeDisposable(8);
             
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout, Flyout.RequestedPlacementProperty, (PlacementMode v) => (PlacementMode?)v));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, flyout));
@@ -406,7 +406,7 @@ public class SplitButton : ContentControl,
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, flyout));
 
             _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Popup
-                                                    .PlacementProperty)
+                                                    .RequestedPlacementProperty)
                                                 .Subscribe(HandleFlyoutPlacementPropertyChanged));
         }
     }
