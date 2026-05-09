@@ -15,7 +15,6 @@
                              PlacementTarget="{TemplateBinding PlacementTarget}"
                              HorizontalOffset="{TemplateBinding HorizontalOffset, Mode=TwoWay}"
                              VerticalOffset="{TemplateBinding VerticalOffset, Mode=TwoWay}"
-                             IsOpen="{TemplateBinding IsOpen, Mode=TwoWay}"
                              HostWidth="{TemplateBinding HostWidth}"
                              HostMinWidth="{TemplateBinding HostMinWidth}"
                              HostMaxWidth="{TemplateBinding HostMaxWidth}"

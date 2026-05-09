@@ -46,7 +46,6 @@ namespace AtomUIGallery.Localization
         Feedback_Alert,
         Feedback_Drawer,
         Feedback_Message,
-        Feedback_MessageBox,
         Feedback_Modal,
         Feedback_Notification,
         Feedback_PopupConfirm,

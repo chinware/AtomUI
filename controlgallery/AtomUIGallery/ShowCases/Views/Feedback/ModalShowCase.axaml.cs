@@ -9,6 +9,7 @@ using Avalonia.Threading;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 using TextBlock = AtomUI.Desktop.Controls.TextBlock;
+using ToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 
 namespace AtomUIGallery.ShowCases.Views;
 
@@ -20,25 +21,43 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
         {
             BasicOpenModalButton.Click       += HandleBasicModalButtonClick;
             BasicWindowOpenModalButton.Click += HandleBasicWindowModalButtonClick;
-            
-            LoadingDialogOpenModalButton.Click       += HandleLoadingDialogOpenModalButtonClick;
-            AsyncDialogOpenModalButton.Click         += HandleAsyncDialogOpenModalButtonClick;
-            CustomFooterDialogOpenButton.Click       += HandleCustomFooterDialogOpenButtonClick;
-            DraggableDialogOpenButton.Click          += HandleDraggableMsgBoxOpenButtonClick;
-            ConfigureButtonsDialogOpenButton.Click   += HandleConfigureButtonsDialogButtonClick;
+
+            ConfirmMsgBoxBtn.Click                   += HandleConfirmMsgBoxBtnClick;
+            InformationMsgBoxBtn.Click               += HandleInformationMsgBoxBtnClick;
+            SuccessMsgBoxBtn.Click                   += HandleSuccessMsgBoxBtnClick;
+            ErrorMsgBoxBtn.Click                     += HandleErrorMsgBoxBtnClick;
+            WarningMsgBoxBtn.Click                   += HandleWarningMsgBoxBtnClick;
+            StyleCaseHostTypeSwitch.IsCheckedChanged += HandleStyleCaseHostTypeSwitchChanged;
+
+            LoadingDialogOpenModalButton.Click     += HandleLoadingDialogOpenModalButtonClick;
+            AsyncDialogOpenModalButton.Click       += HandleAsyncDialogOpenModalButtonClick;
+            CustomFooterDialogOpenButton.Click     += HandleCustomFooterDialogOpenButtonClick;
+            CustomFooterMsgBoxOpenButton.Click     += HandleCustomFooterMsgBoxOpenButtonClick;
+            DraggableDialogOpenButton.Click        += HandleDraggableMsgBoxOpenButtonClick;
+            DelayedCloseMsgBoxOpenButton.Click     += HandleDelayedCloseMsgBoxOpenButtonClick;
+            ConfigureButtonsDialogOpenButton.Click += HandleConfigureButtonsDialogButtonClick;
 
             disposables.Add(Disposable.Create(() => BasicOpenModalButton.Click -= HandleBasicModalButtonClick));
             disposables.Add(Disposable.Create(() => BasicWindowOpenModalButton.Click -= HandleBasicWindowModalButtonClick));
+            disposables.Add(Disposable.Create(() => ConfirmMsgBoxBtn.Click -= HandleConfirmMsgBoxBtnClick));
+            disposables.Add(Disposable.Create(() => InformationMsgBoxBtn.Click -= HandleInformationMsgBoxBtnClick));
+            disposables.Add(Disposable.Create(() => SuccessMsgBoxBtn.Click -= HandleSuccessMsgBoxBtnClick));
+            disposables.Add(Disposable.Create(() => ErrorMsgBoxBtn.Click -= HandleErrorMsgBoxBtnClick));
+            disposables.Add(Disposable.Create(() => WarningMsgBoxBtn.Click -= HandleWarningMsgBoxBtnClick));
+            disposables.Add(Disposable.Create(() => StyleCaseHostTypeSwitch.IsCheckedChanged -= HandleStyleCaseHostTypeSwitchChanged));
             disposables.Add(Disposable.Create(() => LoadingDialogOpenModalButton.Click -= HandleLoadingDialogOpenModalButtonClick));
             disposables.Add(Disposable.Create(() => CustomFooterDialogOpenButton.Click -= HandleCustomFooterDialogOpenButtonClick));
+            disposables.Add(Disposable.Create(() => CustomFooterMsgBoxOpenButton.Click -= HandleCustomFooterMsgBoxOpenButtonClick));
             disposables.Add(Disposable.Create(() => DraggableDialogOpenButton.Click -= HandleDraggableMsgBoxOpenButtonClick));
+            disposables.Add(Disposable.Create(() => DelayedCloseMsgBoxOpenButton.Click -= HandleDelayedCloseMsgBoxOpenButtonClick));
             disposables.Add(Disposable.Create(() => ConfigureButtonsDialogOpenButton.Click -= HandleConfigureButtonsDialogButtonClick));
-            
+
             ConfigureButtonPropertiesDialog.ButtonsConfigure = ConfigureButtonProperties;
-            
+
             if (DataContext is ModalViewModel viewModel)
             {
-                viewModel.CountdownSeconds = 5;
+                viewModel.MessageBoxStyleCaseHostType = DialogHostType.Overlay;
+                viewModel.CountdownSeconds            = 5;
             }
         });
         InitializeComponent();
@@ -51,7 +70,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             viewModel.IsBasicModalOpened = true;
         }
     }
-    
+
     private void HandleBasicWindowModalButtonClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is ModalViewModel viewModel)
@@ -59,6 +78,58 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             viewModel.IsBasicWindowModalOpened = true;
         }
     }
+
+    private void HandleConfirmMsgBoxBtnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsConfirmMsgBoxOpened = true;
+        }
+    }
+
+    private void HandleInformationMsgBoxBtnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsInformationMsgBoxOpened = true;
+        }
+    }
+
+    private void HandleSuccessMsgBoxBtnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsSuccessMsgBoxOpened = true;
+        }
+    }
+
+    private void HandleErrorMsgBoxBtnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsErrorMsgBoxOpened = true;
+        }
+    }
+
+    private void HandleWarningMsgBoxBtnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsWarningMsgBoxOpened = true;
+        }
+    }
+
+    private void HandleStyleCaseHostTypeSwitchChanged(object? sender, RoutedEventArgs e)
+    {
+        if (sender is ToggleSwitch toggleSwitch)
+        {
+            if (DataContext is ModalViewModel viewModel)
+            {
+                viewModel.MessageBoxStyleCaseHostType = toggleSwitch.IsChecked == true ? DialogHostType.Window : DialogHostType.Overlay;
+            }
+        }
+    }
+
     private void HandleLoadingDialogOpenModalButtonClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is ModalViewModel viewModel)
@@ -89,7 +160,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             }, TimeSpan.FromMilliseconds(3000));
         }
     }
-    
+
     private void HandleAsyncDialogOpenModalButtonClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is ModalViewModel viewModel)
@@ -97,7 +168,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             viewModel.IsAsyncDialogOpened = true;
         }
     }
-    
+
     private void HandleAsyncDialogButtonClicked(object? sender, DialogButtonClickedEventArgs e)
     {
         if (sender is Dialog dialog && e.SourceButton.Role == DialogButtonRole.AcceptRole)
@@ -120,6 +191,14 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
         }
     }
 
+    private void HandleCustomFooterMsgBoxOpenButtonClick(object? sender, EventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsCustomFooterMsgBoxOpened = true;
+        }
+    }
+
     private void HandleDraggableMsgBoxOpenButtonClick(object? sender, EventArgs e)
     {
         if (DataContext is ModalViewModel viewModel)
@@ -127,7 +206,39 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             viewModel.IsDraggableMsgBoxOpened = true;
         }
     }
-    
+
+    private void HandleDelayedCloseMsgBoxOpenButtonClick(object? sender, EventArgs e)
+    {
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.IsDelayedCloseMsgBoxOpened = true;
+        }
+    }
+
+    private IDisposable? _delayedCloseDialogDisposal;
+
+    private void HandleDelayedCloseMsgBoxOpened(object? sender, EventArgs e)
+    {
+        if (sender is MessageBox messageBox)
+        {
+            if (DataContext is ModalViewModel viewModel)
+            {
+                viewModel.CountdownSeconds = 5;
+                _delayedCloseDialogDisposal?.Dispose();
+                _delayedCloseDialogDisposal = DispatcherTimer.Run(() =>
+                {
+                    if (viewModel.CountdownSeconds == 0)
+                    {
+                        messageBox.Confirm();
+                        return false;
+                    }
+                    viewModel.CountdownSeconds--;
+                    return true;
+                }, TimeSpan.FromMilliseconds(1000));
+            }
+        }
+    }
+
     private void HandleConfigureButtonsDialogButtonClick(object? sender, EventArgs e)
     {
         if (DataContext is ModalViewModel viewModel)
@@ -143,7 +254,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
             button.IsEnabled = false;
         }
     }
-    
+
     private async void HandleOpenOverlayDialogButtonClick(object? sender, RoutedEventArgs e)
     {
         try
@@ -162,7 +273,7 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
                 HorizontalStartupLocation = DialogHorizontalAnchor.Center,
                 VerticalOffset            = new Dimension(30, DimensionUnitType.Percentage),
                 HostMinWidth              = 400,
-                PlacementTarget = OpenOverlayDialogAPIButton
+                PlacementTarget           = OpenOverlayDialogAPIButton
             };
             await Dialog.ShowDialogModalAsync(content, null, options);
         }
@@ -223,6 +334,96 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
 
+    private async void HandleCreateConfirmMessageBox(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            var content = BuildMessageBoxContent();
+            var options = new MessageBoxOptions
+            {
+                Title             = "Do you want to delete these items?",
+                IsDragMovable     = true,
+                IsCenterOnStartup = true,
+                Style             = MessageBoxStyle.Confirm
+            };
+            await MessageBox.ShowMessageModalAsync(content, null, options);
+        }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
+    }
+
+    private async void HandleCreateInformationMessageBox(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            var content = BuildMessageBoxContent();
+            var options = new MessageBoxOptions
+            {
+                Title             = "This is a notification message",
+                IsDragMovable     = true,
+                IsCenterOnStartup = true,
+                Style             = MessageBoxStyle.Information
+            };
+            await MessageBox.ShowMessageModalAsync(content, null, options);
+        }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
+    }
+
+    private async void HandleCreateSuccessMessageBox(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            var content = BuildMessageBoxContent();
+            var options = new MessageBoxOptions
+            {
+                Title             = "Operation successful",
+                IsDragMovable     = true,
+                IsCenterOnStartup = true,
+                Style             = MessageBoxStyle.Success
+            };
+            await MessageBox.ShowMessageModalAsync(content, null, options);
+        }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
+    }
+
+    private async void HandleCreateErrorMessageBox(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            var content = BuildMessageBoxContent();
+            var options = new MessageBoxOptions
+            {
+                Title             = "This is an error message",
+                IsDragMovable     = true,
+                IsCenterOnStartup = true,
+                Style             = MessageBoxStyle.Error
+            };
+            await MessageBox.ShowMessageModalAsync(content, null, options);
+        }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
+    }
+
+    private async void HandleCreateWarningMessageBox(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            var content = BuildMessageBoxContent();
+            var options = new MessageBoxOptions
+            {
+                Title             = "This is a warning message",
+                IsDragMovable     = true,
+                IsCenterOnStartup = true,
+                Style             = MessageBoxStyle.Warning
+            };
+            await MessageBox.ShowMessageModalAsync(content, null, options);
+        }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
+    }
+
     private Control BuildDialogContent()
     {
         var stackPanel = new StackPanel
@@ -241,6 +442,24 @@ public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
         stackPanel.Children.Add(new TextBlock
         {
             Text = "Some contents..."
+        });
+        return stackPanel;
+    }
+
+    private Control BuildMessageBoxContent()
+    {
+        var stackPanel = new StackPanel
+        {
+            Orientation = Orientation.Vertical,
+            Spacing     = 5
+        };
+        stackPanel.Children.Add(new TextBlock
+        {
+            Text = "some messages...some messages..."
+        });
+        stackPanel.Children.Add(new TextBlock
+        {
+            Text = "some messages...some messages..."
         });
         return stackPanel;
     }

@@ -69,7 +69,6 @@ internal class en_US : LanguageProvider
     public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";
     public const string Feedback_Modal = "Modal";
-    public const string Feedback_MessageBox = "MessageBox";
     public const string Feedback_Notification = "Notification";
     public const string Feedback_PopupConfirm = "PopupConfirm";
     public const string Feedback_Drawer = "Drawer";

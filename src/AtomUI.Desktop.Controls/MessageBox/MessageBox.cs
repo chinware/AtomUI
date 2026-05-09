@@ -285,6 +285,13 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     private Dialog? _dialog;
     private MessageBoxContent? _dialogContent;
+    private bool _ignoreIsOpenChanged;
+
+    static MessageBox()
+    {
+        IsOpenProperty.Changed.AddClassHandler<MessageBox>((x, e) =>
+            x.HandleIsOpenChanged((AvaloniaPropertyChangedEventArgs<bool>)e));
+    }
 
     public MessageBox()
     {
@@ -292,15 +299,40 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
 
+    private void HandleIsOpenChanged(AvaloniaPropertyChangedEventArgs<bool> e)
+    {
+        if (_ignoreIsOpenChanged)
+        {
+            return;
+        }
+
+        if (e.NewValue.Value)
+        {
+            Dispatcher.InvokeAsync(() => OpenAsync());
+        }
+        else
+        {
+            Cancel();
+        }
+    }
+
     public object? Open()
     {
         Debug.Assert(_dialog != null);
+        using (BeginIgnoringIsOpen())
+        {
+            SetCurrentValue(IsOpenProperty, true);
+        }
         return _dialog.Open();
     }
 
     public async Task OpenAsync(CancellationToken cancellationToken = default)
     {
         Debug.Assert(_dialog != null);
+        using (BeginIgnoringIsOpen())
+        {
+            SetCurrentValue(IsOpenProperty, true);
+        }
         await _dialog.OpenAsync(cancellationToken);
     }
 
@@ -508,6 +540,10 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     private void HandleDialogClosed(object? sender, EventArgs e)
     {
+        using (BeginIgnoringIsOpen())
+        {
+            SetCurrentValue(IsOpenProperty, false);
+        }
         Closed?.Invoke(this, EventArgs.Empty);
     }
 
@@ -599,6 +635,27 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         }
 
         return new Size();
+    }
+
+    private IgnoreIsOpenScope BeginIgnoringIsOpen()
+    {
+        return new IgnoreIsOpenScope(this);
+    }
+
+    private readonly struct IgnoreIsOpenScope : IDisposable
+    {
+        private readonly MessageBox _owner;
+
+        public IgnoreIsOpenScope(MessageBox owner)
+        {
+            _owner                      = owner;
+            _owner._ignoreIsOpenChanged = true;
+        }
+
+        public void Dispose()
+        {
+            _owner._ignoreIsOpenChanged = false;
+        }
     }
 
     private void HandleCustomButtonsChanged(object? sender, NotifyCollectionChangedEventArgs e)
