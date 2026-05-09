@@ -12,7 +12,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -333,7 +332,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var hOffset            = HorizontalOffset;
         var vOffset            = VerticalOffset;
         var marginToAnchor     = MarginToAnchor;
-
         PopupAnchor anchor;
         PopupGravity gravity;
 
@@ -411,7 +409,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                     }
                 }
             }
-
             var (flipX, flipY) = PopupUtils.ApplyCustomPlacement(
                 placement,
                 requestedPlacement,

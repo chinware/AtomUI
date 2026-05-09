@@ -7,6 +7,7 @@ using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -32,6 +33,14 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         PopupControl.MarginToAnchorProperty.AddOwner<Flyout>();
+
+    /// <summary>
+    /// 如果要启用 AtomUI 的自定义定位功能（MarginToAnchor、箭头、翻转等），
+    /// 请使用该属性而不是 <see cref="PopupFlyoutBase.Placement"/>。
+    /// 为 null 时 Flyout 走 Avalonia 默认定位逻辑。
+    /// </summary>
+    public static readonly StyledProperty<PlacementMode?> RequestedPlacementProperty =
+        PopupControl.RequestedPlacementProperty.AddOwner<Flyout>();
 
     /// <summary>
     /// 箭头是否始终指向中心
@@ -82,6 +91,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     {
         get => GetValue(MarginToAnchorProperty);
         set => SetValue(MarginToAnchorProperty, value);
+    }
+
+    public PlacementMode? RequestedPlacement
+    {
+        get => GetValue(RequestedPlacementProperty);
+        set => SetValue(RequestedPlacementProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -208,7 +223,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
             WindowManagerAddShadowHint = false,
         };
 
-        popup[!PopupControl.RequestedPlacementProperty]     = this[!PlacementProperty];
+        popup[!PopupControl.RequestedPlacementProperty]     = this[!RequestedPlacementProperty];
         popup[!PopupControl.PlacementAnchorProperty]        = this[!PlacementAnchorProperty];
         popup[!PopupControl.PlacementGravityProperty]       = this[!PlacementGravityProperty];
         popup[!PopupControl.PopupRootShadowProperty]        = this[!PopupRootShadowProperty];
@@ -228,7 +243,37 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup.Closed += this.OnPopupClosed;
         popup.AddClosingEventHandler(HandlePopupClosing);
         popup.KeyUp += this.OnPlacementTargetOrPopupKeyUp;
+        popup.PropertyChanged += HandlePopupPropertyChanged;
         return popup;
+    }
+
+    /// <remarks>
+    /// <see cref="PopupFlyoutBase.ShowAtCore"/> 内部的 <c>PositionPopup</c> 会在每次打开时把
+    /// <see cref="AvaloniaPopup.Placement"/> 和 <see cref="AvaloniaPopup.CustomPopupPlacementCallback"/>
+    /// 强制覆盖为 Flyout 侧的值，导致 AtomUI 自定义定位链路失效。这里在 <see cref="RequestedPlacement"/>
+    /// 非空时把 Popup 的相关属性重新拉回 Custom 模式。
+    /// </remarks>
+    private void HandlePopupPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (sender is not PopupControl popup || !RequestedPlacement.HasValue)
+        {
+            return;
+        }
+
+        if (e.Property == AvaloniaPopup.PlacementProperty)
+        {
+            if (e.GetNewValue<PlacementMode>() != PlacementMode.Custom)
+            {
+                popup.Placement = PlacementMode.Custom;
+            }
+        }
+        else if (e.Property == AvaloniaPopup.CustomPopupPlacementCallbackProperty)
+        {
+            if (e.GetNewValue<CustomPopupPlacementCallback?>() != popup.HandleCustomPlacement)
+            {
+                popup.CustomPopupPlacementCallback = popup.HandleCustomPlacement;
+            }
+        }
     }
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)
@@ -267,6 +312,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         base.OnPropertyChanged(change);
         if (change.Property == IsShowArrowProperty ||
             change.Property == PlacementProperty ||
+            change.Property == RequestedPlacementProperty ||
             change.Property == PlacementAnchorProperty ||
             change.Property == PlacementGravityProperty)
         {
@@ -274,6 +320,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         }
 
         if (change.Property == PlacementProperty ||
+            change.Property == RequestedPlacementProperty ||
             change.Property == IsPopupHorizontalFlippedProperty ||
             change.Property == IsPopupVerticalFlippedProperty)
         {
@@ -289,13 +336,15 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         }
         else
         {
-            SetCurrentValue(IsShowArrowEffectiveProperty, PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity));
+            var placement = RequestedPlacement ?? Placement;
+            SetCurrentValue(IsShowArrowEffectiveProperty, PopupUtils.CanEnabledArrow(placement, PlacementAnchor, PlacementGravity));
         }
     }
 
     protected void ConfigureArrowPosition()
     {
-        var arrowPosition = PopupUtils.CalculateArrowPosition(Placement, PlacementAnchor, PlacementGravity);
+        var placement     = RequestedPlacement ?? Placement;
+        var arrowPosition = PopupUtils.CalculateArrowPosition(placement, PlacementAnchor, PlacementGravity);
         if (arrowPosition.HasValue)
         {
             arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, IsPopupHorizontalFlipped, IsPopupVerticalFlipped);

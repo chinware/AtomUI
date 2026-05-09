@@ -48,19 +48,19 @@ internal class TabControlScrollViewer : BaseTabScrollViewer
  
         if (TabStripPlacement == Dock.Top)
         {
-            MenuFlyout.Placement = PlacementMode.BottomEdgeAlignedLeft;
+            MenuFlyout.RequestedPlacement = PlacementMode.BottomEdgeAlignedLeft;
         }
         else if (TabStripPlacement == Dock.Bottom)
         {
-            MenuFlyout.Placement = PlacementMode.TopEdgeAlignedLeft;
+            MenuFlyout.RequestedPlacement = PlacementMode.TopEdgeAlignedLeft;
         }
         else if (TabStripPlacement == Dock.Right)
         {
-            MenuFlyout.Placement = PlacementMode.LeftEdgeAlignedBottom;
+            MenuFlyout.RequestedPlacement = PlacementMode.LeftEdgeAlignedBottom;
         }
         else
         {
-            MenuFlyout.Placement = PlacementMode.RightEdgeAlignedBottom;
+            MenuFlyout.RequestedPlacement = PlacementMode.RightEdgeAlignedBottom;
         }
 
         // 收集没有完全显示的 Tab 列表
