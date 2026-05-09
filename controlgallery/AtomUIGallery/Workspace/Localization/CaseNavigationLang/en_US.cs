@@ -65,6 +65,7 @@ internal class en_US : LanguageProvider
     public const string DataDisplay_TreeView = "TreeView";
     public const string DataDisplay_Tour = "Tour";
     public const string DataDisplay_DataGrid = "DataGrid";
+    public const string DataDisplay_Tooltip = "Tooltip";
     public const string Feedback = "Feedback";
     public const string Feedback_Alert = "Alert";
     public const string Feedback_Message = "Message";

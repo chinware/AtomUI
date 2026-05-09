@@ -34,28 +34,6 @@
                                                 Footer="{TemplateBinding SourceViewFooter}"
                                                 FooterTemplate="{TemplateBinding SourceViewFooterTemplate}"
                                                 ItemTemplate="{TemplateBinding ItemTemplate}" />
-                    <StackPanel Name="ActionsLayout"
-                                Orientation="Vertical"
-                                VerticalAlignment="Center"
-                                Grid.Row="0"
-                                Grid.Column="1">
-                        <atom:Button Name="ToTargetButton" ButtonType="Primary"
-                                     Icon="{TemplateBinding ToTargetTransferIcon}"
-                                     SizeType="Small"
-                                     IsEnabled="{Binding #SourceDecoratorView.HasSelected}"
-                                     Tag="{x:Static atom:TransferDirection.ToTarget}"
-                                     Content="{TemplateBinding ToTargetButtonText}"
-                                     HorizontalAlignment="Stretch" />
-                        <atom:Button Name="ToSourceButton"
-                                     ButtonType="Primary"
-                                     Tag="{x:Static atom:TransferDirection.ToSource}"
-                                     Icon="{TemplateBinding ToSourceTransferIcon}"
-                                     SizeType="Small"
-                                     IsEnabled="{Binding #TargetDecoratorView.HasSelected}"
-                                     Content="{TemplateBinding ToSourceButtonText}"
-                                     HorizontalAlignment="Stretch"
-                                     IsVisible="{TemplateBinding IsOneWay, Converter={x:Static BoolConverters.Not}}" />
-                    </StackPanel>
                     <atom:TransferItemDecorator Name="TargetDecoratorView"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
@@ -79,6 +57,28 @@
                                                 ItemTemplate="{TemplateBinding ItemTemplate}">
                         <atom:TransferListView/>
                     </atom:TransferItemDecorator>
+                    <StackPanel Name="ActionsLayout"
+                                Orientation="Vertical"
+                                VerticalAlignment="Center"
+                                Grid.Row="0"
+                                Grid.Column="1">
+                        <atom:Button Name="ToTargetButton" ButtonType="Primary"
+                                     Icon="{TemplateBinding ToTargetTransferIcon}"
+                                     SizeType="Small"
+                                     IsEnabled="{Binding #SourceDecoratorView.HasSelected}"
+                                     Tag="{x:Static atom:TransferDirection.ToTarget}"
+                                     Content="{TemplateBinding ToTargetButtonText}"
+                                     HorizontalAlignment="Stretch" />
+                        <atom:Button Name="ToSourceButton"
+                                     ButtonType="Primary"
+                                     Tag="{x:Static atom:TransferDirection.ToSource}"
+                                     Icon="{TemplateBinding ToSourceTransferIcon}"
+                                     SizeType="Small"
+                                     IsEnabled="{Binding #TargetDecoratorView.HasSelected}"
+                                     Content="{TemplateBinding ToSourceButtonText}"
+                                     HorizontalAlignment="Stretch"
+                                     IsVisible="{TemplateBinding IsOneWay, Converter={x:Static BoolConverters.Not}}" />
+                    </StackPanel>
                 </Grid>
             </ControlTemplate>
         </Setter>

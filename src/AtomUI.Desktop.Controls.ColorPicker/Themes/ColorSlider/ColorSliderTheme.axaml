@@ -9,17 +9,6 @@
                 <Border CornerRadius="{TemplateBinding CornerRadius}"
                         Margin="{TemplateBinding Padding}">
                     <Panel>
-                        <Border HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center"
-                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                Background="{TemplateBinding TransparentBgBrush}" />
-                        <Border HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center"
-                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                BoxShadow="{atom:ColorPickerTokenResource ColorPickerInsetShadow}" />
                         <atom:ColorPickerSliderTrack Name="PART_Track"
                                                      Height="{atom:ColorPickerTokenResource ColorPickerSliderTrackSize}"
                                                      HorizontalAlignment="Stretch"
@@ -64,6 +53,17 @@
                                                    DataContext="{TemplateBinding Value}"
                                                    ColorValueBrush="{TemplateBinding ThumbColorValueBrush}" />
                         </atom:ColorPickerSliderTrack>
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Background="{TemplateBinding TransparentBgBrush}" />
+                        <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                Height="{Binding ElementName=PART_Track, Path=Bounds.Height}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BoxShadow="{atom:ColorPickerTokenResource ColorPickerInsetShadow}" />
                     </Panel>
                 </Border>
             </ControlTemplate>

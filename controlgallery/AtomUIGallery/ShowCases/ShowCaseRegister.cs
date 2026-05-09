@@ -72,5 +72,6 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<TreeViewViewModel, TreeViewShowCase>(() => new TreeViewShowCase());
         locator.Map<TourViewModel, TourShowCase>(() => new TourShowCase());
         locator.Map<DataGridViewModel, DataGridShowCase>(() => new DataGridShowCase());
+        locator.Map<TooltipViewModel, TooltipShowCase>(() => new TooltipShowCase());
     }
 }

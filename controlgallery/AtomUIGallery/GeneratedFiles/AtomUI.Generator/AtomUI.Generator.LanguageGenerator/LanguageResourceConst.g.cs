@@ -24,6 +24,7 @@ namespace AtomUIGallery.Localization
         DataDisplay_Statistic,
         DataDisplay_Tag,
         DataDisplay_Timeline,
+        DataDisplay_Tooltip,
         DataDisplay_Tour,
         DataDisplay_TreeView,
         DataEntry,
