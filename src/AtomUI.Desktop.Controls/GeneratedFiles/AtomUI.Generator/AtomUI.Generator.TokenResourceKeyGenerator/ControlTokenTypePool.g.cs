@@ -34,6 +34,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.FloatButtonToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.FlyoutHostToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.GroupBoxToken));
+            tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ImagePreviewerToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.LineEditToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ListBoxToken));
             tokenTypes.Add(typeof(AtomUI.Desktop.Controls.ListViewToken));

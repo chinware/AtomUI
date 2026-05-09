@@ -31,7 +31,7 @@
         <!-- <ResourceInclude Source="Form/Themes/FormThemes.axaml" /> -->
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="HeaderedContentControl/Themes/HeaderedContentControlTheme.axaml" />
-        <!-- <ResourceInclude Source="ImagePreviewer/Themes/ImagePreviewerThemes.axaml" /> -->
+        <ResourceInclude Source="ImagePreviewer/Themes/ImagePreviewerThemes.axaml" />
         <ResourceInclude Source="Input/Themes/InputThemes.axaml" />
         <ResourceInclude Source="ListView/Themes/ListViewThemes.axaml" />
         <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />

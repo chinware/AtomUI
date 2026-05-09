@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="ImageViewerTheme.axaml"/>
+        <ResourceInclude Source="ImagePreviewFloatToolbarTheme.axaml"/>
+        <ResourceInclude Source="ImagePreviewToolbarTheme.axaml"/>
+        <ResourceInclude Source="ImagePreviewNavButtonTheme.axaml"/>
+        <ResourceInclude Source="ImageGroupPreviewerTheme.axaml"/>
+        <ResourceInclude Source="ImagePreviewerTheme.axaml"/>
+        <ResourceInclude Source="ImagePreviewerCoverTheme.axaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <atom:ImagePreviewerTitleBarTheme x:Key="{x:Type atom:ImagePreviewerTitleBar}"
+                                        TargetType="atom:ImagePreviewerTitleBar" />
+    <atom:ImagePreviewerDialogTheme x:Key="{x:Type atom:ImagePreviewerDialog}"
+                                    TargetType="atom:ImagePreviewerDialog" />
+</ResourceDictionary>

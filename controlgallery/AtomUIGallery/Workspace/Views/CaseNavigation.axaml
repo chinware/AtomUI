@@ -109,6 +109,8 @@
                               ItemKey="{x:Static viewmodels:EmptyViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Expander}"
                               ItemKey="{x:Static viewmodels:ExpanderViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_ImagePreviewer}"
+                              ItemKey="{x:Static viewmodels:ImagePreviewerViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Tag}"
                               ItemKey="{x:Static viewmodels:TagViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataDisplay_Segmented}"

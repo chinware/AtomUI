@@ -214,14 +214,24 @@ Desktop and Mobile controls typically inherit from abstract base classes in `Ato
 
 **Why:** Breaking changes in the base class affect all platform-specific implementations. Missing base class issues leads to runtime bugs (e.g., `RawInputEventArgs.Root` comparison failures) that are hard to trace back to the migration.
 
-### 12. Verify Avalonia API from reference source, not assembly metadata
+### 12. Verify API from local reference source, not assembly metadata
 
-When you need to check whether an Avalonia 12 API exists, what properties/methods a type exposes, or how a type is defined, look up the source code in `.referenceprojects/Avalonia/src` first. This is the local checkout of the exact Avalonia version used by the project. Do NOT attempt to decompile NuGet assemblies, parse `strings` output, or guess API shapes. The source is authoritative and always available.
+When you need to check whether an API exists, what properties/methods a type exposes, or how a type is defined, look up the source code under `.referenceprojects/` **first**. These are local checkouts of the exact versions used by the project. Do NOT attempt to decompile NuGet assemblies, parse `strings` output, or guess API shapes. Source is authoritative and always available.
+
+Available reference repositories:
+
+- `.referenceprojects/Avalonia/src` — Avalonia 12 core (`Avalonia.Base` / `Avalonia.Controls` / `Avalonia.Themes.Fluent` / `Avalonia.Skia` / platform backends). Use for all Avalonia 11→12 breaking-change verification, accessibility checks (`public` / `[PrivateApi]` / `internal`), template slot names, default property values.
+- `.referenceprojects/Avalonia.Controls.DataGrid` — Avalonia official DataGrid. Use when AtomUI's DataGrid derives from or aligns with upstream behavior.
+- `.referenceprojects/Svg.Skia/src/Svg.Controls.Avalonia` — `Svg.Controls.Avalonia` package source (the `Avalonia.Svg.Svg` control, `AvaloniaPicture`, `SvgSource`, etc.). Use when touching `atom:ImagePreviewer`, `atom:Empty`, `atom:Result` or anywhere SVG is rendered.
+- `.referenceprojects/avalonia-docs` — Avalonia official docs (`api/`, `api_versioned_docs/`). Use for conceptual/migration prose, API usage examples, and cross-version comparisons before confirming details in the code tree above.
 
 Examples:
-- Check if `TextOptions` has a `TextRenderingModeProperty`: search in `.referenceprojects/Avalonia/src/Avalonia.Base` or `Avalonia.Controls`
-- Check if `IInputManager` is still public: read the interface definition from source
-- Check constructor signatures, property names, or method overloads: read the source file directly
+- Check if `TextOptions` has a `TextRenderingModeProperty`: `rg` in `.referenceprojects/Avalonia/src/Avalonia.Base` and `Avalonia.Controls`
+- Check if `IInputManager` is still public: read the interface definition in `.referenceprojects/Avalonia/src`
+- Check what `Avalonia.Svg.Svg` exposes in 12.0.0.5: `.referenceprojects/Svg.Skia/src/Svg.Controls.Avalonia/Svg.cs` (e.g. `Model` is `SKPicture?`, there is no `GetSKPicture()`)
+- Check DataGrid column internals: `.referenceprojects/Avalonia.Controls.DataGrid`
+
+**Rule:** Before making any claim like "API X was removed" / "method Y is internal" / "property Z exists", grep one of these four trees. If you haven't looked at the source, don't speculate — reflect reading NuGet metadata is lossy and has already caused incorrect conclusions (e.g. claiming `Avalonia.Svg.Svg` didn't exist when it very much does).
 
 ### 13. Token definitions and language packs are copy-only
 
@@ -529,7 +539,7 @@ dotnet build src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
 ```
 
 **If build fails multiple times:**
-- Review the Avalonia 12 reference source in `.referenceprojects/Avalonia/src`
+- Review the local reference source under `.referenceprojects/` (see Rule 12 for the full list: `Avalonia/src`, `Avalonia.Controls.DataGrid`, `Svg.Skia/src/Svg.Controls.Avalonia`, `avalonia-docs`)
 - Check if the API you're using actually exists in Avalonia 12
 - Verify the correct namespace and assembly
 - Consider whether reflection/extraction is needed for internal APIs

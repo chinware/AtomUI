@@ -1,0 +1,41 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    xmlns:imagepreviewlang="using:AtomUI.Desktop.Controls.ImagePreviewerLang"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ImagePreviewer}" TargetType="atom:ImagePreviewer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <atom:ImagePreviewerCover ImageSource="{TemplateBinding EffectiveCoverImage}"
+                                              Content="{TemplateBinding CoverIndicatorContent}"
+                                              ContentTemplate="{TemplateBinding CoverIndicatorContentTemplate}"
+                                              IsShowCoverMask="{TemplateBinding IsShowCoverMask}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        
+        <Setter Property="CoverIndicatorContentTemplate">
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="{atom:SharedTokenResource SpacingXXS}">
+                    <antdicons:EyeOutlined StrokeBrush="{atom:SharedTokenResource ColorTextLightSolid}"/>
+                    <TextBlock
+                        Text="{atom:ImagePreviewerLangResource Preview}" />
+                </StackPanel>
+            </DataTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

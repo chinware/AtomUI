@@ -442,6 +442,24 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         VerticalMarginInline
     }
 
+    public enum ImagePreviewerTokenKind
+    {
+        CoverImageWidth,
+        DialogMinHeight,
+        DialogMinWidth,
+        FloatToolbarIndicatorPadding,
+        FloatToolbarPadding,
+        ImagePreviewSwitchSize,
+        MaskBgColor,
+        NavButtonBgColor,
+        NavButtonBgHoverColor,
+        PreviewOperationColor,
+        PreviewOperationColorDisabled,
+        PreviewOperationHoverColor,
+        PreviewOperationSize,
+        TitleBarBackgroundColor
+    }
+
     public enum LineEditTokenKind
     {
         InputFontSize,
@@ -1522,6 +1540,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public GroupBoxTokenResourceExtension(GroupBoxTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class ImagePreviewerTokenResourceExtension : TokenResourceExtension<ImagePreviewerTokenKind>
+    {
+        public ImagePreviewerTokenResourceExtension()
+        {
+        }
+
+        public ImagePreviewerTokenResourceExtension(ImagePreviewerTokenKind kind) : base(kind)
         {
         }
     }

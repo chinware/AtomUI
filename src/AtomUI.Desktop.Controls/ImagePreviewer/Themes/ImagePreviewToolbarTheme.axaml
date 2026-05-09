@@ -1,0 +1,78 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:ImagePreviewToolbar}" TargetType="atom:ImagePreviewToolbar">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Name="RootLayout">
+                    <atom:IconButton Name="PART_PreviousButton"
+                                     Icon="{antdicons:AntDesignIconProvider ArrowLeftOutlined}"
+                                     IsVisible="{TemplateBinding IsMultiImages}"
+                                     IsEnabled="{TemplateBinding IsFirstImage, Converter={x:Static BoolConverters.Not}}"/>
+                    <atom:IconButton Name="PART_NextButton"
+                                     Icon="{antdicons:AntDesignIconProvider ArrowRightOutlined}"
+                                     IsVisible="{TemplateBinding IsMultiImages}"
+                                     IsEnabled="{TemplateBinding IsLastImage, Converter={x:Static BoolConverters.Not}}"/>
+                    <atom:IconButton Name="PART_ScaleDownButton"
+                                     Icon="{antdicons:AntDesignIconProvider ZoomOutOutlined}"
+                                     IsEnabled="{TemplateBinding IsScaleDownEnabled}" />
+                    <atom:IconButton Name="PART_ScaleUpButton"
+                                     Icon="{antdicons:AntDesignIconProvider ZoomInOutlined}"
+                                     IsEnabled="{TemplateBinding IsScaleUpEnabled}" />
+                    <atom:ToggleIconButton Name="PART_FitToWindowButton"
+                                           CheckedIcon="{antdicons:AntDesignIconProvider FitToWindowOutlined}"
+                                           UnCheckedIcon="{antdicons:AntDesignIconProvider OneToOneOutlined}"
+                                           IsChecked="{TemplateBinding IsImageFitToWindow}"/>
+                    <atom:IconButton Name="PART_HorizontalFlipButton"
+                                     Icon="{antdicons:AntDesignIconProvider SwapOutlined}" />
+                    <atom:IconButton Name="PART_VerticalFlipButton"
+                                     Icon="{antdicons:AntDesignIconProvider SwapOutlined}"
+                                     RenderTransform="rotate(90deg)" />
+                    <atom:IconButton Name="PART_RotateLeftButton"
+                                     Icon="{antdicons:AntDesignIconProvider RotateLeftOutlined}" />
+                    <atom:IconButton Name="PART_RotateRightButton"
+                                     Icon="{antdicons:AntDesignIconProvider RotateRightOutlined}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="IsPassthroughMouseEvent" Value="False" />
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|ToggleIconButton">
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton:pointerover">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|ToggleIconButton:pointerover">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextHover}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|IconButton:pressed">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}" />
+        </Style>
+
+        <Style Selector="^ /template/ atom|ToggleIconButton:pressed">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgTextActive}" />
+        </Style>
+
+        <Style Selector="^ /template/ StackPanel#RootLayout">
+            <Setter Property="Spacing" Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

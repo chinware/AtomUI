@@ -1,0 +1,10 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              TargetType="atom:ImagePreviewerTitleBar"
+              x:Class="AtomUI.Desktop.Controls.Themes.ImagePreviewerTitleBarTheme"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <atom:WindowTitleBarTheme TargetType="atom:ImagePreviewerTitleBar" />
+    </ControlTheme.BasedOn>
+</ControlTheme>

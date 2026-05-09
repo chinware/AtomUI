@@ -1,0 +1,28 @@
+<ControlTheme xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atom="https://atomui.net"
+              TargetType="atom:ImagePreviewerDialog"
+              x:Class="AtomUI.Desktop.Controls.Themes.ImagePreviewerDialogTheme"
+              x:ClassModifier="internal">
+    <ControlTheme.BasedOn>
+        <atom:WindowTheme TargetType="atom:ImagePreviewerDialog" />
+    </ControlTheme.BasedOn>
+
+    <Setter Property="SizeToContent" Value="Manual" />
+    <Setter Property="CanResize" Value="True" />
+    <Setter Property="CanMaximize" Value="True" />
+    <Setter Property="CanMinimize" Value="True" />
+    <Setter Property="IsMoveEnabled" Value="True" />
+    <Setter Property="WindowStartupLocation" Value="CenterOwner" />
+    <Setter Property="IsFullScreenCaptionButtonVisible" Value="False" />
+    <Setter Property="IsPinCaptionButtonVisible" Value="False" />
+    <Setter Property="MinWidth" Value="{atom:ImagePreviewerTokenResource DialogMinWidth}" />
+    <Setter Property="MinHeight" Value="{atom:ImagePreviewerTokenResource DialogMinHeight}" />
+    <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgLayout}" />
+    <Setter Property="TitleBarFrameBackground"
+            Value="{atom:ImagePreviewerTokenResource TitleBarBackgroundColor}" />
+
+    <Style Selector="^ /template/ atom|ImagePreviewNavButton">
+        <Setter Property="Margin" Value="{atom:SharedTokenResource MarginXS}" />
+    </Style>
+</ControlTheme>

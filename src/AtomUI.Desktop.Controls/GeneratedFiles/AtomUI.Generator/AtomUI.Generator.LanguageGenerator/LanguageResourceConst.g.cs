@@ -60,6 +60,25 @@ namespace AtomUI.Desktop.Controls.Localization
 
 namespace AtomUI.Desktop.Controls.Localization
 {
+    public enum ImagePreviewerLangResourceKind
+    {
+        Preview
+    }
+
+    public class ImagePreviewerLangResourceExtension : LanguageResourceExtension<ImagePreviewerLangResourceKind>
+    {
+        public ImagePreviewerLangResourceExtension()
+        {
+        }
+
+        public ImagePreviewerLangResourceExtension(ImagePreviewerLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUI.Desktop.Controls.Localization
+{
     public enum PaginationLangResourceKind
     {
         JumpToText,
