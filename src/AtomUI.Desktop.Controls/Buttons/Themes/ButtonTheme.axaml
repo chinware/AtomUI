@@ -548,7 +548,7 @@
             <Style Selector="^:not(:disabled)">
                 <Setter Property="Foreground" Value="{atom:ButtonTokenResource PrimaryColor}" />
                 <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
-                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}" />
 
                 <Style Selector="^:pointerover">
                     <Setter Property="Background"
