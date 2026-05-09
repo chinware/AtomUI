@@ -11,7 +11,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 

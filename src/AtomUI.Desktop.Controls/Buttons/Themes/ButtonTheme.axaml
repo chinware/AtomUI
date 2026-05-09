@@ -109,17 +109,20 @@
         </Style>
 
         <!-- 公用样式开始 -->
-        
+
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>
-                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}"/>
-                    <atom:SolidColorBrushTransition Property="Foreground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}"/>
-                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}"/>
+                    <atom:SolidColorBrushTransition Property="Background"
+                                                    Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Foreground"
+                                                    Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="BorderBrush"
+                                                    Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                 </Transitions>
             </Setter>
         </Style>
-        
+
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -532,11 +535,21 @@
 
         <!-- 主按钮样式开始 -->
         <Style Selector="^[ButtonType=Primary]">
+            <Style Selector="^[IsMotionEnabled=True]">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <atom:SolidColorBrushTransition Property="Background"
+                                                        Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                        <atom:SolidColorBrushTransition Property="Foreground"
+                                                        Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    </Transitions>
+                </Setter>
+            </Style>
             <Style Selector="^:not(:disabled)">
                 <Setter Property="Foreground" Value="{atom:ButtonTokenResource PrimaryColor}" />
                 <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
-                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource Self}}" />
-                
+                <Setter Property="BorderBrush" Value="Transparent" />
+
                 <Style Selector="^:pointerover">
                     <Setter Property="Background"
                             Value="{atom:SharedTokenResource ColorPrimaryHover}" />
@@ -544,7 +557,7 @@
 
                 <Style Selector="^:pressed">
                     <Setter Property="Background"
-                            Value="{atom:SharedTokenResource ColorPrimaryActive}" /> 
+                            Value="{atom:SharedTokenResource ColorPrimaryActive}" />
                 </Style>
 
                 <Style Selector="^:danger">
@@ -603,9 +616,6 @@
                                     Value="{atom:SharedTokenResource ColorErrorActive}" />
                         </Style>
                     </Style>
-                </Style>
-                <Style Selector="^[IsGhost=False]">
-                    <Setter Property="BorderThickness" Value="0" />
                 </Style>
             </Style>
 
