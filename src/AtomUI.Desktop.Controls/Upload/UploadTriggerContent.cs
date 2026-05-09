@@ -1,8 +1,8 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Desktop.Controls.Utils;
+using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -86,7 +86,7 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
             {
                 if (mouseEventArgs.Type == RawPointerEventType.LeftButtonDown)
                 {
-                    if (mouseEventArgs.GetInputRoot() == TopLevel.GetTopLevel(this) && IsMousePointValid(mouseEventArgs))
+                    if (mouseEventArgs.Root.GetRootElement() == this.GetVisualRoot() && IsMousePointValid(mouseEventArgs))
                     {
                         _latestClickEventArgs = mouseEventArgs;
                     }
@@ -112,7 +112,7 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
         }
 
         var scaling          = TopLevelUtils.GetDesktopScaling(this);
-        var pointRoot        = args.Root as Control;
+        var pointRoot        = args.Root.GetRootElement() as Control;
         var localPoint       = pointRoot?.PointToScreen(args.Position) ?? default;
         var offset           = _trigger.Child.PointToScreen(new Point(0, 0));
         var constraintBounds = new Rect(new Point(offset.X, offset.Y), _trigger.Child.Bounds.Size * scaling);
@@ -158,7 +158,7 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _trigger = e.NameScope.Find<ContentPresenter>(UploadTriggerContentThemeConstants.TriggerPart);
+        _trigger = e.NameScope.Find<ContentPresenter>("PART_Trigger");
     }
 
     protected override void OnInitialized()
@@ -170,6 +170,6 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
+        Dispatcher.Post(this.EnableTransitions);
     }
 }

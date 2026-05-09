@@ -44,6 +44,7 @@ namespace AtomUIGallery.Localization
         DataEntry_TimePicker,
         DataEntry_ToggleSwitch,
         DataEntry_TreeSelect,
+        DataEntry_Upload,
         Feedback,
         Feedback_Alert,
         Feedback_Drawer,

@@ -75,7 +75,7 @@
         <ResourceInclude Source="TreeSelect/Themes/TreeSelectThemes.axaml" />
         <!-- <ResourceInclude Source="Transfer/Themes/TransferThemes.axaml" /> -->
         <ResourceInclude Source="Tour/Themes/TourThemes.axaml" />
-        <!-- <ResourceInclude Source="Upload/Themes/UploadThemes.axaml" /> -->
+        <ResourceInclude Source="Upload/Themes/UploadThemes.axaml" />
         <ResourceInclude Source="Window/Themes/WindowThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

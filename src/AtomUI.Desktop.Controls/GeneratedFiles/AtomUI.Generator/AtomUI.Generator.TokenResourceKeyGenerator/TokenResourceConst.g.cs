@@ -1218,6 +1218,20 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TreeNodeSwitcherMargin
     }
 
+    public enum UploadTokenKind
+    {
+        ActionsColor,
+        DragHeaderMargin,
+        DragIconMargin,
+        DragIconSize,
+        PictureCardSize,
+        PictureListItemMargin,
+        PictureListPreviewerSize,
+        TextListItemMargin,
+        TextListNamePadding,
+        UploadThumbnailSize
+    }
+
     public enum WindowTitleBarTokenKind
     {
         ActiveBgColor,
@@ -2035,6 +2049,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public TreeViewTokenResourceExtension(TreeViewTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class UploadTokenResourceExtension : TokenResourceExtension<UploadTokenKind>
+    {
+        public UploadTokenResourceExtension()
+        {
+        }
+
+        public UploadTokenResourceExtension(UploadTokenKind kind) : base(kind)
         {
         }
     }

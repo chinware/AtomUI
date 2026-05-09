@@ -135,7 +135,7 @@ public abstract class AbstractScrollViewer : AvaloniaScrollViewer, IMotionAwareC
     {
         if (e is RawPointerEventArgs mouseEventArgs)
         {
-            if (mouseEventArgs.Root.GetRootElement() != TopLevel.GetTopLevel(this) || Classes.Contains(StdPseudoClass.Disabled))
+            if (mouseEventArgs.Root.GetRootElement() != this.GetVisualRoot() || Classes.Contains(StdPseudoClass.Disabled))
             {
                 return;
             }

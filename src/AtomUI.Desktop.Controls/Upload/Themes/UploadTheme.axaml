@@ -9,7 +9,7 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <DockPanel Name="RootLayout" LastChildFill="True">
-                        <atom:UploadTriggerContent Name="{x:Static atom:UploadThemeConstants.TriggerContentPart}"
+                        <atom:UploadTriggerContent Name="PART_TriggerContent"
                                                    DockPanel.Dock="Top"
                                                    Content="{TemplateBinding Content}"
                                                    ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -18,7 +18,7 @@
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                    ListType="{TemplateBinding ListType}"
                                                    IsVisible="{TemplateBinding IsShowUploadTrigger}" />
-                        <atom:UploadList Name="{x:Static atom:UploadThemeConstants.UploadListPart}"
+                        <atom:UploadList Name="PART_UploadList"
                                          ListType="{TemplateBinding ListType}"
                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                          IsVisible="{TemplateBinding IsShowUploadList}" 
@@ -31,7 +31,7 @@
         <Style Selector="^[ListType=PictureCard], ^[ListType=PictureCircle]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <atom:UploadPictureShapeList Name="{x:Static atom:UploadThemeConstants.UploadListPart}"
+                    <atom:UploadPictureShapeList Name="PART_UploadList"
                                                  ListType="{TemplateBinding ListType}"
                                                  IsShowUploadTrigger="{TemplateBinding IsShowUploadTrigger}"
                                                  IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

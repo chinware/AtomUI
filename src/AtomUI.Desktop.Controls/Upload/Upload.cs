@@ -207,7 +207,7 @@ public class Upload : ContentControl,
     {
         AbstractUploadListItem.TaskRemoveRequestEvent.AddClassHandler<Upload>((upload, args) =>
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            upload.Dispatcher.InvokeAsync(async () =>
             {
                 await upload.HandleUploadTaskRemoveRequestAsync(args.TaskId);
             });
@@ -218,7 +218,7 @@ public class Upload : ContentControl,
         });
         UploadDefaultDropArea.FilesDroppedEvent.AddClassHandler<Upload>((upload, args) =>
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            upload.Dispatcher.InvokeAsync(async () =>
             {
                 await upload.EnqueueUploadFiles(args.Files);
             });
@@ -263,7 +263,7 @@ public class Upload : ContentControl,
                 throw new InvalidOperationException("Can't open storage provider");
             }
 
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 if (IsUploadDirectoryEnabled)
                 {
@@ -469,7 +469,7 @@ public class Upload : ContentControl,
         {
             if (UploadTransport != null)
             {
-                Dispatcher.UIThread.InvokeAsync(async () =>
+                Dispatcher.InvokeAsync(async () =>
                 {
                    await _uploadScheduler.SetTransportAsync(UploadTransport);
                 });
@@ -477,7 +477,7 @@ public class Upload : ContentControl,
         }
         else if (change.Property == MaxConcurrentTasksProperty)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            Dispatcher.InvokeAsync(async () =>
             {
                 await _uploadScheduler.SetMaxConcurrentTasksAsync(MaxConcurrentTasks);
             });
@@ -514,7 +514,7 @@ public class Upload : ContentControl,
             }
             else
             {
-                await Dispatcher.UIThread.InvokeAsync(async () =>
+                await Dispatcher.InvokeAsync(async () =>
                 {
                     await _uploadScheduler.CancelUploadAsync(taskInfo.UploadTask);
                     TaskInfoList.Remove(taskInfo);
@@ -533,7 +533,7 @@ public class Upload : ContentControl,
 
     public void Reset()
     {
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.InvokeAsync(async () =>
         {
             await CancelAllUploadTaskAsync();
         });
@@ -552,7 +552,7 @@ public class Upload : ContentControl,
             }
             else
             {
-                await Dispatcher.UIThread.InvokeAsync(async () =>
+                await Dispatcher.InvokeAsync(async () =>
                 {
                     await _uploadScheduler.CancelUploadAsync(taskInfo.UploadTask);
                     _allTaskList.Remove(taskInfo);

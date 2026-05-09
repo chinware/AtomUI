@@ -17,7 +17,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True" Name="ContentLayout">
-                        <atom:UploadImagePreviewer Name="{x:Static atom:UploadThemeConstants.ImagePreviewerPart}"
+                        <atom:UploadImagePreviewer Name="PART_ImagePreviewer"
                                                    IsShowCoverMask="False"
                                                    DockPanel.Dock="Left"
                                                    ItemsSource="{TemplateBinding Sources}"
@@ -26,7 +26,7 @@
                                          DockPanel.Dock="Right"
                                          VerticalAlignment="Center"
                                          Tag="{x:Static atom:UploadListActions.Remove}" />
-                        <atom:HyperLinkTextBlock Name="{x:Static atom:UploadThemeConstants.FileNamePart}"
+                        <atom:HyperLinkTextBlock Name="PART_FileName"
                                                  Text="{TemplateBinding FileName}"
                                                  VerticalAlignment="Center"
                                                  TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />

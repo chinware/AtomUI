@@ -186,3 +186,24 @@ namespace AtomUI.Desktop.Controls.Localization
         }
     }
 }
+
+namespace AtomUI.Desktop.Controls.Localization
+{
+    public enum UploadLangResourceKind
+    {
+        DragUploadHead,
+        Pending,
+        Uploading
+    }
+
+    public class UploadLangResourceExtension : LanguageResourceExtension<UploadLangResourceKind>
+    {
+        public UploadLangResourceExtension()
+        {
+        }
+
+        public UploadLangResourceExtension(UploadLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}

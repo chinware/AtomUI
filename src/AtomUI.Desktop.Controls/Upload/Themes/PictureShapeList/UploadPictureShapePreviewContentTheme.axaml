@@ -18,7 +18,7 @@
                         Padding="{TemplateBinding Padding}">
                     <Border Name="ContentFrame" ClipToBounds="True">
                         <Panel>
-                            <atom:UploadImagePreviewer Name="{x:Static atom:UploadThemeConstants.ImagePreviewerPart}"
+                            <atom:UploadImagePreviewer Name="PART_ImagePreviewer"
                                                        IsShowCoverMask="False"
                                                        HorizontalAlignment="Stretch"
                                                        VerticalAlignment="Stretch"

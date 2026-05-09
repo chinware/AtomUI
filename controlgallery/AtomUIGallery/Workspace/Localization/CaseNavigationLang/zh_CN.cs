@@ -44,6 +44,7 @@ internal class zh_CN : LanguageProvider
     public const string DataEntry_NumberUpDown = "NumberUpDown 数字输入框";
     public const string DataEntry_TimePicker = "TimePicker 时间选择框";
     public const string DataEntry_DatePicker = "DatePicker 日期选择框";
+    public const string DataEntry_Upload = "Upload 上传";
     public const string DataDisplay = "数据展示";
     public const string DataDisplay_Avatar = "Avatar 头像";
     public const string DataDisplay_Calendar = "Calendar 日历";

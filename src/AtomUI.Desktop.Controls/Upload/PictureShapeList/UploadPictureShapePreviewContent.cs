@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -58,6 +57,6 @@ internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _uploadImagePreviewer = e.NameScope.Find<UploadImagePreviewer>(UploadThemeConstants.ImagePreviewerPart);
+        _uploadImagePreviewer = e.NameScope.Find<UploadImagePreviewer>("PART_ImagePreviewer");
     }
 }
