@@ -58,7 +58,7 @@
         </Style>
 
         <Setter Property="ItemTemplate">
-            <DataTemplate>
+            <DataTemplate x:DataType="x:String">
                 <atom:TextBlock Text="{Binding}" />
             </DataTemplate>
         </Setter>

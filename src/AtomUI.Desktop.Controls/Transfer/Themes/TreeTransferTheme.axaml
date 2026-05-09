@@ -12,7 +12,7 @@
             <ControlTemplate TargetType="atom:TreeTransfer">
                 <Grid Name="RootLayout"
                       RowDefinitions="Auto">
-                    <atom:TransferItemDecorator Name="SourceDecoratorView"
+                    <atom:TransferItemDecorator x:Name="SourceDecoratorView"
                                                 Content="{TemplateBinding SourceView}"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
@@ -34,7 +34,7 @@
                                                 Footer="{TemplateBinding SourceViewFooter}"
                                                 FooterTemplate="{TemplateBinding SourceViewFooterTemplate}"
                                                 ItemTemplate="{TemplateBinding ItemTemplate}" />
-                    <atom:TransferItemDecorator Name="TargetDecoratorView"
+                    <atom:TransferItemDecorator x:Name="TargetDecoratorView"
                                                 HorizontalAlignment="Left"
                                                 Grid.Row="0"
                                                 Grid.Column="2"

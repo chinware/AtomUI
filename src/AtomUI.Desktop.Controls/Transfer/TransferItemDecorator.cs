@@ -219,7 +219,6 @@ internal class TransferItemDecorator : TemplatedControl,
         AvaloniaProperty.RegisterDirect<TransferItemDecorator, bool>(nameof(HasSelected),
             o => o.HasSelected,
             (o, v) => o.HasSelected = v);
-    
     internal static readonly DirectProperty<TransferItemDecorator, int> ItemCountProperty =
         AvaloniaProperty.RegisterDirect<TransferItemDecorator, int>(nameof(ItemCount),
             o => o.ItemCount,

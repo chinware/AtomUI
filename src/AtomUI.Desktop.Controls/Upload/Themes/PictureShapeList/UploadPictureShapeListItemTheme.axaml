@@ -62,7 +62,7 @@
 
         <Style Selector="^[Status=Cancelled], ^[Status=Failed]">
             <Style Selector="^:pointerover">
-                <Setter Property="atom:ToolTip.Tip" Value="{Binding ErrorMessage, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="atom:ToolTip.Tip" Value="{Binding (atom:UploadPictureShapeListItem).ErrorMessage, RelativeSource={RelativeSource Self}}" />
                 <Setter Property="atom:ToolTip.Placement" Value="Top" />
             </Style>
         </Style>

@@ -156,7 +156,7 @@
             <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Small]">
                 <Style Selector="^ /template/ Border#PART_ContentFrame">
                     <Setter Property="Padding"
-                            Value="{Binding EffectiveContentPadding, RelativeSource={RelativeSource TemplatedParent}}" />
+                            Value="{Binding (atom:ButtonSpinnerDecoratedBox).EffectiveContentPadding, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Style>
             </Style>
 
