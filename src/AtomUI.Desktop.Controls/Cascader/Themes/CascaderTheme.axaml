@@ -98,12 +98,15 @@
                                                LoadingIcon="{TemplateBinding LoadingIcon}"
                                                ExpandTrigger="{TemplateBinding ExpandTrigger}"
                                                DefaultExpandedPath="{TemplateBinding DefaultSelectOptionPath}"
-                                               IsAllowSelectParent="{TemplateBinding IsAllowSelectParent}" />
+                                               IsAllowSelectParent="{TemplateBinding IsAllowSelectParent}"
+                                               IsEffectiveEmptyVisible="{TemplateBinding IsEffectiveEmptyVisible, Mode=TwoWay}"/>
                         </Border>
                     </atom:Popup>
                 </Panel>
             </ControlTemplate>
         </Setter>
+        <Setter Property="IsPopupMatchSelectWidth"
+                Value="False" />
         <Setter Property="FilterHighlightForeground"
                 Value="{atom:CascaderTokenResource FilterHighlightColor}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -114,6 +117,11 @@
         <Setter Property="ItemHeight" Value="{atom:SharedTokenResource ControlHeight}" />
         <Setter Property="PlaceholderForeground"
                 Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
+        
+        <Style Selector="^[IsEffectiveEmptyVisible=True]">
+            <Setter Property="IsPopupMatchSelectWidth"
+                    Value="True" />
+        </Style>
 
         <Style Selector="^:not(^[HorizontalAlignment=Stretch])">
             <Setter Property="Width" Value="{atom:CascaderTokenResource ControlWidth}" />

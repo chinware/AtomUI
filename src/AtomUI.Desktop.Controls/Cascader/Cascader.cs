@@ -201,6 +201,12 @@ public class Cascader : AbstractSelect
             o => o.SelectedOptionPath,
             (o, v) => o.SelectedOptionPath = v);
     
+    internal static readonly DirectProperty<Cascader, bool> IsEffectiveEmptyVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Cascader, bool>(
+            nameof(IsEffectiveEmptyVisible),
+            o => o.IsEffectiveEmptyVisible,
+            (o, v) => o.IsEffectiveEmptyVisible = v);
+    
     private bool _isMaxSelectReached;
 
     internal bool IsMaxSelectReached
@@ -225,6 +231,12 @@ public class Cascader : AbstractSelect
         set => SetAndRaise(SelectedOptionPathProperty, ref _selectOptionPath, value);
     }
 
+    private bool _isEffectiveEmptyVisible = false;
+    internal bool IsEffectiveEmptyVisible
+    {
+        get => _isEffectiveEmptyVisible;
+        set => SetAndRaise(IsEffectiveEmptyVisibleProperty, ref _isEffectiveEmptyVisible, value);
+    }
     #endregion
     
     private readonly ItemCollection _options = new();
