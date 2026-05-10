@@ -16,8 +16,9 @@ internal class ResizeHandle : TemplatedControl
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        e.Handled = true;
-        _lastPoint    = e.GetPosition(TopLevel.GetTopLevel(this));
+        e.Handled  = true;
+        _lastPoint = e.GetPosition(TopLevel.GetTopLevel(this));
+        e.Pointer.Capture(this);
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -26,9 +27,10 @@ internal class ResizeHandle : TemplatedControl
         if (_lastPoint.HasValue)
         {
             Owner?.NotifyResizeCompleted();
-            e.Handled     = true;
-            _lastPoint    = null;
-            _dragging     = false;
+            e.Handled  = true;
+            _lastPoint = null;
+            _dragging  = false;
+            e.Pointer.Capture(null);
         }
     }
 

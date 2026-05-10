@@ -103,6 +103,7 @@
                 Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="MinLines" Value="1" />
 
         <Style Selector="^ /template/ Panel#ContentLayout">
             <Setter Property="Background" Value="Transparent" />

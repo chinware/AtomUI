@@ -185,6 +185,8 @@ public class TextArea : AvaloniaTextBox,
     private ResizeHandle? _resizeHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
     private double? _originHeight; // 拖动改变高度的初始值
+    private double _minResizeHeight; // 拖动改变高度时允许的最小 TextArea.Height
+    private double _maxResizeHeight; // 拖动改变高度时允许的最大 TextArea.Height
 
     static TextArea()
     {
@@ -323,20 +325,24 @@ public class TextArea : AvaloniaTextBox,
             {
                 if (Lines > 0 && double.IsNaN(Height))
                 {
-                    var height = double.NaN;
                     Lines = Math.Max(Lines, MinLines);
-                    var fontSize = FontSize;
-                    var typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
-                    var paragraphProperties = TextLayoutReflectionExtensions.CreateTextParagraphProperties(typeface, fontSize, null, default, default, null, default, LineHeight, default, FontFeatures);
-                    var textLayout = new TextLayout(new LineTextSource(Lines), paragraphProperties);
-                    var verticalSpace = this.GetVerticalSpaceBetweenScrollViewerAndPresenter();
-                    height = Math.Ceiling(textLayout.Height + verticalSpace);
+                    var height = CalculateScrollViewerHeight(Lines);
                     _scrollViewer.SetCurrentValue(MinHeightProperty, height);
                     _scrollViewer.SetCurrentValue(MaxHeightProperty, height);
                 }
             }
         }
         return size;
+    }
+
+    private double CalculateScrollViewerHeight(int lines)
+    {
+        var fontSize = FontSize;
+        var typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
+        var paragraphProperties = TextLayoutReflectionExtensions.CreateTextParagraphProperties(typeface, fontSize, null, default, default, null, default, LineHeight, default, FontFeatures);
+        var textLayout = new TextLayout(new LineTextSource(lines), paragraphProperties);
+        var verticalSpace = this.GetVerticalSpaceBetweenScrollViewerAndPresenter();
+        return Math.Ceiling(textLayout.Height + verticalSpace);
     }
     
     private void ConfigureEffectiveShowClearButton()
@@ -384,32 +390,33 @@ public class TextArea : AvaloniaTextBox,
 
     internal void NotifyAboutToResize()
     {
+        _originHeight = Bounds.Height;
+        SetCurrentValue(HeightProperty, Bounds.Height);
         if (_scrollViewer != null)
         {
-            if (!double.IsNaN(Height))
-            {
-                _scrollViewer.SetCurrentValue(HeightProperty, _scrollViewer.Bounds.Height);
-            }
-            var minHeight = _scrollViewer.MinHeight;
-            var height    = _scrollViewer.Height;
-            if (double.IsNaN(height))
-            {
-                height = minHeight;
-            }
-            _originHeight = height;
-            SetCurrentValue(HeightProperty, double.NaN);
+            var overhead = Math.Max(0, Bounds.Height - _scrollViewer.Bounds.Height);
+            var minScrollHeight = MinLines > 0 ? CalculateScrollViewerHeight(MinLines) : 0;
+            _minResizeHeight = overhead + minScrollHeight;
+            _maxResizeHeight = MaxLines > 0
+                ? overhead + CalculateScrollViewerHeight(MaxLines)
+                : double.PositiveInfinity;
+            _scrollViewer.ClearValue(MinHeightProperty);
+            _scrollViewer.ClearValue(MaxHeightProperty);
+        }
+        else
+        {
+            _minResizeHeight = 0;
+            _maxResizeHeight = double.PositiveInfinity;
         }
     }
 
     internal void NotifyResizing(Point delta)
     {
-        if (_scrollViewer != null && _originHeight != null)
+        if (_originHeight != null)
         {
-            var minHeight = _scrollViewer.MinHeight;
-            var maxHeight = _scrollViewer.MaxHeight;
             var height = _originHeight.Value + delta.Y;
-            height = Math.Max(minHeight, Math.Min(height, maxHeight));
-            _scrollViewer.SetCurrentValue(HeightProperty, height);
+            height = Math.Max(_minResizeHeight, Math.Min(height, _maxResizeHeight));
+            SetCurrentValue(HeightProperty, height);
         }
     }
     
