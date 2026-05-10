@@ -10,28 +10,28 @@ internal class GradientColorSliderThumb : ColorSliderThumb
     protected override Type StyleKeyOverride { get; } = typeof(ColorSliderThumb);
     public const int ActivatedZIndex = 1000;
     public const int NormalZIndex = 1;
-    
-    public static readonly StyledProperty<double> ValueProperty = 
+
+    public static readonly StyledProperty<double> ValueProperty =
         AvaloniaProperty.Register<GradientColorSliderThumb, double>(nameof(Value), 0.0);
-    
-    public static readonly StyledProperty<Color> ColorProperty = 
+
+    public static readonly StyledProperty<Color> ColorProperty =
         AvaloniaProperty.Register<GradientColorSliderThumb, Color>(nameof(Color));
-    
-    public static readonly StyledProperty<bool> IsActivatedProperty = 
+
+    public static readonly StyledProperty<bool> IsActivatedProperty =
         AvaloniaProperty.Register<GradientColorSliderThumb, bool>(nameof(IsActivated));
-    
+
     public double Value
     {
         get => GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
     }
-    
+
     public Color Color
     {
         get => GetValue(ColorProperty);
         set => SetValue(ColorProperty, value);
     }
-    
+
     public bool IsActivated
     {
         get => GetValue(IsActivatedProperty);

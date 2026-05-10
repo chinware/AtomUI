@@ -7,6 +7,6 @@ namespace AtomUI.Desktop.Controls.ColorPickerLang;
 internal class en_US : LanguageProvider
 {
     public const string EmptyColorText = "Transparent";
-    
+
     protected override Type GetResourceKindType() => typeof(ColorPickerLangResourceKind);
 }

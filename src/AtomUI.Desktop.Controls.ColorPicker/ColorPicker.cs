@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -12,28 +11,28 @@ public class ColorPicker : AbstractColorPicker
     #region 公共属性定义
     public static readonly StyledProperty<Color?> DefaultValueProperty =
         AvaloniaProperty.Register<ColorPicker, Color?>(nameof(DefaultValue));
-    
+
     public static readonly StyledProperty<Color?> ValueProperty =
         AvaloniaProperty.Register<ColorPicker, Color?>(nameof(Value));
-    
+
     public static readonly AttachedProperty<Func<Color, ColorFormat, string>?> ColorTextFormatterProperty =
         AvaloniaProperty.RegisterAttached<ColorPicker, Control, Func<Color, ColorFormat, string>?>("ColorTextFormatter");
-    
+
     public static readonly StyledProperty<ColorPickerValueSyncMode> ValueSyncStrategyProperty =
         AvaloniaProperty.Register<ColorPicker, ColorPickerValueSyncMode>(nameof(ValueSyncStrategy), ColorPickerValueSyncMode.Immediate);
-    
+
     public Color? DefaultValue
     {
         get => GetValue(DefaultValueProperty);
         set => SetValue(DefaultValueProperty, value);
     }
-    
+
     public Color? Value
     {
         get => GetValue(ValueProperty);
         private set => SetValue(ValueProperty, value);
     }
-    
+
     public static Func<Color, ColorFormat, string>? GetColorTextFormatter(ColorPicker colorPicker)
     {
         return colorPicker.GetValue(ColorTextFormatterProperty);
@@ -43,14 +42,14 @@ public class ColorPicker : AbstractColorPicker
     {
         colorPicker.SetValue(ColorTextFormatterProperty, formatter);
     }
-    
+
     public ColorPickerValueSyncMode ValueSyncStrategy
     {
         get => GetValue(ValueSyncStrategyProperty);
         set => SetValue(ValueSyncStrategyProperty, value);
     }
     #endregion
-    
+
     #region 公共事件定义
     /// <summary>
     /// Keep distributing as long as there are changes
@@ -69,7 +68,7 @@ public class ColorPicker : AbstractColorPicker
             nameof(ColorText),
             o => o.ColorText,
             (o, v) => o.ColorText = v);
-    
+
     private string? _colorText;
 
     internal string? ColorText
@@ -79,11 +78,11 @@ public class ColorPicker : AbstractColorPicker
     }
 
     #endregion
-    
+
     private ColorPickerView? _presenter;
     private Color? _latestSyncValue;
     private ColorBlock? _colorIndicator;
-    
+
     static ColorPicker()
     {
         AffectsMeasure<ColorPicker>(ColorTextFormatterProperty);
@@ -111,6 +110,7 @@ public class ColorPicker : AbstractColorPicker
             GenerateValueText();
             GenerateColorBlockBackground();
             NotifyValueChanged(new ColorChangedEventArgs(change.GetOldValue<Color?>(), change.GetNewValue<Color?>()));
+            NotifyFormValueChanged();
         }
 
         if (change.Property == ColorTextFormatterProperty)
@@ -118,7 +118,7 @@ public class ColorPicker : AbstractColorPicker
             GenerateValueText();
         }
     }
-    
+
     protected override void GenerateValueText()
     {
         if (IsShowText)
@@ -163,29 +163,26 @@ public class ColorPicker : AbstractColorPicker
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _colorIndicator =  e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
+        _colorIndicator = e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
     }
-    
-    protected override Flyout CreatePickerFlyout()
+
+    protected override Control CreatePickerPresenter()
     {
-        var flyout = new ColorPickerFlyout();
-        flyout[!ColorPickerFlyout.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-        flyout[!ColorPickerFlyout.IsClearEnabledProperty]        = this[!IsClearEnabledProperty];
-        flyout[!ColorPickerFlyout.FormatProperty]                = this[!FormatProperty];
-        flyout[!ColorPickerFlyout.IsAlphaEnabledProperty]        = this[!IsAlphaEnabledProperty];
-        flyout[!ColorPickerFlyout.IsFormatEnabledProperty]       = this[!IsFormatEnabledProperty];
-        flyout[!ColorPickerFlyout.IsPaletteGroupEnabledProperty] = this[!IsPaletteGroupEnabledProperty];
-        flyout[!ColorPickerFlyout.PaletteGroupProperty]          = this[!PaletteGroupProperty];
-        
-        return flyout;
+        var presenter = new ColorPickerView();
+        presenter[!ColorPickerView.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        presenter[!ColorPickerView.IsClearEnabledProperty] = this[!IsClearEnabledProperty];
+        presenter[!ColorPickerView.FormatProperty] = this[!FormatProperty];
+        presenter[!ColorPickerView.IsAlphaEnabledProperty] = this[!IsAlphaEnabledProperty];
+        presenter[!ColorPickerView.IsFormatEnabledProperty] = this[!IsFormatEnabledProperty];
+        presenter[!ColorPickerView.IsPaletteGroupEnabledProperty] = this[!IsPaletteGroupEnabledProperty];
+        presenter[!ColorPickerView.PaletteGroupProperty] = this[!PaletteGroupProperty];
+
+        return presenter;
     }
-    
-    protected override void NotifyFlyoutPresenterCreated(Control control)
+
+    protected override void NotifyPickerPresenterCreated(Control pickerPresenter)
     {
-        if (control is FlyoutPresenter flyoutPresenter && flyoutPresenter.Content is ColorPickerView presenter)
-        {
-            _presenter = presenter;
-        }
+        _presenter = pickerPresenter as ColorPickerView;
     }
 
     private void HandleColorPickerViewValueChanged(object? sender, ColorChangedEventArgs args)
@@ -199,20 +196,21 @@ public class ColorPicker : AbstractColorPicker
             _latestSyncValue = args.NewColor;
         }
     }
-    
-    protected override void NotifyFlyoutOpened()
+
+    protected override void NotifyPickerOpened()
     {
+        base.NotifyPickerOpened();
         if (_presenter != null)
         {
             var effectiveColor = Value ?? DefaultValue ?? Colors.White;
             _presenter.SetCurrentValue(ColorPickerView.ValueProperty, effectiveColor);
             _latestSyncValue = effectiveColor;
-            _presenter.ValueChanged      += HandleColorPickerViewValueChanged;
+            _presenter.ValueChanged += HandleColorPickerViewValueChanged;
             _presenter.ColorValueCleared += HandleColorCleared;
         }
     }
-    
-    protected override void NotifyFlyoutClosed()
+
+    protected override void NotifyPickerClosed()
     {
         if (_presenter != null)
         {
@@ -225,11 +223,12 @@ public class ColorPicker : AbstractColorPicker
             {
                 ValueSelected?.Invoke(this, new ColorSelectedEventArgs(Value.Value));
             }
-            _presenter.ValueChanged      -= HandleColorPickerViewValueChanged;
+            _presenter.ValueChanged -= HandleColorPickerViewValueChanged;
             _presenter.ColorValueCleared -= HandleColorCleared;
         }
+        base.NotifyPickerClosed();
     }
-    
+
     internal void NotifyValueChanged(ColorChangedEventArgs e)
     {
         ValueChanged?.Invoke(this, e);
@@ -248,7 +247,7 @@ public class ColorPicker : AbstractColorPicker
             this[!ColorTextProperty] = this[!EmptyColorTextProperty];
         }
     }
-    
+
     #region 实现 FormItem 接口
     protected override void NotifySetFormValue(object? value)
     {

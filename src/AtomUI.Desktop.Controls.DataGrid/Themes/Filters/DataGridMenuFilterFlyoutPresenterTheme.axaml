@@ -47,7 +47,7 @@
                                            IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
                                            AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}"
                                            IsScrollChainingEnabled="False">
-                            <ItemsPresenter Name="{x:Static atom:MenuFlyoutThemeConstants.ItemsPresenterPart}"
+                            <ItemsPresenter Name="PART_ItemsPresenter"
                                             ItemsPanel="{TemplateBinding ItemsPanel}"
                                             KeyboardNavigation.TabNavigation="Continue"
                                             Grid.IsSharedSizeScope="True" />

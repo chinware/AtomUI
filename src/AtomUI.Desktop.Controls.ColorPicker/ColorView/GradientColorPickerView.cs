@@ -9,35 +9,35 @@ public class GradientColorPickerView : AbstractColorPickerView
     #region 公共属性定义
     public static readonly StyledProperty<LinearGradientBrush?> DefaultValueProperty =
         AvaloniaProperty.Register<GradientColorPickerView, LinearGradientBrush?>(nameof(DefaultValue));
-    
+
     public static readonly StyledProperty<LinearGradientBrush?> ValueProperty =
         AvaloniaProperty.Register<GradientColorPickerView, LinearGradientBrush?>(nameof(Value));
-    
+
     public LinearGradientBrush? DefaultValue
     {
         get => GetValue(DefaultValueProperty);
         set => SetValue(DefaultValueProperty, value);
     }
-    
+
     public LinearGradientBrush? Value
     {
         get => GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
     }
     #endregion
-    
+
     #region 公共事件定义
     public event EventHandler<GradientColorChangedEventArgs>? GradientValueChanged;
     #endregion
-    
+
     #region 内部属性定义
-    
+
     internal static readonly DirectProperty<GradientColorPickerView, int?> ActivatedStopIndexProperty =
         AvaloniaProperty.RegisterDirect<GradientColorPickerView, int?>(
             nameof(ActivatedStopIndex),
             o => o.ActivatedStopIndex,
             (o, v) => o.ActivatedStopIndex = v);
-    
+
     private int? _activatedStopIndex;
 
     internal int? ActivatedStopIndex
@@ -82,18 +82,18 @@ public class GradientColorPickerView : AbstractColorPickerView
             }
         }
     }
-    
+
     protected virtual void NotifyGradientValueChanged(GradientColorChangedEventArgs e)
     {
         GradientValueChanged?.Invoke(this, e);
     }
-    
+
     protected override void NotifyColorClearRequest()
     {
         SetCurrentValue(ValueProperty, new LinearGradientBrush()
         {
             StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
-            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
+            EndPoint = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             GradientStops = new GradientStops()
             {
                 new GradientStop(Color.FromArgb(0,0, 0, 0), 0.0)
@@ -102,7 +102,7 @@ public class GradientColorPickerView : AbstractColorPickerView
         HsvValue = new HsvColor(0.0, 0, 0, 0);
         InvokeColorValueClearedEvent();
     }
-    
+
     protected override void NotifyPaletteColorSelected(Color color)
     {
         SetCurrentValue(HsvValueProperty, color.ToHsv());

@@ -51,16 +51,16 @@ internal static class ColorPickerHelpers
 
         return Task.Run(() =>
         {
-            int    pixelDataIndex = 0;
+            int pixelDataIndex = 0;
             double componentStep;
-            Color  baseRgbColor = Colors.White;
-            Color  rgbColor;
-            int    bgraPixelDataHeight;
-            int    bgraPixelDataWidth;
+            Color baseRgbColor = Colors.White;
+            Color rgbColor;
+            int bgraPixelDataHeight;
+            int bgraPixelDataWidth;
 
             // BGRA formatted color components 1 byte each (4 bytes in a pixel)
             bgraPixelDataHeight = height * 4;
-            bgraPixelDataWidth  = width * 4;
+            bgraPixelDataWidth = width * 4;
 
             // Maximize alpha component value
             if (isAlphaVisible == false &&
@@ -217,97 +217,97 @@ internal static class ColorPickerHelpers
                 switch (component)
                 {
                     case ColorComponent.Component1:
-                    {
-                        if (colorModel == ColorModel.Hsva)
                         {
-                            // Sweep hue
-                            newRgbColor = HsvColor.ToRgb(
-                                Math.Clamp(componentValue, 0.0, 360.0),
-                                baseHsvColor.S,
-                                baseHsvColor.V,
-                                baseHsvColor.A);
-                        }
-                        else
-                        {
-                            // Sweep red
-                            newRgbColor = new Color(
-                                baseRgbColor.A,
-                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
-                                baseRgbColor.G,
-                                baseRgbColor.B);
-                        }
+                            if (colorModel == ColorModel.Hsva)
+                            {
+                                // Sweep hue
+                                newRgbColor = HsvColor.ToRgb(
+                                    Math.Clamp(componentValue, 0.0, 360.0),
+                                    baseHsvColor.S,
+                                    baseHsvColor.V,
+                                    baseHsvColor.A);
+                            }
+                            else
+                            {
+                                // Sweep red
+                                newRgbColor = new Color(
+                                    baseRgbColor.A,
+                                    Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
+                                    baseRgbColor.G,
+                                    baseRgbColor.B);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case ColorComponent.Component2:
-                    {
-                        if (colorModel == ColorModel.Hsva)
                         {
-                            // Sweep saturation
-                            newRgbColor = HsvColor.ToRgb(
-                                baseHsvColor.H,
-                                Math.Clamp(componentValue, 0.0, 1.0),
-                                baseHsvColor.V,
-                                baseHsvColor.A);
-                        }
-                        else
-                        {
-                            // Sweep green
-                            newRgbColor = new Color(
-                                baseRgbColor.A,
-                                baseRgbColor.R,
-                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
-                                baseRgbColor.B);
-                        }
+                            if (colorModel == ColorModel.Hsva)
+                            {
+                                // Sweep saturation
+                                newRgbColor = HsvColor.ToRgb(
+                                    baseHsvColor.H,
+                                    Math.Clamp(componentValue, 0.0, 1.0),
+                                    baseHsvColor.V,
+                                    baseHsvColor.A);
+                            }
+                            else
+                            {
+                                // Sweep green
+                                newRgbColor = new Color(
+                                    baseRgbColor.A,
+                                    baseRgbColor.R,
+                                    Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
+                                    baseRgbColor.B);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case ColorComponent.Component3:
-                    {
-                        if (colorModel == ColorModel.Hsva)
                         {
-                            // Sweep value
-                            newRgbColor = HsvColor.ToRgb(
-                                baseHsvColor.H,
-                                baseHsvColor.S,
-                                Math.Clamp(componentValue, 0.0, 1.0),
-                                baseHsvColor.A);
-                        }
-                        else
-                        {
-                            // Sweep blue
-                            newRgbColor = new Color(
-                                baseRgbColor.A,
-                                baseRgbColor.R,
-                                baseRgbColor.G,
-                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)));
-                        }
+                            if (colorModel == ColorModel.Hsva)
+                            {
+                                // Sweep value
+                                newRgbColor = HsvColor.ToRgb(
+                                    baseHsvColor.H,
+                                    baseHsvColor.S,
+                                    Math.Clamp(componentValue, 0.0, 1.0),
+                                    baseHsvColor.A);
+                            }
+                            else
+                            {
+                                // Sweep blue
+                                newRgbColor = new Color(
+                                    baseRgbColor.A,
+                                    baseRgbColor.R,
+                                    baseRgbColor.G,
+                                    Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)));
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case ColorComponent.Alpha:
-                    {
-                        if (colorModel == ColorModel.Hsva)
                         {
-                            // Sweep alpha
-                            newRgbColor = HsvColor.ToRgb(
-                                baseHsvColor.H,
-                                baseHsvColor.S,
-                                baseHsvColor.V,
-                                Math.Clamp(componentValue, 0.0, 1.0));
-                        }
-                        else
-                        {
-                            // Sweep alpha
-                            newRgbColor = new Color(
-                                Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
-                                baseRgbColor.R,
-                                baseRgbColor.G,
-                                baseRgbColor.B);
-                        }
+                            if (colorModel == ColorModel.Hsva)
+                            {
+                                // Sweep alpha
+                                newRgbColor = HsvColor.ToRgb(
+                                    baseHsvColor.H,
+                                    baseHsvColor.S,
+                                    baseHsvColor.V,
+                                    Math.Clamp(componentValue, 0.0, 1.0));
+                            }
+                            else
+                            {
+                                // Sweep alpha
+                                newRgbColor = new Color(
+                                    Convert.ToByte(Math.Clamp(componentValue, 0.0, 255.0)),
+                                    baseRgbColor.R,
+                                    baseRgbColor.G,
+                                    baseRgbColor.B);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
 
                 return newRgbColor;
@@ -337,7 +337,7 @@ internal static class ColorPickerHelpers
 
             // Note: *valueToIncrement replaced with ref local variable for C#, must be initialized
             ref double valueToIncrement = ref newHsv.H;
-            double     incrementAmount  = 0.0;
+            double incrementAmount = 0.0;
 
             // If we're adding a small increment, then we'll just add or subtract 1.
             // If we're adding a large increment, then we want to snap to the next
@@ -347,17 +347,17 @@ internal static class ColorPickerHelpers
             {
                 case HsvComponent.Hue:
                     valueToIncrement = ref newHsv.H;
-                    incrementAmount  = amount == IncrementAmount.Small ? 1 : 30;
+                    incrementAmount = amount == IncrementAmount.Small ? 1 : 30;
                     break;
 
                 case HsvComponent.Saturation:
                     valueToIncrement = ref newHsv.S;
-                    incrementAmount  = amount == IncrementAmount.Small ? 1 : 10;
+                    incrementAmount = amount == IncrementAmount.Small ? 1 : 10;
                     break;
 
                 case HsvComponent.Value:
                     valueToIncrement = ref newHsv.V;
-                    incrementAmount  = amount == IncrementAmount.Small ? 1 : 10;
+                    incrementAmount = amount == IncrementAmount.Small ? 1 : 10;
                     break;
 
                 default:
@@ -418,32 +418,32 @@ internal static class ColorPickerHelpers
         // we find its bounds on the other side, and then select the color that is exactly
         // in the middle of that color's bounds.
         Hsv newHsv = originalHsv;
-            
+
         string originalColorName = ColorHelper.ToDisplayName(originalHsv.ToRgb().ToColor());
-        string newColorName      = originalColorName;
+        string newColorName = originalColorName;
 
         // Note: *newValue replaced with ref local variable for C#, must be initialized
-        double     originalValue   = 0.0;
-        ref double newValue        = ref newHsv.H;
-        double     incrementAmount = 0.0;
+        double originalValue = 0.0;
+        ref double newValue = ref newHsv.H;
+        double incrementAmount = 0.0;
 
         switch (component)
         {
             case HsvComponent.Hue:
-                originalValue   = originalHsv.H;
-                newValue        = ref newHsv.H;
+                originalValue = originalHsv.H;
+                newValue = ref newHsv.H;
                 incrementAmount = 1;
                 break;
 
             case HsvComponent.Saturation:
-                originalValue   = originalHsv.S;
-                newValue        = ref newHsv.S;
+                originalValue = originalHsv.S;
+                newValue = ref newHsv.S;
                 incrementAmount = 0.01;
                 break;
 
             case HsvComponent.Value:
-                originalValue   = originalHsv.V;
-                newValue        = ref newHsv.V;
+                originalValue = originalHsv.V;
+                newValue = ref newHsv.V;
                 incrementAmount = 0.01;
                 break;
 
@@ -467,14 +467,14 @@ internal static class ColorPickerHelpers
             {
                 if (shouldWrap)
                 {
-                    newValue    = minBound;
+                    newValue = minBound;
                     justWrapped = true;
                 }
                 else
                 {
-                    newValue           = maxBound;
+                    newValue = maxBound;
                     shouldFindMidPoint = false;
-                    newColorName       = ColorHelper.ToDisplayName(newHsv.ToRgb().ToColor());
+                    newColorName = ColorHelper.ToDisplayName(newHsv.ToRgb().ToColor());
                     break;
                 }
             }
@@ -482,14 +482,14 @@ internal static class ColorPickerHelpers
             {
                 if (shouldWrap)
                 {
-                    newValue    = maxBound;
+                    newValue = maxBound;
                     justWrapped = true;
                 }
                 else
                 {
-                    newValue           = minBound;
+                    newValue = minBound;
                     shouldFindMidPoint = false;
-                    newColorName       = ColorHelper.ToDisplayName(newHsv.ToRgb().ToColor());
+                    newColorName = ColorHelper.ToDisplayName(newHsv.ToRgb().ToColor());
                     break;
                 }
             }
@@ -509,33 +509,33 @@ internal static class ColorPickerHelpers
 
         if (shouldFindMidPoint)
         {
-            Hsv    startHsv         = newHsv;
-            Hsv    currentHsv       = startHsv;
-            double startEndOffset   = 0;
+            Hsv startHsv = newHsv;
+            Hsv currentHsv = startHsv;
+            double startEndOffset = 0;
             string currentColorName = newColorName;
 
             // Note: *startValue/*currentValue replaced with ref local variables for C#, must be initialized
-            ref double startValue    = ref startHsv.H;
-            ref double currentValue  = ref currentHsv.H;
-            double     wrapIncrement = 0;
+            ref double startValue = ref startHsv.H;
+            ref double currentValue = ref currentHsv.H;
+            double wrapIncrement = 0;
 
             switch (component)
             {
                 case HsvComponent.Hue:
-                    startValue    = ref startHsv.H;
-                    currentValue  = ref currentHsv.H;
+                    startValue = ref startHsv.H;
+                    currentValue = ref currentHsv.H;
                     wrapIncrement = 360.0;
                     break;
 
                 case HsvComponent.Saturation:
-                    startValue    = ref startHsv.S;
-                    currentValue  = ref currentHsv.S;
+                    startValue = ref startHsv.S;
+                    currentValue = ref currentHsv.S;
                     wrapIncrement = 1.0;
                     break;
 
                 case HsvComponent.Value:
-                    startValue    = ref startHsv.V;
-                    currentValue  = ref currentHsv.V;
+                    startValue = ref startHsv.V;
+                    currentValue = ref currentHsv.V;
                     wrapIncrement = 1.0;
                     break;
 
@@ -554,7 +554,7 @@ internal static class ColorPickerHelpers
                 {
                     if (shouldWrap)
                     {
-                        currentValue   = minBound;
+                        currentValue = minBound;
                         startEndOffset = maxBound - minBound;
                     }
                     else
@@ -567,7 +567,7 @@ internal static class ColorPickerHelpers
                 {
                     if (shouldWrap)
                     {
-                        currentValue   = maxBound;
+                        currentValue = maxBound;
                         startEndOffset = minBound - maxBound;
                     }
                     else

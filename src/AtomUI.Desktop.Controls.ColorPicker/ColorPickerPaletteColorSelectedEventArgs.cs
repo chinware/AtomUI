@@ -8,6 +8,6 @@ internal class ColorPickerPaletteColorSelectedEventArgs : EventArgs
     {
         SelectedColor = color;
     }
-    
+
     public Color SelectedColor { get; private set; }
 }

@@ -299,15 +299,15 @@ internal class ColorSpectrum : TemplatedControl
     /// </summary>
     public ColorSpectrum()
     {
-        _componentsFromLastBitmapCreation    = Components;
-        _imageWidthFromLastBitmapCreation    = 0;
-        _imageHeightFromLastBitmapCreation   = 0;
-        _minHueFromLastBitmapCreation        = MinHue;
-        _maxHueFromLastBitmapCreation        = MaxHue;
+        _componentsFromLastBitmapCreation = Components;
+        _imageWidthFromLastBitmapCreation = 0;
+        _imageHeightFromLastBitmapCreation = 0;
+        _minHueFromLastBitmapCreation = MinHue;
+        _maxHueFromLastBitmapCreation = MaxHue;
         _minSaturationFromLastBitmapCreation = MinSaturation;
         _maxSaturationFromLastBitmapCreation = MaxSaturation;
-        _minValueFromLastBitmapCreation      = MinValue;
-        _maxValueFromLastBitmapCreation      = MaxValue;
+        _minValueFromLastBitmapCreation = MinValue;
+        _maxValueFromLastBitmapCreation = MaxValue;
     }
 
     /// <inheritdoc/>
@@ -317,25 +317,25 @@ internal class ColorSpectrum : TemplatedControl
 
         UnregisterEvents(); // Failsafe
 
-        _inputTarget              = e.NameScope.Find<Canvas>("PART_InputTarget");
-        _layoutRoot               = e.NameScope.Find<Panel>("PART_LayoutRoot");
-        _selectionEllipsePanel    = e.NameScope.Find<Panel>("PART_SelectionEllipsePanel");
-        _sizingPanel              = e.NameScope.Find<Panel>("PART_SizingPanel");
-        _spectrumRectangle        = e.NameScope.Find<Rectangle>("PART_SpectrumRectangle");
+        _inputTarget = e.NameScope.Find<Canvas>("PART_InputTarget");
+        _layoutRoot = e.NameScope.Find<Panel>("PART_LayoutRoot");
+        _selectionEllipsePanel = e.NameScope.Find<Panel>("PART_SelectionEllipsePanel");
+        _sizingPanel = e.NameScope.Find<Panel>("PART_SizingPanel");
+        _spectrumRectangle = e.NameScope.Find<Rectangle>("PART_SpectrumRectangle");
         _spectrumOverlayRectangle = e.NameScope.Find<Rectangle>("PART_SpectrumOverlayRectangle");
 
         if (_inputTarget != null)
         {
-            _inputTarget.PointerEntered  += HandleInputTargetPointerEntered;
-            _inputTarget.PointerExited   += HandleInputTargetPointerExited;
-            _inputTarget.PointerPressed  += HandleInputTargetPointerPressed;
-            _inputTarget.PointerMoved    += HandleInputTargetPointerMoved;
+            _inputTarget.PointerEntered += HandleInputTargetPointerEntered;
+            _inputTarget.PointerExited += HandleInputTargetPointerExited;
+            _inputTarget.PointerPressed += HandleInputTargetPointerPressed;
+            _inputTarget.PointerMoved += HandleInputTargetPointerMoved;
             _inputTarget.PointerReleased += HandleInputTargetPointerReleased;
         }
 
         if (_layoutRoot != null)
         {
-            _layoutRootDisposable = _layoutRoot.GetObservable(BoundsProperty).Subscribe(_ => 
+            _layoutRootDisposable = _layoutRoot.GetObservable(BoundsProperty).Subscribe(_ =>
             {
 #pragma warning disable CS4014
                 CreateBitmapsAndColorMapAsync();
@@ -345,7 +345,7 @@ internal class ColorSpectrum : TemplatedControl
 
         if (_selectionEllipsePanel != null)
         {
-            _selectionEllipsePanelDisposable = _selectionEllipsePanel.GetObservable(FlowDirectionProperty).Subscribe(_ => 
+            _selectionEllipsePanelDisposable = _selectionEllipsePanel.GetObservable(FlowDirectionProperty).Subscribe(_ =>
             {
                 UpdateEllipse();
             });
@@ -400,10 +400,10 @@ internal class ColorSpectrum : TemplatedControl
 
         if (_inputTarget != null)
         {
-            _inputTarget.PointerEntered  -= HandleInputTargetPointerEntered;
-            _inputTarget.PointerExited   -= HandleInputTargetPointerExited;
-            _inputTarget.PointerPressed  -= HandleInputTargetPointerPressed;
-            _inputTarget.PointerMoved    -= HandleInputTargetPointerMoved;
+            _inputTarget.PointerEntered -= HandleInputTargetPointerEntered;
+            _inputTarget.PointerExited -= HandleInputTargetPointerExited;
+            _inputTarget.PointerPressed -= HandleInputTargetPointerPressed;
+            _inputTarget.PointerMoved -= HandleInputTargetPointerMoved;
             _inputTarget.PointerReleased -= HandleInputTargetPointerReleased;
         }
     }
@@ -799,7 +799,7 @@ internal class ColorSpectrum : TemplatedControl
     /// <param name="newHsv">The new HSV color to change to.</param>
     private void UpdateColor(Hsv newHsv)
     {
-        _updatingColor    = true;
+        _updatingColor = true;
         _updatingHsvColor = true;
 
         double alpha = HsvColor.A;
@@ -893,7 +893,7 @@ internal class ColorSpectrum : TemplatedControl
         UpdatePseudoClasses();
 
         _updatingHsvColor = false;
-        _updatingColor    = false;
+        _updatingColor = false;
 
         RaiseColorChanged();
     }
@@ -912,13 +912,13 @@ internal class ColorSpectrum : TemplatedControl
         }
 
         // Remember the bitmap size follows physical device pixels
-        var    scale     = LayoutHelper.GetLayoutScale(this);
+        var scale = LayoutHelper.GetLayoutScale(this);
         double xPosition = point.Position.X * scale;
         double yPosition = point.Position.Y * scale;
 
         // Now we need to find the index into the array of HSL values at each point in the spectrum m_image.
-        int x     = (int)Math.Round(xPosition);
-        int y     = (int)Math.Round(yPosition);
+        int x = (int)Math.Round(xPosition);
+        int y = (int)Math.Round(yPosition);
         int width = (int)Math.Round(_imageWidthFromLastBitmapCreation);
 
         if (x < 0)
@@ -1064,7 +1064,7 @@ internal class ColorSpectrum : TemplatedControl
         {
             ToolTip.SetIsOpen(_selectionEllipsePanel, true);
         }
-     
+
         UpdatePseudoClasses();
     }
 
@@ -1118,7 +1118,7 @@ internal class ColorSpectrum : TemplatedControl
     /// <inheritdoc cref="InputElement.PointerReleased"/>
     private void HandleInputTargetPointerReleased(object? sender, PointerReleasedEventArgs args)
     {
-        _isPointerPressed         = false;
+        _isPointerPressed = false;
         _shouldShowLargeSelection = false;
 
         args.Pointer.Capture(null);
@@ -1141,31 +1141,31 @@ internal class ColorSpectrum : TemplatedControl
                 return;
             }
 
-            double width  = _layoutRoot.Bounds.Width;
+            double width = _layoutRoot.Bounds.Width;
             double height = _layoutRoot.Bounds.Height;
 
             if (width == 0 || height == 0)
             {
                 return;
             }
-        
-            _sizingPanel.Width               = width;
-            _sizingPanel.Height              = height;
-            _inputTarget.Width               = width;
-            _inputTarget.Height              = height;
-            _spectrumRectangle.Width         = width;
-            _spectrumRectangle.Height        = height;
-            _spectrumOverlayRectangle.Width  = width;
+
+            _sizingPanel.Width = width;
+            _sizingPanel.Height = height;
+            _inputTarget.Width = width;
+            _inputTarget.Height = height;
+            _spectrumRectangle.Width = width;
+            _spectrumRectangle.Height = height;
+            _spectrumOverlayRectangle.Width = width;
             _spectrumOverlayRectangle.Height = height;
 
-            HsvColor                hsvColor      = HsvColor;
-            int                     minHue        = MinHue;
-            int                     maxHue        = MaxHue;
-            int                     minSaturation = MinSaturation;
-            int                     maxSaturation = MaxSaturation;
-            int                     minValue      = MinValue;
-            int                     maxValue      = MaxValue;
-            ColorSpectrumComponents components    = Components;
+            HsvColor hsvColor = HsvColor;
+            int minHue = MinHue;
+            int maxHue = MaxHue;
+            int minSaturation = MinSaturation;
+            int maxSaturation = MaxSaturation;
+            int minValue = MinValue;
+            int maxValue = MaxValue;
+            ColorSpectrumComponents components = Components;
 
             // If min >= max, then by convention, min is the only number that a property can have.
             if (minHue >= maxHue)
@@ -1184,23 +1184,23 @@ internal class ColorSpectrum : TemplatedControl
             }
 
             Hsv hsv = new Hsv(hsvColor);
-            
+
             // In Avalonia, Bounds returns the actual device-independent pixel size of a control.
             // However, this is not necessarily the size of the control rendered on a display.
             // A desktop or application scaling factor may be applied which must be accounted for here.
             // Remember bitmaps in Avalonia are rendered mapping to actual device pixels, not the device-
             // independent pixels of controls.
-            var scale         = LayoutHelper.GetLayoutScale(this);
-            int pixelWidth    = (int)Math.Round(width * scale);
-            int pixelHeight   = (int)Math.Round(height * scale);
-            var pixelCount    = pixelWidth * pixelHeight;
+            var scale = LayoutHelper.GetLayoutScale(this);
+            int pixelWidth = (int)Math.Round(width * scale);
+            int pixelHeight = (int)Math.Round(height * scale);
+            var pixelCount = pixelWidth * pixelHeight;
             var pixelDataSize = pixelCount * 4;
             // We'll only save pixel data for the middle bitmaps if our third dimension is hue.
             var middleBitmapsSize =
                 components is ColorSpectrumComponents.ValueSaturation or ColorSpectrumComponents.SaturationValue
                     ? pixelDataSize : 0;
 
-            var       newHsvValues     = new List<Hsv>(pixelCount);
+            var newHsvValues = new List<Hsv>(pixelCount);
             using var bgraMinPixelData = new PooledList<byte>(pixelDataSize, ClearMode.Never);
             using var bgraMaxPixelData = new PooledList<byte>(pixelDataSize, ClearMode.Never);
             // The middle 4 are only needed and used in the case of hue as the third dimension.
@@ -1274,16 +1274,16 @@ internal class ColorSpectrum : TemplatedControl
                         _huePurpleBitmap = _maxBitmap;
                         break;
                 }
-            
-                _componentsFromLastBitmapCreation    = Components;
-                _imageWidthFromLastBitmapCreation    = pixelWidth;
-                _imageHeightFromLastBitmapCreation   = pixelHeight;
-                _minHueFromLastBitmapCreation        = MinHue;
-                _maxHueFromLastBitmapCreation        = MaxHue;
+
+                _componentsFromLastBitmapCreation = Components;
+                _imageWidthFromLastBitmapCreation = pixelWidth;
+                _imageHeightFromLastBitmapCreation = pixelHeight;
+                _minHueFromLastBitmapCreation = MinHue;
+                _maxHueFromLastBitmapCreation = MaxHue;
                 _minSaturationFromLastBitmapCreation = MinSaturation;
                 _maxSaturationFromLastBitmapCreation = MaxSaturation;
-                _minValueFromLastBitmapCreation      = MinValue;
-                _maxValueFromLastBitmapCreation      = MaxValue;
+                _minValueFromLastBitmapCreation = MinValue;
+                _maxValueFromLastBitmapCreation = MaxValue;
 
                 _hsvValues = newHsvValues;
 
@@ -1327,12 +1327,12 @@ internal class ColorSpectrum : TemplatedControl
         double vMin = minValue / 100.0;
         double vMax = maxValue / 100.0;
 
-        Hsv hsvMin     = baseHsv;
+        Hsv hsvMin = baseHsv;
         Hsv hsvMiddle1 = baseHsv;
         Hsv hsvMiddle2 = baseHsv;
         Hsv hsvMiddle3 = baseHsv;
         Hsv hsvMiddle4 = baseHsv;
-        Hsv hsvMax     = baseHsv;
+        Hsv hsvMax = baseHsv;
 
         double xPercent = x / (pixelWidth - 1);
         double yPercent = y / (pixelHeight - 1);
@@ -1399,21 +1399,21 @@ internal class ColorSpectrum : TemplatedControl
         if (components == ColorSpectrumComponents.HueSaturation ||
             components == ColorSpectrumComponents.SaturationHue)
         {
-            hsvMin.S     = sMax - hsvMin.S + sMin;
+            hsvMin.S = sMax - hsvMin.S + sMin;
             hsvMiddle1.S = sMax - hsvMiddle1.S + sMin;
             hsvMiddle2.S = sMax - hsvMiddle2.S + sMin;
             hsvMiddle3.S = sMax - hsvMiddle3.S + sMin;
             hsvMiddle4.S = sMax - hsvMiddle4.S + sMin;
-            hsvMax.S     = sMax - hsvMax.S + sMin;
+            hsvMax.S = sMax - hsvMax.S + sMin;
         }
         else
         {
-            hsvMin.V     = vMax - hsvMin.V + vMin;
+            hsvMin.V = vMax - hsvMin.V + vMin;
             hsvMiddle1.V = vMax - hsvMiddle1.V + vMin;
             hsvMiddle2.V = vMax - hsvMiddle2.V + vMin;
             hsvMiddle3.V = vMax - hsvMiddle3.V + vMin;
             hsvMiddle4.V = vMax - hsvMiddle4.V + vMin;
-            hsvMax.V     = vMax - hsvMax.V + vMin;
+            hsvMax.V = vMax - hsvMax.V + vMin;
         }
 
         newHsvValues.Add(hsvMin);
@@ -1467,8 +1467,8 @@ internal class ColorSpectrum : TemplatedControl
         {
             return;
         }
- 
-        HsvColor                hsvColor   = HsvColor;
+
+        HsvColor hsvColor = HsvColor;
         ColorSpectrumComponents components = Components;
 
         // We'll set the base image and the overlay image based on which component is our third dimension.
@@ -1481,95 +1481,95 @@ internal class ColorSpectrum : TemplatedControl
         {
             case ColorSpectrumComponents.HueValue:
             case ColorSpectrumComponents.ValueHue:
-            {
-                if (_saturationMinimumBitmap == null ||
-                    _saturationMaximumBitmap == null)
                 {
-                    return;
+                    if (_saturationMinimumBitmap == null ||
+                        _saturationMaximumBitmap == null)
+                    {
+                        return;
+                    }
+
+                    ImageBrush spectrumBrush = new ImageBrush(_saturationMinimumBitmap);
+                    ImageBrush spectrumOverlayBrush = new ImageBrush(_saturationMaximumBitmap);
+
+                    _spectrumOverlayRectangle.Opacity = hsvColor.S;
+                    _spectrumRectangle.Fill = spectrumBrush;
+                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
                 }
-
-                ImageBrush spectrumBrush        = new ImageBrush(_saturationMinimumBitmap);
-                ImageBrush spectrumOverlayBrush = new ImageBrush(_saturationMaximumBitmap);
-
-                _spectrumOverlayRectangle.Opacity = hsvColor.S;
-                _spectrumRectangle.Fill           = spectrumBrush;
-                _spectrumOverlayRectangle.Fill    = spectrumOverlayBrush;
-                _spectrumOverlayRectangle.Fill    = spectrumOverlayBrush;
-            }
                 break;
 
             case ColorSpectrumComponents.HueSaturation:
             case ColorSpectrumComponents.SaturationHue:
-            {
-                if (_valueBitmap == null)
                 {
-                    return;
+                    if (_valueBitmap == null)
+                    {
+                        return;
+                    }
+
+                    ImageBrush spectrumBrush = new ImageBrush(_valueBitmap);
+                    ImageBrush spectrumOverlayBrush = new ImageBrush(_valueBitmap);
+
+                    _spectrumOverlayRectangle.Opacity = 1.0;
+                    _spectrumRectangle.Fill = spectrumBrush;
+                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
                 }
-
-                ImageBrush spectrumBrush        = new ImageBrush(_valueBitmap);
-                ImageBrush spectrumOverlayBrush = new ImageBrush(_valueBitmap);
-
-                _spectrumOverlayRectangle.Opacity = 1.0;
-                _spectrumRectangle.Fill           = spectrumBrush;
-                _spectrumOverlayRectangle.Fill    = spectrumOverlayBrush;
-                _spectrumOverlayRectangle.Fill    = spectrumOverlayBrush;
-            }
                 break;
 
             case ColorSpectrumComponents.ValueSaturation:
             case ColorSpectrumComponents.SaturationValue:
-            {
-                if (_hueRedBitmap == null ||
-                    _hueYellowBitmap == null ||
-                    _hueGreenBitmap == null ||
-                    _hueCyanBitmap == null ||
-                    _hueBlueBitmap == null ||
-                    _huePurpleBitmap == null)
                 {
-                    return;
-                }
+                    if (_hueRedBitmap == null ||
+                        _hueYellowBitmap == null ||
+                        _hueGreenBitmap == null ||
+                        _hueCyanBitmap == null ||
+                        _hueBlueBitmap == null ||
+                        _huePurpleBitmap == null)
+                    {
+                        return;
+                    }
 
-                ImageBrush spectrumBrush;
-                ImageBrush spectrumOverlayBrush;
+                    ImageBrush spectrumBrush;
+                    ImageBrush spectrumOverlayBrush;
 
-                double sextant = hsvColor.H / 60.0;
+                    double sextant = hsvColor.H / 60.0;
 
-                if (sextant < 1)
-                {
-                    spectrumBrush        = new ImageBrush(_hueRedBitmap);
-                    spectrumOverlayBrush = new ImageBrush(_hueYellowBitmap);
-                }
-                else if (sextant >= 1 && sextant < 2)
-                {
-                    spectrumBrush        = new ImageBrush(_hueYellowBitmap);
-                    spectrumOverlayBrush = new ImageBrush(_hueGreenBitmap);
-                }
-                else if (sextant >= 2 && sextant < 3)
-                {
-                    spectrumBrush        = new ImageBrush(_hueGreenBitmap);
-                    spectrumOverlayBrush = new ImageBrush(_hueCyanBitmap);
-                }
-                else if (sextant >= 3 && sextant < 4)
-                {
-                    spectrumBrush        = new ImageBrush(_hueCyanBitmap);
-                    spectrumOverlayBrush = new ImageBrush(_hueBlueBitmap);
-                }
-                else if (sextant >= 4 && sextant < 5)
-                {
-                    spectrumBrush        = new ImageBrush(_hueBlueBitmap);
-                    spectrumOverlayBrush = new ImageBrush(_huePurpleBitmap);
-                }
-                else
-                {
-                    spectrumBrush        = new ImageBrush(_huePurpleBitmap);
-                    spectrumOverlayBrush = new ImageBrush(_hueRedBitmap);
-                }
+                    if (sextant < 1)
+                    {
+                        spectrumBrush = new ImageBrush(_hueRedBitmap);
+                        spectrumOverlayBrush = new ImageBrush(_hueYellowBitmap);
+                    }
+                    else if (sextant >= 1 && sextant < 2)
+                    {
+                        spectrumBrush = new ImageBrush(_hueYellowBitmap);
+                        spectrumOverlayBrush = new ImageBrush(_hueGreenBitmap);
+                    }
+                    else if (sextant >= 2 && sextant < 3)
+                    {
+                        spectrumBrush = new ImageBrush(_hueGreenBitmap);
+                        spectrumOverlayBrush = new ImageBrush(_hueCyanBitmap);
+                    }
+                    else if (sextant >= 3 && sextant < 4)
+                    {
+                        spectrumBrush = new ImageBrush(_hueCyanBitmap);
+                        spectrumOverlayBrush = new ImageBrush(_hueBlueBitmap);
+                    }
+                    else if (sextant >= 4 && sextant < 5)
+                    {
+                        spectrumBrush = new ImageBrush(_hueBlueBitmap);
+                        spectrumOverlayBrush = new ImageBrush(_huePurpleBitmap);
+                    }
+                    else
+                    {
+                        spectrumBrush = new ImageBrush(_huePurpleBitmap);
+                        spectrumOverlayBrush = new ImageBrush(_hueRedBitmap);
+                    }
 
-                _spectrumOverlayRectangle.Opacity = sextant - (int)sextant;
-                _spectrumRectangle.Fill           = spectrumBrush;
-                _spectrumOverlayRectangle.Fill    = spectrumOverlayBrush;
-                _spectrumOverlayRectangle.Fill    = spectrumOverlayBrush;
-            }
+                    _spectrumOverlayRectangle.Opacity = sextant - (int)sextant;
+                    _spectrumRectangle.Fill = spectrumBrush;
+                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                }
                 break;
         }
     }
@@ -1594,7 +1594,7 @@ internal class ColorSpectrum : TemplatedControl
             Components == ColorSpectrumComponents.SaturationHue)
         {
             HsvColor hsvColor = HsvColor;
-            Rgb      color    = (new Hsv(hsvColor.H, hsvColor.S, 1.0)).ToRgb();
+            Rgb color = (new Hsv(hsvColor.H, hsvColor.S, 1.0)).ToRgb();
             displayedColor = color.ToColor(hsvColor.A);
         }
         else

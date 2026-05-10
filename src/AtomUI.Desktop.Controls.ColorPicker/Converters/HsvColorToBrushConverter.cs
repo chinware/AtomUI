@@ -11,9 +11,9 @@ internal class HsvColorToBrushConverter : IValueConverter
     {
         EnableAlpha = false
     };
-    
+
     public bool EnableAlpha { get; set; } = true;
-    
+
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is HsvColor color)

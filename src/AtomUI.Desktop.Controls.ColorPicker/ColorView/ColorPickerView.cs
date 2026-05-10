@@ -14,14 +14,14 @@ public class ColorPickerView : AbstractColorPickerView
             Colors.White,
             defaultBindingMode: BindingMode.TwoWay,
             coerce: CoerceColor);
-    
+
     public Color Value
     {
         get => GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
     }
     #endregion
-    
+
     #region 公共事件定义
     public event EventHandler<ColorChangedEventArgs>? ValueChanged;
     #endregion
@@ -56,7 +56,7 @@ public class ColorPickerView : AbstractColorPickerView
             }
         }
     }
-    
+
     protected virtual void NotifyColorChanged(ColorChangedEventArgs e)
     {
         ValueChanged?.Invoke(this, e);

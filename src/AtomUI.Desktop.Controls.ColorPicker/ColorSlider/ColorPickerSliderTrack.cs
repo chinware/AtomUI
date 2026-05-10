@@ -17,14 +17,14 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
 
     public static readonly StyledProperty<AvaloniaButton?> DecreaseButtonProperty =
         AvaloniaProperty.Register<ColorPickerSliderTrack, AvaloniaButton?>(nameof(DecreaseButton));
-    
+
     [Content]
     public Thumb? Thumb
     {
         get => GetValue(ThumbProperty);
         set => SetValue(ThumbProperty, value);
     }
-    
+
     public AvaloniaButton? IncreaseButton
     {
         get => GetValue(IncreaseButtonProperty);
@@ -36,7 +36,7 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
         get => GetValue(DecreaseButtonProperty);
         set => SetValue(DecreaseButtonProperty, value);
     }
-    
+
     #endregion
 
     static ColorPickerSliderTrack()
@@ -57,37 +57,37 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
             Thumb.Measure(availableSize);
             desiredSize = Thumb.DesiredSize;
         }
-        
+
         return desiredSize;
     }
-    
+
     protected override Size ArrangeOverride(Size arrangeSize)
     {
         double decreaseButtonLength;
         double increaseButtonLength;
         double thumbLength = Thumb?.DesiredSize.Width ?? 0;
         ComputeSliderLengths(arrangeSize, out decreaseButtonLength, out increaseButtonLength);
-    
+
         // Layout the pieces of track
-        var offset    = new Point();
+        var offset = new Point();
         var pieceSize = arrangeSize;
-    
+
         CoerceLength(ref decreaseButtonLength, arrangeSize.Width);
         CoerceLength(ref increaseButtonLength, arrangeSize.Width);
         CoerceLength(ref thumbLength, arrangeSize.Width);
-            
+
         pieceSize = pieceSize.WithWidth(decreaseButtonLength);
-    
+
         DecreaseButton?.Arrange(new Rect(offset, pieceSize));
-    
-        offset    = offset.WithX(decreaseButtonLength);
+
+        offset = offset.WithX(decreaseButtonLength);
         pieceSize = pieceSize.WithWidth(increaseButtonLength);
-    
+
         IncreaseButton?.Arrange(new Rect(offset, pieceSize));
-    
-        offset    = offset.WithX(decreaseButtonLength - thumbLength / 2);
+
+        offset = offset.WithX(decreaseButtonLength - thumbLength / 2);
         pieceSize = pieceSize.WithWidth(thumbLength);
-    
+
         if (Thumb != null)
         {
             var bounds = new Rect(offset, pieceSize);
@@ -95,12 +95,12 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
             Thumb.Arrange(bounds);
             Thumb.AdjustDrag(adjust);
         }
-    
+
         ThumbCenterOffset = offset.X;
-        LastDrag          = default;
+        LastDrag = default;
         return arrangeSize;
     }
-    
+
     private void ThumbChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var oldThumb = (Thumb?)change.OldValue;
@@ -108,7 +108,7 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
 
         if (oldThumb != null)
         {
-            oldThumb.DragDelta     -= ThumbDragged;
+            oldThumb.DragDelta -= ThumbDragged;
             oldThumb.DragCompleted -= ThumbDragCompleted;
             LogicalChildren.Remove(oldThumb);
             VisualChildren.Remove(oldThumb);
@@ -116,7 +116,7 @@ internal class ColorPickerSliderTrack : AbstractColorPickerSliderTrack
 
         if (newThumb != null)
         {
-            newThumb.DragDelta     += ThumbDragged;
+            newThumb.DragDelta += ThumbDragged;
             newThumb.DragCompleted += ThumbDragCompleted;
             LogicalChildren.Add(newThumb);
             VisualChildren.Add(newThumb);

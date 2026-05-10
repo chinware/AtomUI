@@ -9,8 +9,8 @@ public class GradientColorChangedEventArgs : EventArgs
         OldColor = oldColor;
         NewColor = newColor;
     }
-    
+
     public LinearGradientBrush? OldColor { get; private set; }
-    
+
     public LinearGradientBrush? NewColor { get; private set; }
 }

@@ -11,7 +11,7 @@ public class ColorPickerPalette : IReadOnlyHeadered
 
     public object Header => Label;
 
-    public ColorPickerPalette(string label, bool isOpen,  IEnumerable<Color> colors)
+    public ColorPickerPalette(string label, bool isOpen, IEnumerable<Color> colors)
     {
         Label = label;
         IsOpen = isOpen;

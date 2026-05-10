@@ -11,20 +11,20 @@ namespace AtomUI.Desktop.Controls;
 
 internal class ColorSliderThumb : Thumb
 {
-    public static readonly StyledProperty<IBrush?> ColorValueBrushProperty = 
-        AvaloniaProperty.Register<ColorSliderThumb, IBrush?>(nameof (ColorValueBrush));
-    
+    public static readonly StyledProperty<IBrush?> ColorValueBrushProperty =
+        AvaloniaProperty.Register<ColorSliderThumb, IBrush?>(nameof(ColorValueBrush));
+
     public IBrush? ColorValueBrush
     {
         get => GetValue(ColorValueBrushProperty);
         set => SetValue(ColorValueBrushProperty, value);
     }
-    
+
     #region 内部属性定义
-    
-    internal static readonly StyledProperty<CornerRadius> InnerCornerRadiusProperty = 
-        AvaloniaProperty.Register<ColorSliderThumb, CornerRadius>(nameof (InnerCornerRadius));
-    
+
+    internal static readonly StyledProperty<CornerRadius> InnerCornerRadiusProperty =
+        AvaloniaProperty.Register<ColorSliderThumb, CornerRadius>(nameof(InnerCornerRadius));
+
     internal CornerRadius InnerCornerRadius
     {
         get => GetValue(InnerCornerRadiusProperty);
@@ -34,7 +34,7 @@ internal class ColorSliderThumb : Thumb
     #endregion
 
     private Border? _innerEllipse;
-    
+
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);

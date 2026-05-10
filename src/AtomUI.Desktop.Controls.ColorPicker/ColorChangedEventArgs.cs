@@ -9,7 +9,7 @@ public class ColorChangedEventArgs : EventArgs
         OldColor = oldColor;
         NewColor = newColor;
     }
-    
+
     public Color? OldColor { get; private set; }
 
     public Color? NewColor { get; private set; }

@@ -15,7 +15,7 @@ internal class PaletteColorItem : AvaloniaRadioButton
 
     public static readonly StyledProperty<Color?> ColorProperty =
         AvaloniaProperty.Register<PaletteColorItem, Color?>(nameof(Color));
-    
+
     public Color? Color
     {
         get => GetValue(ColorProperty);
@@ -28,28 +28,28 @@ internal class PaletteColorItem : AvaloniaRadioButton
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaletteColorItem>();
-    
-    internal static readonly StyledProperty<ITransform?> CheckedMarkRenderTransformProperty = 
-        AvaloniaProperty.Register<PaletteColorItem, ITransform?>(nameof (CheckedMarkRenderTransform));
-    
+
+    internal static readonly StyledProperty<ITransform?> CheckedMarkRenderTransformProperty =
+        AvaloniaProperty.Register<PaletteColorItem, ITransform?>(nameof(CheckedMarkRenderTransform));
+
     internal static readonly DirectProperty<PaletteColorItem, bool> IsLightColorProperty =
         AvaloniaProperty.RegisterDirect<PaletteColorItem, bool>(
             nameof(IsLightColor),
             o => o.IsLightColor,
             (o, v) => o.IsLightColor = v);
-    
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
     internal ITransform? CheckedMarkRenderTransform
     {
         get => GetValue(CheckedMarkRenderTransformProperty);
         set => SetValue(CheckedMarkRenderTransformProperty, value);
     }
-        
+
     private bool _isLightColor;
 
     internal bool IsLightColor
@@ -58,7 +58,7 @@ internal class PaletteColorItem : AvaloniaRadioButton
         set => SetAndRaise(IsLightColorProperty, ref _isLightColor, value);
     }
     #endregion
-    
+
     static PaletteColorItem()
     {
         AffectsRender<PaletteColorItem>(ColorProperty, IsLightColorProperty);

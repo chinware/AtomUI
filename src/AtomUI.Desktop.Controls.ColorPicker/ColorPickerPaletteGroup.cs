@@ -11,32 +11,32 @@ internal class ColorPickerPaletteGroup : TemplatedControl
     public static readonly StyledProperty<List<ColorPickerPalette>?> PaletteGroupProperty =
         AvaloniaProperty.Register<AbstractColorPickerView, List<ColorPickerPalette>?>(
             nameof(PaletteGroup));
-    
+
     public List<ColorPickerPalette>? PaletteGroup
     {
         get => GetValue(PaletteGroupProperty);
         set => SetValue(PaletteGroupProperty, value);
     }
-    
-    public event EventHandler<ColorPickerPaletteColorSelectedEventArgs>? ColorSelected; 
-    
+
+    public event EventHandler<ColorPickerPaletteColorSelectedEventArgs>? ColorSelected;
+
     #region 内部属性定义
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ColorPickerPaletteGroup>();
-    
+
     internal static readonly DirectProperty<ColorPickerPaletteGroup, string?> GroupNameProperty =
         AvaloniaProperty.RegisterDirect<ColorPickerPaletteGroup, string?>(
             nameof(GroupName),
             o => o.GroupName,
             (o, v) => o.GroupName = v);
-    
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
     private string? _groupNameProperty;
     private IDisposable? _colorSelectedDisposable;
 

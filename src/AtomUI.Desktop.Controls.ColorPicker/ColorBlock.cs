@@ -16,25 +16,25 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<ColorBlock>();
-    
+
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<ColorBlock, double>(nameof(Size), Double.NaN);
-    
+
     public static readonly StyledProperty<bool> IsEmptyColorModeProperty =
         AvaloniaProperty.Register<ColorBlock, bool>(nameof(IsEmptyColorMode));
-    
+
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     public double Size
     {
         get => GetValue(SizeProperty);
         set => SetValue(SizeProperty, value);
     }
-    
+
     public bool IsEmptyColorMode
     {
         get => GetValue(IsEmptyColorModeProperty);
@@ -49,7 +49,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         RoutedEvent.Register<SplitButton, RoutedEventArgs>(
             nameof(ClearRequest),
             RoutingStrategies.Bubble);
-    
+
     public event EventHandler<RoutedEventArgs>? ClearRequest
     {
         add => AddHandler(ClearRequestEvent, value);
@@ -65,19 +65,19 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
             nameof(TransparentBgBrush),
             o => o.TransparentBgBrush,
             (o, v) => o.TransparentBgBrush = v);
-    
+
     internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
         AvaloniaProperty.Register<ColorBlock, IBrush?>(nameof(TransparentBgIntervalColor));
-    
+
     internal static readonly StyledProperty<double> TransparentBgSizeProperty =
         AvaloniaProperty.Register<ColorBlock, double>(nameof(TransparentBgSize), 4.0);
-    
+
     internal static readonly DirectProperty<ColorBlock, bool> IsCustomSizeProperty =
         AvaloniaProperty.RegisterDirect<ColorBlock, bool>(
             nameof(IsCustomSize),
             o => o.IsCustomSize,
             (o, v) => o.IsCustomSize = v);
-    
+
     private IBrush? _transparentBgBrush;
 
     internal IBrush? TransparentBgBrush
@@ -85,19 +85,19 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         get => _transparentBgBrush;
         set => SetAndRaise(TransparentBgBrushProperty, ref _transparentBgBrush, value);
     }
-    
+
     internal IBrush? TransparentBgIntervalColor
     {
         get => GetValue(TransparentBgIntervalColorProperty);
         set => SetValue(TransparentBgIntervalColorProperty, value);
     }
-    
+
     internal double TransparentBgSize
     {
         get => GetValue(TransparentBgSizeProperty);
         set => SetValue(TransparentBgSizeProperty, value);
     }
-    
+
     private bool _isCustomSize;
 
     internal bool IsCustomSize
@@ -105,9 +105,9 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
         get => _isCustomSize;
         set => SetAndRaise(IsCustomSizeProperty, ref _isCustomSize, value);
     }
-    
+
     #endregion
-    
+
     static ColorBlock()
     {
         AffectsRender<ColorBlock>(TransparentBgBrushProperty, IsEmptyColorModeProperty);
@@ -131,7 +131,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
                 ConfigureTransparentBgBrush();
             }
         }
-        
+
         if (change.Property == SizeProperty)
         {
             ConfigureSize();
@@ -153,7 +153,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
             }
         }
     }
-    
+
     private void ConfigureSize()
     {
         if (!double.IsNaN(Size))
@@ -173,7 +173,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
                 EdgeMode = EdgeMode.Antialias
             });
             var startPoint = new Point(2, DesiredSize.Height - 2);
-            var endPoint   = new Point(DesiredSize.Width - 2, 2);
+            var endPoint = new Point(DesiredSize.Width - 2, 2);
             context.DrawLine(new Pen(Brushes.Red, 2), startPoint, endPoint);
         }
     }

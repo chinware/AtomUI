@@ -17,6 +17,9 @@
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         <Setter Property="Padding" Value="{atom:ColorPickerTokenResource TriggerPadding}" />
         <Setter Property="EmptyColorText" Value="{atom:ColorPickerLangResource EmptyColorText}" />
+        <Setter Property="IsShowArrow" Value="True" />
+        <Setter Property="ShouldUseOverlayPopup" Value="True" />
+        <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}" />
 
         <Style Selector="^:pointerover, ^:flyout-open">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}" />

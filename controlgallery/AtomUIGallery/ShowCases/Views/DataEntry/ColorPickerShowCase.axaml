@@ -20,25 +20,16 @@
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsShowText="True"/>
                 </StackPanel>
-                
+        
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsShowText="True"/>
                 </StackPanel>
-                
+        
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsShowText="True"/>
                 </StackPanel>
-            </StackPanel>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="controlled mode"
-            Description="Set the component to controlled mode. Will lock the display color if controlled by.">
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" />
-                <atom:ColorPicker DefaultValue="#1677ff" ValueSyncStrategy="OnCompleted"/>
             </StackPanel>
         </gallery:ShowCaseItem>
         
@@ -100,9 +91,18 @@
         <gallery:ShowCaseItem
             Title="controlled mode"
             Description="Set the component to controlled mode. Will lock the display color if controlled by.">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Hover"/>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:ColorPicker DefaultValue="#1677ff"/>
+                <atom:ColorPicker DefaultValue="#1677ff" ValueSyncStrategy="OnCompleted"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+        
+        <gallery:ShowCaseItem
+            Title="Custom Trigger Event"
+            Description="Triggers event for customizing color panels, provide options click and hover.">
+            <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Click"/>
+                <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Hover"/>
             </StackPanel>
         </gallery:ShowCaseItem>
         

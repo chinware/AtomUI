@@ -11,24 +11,42 @@
 
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        Background="{TemplateBinding Background}">
-                    <DockPanel LastChildFill="True">
-                        <atom:ColorBlock Name="PART_ColorIndicator"
-                                         SizeType="{TemplateBinding SizeType}"
-                                         Background="{TemplateBinding ColorBlockBackground}"
-                                         VerticalAlignment="Top"
-                                         DockPanel.Dock="Left"/>
-                        <Panel VerticalAlignment="Center">
-                            <WrapPanel Name="PART_ColorTextPanel"
-                                       IsVisible="{TemplateBinding IsShowText}" />
-                        </Panel>
-                    </DockPanel>
-                </Border>
+                <Panel>
+                    <Border Name="Frame"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}">
+                        <DockPanel LastChildFill="True">
+                            <atom:ColorBlock Name="PART_ColorIndicator"
+                                             SizeType="{TemplateBinding SizeType}"
+                                             Background="{TemplateBinding ColorBlockBackground}"
+                                             VerticalAlignment="Top"
+                                             DockPanel.Dock="Left"/>
+                            <Panel VerticalAlignment="Center">
+                                <WrapPanel Name="PART_ColorTextPanel"
+                                           IsVisible="{TemplateBinding IsShowText}" />
+                            </Panel>
+                        </DockPanel>
+                    </Border>
+                    <atom:Popup Name="PART_Popup"
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="{TemplateBinding IsLightDismissEnabled}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
+                                RequestedPlacement="{TemplateBinding Placement}"
+                                PlacementAnchor="{TemplateBinding PlacementAnchor}"
+                                PlacementGravity="{TemplateBinding PlacementGravity}"
+                                IsPointAtCenter="{TemplateBinding IsPointAtCenter}"
+                                IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
+                                MarginToAnchor="{TemplateBinding MarginToAnchor}">
+                        <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
+                                                IsShowArrow="{TemplateBinding IsShowArrowEffective}"
+                                                ArrowPosition="{TemplateBinding ArrowPosition}"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    </atom:Popup>
+                </Panel>
             </ControlTemplate>
         </Setter>
 

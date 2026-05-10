@@ -15,19 +15,19 @@ namespace AtomUI.Desktop.Controls;
 internal abstract class AbstractColorSlider : RangeBase
 {
     #region 公共属性定义
-    
+
     internal static readonly StyledProperty<IBrush?> TransparentBgIntervalColorProperty =
         AvaloniaProperty.Register<AbstractColorSlider, IBrush?>(nameof(TransparentBgIntervalColor));
-    
+
     internal static readonly StyledProperty<double> TransparentBgSizeProperty =
         AvaloniaProperty.Register<AbstractColorSlider, double>(nameof(TransparentBgSize), 4.0);
-    
+
     internal IBrush? TransparentBgIntervalColor
     {
         get => GetValue(TransparentBgIntervalColorProperty);
         set => SetValue(TransparentBgIntervalColorProperty, value);
     }
-    
+
     internal double TransparentBgSize
     {
         get => GetValue(TransparentBgSizeProperty);
@@ -37,19 +37,19 @@ internal abstract class AbstractColorSlider : RangeBase
     #endregion
 
     #region 内部属性定义
-    
+
     internal static readonly DirectProperty<AbstractColorSlider, IBrush?> TransparentBgBrushProperty =
         AvaloniaProperty.RegisterDirect<AbstractColorSlider, IBrush?>(
             nameof(TransparentBgBrush),
             o => o.TransparentBgBrush,
             (o, v) => o.TransparentBgBrush = v);
-    
+
     internal static readonly DirectProperty<ColorSlider, double> ThumbSizeProperty =
         AvaloniaProperty.RegisterDirect<ColorSlider, double>(
             nameof(ThumbSize),
             o => o.ThumbSize,
             (o, v) => o.ThumbSize = v);
-    
+
     private IBrush? _transparentBgBrush;
 
     internal IBrush? TransparentBgBrush
@@ -57,7 +57,7 @@ internal abstract class AbstractColorSlider : RangeBase
         get => _transparentBgBrush;
         set => SetAndRaise(TransparentBgBrushProperty, ref _transparentBgBrush, value);
     }
-    
+
     private double _thumbSize = 0.0d;
 
     internal double ThumbSize
@@ -67,15 +67,15 @@ internal abstract class AbstractColorSlider : RangeBase
     }
 
     #endregion
-    
+
     protected internal bool IsDragging;
     protected bool IgnorePropertyChanged = false;
     internal const double Tolerance = 0.0001;
     private IDisposable? _pointerMovedDispose;
-    
+
     // Slider required parts
     protected internal AbstractColorPickerSliderTrack? Track;
-    
+
     static AbstractColorSlider()
     {
         PressedMixin.Attach<AbstractColorSlider>();
@@ -84,12 +84,12 @@ internal abstract class AbstractColorSlider : RangeBase
         Thumb.DragCompletedEvent.AddClassHandler<ColorSlider>((x, e) => x.NotifyThumbDragCompleted(e),
             RoutingStrategies.Bubble);
     }
-    
+
     protected void ConfigureCornerRadius(Size size)
     {
         CornerRadius = new CornerRadius(size.Height / 2);
     }
-    
+
     protected override void UpdateDataValidation(
         AvaloniaProperty property,
         BindingValueType state,
@@ -105,12 +105,12 @@ internal abstract class AbstractColorSlider : RangeBase
     {
         IsDragging = true;
     }
-    
+
     protected virtual void NotifyThumbDragCompleted(VectorEventArgs e)
     {
         IsDragging = false;
     }
-    
+
     protected void TrackReleased(object? sender, PointerReleasedEventArgs e)
     {
         IsDragging = false;
@@ -125,7 +125,7 @@ internal abstract class AbstractColorSlider : RangeBase
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        
+
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == TransparentBgIntervalColorProperty ||
@@ -149,7 +149,7 @@ internal abstract class AbstractColorSlider : RangeBase
             TransparentBgBrush = TransparentBgBrushUtils.Build(TransparentBgSize, solidColorBrush.Color);
         }
     }
-    
+
     protected virtual void TrackMoved(object? sender, PointerEventArgs e)
     {
         if (!IsEnabled)
@@ -162,25 +162,25 @@ internal abstract class AbstractColorSlider : RangeBase
             MoveToPoint(e.GetCurrentPoint(Track));
         }
     }
-    
+
     protected virtual void MoveToPoint(PointerPoint posOnTrack)
     {
         if (Track is null)
         {
             return;
         }
-        
+
         var thumbLength = ThumbSize + double.Epsilon;
         var trackLength = Track.Bounds.Width - thumbLength;
-        var trackPos    = posOnTrack.Position.X;
-        var logicalPos  = Math.Clamp((trackPos - thumbLength * 0.5) / trackLength, 0.0d, 1.0d);
-        var calcVal     = Math.Abs(-logicalPos);
-        var range       = Maximum - Minimum;
-        var finalValue  = calcVal * range + Minimum;
-        
+        var trackPos = posOnTrack.Position.X;
+        var logicalPos = Math.Clamp((trackPos - thumbLength * 0.5) / trackLength, 0.0d, 1.0d);
+        var calcVal = Math.Abs(-logicalPos);
+        var range = Maximum - Minimum;
+        var finalValue = calcVal * range + Minimum;
+
         SetCurrentValue(ValueProperty, finalValue);
     }
-    
+
     protected virtual void TrackPressed(object? sender, PointerPressedEventArgs e)
     {
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)

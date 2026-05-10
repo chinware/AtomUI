@@ -13,44 +13,44 @@ internal class ColorPickerInput : TemplatedControl
     #region 公共属性定义
     public static readonly StyledProperty<ColorFormat> FormatProperty =
         AbstractColorPickerView.FormatProperty.AddOwner<ColorPickerInput>();
-   
+
     public static readonly StyledProperty<bool> IsFormatEnabledProperty =
         AbstractColorPickerView.IsFormatEnabledProperty.AddOwner<ColorPickerInput>();
-    
+
     public static readonly StyledProperty<HsvColor> ColorValueProperty =
         AvaloniaProperty.Register<ColorPickerInput, HsvColor>(nameof(ColorValue),
             Colors.White.ToHsv());
-   
+
     public static readonly StyledProperty<bool> IsClearEnabledProperty =
         AbstractColorPickerView.IsClearEnabledProperty.AddOwner<ColorPickerInput>();
-   
+
     public static readonly StyledProperty<bool> IsAlphaVisibleProperty =
         AbstractColorPickerView.IsAlphaVisibleProperty.AddOwner<ColorPickerInput>();
-   
+
     public ColorFormat Format
     {
         get => GetValue(FormatProperty);
         set => SetValue(FormatProperty, value);
     }
-   
+
     public bool IsFormatEnabled
     {
         get => GetValue(IsFormatEnabledProperty);
         set => SetValue(IsFormatEnabledProperty, value);
     }
-    
+
     public HsvColor ColorValue
     {
         get => GetValue(ColorValueProperty);
         set => SetValue(ColorValueProperty, value);
     }
-   
+
     public bool IsClearEnabled
     {
         get => GetValue(IsClearEnabledProperty);
         set => SetValue(IsClearEnabledProperty, value);
     }
-   
+
     public bool IsAlphaVisible
     {
         get => GetValue(IsAlphaVisibleProperty);
@@ -76,7 +76,7 @@ internal class ColorPickerInput : TemplatedControl
     private bool _rValueInputPassiveChanged;
     private bool _gValueInputPassiveChanged;
     private bool _bValueInputPassiveChanged;
-   
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -108,7 +108,8 @@ internal class ColorPickerInput : TemplatedControl
             else if (Format == ColorFormat.Hsva)
             {
                 _colorFormatComboBox.SelectedIndex = 1;
-            } else if (Format == ColorFormat.Rgba)
+            }
+            else if (Format == ColorFormat.Rgba)
             {
                 _colorFormatComboBox.SelectedIndex = 2;
             }
@@ -229,7 +230,7 @@ internal class ColorPickerInput : TemplatedControl
         {
             _bValueInput.ValueChanged -= HandleBValueInputValueChanged;
         }
-      
+
         if (_colorFormatComboBox != null)
         {
             _colorFormatComboBox.SelectionChanged -= HandleFormatChanged;
@@ -237,26 +238,26 @@ internal class ColorPickerInput : TemplatedControl
 
         base.OnApplyTemplate(e);
         _colorFormatComboBox = e.NameScope.Find<ComboBox>("PART_ColorFormatComboBox");
-        _alphaInput          = e.NameScope.Find<NumericUpDown>("PART_AlphaInput");
-        _hexValueInput       = e.NameScope.Find<LineEdit>("PART_HexValueInput");
-        _hValueInput         = e.NameScope.Find<NumericUpDown>("PART_HValueInput");
-        _sValueInput         = e.NameScope.Find<NumericUpDown>("PART_SValueInput");
-        _vValueInput         = e.NameScope.Find<NumericUpDown>("PART_VValueInput");
-        _rValueInput         = e.NameScope.Find<NumericUpDown>("PART_RValueInput");
-        _gValueInput         = e.NameScope.Find<NumericUpDown>("PART_GValueInput");
-        _bValueInput         = e.NameScope.Find<NumericUpDown>("PART_BValueInput");
+        _alphaInput = e.NameScope.Find<NumericUpDown>("PART_AlphaInput");
+        _hexValueInput = e.NameScope.Find<LineEdit>("PART_HexValueInput");
+        _hValueInput = e.NameScope.Find<NumericUpDown>("PART_HValueInput");
+        _sValueInput = e.NameScope.Find<NumericUpDown>("PART_SValueInput");
+        _vValueInput = e.NameScope.Find<NumericUpDown>("PART_VValueInput");
+        _rValueInput = e.NameScope.Find<NumericUpDown>("PART_RValueInput");
+        _gValueInput = e.NameScope.Find<NumericUpDown>("PART_GValueInput");
+        _bValueInput = e.NameScope.Find<NumericUpDown>("PART_BValueInput");
 
         if (_colorFormatComboBox != null)
         {
             _colorFormatComboBox.SelectionChanged += HandleFormatChanged;
             ConfigureComboBoxSelected();
         }
-      
+
         if (_alphaInput != null)
         {
             _alphaInput.ValueChanged += HandleAlphaInputValueChanged;
         }
-      
+
         if (_hexValueInput != null)
         {
             _hexValueInput.TextChanged += HandleHexValueInputTextChanged;
@@ -271,7 +272,7 @@ internal class ColorPickerInput : TemplatedControl
         {
             _sValueInput.ValueChanged += HandleSValueInputValueChanged;
         }
-      
+
         if (_vValueInput != null)
         {
             _vValueInput.ValueChanged += HandleVValueInputValueChanged;
@@ -281,12 +282,12 @@ internal class ColorPickerInput : TemplatedControl
         {
             _rValueInput.ValueChanged += HandleRValueInputValueChanged;
         }
-      
+
         if (_gValueInput != null)
         {
             _gValueInput.ValueChanged += HandleGValueInputValueChanged;
         }
-      
+
         if (_bValueInput != null)
         {
             _bValueInput.ValueChanged += HandleBValueInputValueChanged;
@@ -307,14 +308,14 @@ internal class ColorPickerInput : TemplatedControl
 
     private void ConfigureColorValues()
     {
-        _alphaInputPassiveChanged    = true;
+        _alphaInputPassiveChanged = true;
         _hexValueInputPassiveChanged = true;
-        _hValueInputPassiveChanged   = true;
-        _sValueInputPassiveChanged   = true;
-        _vValueInputPassiveChanged   = true;
-        _rValueInputPassiveChanged   = true;
-        _gValueInputPassiveChanged   = true;
-        _bValueInputPassiveChanged   = true;
+        _hValueInputPassiveChanged = true;
+        _sValueInputPassiveChanged = true;
+        _vValueInputPassiveChanged = true;
+        _rValueInputPassiveChanged = true;
+        _gValueInputPassiveChanged = true;
+        _bValueInputPassiveChanged = true;
         if (Format == ColorFormat.Hex)
         {
             var rgbValue = ColorValue.ToRgb();
@@ -350,7 +351,7 @@ internal class ColorPickerInput : TemplatedControl
             {
                 _gValueInput.Value = rgbValue.G;
             }
-         
+
             if (_bValueInput != null)
             {
                 _bValueInput.Value = rgbValue.B;
@@ -372,53 +373,53 @@ internal class ColorPickerInput : TemplatedControl
             {
                 if (Color.TryParse(colorValue, out var value))
                 {
-                    var       percentage   = _alphaInput?.Value ?? 100m;
-                    byte      alphaValue   = (byte)(percentage * 2.55m);
-                    var       combineValue = Color.FromArgb(alphaValue, value.R, value.G, value.B);
-                    using var scope        = BeginIgnoringConfigureValues();
+                    var percentage = _alphaInput?.Value ?? 100m;
+                    byte alphaValue = (byte)(percentage * 2.55m);
+                    var combineValue = Color.FromArgb(alphaValue, value.R, value.G, value.B);
+                    using var scope = BeginIgnoringConfigureValues();
                     SetCurrentValue(ColorValueProperty, combineValue.ToHsv());
                 }
             }
         }
         else if (Format == ColorFormat.Hsva)
         {
-            var hValue     = (double?)_hValueInput?.Value;
-            var sValue     = (double?)_sValueInput?.Value;
-            var vValue     = (double?)_vValueInput?.Value;
+            var hValue = (double?)_hValueInput?.Value;
+            var sValue = (double?)_sValueInput?.Value;
+            var vValue = (double?)_vValueInput?.Value;
             var percentage = _alphaInput?.Value ?? 100m;
             var alphaValue = (double)percentage / 100;
             if (hValue != null && sValue != null && vValue != null)
             {
-                using var scope         = BeginIgnoringConfigureValues();
-                var       newColorValue = HsvColor.FromAhsv(alphaValue, hValue.Value, sValue.Value / 100, vValue.Value / 100);
+                using var scope = BeginIgnoringConfigureValues();
+                var newColorValue = HsvColor.FromAhsv(alphaValue, hValue.Value, sValue.Value / 100, vValue.Value / 100);
                 SetCurrentValue(ColorValueProperty, newColorValue);
             }
         }
         else if (Format == ColorFormat.Rgba)
         {
-            var  rValue     = _rValueInput?.Value;
-            var  gValue     = _gValueInput?.Value;
-            var  bValue     = _bValueInput?.Value;
-            var  percentage = _alphaInput?.Value ?? 100m;
+            var rValue = _rValueInput?.Value;
+            var gValue = _gValueInput?.Value;
+            var bValue = _bValueInput?.Value;
+            var percentage = _alphaInput?.Value ?? 100m;
             byte alphaValue = (byte)(percentage * 2.55m);
             if (rValue != null && gValue != null && bValue != null)
             {
-                using var scope         = BeginIgnoringConfigureValues();
-                var       newColorValue = Color.FromArgb(alphaValue, (byte)rValue.Value, (byte)gValue.Value, (byte)bValue.Value);
+                using var scope = BeginIgnoringConfigureValues();
+                var newColorValue = Color.FromArgb(alphaValue, (byte)rValue.Value, (byte)gValue.Value, (byte)bValue.Value);
                 SetCurrentValue(ColorValueProperty, newColorValue.ToHsv());
             }
         }
     }
-   
+
     private IgnoreConfigureValues BeginIgnoringConfigureValues() => new IgnoreConfigureValues(this);
-    
+
     private readonly struct IgnoreConfigureValues : IDisposable
     {
         private readonly ColorPickerInput _owner;
 
         public IgnoreConfigureValues(ColorPickerInput owner)
         {
-            _owner                          = owner;
+            _owner = owner;
             _owner._ignoringConfigureValues = true;
         }
 

@@ -25,38 +25,38 @@ internal class ColorSlider : AbstractColorSlider
             nameof(Color),
             Colors.White,
             defaultBindingMode: BindingMode.TwoWay);
-    
+
     public static readonly StyledProperty<ColorComponent> ColorComponentProperty =
         AvaloniaProperty.Register<ColorSlider, ColorComponent>(
             nameof(ColorComponent),
             ColorComponent.Component1);
-    
+
     public static readonly StyledProperty<ColorModel> ColorModelProperty =
         AvaloniaProperty.Register<ColorSlider, ColorModel>(
             nameof(ColorModel),
             ColorModel.Rgba);
-    
+
     public static readonly StyledProperty<HsvColor> HsvColorProperty =
         AvaloniaProperty.Register<ColorSlider, HsvColor>(
             nameof(HsvColor),
             Colors.White.ToHsv(),
             defaultBindingMode: BindingMode.TwoWay);
-    
+
     public static readonly StyledProperty<bool> IsAlphaVisibleProperty =
         AvaloniaProperty.Register<ColorSlider, bool>(
             nameof(IsAlphaVisible),
             false);
-    
+
     public static readonly StyledProperty<bool> IsPerceptiveProperty =
         AvaloniaProperty.Register<ColorSlider, bool>(
             nameof(IsPerceptive),
             true);
-    
+
     public static readonly StyledProperty<bool> IsRoundingEnabledProperty =
         AvaloniaProperty.Register<ColorSlider, bool>(
             nameof(IsRoundingEnabled),
             false);
-    
+
     public Color Color
     {
         get => GetValue(ColorProperty);
@@ -68,25 +68,25 @@ internal class ColorSlider : AbstractColorSlider
         get => GetValue(ColorComponentProperty);
         set => SetValue(ColorComponentProperty, value);
     }
-    
+
     public ColorModel ColorModel
     {
         get => GetValue(ColorModelProperty);
         set => SetValue(ColorModelProperty, value);
     }
-    
+
     public HsvColor HsvColor
     {
         get => GetValue(HsvColorProperty);
         set => SetValue(HsvColorProperty, value);
     }
-    
+
     public bool IsAlphaVisible
     {
         get => GetValue(IsAlphaVisibleProperty);
         set => SetValue(IsAlphaVisibleProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether the slider adapts rendering to improve user-perception
     /// over exactness.
@@ -108,7 +108,7 @@ internal class ColorSlider : AbstractColorSlider
         get => GetValue(IsPerceptiveProperty);
         set => SetValue(IsPerceptiveProperty, value);
     }
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether rounding of color component values is enabled.
     /// </summary>
@@ -125,20 +125,20 @@ internal class ColorSlider : AbstractColorSlider
     #endregion
 
     #region 内部属性定义
-    
-    internal static readonly StyledProperty<IBrush?> ThumbColorValueBrushProperty = 
-        AvaloniaProperty.Register<ColorSlider, IBrush?>(nameof (ThumbColorValueBrush));
-    
+
+    internal static readonly StyledProperty<IBrush?> ThumbColorValueBrushProperty =
+        AvaloniaProperty.Register<ColorSlider, IBrush?>(nameof(ThumbColorValueBrush));
+
     internal IBrush? ThumbColorValueBrush
     {
         get => GetValue(ThumbColorValueBrushProperty);
         set => SetValue(ThumbColorValueBrushProperty, value);
     }
-    
+
     #endregion
-    
+
     public event EventHandler<ColorChangedEventArgs>? ColorChanged;
-    
+
     /// <summary>
     /// Defines the maximum hue component value
     /// (other components are always 0..100 or 0.255).
@@ -147,7 +147,7 @@ internal class ColorSlider : AbstractColorSlider
     /// This should match the default <see cref="ColorSpectrum.MaxHue"/> property.
     /// </remarks>
     internal const double MaxHue = 359;
-    
+
     private Bitmap? _backgroundBitmap;
     private AvaloniaButton? _decreaseButton;
     private AvaloniaButton? _increaseButton;
@@ -160,7 +160,7 @@ internal class ColorSlider : AbstractColorSlider
     {
         ValueProperty.OverrideMetadata<ColorSlider>(new(enableDataValidation: true));
     }
-    
+
     /// <summary>
     /// Updates the visual state of the control by applying latest PseudoClasses.
     /// </summary>
@@ -202,7 +202,7 @@ internal class ColorSlider : AbstractColorSlider
             }
         }
     }
-    
+
     /// <summary>
     /// Generates a new background image for the color slider and applies it.
     /// </summary>
@@ -222,7 +222,7 @@ internal class ColorSlider : AbstractColorSlider
 
             if (Track != null)
             {
-                pixelWidth  = Convert.ToInt32(Track.Bounds.Width * scale);
+                pixelWidth = Convert.ToInt32(Track.Bounds.Width * scale);
                 pixelHeight = Convert.ToInt32(Track.Bounds.Height * scale);
             }
             else
@@ -230,7 +230,7 @@ internal class ColorSlider : AbstractColorSlider
                 // As a fallback, attempt to calculate using the overall control size
                 // This shouldn't happen as a track is a required template part of a slider
                 // However, if it does, the spectrum gradient will still be shown
-                pixelWidth  = Convert.ToInt32(Bounds.Width * scale);
+                pixelWidth = Convert.ToInt32(Bounds.Width * scale);
                 pixelHeight = Convert.ToInt32(Bounds.Height * scale);
             }
 
@@ -265,7 +265,7 @@ internal class ColorSlider : AbstractColorSlider
             System.Diagnostics.Debug.WriteLine($"Error in UpdateBackgroundAsync: {ex.Message}");
         }
     }
-    
+
     /// <summary>
     /// Rounds the component values of the given <see cref="HsvColor"/>.
     /// This is useful for user-display and to ensure a color matches user selection exactly.
@@ -307,22 +307,22 @@ internal class ColorSlider : AbstractColorSlider
                 case ColorComponent.Alpha:
                     Minimum = 0;
                     Maximum = 100;
-                    Value   = hsvColor.A * 100;
+                    Value = hsvColor.A * 100;
                     break;
                 case ColorComponent.Component1: // Hue
                     Minimum = 0;
                     Maximum = MaxHue;
-                    Value   = hsvColor.H;
+                    Value = hsvColor.H;
                     break;
                 case ColorComponent.Component2: // Saturation
                     Minimum = 0;
                     Maximum = 100;
-                    Value   = hsvColor.S * 100;
+                    Value = hsvColor.S * 100;
                     break;
                 case ColorComponent.Component3: // Value
                     Minimum = 0;
                     Maximum = 100;
-                    Value   = hsvColor.V * 100;
+                    Value = hsvColor.V * 100;
                     break;
             }
         }
@@ -335,22 +335,22 @@ internal class ColorSlider : AbstractColorSlider
                 case ColorComponent.Alpha:
                     Minimum = 0;
                     Maximum = 255;
-                    Value   = Convert.ToDouble(rgbColor.A);
+                    Value = Convert.ToDouble(rgbColor.A);
                     break;
                 case ColorComponent.Component1: // Red
                     Minimum = 0;
                     Maximum = 255;
-                    Value   = Convert.ToDouble(rgbColor.R);
+                    Value = Convert.ToDouble(rgbColor.R);
                     break;
                 case ColorComponent.Component2: // Green
                     Minimum = 0;
                     Maximum = 255;
-                    Value   = Convert.ToDouble(rgbColor.G);
+                    Value = Convert.ToDouble(rgbColor.G);
                     break;
                 case ColorComponent.Component3: // Blue
                     Minimum = 0;
                     Maximum = 255;
-                    Value   = Convert.ToDouble(rgbColor.B);
+                    Value = Convert.ToDouble(rgbColor.B);
                     break;
             }
         }
@@ -361,10 +361,10 @@ internal class ColorSlider : AbstractColorSlider
     /// </summary>
     private (Color, HsvColor) GetColorFromSliderValues()
     {
-        HsvColor hsvColor      = new HsvColor();
-        Color    rgbColor      = new Color();
-        double   sliderPercent = Value / (Maximum - Minimum);
-        var      component     = ColorComponent;
+        HsvColor hsvColor = new HsvColor();
+        Color rgbColor = new Color();
+        double sliderPercent = Value / (Maximum - Minimum);
+        var component = ColorComponent;
 
         if (ColorModel == ColorModel.Hsva)
         {
@@ -373,25 +373,25 @@ internal class ColorSlider : AbstractColorSlider
             switch (component)
             {
                 case ColorComponent.Alpha:
-                {
-                    hsvColor = new HsvColor(sliderPercent, baseHsvColor.H, baseHsvColor.S, baseHsvColor.V);
-                    break;
-                }
+                    {
+                        hsvColor = new HsvColor(sliderPercent, baseHsvColor.H, baseHsvColor.S, baseHsvColor.V);
+                        break;
+                    }
                 case ColorComponent.Component1:
-                {
-                    hsvColor = new HsvColor(baseHsvColor.A, sliderPercent * MaxHue, baseHsvColor.S, baseHsvColor.V);
-                    break;
-                }
+                    {
+                        hsvColor = new HsvColor(baseHsvColor.A, sliderPercent * MaxHue, baseHsvColor.S, baseHsvColor.V);
+                        break;
+                    }
                 case ColorComponent.Component2:
-                {
-                    hsvColor = new HsvColor(baseHsvColor.A, baseHsvColor.H, sliderPercent, baseHsvColor.V);
-                    break;
-                }
+                    {
+                        hsvColor = new HsvColor(baseHsvColor.A, baseHsvColor.H, sliderPercent, baseHsvColor.V);
+                        break;
+                    }
                 case ColorComponent.Component3:
-                {
-                    hsvColor = new HsvColor(baseHsvColor.A, baseHsvColor.H, baseHsvColor.S, sliderPercent);
-                    break;
-                }
+                    {
+                        hsvColor = new HsvColor(baseHsvColor.A, baseHsvColor.H, baseHsvColor.S, sliderPercent);
+                        break;
+                    }
             }
 
             rgbColor = hsvColor.ToRgb();
@@ -437,9 +437,9 @@ internal class ColorSlider : AbstractColorSlider
     /// <returns>The equivalent, perceived background color.</returns>
     private HsvColor GetPerceptiveBackgroundColor(HsvColor hsvColor)
     {
-        var component      = ColorComponent;
+        var component = ColorComponent;
         var isAlphaVisible = IsAlphaVisible;
-        var isPerceptive   = IsPerceptive;
+        var isPerceptive = IsPerceptive;
 
         if (isAlphaVisible == false &&
             component != ColorComponent.Alpha)
@@ -472,9 +472,9 @@ internal class ColorSlider : AbstractColorSlider
     /// <returns>The equivalent, perceived background color.</returns>
     private Color GetPerceptiveBackgroundColor(Color rgbColor)
     {
-        var component      = ColorComponent;
+        var component = ColorComponent;
         var isAlphaVisible = IsAlphaVisible;
-        var isPerceptive   = IsPerceptive;
+        var isPerceptive = IsPerceptive;
 
         if (isAlphaVisible == false &&
             component != ColorComponent.Alpha)
@@ -498,7 +498,7 @@ internal class ColorSlider : AbstractColorSlider
         }
         return rgbColor;
     }
-        
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (IgnorePropertyChanged)
@@ -596,7 +596,7 @@ internal class ColorSlider : AbstractColorSlider
 
         base.OnPropertyChanged(change);
     }
-          
+
     protected virtual void NotifyColorChanged(ColorChangedEventArgs e)
     {
         ColorChanged?.Invoke(this, e);
@@ -605,7 +605,7 @@ internal class ColorSlider : AbstractColorSlider
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
+
         _decreaseButtonPressDispose?.Dispose();
         _decreaseButtonReleaseDispose?.Dispose();
         _increaseButtonSubscription?.Dispose();

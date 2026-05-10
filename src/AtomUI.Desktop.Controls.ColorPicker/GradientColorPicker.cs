@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -14,25 +13,25 @@ public class GradientColorPicker : AbstractColorPicker
     #region 公共属性定义
     public static readonly StyledProperty<LinearGradientBrush?> DefaultValueProperty =
         GradientColorPickerView.DefaultValueProperty.AddOwner<GradientColorPicker>();
-    
+
     public static readonly StyledProperty<LinearGradientBrush?> ValueProperty =
         GradientColorPickerView.ValueProperty.AddOwner<GradientColorPicker>();
-    
+
     public static readonly AttachedProperty<Action<LinearGradientBrush?, ColorFormat, Avalonia.Controls.Controls>?> ColorTextFormatterProperty =
         AvaloniaProperty.RegisterAttached<GradientColorPicker, Control, Action<LinearGradientBrush?, ColorFormat, Avalonia.Controls.Controls>?>("ColorTextFormatter");
-    
+
     public LinearGradientBrush? DefaultValue
     {
         get => GetValue(DefaultValueProperty);
         set => SetValue(DefaultValueProperty, value);
     }
-    
+
     public LinearGradientBrush? Value
     {
         get => GetValue(ValueProperty);
         private set => SetValue(ValueProperty, value);
     }
-    
+
     public static Action<LinearGradientBrush?, ColorFormat, Avalonia.Controls.Controls>? GetColorTextFormatter(GradientColorPicker colorPicker)
     {
         return colorPicker.GetValue(ColorTextFormatterProperty);
@@ -43,13 +42,13 @@ public class GradientColorPicker : AbstractColorPicker
         colorPicker.SetValue(ColorTextFormatterProperty, formatter);
     }
     #endregion
-    
+
     #region 公共事件定义
     /// <summary>
     /// Keep distributing as long as there are changes
     /// </summary>
     public event EventHandler<GradientColorChangedEventArgs>? GradientValueChanged;
-    
+
     /// <summary>
     /// Dispatched once when Flyout is closed
     /// </summary>
@@ -75,7 +74,7 @@ public class GradientColorPicker : AbstractColorPicker
             nameof(ActivatedStopIndex),
             o => o.ActivatedStopIndex,
             (o, v) => o.ActivatedStopIndex = v);
-    
+
     private int? _activatedStopIndex;
 
     internal int? ActivatedStopIndex
@@ -85,17 +84,17 @@ public class GradientColorPicker : AbstractColorPicker
     }
 
     #endregion
-    
+
     private GradientColorPickerView? _presenter;
     private WrapPanel? _textPanel;
     private int? _latestActivatedStopIndex;
     private ColorBlock? _colorIndicator;
-    
+
     static GradientColorPicker()
     {
         AffectsMeasure<GradientColorPicker>(ColorTextFormatterProperty);
     }
-    
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -103,13 +102,14 @@ public class GradientColorPicker : AbstractColorPicker
         {
             NotifyValueChanged(new GradientColorChangedEventArgs(change.GetOldValue<LinearGradientBrush?>(),
                 change.GetNewValue<LinearGradientBrush?>()));
+            NotifyFormValueChanged();
         }
 
         if (change.Property == ColorTextFormatterProperty)
         {
             GenerateValueText();
         }
-        
+
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == DefaultValueProperty)
@@ -121,7 +121,7 @@ public class GradientColorPicker : AbstractColorPicker
                 if (Value != null)
                 {
                     Value.StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative);
-                    Value.EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative);
+                    Value.EndPoint = new RelativePoint(1, 0.5, RelativeUnit.Relative);
                 }
                 GenerateValueText();
                 GenerateColorBlockBackground();
@@ -132,9 +132,9 @@ public class GradientColorPicker : AbstractColorPicker
                 HandleGradientActiveStopChanged(ActivatedStopIndex);
             }
         }
-        
+
     }
-    
+
     protected override void GenerateValueText()
     {
         if (_textPanel == null || !IsShowText)
@@ -148,8 +148,8 @@ public class GradientColorPicker : AbstractColorPicker
         }
         else
         {
-            var stops        = Value.GradientStops;
-            var stopsCount   = stops.Count;
+            var stops = Value.GradientStops;
+            var stopsCount = stops.Count;
             if (stopsCount < textRunCount)
             {
                 // 删除多于的
@@ -158,10 +158,10 @@ public class GradientColorPicker : AbstractColorPicker
                 {
                     _textPanel.Children.Remove(_textPanel.Children.Last());
                 }
-            } 
+            }
             else if (stopsCount > textRunCount)
             {
-                var delta   = stopsCount - textRunCount;
+                var delta = stopsCount - textRunCount;
                 for (var i = 0; i < delta; i++)
                 {
                     var textBlock = new AvaloniaTextBlock();
@@ -187,10 +187,10 @@ public class GradientColorPicker : AbstractColorPicker
             {
                 for (var i = 0; i < textRunCount; i++)
                 {
-                    var stop      = Value.GradientStops[i];
-                    var textBlock       = _textPanel.Children[i] as AvaloniaTextBlock;
+                    var stop = Value.GradientStops[i];
+                    var textBlock = _textPanel.Children[i] as AvaloniaTextBlock;
                     var colorText = FormatColor(stop.Color, Format);
-                    var percent   = $"{stop.Offset * 100:0}%";
+                    var percent = $"{stop.Offset * 100:0}%";
                     if (textBlock != null)
                     {
                         if (i < textRunCount - 1)
@@ -199,7 +199,7 @@ public class GradientColorPicker : AbstractColorPicker
                         }
                         else
                         {
-                            
+
                             textBlock.Text = $"{colorText} {percent}";
                         }
                     }
@@ -207,7 +207,7 @@ public class GradientColorPicker : AbstractColorPicker
             }
         }
     }
-    
+
     protected override void GenerateColorBlockBackground()
     {
         if (_colorIndicator != null)
@@ -224,43 +224,40 @@ public class GradientColorPicker : AbstractColorPicker
         }
     }
 
-    protected override Flyout CreatePickerFlyout()
+    protected override Control CreatePickerPresenter()
     {
-        var flyout = new GradientColorPickerFlyout();
+        var presenter = new GradientColorPickerView();
+        presenter[!GradientColorPickerView.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        presenter[!GradientColorPickerView.IsClearEnabledProperty] = this[!IsClearEnabledProperty];
+        presenter[!GradientColorPickerView.FormatProperty] = this[!FormatProperty];
+        presenter[!GradientColorPickerView.IsAlphaEnabledProperty] = this[!IsAlphaEnabledProperty];
+        presenter[!GradientColorPickerView.IsFormatEnabledProperty] = this[!IsFormatEnabledProperty];
+        presenter[!GradientColorPickerView.IsPaletteGroupEnabledProperty] = this[!IsPaletteGroupEnabledProperty];
+        presenter[!GradientColorPickerView.PaletteGroupProperty] = this[!PaletteGroupProperty];
 
-        flyout[!GradientColorPickerFlyout.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
-        flyout[!GradientColorPickerFlyout.IsClearEnabledProperty]        = this[!IsClearEnabledProperty];
-        flyout[!GradientColorPickerFlyout.FormatProperty]                = this[!FormatProperty];
-        flyout[!GradientColorPickerFlyout.IsAlphaEnabledProperty]        = this[!IsAlphaEnabledProperty];
-        flyout[!GradientColorPickerFlyout.IsFormatEnabledProperty]       = this[!IsFormatEnabledProperty];
-        flyout[!GradientColorPickerFlyout.IsPaletteGroupEnabledProperty] = this[!IsPaletteGroupEnabledProperty];
-        flyout[!GradientColorPickerFlyout.PaletteGroupProperty]          = this[!PaletteGroupProperty];
-        
-        return flyout;
+        return presenter;
     }
-    
-    protected override void NotifyFlyoutPresenterCreated(Control control)
+
+    protected override void NotifyPickerPresenterCreated(Control pickerPresenter)
     {
-        if (control is FlyoutPresenter flyoutPresenter && flyoutPresenter.Content is GradientColorPickerView presenter)
-        {
-            _presenter = presenter;
-        }
+        _presenter = pickerPresenter as GradientColorPickerView;
     }
 
     private void HandleColorPickerViewValueChanged(object? sender, GradientColorChangedEventArgs args)
     {
-        if (IsFlyoutOpen)
+        if (IsPickerOpen)
         {
             SetCurrentValue(ValueProperty, args.NewColor);
         }
     }
 
-    protected override void NotifyFlyoutOpened()
+    protected override void NotifyPickerOpened()
     {
+        base.NotifyPickerOpened();
         if (_presenter != null)
         {
             _presenter.GradientValueChanged += HandleColorPickerViewValueChanged;
-            _presenter.ColorValueCleared    += HandleColorCleared;
+            _presenter.ColorValueCleared += HandleColorCleared;
             var effectiveColor = Value ?? DefaultValue;
             this[!ActivatedStopIndexProperty] = _presenter[!GradientColorPickerView.ActivatedStopIndexProperty];
             if (effectiveColor != null)
@@ -271,7 +268,7 @@ public class GradientColorPicker : AbstractColorPicker
         }
     }
 
-    protected override void NotifyFlyoutClosed()
+    protected override void NotifyPickerClosed()
     {
         if (_presenter != null)
         {
@@ -279,11 +276,12 @@ public class GradientColorPicker : AbstractColorPicker
             {
                 ValueSelected?.Invoke(this, new GradientColorSelectedEventArgs(Value));
             }
-            _latestActivatedStopIndex       =  ActivatedStopIndex;
+            _latestActivatedStopIndex = ActivatedStopIndex;
             _presenter.GradientValueChanged -= HandleColorPickerViewValueChanged;
-            _presenter.ColorValueCleared    -= HandleColorCleared;
+            _presenter.ColorValueCleared -= HandleColorCleared;
             SetCurrentValue(ActivatedStopIndexProperty, null);
         }
+        base.NotifyPickerClosed();
     }
 
     private void HandleGradientActiveStopChanged(int? index)
@@ -307,7 +305,7 @@ public class GradientColorPicker : AbstractColorPicker
             }
         }
     }
-    
+
     internal void NotifyValueChanged(GradientColorChangedEventArgs e)
     {
         GradientValueChanged?.Invoke(this, e);
@@ -316,18 +314,18 @@ public class GradientColorPicker : AbstractColorPicker
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        Value           ??= DefaultValue;
-        _textPanel      =   e.NameScope.Find<WrapPanel>("PART_ColorTextPanel");
-        _colorIndicator =   e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
+        Value ??= DefaultValue;
+        _textPanel = e.NameScope.Find<WrapPanel>("PART_ColorTextPanel");
+        _colorIndicator = e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
         GenerateValueText();
         GenerateColorBlockBackground();
     }
-    
+
     private void HandleColorCleared(object? sender, EventArgs args)
     {
         ClearColor();
     }
-    
+
     private void ClearColor()
     {
         if (_colorIndicator != null)
@@ -339,7 +337,7 @@ public class GradientColorPicker : AbstractColorPicker
             _textPanel?.Children.Add(emptyTextBlock);
         }
     }
-    
+
     #region 实现 FormItem 接口
     protected override void NotifySetFormValue(object? value)
     {

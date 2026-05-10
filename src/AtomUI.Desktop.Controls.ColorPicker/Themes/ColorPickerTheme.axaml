@@ -11,24 +11,42 @@
 
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
-                    <StackPanel Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
-                        <atom:ColorBlock Name="PART_ColorIndicator"
-                                         SizeType="{TemplateBinding SizeType}"
-                                         Background="{TemplateBinding ColorBlockBackground}" />
-                        <TextBlock Name="ColorText"
-                                   IsVisible="{TemplateBinding IsShowText}"
-                                   Text="{TemplateBinding ColorText}"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
-                </Border>
+                <Panel>
+                    <Border Name="Frame"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <atom:ColorBlock Name="PART_ColorIndicator"
+                                             SizeType="{TemplateBinding SizeType}"
+                                             Background="{TemplateBinding ColorBlockBackground}" />
+                            <TextBlock Name="ColorText"
+                                       IsVisible="{TemplateBinding IsShowText}"
+                                       Text="{TemplateBinding ColorText}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                    <atom:Popup Name="PART_Popup"
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="{TemplateBinding IsLightDismissEnabled}"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
+                                RequestedPlacement="{TemplateBinding Placement}"
+                                PlacementAnchor="{TemplateBinding PlacementAnchor}"
+                                PlacementGravity="{TemplateBinding PlacementGravity}"
+                                IsPointAtCenter="{TemplateBinding IsPointAtCenter}"
+                                IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
+                                MarginToAnchor="{TemplateBinding MarginToAnchor}">
+                        <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
+                                                IsShowArrow="{TemplateBinding IsShowArrowEffective}"
+                                                ArrowPosition="{TemplateBinding ArrowPosition}"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    </atom:Popup>
+                </Panel>
             </ControlTemplate>
         </Setter>
     </ControlTheme>
