@@ -15,7 +15,7 @@
                            LastChildFill="True">
                     <Border Name="ButtonsFrame"
                             BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
-                            IsVisible="{TemplateBinding ButtonsPanelVisible}"
+                            IsVisible="{TemplateBinding IsButtonsPanelVisible}"
                             DockPanel.Dock="Bottom">
                         <Panel Name="ButtonsLayout">
                             <atom:Button

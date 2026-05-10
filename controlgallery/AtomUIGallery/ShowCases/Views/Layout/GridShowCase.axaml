@@ -144,7 +144,7 @@
                 </atom:Row>
 
                 <TextBlock Classes="grid-section-title">Vertical</TextBlock>
-                <atom:Row Gutter="16,24" Wrap="True">
+                <atom:Row Gutter="16,24" IsWrapped="True">
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
                             <TextBlock Classes="grid-cell-text">col-6</TextBlock>

@@ -24,8 +24,8 @@ public abstract class AbstractProgressBar : RangeBase,
     public static readonly StyledProperty<bool> IsIndeterminateProperty =
         AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsIndeterminate));
     
-    public static readonly StyledProperty<bool> IsShowProgressInfoProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsShowProgressInfo), true);
+    public static readonly StyledProperty<bool> IsProgressInfoVisibleProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsProgressInfoVisible), true);
     
     public static readonly StyledProperty<string> ProgressTextFormatProperty =
         AvaloniaProperty.Register<AbstractProgressBar, string>(nameof(ProgressTextFormat), "{0:0}%");
@@ -82,10 +82,10 @@ public abstract class AbstractProgressBar : RangeBase,
     /// <summary>
     /// Gets or sets a value indicating whether progress text will be shown.
     /// </summary>
-    public bool IsShowProgressInfo
+    public bool IsProgressInfoVisible
     {
-        get => GetValue(IsShowProgressInfoProperty);
-        set => SetValue(IsShowProgressInfoProperty, value);
+        get => GetValue(IsProgressInfoVisibleProperty);
+        set => SetValue(IsProgressInfoVisibleProperty, value);
     }
 
     /// <summary>
@@ -194,11 +194,11 @@ public abstract class AbstractProgressBar : RangeBase,
     internal static readonly StyledProperty<IBrush?> GrooveBrushProperty =
         AvaloniaProperty.Register<AbstractProgressBar, IBrush?>(nameof(GrooveBrush));
 
-    internal static readonly StyledProperty<bool> PercentLabelVisibleProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(PercentLabelVisible), true);
+    internal static readonly StyledProperty<bool> IsPercentLabelVisibleProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsPercentLabelVisible), true);
 
-    internal static readonly StyledProperty<bool> StatusIconVisibleProperty =
-        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(StatusIconVisible), true);
+    internal static readonly StyledProperty<bool> IsStatusIconVisibleProperty =
+        AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsStatusIconVisible), true);
 
     internal static readonly StyledProperty<bool> IsCompletedProperty =
         AvaloniaProperty.Register<AbstractProgressBar, bool>(nameof(IsCompleted));
@@ -225,16 +225,16 @@ public abstract class AbstractProgressBar : RangeBase,
         set => SetValue(GrooveBrushProperty, value);
     }
 
-    internal bool PercentLabelVisible
+    internal bool IsPercentLabelVisible
     {
-        get => GetValue(PercentLabelVisibleProperty);
-        set => SetValue(PercentLabelVisibleProperty, value);
+        get => GetValue(IsPercentLabelVisibleProperty);
+        set => SetValue(IsPercentLabelVisibleProperty, value);
     }
 
-    internal bool StatusIconVisible
+    internal bool IsStatusIconVisible
     {
-        get => GetValue(StatusIconVisibleProperty);
-        set => SetValue(StatusIconVisibleProperty, value);
+        get => GetValue(IsStatusIconVisibleProperty);
+        set => SetValue(IsStatusIconVisibleProperty, value);
     }
 
     internal bool IsCompleted
@@ -253,7 +253,7 @@ public abstract class AbstractProgressBar : RangeBase,
     static AbstractProgressBar()
     {
         AffectsMeasure<AbstractProgressBar>(EffectiveSizeTypeProperty,
-            IsShowProgressInfoProperty,
+            IsProgressInfoVisibleProperty,
             ProgressTextFormatProperty,
             ValueProperty);
         AffectsRender<AbstractProgressBar>(StrokeBrushProperty,
@@ -333,7 +333,7 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected virtual void NotifyUpdateProgress()
     {
-        if (IsShowProgressInfo && PercentageLabel != null)
+        if (IsProgressInfoVisible && PercentageLabel != null)
         {
             if (Status != ProgressStatus.Exception)
             {

@@ -68,10 +68,10 @@ internal class DrawerContainer : ContentControl
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DrawerContainer>();
 
-    internal static readonly DirectProperty<DrawerContainer, bool> CloseWhenClickOnMaskProperty =
-        AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(CloseWhenClickOnMask),
-            o => o.CloseWhenClickOnMask,
-            (o, v) => o.CloseWhenClickOnMask = v);
+    internal static readonly DirectProperty<DrawerContainer, bool> IsCloseOnMaskClickProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, bool>(nameof(IsCloseOnMaskClick),
+            o => o.IsCloseOnMaskClick,
+            (o, v) => o.IsCloseOnMaskClick = v);
     
     internal static readonly StyledProperty<TimeSpan> MotionDurationProperty =
         MotionAwareControlProperty.MotionDurationProperty.AddOwner<DrawerContainer>();
@@ -161,10 +161,10 @@ internal class DrawerContainer : ContentControl
     
     private bool _closeWhenClickOnMask;
 
-    internal bool CloseWhenClickOnMask
+    internal bool IsCloseOnMaskClick
     {
         get => _closeWhenClickOnMask;
-        set => SetAndRaise(CloseWhenClickOnMaskProperty, ref _closeWhenClickOnMask, value);
+        set => SetAndRaise(IsCloseOnMaskClickProperty, ref _closeWhenClickOnMask, value);
     }
     
     internal TimeSpan MotionDuration
@@ -323,7 +323,7 @@ internal class DrawerContainer : ContentControl
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        if (CloseWhenClickOnMask)
+        if (IsCloseOnMaskClick)
         {
             if (Drawer != null && Drawer.TryGetTarget(out var drawer))
             {

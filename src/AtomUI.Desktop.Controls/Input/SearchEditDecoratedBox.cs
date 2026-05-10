@@ -15,8 +15,8 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
     public static readonly StyledProperty<string> SearchButtonTextProperty =
         SearchEdit.SearchButtonTextProperty.AddOwner<SearchEditDecoratedBox>();
 
-    public static readonly StyledProperty<bool> SearchButtonLoadingProperty = AvaloniaProperty.Register<SearchEditDecoratedBox, bool>(
-        nameof(SearchButtonLoading));
+    public static readonly StyledProperty<bool> IsSearchButtonLoadingProperty = AvaloniaProperty.Register<SearchEditDecoratedBox, bool>(
+        nameof(IsSearchButtonLoading));
     
     public SearchEditButtonStyle SearchButtonStyle
     {
@@ -30,10 +30,10 @@ internal class SearchEditDecoratedBox : AddOnDecoratedBox
         set => SetValue(SearchButtonTextProperty, value);
     }
     
-    public bool SearchButtonLoading
+    public bool IsSearchButtonLoading
     {
-        get => GetValue(SearchButtonLoadingProperty);
-        set => SetValue(SearchButtonLoadingProperty, value);
+        get => GetValue(IsSearchButtonLoadingProperty);
+        set => SetValue(IsSearchButtonLoadingProperty, value);
     }
 
     #endregion

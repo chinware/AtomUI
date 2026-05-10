@@ -45,23 +45,23 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Spin IsSpinning="True" SizeType="Small"
-                               IsShowTip="True"
+                               IsTipVisible="True"
                                Tip="Loading...">
                         <Border Width="100" Height="100" Background="#0D000000" />
                     </atom:Spin>
                     <atom:Spin IsSpinning="True" SizeType="Middle"
-                               IsShowTip="True"
+                               IsTipVisible="True"
                                Tip="Loading...">
                         <Border Width="100" Height="100" Background="#0D000000" />
                     </atom:Spin>
                     <atom:Spin IsSpinning="True" SizeType="Large"
-                               IsShowTip="True"
+                               IsTipVisible="True"
                                Tip="Loading...">
                         <Border Width="100" Height="100" Background="#0D000000" />
                     </atom:Spin>
                 </StackPanel>
                 <atom:Spin IsSpinning="True"
-                           IsShowTip="True"
+                           IsTipVisible="True"
                            Tip="Loading...">
                     <atom:Alert Message="Alert message title"
                                 Description="Further details about the context of this alert."
@@ -76,7 +76,7 @@
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
-                           IsShowTip="True"
+                           IsTipVisible="True"
                            HorizontalAlignment="Stretch"
                            Tip="Loading...">
                     <atom:Alert Message="Alert message title"
@@ -85,7 +85,7 @@
                 </atom:Spin>
 
                 <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
-                           IsShowTip="True"
+                           IsTipVisible="True"
                            Tip="Loading..."
                            HorizontalAlignment="Stretch"
                            IsMaskBlurEnabled="True">

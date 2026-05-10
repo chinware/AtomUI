@@ -17,7 +17,7 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
-                    IsShowHandle="{TemplateBinding ShowButtonSpinner}"
+                    IsShowHandle="{TemplateBinding IsButtonSpinnerVisible}"
                     IsHandleFloatable="{TemplateBinding IsButtonSpinnerFloatable}"
                     ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"
                     Focusable="True"

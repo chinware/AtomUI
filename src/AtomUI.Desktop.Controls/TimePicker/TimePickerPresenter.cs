@@ -70,10 +70,10 @@ internal class TimePickerPresenter : PickerPresenterBase
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<TimePickerPresenter, bool> ButtonsPanelVisibleProperty =
-        AvaloniaProperty.RegisterDirect<TimePickerPresenter, bool>(nameof(ButtonsPanelVisible),
-            o => o.ButtonsPanelVisible,
-            (o, v) => o.ButtonsPanelVisible = v);
+    internal static readonly DirectProperty<TimePickerPresenter, bool> IsButtonsPanelVisibleProperty =
+        AvaloniaProperty.RegisterDirect<TimePickerPresenter, bool>(nameof(IsButtonsPanelVisible),
+            o => o.IsButtonsPanelVisible,
+            (o, v) => o.IsButtonsPanelVisible = v);
 
     internal static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<TimePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
@@ -88,10 +88,10 @@ internal class TimePickerPresenter : PickerPresenterBase
 
     private bool _buttonsPanelVisible = true;
 
-    internal bool ButtonsPanelVisible
+    internal bool IsButtonsPanelVisible
     {
         get => _buttonsPanelVisible;
-        set => SetAndRaise(ButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
+        set => SetAndRaise(IsButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
     }
 
     public TimeSpan? TempSelectedTime
@@ -126,7 +126,7 @@ internal class TimePickerPresenter : PickerPresenterBase
     /// <summary>
     /// 当前是否处于选择中状态
     /// </summary>
-    public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatueChanged;
+    public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatusChanged;
 
     #endregion
     
@@ -201,7 +201,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             };
             _confirmButton.PointerExited += (sender, args) =>
             {
-                ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
+                ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
             };
         }
     }
@@ -232,7 +232,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             _nowButton.HorizontalAlignment = HorizontalAlignment.Left;
         }
 
-        ButtonsPanelVisible = _nowButton.IsVisible || _confirmButton.IsVisible;
+        IsButtonsPanelVisible = _nowButton.IsVisible || _confirmButton.IsVisible;
     }
 
     private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
@@ -278,7 +278,7 @@ internal class TimePickerPresenter : PickerPresenterBase
 
     protected override void OnConfirmed()
     {
-        ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
+        ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
         base.OnConfirmed();
     }
 
@@ -291,7 +291,7 @@ internal class TimePickerPresenter : PickerPresenterBase
             _choosingStateDisposable = _timeView.GetObservable(TimeView.IsPointerInSelectorProperty)
                 .Subscribe(isPointer =>
                 {
-                    ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(isPointer));
+                    ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(isPointer));
                 });
         }
     }

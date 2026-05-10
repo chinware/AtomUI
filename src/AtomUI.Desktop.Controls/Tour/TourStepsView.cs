@@ -34,8 +34,8 @@ internal class TourStepsView : SelectingItemsControl
     public static readonly StyledProperty<TourStyleType> StyleTypeProperty =
         Tour.StyleTypeProperty.AddOwner<TourStepsView>();
     
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        Tour.IsShowArrowProperty.AddOwner<TourStepsView>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        Tour.IsArrowVisibleProperty.AddOwner<TourStepsView>();
     
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         Tour.IsPointAtCenterProperty.AddOwner<TourStepsView>();
@@ -73,10 +73,10 @@ internal class TourStepsView : SelectingItemsControl
         set => SetValue(StyleTypeProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -214,7 +214,7 @@ internal class TourStepsView : SelectingItemsControl
             tourStep[!TourStep.CloseIconTemplateProperty] = this[!CloseIconProperty];
             // TODO 需要审查
             BindUtils.RelayBind(this, StyleTypeProperty, tourStep, TourStep.StyleTypeProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, IsShowArrowProperty, tourStep, TourStep.IsShowArrowProperty, priority: BindingPriority.Template);
+            BindUtils.RelayBind(this, IsArrowVisibleProperty, tourStep, TourStep.IsArrowVisibleProperty, priority: BindingPriority.Template);
             BindUtils.RelayBind(this, IsPointAtCenterProperty, tourStep, TourStep.IsPointAtCenterProperty, priority: BindingPriority.Template);
             BindUtils.RelayBind(this, PlacementProperty, tourStep, TourStep.PlacementProperty, priority: BindingPriority.Template);
             BindUtils.RelayBind(this, IsShowMaskProperty, tourStep, TourStep.IsShowMaskProperty, priority: BindingPriority.Template);

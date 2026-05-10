@@ -15,7 +15,7 @@ public class FormUrlValidator : AbstractFormValidator
         RegexOptions.Compiled | RegexOptions.IgnoreCase,
         TimeSpan.FromMilliseconds(250));
     
-    protected override async Task<bool> NotifyValidateAsync(string fieldName, object? value, CancellationToken cancellationToken)
+    protected override async Task<bool> ValidateCoreAsync(string fieldName, object? value, CancellationToken cancellationToken)
     {
         var isValid  = true;
         var strValue = value as string;

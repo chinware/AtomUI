@@ -93,7 +93,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
     // 根据当前的状态进行计算
     protected virtual Size CalculateExtraInfoSize(double fontSize)
     {
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             if (Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum))
             {
@@ -125,7 +125,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
                 CalculateStrokeThickness();
             }
             else if (change.Property == EffectiveSizeTypeProperty ||
-                     change.Property == IsShowProgressInfoProperty)
+                     change.Property == IsProgressInfoVisibleProperty)
             {
                 _extraInfoSize = CalculateExtraInfoSize(FontSize);
             }

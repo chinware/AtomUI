@@ -35,8 +35,8 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<FlyoutTriggerType> TriggerProperty =
         FlyoutStateHelper.TriggerTypeProperty.AddOwner<FlyoutHost>();
     
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<FlyoutHost>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<FlyoutHost>();
     
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         FlyoutControl.IsPointAtCenterProperty.AddOwner<FlyoutHost>();
@@ -103,10 +103,10 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         set => SetValue(TriggerProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -225,7 +225,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.RequestedPlacementProperty, (PlacementMode v) => (PlacementMode?)v));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, Flyout, FlyoutControl.IsShowArrowProperty));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, Flyout, FlyoutControl.IsArrowVisibleProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, FlyoutControl.MarginToAnchorProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, FlyoutControl.IsMotionEnabledProperty));

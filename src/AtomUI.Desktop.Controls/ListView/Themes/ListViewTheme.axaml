@@ -22,7 +22,7 @@
                                       IsVisible="{TemplateBinding BottomPagination, Converter={x:Static ObjectConverters.IsNotNull}}"
                                       Content="{TemplateBinding BottomPagination}"/>
                     <atom:Spin IsSpinning="{TemplateBinding IsOperating}"
-                               IsShowTip="True"
+                               IsTipVisible="True"
                                Tip="{TemplateBinding OperatingMsg}"
                                CustomIndicator="{TemplateBinding CustomOperatingIndicator}"
                                CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}"

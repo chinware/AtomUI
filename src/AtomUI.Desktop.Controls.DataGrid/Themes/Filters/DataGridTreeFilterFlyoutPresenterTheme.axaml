@@ -13,7 +13,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:ArrowDecoratedBox Name="{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}"
-                                        IsShowArrow="{TemplateBinding IsShowArrow}"
+                                        IsArrowVisible="{TemplateBinding IsArrowVisible}"
                                         ArrowPosition="{TemplateBinding ArrowPosition}"
                                         BackgroundSizing="{TemplateBinding BackgroundSizing}"
                                         Background="{TemplateBinding Background}"

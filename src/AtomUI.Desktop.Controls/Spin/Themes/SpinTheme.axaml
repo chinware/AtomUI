@@ -29,7 +29,7 @@
                                 Text="{TemplateBinding Tip}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                IsVisible="{TemplateBinding IsShowTip}"/>
+                                IsVisible="{TemplateBinding IsTipVisible}"/>
                         </StackPanel>
                     </Panel>
                 </Panel>

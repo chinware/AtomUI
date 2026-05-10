@@ -15,7 +15,7 @@
                 OkText="Ok"
                 CancelText="Cancel"
                 Placement="Top"
-                IsShowArrow="True">
+                IsArrowVisible="True">
                 <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
             </atom:PopupConfirm>
         </gallery:ShowCaseItem>

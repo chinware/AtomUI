@@ -14,7 +14,7 @@
         <Setter Property="ColorTextLightSolid"
                 Value="{atom:SharedTokenResource ColorTextLightSolid}" />
         
-        <Style Selector="^[IsShowProgressInfo=True]">
+        <Style Selector="^[IsProgressInfoVisible=True]">
             <Style Selector="^[Orientation=Horizontal]">
                 <Style Selector="^:labelinner-start">
                     <Style Selector="^ /template/ atom|IconPresenter">

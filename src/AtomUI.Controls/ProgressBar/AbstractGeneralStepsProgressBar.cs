@@ -321,7 +321,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
             var chunkWidth  = GetChunkWidth();
             var chunkHeight = GetChunkHeight();
             targetWidth = chunkWidth * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (PercentPosition == LinePercentAlignment.Center)
                 {
@@ -340,7 +340,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
             var chunkWidth  = GetChunkHeight();
             var chunkHeight = GetChunkWidth();
             targetHeight = chunkHeight * Steps + DEFAULT_CHUNK_SPACE * (Steps - 1);
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (PercentPosition == LinePercentAlignment.Center)
                 {
@@ -360,7 +360,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
             if (LayoutTransformLabel is not null)
@@ -435,7 +435,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
         var    strokeThickness = StrokeThickness;
         if (Orientation == Orientation.Horizontal)
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 var percentLabelWidth  = _extraInfoSize.Width;
                 var percentLabelHeight = _extraInfoSize.Height;
@@ -455,7 +455,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
         }
         else
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 var percentLabelWidth  = _extraInfoSize.Width;
                 var percentLabelHeight = _extraInfoSize.Height;
@@ -492,7 +492,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
         double offsetY      = 0;
         double targetWidth  = 0;
         double targetHeight = 0;
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             targetWidth  = _extraInfoSize.Width;
             targetHeight = _extraInfoSize.Height;
@@ -500,7 +500,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
 
         if (Orientation == Orientation.Horizontal)
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (PercentPosition == LinePercentAlignment.Start)
                 {
@@ -521,7 +521,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
         }
         else
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (PercentPosition == LinePercentAlignment.Start)
                 {

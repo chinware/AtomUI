@@ -11,7 +11,7 @@
                     <DockPanel Name="PART_MainLayout" LastChildFill="True">
                         <Border Name="PART_ButtonsFrame"
                                 BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
-                                IsVisible="{TemplateBinding ButtonsPanelVisible}"
+                                IsVisible="{TemplateBinding IsButtonsPanelVisible}"
                                 DockPanel.Dock="Bottom">
                             <Panel Name="PART_ButtonsLayout">
                                 <atom:Button

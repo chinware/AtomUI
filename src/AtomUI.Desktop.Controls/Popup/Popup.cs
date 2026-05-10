@@ -395,7 +395,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             if (Child is IArrowAwareShadowMaskInfoProvider provider)
             {
                 // If ArrowIndicatorLayoutBounds is not initialized yet, force a layout pass
-                if (provider.IsShowArrow() && PopupUtils.CanEnabledArrow(requestedPlacement))
+                if (provider.IsArrowVisible() && PopupUtils.CanEnabledArrow(requestedPlacement))
                 {
                     Child.Measure(Size.Infinity);
                     Child.Arrange(new Rect(Child.DesiredSize));
@@ -412,7 +412,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 else if (PopupUtils.CanEnabledArrow(requestedPlacement))
                 {
                     // 箭头被隐藏但该 Placement 本来支持箭头：popup root 在箭头侧仍然预留了完整阴影厚度
-                    // （ShadowsAwareContainer.GetEffectiveShadowThickness 在 IsShowArrow=false 时返回完整阴影），
+                    // （ShadowsAwareContainer.GetEffectiveShadowThickness 在 IsArrowVisible=false 时返回完整阴影），
                     // 而位置公式默认阴影会被箭头抵消，因此此时内容离 target 会多出一个阴影厚度的空隙。
                     // 在 ApplyCustomPlacement 之后再对 placement.Offset 做一次朝 target 方向的补偿。
                     arrowHiddenButCapable = true;

@@ -156,7 +156,7 @@ public class TimePicker : InfoPickerInput
         base.NotifyPickerOpened();
         if (_pickerPresenter is not null)
         {
-            _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
+            _pickerPresenter.ChoosingStatusChanged += HandleChoosingStatusChanged;
             _pickerPresenter.HoverTimeChanged      += HandleHoverTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
         }
@@ -167,7 +167,7 @@ public class TimePicker : InfoPickerInput
         base.NotifyPickerClosed();
         if (_pickerPresenter is not null)
         {
-            _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
+            _pickerPresenter.ChoosingStatusChanged -= HandleChoosingStatusChanged;
             _pickerPresenter.HoverTimeChanged      -= HandleHoverTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
             if (!IsNeedConfirm)
@@ -177,7 +177,7 @@ public class TimePicker : InfoPickerInput
         }
     }
 
-    private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
+    private void HandleChoosingStatusChanged(object? sender, ChoosingStatusEventArgs args)
     {
         IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();

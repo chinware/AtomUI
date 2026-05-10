@@ -46,8 +46,8 @@ public abstract class AbstractTimelineItem : ContentControl
 
     #region 内部属性定义
     
-    internal static readonly DirectProperty<AbstractTimelineItem, TimeLineMode> ModeProperty = 
-        AvaloniaProperty.RegisterDirect<AbstractTimelineItem, TimeLineMode>(nameof(Mode), 
+    internal static readonly DirectProperty<AbstractTimelineItem, TimelineMode> ModeProperty = 
+        AvaloniaProperty.RegisterDirect<AbstractTimelineItem, TimelineMode>(nameof(Mode), 
             o => o.Mode,
             (o, v) => o.Mode = v);
     
@@ -86,9 +86,9 @@ public abstract class AbstractTimelineItem : ContentControl
             o => o.IsLabelLayout,
             (o, v) => o.IsLabelLayout = v);
         
-    private TimeLineMode _mode = TimeLineMode.Left;
+    private TimelineMode _mode = TimelineMode.Left;
 
-    internal TimeLineMode Mode
+    internal TimelineMode Mode
     {
         get => _mode;
         set => SetAndRaise(ModeProperty, ref _mode, value);

@@ -29,8 +29,8 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     /// <summary>
     /// 是否显示指示箭头
     /// </summary>
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<Flyout>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<Flyout>();
     
     public static readonly StyledProperty<double> MarginToAnchorProperty =
         PopupControl.MarginToAnchorProperty.AddOwner<Flyout>();
@@ -82,10 +82,10 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         set => SetValue(OverlayHostShadowProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
     
     public double MarginToAnchor
@@ -153,10 +153,10 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     #region 内部属性定义
     
-    internal static readonly DirectProperty<Flyout, bool> IsShowArrowEffectiveProperty =
-        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsShowArrowEffective),
-            o => o.IsShowArrowEffective,
-            (o, v) => o.IsShowArrowEffective = v);
+    internal static readonly DirectProperty<Flyout, bool> IsArrowVisibleEffectiveProperty =
+        AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsArrowVisibleEffective),
+            o => o.IsArrowVisibleEffective,
+            (o, v) => o.IsArrowVisibleEffective = v);
     
     internal static readonly DirectProperty<Flyout, bool> IsPopupHorizontalFlippedProperty =
         AvaloniaProperty.RegisterDirect<Flyout, bool>(nameof(IsPopupHorizontalFlipped),
@@ -171,12 +171,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     internal static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<Flyout>();
     
-    private bool _isShowArrowEffective;
+    private bool _isArrowVisibleEffective;
 
-    internal bool IsShowArrowEffective
+    internal bool IsArrowVisibleEffective
     {
-        get => _isShowArrowEffective;
-        private set => SetAndRaise(IsShowArrowEffectiveProperty, ref _isShowArrowEffective, value);
+        get => _isArrowVisibleEffective;
+        private set => SetAndRaise(IsArrowVisibleEffectiveProperty, ref _isArrowVisibleEffective, value);
     }
     
     private bool _isPopupHorizontalFlipped;
@@ -210,7 +210,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     static Flyout()
     {
-        IsShowArrowProperty.OverrideDefaultValue<Flyout>(false);
+        IsArrowVisibleProperty.OverrideDefaultValue<Flyout>(false);
         IsLightDismissEnabledProperty.OverrideDefaultValue<Flyout>(true);
     }
 
@@ -306,7 +306,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         var presenter = new FlyoutPresenter();
         presenter[!FlyoutPresenter.ContentProperty]         = this[!ContentProperty];
         presenter[!FlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-        presenter[!FlyoutPresenter.IsShowArrowProperty]     = this[!IsShowArrowEffectiveProperty];
+        presenter[!FlyoutPresenter.IsArrowVisibleProperty]     = this[!IsArrowVisibleEffectiveProperty];
         presenter[!FlyoutPresenter.ArrowPositionProperty]   = this[!ArrowPositionProperty];
         ConfigureShowArrowEffective();
         ConfigureArrowPosition();
@@ -316,7 +316,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsShowArrowProperty ||
+        if (change.Property == IsArrowVisibleProperty ||
             change.Property == PlacementProperty ||
             change.Property == RequestedPlacementProperty ||
             change.Property == PlacementAnchorProperty ||
@@ -341,14 +341,14 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     protected void ConfigureShowArrowEffective()
     {
-        if (!IsShowArrow)
+        if (!IsArrowVisible)
         {
-            SetCurrentValue(IsShowArrowEffectiveProperty, false);
+            SetCurrentValue(IsArrowVisibleEffectiveProperty, false);
         }
         else
         {
             var placement = RequestedPlacement ?? Placement;
-            SetCurrentValue(IsShowArrowEffectiveProperty, PopupUtils.CanEnabledArrow(placement, PlacementAnchor, PlacementGravity));
+            SetCurrentValue(IsArrowVisibleEffectiveProperty, PopupUtils.CanEnabledArrow(placement, PlacementAnchor, PlacementGravity));
         }
     }
 

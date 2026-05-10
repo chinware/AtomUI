@@ -72,8 +72,8 @@ public partial class Dialog : TemplatedControl,
     public static readonly StyledProperty<Dimension?> VerticalOffsetProperty =
         AvaloniaProperty.Register<Dialog, Dimension?>(nameof(VerticalOffset));
 
-    public static readonly StyledProperty<bool> TopmostProperty =
-        AvaloniaProperty.Register<Dialog, bool>(nameof(Topmost));
+    public static readonly StyledProperty<bool> IsTopmostProperty =
+        AvaloniaProperty.Register<Dialog, bool>(nameof(IsTopmost));
 
     public static readonly StyledProperty<object?> ResultProperty =
         AvaloniaProperty.Register<Dialog, object?>(nameof(Result));
@@ -225,10 +225,10 @@ public partial class Dialog : TemplatedControl,
         set => SetValue(VerticalOffsetProperty, value);
     }
 
-    public bool Topmost
+    public bool IsTopmost
     {
-        get => GetValue(TopmostProperty);
-        set => SetValue(TopmostProperty, value);
+        get => GetValue(IsTopmostProperty);
+        set => SetValue(IsTopmostProperty, value);
     }
 
     public object? Result
@@ -480,7 +480,7 @@ public partial class Dialog : TemplatedControl,
                 dialogHost.Content         = Content;
                 dialogHost.ContentTemplate = ContentTemplate;
                 dialogHost.UpdateSizing();
-                dialogHost.Topmost         = Topmost;
+                dialogHost.Topmost         = IsTopmost;
 
                 SubscribeToEventHandler<IDialogHost, EventHandler<TemplateAppliedEventArgs>>(dialogHost, RootTemplateApplied,
                     (x, handler) => x.TemplateApplied += handler,
@@ -666,7 +666,7 @@ public partial class Dialog : TemplatedControl,
                 var hostedContent = change.GetNewValue<object?>() as Control;
                 _openState.DialogHost.Content = hostedContent;
             }
-            else if (change.Property == TopmostProperty)
+            else if (change.Property == IsTopmostProperty)
             {
                 _openState.DialogHost.Topmost = change.GetNewValue<bool>();
             }

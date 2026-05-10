@@ -187,11 +187,11 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         {
             if (extraInfo.Width > extraInfoSize || extraInfo.Height > extraInfoSize)
             {
-                PercentLabelVisible = false;
+                IsPercentLabelVisible = false;
             }
             else
             {
-                PercentLabelVisible = true;
+                IsPercentLabelVisible = true;
             }
         }
 
@@ -201,11 +201,11 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             var exceptionIconHeight = ExceptionCompletedIconPresenter.Height;
             if (exceptionIconWidth > extraInfoSize || exceptionIconHeight > extraInfoSize)
             {
-                StatusIconVisible = false;
+                IsStatusIconVisible = false;
             }
             else
             {
-                StatusIconVisible = true;
+                IsStatusIconVisible = true;
             }
         }
 
@@ -215,11 +215,11 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
             var successIconHeight = SuccessCompletedIconPresenter.Height;
             if (successIconWidth > extraInfoSize || successIconHeight > extraInfoSize)
             {
-                StatusIconVisible = false;
+                IsStatusIconVisible = false;
             }
             else
             {
-                StatusIconVisible = true;
+                IsStatusIconVisible = true;
             }
         }
     }
@@ -264,7 +264,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
             var extraInfoPos  = extraInfoRect.Position;

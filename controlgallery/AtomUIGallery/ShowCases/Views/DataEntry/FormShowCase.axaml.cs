@@ -270,7 +270,7 @@ public class CustomizeGenderFormItem : FormItem
 
 public class PriceValidator : AbstractFormValidator
 {
-    protected override async Task<bool> NotifyValidateAsync(string fieldName, object? value, CancellationToken cancellationToken)
+    protected override async Task<bool> ValidateCoreAsync(string fieldName, object? value, CancellationToken cancellationToken)
     {
         var price = value as PriceInfo;
         return await Task.FromResult(price != null && price.Value > 0);

@@ -1,6 +1,6 @@
 namespace AtomUI.Controls;
 
-public enum TimeLineMode
+public enum TimelineMode
 {
     Left,
     Right,

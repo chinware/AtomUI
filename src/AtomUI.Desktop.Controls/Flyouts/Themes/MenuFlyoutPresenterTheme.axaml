@@ -7,7 +7,7 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:MenuFlyoutPresenter">
             <atom:ArrowDecoratedBox Name="{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}"
-                                    IsShowArrow="{TemplateBinding IsShowArrow}"
+                                    IsArrowVisible="{TemplateBinding IsArrowVisible}"
                                     ArrowPosition="{TemplateBinding ArrowPosition}"
                                     Padding="{TemplateBinding Padding}"
                                     MaxHeight="{TemplateBinding MaxPopupHeight}">

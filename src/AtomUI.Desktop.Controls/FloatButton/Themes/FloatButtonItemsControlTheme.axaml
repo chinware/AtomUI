@@ -18,7 +18,7 @@
                                 <Panel>
                                     <atomc:FloatButtonSeparatorLayer Orientation="{TemplateBinding Orientation}"
                                                                      Lines="{TemplateBinding Lines}" />
-                                    <StackPanel Name="ItemsLayout" Orientation="{TemplateBinding Orientation}" />
+                                    <StackPanel Name="PART_ItemsLayout" Orientation="{TemplateBinding Orientation}" />
                                 </Panel>
                             </Border>
                         </DockPanel>
@@ -37,7 +37,7 @@
                         <Panel>
                             <atomc:FloatButtonSeparatorLayer Orientation="{TemplateBinding Orientation}"
                                                              Lines="{TemplateBinding Lines}" />
-                            <StackPanel Name="ItemsLayout" Orientation="{TemplateBinding Orientation}" />
+                            <StackPanel Name="PART_ItemsLayout" Orientation="{TemplateBinding Orientation}" />
                         </Panel>
                     </Border>
                 </ControlTemplate>
@@ -56,7 +56,7 @@
         </Style>
         
         <Style Selector="^[Shape=Circle]">
-            <Style Selector="^ /template/ StackPanel#ItemsLayout">
+            <Style Selector="^ /template/ StackPanel#PART_ItemsLayout">
                 <Setter Property="Spacing" Value="{atom:SharedTokenResource Spacing}" />
             </Style>
             <Style Selector="^ /template/ atomc|FloatButtonSeparatorLayer">

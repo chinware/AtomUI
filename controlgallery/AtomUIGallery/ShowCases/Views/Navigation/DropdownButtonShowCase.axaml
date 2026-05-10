@@ -106,7 +106,7 @@
                 </Style>
             </gallery:ShowCaseItem.Styles>
             <WrapPanel>
-                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
                                      Placement="BottomEdgeAlignedLeft">
                     BottomLeft
                     <atom:DropdownButton.DropdownFlyout>
@@ -121,7 +121,7 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
 
-                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
                                      Placement="Bottom">
                     Bottom
                     <atom:DropdownButton.DropdownFlyout>
@@ -136,7 +136,7 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
-                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
                                      Placement="BottomEdgeAlignedRight">
                     BottomRight
                     <atom:DropdownButton.DropdownFlyout>
@@ -151,7 +151,7 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
-                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
                                      Placement="TopEdgeAlignedLeft">
                     TopLeft
                     <atom:DropdownButton.DropdownFlyout>
@@ -166,7 +166,7 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
-                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
                                      Placement="Top">
                     Top
                     <atom:DropdownButton.DropdownFlyout>
@@ -181,7 +181,7 @@
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
-                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsShowArrow="True"
+                <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
                                      Placement="TopEdgeAlignedRight">
                     TopRight
                     <atom:DropdownButton.DropdownFlyout>

@@ -38,8 +38,8 @@ public class Tour : TemplatedControl, IMotionAwareControl
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Tour>();
     
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        AvaloniaProperty.Register<Tour, bool>(nameof(IsShowArrow), true);
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        AvaloniaProperty.Register<Tour, bool>(nameof(IsArrowVisible), true);
     
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         AvaloniaProperty.Register<Tour, bool>(nameof(IsPointAtCenter), false);
@@ -110,10 +110,10 @@ public class Tour : TemplatedControl, IMotionAwareControl
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -238,10 +238,10 @@ public class Tour : TemplatedControl, IMotionAwareControl
             o => o.CurrentStyleType,
             (o, v) => o.CurrentStyleType = v);
     
-    internal static readonly DirectProperty<Tour, bool> CurrentShowArrowProperty =
-        AvaloniaProperty.RegisterDirect<Tour, bool>(nameof(CurrentShowArrow),
-            o => o.CurrentShowArrow,
-            (o, v) => o.CurrentShowArrow = v);
+    internal static readonly DirectProperty<Tour, bool> CurrentArrowVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Tour, bool>(nameof(CurrentArrowVisible),
+            o => o.CurrentArrowVisible,
+            (o, v) => o.CurrentArrowVisible = v);
     
     internal static readonly DirectProperty<Tour, IBrush?> CurrentMaskColorProperty =
         AvaloniaProperty.RegisterDirect<Tour, IBrush?>(nameof(CurrentMaskColor),
@@ -286,12 +286,12 @@ public class Tour : TemplatedControl, IMotionAwareControl
         private set => SetAndRaise(CurrentStyleTypeProperty, ref _currentStyleType, value);
     }
 
-    private bool _currentShowArrow;
+    private bool _currentArrowVisible;
 
-    internal bool CurrentShowArrow
+    internal bool CurrentArrowVisible
     {
-        get => _currentShowArrow;
-        private set => SetAndRaise(CurrentShowArrowProperty, ref _currentShowArrow, value);
+        get => _currentArrowVisible;
+        private set => SetAndRaise(CurrentArrowVisibleProperty, ref _currentArrowVisible, value);
     }
     
     private IBrush? _currentMaskColor;
@@ -365,7 +365,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
         {
             if (item is ITourStepOption stepOption)
             {
-                stepOption.IsShowArrow      ??= IsShowArrow;
+                stepOption.IsArrowVisible      ??= IsArrowVisible;
                 stepOption.IsPointAtCenter  ??= IsPointAtCenter;
                 stepOption.IsShowMask       ??= IsShowMask;
                 stepOption.StyleType        ??= StyleType;
@@ -612,17 +612,17 @@ public class Tour : TemplatedControl, IMotionAwareControl
         if (step is ITourStepOption stepOption)
         {
             CurrentStyleType = stepOption.StyleType ?? StyleType;
-            CurrentShowArrow = stepOption.IsShowArrow ?? IsShowArrow;
+            CurrentArrowVisible = stepOption.IsArrowVisible ?? IsArrowVisible;
             if (_layer != null)
             {
                 CurrentMaskColor = stepOption.MaskColor ?? MaskColor;
-                _layer.IsVisible = stepOption.IsShowMask ?? IsShowArrow;
+                _layer.IsVisible = stepOption.IsShowMask ?? IsArrowVisible;
             }
 
             if (target == null)
             {
                 _popup.RequestedPlacement = GetPopupPlacement(TourPlacementMode.Center);
-                CurrentShowArrow = false;
+                CurrentArrowVisible = false;
             }
             else
             {

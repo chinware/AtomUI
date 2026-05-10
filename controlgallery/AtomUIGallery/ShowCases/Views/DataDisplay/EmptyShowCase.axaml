@@ -38,7 +38,7 @@
         <gallery:ShowCaseItem
             Title="No description"
             Description="Simplest Usage with no description.">
-            <atom:Empty PresetImage="Default" IsShowDescription="False" />
+            <atom:Empty PresetImage="Default" IsDescriptionVisible="False" />
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

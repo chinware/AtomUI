@@ -121,7 +121,7 @@ public class ColorPicker : AbstractColorPicker
 
     protected override void GenerateValueText()
     {
-        if (IsShowText)
+        if (IsTextVisible)
         {
             if (Value != null)
             {
@@ -166,7 +166,7 @@ public class ColorPicker : AbstractColorPicker
         _colorIndicator = e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
     }
 
-    protected override Control CreatePickerPresenter()
+    protected override Control CreatePresenter()
     {
         var presenter = new ColorPickerView();
         presenter[!ColorPickerView.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];

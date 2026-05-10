@@ -614,7 +614,7 @@ internal class ColorSlider : AbstractColorSlider
 
         if (Track != null)
         {
-            Track.IgnoreThumbDrag = true;
+            Track.IsThumbDragIgnored = true;
 
             _decreaseButton = e.NameScope.Find<AvaloniaButton>("PART_DecreaseButton");
             _increaseButton = e.NameScope.Find<AvaloniaButton>("PART_IncreaseButton");

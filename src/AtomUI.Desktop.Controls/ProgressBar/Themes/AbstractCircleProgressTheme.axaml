@@ -22,7 +22,7 @@
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            IsEnabled="{TemplateBinding IsEnabled}" 
-                           IsVisible="{TemplateBinding PercentLabelVisible}"/>
+                           IsVisible="{TemplateBinding IsPercentLabelVisible}"/>
                 </LayoutTransformControl>
                 
                 <atom:IconPresenter

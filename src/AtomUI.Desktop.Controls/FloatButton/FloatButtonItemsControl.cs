@@ -93,7 +93,7 @@ internal class FloatButtonItemsControl : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _itemsLayout = e.NameScope.Find<StackPanel>("ItemsLayout");
+        _itemsLayout = e.NameScope.Find<StackPanel>("PART_ItemsLayout");
         _itemsLayout?.Children.AddRange(Children);
     }
     

@@ -18,8 +18,8 @@ internal class ShadowsAwareContainer : Decorator
     public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
         Border.CornerRadiusProperty.AddOwner<ShadowsAwareContainer>();
     
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<ShadowsAwareContainer>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<ShadowsAwareContainer>();
     
     public static readonly StyledProperty<double> ArrowSizeProperty =
         ArrowDecoratedBox.ArrowSizeProperty.AddOwner<ShadowsAwareContainer>();
@@ -42,10 +42,10 @@ internal class ShadowsAwareContainer : Decorator
         set => SetValue(CornerRadiusProperty, value);
     }
     
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
     
     public double ArrowSize
@@ -96,7 +96,7 @@ internal class ShadowsAwareContainer : Decorator
             BoxShadowProperty, 
             ArrowDirectionProperty, 
             ArrowSizeProperty, 
-            IsShowArrowProperty,
+            IsArrowVisibleProperty,
             IsOverlayModeProperty,
             ArrowIndicatorLayoutBoundsProperty);
     }
@@ -153,7 +153,7 @@ internal class ShadowsAwareContainer : Decorator
                 offsetX = shadowThickness.Left;
                 offsetY = shadowThickness.Top;
 
-                if (IsShowArrow)
+                if (IsArrowVisible)
                 {
                     if (ArrowDirection == Direction.Left)
                     {
@@ -177,7 +177,7 @@ internal class ShadowsAwareContainer : Decorator
         if (HasBoxShadow && _shadowsRenderer != null)
         {
             var shadowBounds = Child?.Bounds ?? default;
-            if (IsShowArrow)
+            if (IsArrowVisible)
             {
                 var effectiveDirection = ArrowDirection;
                 if (effectiveDirection == Direction.Top)
@@ -226,7 +226,7 @@ internal class ShadowsAwareContainer : Decorator
 
     private Thickness GetEffectiveShadowThickness(Thickness shadowThickness)
     {
-        if (!IsShowArrow)
+        if (!IsArrowVisible)
         {
             return shadowThickness;
         }
@@ -287,16 +287,16 @@ internal class ShadowsAwareContainer : Decorator
             this[!ArrowSizeProperty]                  = arrowDecoratedBox[!ArrowSizeProperty];
             this[!ArrowIndicatorLayoutBoundsProperty] = arrowDecoratedBox[!ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty];
             this[!ArrowDirectionProperty]             = arrowDecoratedBox[!ArrowDirectionProperty];
-            this[!IsShowArrowProperty]                = arrowDecoratedBox[!IsShowArrowProperty];
+            this[!IsArrowVisibleProperty]                = arrowDecoratedBox[!IsArrowVisibleProperty];
         }
         else if (child is Border bordered)
         {
-            SetCurrentValue(IsShowArrowProperty, false);
+            SetCurrentValue(IsArrowVisibleProperty, false);
             this[!CornerRadiusProperty] = bordered[!CornerRadiusProperty];
         }
         else if (child is TemplatedControl templatedControl)
         {
-            SetCurrentValue(IsShowArrowProperty, false);
+            SetCurrentValue(IsArrowVisibleProperty, false);
             this[!CornerRadiusProperty] = templatedControl[!CornerRadiusProperty];
         }
     }

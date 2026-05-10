@@ -175,7 +175,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
         }
     }
 
-    private protected virtual void HandleDecoratedTargetChanged()
+    private protected virtual void NotifyDecoratedTargetChanged()
     {
         if (_dotBadgeAdorner is not null)
         {
@@ -217,7 +217,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
         {
             if (change.Property == DecoratedTargetProperty)
             {
-                HandleDecoratedTargetChanged();
+                NotifyDecoratedTargetChanged();
             }
 
             if (change.Property == DotColorProperty)

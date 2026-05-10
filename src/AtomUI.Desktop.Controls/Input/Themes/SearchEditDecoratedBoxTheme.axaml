@@ -29,7 +29,7 @@
                         IsEnabled="{TemplateBinding IsEnabled}"
                         Icon="{antdicons:AntDesignIconProvider SearchOutlined}"
                         BackgroundSizing="OuterBorderEdge"
-                        IsLoading="{TemplateBinding SearchButtonLoading}"
+                        IsLoading="{TemplateBinding IsSearchButtonLoading}"
                         Content="{TemplateBinding SearchButtonText}"
                         SizeType="{TemplateBinding SizeType}"
                         Status="{TemplateBinding Status}"

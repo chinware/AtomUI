@@ -56,8 +56,8 @@ public class SliderTrack : TemplatedControl
     public static readonly StyledProperty<bool> DeferThumbDragProperty =
         AvaloniaProperty.Register<SliderTrack, bool>(nameof(DeferThumbDrag));
 
-    public static readonly StyledProperty<bool> IncludedProperty =
-        AvaloniaProperty.Register<SliderTrack, bool>(nameof(Included), true);
+    public static readonly StyledProperty<bool> IsIncludedProperty =
+        AvaloniaProperty.Register<SliderTrack, bool>(nameof(IsIncluded), true);
 
     public static readonly StyledProperty<IBrush?> TrackBarBrushProperty =
         AvaloniaProperty.Register<SliderTrack, IBrush?>(nameof(TrackBarBrush));
@@ -143,10 +143,10 @@ public class SliderTrack : TemplatedControl
         set => SetValue(DeferThumbDragProperty, value);
     }
 
-    public bool Included
+    public bool IsIncluded
     {
-        get => GetValue(IncludedProperty);
-        set => SetValue(IncludedProperty, value);
+        get => GetValue(IsIncludedProperty);
+        set => SetValue(IsIncludedProperty, value);
     }
 
     public IBrush? TrackBarBrush
@@ -300,7 +300,7 @@ public class SliderTrack : TemplatedControl
             IsRangeModeProperty);
         AffectsRender<SliderTrack>(TrackBarBrushProperty,
             TrackGrooveBrushProperty,
-            IncludedProperty,
+            IsIncludedProperty,
             MarkBorderBrushProperty,
             MarkLabelBrushProperty);
     }
@@ -898,7 +898,7 @@ public class SliderTrack : TemplatedControl
                     for (var i = 0; i < Marks.Count; i++)
                     {
                         var mark = Marks[i];
-                        if (Included)
+                        if (IsIncluded)
                         {
                             if (IsRangeMode)
                             {
@@ -967,7 +967,7 @@ public class SliderTrack : TemplatedControl
                     for (var i = 0; i < Marks.Count; i++)
                     {
                         var mark = Marks[i];
-                        if (Included)
+                        if (IsIncluded)
                         {
                             if (IsRangeMode)
                             {
@@ -1050,7 +1050,7 @@ public class SliderTrack : TemplatedControl
 
     private void DrawTrackBar(DrawingContext context)
     {
-        if (Included)
+        if (IsIncluded)
         {
             context.DrawPilledRect(TrackBarBrush, null, _renderContextData!.TrackRangeRect, Orientation);
         }

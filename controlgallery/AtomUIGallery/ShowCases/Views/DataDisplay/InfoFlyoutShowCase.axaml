@@ -222,7 +222,7 @@
                     <atom:FlyoutHost Grid.Row="1" Grid.Column="0"
                                      Trigger="Hover"
                                      Placement="LeftEdgeAlignedTop"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -235,7 +235,7 @@
                     <atom:FlyoutHost Grid.Row="2" Grid.Column="0"
                                      Trigger="Hover"
                                      Placement="Left"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -248,7 +248,7 @@
                     <atom:FlyoutHost Grid.Row="3" Grid.Column="0"
                                      Trigger="Hover"
                                      Placement="LeftEdgeAlignedBottom"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -261,7 +261,7 @@
                     <atom:FlyoutHost Grid.Row="0" Grid.Column="1"
                                      Trigger="Hover"
                                      Placement="TopEdgeAlignedLeft"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -274,7 +274,7 @@
                     <atom:FlyoutHost Grid.Row="0" Grid.Column="2"
                                      Trigger="Hover"
                                      Placement="Top"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -287,7 +287,7 @@
                     <atom:FlyoutHost Grid.Row="0" Grid.Column="3"
                                      Trigger="Hover"
                                      Placement="TopEdgeAlignedRight"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -300,7 +300,7 @@
                     <atom:FlyoutHost Grid.Row="1" Grid.Column="4"
                                      Trigger="Hover"
                                      Placement="RightEdgeAlignedTop"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -313,7 +313,7 @@
                     <atom:FlyoutHost Grid.Row="2" Grid.Column="4"
                                      Trigger="Hover"
                                      Placement="Right"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -326,7 +326,7 @@
                     <atom:FlyoutHost Grid.Row="3" Grid.Column="4"
                                      Trigger="Hover"
                                      Placement="RightEdgeAlignedBottom"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -339,7 +339,7 @@
                     <atom:FlyoutHost Grid.Row="4" Grid.Column="1"
                                      Trigger="Hover"
                                      Placement="BottomEdgeAlignedLeft"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -352,7 +352,7 @@
                     <atom:FlyoutHost Grid.Row="4" Grid.Column="2"
                                      Trigger="Hover"
                                      Placement="Bottom"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>
@@ -365,7 +365,7 @@
                     <atom:FlyoutHost Grid.Row="4" Grid.Column="3"
                                      Trigger="Hover"
                                      Placement="BottomEdgeAlignedRight"
-                                     IsShowArrow="{Binding  ShowArrow}"
+                                     IsArrowVisible="{Binding  ShowArrow}"
                                      IsPointAtCenter="{Binding  IsPointAtCenter}">
                         <atom:FlyoutHost.Flyout>
                             <atom:Flyout>

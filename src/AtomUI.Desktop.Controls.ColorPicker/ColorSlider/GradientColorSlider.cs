@@ -95,7 +95,7 @@ internal class GradientColorSlider : AbstractColorSlider
 
         if (Track is GradientColorPickerTrack track)
         {
-            track.IgnoreThumbDrag = true;
+            track.IsThumbDragIgnored = true;
             _pressDispose = this.AddDisposableHandler(PointerPressedEvent, TrackPressed, RoutingStrategies.Tunnel);
             _releaseDispose = this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
             _activatedThumbDispose = track.GetObservable(GradientColorPickerTrack.ActivatedThumbProperty)

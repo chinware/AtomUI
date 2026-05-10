@@ -26,7 +26,7 @@
                             <TextBlock Text="{TemplateBinding FileName}"
                                        TextTrimming="{x:Static TextTrimming.CharacterEllipsis}" />
                             <atom:ProgressBar SizeType="Small" 
-                                              IsShowProgressInfo="False"
+                                              IsProgressInfoVisible="False"
                                               Value="{TemplateBinding Progress}"/>
                         </StackPanel>
                     </DockPanel>

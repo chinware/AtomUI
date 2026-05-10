@@ -45,7 +45,7 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
         }
 
         presenter[!DataGridTreeFilterFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-        presenter[!DataGridTreeFilterFlyoutPresenter.IsShowArrowProperty]     = this[!IsShowArrowEffectiveProperty];
+        presenter[!DataGridTreeFilterFlyoutPresenter.IsArrowVisibleProperty]     = this[!IsArrowVisibleEffectiveProperty];
         presenter[!DataGridTreeFilterFlyoutPresenter.ArrowPositionProperty]   = this[!ArrowPositionProperty];
         presenter[!DataGridTreeFilterFlyoutPresenter.ToggleTypeProperty]      = this[!ToggleTypeProperty];
         

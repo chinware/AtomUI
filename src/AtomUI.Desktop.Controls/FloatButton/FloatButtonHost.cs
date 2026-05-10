@@ -11,7 +11,7 @@ public class FloatButtonHost : AbstractFloatButtonHost
         this.RegisterTokenResourceScope(FloatButtonToken.ScopeProvider);
     }
     
-    protected override AbstractFloatButton NotifyCreateFloatButton(CompositeDisposable disposables)
+    protected override AbstractFloatButton CreateFloatButton(CompositeDisposable disposables)
     {
         var floatButton = new FloatButton();
 

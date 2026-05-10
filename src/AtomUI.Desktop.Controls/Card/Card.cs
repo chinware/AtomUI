@@ -154,11 +154,11 @@ public class Card : HeaderedContentControl,
             o => o.EffectiveCornerRadius,
             (o, v) => o.EffectiveCornerRadius = v);
     
-    internal static readonly DirectProperty<Card, bool> ActionsPanelVisibleProperty =
+    internal static readonly DirectProperty<Card, bool> IsActionsPanelVisibleProperty =
         AvaloniaProperty.RegisterDirect<Card, bool>(
-            nameof(ActionsPanelVisible),
-            o => o.ActionsPanelVisible,
-            (o, v) => o.ActionsPanelVisible = v);
+            nameof(IsActionsPanelVisible),
+            o => o.IsActionsPanelVisible,
+            (o, v) => o.IsActionsPanelVisible = v);
     
     internal static readonly DirectProperty<Card, CardContentType> ContentTypeProperty =
         AvaloniaProperty.RegisterDirect<Card, CardContentType>(
@@ -192,10 +192,10 @@ public class Card : HeaderedContentControl,
     
     private bool _actionsPanelVisible;
 
-    internal bool ActionsPanelVisible
+    internal bool IsActionsPanelVisible
     {
         get => _actionsPanelVisible;
-        set => SetAndRaise(ActionsPanelVisibleProperty, ref _actionsPanelVisible, value);
+        set => SetAndRaise(IsActionsPanelVisibleProperty, ref _actionsPanelVisible, value);
     }
     
     private CardContentType _contentType;
@@ -364,7 +364,7 @@ public class Card : HeaderedContentControl,
                     throw new NotSupportedException();
             }
         }
-        SetCurrentValue(ActionsPanelVisibleProperty, Actions.Count > 0);
+        SetCurrentValue(IsActionsPanelVisibleProperty, Actions.Count > 0);
     }
 
     protected override void OnInitialized()

@@ -12,7 +12,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="Frame"
+                    <Border Name="PART_Frame"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
@@ -26,7 +26,7 @@
                                              DockPanel.Dock="Left"/>
                             <Panel VerticalAlignment="Center">
                                 <WrapPanel Name="PART_ColorTextPanel"
-                                           IsVisible="{TemplateBinding IsShowText}" />
+                                           IsVisible="{TemplateBinding IsTextVisible}" />
                             </Panel>
                         </DockPanel>
                     </Border>
@@ -42,7 +42,7 @@
                                 IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
                                 MarginToAnchor="{TemplateBinding MarginToAnchor}">
                         <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
-                                                IsShowArrow="{TemplateBinding IsShowArrowEffective}"
+                                                IsArrowVisible="{TemplateBinding IsArrowVisibleEffective}"
                                                 ArrowPosition="{TemplateBinding ArrowPosition}"
                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     </atom:Popup>

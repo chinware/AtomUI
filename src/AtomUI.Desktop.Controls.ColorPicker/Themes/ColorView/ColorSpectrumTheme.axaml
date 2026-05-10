@@ -10,13 +10,13 @@
     <ControlTheme x:Key="{x:Type atom:ColorSpectrum}" TargetType="atom:ColorSpectrum">
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type atom:ColorSpectrum}">
-                <Border Name="Frame" ClipToBounds="True"
+                <Border Name="PART_Frame" ClipToBounds="True"
                         Padding="0.5"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel Name="PART_LayoutRoot"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch">
-                        <Panel x:Name="PART_SizingPanel"
+                        <Panel Name="PART_SizingPanel"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center">
                             <Rectangle Name="PART_SpectrumRectangle"
@@ -58,7 +58,7 @@
 
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
 
-        <Style Selector="^ /template/ Border#Frame">
+        <Style Selector="^ /template/ Border#PART_Frame">
             <Setter Property="BoxShadow"
                     Value="{atom:ColorPickerTokenResource ColorPickerInsetShadow}" />
         </Style>

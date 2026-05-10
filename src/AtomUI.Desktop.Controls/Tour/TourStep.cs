@@ -16,8 +16,8 @@ public class TourStep : ContentControl, ITourStepOption
     public static readonly StyledProperty<Control?> TargetProperty =
         AvaloniaProperty.Register<TourStep, Control?>(nameof(Target));
     
-    public static readonly StyledProperty<bool?> IsShowArrowProperty =
-        AvaloniaProperty.Register<TourStep, bool?>(nameof(IsShowArrow));
+    public static readonly StyledProperty<bool?> IsArrowVisibleProperty =
+        AvaloniaProperty.Register<TourStep, bool?>(nameof(IsArrowVisible));
     
     public static readonly StyledProperty<bool?> IsPointAtCenterProperty =
         AvaloniaProperty.Register<TourStep, bool?>(nameof(IsPointAtCenter));
@@ -64,10 +64,10 @@ public class TourStep : ContentControl, ITourStepOption
         set => SetValue(TargetProperty, value);
     }
     
-    public bool? IsShowArrow
+    public bool? IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool? IsPointAtCenter

@@ -59,23 +59,23 @@ public abstract class WatermarkGlyph : AvaloniaObject
     public static readonly StyledProperty<double> OpacityProperty = AvaloniaProperty
         .Register<WatermarkGlyph, double>(nameof(Opacity), 0.3);
 
-    public bool UseMirror
+    public bool IsMirrorUsed
     {
-        get => GetValue(UseMirrorProperty);
-        set => SetValue(UseMirrorProperty, value);
+        get => GetValue(IsMirrorUsedProperty);
+        set => SetValue(IsMirrorUsedProperty, value);
     }
 
-    public static readonly StyledProperty<bool> UseMirrorProperty = AvaloniaProperty
-        .Register<WatermarkGlyph, bool>(nameof(UseMirror));
+    public static readonly StyledProperty<bool> IsMirrorUsedProperty = AvaloniaProperty
+        .Register<WatermarkGlyph, bool>(nameof(IsMirrorUsed));
 
-    public bool UseCross
+    public bool IsCrossUsed
     {
-        get => GetValue(UseCrossProperty);
-        set => SetValue(UseCrossProperty, value);
+        get => GetValue(IsCrossUsedProperty);
+        set => SetValue(IsCrossUsedProperty, value);
     }
 
-    public static readonly StyledProperty<bool> UseCrossProperty = AvaloniaProperty
-        .Register<WatermarkGlyph, bool>(nameof(UseCross), true);
+    public static readonly StyledProperty<bool> IsCrossUsedProperty = AvaloniaProperty
+        .Register<WatermarkGlyph, bool>(nameof(IsCrossUsed), true);
 
     public abstract void Render(DrawingContext context);
 

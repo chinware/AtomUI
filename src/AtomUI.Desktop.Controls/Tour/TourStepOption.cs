@@ -7,7 +7,7 @@ namespace AtomUI.Desktop.Controls;
 public interface ITourStepOption
 {
     Control? Target { get; set; }
-    bool? IsShowArrow { get; set; }
+    bool? IsArrowVisible { get; set; }
     bool? IsPointAtCenter { get; set; }
     PathIcon? CloseIcon { get; set; }
     object? Cover { get; set; }
@@ -25,7 +25,7 @@ public interface ITourStepOption
 public class TourStepOption : ITourStepOption
 {
     public Control? Target { get; set; }
-    public bool? IsShowArrow { get; set; }
+    public bool? IsArrowVisible { get; set; }
     public bool? IsPointAtCenter { get; set; }
     public PathIcon? CloseIcon { get; set; }
     public object? Cover { get; set; }

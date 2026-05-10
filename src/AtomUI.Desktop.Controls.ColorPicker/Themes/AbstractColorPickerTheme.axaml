@@ -17,7 +17,7 @@
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         <Setter Property="Padding" Value="{atom:ColorPickerTokenResource TriggerPadding}" />
         <Setter Property="EmptyColorText" Value="{atom:ColorPickerLangResource EmptyColorText}" />
-        <Setter Property="IsShowArrow" Value="True" />
+        <Setter Property="IsArrowVisible" Value="True" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
         <Setter Property="MarginToAnchor" Value="{atom:PopupHostTokenResource MarginToAnchor}" />
 
@@ -56,18 +56,18 @@
         <Style Selector="^[SizeType=Small]">
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
-            <Style Selector="^ /template/ TextBlock#ColorText">
+            <Style Selector="^ /template/ TextBlock#PART_ColorText">
                 <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightXS}" />
             </Style>
         </Style>
 
-        <Style Selector="^ /template/ TextBlock#ColorText">
+        <Style Selector="^ /template/ TextBlock#PART_ColorText">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
             <Setter Property="Margin" Value="{atom:ColorPickerTokenResource TriggerTextMargin}"/>
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ TextBlock#ColorText">
+            <Style Selector="^ /template/ TextBlock#PART_ColorText">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>

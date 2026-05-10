@@ -91,8 +91,8 @@ public class Form : ItemsControl,
     public static readonly StyledProperty<IDataTemplate?> CustomOptionalMarkTemplateProperty =
         AvaloniaProperty.Register<Form, IDataTemplate?>(nameof(CustomOptionalMarkTemplate));
     
-    public static readonly StyledProperty<bool> ScrollToFirstErrorProperty =
-        AvaloniaProperty.Register<Form, bool>(nameof(ScrollToFirstError));
+    public static readonly StyledProperty<bool> IsScrollToFirstErrorEnabledProperty =
+        AvaloniaProperty.Register<Form, bool>(nameof(IsScrollToFirstErrorEnabled));
     
     public static readonly StyledProperty<FormValidateTrigger> ValidateTriggerProperty =
         AvaloniaProperty.Register<Form, FormValidateTrigger>(nameof(ValidateTrigger), FormValidateTrigger.OnChanged);
@@ -281,10 +281,10 @@ public class Form : ItemsControl,
         set => SetValue(CustomOptionalMarkTemplateProperty, value);
     }
     
-    public bool ScrollToFirstError
+    public bool IsScrollToFirstErrorEnabled
     {
-        get => GetValue(ScrollToFirstErrorProperty);
-        set => SetValue(ScrollToFirstErrorProperty, value);
+        get => GetValue(IsScrollToFirstErrorEnabledProperty);
+        set => SetValue(IsScrollToFirstErrorEnabledProperty, value);
     }
     
     public FormValidateTrigger ValidateTrigger

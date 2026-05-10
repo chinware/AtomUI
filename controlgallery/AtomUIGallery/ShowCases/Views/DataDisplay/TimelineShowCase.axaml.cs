@@ -42,15 +42,15 @@ public partial class TimelineShowCase : ReactiveUserControl<TimelineViewModel>
         {
             if (radioButton == ModeLeft && ModeLeft.IsChecked == true)
             {
-                LabelTimeline.Mode = TimeLineMode.Left;
+                LabelTimeline.Mode = TimelineMode.Left;
             }
             else if (radioButton == ModeRight && ModeRight.IsChecked == true)
             {
-                LabelTimeline.Mode = TimeLineMode.Right;
+                LabelTimeline.Mode = TimelineMode.Right;
             }
             else if (radioButton == ModeAlternate && ModeAlternate.IsChecked == true)
             {
-                LabelTimeline.Mode = TimeLineMode.Alternate;
+                LabelTimeline.Mode = TimelineMode.Alternate;
             }
         }
     }

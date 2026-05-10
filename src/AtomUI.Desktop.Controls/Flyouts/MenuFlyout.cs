@@ -96,8 +96,8 @@ public class MenuFlyout : Flyout
             BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter,
                 MenuFlyoutPresenter.ItemContainerThemeProperty));
         _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, IsShowArrowEffectiveProperty, Presenter,
-                MenuFlyoutPresenter.IsShowArrowProperty));
+            BindUtils.RelayBind(this, IsArrowVisibleEffectiveProperty, Presenter,
+                MenuFlyoutPresenter.IsArrowVisibleProperty));
         _presenterBindingDisposables.Add(
             BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter,
                 MenuFlyoutPresenter.IsMotionEnabledProperty));

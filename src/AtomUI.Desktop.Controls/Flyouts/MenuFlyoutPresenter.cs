@@ -19,8 +19,8 @@ public class MenuFlyoutPresenter : MenuBase,
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<MenuFlyoutPresenter>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<MenuFlyoutPresenter>();
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<MenuFlyoutPresenter>();
@@ -42,10 +42,10 @@ public class MenuFlyoutPresenter : MenuBase,
     public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         Menu.ShouldUseOverlayPopupProperty.AddOwner<MenuFlyoutPresenter>();
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public ArrowPosition ArrowPosition
@@ -305,10 +305,10 @@ public class MenuFlyoutPresenter : MenuBase,
         return _arrowDecoratedBox.ArrowPosition;
     }
 
-    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    bool IArrowAwareShadowMaskInfoProvider.IsArrowVisible()
     {
         Debug.Assert(_arrowDecoratedBox != null);
-        return _arrowDecoratedBox.IsShowArrow;
+        return _arrowDecoratedBox.IsArrowVisible;
     }
 
     void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)

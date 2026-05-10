@@ -43,7 +43,7 @@
                                 Padding="{TemplateBinding PopupContentPadding}">
                             <Panel>
                                 <atom:Spin Name="LoadingIndicator" SizeType="Middle" 
-                                           IsShowTip="True" 
+                                           IsTipVisible="True" 
                                            IsSpinning="True"
                                            Tip="{atom:CommonLangResource Loading}"
                                            HorizontalAlignment="Center"

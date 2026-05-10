@@ -16,7 +16,7 @@ public class CountBadge : AbstractCountBadge
         {
             _badgeAdorner = new CountBadgeAdorner();
             SetupTokenBindings();
-            HandleDecoratedTargetChanged();
+            NotifyDecoratedTargetChanged();
             if (BadgeColor is not null)
             {
                 ConfigureDotColor(BadgeColor);

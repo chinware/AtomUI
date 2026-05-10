@@ -28,11 +28,11 @@ public class ButtonSpinner : Spinner,
                              IInputControlStyleVariantAware
 {
     #region 公共属性定义
-    public static readonly StyledProperty<bool> AllowSpinProperty =
-        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(AllowSpin), true);
+    public static readonly StyledProperty<bool> IsSpinEnabledProperty =
+        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsSpinEnabled), true);
     
-    public static readonly StyledProperty<bool> ShowButtonSpinnerProperty =
-        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(ShowButtonSpinner), true);
+    public static readonly StyledProperty<bool> IsButtonSpinnerVisibleProperty =
+        AvaloniaProperty.Register<ButtonSpinner, bool>(nameof(IsButtonSpinnerVisible), true);
     
     public static readonly StyledProperty<ButtonSpinnerLocation> ButtonSpinnerLocationProperty =
         AvaloniaProperty.Register<ButtonSpinner, ButtonSpinnerLocation>(nameof(ButtonSpinnerLocation), ButtonSpinnerLocation.Right);
@@ -76,16 +76,16 @@ public class ButtonSpinner : Spinner,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ButtonSpinner>();
 
-    public bool AllowSpin
+    public bool IsSpinEnabled
     {
-        get => GetValue(AllowSpinProperty);
-        set => SetValue(AllowSpinProperty, value);
+        get => GetValue(IsSpinEnabledProperty);
+        set => SetValue(IsSpinEnabledProperty, value);
     }
 
-    public bool ShowButtonSpinner
+    public bool IsButtonSpinnerVisible
     {
-        get => GetValue(ShowButtonSpinnerProperty);
-        set => SetValue(ShowButtonSpinnerProperty, value);
+        get => GetValue(IsButtonSpinnerVisibleProperty);
+        set => SetValue(IsButtonSpinnerVisibleProperty, value);
     }
 
     public ButtonSpinnerLocation ButtonSpinnerLocation
@@ -223,7 +223,7 @@ public class ButtonSpinner : Spinner,
 
     static ButtonSpinner()
     {
-        AllowSpinProperty.Changed.Subscribe(AllowSpinChanged);
+        IsSpinEnabledProperty.Changed.Subscribe(IsSpinEnabledChanged);
     }
     
     public ButtonSpinner()
@@ -395,7 +395,7 @@ public class ButtonSpinner : Spinner,
     {
         base.OnPointerWheelChanged(e);
 
-        if (AllowSpin && IsKeyboardFocusWithin && e.Delta.Y != 0)
+        if (IsSpinEnabled && IsKeyboardFocusWithin && e.Delta.Y != 0)
         {
             var direction = e.Delta.Y < 0 ? SpinDirection.Decrease : SpinDirection.Increase;
             OnSpin(new SpinEventArgs(SpinEvent, direction, true));
@@ -409,7 +409,7 @@ public class ButtonSpinner : Spinner,
         {
             case Key.Up:
             {
-                if (AllowSpin)
+                if (IsSpinEnabled)
                 {
                     OnSpin(new SpinEventArgs(SpinEvent, SpinDirection.Increase));
                     e.Handled = true;
@@ -418,7 +418,7 @@ public class ButtonSpinner : Spinner,
             }
             case Key.Down:
             {
-                if (AllowSpin)
+                if (IsSpinEnabled)
                 {
                     OnSpin(new SpinEventArgs(SpinEvent, SpinDirection.Decrease));
                     e.Handled = true;
@@ -443,18 +443,18 @@ public class ButtonSpinner : Spinner,
         SetButtonUsage();
     }
     
-    protected virtual void OnAllowSpinChanged(bool oldValue, bool newValue)
+    protected virtual void OnIsSpinEnabledChanged(bool oldValue, bool newValue)
     {
         SetButtonUsage();
     }
     
-    private static void AllowSpinChanged(AvaloniaPropertyChangedEventArgs change)
+    private static void IsSpinEnabledChanged(AvaloniaPropertyChangedEventArgs change)
     {
         if (change.Sender is ButtonSpinner spinner)
         {
             var oldValue = (bool)change.OldValue!;
             var newValue = (bool)change.NewValue!;
-            spinner.OnAllowSpinChanged(oldValue, newValue);
+            spinner.OnIsSpinEnabledChanged(oldValue, newValue);
         }
     }
     
@@ -462,18 +462,18 @@ public class ButtonSpinner : Spinner,
     {
         if (IncreaseButton != null)
         {
-            IncreaseButton.IsEnabled = AllowSpin && ((ValidSpinDirection & ValidSpinDirections.Increase) == ValidSpinDirections.Increase);
+            IncreaseButton.IsEnabled = IsSpinEnabled && ((ValidSpinDirection & ValidSpinDirections.Increase) == ValidSpinDirections.Increase);
         }
 
         if (DecreaseButton != null)
         {
-            DecreaseButton.IsEnabled = AllowSpin && ((ValidSpinDirection & ValidSpinDirections.Decrease) == ValidSpinDirections.Decrease);
+            DecreaseButton.IsEnabled = IsSpinEnabled && ((ValidSpinDirection & ValidSpinDirections.Decrease) == ValidSpinDirections.Decrease);
         }
     }
     
     private void HandleButtonClick(object? sender, RoutedEventArgs e)
     {
-        if (AllowSpin)
+        if (IsSpinEnabled)
         {
             var direction = sender == IncreaseButton ? SpinDirection.Increase : SpinDirection.Decrease;
             OnSpin(new SpinEventArgs(SpinEvent, direction));

@@ -35,8 +35,8 @@ public class ToolTip : ContentControl,
     public static readonly AttachedProperty<bool> IsUseOverlayHostProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsUseOverlayHost");
     
-    public static readonly AttachedProperty<bool> IsShowArrowProperty =
-        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsShowArrow", true);
+    public static readonly AttachedProperty<bool> IsArrowVisibleProperty =
+        AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsArrowVisible", true);
     
     public static readonly AttachedProperty<bool> IsPointAtCenterProperty =
         AvaloniaProperty.RegisterAttached<ToolTip, Control, bool>("IsPointAtCenter");
@@ -182,14 +182,14 @@ public class ToolTip : ContentControl,
         element.SetValue(IsUseOverlayHostProperty, value);
     }
     
-    public static bool GetIsShowArrow(Control element)
+    public static bool GetIsArrowVisible(Control element)
     {
-        return element.GetValue(IsShowArrowProperty);
+        return element.GetValue(IsArrowVisibleProperty);
     }
 
-    public static void SetIsShowArrow(Control element, bool flag)
+    public static void SetIsArrowVisible(Control element, bool flag)
     {
-        element.SetValue(IsShowArrowProperty, flag);
+        element.SetValue(IsArrowVisibleProperty, flag);
     }
 
     public static bool GetIsPointAtCenter(Control element)
@@ -463,7 +463,7 @@ public class ToolTip : ContentControl,
 
     private void UpdatePseudoClasses(bool newValue)
     {
-        PseudoClasses.Set(":open", newValue);
+        PseudoClasses.Set(ToolTipPseudoClass.Open, newValue);
     }
 
     CornerRadius IShadowMaskInfoProvider.GetMaskCornerRadius()
@@ -486,9 +486,9 @@ public class ToolTip : ContentControl,
         return EnsureArrowDecoratedBox().ArrowPosition;
     }
     
-    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    bool IArrowAwareShadowMaskInfoProvider.IsArrowVisible()
     {
-        return EnsureArrowDecoratedBox().IsShowArrow;
+        return EnsureArrowDecoratedBox().IsArrowVisible;
     }
 
     void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
@@ -535,8 +535,8 @@ public class ToolTip : ContentControl,
                 _contentPresenter.Width = GetTipHostWidth(control);
             }
             
-            _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsShowArrowProperty,
-                control.GetBindingObservable(IsShowArrowProperty, flag =>
+            _arrowDecoratedBox.Bind(ArrowDecoratedBox.IsArrowVisibleProperty,
+                control.GetBindingObservable(IsArrowVisibleProperty, flag =>
                 {
                     // 有些条件下是不能开启箭头指针的
                     if (flag && _popup is not null)

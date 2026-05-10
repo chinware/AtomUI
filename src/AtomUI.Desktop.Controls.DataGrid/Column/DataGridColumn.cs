@@ -267,26 +267,26 @@ public abstract partial class DataGridColumn : AvaloniaObject
         }
     }
 
-    public bool ShowSorterTooltip
+    public bool IsSorterTooltipVisible
     {
         get
         {
-            var showSorterTooltip = ShowSorterTooltipInternal ??
-                                    OwningGrid?.ShowSorterTooltip ??
-                                    DataGrid.DefaultShowSorterTooltip;
+            var isSorterTooltipVisible = IsSorterTooltipVisibleInternal ??
+                                    OwningGrid?.IsSorterTooltipVisible ??
+                                    DataGrid.DefaultIsSorterTooltipVisible;
             if (HasHeaderCell)
             {
-                HeaderCell.ShowSorterTooltip = showSorterTooltip;
+                HeaderCell.IsSorterTooltipVisible = isSorterTooltipVisible;
             }
-            return showSorterTooltip;
+            return isSorterTooltipVisible;
         }
         
         set
         {
-            ShowSorterTooltipInternal = value;
+            IsSorterTooltipVisibleInternal = value;
             if (HasHeaderCell)
             {
-                HeaderCell.ShowSorterTooltip = value;
+                HeaderCell.IsSorterTooltipVisible = value;
             }
         }
     }
@@ -462,7 +462,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// <summary>
     /// Whether multiple filters can be selected
     /// </summary>
-    public bool FilterMultiple { get; set; } = true;
+    public bool IsMultipleFilterEnabled { get; set; } = true;
     
     /// <summary>
     /// Whether to trigger filter when the filter menu closes

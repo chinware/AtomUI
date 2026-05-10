@@ -7,7 +7,7 @@ public abstract class AbstractFormValidator : IFormValidator
     
     public async Task<FormValidateResult> ValidateAsync(string fieldName, object? value, CancellationToken cancellationToken)
     {
-        var isValid = await NotifyValidateAsync(fieldName, value, cancellationToken);
+        var isValid = await ValidateCoreAsync(fieldName, value, cancellationToken);
         if (isValid)
         {
             return await Task.FromResult(FormValidateResult.Success);
@@ -20,5 +20,5 @@ public abstract class AbstractFormValidator : IFormValidator
         return await Task.FromResult(FormValidateResult.Error);
     }
 
-    protected abstract Task<bool> NotifyValidateAsync(string fieldName, object? value, CancellationToken cancellationToken);
+    protected abstract Task<bool> ValidateCoreAsync(string fieldName, object? value, CancellationToken cancellationToken);
 }

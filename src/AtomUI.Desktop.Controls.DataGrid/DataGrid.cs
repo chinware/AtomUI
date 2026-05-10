@@ -46,8 +46,8 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<IDataTemplate?> CustomOperatingIndicatorTemplateProperty =
         AvaloniaProperty.Register<DataGrid, IDataTemplate?>(nameof(CustomOperatingIndicatorTemplate));
 
-    public static readonly StyledProperty<bool> IsShowFrameBorderProperty =
-        AvaloniaProperty.Register<DataGrid, bool>(nameof(IsShowFrameBorder), false);
+    public static readonly StyledProperty<bool> IsFrameBorderVisibleProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(IsFrameBorderVisible), false);
 
     public static readonly StyledProperty<bool> CanUserReorderColumnsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserReorderColumns));
@@ -64,8 +64,8 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<bool> CanUserReorderRowsProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(CanUserReorderRows), false);
     
-    public static readonly StyledProperty<bool> ShowSorterTooltipProperty =
-        AvaloniaProperty.Register<DataGrid, bool>(nameof(ShowSorterTooltip), true);
+    public static readonly StyledProperty<bool> IsSorterTooltipVisibleProperty =
+        AvaloniaProperty.Register<DataGrid, bool>(nameof(IsSorterTooltipVisible), true);
     
     public static readonly StyledProperty<double> ColumnHeaderHeightProperty = 
         AvaloniaProperty.Register<DataGrid, double>(nameof(ColumnHeaderHeight), defaultValue: double.NaN, validate: IsValidColumnHeaderHeight);
@@ -255,10 +255,10 @@ public partial class DataGrid : TemplatedControl,
         set => SetValue(CustomOperatingIndicatorTemplateProperty, value);
     }
 
-    public bool IsShowFrameBorder
+    public bool IsFrameBorderVisible
     {
-        get => GetValue(IsShowFrameBorderProperty);
-        set => SetValue(IsShowFrameBorderProperty, value);
+        get => GetValue(IsFrameBorderVisibleProperty);
+        set => SetValue(IsFrameBorderVisibleProperty, value);
     }
 
     /// <summary>
@@ -311,10 +311,10 @@ public partial class DataGrid : TemplatedControl,
     /// <summary>
     /// If header show next sorter direction tooltip
     /// </summary>
-    public bool ShowSorterTooltip
+    public bool IsSorterTooltipVisible
     {
-        get => GetValue(ShowSorterTooltipProperty);
-        set => SetValue(ShowSorterTooltipProperty, value);
+        get => GetValue(IsSorterTooltipVisibleProperty);
+        set => SetValue(IsSorterTooltipVisibleProperty, value);
     }
 
     /// <summary>
@@ -1616,7 +1616,7 @@ public partial class DataGrid : TemplatedControl,
         _topRightCornerHeader = e.NameScope.Find<ContentControl>(DataGridThemeConstants.TopRightCornerPart);
         _bottomRightCorner    = e.NameScope.Find<Visual>(DataGridThemeConstants.BottomRightCornerPart);
 
-        if (IsShowFrameBorder)
+        if (IsFrameBorderVisible)
         {
             ConfigureFrameBorderThickness();
         }
@@ -1756,7 +1756,7 @@ public partial class DataGrid : TemplatedControl,
 
         if (change.Property == BorderThicknessProperty ||
             change.Property == GridLinesVisibilityProperty ||
-            change.Property == IsShowFrameBorderProperty ||
+            change.Property == IsFrameBorderVisibleProperty ||
             change.Property == FooterProperty)
         {
             ConfigureFrameBorderThickness();

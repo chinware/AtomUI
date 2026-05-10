@@ -32,7 +32,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     internal bool? CanUserResizeInternal { get; set; }
     internal bool? CanUserSortInternal { get; set; }
     internal bool? CanUserFilterInternal { get; set; }
-    internal bool? ShowSorterTooltipInternal { get; set; }
+    internal bool? IsSorterTooltipVisibleInternal { get; set; }
     
     DataGridHeaderViewItem? IDataGridColumnGroupItemInternal.GroupHeaderViewItem { get; set; }
 

@@ -19,7 +19,7 @@
                                   MarkLabelFontFamily="{TemplateBinding FontFamily}"
                                   MarkLabelFontSize="{TemplateBinding FontSize}"
                                   Marks="{TemplateBinding Marks}"
-                                  Included="{TemplateBinding Included}">
+                                  IsIncluded="{TemplateBinding IsIncluded}">
                     <atom:SliderTrack.StartSliderThumb>
                         <atom:SliderThumb Name="PART_StartThumb"
                                           IsMotionEnabled="{Binding IsMotionEnabled, RelativeSource={RelativeSource AncestorType=atom:Slider}}"

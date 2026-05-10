@@ -28,8 +28,8 @@ public abstract class AbstractEmpty : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractEmpty>();
 
-    public static readonly StyledProperty<bool> IsShowDescriptionProperty =
-        AvaloniaProperty.Register<AbstractEmpty, bool>(nameof(IsShowDescription), true);
+    public static readonly StyledProperty<bool> IsDescriptionVisibleProperty =
+        AvaloniaProperty.Register<AbstractEmpty, bool>(nameof(IsDescriptionVisible), true);
 
     public PresetEmptyImage? PresetImage
     {
@@ -61,10 +61,10 @@ public abstract class AbstractEmpty : TemplatedControl, ISizeTypeAware
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public bool IsShowDescription
+    public bool IsDescriptionVisible
     {
-        get => GetValue(IsShowDescriptionProperty);
-        set => SetValue(IsShowDescriptionProperty, value);
+        get => GetValue(IsDescriptionVisibleProperty);
+        set => SetValue(IsDescriptionVisibleProperty, value);
     }
 
     #endregion
@@ -126,7 +126,7 @@ public abstract class AbstractEmpty : TemplatedControl, ISizeTypeAware
             ImagePathProperty,
             ImageSourceProperty,
             DescriptionProperty,
-            IsShowDescriptionProperty,
+            IsDescriptionVisibleProperty,
             BorderColorProperty,
             BorderColorSecondaryProperty,
             ShadowColorProperty,

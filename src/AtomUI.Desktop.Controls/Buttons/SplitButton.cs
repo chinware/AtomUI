@@ -46,8 +46,8 @@ public class SplitButton : ContentControl,
     public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
         FlyoutStateHelper.TriggerTypeProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         Flyout.IsPointAtCenterProperty.AddOwner<SplitButton>();
@@ -139,10 +139,10 @@ public class SplitButton : ContentControl,
         set => SetValue(TriggerTypeProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -304,7 +304,7 @@ public class SplitButton : ContentControl,
     static SplitButton()
     {
         PlacementProperty.OverrideDefaultValue<SplitButton>(PlacementMode.BottomEdgeAlignedRight);
-        IsShowArrowProperty.OverrideDefaultValue<SplitButton>(false);
+        IsArrowVisibleProperty.OverrideDefaultValue<SplitButton>(false);
         HorizontalAlignmentProperty.OverrideDefaultValue<SplitButton>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<SplitButton>(VerticalAlignment.Top);
         AffectsRender<SplitButton>(IsPrimaryButtonTypeProperty, IsDangerProperty, SplitSeparatorBrushProperty);
@@ -399,7 +399,7 @@ public class SplitButton : ContentControl,
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout, Flyout.RequestedPlacementProperty, (PlacementMode v) => (PlacementMode?)v));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, flyout));
+            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, GutterToFlyoutProperty, flyout, MenuFlyout.MarginToAnchorProperty));
             _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout));

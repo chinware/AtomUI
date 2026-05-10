@@ -14,7 +14,7 @@
                     <atom:ProgressBar Name="ProgressBar" 
                                       SizeType="Small" 
                                       Value="{TemplateBinding Progress}"
-                                      IsShowProgressInfo="False"
+                                      IsProgressInfoVisible="False"
                                       IsVisible="False" />
                 </StackPanel>
             </ControlTemplate>

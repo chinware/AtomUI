@@ -13,14 +13,14 @@
                             IsMotionEnabled="False"
                             ShouldUseOverlayLayer="True">
                     <atom:ArrowDecoratedBox Name="{x:Static atom:AbstractArrowDecoratedBox.ArrowDecoratorPart}"
-                                            IsShowArrow="{TemplateBinding CurrentShowArrow}"
+                                            IsArrowVisible="{TemplateBinding CurrentArrowVisible}"
                                             ArrowPosition="{TemplateBinding ArrowPosition}">
                         <atom:TourStepsView Name="StepsView"
                                             ItemsSource="{Binding Steps, RelativeSource={RelativeSource TemplatedParent}}"
                                             SelectedIndex="{TemplateBinding CurrentIndex, Mode=TwoWay}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                             StyleType="{TemplateBinding StyleType}"
-                                            IsShowArrow="{TemplateBinding IsShowArrow}"
+                                            IsArrowVisible="{TemplateBinding IsArrowVisible}"
                                             IsPointAtCenter="{TemplateBinding IsPointAtCenter}"
                                             Placement="{TemplateBinding Placement}"
                                             IsShowMask="{TemplateBinding IsShowMask}"

@@ -10,8 +10,8 @@ public abstract class AbstractTimeline : ItemsControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<TimeLineMode> ModeProperty =
-        AvaloniaProperty.Register<AbstractTimeline, TimeLineMode>(nameof(Mode), TimeLineMode.Left);
+    public static readonly StyledProperty<TimelineMode> ModeProperty =
+        AvaloniaProperty.Register<AbstractTimeline, TimelineMode>(nameof(Mode), TimelineMode.Left);
 
     public static readonly StyledProperty<object?> PendingProperty =
         AvaloniaProperty.Register<AbstractTimeline, object?>(nameof(Pending));
@@ -22,7 +22,7 @@ public abstract class AbstractTimeline : ItemsControl
     public static readonly StyledProperty<PathIcon?> PendingIconProperty =
         AvaloniaProperty.Register<AbstractTimeline, PathIcon?>(nameof(PendingIcon));
 
-    public TimeLineMode Mode
+    public TimelineMode Mode
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);

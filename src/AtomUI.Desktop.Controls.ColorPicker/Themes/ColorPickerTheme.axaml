@@ -12,7 +12,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="Frame"
+                    <Border Name="PART_Frame"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
@@ -24,8 +24,8 @@
                             <atom:ColorBlock Name="PART_ColorIndicator"
                                              SizeType="{TemplateBinding SizeType}"
                                              Background="{TemplateBinding ColorBlockBackground}" />
-                            <TextBlock Name="ColorText"
-                                       IsVisible="{TemplateBinding IsShowText}"
+                            <TextBlock Name="PART_ColorText"
+                                       IsVisible="{TemplateBinding IsTextVisible}"
                                        Text="{TemplateBinding ColorText}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
@@ -42,7 +42,7 @@
                                 IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
                                 MarginToAnchor="{TemplateBinding MarginToAnchor}">
                         <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
-                                                IsShowArrow="{TemplateBinding IsShowArrowEffective}"
+                                                IsArrowVisible="{TemplateBinding IsArrowVisibleEffective}"
                                                 ArrowPosition="{TemplateBinding ArrowPosition}"
                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                     </atom:Popup>

@@ -24,7 +24,7 @@
                                 HorizontalAlignment="Center" 
                                 VerticalAlignment="Top"
                                 Margin="0, 10, 0, 0"/>
-                            <atom:ProgressBar SizeType="Small" IsShowProgressInfo="False"
+                            <atom:ProgressBar SizeType="Small" IsProgressInfoVisible="False"
                                               Value="{TemplateBinding Progress}"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>

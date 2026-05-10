@@ -121,7 +121,7 @@
                     Maximum="100"
                     Minimum="0"
                     TickFrequency="1"
-                    Included="False"
+                    IsIncluded="False"
                     Value="20" />
 
                 <atom:Slider
@@ -130,7 +130,7 @@
                     Minimum="0"
                     IsRangeMode="True"
                     TickFrequency="5"
-                    Included="False"
+                    IsIncluded="False"
                     RangeValue="20, 80" />
 
             </StackPanel>

@@ -180,7 +180,7 @@ public class DatePicker : InfoPickerInput
         base.NotifyPickerOpened();
         if (_pickerPresenter is not null)
         {
-            _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
+            _pickerPresenter.ChoosingStatusChanged += HandleChoosingStatusChanged;
             _pickerPresenter.HoverDateTimeChanged  += HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
         }
@@ -191,13 +191,13 @@ public class DatePicker : InfoPickerInput
         base.NotifyPickerClosed();
         if (_pickerPresenter is not null)
         {
-            _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
+            _pickerPresenter.ChoosingStatusChanged -= HandleChoosingStatusChanged;
             _pickerPresenter.HoverDateTimeChanged  -= HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
         }
     }
 
-    private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
+    private void HandleChoosingStatusChanged(object? sender, ChoosingStatusEventArgs args)
     {
         IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();

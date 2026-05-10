@@ -137,7 +137,7 @@ public class GradientColorPicker : AbstractColorPicker
 
     protected override void GenerateValueText()
     {
-        if (_textPanel == null || !IsShowText)
+        if (_textPanel == null || !IsTextVisible)
         {
             return;
         }
@@ -224,7 +224,7 @@ public class GradientColorPicker : AbstractColorPicker
         }
     }
 
-    protected override Control CreatePickerPresenter()
+    protected override Control CreatePresenter()
     {
         var presenter = new GradientColorPickerView();
         presenter[!GradientColorPickerView.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];

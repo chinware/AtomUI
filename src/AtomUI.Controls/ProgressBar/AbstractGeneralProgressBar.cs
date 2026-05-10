@@ -61,7 +61,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         if (Orientation == Orientation.Horizontal)
         {
             targetHeight = StrokeThickness;
-            if (!PercentPosition.IsInner && IsShowProgressInfo)
+            if (!PercentPosition.IsInner && IsProgressInfoVisible)
             {
                 if (PercentPosition.Alignment == LinePercentAlignment.Center)
                 {
@@ -81,7 +81,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         else
         {
             targetWidth = StrokeThickness;
-            if (!PercentPosition.IsInner && IsShowProgressInfo)
+            if (!PercentPosition.IsInner && IsProgressInfoVisible)
             {
                 if (PercentPosition.Alignment == LinePercentAlignment.Center)
                 {
@@ -105,7 +105,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             var extraInfoRect = GetExtraInfoRect(new Rect(new Point(0, 0), finalSize));
             if (LayoutTransformLabel is not null)
@@ -232,7 +232,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
             strokeThickness = IndicatorThickness;
         }
 
-        if (IsShowProgressInfo && PercentPosition.IsInner)
+        if (IsProgressInfoVisible && PercentPosition.IsInner)
         {
             if (Orientation == Orientation.Horizontal)
             {
@@ -385,7 +385,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         var    strokeThickness = StrokeThickness;
         if (Orientation == Orientation.Horizontal)
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (!PercentPosition.IsInner)
                 {
@@ -408,7 +408,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         }
         else
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (!PercentPosition.IsInner)
                 {
@@ -448,7 +448,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         double offsetY      = 0;
         double targetWidth  = 0;
         double targetHeight = 0;
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             targetWidth  = _extraInfoSize.Width;
             targetHeight = _extraInfoSize.Height;
@@ -456,7 +456,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
 
         if (Orientation == Orientation.Horizontal)
         {
-            if (IsShowProgressInfo)
+            if (IsProgressInfoVisible)
             {
                 if (PercentPosition.IsInner)
                 {
@@ -545,7 +545,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
 
     protected override Size CalculateExtraInfoSize(double fontSize)
     {
-        if (IsShowProgressInfo)
+        if (IsProgressInfoVisible)
         {
             if ((Status == ProgressStatus.Exception || MathUtils.AreClose(Value, Maximum)) &&
                 !PercentPosition.IsInner)
@@ -596,7 +596,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         {
             UpdatePseudoClasses();
         }
-        else if (change.Property == IsShowProgressInfoProperty)
+        else if (change.Property == IsProgressInfoVisibleProperty)
         {
             CalculateMinBarThickness();
         }

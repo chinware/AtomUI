@@ -1802,7 +1802,7 @@ public partial class DataGrid
             Debug.Assert(!_columnHeadersPresenter.Children.Contains(dataGridColumn.HeaderCell));
             dataGridColumn.HeaderCell.CanUserSort       = dataGridColumn.CanUserSort;
             dataGridColumn.HeaderCell.CanUserFilter     = dataGridColumn.CanUserFilter;
-            dataGridColumn.HeaderCell.ShowSorterTooltip = dataGridColumn.ShowSorterTooltip;
+            dataGridColumn.HeaderCell.IsSorterTooltipVisible = dataGridColumn.IsSorterTooltipVisible;
             _columnHeadersPresenter.Children.Insert(dataGridColumn.DisplayIndexWithFiller, dataGridColumn.HeaderCell);
         }
     }

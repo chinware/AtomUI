@@ -36,7 +36,7 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
 
         Presenter[!MenuFlyoutPresenter.ItemTemplateProperty]          = this[!ItemTemplateProperty];
         Presenter[!MenuFlyoutPresenter.ItemContainerThemeProperty]    = this[!ItemContainerThemeProperty];
-        Presenter[!MenuFlyoutPresenter.IsShowArrowProperty]           = this[!IsShowArrowEffectiveProperty];
+        Presenter[!MenuFlyoutPresenter.IsArrowVisibleProperty]           = this[!IsArrowVisibleEffectiveProperty];
         Presenter[!MenuFlyoutPresenter.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
         Presenter[!MenuFlyoutPresenter.ArrowPositionProperty]         = this[!ArrowPositionProperty];
 

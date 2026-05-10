@@ -42,8 +42,8 @@ public class Drawer : Control,
     public static readonly StyledProperty<bool> IsShowCloseButtonProperty = 
         AvaloniaProperty.Register<Drawer, bool>(nameof(IsShowCloseButton), true);
 
-    public static readonly StyledProperty<bool> CloseWhenClickOnMaskProperty = 
-        AvaloniaProperty.Register<Drawer, bool>(nameof(CloseWhenClickOnMask), true);
+    public static readonly StyledProperty<bool> IsCloseOnMaskClickProperty = 
+        AvaloniaProperty.Register<Drawer, bool>(nameof(IsCloseOnMaskClick), true);
 
     public static readonly StyledProperty<string> TitleProperty = 
         AvaloniaProperty.Register<Drawer, string>(nameof(Title));
@@ -116,10 +116,10 @@ public class Drawer : Control,
         set => SetValue(IsShowCloseButtonProperty, value);
     }
 
-    public bool CloseWhenClickOnMask
+    public bool IsCloseOnMaskClick
     {
-        get => GetValue(CloseWhenClickOnMaskProperty);
-        set => SetValue(CloseWhenClickOnMaskProperty, value);
+        get => GetValue(IsCloseOnMaskClickProperty);
+        set => SetValue(IsCloseOnMaskClickProperty, value);
     }
 
     public string Title
@@ -383,7 +383,7 @@ public class Drawer : Control,
             _container[!DrawerContainer.IsShowMaskProperty]           = this[!IsShowMaskProperty];
             _container[!DrawerContainer.IsShowCloseButtonProperty]    = this[!IsShowCloseButtonProperty];
             _container[!DrawerContainer.IsMotionEnabledProperty]      = this[!IsMotionEnabledProperty];
-            _container[!DrawerContainer.CloseWhenClickOnMaskProperty] = this[!CloseWhenClickOnMaskProperty];
+            _container[!DrawerContainer.IsCloseOnMaskClickProperty] = this[!IsCloseOnMaskClickProperty];
             _container[!DrawerContainer.PushOffsetPercentProperty]    = this[!PushOffsetPercentProperty];
         }
     }

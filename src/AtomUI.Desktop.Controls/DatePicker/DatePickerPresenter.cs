@@ -73,10 +73,10 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<DatePickerPresenter, bool> ButtonsPanelVisibleProperty =
-        AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(ButtonsPanelVisible),
-            o => o.ButtonsPanelVisible,
-            (o, v) => o.ButtonsPanelVisible = v);
+    internal static readonly DirectProperty<DatePickerPresenter, bool> IsButtonsPanelVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(IsButtonsPanelVisible),
+            o => o.IsButtonsPanelVisible,
+            (o, v) => o.IsButtonsPanelVisible = v);
 
     public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<DatePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
@@ -92,10 +92,10 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     private bool _buttonsPanelVisible = true;
 
-    internal bool ButtonsPanelVisible
+    internal bool IsButtonsPanelVisible
     {
         get => _buttonsPanelVisible;
-        set => SetAndRaise(ButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
+        set => SetAndRaise(IsButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
     }
 
     public TimeSpan? TempSelectedTime
@@ -116,7 +116,7 @@ internal class DatePickerPresenter : PickerPresenterBase
     /// <summary>
     /// 当前是否处于选择中状态
     /// </summary>
-    public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatueChanged;
+    public event EventHandler<ChoosingStatusEventArgs>? ChoosingStatusChanged;
 
     #endregion
 
@@ -135,12 +135,12 @@ internal class DatePickerPresenter : PickerPresenterBase
         if (CalendarView is not null)
         {
             _pointerDisposables.Add(CalendarView.GetObservable(PickerCalendar.IsPointerInMonthViewProperty)
-                .Subscribe(EmitChoosingStatueChanged));
+                .Subscribe(EmitChoosingStatusChanged));
         }
         if (TimeView is not null)
         {
             _pointerDisposables.Add(TimeView.GetObservable(TimeView.IsPointerInSelectorProperty)
-                .Subscribe(EmitChoosingStatueChanged));
+                .Subscribe(EmitChoosingStatusChanged));
         }
     }
 
@@ -239,7 +239,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyPointerExitConfirmButton()
     {
-        EmitChoosingStatueChanged(false);
+        EmitChoosingStatusChanged(false);
     }
     
     protected virtual void NotifyPointerEnterTodayButton()
@@ -251,7 +251,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyPointerExitTodayButton()
     {
-        EmitChoosingStatueChanged(false);
+        EmitChoosingStatusChanged(false);
     }
     
     protected virtual void NotifyPointerEnterNowButton()
@@ -263,7 +263,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected virtual void NotifyPointerExitNowButton()
     {
-        EmitChoosingStatueChanged(false);
+        EmitChoosingStatusChanged(false);
     }
 
     private void HandleTodayButtonClicked(object? sender, RoutedEventArgs args)
@@ -408,13 +408,13 @@ internal class DatePickerPresenter : PickerPresenterBase
             }
         }
 
-        ButtonsPanelVisible = NowButton.IsVisible || TodayButton.IsVisible || ConfirmButton.IsVisible;
+        IsButtonsPanelVisible = NowButton.IsVisible || TodayButton.IsVisible || ConfirmButton.IsVisible;
     }
 
     protected override void OnConfirmed()
     {
         CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, SelectedDateTime);
-        EmitChoosingStatueChanged(false);
+        EmitChoosingStatusChanged(false);
         base.OnConfirmed();
     }
 
@@ -423,9 +423,9 @@ internal class DatePickerPresenter : PickerPresenterBase
         base.OnConfirmed();
     }
 
-    protected void EmitChoosingStatueChanged(bool isChoosing)
+    protected void EmitChoosingStatusChanged(bool isChoosing)
     {
-        ChoosingStatueChanged?.Invoke(this, new ChoosingStatusEventArgs(isChoosing));
+        ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(isChoosing));
     }
 
     protected override void OnDismiss()

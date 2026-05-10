@@ -71,8 +71,8 @@ public abstract class InfoPickerInput : TemplatedControl,
             PlacementMode.BottomEdgeAlignedLeft,
             coerce:CoercePickerPlacement);
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<InfoPickerInput>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         Flyout.IsPointAtCenterProperty.AddOwner<InfoPickerInput>();
@@ -173,10 +173,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         set => SetValue(PickerPlacementProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -243,10 +243,10 @@ public abstract class InfoPickerInput : TemplatedControl,
     internal static readonly StyledProperty<bool> IsPickerOpenProperty =
         AvaloniaProperty.Register<InfoPickerInput, bool>(nameof(IsPickerOpen));
     
-    internal static readonly DirectProperty<InfoPickerInput, bool> IsShowArrowEffectiveProperty =
-        AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsShowArrowEffective),
-            o => o.IsShowArrowEffective,
-            (o, v) => o.IsShowArrowEffective = v);
+    internal static readonly DirectProperty<InfoPickerInput, bool> IsArrowVisibleEffectiveProperty =
+        AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsArrowVisibleEffective),
+            o => o.IsArrowVisibleEffective,
+            (o, v) => o.IsArrowVisibleEffective = v);
     
     internal static readonly DirectProperty<InfoPickerInput, bool> IsPopupHorizontalFlippedProperty =
         AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsPopupHorizontalFlipped),
@@ -319,12 +319,12 @@ public abstract class InfoPickerInput : TemplatedControl,
         set => SetValue(IsPickerOpenProperty, value);
     }
     
-    private bool _isShowArrowEffective;
+    private bool _isArrowVisibleEffective;
 
-    internal bool IsShowArrowEffective
+    internal bool IsArrowVisibleEffective
     {
-        get => _isShowArrowEffective;
-        private set => SetAndRaise(IsShowArrowEffectiveProperty, ref _isShowArrowEffective, value);
+        get => _isArrowVisibleEffective;
+        private set => SetAndRaise(IsArrowVisibleEffectiveProperty, ref _isArrowVisibleEffective, value);
     }
 
     private bool _isPopupHorizontalFlipped;
@@ -743,7 +743,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsShowArrowProperty ||
+        if (change.Property == IsArrowVisibleProperty ||
             change.Property == PickerPlacementProperty)
         {
             ConfigureShowArrowEffective();
@@ -759,13 +759,13 @@ public abstract class InfoPickerInput : TemplatedControl,
     
     protected void ConfigureShowArrowEffective()
     {
-        if (!IsShowArrow)
+        if (!IsArrowVisible)
         {
-            SetCurrentValue(IsShowArrowEffectiveProperty, false);
+            SetCurrentValue(IsArrowVisibleEffectiveProperty, false);
         }
         else
         {
-            SetCurrentValue(IsShowArrowEffectiveProperty, PopupUtils.CanEnabledArrow(PickerPlacement));
+            SetCurrentValue(IsArrowVisibleEffectiveProperty, PopupUtils.CanEnabledArrow(PickerPlacement));
         }
     }
 

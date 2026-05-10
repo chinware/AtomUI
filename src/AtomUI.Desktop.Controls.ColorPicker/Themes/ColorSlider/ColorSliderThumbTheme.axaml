@@ -36,7 +36,7 @@
         <Setter Property="Height"
                 Value="{atom:ColorPickerTokenResource ColorPickerSliderThumbSize}" />
         
-        <Style Selector="^:focus,^:active">
+        <Style Selector="^:focus,^:pressed">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryActive}" />
         </Style>
     </ControlTheme>

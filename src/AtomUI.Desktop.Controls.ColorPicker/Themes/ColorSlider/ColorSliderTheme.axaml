@@ -9,7 +9,7 @@
                 <Border CornerRadius="{TemplateBinding CornerRadius}"
                         Margin="{TemplateBinding Padding}">
                     <Panel>
-                        <atom:ColorPickerSliderTrack x:Name="PART_Track"
+                        <atom:ColorPickerSliderTrack Name="PART_Track"
                                                      Height="{atom:ColorPickerTokenResource ColorPickerSliderTrackSize}"
                                                      HorizontalAlignment="Stretch"
                                                      VerticalAlignment="Center"

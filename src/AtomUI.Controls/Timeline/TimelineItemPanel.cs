@@ -13,8 +13,8 @@ internal class TimelineItemPanel : Panel
     public static readonly StyledProperty<bool> IsOddProperty =
         AvaloniaProperty.Register<TimelineItemPanel, bool>(nameof(IsOdd));
 
-    public static readonly StyledProperty<TimeLineMode> ModeProperty =
-        AvaloniaProperty.Register<TimelineItemPanel, TimeLineMode>(nameof(Mode), TimeLineMode.Left);
+    public static readonly StyledProperty<TimelineMode> ModeProperty =
+        AvaloniaProperty.Register<TimelineItemPanel, TimelineMode>(nameof(Mode), TimelineMode.Left);
 
     public static readonly StyledProperty<bool> IsLabelLayoutProperty =
         AvaloniaProperty.Register<TimelineItemPanel, bool>(nameof(IsLabelLayout), false);
@@ -25,7 +25,7 @@ internal class TimelineItemPanel : Panel
         set => SetValue(IsOddProperty, value);
     }
 
-    public TimeLineMode Mode
+    public TimelineMode Mode
     {
         get => GetValue(ModeProperty);
         set => SetValue(ModeProperty, value);
@@ -52,7 +52,7 @@ internal class TimelineItemPanel : Panel
         var contentPresenter = GetContentPresenter();
         var indicatorWidth   = indicator.DesiredSize.Width;
         var height           = 0d;
-        if (IsLabelLayout || Mode == TimeLineMode.Alternate)
+        if (IsLabelLayout || Mode == TimelineMode.Alternate)
         {
             // 有标签就是平分
             var labelOrContentWidth = (availableSize.Width - indicatorWidth) / 2;
@@ -62,7 +62,7 @@ internal class TimelineItemPanel : Panel
             contentPresenter.Measure(labelOrContentSize);
             height = Math.Max(height, contentPresenter.DesiredSize.Height);
         }
-        else if (Mode == TimeLineMode.Left || Mode == TimeLineMode.Right)
+        else if (Mode == TimelineMode.Left || Mode == TimelineMode.Right)
         {
             var contentWidth = availableSize.Width - indicatorWidth;
             var contentSize  = new Size(contentWidth, availableSize.Height);
@@ -79,18 +79,18 @@ internal class TimelineItemPanel : Panel
         var labelTextBlock   = GetLabelTextBlock();
         var contentPresenter = GetContentPresenter();
         var indicatorWidth   = indicator.DesiredSize.Width;
-        if (IsLabelLayout || Mode == TimeLineMode.Alternate)
+        if (IsLabelLayout || Mode == TimelineMode.Alternate)
         {
             var labelOrContentWidth = (finalSize.Width - indicatorWidth) / 2;
             var leftRect = new Rect(0, 0, labelOrContentWidth, finalSize.Height);
             var rightRect = new Rect(labelOrContentWidth + indicatorWidth, 0, labelOrContentWidth, finalSize.Height);
-            if (Mode == TimeLineMode.Left)
+            if (Mode == TimelineMode.Left)
             {
                 labelTextBlock.Arrange(leftRect);
                 indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
                 contentPresenter.Arrange(rightRect);
             }
-            else if (Mode == TimeLineMode.Right)
+            else if (Mode == TimelineMode.Right)
             {
                 labelTextBlock.Arrange(rightRect);
                 indicator.Arrange(new Rect(labelOrContentWidth, 0, indicatorWidth, finalSize.Height));
@@ -115,12 +115,12 @@ internal class TimelineItemPanel : Panel
         else
         {
             var contentWidth = finalSize.Width - indicatorWidth;
-            if (Mode == TimeLineMode.Left)
+            if (Mode == TimelineMode.Left)
             {
                 indicator.Arrange(new Rect(0, 0, indicatorWidth, finalSize.Height));
                 contentPresenter.Arrange(new Rect(indicatorWidth, 0, contentWidth, finalSize.Height));
             }
-            else if (Mode == TimeLineMode.Right)
+            else if (Mode == TimelineMode.Right)
             {
                 indicator.Arrange(new Rect(contentWidth, 0, indicatorWidth, finalSize.Height));
                 contentPresenter.Arrange(new Rect(0, 0, contentWidth, finalSize.Height));
@@ -140,14 +140,14 @@ internal class TimelineItemPanel : Panel
     {
         var labelTextBlock   = GetLabelTextBlock();
         var contentPresenter = GetContentPresenter();
-        if (IsLabelLayout || Mode == TimeLineMode.Alternate)
+        if (IsLabelLayout || Mode == TimelineMode.Alternate)
         {
-            if (Mode == TimeLineMode.Left)
+            if (Mode == TimelineMode.Left)
             {
                 labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Right;
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Left;
             }
-            else if (Mode == TimeLineMode.Right)
+            else if (Mode == TimelineMode.Right)
             {
                 labelTextBlock.HorizontalAlignment   = HorizontalAlignment.Left;
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Right;
@@ -168,11 +168,11 @@ internal class TimelineItemPanel : Panel
         }
         else
         {
-            if (Mode == TimeLineMode.Left)
+            if (Mode == TimelineMode.Left)
             {
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Left;
             }
-            else if (Mode == TimeLineMode.Right)
+            else if (Mode == TimelineMode.Right)
             {
                 contentPresenter.HorizontalAlignment = HorizontalAlignment.Right;
             }

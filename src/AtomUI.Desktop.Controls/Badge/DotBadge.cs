@@ -16,7 +16,7 @@ public class DotBadge : AbstractDotBadge
         {
             _dotBadgeAdorner = new DotBadgeAdorner();
             SetupTokenBindings();
-            HandleDecoratedTargetChanged();
+            NotifyDecoratedTargetChanged();
             if (DotColor is not null)
             {
                 ConfigureDotColor(DotColor);

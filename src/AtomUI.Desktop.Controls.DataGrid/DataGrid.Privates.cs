@@ -29,7 +29,7 @@ public partial class DataGrid
     internal const bool DefaultCanUserResizeColumns = true;
     internal const bool DefaultCanUserSortColumns = false;
     internal const bool DefaultCanUserFilterColumns = false;
-    internal const bool DefaultShowSorterTooltip = false;
+    internal const bool DefaultIsSorterTooltipVisible = false;
 
     #region 内部属性定义
 
@@ -1460,7 +1460,7 @@ public partial class DataGrid
 
             column.HeaderCell.CanUserSort       = column.CanUserSort;
             column.HeaderCell.CanUserFilter     = column.CanUserFilter;
-            column.HeaderCell.ShowSorterTooltip = column.ShowSorterTooltip;
+            column.HeaderCell.IsSorterTooltipVisible = column.IsSorterTooltipVisible;
         }
 
         PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
@@ -4669,7 +4669,7 @@ public partial class DataGrid
 
     private void ConfigureFrameBorderThickness()
     {
-        if (!IsShowFrameBorder)
+        if (!IsFrameBorderVisible)
         {
             SetValue(FrameBorderThicknessProperty, new Thickness(0), BindingPriority.Template);
         }

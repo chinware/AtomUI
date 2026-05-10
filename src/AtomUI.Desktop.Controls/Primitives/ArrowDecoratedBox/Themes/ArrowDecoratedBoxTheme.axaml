@@ -11,7 +11,7 @@
                         Name="PART_ArrowIndicatorLayout"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        IsVisible="{TemplateBinding IsShowArrow}"
+                        IsVisible="{TemplateBinding IsArrowVisible}"
                         Opacity="{TemplateBinding ArrowOpacity}"
                         ClipToBounds="False">
                         <atom:ArrowIndicator

@@ -179,7 +179,7 @@ public sealed class Watermark : Control
             while (t < targetSize.Height)
             {
                 var pushState = new DrawingContext.PushedState();
-                if (r % 2 == 1 && Glyph.UseCross)
+                if (r % 2 == 1 && Glyph.IsCrossUsed)
                 {
                     pushState = context.PushTransform(
                         Matrix.CreateTranslation((Glyph.HorizontalSpace - size.Width) / 2 + size.Width, 0));
@@ -192,7 +192,7 @@ public sealed class Watermark : Control
                     while (l < targetSize.Width)
                     {
                         // Use pre-cached rotation matrix — no trig/allocation per tile
-                        var m = c % 2 == 1 && Glyph.UseMirror
+                        var m = c % 2 == 1 && Glyph.IsMirrorUsed
                             ? _mirrorRotationMatrix
                             : _normalRotationMatrix;
 

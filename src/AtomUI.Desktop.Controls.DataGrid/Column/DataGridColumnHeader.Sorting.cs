@@ -38,11 +38,11 @@ internal partial class DataGridColumnHeader
     internal static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
         DataGridColumn.SupportedSortDirectionsProperty.AddOwner<DataGridColumnHeader>();
 
-    internal static readonly DirectProperty<DataGridColumnHeader, bool> ShowSorterTooltipProperty =
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> IsSorterTooltipVisibleProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
-            nameof(ShowSorterTooltip),
-            o => o.ShowSorterTooltip,
-            (o, v) => o.ShowSorterTooltip = v);
+            nameof(IsSorterTooltipVisible),
+            o => o.IsSorterTooltipVisible,
+            (o, v) => o.IsSorterTooltipVisible = v);
 
     public static readonly StyledProperty<DataGridSortTooltipType> SortTooltipTypeProperty =
         AvaloniaProperty.Register<DataGridColumnHeader, DataGridSortTooltipType>(nameof(SortTooltipType));
@@ -69,12 +69,12 @@ internal partial class DataGridColumnHeader
         set => SetValue(SupportedSortDirectionsProperty, value);
     }
 
-    private bool _showSorterTooltip;
+    private bool _isSorterTooltipVisible;
 
-    internal bool ShowSorterTooltip
+    internal bool IsSorterTooltipVisible
     {
-        get => _showSorterTooltip;
-        set => SetAndRaise(ShowSorterTooltipProperty, ref _showSorterTooltip, value);
+        get => _isSorterTooltipVisible;
+        set => SetAndRaise(IsSorterTooltipVisibleProperty, ref _isSorterTooltipVisible, value);
     }
 
     internal DataGridSortTooltipType SortTooltipType
@@ -87,15 +87,15 @@ internal partial class DataGridColumnHeader
 
     private void NotifyPropertyChangedForSorting(AvaloniaPropertyChangedEventArgs change)
     {
-        if (change.Property == ShowSorterTooltipProperty || change.Property == CurrentSortingStateProperty)
+        if (change.Property == IsSorterTooltipVisibleProperty || change.Property == CurrentSortingStateProperty)
         {
-            ConfigureShowSorterTooltip();
+            ConfigureIsSorterTooltipVisible();
         }
     }
 
-    private void ConfigureShowSorterTooltip()
+    private void ConfigureIsSorterTooltipVisible()
     {
-        if (!ShowSorterTooltip || SupportedSortDirections == DataGridSortDirections.None)
+        if (!IsSorterTooltipVisible || SupportedSortDirections == DataGridSortDirections.None)
         {
             return;
         }

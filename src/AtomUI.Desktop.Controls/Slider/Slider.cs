@@ -113,8 +113,8 @@ public class Slider : RangeBase,
     public static readonly StyledProperty<string> ValueFormatTemplateProperty =
         AvaloniaProperty.Register<Slider, string>(nameof(ValueFormatTemplate), "{0:0}");
 
-    public static readonly StyledProperty<bool> IncludedProperty =
-        SliderTrack.IncludedProperty.AddOwner<Slider>();
+    public static readonly StyledProperty<bool> IsIncludedProperty =
+        SliderTrack.IsIncludedProperty.AddOwner<Slider>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Slider>();
@@ -173,10 +173,10 @@ public class Slider : RangeBase,
         set => SetValue(ValueFormatTemplateProperty, value);
     }
 
-    public bool Included
+    public bool IsIncluded
     {
-        get => GetValue(IncludedProperty);
-        set => SetValue(IncludedProperty, value);
+        get => GetValue(IsIncludedProperty);
+        set => SetValue(IsIncludedProperty, value);
     }
 
     public bool IsMotionEnabled

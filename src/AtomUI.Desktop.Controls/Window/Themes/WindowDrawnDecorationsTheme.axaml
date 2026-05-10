@@ -19,7 +19,7 @@
                                                   ContentTemplate="{Binding $parent[atom:Window].WindowFrameLayerTemplate}" />
                             </Border>
 
-                            <ContentPresenter x:Name="PART_TitleBar"
+                            <ContentPresenter Name="PART_TitleBar"
                                               VerticalAlignment="Top"
                                               IsVisible="{TemplateBinding HasTitleBar}"
                                               WindowDecorationProperties.ElementRole="TitleBar"

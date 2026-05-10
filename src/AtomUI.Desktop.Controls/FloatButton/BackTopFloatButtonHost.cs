@@ -5,7 +5,7 @@ namespace AtomUI.Desktop.Controls;
 
 public class BackTopFloatButtonHost : AbstractBackTopFloatButtonHost
 {
-    protected override AbstractFloatButton NotifyCreateFloatButton(CompositeDisposable disposables)
+    protected override AbstractFloatButton CreateFloatButton(CompositeDisposable disposables)
     {
         var floatButton = new BackTopFloatButton();
         

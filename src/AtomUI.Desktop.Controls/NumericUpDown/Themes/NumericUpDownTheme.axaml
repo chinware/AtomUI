@@ -8,12 +8,12 @@
             <ControlTemplate>
                 <atom:ButtonSpinner
                     Name="PART_Spinner"
-                    AllowSpin="{TemplateBinding AllowSpin}"
+                    IsSpinEnabled="{TemplateBinding AllowSpin}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     SizeType="{TemplateBinding SizeType}"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     Status="{TemplateBinding Status}"
-                    ShowButtonSpinner="True"
+                    IsButtonSpinnerVisible="True"
                     IsButtonSpinnerFloatable="True"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

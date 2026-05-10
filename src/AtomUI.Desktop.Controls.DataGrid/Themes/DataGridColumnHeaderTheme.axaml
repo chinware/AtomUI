@@ -7,9 +7,9 @@
               xmlns:atom="https://atomui.net">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DataGridColumnHeader">
-            <Border Name="Frame" Background="{TemplateBinding Background}">
-                <Panel Name="RootLayout">
-                    <Border Name="ContentFrame">
+            <Border Name="PART_Frame" Background="{TemplateBinding Background}">
+                <Panel Name="PART_RootLayout">
+                    <Border Name="PART_ContentFrame">
                         <DockPanel LastChildFill="True" Name="ContentLayout">
                             <StackPanel Name="IndicatorsLayout"
                                         Orientation="Horizontal"
@@ -44,11 +44,11 @@
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </DockPanel>
                     </Border>
-                    <Rectangle Name="VerticalSeparator"
+                    <Rectangle Name="PART_VerticalSeparator"
                                Width="1.0"
                                HorizontalAlignment="Right"
                                IsVisible="{TemplateBinding IsSeparatorsVisible}" />
-                    <Panel Name="FocusVisual"
+                    <Panel Name="PART_FocusVisual"
                            IsVisible="False"
                            IsHitTestVisible="False">
                         <Rectangle Name="FocusVisualPrimary"
@@ -89,37 +89,37 @@
             </Setter>
         </Style>
 
-        <Style Selector="^[ShowSorterTooltip=True]">
+        <Style Selector="^[IsSorterTooltipVisible=True]">
             <Setter Property="atom:ToolTip.ServiceEnabled" Value="True" />
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#ContentFrame">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
                 <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePadding}" />
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSize}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#ContentFrame">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
                 <Setter Property="Padding"
                         Value="{atom:DataGridTokenResource TablePaddingMiddle}" />
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSizeMiddle}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#ContentFrame">
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
                 <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePaddingSmall}" />
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSizeSmall}" />
         </Style>
 
-        <Style Selector="^ /template/ Rectangle#VerticalSeparator">
+        <Style Selector="^ /template/ Rectangle#PART_VerticalSeparator">
             <Setter Property="Fill" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
         </Style>
 
-        <Style Selector="^[IsSeparatorFullHeight=True] /template/ Rectangle#VerticalSeparator">
+        <Style Selector="^[IsSeparatorFullHeight=True] /template/ Rectangle#PART_VerticalSeparator">
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Height" Value="NaN" />
         </Style>
@@ -153,7 +153,7 @@
                         Value="{atom:DataGridTokenResource HeaderSortActiveBg}" />
             </Style>
 
-            <Style Selector="^ /template/ Border#Frame">
+            <Style Selector="^ /template/ Border#PART_Frame">
                 <Setter Property="Cursor" Value="Hand" />
             </Style>
 
@@ -177,7 +177,7 @@
             <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
 
             <Style Selector="^[FrozenShadowPosition=Left]">
-                <Style Selector="^ /template/ Border#Frame">
+                <Style Selector="^ /template/ Border#PART_Frame">
                     <Setter Property="BoxShadow"
                             Value="{atom:DataGridTokenResource LeftFrozenShadows}" />
                 </Style>
@@ -185,7 +185,7 @@
             </Style>
 
             <Style Selector="^[FrozenShadowPosition=Right]">
-                <Style Selector="^ /template/ Border#Frame">
+                <Style Selector="^ /template/ Border#PART_Frame">
                     <Setter Property="BoxShadow"
                             Value="{atom:DataGridTokenResource RightFrozenShadows}" />
                 </Style>

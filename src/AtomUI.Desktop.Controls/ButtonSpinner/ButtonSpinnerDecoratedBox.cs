@@ -54,10 +54,10 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     
     #region 内部属性定义
 
-    internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, bool> ShowButtonSpinnerProperty =
-        AvaloniaProperty.RegisterDirect<ButtonSpinnerDecoratedBox, bool>(nameof(ShowButtonSpinner),
-            o => o.ShowButtonSpinner,
-            (o, v) => o.ShowButtonSpinner = v);
+    internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, bool> IsButtonSpinnerVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ButtonSpinnerDecoratedBox, bool>(nameof(IsButtonSpinnerVisible),
+            o => o.IsButtonSpinnerVisible,
+            (o, v) => o.IsButtonSpinnerVisible = v);
     
     internal static readonly DirectProperty<ButtonSpinnerDecoratedBox, Thickness> SpinnerBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<ButtonSpinnerDecoratedBox, Thickness>(nameof(SpinnerBorderThickness),
@@ -96,10 +96,10 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
 
     private bool _showButtonSpinner;
 
-    internal bool ShowButtonSpinner
+    internal bool IsButtonSpinnerVisible
     {
         get => _showButtonSpinner;
-        set => SetAndRaise(ShowButtonSpinnerProperty, ref _showButtonSpinner, value);
+        set => SetAndRaise(IsButtonSpinnerVisibleProperty, ref _showButtonSpinner, value);
     }
     
     private Thickness _spinnerBorderThickness;

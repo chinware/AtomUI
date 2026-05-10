@@ -10,7 +10,7 @@
     </ControlTheme.BasedOn>
     <Setter Property="Template">
         <ControlTemplate TargetType="atomc:AbstractLineProgress">
-            <Canvas IsVisible="{TemplateBinding IsShowProgressInfo}">
+            <Canvas IsVisible="{TemplateBinding IsProgressInfoVisible}">
                 <LayoutTransformControl Name="PART_LayoutTransformControl">
                     <Label Name="PART_PercentageLabel"
                            Padding="0"

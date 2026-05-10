@@ -21,8 +21,8 @@ public class DropdownButton : Button
     public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
         FlyoutStateHelper.TriggerTypeProperty.AddOwner<DropdownButton>();
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<DropdownButton>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<DropdownButton>();
 
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         FlyoutControl.IsPointAtCenterProperty.AddOwner<DropdownButton>();
@@ -66,10 +66,10 @@ public class DropdownButton : Button
         set => SetValue(TriggerTypeProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -170,7 +170,7 @@ public class DropdownButton : Button
     static DropdownButton()
     {
         PlacementProperty.OverrideDefaultValue<DropdownButton>(PlacementMode.BottomEdgeAlignedLeft);
-        IsShowArrowProperty.OverrideDefaultValue<DropdownButton>(false);
+        IsArrowVisibleProperty.OverrideDefaultValue<DropdownButton>(false);
     }
 
     public DropdownButton()
@@ -219,7 +219,7 @@ public class DropdownButton : Button
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, menuFlyout, FlyoutControl.RequestedPlacementProperty));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, menuFlyout));
-        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsShowArrowProperty, menuFlyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, menuFlyout));
         _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, menuFlyout));

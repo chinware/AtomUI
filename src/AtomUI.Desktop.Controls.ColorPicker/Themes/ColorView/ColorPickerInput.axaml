@@ -6,7 +6,7 @@
     <ControlTheme x:Key="{x:Type atom:ColorPickerInput}" TargetType="atom:ColorPickerInput">
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel Name="RootLayout" LastChildFill="True">
+                <DockPanel Name="PART_RootLayout" LastChildFill="True">
                     <atom:ComboBox Name="PART_ColorFormatComboBox" 
                                    StyleVariant="Borderless" 
                                    SizeType="Small" 
@@ -29,7 +29,7 @@
                         <atom:LineEdit Name="PART_HexValueInput"
                                        SizeType="Small"
                                        IsVisible="False"/>
-                        <StackPanel Name="HsvValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
+                        <StackPanel Name="PART_HsvValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
                             <atom:NumericUpDown Name="PART_HValueInput"
                                                 Minimum="0"
                                                 Maximum="360"
@@ -45,7 +45,7 @@
                                                 FormatString="0'%'"
                                                 Increment="1"/>
                         </StackPanel>
-                        <StackPanel Name="RgbValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
+                        <StackPanel Name="PART_RgbValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
                             <atom:NumericUpDown Name="PART_RValueInput"
                                                 Minimum="0"
                                                 Maximum="255"
@@ -81,13 +81,13 @@
         </Style>
         
         <Style Selector="^[Format=Hsva]">
-            <Style Selector="^ /template/ StackPanel#HsvValuePanel">
+            <Style Selector="^ /template/ StackPanel#PART_HsvValuePanel">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
         
         <Style Selector="^[Format=Rgba]">
-            <Style Selector="^ /template/ StackPanel#RgbValuePanel">
+            <Style Selector="^ /template/ StackPanel#PART_RgbValuePanel">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>

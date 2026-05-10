@@ -20,8 +20,8 @@ public abstract class AbstractSpin : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<string?> TipProperty =
         AvaloniaProperty.Register<AbstractSpin, string?>(nameof(Tip));
 
-    public static readonly StyledProperty<bool> IsShowTipProperty =
-        AvaloniaProperty.Register<AbstractSpin, bool>(nameof(IsShowTip));
+    public static readonly StyledProperty<bool> IsTipVisibleProperty =
+        AvaloniaProperty.Register<AbstractSpin, bool>(nameof(IsTipVisible));
     
     public static readonly StyledProperty<object?> CustomIndicatorProperty =
         AvaloniaProperty.Register<AbstractSpin, object?>(nameof(CustomIndicator));
@@ -59,10 +59,10 @@ public abstract class AbstractSpin : ContentControl, IMotionAwareControl
         set => SetValue(TipProperty, value);
     }
 
-    public bool IsShowTip
+    public bool IsTipVisible
     {
-        get => GetValue(IsShowTipProperty);
-        set => SetValue(IsShowTipProperty, value);
+        get => GetValue(IsTipVisibleProperty);
+        set => SetValue(IsTipVisibleProperty, value);
     }
     
     [DependsOn(nameof(CustomIndicatorTemplate))]

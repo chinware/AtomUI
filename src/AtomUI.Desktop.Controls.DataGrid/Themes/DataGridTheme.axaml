@@ -13,7 +13,7 @@
                     CornerRadius="{TemplateBinding CornerRadius, Converter={x:Static atom:DataGridTheme.HeaderCornerRadiusConverter}}"
                     ClipToBounds="True">
                 <atom:Spin IsSpinning="{TemplateBinding IsOperating}"
-                           IsShowTip="True"
+                           IsTipVisible="True"
                            Tip="{TemplateBinding OperatingMsg}"
                            CustomIndicator="{TemplateBinding CustomOperatingIndicator}"
                            CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}"
@@ -183,7 +183,7 @@
             <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
-        <Style Selector="^[IsShowFrameBorder=False] /template/ Border#TitleFrame">
+        <Style Selector="^[IsFrameBorderVisible=False] /template/ Border#TitleFrame">
             <Setter Property="BorderThickness" Value="0" />
         </Style>
 

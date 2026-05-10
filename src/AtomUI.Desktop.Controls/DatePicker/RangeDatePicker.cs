@@ -175,7 +175,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         base.NotifyPickerOpened();
         if (_pickerPresenter is not null)
         {
-            _pickerPresenter.ChoosingStatueChanged += HandleChoosingStatueChanged;
+            _pickerPresenter.ChoosingStatusChanged += HandleChoosingStatusChanged;
             _pickerPresenter.HoverDateTimeChanged  += HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
             _pickerPresenter.RangePartConfirmed    += HandleRangePartConfirmed;
@@ -198,7 +198,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         base.NotifyPickerClosed();
         if (_pickerPresenter is not null)
         {
-            _pickerPresenter.ChoosingStatueChanged -= HandleChoosingStatueChanged;
+            _pickerPresenter.ChoosingStatusChanged -= HandleChoosingStatusChanged;
             _pickerPresenter.HoverDateTimeChanged  -= HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             -= HandleConfirmed;
             _pickerPresenter.RangePartConfirmed    -= HandleRangePartConfirmed;
@@ -211,7 +211,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         }
     }
 
-    private void HandleChoosingStatueChanged(object? sender, ChoosingStatusEventArgs args)
+    private void HandleChoosingStatusChanged(object? sender, ChoosingStatusEventArgs args)
     {
         IsChoosing = args.IsChoosing;
         UpdatePseudoClasses();

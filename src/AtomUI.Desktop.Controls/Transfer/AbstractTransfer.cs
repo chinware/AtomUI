@@ -309,15 +309,15 @@ public abstract class AbstractTransfer: TemplatedControl,
     internal static readonly StyledProperty<IEnumerable<IItemKey>?> TargetViewSourceProperty =
         AvaloniaProperty.Register<AbstractTransfer, IEnumerable<IItemKey>?>(nameof(TargetViewSource));
     
-    internal static readonly DirectProperty<AbstractTransfer, bool> ToTargetButtonEnabledProperty =
-        AvaloniaProperty.RegisterDirect<AbstractTransfer, bool>(nameof(ToTargetButtonEnabled),
-            o => o.ToTargetButtonEnabled,
-            (o, v) => o.ToTargetButtonEnabled = v);
+    internal static readonly DirectProperty<AbstractTransfer, bool> IsToTargetButtonEnabledProperty =
+        AvaloniaProperty.RegisterDirect<AbstractTransfer, bool>(nameof(IsToTargetButtonEnabled),
+            o => o.IsToTargetButtonEnabled,
+            (o, v) => o.IsToTargetButtonEnabled = v);
     
-    internal static readonly DirectProperty<AbstractTransfer, bool> ToSourceButtonEnabledProperty =
-        AvaloniaProperty.RegisterDirect<AbstractTransfer, bool>(nameof(ToSourceButtonEnabled),
-            o => o.ToSourceButtonEnabled,
-            (o, v) => o.ToSourceButtonEnabled = v);
+    internal static readonly DirectProperty<AbstractTransfer, bool> IsToSourceButtonEnabledProperty =
+        AvaloniaProperty.RegisterDirect<AbstractTransfer, bool>(nameof(IsToSourceButtonEnabled),
+            o => o.IsToSourceButtonEnabled,
+            (o, v) => o.IsToSourceButtonEnabled = v);
     
     internal static readonly DirectProperty<AbstractTransfer, string?> SourceFilterValueProperty =
         AvaloniaProperty.RegisterDirect<AbstractTransfer, string?>(nameof(SourceFilterValue),
@@ -345,17 +345,17 @@ public abstract class AbstractTransfer: TemplatedControl,
     }
     
     private bool _toTargetButtonEnabled;
-    internal bool ToTargetButtonEnabled
+    internal bool IsToTargetButtonEnabled
     {
         get => _toTargetButtonEnabled;
-        set => SetAndRaise(ToTargetButtonEnabledProperty, ref _toTargetButtonEnabled, value);
+        set => SetAndRaise(IsToTargetButtonEnabledProperty, ref _toTargetButtonEnabled, value);
     }
     
     private bool _toSourceButtonEnabled;
-    internal bool ToSourceButtonEnabled
+    internal bool IsToSourceButtonEnabled
     {
         get => _toSourceButtonEnabled;
-        set => SetAndRaise(ToSourceButtonEnabledProperty, ref _toSourceButtonEnabled, value);
+        set => SetAndRaise(IsToSourceButtonEnabledProperty, ref _toSourceButtonEnabled, value);
     }
 
     private string? _sourceFilterValue;

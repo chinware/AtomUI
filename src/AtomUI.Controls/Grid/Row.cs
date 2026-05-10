@@ -17,8 +17,8 @@ public class Row : Panel
     public static readonly StyledProperty<RowAlign> AlignProperty =
         AvaloniaProperty.Register<Row, RowAlign>(nameof(Align), RowAlign.Stretch);
 
-    public static readonly StyledProperty<bool> WrapProperty =
-        AvaloniaProperty.Register<Row, bool>(nameof(Wrap), true);
+    public static readonly StyledProperty<bool> IsWrappedProperty =
+        AvaloniaProperty.Register<Row, bool>(nameof(IsWrapped), true);
 
     public GridGutter Gutter
     {
@@ -38,10 +38,10 @@ public class Row : Panel
         set => SetValue(AlignProperty, value);
     }
 
-    public bool Wrap
+    public bool IsWrapped
     {
-        get => GetValue(WrapProperty);
-        set => SetValue(WrapProperty, value);
+        get => GetValue(IsWrappedProperty);
+        set => SetValue(IsWrappedProperty, value);
     }
 
     private MediaBreakPoint? _breakPoint;
@@ -51,7 +51,7 @@ public class Row : Panel
 
     static Row()
     {
-        AffectsMeasure<Row>(GutterProperty, JustifyProperty, AlignProperty, WrapProperty);
+        AffectsMeasure<Row>(GutterProperty, JustifyProperty, AlignProperty, IsWrappedProperty);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -148,7 +148,7 @@ public class Row : Panel
             var offsetWidth = result.WidthInfinite ? 0 : result.ColumnWidth * layout.Offset;
             var estimatedWidth = offsetWidth + baseWidth;
 
-            if (Wrap && !result.WidthInfinite && currentLine.Items.Count > 0 &&
+            if (IsWrapped && !result.WidthInfinite && currentLine.Items.Count > 0 &&
                 lineWidth + estimatedWidth > result.ContainerWidth)
             {
                 FinalizeLine(currentLine);

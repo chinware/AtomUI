@@ -16,9 +16,9 @@ public abstract class WatermarkGlyphExtension : MarkupExtension
 
     public double Opacity { get; set; } = 0.3;
 
-    public bool UseMirror { get; set; } = false;
+    public bool IsMirrorUsed { get; set; } = false;
 
-    public bool UseCross { get; set; } = true;
+    public bool IsCrossUsed { get; set; } = true;
 
     protected void SetProperties(WatermarkGlyph glyph)
     {
@@ -28,7 +28,7 @@ public abstract class WatermarkGlyphExtension : MarkupExtension
         glyph.VerticalOffset   = VerticalOffset;
         glyph.Rotate           = Rotate;
         glyph.Opacity          = Opacity;
-        glyph.UseMirror        = UseMirror;
-        glyph.UseCross         = UseCross;
+        glyph.IsMirrorUsed        = IsMirrorUsed;
+        glyph.IsCrossUsed         = IsCrossUsed;
     }
 }

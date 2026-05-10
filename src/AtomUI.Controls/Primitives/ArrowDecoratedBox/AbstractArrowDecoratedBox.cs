@@ -90,8 +90,8 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     
     #region 公共属性定义
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        AvaloniaProperty.Register<AbstractArrowDecoratedBox, bool>(nameof(IsShowArrow), true);
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        AvaloniaProperty.Register<AbstractArrowDecoratedBox, bool>(nameof(IsArrowVisible), true);
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         AvaloniaProperty.Register<AbstractArrowDecoratedBox, ArrowPosition>(
@@ -103,10 +103,10 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     /// <summary>
     /// 是否显示指示箭头
     /// </summary>
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     /// <summary>
@@ -195,7 +195,7 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
 
     static AbstractArrowDecoratedBox()
     {
-        AffectsMeasure<AbstractArrowDecoratedBox>(IsShowArrowProperty, ArrowDirectionProperty);
+        AffectsMeasure<AbstractArrowDecoratedBox>(IsArrowVisibleProperty, ArrowDirectionProperty);
         AffectsArrange<AbstractArrowDecoratedBox>(ArrowPositionProperty);
         AffectsRender<AbstractArrowDecoratedBox>(BackgroundProperty, ArrowOpacityProperty);
     }
@@ -329,7 +329,7 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (IsShowArrow)
+        if (IsArrowVisible)
         {
             ArrangeArrow(finalSize);
         }
@@ -465,9 +465,9 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
         return ArrowPosition;
     }
     
-    bool IArrowAwareShadowMaskInfoProvider.IsShowArrow()
+    bool IArrowAwareShadowMaskInfoProvider.IsArrowVisible()
     {
-        return IsShowArrow;
+        return IsArrowVisible;
     }
 
     void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)

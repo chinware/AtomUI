@@ -26,8 +26,8 @@ internal class DataGridFilterIndicator : IconButton
             o => o.FilterMode,
             (o, v) => o.FilterMode = v);
     
-    public static readonly StyledProperty<bool> FilterMultipleProperty =
-        AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(FilterMultiple));
+    public static readonly StyledProperty<bool> IsMultipleFilterEnabledProperty =
+        AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(IsMultipleFilterEnabled));
     
     public event EventHandler<DataGridColumnFilterEventArgs>? FilterRequest;
 
@@ -45,10 +45,10 @@ internal class DataGridFilterIndicator : IconButton
         set => SetAndRaise(FilterModeProperty, ref _filterMode, value);
     }
     
-    public bool FilterMultiple
+    public bool IsMultipleFilterEnabled
     {
-        get => GetValue(FilterMultipleProperty);
-        set => SetValue(FilterMultipleProperty, value);
+        get => GetValue(IsMultipleFilterEnabledProperty);
+        set => SetValue(IsMultipleFilterEnabledProperty, value);
     }
     #endregion
 
@@ -83,7 +83,7 @@ internal class DataGridFilterIndicator : IconButton
             if (_owningColumn != null)
             {
                 FilterMode     = _owningColumn.FilterMode;
-                FilterMultiple = _owningColumn.FilterMultiple;
+                IsMultipleFilterEnabled = _owningColumn.IsMultipleFilterEnabled;
             }
         }
     }
@@ -132,7 +132,7 @@ internal class DataGridFilterIndicator : IconButton
         {
             var menuFlyout = new DataGridMenuFilterFlyout
             {
-                IsShowArrow               = false,
+                IsArrowVisible               = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 ShouldUseOverlayPopup     = true,
             };
@@ -152,18 +152,18 @@ internal class DataGridFilterIndicator : IconButton
         {
             var treeFlyout = new DataGridTreeFilterFlyout
             {
-                IsShowArrow               = false,
+                IsArrowVisible               = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 ShouldUseOverlayPopup     = true
             };
-            BindUtils.RelayBind(this, FilterMultipleProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty,
+            BindUtils.RelayBind(this, IsMultipleFilterEnabledProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty,
                 (v) =>
                 {
                     return v ? ItemToggleType.CheckBox : ItemToggleType.Radio;
                 });
             treeFlyout[!MotionAwareControlProperty.IsMotionEnabledProperty] = owningGrid[!MotionAwareControlProperty.IsMotionEnabledProperty];
             var treeItems = BuildTreeItems(OwningColumn.Filters.ToList());
-            if (FilterMultiple)
+            if (IsMultipleFilterEnabled)
             {
                 var selectAllTreeItem = new DataGridFilterTreeViewItem();
                 selectAllTreeItem[!DataGridFilterTreeViewItem.HeaderProperty] = this[!SelectedAllTextProperty];
@@ -198,7 +198,7 @@ internal class DataGridFilterIndicator : IconButton
                 FilterValue      = item.Value,
                 StaysOpenOnClick = true
             };
-            BindUtils.RelayBind(this, FilterMultipleProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
+            BindUtils.RelayBind(this, IsMultipleFilterEnabledProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
             {
                 return v ? MenuItemToggleType.CheckBox : MenuItemToggleType.Radio;
             }, BindingPriority.Template);

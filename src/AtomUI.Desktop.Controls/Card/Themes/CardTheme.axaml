@@ -34,7 +34,7 @@
                                               DockPanel.Dock="Bottom"
                                               CornerRadius="{TemplateBinding CornerRadius}"
                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                              IsVisible="{TemplateBinding ActionsPanelVisible}" />
+                                              IsVisible="{TemplateBinding IsActionsPanelVisible}" />
                         <Border Name="CoverFrame"
                                 CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource CornerRadiusFilterConverter}}"
                                 ClipToBounds="True"

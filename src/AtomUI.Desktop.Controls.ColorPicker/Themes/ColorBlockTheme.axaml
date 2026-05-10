@@ -7,16 +7,16 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="ColorPreviewFrame"
+                    <Border Name="PART_ColorPreviewFrame"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Background="{TemplateBinding TransparentBgBrush}"
                             IsVisible="{TemplateBinding IsEmptyColorMode, Converter={x:Static BoolConverters.Not}}">
-                        <Border Name="ColorPreview"
+                        <Border Name="PART_ColorPreview"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 BoxShadow="{atom:ColorPickerTokenResource ColorBlockInnerShadows}"/>
                     </Border>
-                    <Border Name="EmptyColorFrame" 
+                    <Border Name="PART_EmptyColorFrame"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             IsVisible="{TemplateBinding IsEmptyColorMode}"
@@ -32,12 +32,12 @@
         
         <Style Selector="^[IsEmptyColorMode=True]">
             <Setter Property="Cursor" Value="Hand" />
-            <Style Selector="^ /template/ Border#EmptyColorFrame">
+            <Style Selector="^ /template/ Border#PART_EmptyColorFrame">
                 <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillSecondary}" />
             </Style>
             
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#EmptyColorFrame">
+                <Style Selector="^ /template/ Border#PART_EmptyColorFrame">
                     <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
                 </Style>
             </Style>

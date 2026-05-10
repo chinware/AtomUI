@@ -140,7 +140,7 @@
                                              Binding="{Binding Address}"
 
                                              CanUserSort="True"
-                                             FilterMultiple="True"
+                                             IsMultipleFilterEnabled="True"
                                              SupportedSortDirections="Ascending">
                         <atom:DataGridTextColumn.Filters>
                             <atom:DataGridFilterItem Text="London" Value="London" />
@@ -234,7 +234,7 @@
                                              Binding="{Binding Address}"
 
                                              CanUserSort="True"
-                                             FilterMultiple="True"
+                                             IsMultipleFilterEnabled="True"
                                              SupportedSortDirections="Ascending">
                         <atom:DataGridTextColumn.Filters>
                             <atom:DataGridFilterItem Text="London" Value="London" />
@@ -286,7 +286,7 @@
                         <atom:DataGridTextColumn Header="Name"
                                                  Binding="{Binding Name}"
                                                  CanUserSort="True"
-                                                 FilterMultiple="True">
+                                                 IsMultipleFilterEnabled="True">
                             <atom:DataGridTextColumn.Filters>
                                 <atom:DataGridFilterItem Text="Joe" Value="Joe" />
                                 <atom:DataGridFilterItem Text="Jim" Value="Jim" />
@@ -304,7 +304,7 @@
                                                  Binding="{Binding Address}"
 
                                                  CanUserSort="True"
-                                                 FilterMultiple="True">
+                                                 IsMultipleFilterEnabled="True">
                             <atom:DataGridTextColumn.Filters>
                                 <atom:DataGridFilterItem Text="London" Value="London" />
                                 <atom:DataGridFilterItem Text="New York" Value="New York" />
@@ -358,7 +358,7 @@
                               Description="Add border, title and footer for table." IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="CustomHeaderAndFooterDataGrid"
                            GridLinesVisibility="All"
-                           IsShowFrameBorder="True"
+                           IsFrameBorderVisible="True"
                            x:DataType="vm:DataGridBaseInfo">
                 <atom:DataGrid.Title>
                     Header

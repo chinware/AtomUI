@@ -96,7 +96,7 @@
                             IsVerticalFlipped="{TemplateBinding IsPopupVerticalFlipped, Mode=TwoWay}"
                             MarginToAnchor="{TemplateBinding MarginToAnchor}">
                     <atom:ArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
-                                            IsShowArrow="{TemplateBinding IsShowArrowEffective}"
+                                            IsArrowVisible="{TemplateBinding IsArrowVisibleEffective}"
                                             ArrowPosition="{TemplateBinding ArrowPosition}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
                 </atom:Popup>

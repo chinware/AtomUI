@@ -136,7 +136,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
 
     protected override void OnConfirmed()
     {
-        EmitChoosingStatueChanged(false);
+        EmitChoosingStatusChanged(false);
 
         if (PickState.HasFlag(RangeDatePickState.PartStart) && PickState.HasFlag(RangeDatePickState.PartEnd))
         {

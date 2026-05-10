@@ -42,8 +42,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<FlyoutTriggerType> TriggerTypeProperty =
         AvaloniaProperty.Register<AbstractColorPicker, FlyoutTriggerType>(nameof(TriggerType), FlyoutTriggerType.Click);
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<AbstractColorPicker>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<AbstractColorPicker>();
 
     public static readonly StyledProperty<bool> IsPointAtCenterProperty =
         AtomUIFlyout.IsPointAtCenterProperty.AddOwner<AbstractColorPicker>();
@@ -66,8 +66,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<bool> IsFormatEnabledProperty =
         AbstractColorPickerView.IsFormatEnabledProperty.AddOwner<AbstractColorPicker>();
 
-    public static readonly StyledProperty<bool> IsShowTextProperty =
-        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsShowText));
+    public static readonly StyledProperty<bool> IsTextVisibleProperty =
+        AvaloniaProperty.Register<AbstractColorPicker, bool>(nameof(IsTextVisible));
 
     public static readonly StyledProperty<bool> IsClearEnabledProperty =
         AbstractColorPickerView.IsClearEnabledProperty.AddOwner<AbstractColorPicker>();
@@ -114,10 +114,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(TriggerTypeProperty, value);
     }
 
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     public bool IsPointAtCenter
@@ -162,10 +162,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(IsFormatEnabledProperty, value);
     }
 
-    public bool IsShowText
+    public bool IsTextVisible
     {
-        get => GetValue(IsShowTextProperty);
-        set => SetValue(IsShowTextProperty, value);
+        get => GetValue(IsTextVisibleProperty);
+        set => SetValue(IsTextVisibleProperty, value);
     }
 
     public bool IsClearEnabled
@@ -264,10 +264,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     internal static readonly StyledProperty<Control?> PickerPresenterProperty =
         AvaloniaProperty.Register<AbstractColorPicker, Control?>(nameof(PickerPresenter));
 
-    internal static readonly DirectProperty<AbstractColorPicker, bool> IsShowArrowEffectiveProperty =
-        AvaloniaProperty.RegisterDirect<AbstractColorPicker, bool>(nameof(IsShowArrowEffective),
-            o => o.IsShowArrowEffective,
-            (o, v) => o.IsShowArrowEffective = v);
+    internal static readonly DirectProperty<AbstractColorPicker, bool> IsArrowVisibleEffectiveProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorPicker, bool>(nameof(IsArrowVisibleEffective),
+            o => o.IsArrowVisibleEffective,
+            (o, v) => o.IsArrowVisibleEffective = v);
 
     internal static readonly DirectProperty<AbstractColorPicker, bool> IsPopupHorizontalFlippedProperty =
         AvaloniaProperty.RegisterDirect<AbstractColorPicker, bool>(nameof(IsPopupHorizontalFlipped),
@@ -333,12 +333,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(PickerPresenterProperty, value);
     }
 
-    private bool _isShowArrowEffective;
+    private bool _isArrowVisibleEffective;
 
-    internal bool IsShowArrowEffective
+    internal bool IsArrowVisibleEffective
     {
-        get => _isShowArrowEffective;
-        private set => SetAndRaise(IsShowArrowEffectiveProperty, ref _isShowArrowEffective, value);
+        get => _isArrowVisibleEffective;
+        private set => SetAndRaise(IsArrowVisibleEffectiveProperty, ref _isArrowVisibleEffective, value);
     }
 
     private bool _isPopupHorizontalFlipped;
@@ -384,7 +384,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     static AbstractColorPicker()
     {
-        AffectsMeasure<AbstractColorPicker>(IsShowTextProperty,
+        AffectsMeasure<AbstractColorPicker>(IsTextVisibleProperty,
             FormatProperty,
             ColorBlockBackgroundProperty);
         IsPickerOpenProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, args) => picker.HandleIsPickerOpenChanged(args));
@@ -781,13 +781,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     private void ConfigureShowArrowEffective()
     {
-        if (!IsShowArrow)
+        if (!IsArrowVisible)
         {
-            IsShowArrowEffective = false;
+            IsArrowVisibleEffective = false;
         }
         else
         {
-            IsShowArrowEffective = PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
+            IsArrowVisibleEffective = PopupUtils.CanEnabledArrow(Placement, PlacementAnchor, PlacementGravity);
         }
     }
 
@@ -810,7 +810,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsShowTextProperty || change.Property == FormatProperty)
+        if (change.Property == IsTextVisibleProperty || change.Property == FormatProperty)
         {
             GenerateValueText();
         }
@@ -821,7 +821,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             ConfigureCornerRadius();
         }
 
-        if (change.Property == IsShowArrowProperty ||
+        if (change.Property == IsArrowVisibleProperty ||
             change.Property == PlacementProperty ||
             change.Property == PlacementAnchorProperty ||
             change.Property == PlacementGravityProperty)
@@ -953,7 +953,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         if (PickerPresenter is null)
         {
-            PickerPresenter = CreatePickerPresenter();
+            PickerPresenter = CreatePresenter();
             NotifyPickerPresenterCreated(PickerPresenter);
         }
 
@@ -978,7 +978,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
     }
 
-    protected abstract Control CreatePickerPresenter();
+    protected abstract Control CreatePresenter();
 
     private void HandleIsPickerOpenChanged(AvaloniaPropertyChangedEventArgs args)
     {
@@ -995,7 +995,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     protected virtual void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(":flyout-open", IsPickerOpen);
+        PseudoClasses.Set(ColorPickerPseudoClass.FlyoutOpen, IsPickerOpen);
     }
 
     public static string FormatColor(Color color, ColorFormat format)

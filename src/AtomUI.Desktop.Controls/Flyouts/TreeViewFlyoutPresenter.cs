@@ -12,8 +12,8 @@ public class TreeViewFlyoutPresenter : FloatableTreeView, IShadowMaskInfoProvide
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<bool> IsShowArrowProperty =
-        ArrowDecoratedBox.IsShowArrowProperty.AddOwner<TreeViewFlyoutPresenter>();
+    public static readonly StyledProperty<bool> IsArrowVisibleProperty =
+        ArrowDecoratedBox.IsArrowVisibleProperty.AddOwner<TreeViewFlyoutPresenter>();
 
     public static readonly StyledProperty<ArrowPosition> ArrowPositionProperty =
         ArrowDecoratedBox.ArrowPositionProperty.AddOwner<TreeViewFlyoutPresenter>();
@@ -21,10 +21,10 @@ public class TreeViewFlyoutPresenter : FloatableTreeView, IShadowMaskInfoProvide
     /// <summary>
     /// 是否显示指示箭头
     /// </summary>
-    public bool IsShowArrow
+    public bool IsArrowVisible
     {
-        get => GetValue(IsShowArrowProperty);
-        set => SetValue(IsShowArrowProperty, value);
+        get => GetValue(IsArrowVisibleProperty);
+        set => SetValue(IsArrowVisibleProperty, value);
     }
 
     /// <summary>

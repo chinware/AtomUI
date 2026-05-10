@@ -20,11 +20,11 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
     public static readonly StyledProperty<double> ValueProperty =
         RangeBase.ValueProperty.AddOwner<AbstractColorPickerSliderTrack>();
 
-    public static readonly StyledProperty<bool> IgnoreThumbDragProperty =
-        AvaloniaProperty.Register<AbstractColorPickerSliderTrack, bool>(nameof(IgnoreThumbDrag));
+    public static readonly StyledProperty<bool> IsThumbDragIgnoredProperty =
+        AvaloniaProperty.Register<AbstractColorPickerSliderTrack, bool>(nameof(IsThumbDragIgnored));
 
-    public static readonly StyledProperty<bool> DeferThumbDragProperty =
-        AvaloniaProperty.Register<AbstractColorPickerSliderTrack, bool>(nameof(DeferThumbDrag));
+    public static readonly StyledProperty<bool> IsThumbDragDeferredProperty =
+        AvaloniaProperty.Register<AbstractColorPickerSliderTrack, bool>(nameof(IsThumbDragDeferred));
 
     public double Minimum
     {
@@ -44,16 +44,16 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
         set => SetValue(ValueProperty, value);
     }
 
-    public bool IgnoreThumbDrag
+    public bool IsThumbDragIgnored
     {
-        get => GetValue(IgnoreThumbDragProperty);
-        set => SetValue(IgnoreThumbDragProperty, value);
+        get => GetValue(IsThumbDragIgnoredProperty);
+        set => SetValue(IsThumbDragIgnoredProperty, value);
     }
 
-    public bool DeferThumbDrag
+    public bool IsThumbDragDeferred
     {
-        get => GetValue(DeferThumbDragProperty);
-        set => SetValue(DeferThumbDragProperty, value);
+        get => GetValue(IsThumbDragDeferredProperty);
+        set => SetValue(IsThumbDragDeferredProperty, value);
     }
 
     #endregion
@@ -103,7 +103,7 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == DeferThumbDragProperty)
+        if (change.Property == IsThumbDragDeferredProperty)
         {
             if (!change.GetNewValue<bool>())
             {
@@ -160,12 +160,12 @@ internal abstract class AbstractColorPickerSliderTrack : TemplatedControl
 
     protected void ThumbDragged(object? sender, VectorEventArgs e)
     {
-        if (IgnoreThumbDrag)
+        if (IsThumbDragIgnored)
         {
             return;
         }
 
-        if (DeferThumbDrag)
+        if (IsThumbDragDeferred)
         {
             DeferredThumbDrag = e;
             InvalidateArrange();

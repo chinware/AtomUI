@@ -34,7 +34,7 @@
                         OkText="Ok"
                         CancelText="Cancel"
                         Placement="Top"
-                        IsShowArrow="True">
+                        IsArrowVisible="True">
                         <atom:Button ButtonType="Default" IsDanger="True">Confirm</atom:Button>
                     </atom:PopupConfirm>
                 </atom:Space>

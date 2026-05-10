@@ -18,17 +18,17 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsShowText="True"/>
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsTextVisible="True"/>
                 </StackPanel>
         
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsShowText="True"/>
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsTextVisible="True"/>
                 </StackPanel>
         
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsShowText="True"/>
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsTextVisible="True"/>
                 </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -37,7 +37,7 @@
             Title="Line Gradient"
             Description="Set the color to a single or a gradient color via mode.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:GradientColorPicker IsShowText="True">
+                <atom:GradientColorPicker IsTextVisible="True">
                     <atom:GradientColorPicker.DefaultValue>
                         <LinearGradientBrush>
                             <GradientStop Color="#108ee9" Offset="0"/>
@@ -52,8 +52,8 @@
             Title="Rendering Trigger Text"
             Description="Renders the default text of the trigger, effective when showText is true. When customizing text, you can use showText as a function to return custom text.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsShowText="True" IsClearEnabled="True"/>
-                <atom:ColorPicker Name="CustomRenderText" DefaultValue="#1677ff" IsShowText="True" />
+                <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
+                <atom:ColorPicker Name="CustomRenderText" DefaultValue="#1677ff" IsTextVisible="True" />
             </StackPanel>
         </gallery:ShowCaseItem>
         
@@ -61,7 +61,7 @@
             Title="Disabled"
             Description="Set to disabled state.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsShowText="True" IsEnabled="False"/>
+                <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsEnabled="False"/>
             </StackPanel>
         </gallery:ShowCaseItem>
         <gallery:ShowCaseItem
@@ -76,8 +76,8 @@
             Title="Clear Color"
             Description="Clear Color.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsShowText="True" IsClearEnabled="True"/>
-                <atom:GradientColorPicker IsShowText="True" IsClearEnabled="True">
+                <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
+                <atom:GradientColorPicker IsTextVisible="True" IsClearEnabled="True">
                     <atom:GradientColorPicker.DefaultValue>
                         <LinearGradientBrush>
                             <GradientStop Color="#108ee9" Offset="0"/>
@@ -110,9 +110,9 @@
             Title="Color Format"
             Description="Encoding formats, support HEX, HSB, RGB.">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" Format="Hex" IsShowText="True"/>
-                <atom:ColorPicker DefaultValue="#1677ff" Format="Hsva" IsShowText="True"/>
-                <atom:ColorPicker DefaultValue="#1677ff" Format="Rgba" IsShowText="True"/>
+                <atom:ColorPicker DefaultValue="#1677ff" Format="Hex" IsTextVisible="True"/>
+                <atom:ColorPicker DefaultValue="#1677ff" Format="Hsva" IsTextVisible="True"/>
+                <atom:ColorPicker DefaultValue="#1677ff" Format="Rgba" IsTextVisible="True"/>
             </StackPanel>
         </gallery:ShowCaseItem>
         
