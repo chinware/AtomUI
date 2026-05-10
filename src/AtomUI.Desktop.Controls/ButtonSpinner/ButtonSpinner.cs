@@ -391,6 +391,18 @@ public class ButtonSpinner : Spinner,
         }
     }
     
+    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
+    {
+        base.OnPointerWheelChanged(e);
+
+        if (AllowSpin && IsKeyboardFocusWithin && e.Delta.Y != 0)
+        {
+            var direction = e.Delta.Y < 0 ? SpinDirection.Decrease : SpinDirection.Increase;
+            OnSpin(new SpinEventArgs(SpinEvent, direction, true));
+            e.Handled = true;
+        }
+    }
+
     protected override void OnKeyDown(KeyEventArgs e)
     {
         switch (e.Key)

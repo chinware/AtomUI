@@ -67,11 +67,8 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public static readonly StyledProperty<bool> IsStringModeProperty =
         AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsStringMode));
     
-    public static readonly StyledProperty<bool> KeyboardProperty =
-        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(Keyboard), true);
-
-    public static readonly StyledProperty<bool> IsWheelEnabledProperty =
-        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsWheelEnabled), true);
+    public static readonly StyledProperty<bool> IsKeyboardEnabledProperty =
+        AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsKeyboardEnabled), true);
 
     public static readonly StyledProperty<string?> StringValueProperty =
         AvaloniaProperty.Register<NumericUpDown, string?>(nameof(StringValue));
@@ -156,16 +153,10 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         set => SetValue(IsStringModeProperty, value);
     }
 
-    public bool Keyboard
+    public bool IsKeyboardEnabled
     {
-        get => GetValue(KeyboardProperty);
-        set => SetValue(KeyboardProperty, value);
-    }
-
-    public bool IsWheelEnabled
-    {
-        get => GetValue(IsWheelEnabledProperty);
-        set => SetValue(IsWheelEnabledProperty, value);
+        get => GetValue(IsKeyboardEnabledProperty);
+        set => SetValue(IsKeyboardEnabledProperty, value);
     }
 
     public string? StringValue
@@ -373,17 +364,16 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     protected override void OnValueChanged(decimal? oldValue, decimal? newValue)
     {
-        base.OnValueChanged(oldValue, newValue);
-        if (!IsStringMode || _isUpdatingFromText || _isParsingText)
+        if (IsStringMode && !_isUpdatingFromText && !_isParsingText)
         {
-            return;
+            UpdateStringValueFromValue(newValue, CultureInfo.CurrentCulture);
         }
-        UpdateStringValueFromValue(newValue, CultureInfo.CurrentCulture);
+        base.OnValueChanged(oldValue, newValue);
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
-        if (!Keyboard)
+        if (!IsKeyboardEnabled)
         {
             switch (e.Key)
             {
@@ -399,34 +389,22 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         base.OnKeyDown(e);
     }
 
-    protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
-    {
-        if (!IsWheelEnabled)
-        {
-            e.Handled = true;
-            return;
-        }
-        base.OnPointerWheelChanged(e);
-    }
-
     private void SetTextBoxPart(TextBox? textBox)
     {
         if (_textBoxPart != null)
         {
-            _textBoxPart.KeyDown             -= HandleTextBoxKeyDown;
-            _textBoxPart.PointerWheelChanged -= HandleTextBoxPointerWheelChanged;
+            _textBoxPart.KeyDown -= HandleTextBoxKeyDown;
         }
         _textBoxPart = textBox;
         if (_textBoxPart != null)
         {
-            _textBoxPart.KeyDown             += HandleTextBoxKeyDown;
-            _textBoxPart.PointerWheelChanged += HandleTextBoxPointerWheelChanged;
+            _textBoxPart.KeyDown += HandleTextBoxKeyDown;
         }
     }
 
     private void HandleTextBoxKeyDown(object? sender, KeyEventArgs e)
     {
-        if (!Keyboard)
+        if (!IsKeyboardEnabled)
         {
             switch (e.Key)
             {
@@ -437,14 +415,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
                     e.Handled = true;
                     break;
             }
-        }
-    }
-
-    private void HandleTextBoxPointerWheelChanged(object? sender, PointerWheelEventArgs e)
-    {
-        if (!IsWheelEnabled)
-        {
-            e.Handled = true;
         }
     }
 
@@ -510,11 +480,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             _isUpdatingText = true;
             SetCurrentValue(TextProperty, displayText);
             _isUpdatingText = false;
-        }
-
-        if (TextConverter == _textConverter)
-        {
-            return;
         }
 
         if (TryParseDecimal(raw, CultureInfo.CurrentCulture, out var value))

@@ -8,6 +8,7 @@
             <ControlTemplate>
                 <atom:ButtonSpinner
                     Name="PART_Spinner"
+                    AllowSpin="{TemplateBinding AllowSpin}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     SizeType="{TemplateBinding SizeType}"
                     StyleVariant="{TemplateBinding StyleVariant}"

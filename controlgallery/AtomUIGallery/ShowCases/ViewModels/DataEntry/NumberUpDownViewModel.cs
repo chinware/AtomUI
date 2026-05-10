@@ -26,13 +26,6 @@ public class NumberUpDownViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _keyboardEnabled, value);
     }
 
-    private bool _mouseWheelEnabled = true;
-    public bool MouseWheelEnabled
-    {
-        get => _mouseWheelEnabled;
-        set => this.RaiseAndSetIfChanged(ref _mouseWheelEnabled, value);
-    }
-
     public NumberUpDownViewModel(IScreen screen)
     {
         HostScreen = screen;

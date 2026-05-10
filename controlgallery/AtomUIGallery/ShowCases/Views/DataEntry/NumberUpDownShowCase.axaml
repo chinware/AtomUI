@@ -40,22 +40,17 @@
                           IsChecked="{Binding KeyboardEnabled}"/>
                 <atom:NumericUpDown Value="1.2"
                                     Increment="0.1"
-                                    Keyboard="{Binding KeyboardEnabled}"
+                                    IsKeyboardEnabled="{Binding KeyboardEnabled}"
                                     PlaceholderText="Keyboard disabled" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="Mouse wheel behavior"
-            Description="Disable mouse wheel spin with the MouseWheel property.">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:CheckBox Content="Mouse wheel enabled"
-                          IsChecked="{Binding MouseWheelEnabled}"/>
-                <atom:NumericUpDown Value="2.5"
-                                    Increment="0.5"
-                                    IsWheelEnabled="{Binding MouseWheelEnabled}"
-                                    PlaceholderText="Mouse wheel disabled" />
-            </StackPanel>
+            Description="Scroll the mouse wheel while the input is focused to increment or decrement by Increment.">
+            <atom:NumericUpDown Value="2.5"
+                                Increment="0.5"
+                                PlaceholderText="Focus and scroll wheel" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
