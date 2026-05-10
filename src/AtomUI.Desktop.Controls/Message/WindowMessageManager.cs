@@ -8,7 +8,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using Avalonia.Controls.Notifications;
 
 namespace AtomUI.Desktop.Controls;
 

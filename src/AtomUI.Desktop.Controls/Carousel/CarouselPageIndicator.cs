@@ -8,7 +8,6 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 

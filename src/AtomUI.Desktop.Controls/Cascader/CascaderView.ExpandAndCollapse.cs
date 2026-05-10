@@ -1,11 +1,7 @@
 using System.Diagnostics;
-using AtomUI.Controls;
-using AtomUI.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 

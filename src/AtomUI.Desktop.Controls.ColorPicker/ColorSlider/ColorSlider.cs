@@ -1,6 +1,5 @@
 using AtomUI.Collections.Pooled;
 using AtomUI.Desktop.Controls.Primitives;
-using AtomUI.Desktop.Controls.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;

@@ -14,7 +14,6 @@ using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls;
 

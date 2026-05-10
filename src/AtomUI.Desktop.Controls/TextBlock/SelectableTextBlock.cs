@@ -11,7 +11,6 @@ using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 using Avalonia.Utilities;
 using Avalonia.VisualTree;
-using System.Globalization;
 
 namespace AtomUI.Desktop.Controls;
 

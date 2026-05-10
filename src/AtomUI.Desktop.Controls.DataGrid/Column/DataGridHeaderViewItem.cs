@@ -1,7 +1,5 @@
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 

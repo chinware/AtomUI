@@ -1,6 +1,5 @@
 using AtomUI.Animations;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Controls.Commons;

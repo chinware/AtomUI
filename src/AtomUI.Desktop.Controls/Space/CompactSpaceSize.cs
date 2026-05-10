@@ -1,6 +1,5 @@
 using System.Globalization;
 using AtomUI.Utils;
-using Avalonia.Utilities;
 
 namespace AtomUI.Desktop.Controls;
 

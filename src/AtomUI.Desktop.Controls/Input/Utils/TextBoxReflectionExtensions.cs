@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
-using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 
 namespace AtomUI.Desktop.Controls.Utils;

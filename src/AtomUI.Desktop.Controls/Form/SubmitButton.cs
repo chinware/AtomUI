@@ -1,7 +1,5 @@
 using Avalonia;
-using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 

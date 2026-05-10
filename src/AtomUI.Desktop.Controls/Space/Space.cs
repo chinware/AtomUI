@@ -14,7 +14,6 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
-using Avalonia.Utilities;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;

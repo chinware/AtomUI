@@ -3,7 +3,6 @@ using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Data;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Localization;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;

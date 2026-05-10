@@ -1,6 +1,4 @@
 using System.Globalization;
-using System.Reactive.Disposables;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;

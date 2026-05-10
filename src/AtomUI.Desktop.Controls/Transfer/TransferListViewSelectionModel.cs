@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
-using AtomUI.Collections;
 using AtomUI.Controls.Data;
-using AtomUI.Desktop.Controls.Primitives;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;

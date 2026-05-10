@@ -1,7 +1,6 @@
 using System.Windows.Input;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Exceptions;
 using AtomUI.Input;
 using AtomUI.MotionScene;
@@ -19,7 +18,6 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 

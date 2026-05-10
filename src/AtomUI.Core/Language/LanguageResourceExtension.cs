@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Data;
 using Avalonia;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 

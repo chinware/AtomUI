@@ -12,7 +12,6 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -857,7 +856,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             _popup.Closed += HandlePopupClosed;
 
             this[!IsPopupHorizontalFlippedProperty] = _popup[!Popup.IsHorizontalFlippedProperty];
-            this[!IsPopupVerticalFlippedProperty]   = _popup[!Popup.IsVerticalFlippedProperty];
+            this[!IsPopupVerticalFlippedProperty] = _popup[!Popup.IsVerticalFlippedProperty];
 
             ApplyPopupTriggerSettings();
         }

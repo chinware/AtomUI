@@ -2,7 +2,6 @@ using System.Globalization;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media.Transformation;
-using Avalonia.Utilities;
 
 namespace AtomUI.Media;
 

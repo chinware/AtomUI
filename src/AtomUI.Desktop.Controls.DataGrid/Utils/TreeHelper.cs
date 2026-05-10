@@ -4,7 +4,6 @@
 // All other rights reserved.
 
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls.Utils;

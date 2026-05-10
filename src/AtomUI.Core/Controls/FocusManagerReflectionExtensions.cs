@@ -1,10 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
-using Avalonia;
 using Avalonia.Input;
-using Avalonia.Platform;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Controls;
 
