@@ -37,13 +37,13 @@
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"
-                                ShouldUseOverlayLayer="True"
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                RequestedPlacement="{TemplateBinding PopupPlacement}"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding MinPopupWidth}">
+                                RequestedPlacement="{TemplateBinding PopupPlacement}">
 
                         <Border Name="PopupFrame"
+                                MaxHeight="{TemplateBinding MaxPopupHeight}"
+                                MinWidth="{TemplateBinding MinPopupWidth}"
                                 Padding="{TemplateBinding PopupContentPadding}">
                             <atom:CandidateList Name="{x:Static atom:AutoCompleteThemeConstants.CandidateListPart}"
                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

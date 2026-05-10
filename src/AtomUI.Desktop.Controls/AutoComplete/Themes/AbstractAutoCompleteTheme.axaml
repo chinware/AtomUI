@@ -27,13 +27,13 @@
         </Style>
         
         <Style Selector="^[IsPopupMatchSelectWidth=True]">
-            <Style Selector="^ /template/ atom|Popup#PART_Popup">
+            <Style Selector="^ /template/ Border#PopupFrame">
                 <Setter Property="Width" Value="{Binding EffectivePopupWidth, RelativeSource={RelativeSource TemplatedParent}}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[IsPopupMatchSelectWidth=False]">
-            <Style Selector="^ /template/ atom|Popup#PART_Popup">
+            <Style Selector="^ /template/ Border#PopupFrame">
                 <Setter Property="MaxWidth" Value="{atom:AutoCompleteTokenResource MaxPopupWidth}" />
             </Style>
         </Style>

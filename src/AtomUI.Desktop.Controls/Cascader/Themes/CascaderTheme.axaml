@@ -72,10 +72,9 @@
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"
                                 RequestedPlacement="{TemplateBinding PopupPlacement}"
-                                ShouldUseOverlayLayer="True"
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}">
+                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border Name="PopupFrame"
                                 MaxHeight="{TemplateBinding MaxPopupHeight}"
                                 MinWidth="{TemplateBinding EffectivePopupWidth}"

@@ -78,11 +78,11 @@
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"
                                 RequestedPlacement="{TemplateBinding PopupPlacement}"
-                                ShouldUseOverlayLayer="True"
-                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding EffectivePopupWidth}">
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
+                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border Name="PopupFrame"
+                                MaxHeight="{TemplateBinding MaxPopupHeight}"
+                                MinWidth="{TemplateBinding EffectivePopupWidth}"
                                 Padding="{TemplateBinding PopupContentPadding}">
                             <atom:TreeSelectTreeView Name="PART_TreeView"
                                                      AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedItem}"

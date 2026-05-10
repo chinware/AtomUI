@@ -170,6 +170,9 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     
     public static readonly StyledProperty<bool> IsPopupMatchSelectWidthProperty =
         AvaloniaProperty.Register<AbstractAutoComplete, bool>(nameof(IsPopupMatchSelectWidth), true);
+
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<AbstractAutoComplete, bool>(nameof(ShouldUseOverlayPopup), true);
     
     public PathIcon? ClearIcon
     {
@@ -394,6 +397,12 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     {
         get => GetValue(IsPopupMatchSelectWidthProperty);
         set => SetValue(IsPopupMatchSelectWidthProperty, value);
+    }
+
+    public bool ShouldUseOverlayPopup
+    {
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     public ItemsSourceView OptionsView => ItemsSourceView.GetOrCreate(_options);

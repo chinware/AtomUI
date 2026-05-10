@@ -46,6 +46,9 @@ public abstract class AbstractSelect : TemplatedControl,
     public static readonly StyledProperty<bool> IsPopupMatchSelectWidthProperty =
         AvaloniaProperty.Register<AbstractSelect, bool>(nameof(IsPopupMatchSelectWidth), true);
 
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<AbstractSelect, bool>(nameof(ShouldUseOverlayPopup), true);
+
     public static readonly StyledProperty<bool> IsFilterEnabledProperty =
         AvaloniaProperty.Register<AbstractSelect, bool>(nameof(IsFilterEnabled));
 
@@ -175,6 +178,12 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         get => GetValue(IsPopupMatchSelectWidthProperty);
         set => SetValue(IsPopupMatchSelectWidthProperty, value);
+    }
+
+    public bool ShouldUseOverlayPopup
+    {
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
 
     public bool IsFilterEnabled

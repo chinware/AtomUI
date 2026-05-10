@@ -80,6 +80,9 @@ public class Mentions : TemplatedControl,
     
     public static readonly StyledProperty<string?> SplitProperty =
         AvaloniaProperty.Register<Mentions, string?>(nameof(Split));
+
+    public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
+        AvaloniaProperty.Register<Mentions, bool>(nameof(ShouldUseOverlayPopup), true);
     
     public static readonly StyledProperty<object?> ContentLeftAddOnProperty =
         AddOnDecoratedBox.ContentLeftAddOnProperty.AddOwner<Mentions>();
@@ -237,6 +240,12 @@ public class Mentions : TemplatedControl,
     {
         get => GetValue(SplitProperty);
         set => SetValue(SplitProperty, value);
+    }
+
+    public bool ShouldUseOverlayPopup
+    {
+        get => GetValue(ShouldUseOverlayPopupProperty);
+        set => SetValue(ShouldUseOverlayPopupProperty, value);
     }
     
     public object? ContentLeftAddOn
