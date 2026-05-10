@@ -447,7 +447,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     private void SetupHoverTrigger()
     {
-        _triggerSubscriptions!.Add(this.GetObservable(InputElement.IsPointerOverProperty).Subscribe(isPointerOver =>
+        _triggerSubscriptions!.Add(this.GetObservable(IsPointerOverProperty).Subscribe(isPointerOver =>
         {
             if (IsEnabled && IsVisible)
             {
@@ -536,6 +536,11 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             return;
         }
 
+        if (e.Source is Visual source && IsSourceInsidePickerPopup(source))
+        {
+            return;
+        }
+
         if (IsPickerOpen)
         {
             HidePicker(immediately: true);
@@ -544,6 +549,15 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         {
             ShowPicker(immediately: true);
         }
+    }
+
+    private bool IsSourceInsidePickerPopup(Visual visual)
+    {
+        if (visual == this || this.IsVisualAncestorOf(visual))
+        {
+            return false;
+        }
+        return IsVisualInPickerScope(visual);
     }
 
     #endregion
@@ -607,7 +621,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         UnregisterRootPointerHandler();
         _registeredTopLevel = TopLevel.GetTopLevel(this);
-        _registeredTopLevel?.AddHandler(InputElement.PointerPressedEvent, HandleFocusModeRootPointerPressed,
+        _registeredTopLevel?.AddHandler(PointerPressedEvent, HandleFocusModeRootPointerPressed,
             RoutingStrategies.Tunnel, handledEventsToo: true);
     }
 
@@ -615,7 +629,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         if (_registeredTopLevel != null)
         {
-            _registeredTopLevel.RemoveHandler(InputElement.PointerPressedEvent, HandleFocusModeRootPointerPressed);
+            _registeredTopLevel.RemoveHandler(PointerPressedEvent, HandleFocusModeRootPointerPressed);
             _registeredTopLevel = null;
         }
     }
@@ -692,20 +706,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     #region Scope helpers
 
     private bool IsVisualInPickerScope(Visual visual)
-    {
-        if (visual == this || this.IsVisualAncestorOf(visual))
-        {
-            return true;
-        }
-
-        if (_popup is { Child: Visual popupChild } &&
-            (visual == popupChild || popupChild.IsLogicalAncestorOf(visual)))
-        {
-            return true;
-        }
-
-        return false;
-    }
+        => PopupUtils.IsVisualInPopupScope(visual, this, _popup?.Child as Visual);
 
     private bool IsFocusWithinPickerScope()
     {

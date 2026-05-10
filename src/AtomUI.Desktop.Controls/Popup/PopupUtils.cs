@@ -3,7 +3,10 @@ using AtomUI.MotionScene;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -710,6 +713,95 @@ internal static class PopupUtils
             vOffset += marginToAnchor;
             hOffset += marginToAnchor;
         }
-      
+
+    }
+
+    /// <summary>
+    /// 判断 <paramref name="visual"/> 是否落在 <paramref name="anchor"/> + <paramref name="popupChild"/>
+    /// 组成的 popup 作用域内（含嵌套 popup）。
+    /// </summary>
+    /// <remarks>
+    /// 用于 anchor 控件的 Click handler（过滤 popup 内部点击）和 Hover 模式的全局指针追踪
+    /// （判断指针是否仍在作用域内）。Avalonia 的 popup 连接走 visual/logical/InteractiveParent
+    /// 三条线叠加，单棵树检查会漏嵌套 popup 场景（popup 里开 ComboBox/Select 等）。
+    /// 本方法沿 <c>popup host → Popup → PlacementTarget</c> 跳跃模拟事件路由。
+    /// 详见 <c>docs/PopupAnchorScopeGuide.md</c>。
+    /// </remarks>
+    internal static bool IsVisualInPopupScope(Visual? visual, Visual anchor, Visual? popupChild)
+    {
+        if (visual == null)
+        {
+            return false;
+        }
+
+        if (visual == anchor || anchor.IsVisualAncestorOf(visual))
+        {
+            return true;
+        }
+
+        if (popupChild == null)
+        {
+            return false;
+        }
+
+        if (visual == popupChild
+            || popupChild.IsLogicalAncestorOf(visual)
+            || popupChild.IsVisualAncestorOf(visual))
+        {
+            return true;
+        }
+
+        var cursor = visual;
+        var guard = 0;
+        while (cursor != null && guard++ < 8)
+        {
+            var owningPopup = FindOwningPopup(cursor);
+            if (owningPopup == null)
+            {
+                break;
+            }
+
+            var target = owningPopup.PlacementTarget
+                         ?? owningPopup.FindLogicalAncestorOfType<Control>();
+            if (target == null || target == cursor)
+            {
+                break;
+            }
+
+            if (target == anchor
+                || anchor.IsVisualAncestorOf(target)
+                || target == popupChild
+                || popupChild.IsLogicalAncestorOf(target)
+                || popupChild.IsVisualAncestorOf(target))
+            {
+                return true;
+            }
+
+            cursor = target;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 从 <paramref name="visual"/> 向上查找承载它的 <see cref="OverlayPopupHost"/> 或
+    /// <see cref="PopupRoot"/>，再取对应的 <see cref="Avalonia.Controls.Primitives.Popup"/> 控件。
+    /// 用于 <see cref="IsVisualInPopupScope"/> 的嵌套 popup 跳跃。
+    /// </summary>
+    internal static Avalonia.Controls.Primitives.Popup? FindOwningPopup(Visual visual)
+    {
+        Visual? host = visual.FindAncestorOfType<OverlayPopupHost>();
+        if (host == null)
+        {
+            host = visual.FindAncestorOfType<PopupRoot>();
+        }
+        if (host is not ILogical logical)
+        {
+            return null;
+        }
+        // OverlayPopupHost.LogicalParent 在 Popup.Open 里通过
+        // ((ISetLogicalParent)popupHost).SetParent(this) 被设成 Popup 控件本身
+        return logical.LogicalParent as Avalonia.Controls.Primitives.Popup
+               ?? (host as StyledElement)?.FindLogicalAncestorOfType<Avalonia.Controls.Primitives.Popup>();
     }
 }
