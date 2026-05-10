@@ -282,7 +282,7 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             adornerLayer.Children.Remove(this);
 
             AdornerLayer.SetAdornedElement(this, adorned);
-            AdornerLayer.SetIsClipEnabled(this, false);
+            AdornerLayer.SetIsClipEnabled(this, true);
             adornerLayer.Children.Add(this);
         }
 

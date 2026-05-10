@@ -188,7 +188,7 @@ public abstract class AbstractRibbonBadge : Control
             }
 
             AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
-            AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
+            AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, true);
             _adornerLayer.Children.Add(ribbonBadgeAdorner);
         }
     }

@@ -179,7 +179,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         adornerLayer.Children.Remove(this);
 
         AdornerLayer.SetAdornedElement(this, adorned);
-        AdornerLayer.SetIsClipEnabled(this, false);
+        AdornerLayer.SetIsClipEnabled(this, true);
         adornerLayer.Children.Add(this);
         
         if (IsMotionEnabled && IsLoaded)
