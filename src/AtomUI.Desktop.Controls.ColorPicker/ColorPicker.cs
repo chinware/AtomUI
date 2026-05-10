@@ -163,7 +163,7 @@ public class ColorPicker : AbstractColorPicker
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _colorIndicator =  e.NameScope.Find<ColorBlock>(ColorPickerThemeConstants.ColorIndicatorPart);
+        _colorIndicator =  e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
     }
     
     protected override Flyout CreatePickerFlyout()
@@ -206,6 +206,7 @@ public class ColorPicker : AbstractColorPicker
         {
             var effectiveColor = Value ?? DefaultValue ?? Colors.White;
             _presenter.SetCurrentValue(ColorPickerView.ValueProperty, effectiveColor);
+            _latestSyncValue = effectiveColor;
             _presenter.ValueChanged      += HandleColorPickerViewValueChanged;
             _presenter.ColorValueCleared += HandleColorCleared;
         }

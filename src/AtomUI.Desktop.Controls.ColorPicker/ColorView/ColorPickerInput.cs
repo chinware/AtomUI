@@ -236,15 +236,15 @@ internal class ColorPickerInput : TemplatedControl
         }
 
         base.OnApplyTemplate(e);
-        _colorFormatComboBox = e.NameScope.Find<ComboBox>(ColorPickerInputThemeConstants.ColorFormatComboBoxPart);
-        _alphaInput          = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.AlphaInputPart);
-        _hexValueInput       = e.NameScope.Find<LineEdit>(ColorPickerInputThemeConstants.HexValueInputPart);
-        _hValueInput         = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.HValueInputPart);
-        _sValueInput         = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.SValueInputPart);
-        _vValueInput         = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.VValueInputPart);
-        _rValueInput         = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.RValueInputPart);
-        _gValueInput         = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.GValueInputPart);
-        _bValueInput         = e.NameScope.Find<NumericUpDown>(ColorPickerInputThemeConstants.BValueInputPart);
+        _colorFormatComboBox = e.NameScope.Find<ComboBox>("PART_ColorFormatComboBox");
+        _alphaInput          = e.NameScope.Find<NumericUpDown>("PART_AlphaInput");
+        _hexValueInput       = e.NameScope.Find<LineEdit>("PART_HexValueInput");
+        _hValueInput         = e.NameScope.Find<NumericUpDown>("PART_HValueInput");
+        _sValueInput         = e.NameScope.Find<NumericUpDown>("PART_SValueInput");
+        _vValueInput         = e.NameScope.Find<NumericUpDown>("PART_VValueInput");
+        _rValueInput         = e.NameScope.Find<NumericUpDown>("PART_RValueInput");
+        _gValueInput         = e.NameScope.Find<NumericUpDown>("PART_GValueInput");
+        _bValueInput         = e.NameScope.Find<NumericUpDown>("PART_BValueInput");
 
         if (_colorFormatComboBox != null)
         {

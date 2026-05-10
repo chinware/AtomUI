@@ -611,14 +611,14 @@ internal class ColorSlider : AbstractColorSlider
         _increaseButtonSubscription?.Dispose();
         _increaseButtonReleaseDispose?.Dispose();
 
-        Track = e.NameScope.Find<ColorPickerSliderTrack>(ColorSliderThemeConstants.TrackPart);
+        Track = e.NameScope.Find<ColorPickerSliderTrack>("PART_Track");
 
         if (Track != null)
         {
             Track.IgnoreThumbDrag = true;
 
-            _decreaseButton = e.NameScope.Find<AvaloniaButton>(ColorSliderThemeConstants.DecreaseButtonPart);
-            _increaseButton = e.NameScope.Find<AvaloniaButton>(ColorSliderThemeConstants.IncreaseButtonPart);
+            _decreaseButton = e.NameScope.Find<AvaloniaButton>("PART_DecreaseButton");
+            _increaseButton = e.NameScope.Find<AvaloniaButton>("PART_IncreaseButton");
 
             if (_decreaseButton != null)
             {

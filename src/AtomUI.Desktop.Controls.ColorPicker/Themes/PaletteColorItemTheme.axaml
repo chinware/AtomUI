@@ -16,7 +16,7 @@
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Background="{TemplateBinding Background}"
                             BoxShadow="{atom:ColorPickerTokenResource ColorBlockInnerShadows}">
-                        <antdicons:CheckBoldOutlined Name="{x:Static atom:PaletteColorItemThemeConstants.CheckedMarkPart}"
+                        <antdicons:CheckBoldOutlined Name="PART_CheckedMark"
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center"
                                                      IsVisible="False" 

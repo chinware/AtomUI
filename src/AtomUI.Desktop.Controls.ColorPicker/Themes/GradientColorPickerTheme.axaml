@@ -18,13 +18,13 @@
                         Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}">
                     <DockPanel LastChildFill="True">
-                        <atom:ColorBlock Name="{x:Static atom:ColorPickerThemeConstants.ColorIndicatorPart}"
+                        <atom:ColorBlock Name="PART_ColorIndicator"
                                          SizeType="{TemplateBinding SizeType}"
                                          Background="{TemplateBinding ColorBlockBackground}"
                                          VerticalAlignment="Top"
                                          DockPanel.Dock="Left"/>
                         <Panel VerticalAlignment="Center">
-                            <WrapPanel Name="{x:Static atom:ColorPickerThemeConstants.ColorTextPanelPart}"
+                            <WrapPanel Name="PART_ColorTextPanel"
                                        IsVisible="{TemplateBinding IsShowText}" />
                         </Panel>
                     </DockPanel>

@@ -49,7 +49,7 @@ internal class ColorSliderThumb : Thumb
         {
             _innerEllipse.SizeChanged -= HandleInnerEllipseSizeChanged;
         }
-        _innerEllipse = e.NameScope.Find<Border>(ColorSliderThumbThemeConstants.InnerEllipsePart);
+        _innerEllipse = e.NameScope.Find<Border>("PART_InnerEllipse");
         if (_innerEllipse != null)
         {
             _innerEllipse.SizeChanged += HandleInnerEllipseSizeChanged;

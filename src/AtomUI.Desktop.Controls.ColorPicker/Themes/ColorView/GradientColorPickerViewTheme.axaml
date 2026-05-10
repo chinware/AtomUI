@@ -20,10 +20,10 @@
                         MinWidth="{TemplateBinding MinWidth}"
                         MinHeight="{TemplateBinding MinHeight}"
                         ClipToBounds="False">
-                    <StackPanel Name="{x:Static atom:ColorPickerViewThemeConstants.LayoutRootPart}"
+                    <StackPanel Name="PART_LayoutRoot"
                                 Orientation="Horizontal" ClipToBounds="False">
                         <atom:ColorPickerPaletteGroup
-                            Name="{x:Static atom:ColorPickerViewThemeConstants.PaletteGroupPart}"
+                            Name="PART_PaletteGroup"
                             PaletteGroup="{TemplateBinding PaletteGroup}"
                             IsVisible="{TemplateBinding IsPaletteGroupEnabled}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
@@ -33,12 +33,12 @@
                         <StackPanel Orientation="Vertical"
                                     ClipToBounds="False"
                                     Spacing="{atom:SharedTokenResource SpacingXS}">
-                            <atom:ColorBlock Name="{x:Static atom:ColorPickerViewThemeConstants.ClearColorPart}"
+                            <atom:ColorBlock Name="PART_ClearColor"
                                              HorizontalAlignment="Right"
                                              IsEmptyColorMode="True"
                                              IsVisible="{TemplateBinding IsClearEnabled}" />
                             <atom:GradientColorSlider
-                                Name="{x:Static atom:ColorPickerViewThemeConstants.GradientColorSliderPart}"
+                                Name="PART_GradientColorSlider"
                                 ActivatedHsvValue="{Binding HsvValue, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
                                 GradientValue="{Binding Value, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
                                 ActivatedStopIndex="{Binding ActivatedStopIndex, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"/>

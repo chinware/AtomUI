@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <DockPanel Name="RootLayout" LastChildFill="True">
-                    <atom:ComboBox Name="{x:Static atom:ColorPickerInputThemeConstants.ColorFormatComboBoxPart}" 
+                    <atom:ComboBox Name="PART_ColorFormatComboBox" 
                                    StyleVariant="Borderless" 
                                    SizeType="Small" 
                                    SelectedIndex="0"
@@ -17,7 +17,7 @@
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Hsva}">HSV</atom:ComboBoxItem>
                         <atom:ComboBoxItem Tag="{x:Static atom:ColorFormat.Rgba}">RGB</atom:ComboBoxItem>
                     </atom:ComboBox>
-                    <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.AlphaInputPart}"
+                    <atom:NumericUpDown Name="PART_AlphaInput"
                                         DockPanel.Dock="Right"
                                         Margin="5, 0, 0, 0"
                                         Minimum="0"
@@ -26,35 +26,35 @@
                                         Increment="1"
                                         IsVisible="{TemplateBinding IsAlphaVisible}"/>
                     <Panel>
-                        <atom:LineEdit Name="{x:Static atom:ColorPickerInputThemeConstants.HexValueInputPart}"
+                        <atom:LineEdit Name="PART_HexValueInput"
                                        SizeType="Small"
                                        IsVisible="False"/>
                         <StackPanel Name="HsvValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
-                            <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.HValueInputPart}"
+                            <atom:NumericUpDown Name="PART_HValueInput"
                                                 Minimum="0"
                                                 Maximum="360"
                                                 Increment="1"/>
-                            <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.SValueInputPart}"
+                            <atom:NumericUpDown Name="PART_SValueInput"
                                                 Minimum="0"
                                                 Maximum="100"
                                                 FormatString="0'%'"
                                                 Increment="1"/>
-                            <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.VValueInputPart}"
+                            <atom:NumericUpDown Name="PART_VValueInput"
                                                 Minimum="0"
                                                 Maximum="100"
                                                 FormatString="0'%'"
                                                 Increment="1"/>
                         </StackPanel>
                         <StackPanel Name="RgbValuePanel" Spacing="5" Orientation="Horizontal" IsVisible="False">
-                            <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.RValueInputPart}"
+                            <atom:NumericUpDown Name="PART_RValueInput"
                                                 Minimum="0"
                                                 Maximum="255"
                                                 Increment="1"/>
-                            <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.GValueInputPart}"
+                            <atom:NumericUpDown Name="PART_GValueInput"
                                                 Minimum="0"
                                                 Maximum="255"
                                                 Increment="1"/>
-                            <atom:NumericUpDown Name="{x:Static atom:ColorPickerInputThemeConstants.BValueInputPart}"
+                            <atom:NumericUpDown Name="PART_BValueInput"
                                                 Minimum="0"
                                                 Maximum="255"
                                                 Increment="1"/>

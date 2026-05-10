@@ -317,12 +317,12 @@ internal class ColorSpectrum : TemplatedControl
 
         UnregisterEvents(); // Failsafe
 
-        _inputTarget              = e.NameScope.Find<Canvas>(ColorSpectrumThemeConstants.InputTargetPart);
-        _layoutRoot               = e.NameScope.Find<Panel>(ColorSpectrumThemeConstants.LayoutRootPart);
-        _selectionEllipsePanel    = e.NameScope.Find<Panel>(ColorSpectrumThemeConstants.SelectionEllipsePanelPart);
-        _sizingPanel              = e.NameScope.Find<Panel>(ColorSpectrumThemeConstants.SizingPanelPart);
-        _spectrumRectangle        = e.NameScope.Find<Rectangle>(ColorSpectrumThemeConstants.SpectrumRectanglePart);
-        _spectrumOverlayRectangle = e.NameScope.Find<Rectangle>(ColorSpectrumThemeConstants.SpectrumOverlayRectanglePart);
+        _inputTarget              = e.NameScope.Find<Canvas>("PART_InputTarget");
+        _layoutRoot               = e.NameScope.Find<Panel>("PART_LayoutRoot");
+        _selectionEllipsePanel    = e.NameScope.Find<Panel>("PART_SelectionEllipsePanel");
+        _sizingPanel              = e.NameScope.Find<Panel>("PART_SizingPanel");
+        _spectrumRectangle        = e.NameScope.Find<Rectangle>("PART_SpectrumRectangle");
+        _spectrumOverlayRectangle = e.NameScope.Find<Rectangle>("PART_SpectrumOverlayRectangle");
 
         if (_inputTarget != null)
         {

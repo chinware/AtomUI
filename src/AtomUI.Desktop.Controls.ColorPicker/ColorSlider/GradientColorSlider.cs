@@ -92,7 +92,7 @@ internal class GradientColorSlider : AbstractColorSlider
         _pressDispose?.Dispose();
         _releaseDispose?.Dispose();
         _activatedThumbDispose?.Dispose();
-        Track = e.NameScope.Find<GradientColorPickerTrack>(ColorSliderThemeConstants.TrackPart);
+        Track = e.NameScope.Find<GradientColorPickerTrack>("PART_Track");
 
         if (Track is GradientColorPickerTrack track)
         {

@@ -13,31 +13,31 @@
                 <Border Name="Frame" ClipToBounds="True"
                         Padding="0.5"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Panel Name="{x:Static atom:ColorSpectrumThemeConstants.LayoutRootPart}"
+                    <Panel Name="PART_LayoutRoot"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch">
                         <Panel x:Name="PART_SizingPanel"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center">
-                            <Rectangle Name="{x:Static atom:ColorSpectrumThemeConstants.SpectrumRectanglePart}"
+                            <Rectangle Name="PART_SpectrumRectangle"
                                        IsHitTestVisible="False"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        RadiusX="{TemplateBinding CornerRadius, Converter={StaticResource TopLeftCornerRadiusConverter}}"
                                        RadiusY="{TemplateBinding CornerRadius, Converter={StaticResource BottomRightCornerRadiusConverter}}" />
-                            <Rectangle Name="{x:Static atom:ColorSpectrumThemeConstants.SpectrumOverlayRectanglePart}"
+                            <Rectangle Name="PART_SpectrumOverlayRectangle"
                                        IsHitTestVisible="False"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"
                                        RadiusX="{TemplateBinding CornerRadius, Converter={StaticResource TopLeftCornerRadiusConverter}}"
                                        RadiusY="{TemplateBinding CornerRadius, Converter={StaticResource BottomRightCornerRadiusConverter}}" />
 
-                            <Canvas Name="{x:Static atom:ColorSpectrumThemeConstants.InputTargetPart}"
+                            <Canvas Name="PART_InputTarget"
                                     Background="Transparent"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch">
                                 <!-- Note: ToolTip.VerticalOffset is for touch devices to keep the tip above fingers -->
-                                <Panel Name="{x:Static atom:ColorSpectrumThemeConstants.SelectionEllipsePanelPart}"
+                                <Panel Name="PART_SelectionEllipsePanel"
                                        ToolTip.VerticalOffset="-10"
                                        ToolTip.Placement="Top">
                                     <Ellipse x:Name="SelectionEllipse"

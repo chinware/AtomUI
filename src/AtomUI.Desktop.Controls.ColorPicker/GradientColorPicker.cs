@@ -317,8 +317,8 @@ public class GradientColorPicker : AbstractColorPicker
     {
         base.OnApplyTemplate(e);
         Value           ??= DefaultValue;
-        _textPanel      =   e.NameScope.Find<WrapPanel>(ColorPickerThemeConstants.ColorTextPanelPart);
-        _colorIndicator =   e.NameScope.Find<ColorBlock>(ColorPickerThemeConstants.ColorIndicatorPart);
+        _textPanel      =   e.NameScope.Find<WrapPanel>("PART_ColorTextPanel");
+        _colorIndicator =   e.NameScope.Find<ColorBlock>("PART_ColorIndicator");
         GenerateValueText();
         GenerateColorBlockBackground();
     }
