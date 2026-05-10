@@ -302,7 +302,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
         if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)
         {
-            _contentRightAddOnBindings.Add(textBox.Bind(NumericUpDown.IsCustomFontSizeProperty,
+            _contentRightAddOnBindings.Add(textBox.Bind(TextBox.IsCustomFontSizeProperty,
                 new Binding(nameof(IsCustomFontSize)) { Source = this }));
         }
     }
