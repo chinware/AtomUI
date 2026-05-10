@@ -137,8 +137,19 @@
                     Value="{atom:InfoPickerInputTokenResource RangePickerArrowMargin}" />
             <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
-            <Setter Property="Foreground"
-                    Value="{atom:SharedTokenResource ColorTextQuaternary}" />
+            <Setter Property="FillBrush"
+                    Value="{atom:SharedTokenResource ColorIcon}" />
+            <Setter Property="StrokeBrush"
+                    Value="{atom:SharedTokenResource ColorIcon}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Style Selector="^ /template/ atom|Icon#PART_RangePickerArrow">
+                <Setter Property="FillBrush"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+                <Setter Property="StrokeBrush"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
         </Style>
 
         <Style Selector="^ /template/ Rectangle#PART_RangePickerIndicator">

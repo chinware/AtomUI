@@ -283,9 +283,10 @@ public class TimePicker : InfoPickerInput
         }
         else
         {
-            var text = DateTimeUtils.FormatTimeSpan(TimeSpan.Zero,
-                ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
-            var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
+                ClockIdentifier == ClockIdentifierType.HourClock12,
+                AmText, PmText,
+                FontSize, FontFamily, FontStyle, FontWeight).Width;
             if (PlaceholderText != null)
             {
                 preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(PlaceholderText, FontSize, FontFamily, FontStyle, FontWeight).Width);
@@ -321,6 +322,7 @@ public class TimePicker : InfoPickerInput
         {
             SetValue(InfoIconProperty, new ClockCircleOutlined(), BindingPriority.Template);
         }
+        CalculatePreferredWidth();
     }
     
     #region 实现 FormItem 接口

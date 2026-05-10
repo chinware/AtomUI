@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.Localization;
@@ -239,11 +240,12 @@ public class DatePicker : InfoPickerInput
         }
 
         Text = FormatDateTime(SelectedDateTime);
-        
+
         if (InfoIcon is null)
         {
             SetValue(InfoIconProperty, new CalendarOutlined(), BindingPriority.Template);
         }
+        CalculatePreferredWidth();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -275,8 +277,18 @@ public class DatePicker : InfoPickerInput
         }
         else
         {
-            var text = FormatDateTime(DateTime.Today);
-            var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            var format = GetEffectiveFormat();
+            DateTimeFormatInfo? formatInfo = null;
+            if (ClockIdentifier == ClockIdentifierType.HourClock12)
+            {
+                formatInfo = new DateTimeFormatInfo
+                {
+                    AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
+                    PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
+                };
+            }
+            var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+                format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
             if (PlaceholderText != null)
             {
                 preferredInputWidth = Math.Max(preferredInputWidth,

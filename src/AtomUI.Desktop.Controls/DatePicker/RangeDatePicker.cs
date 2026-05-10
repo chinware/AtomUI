@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.Localization;
@@ -384,8 +385,18 @@ public class RangeDatePicker : RangeInfoPickerInput
         }
         else
         {
-            var text                = FormatDateTime(DateTime.Today);
-            var preferredInputWidth = TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            var format = GetEffectiveFormat();
+            DateTimeFormatInfo? formatInfo = null;
+            if (ClockIdentifier == ClockIdentifierType.HourClock12)
+            {
+                formatInfo = new DateTimeFormatInfo
+                {
+                    AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
+                    PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
+                };
+            }
+            var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+                format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
             if (PlaceholderText != null)
             {
                 preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(PlaceholderText, FontSize, FontFamily, FontStyle, FontWeight).Width);
@@ -397,7 +408,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             }
 
             preferredInputWidth *= 1.1;
-            
+
             if (!double.IsNaN(MinWidth))
             {
                 preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
@@ -500,6 +511,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         }
         Text          = FormatDateTime(RangeStartSelectedDate);
         SecondaryText = FormatDateTime(RangeEndSelectedDate);
+        CalculatePreferredWidth();
     }
     
     #region 实现 FormItem 接口
