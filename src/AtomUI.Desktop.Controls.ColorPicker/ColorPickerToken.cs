@@ -137,6 +137,11 @@ public class ColorPickerToken : AbstractControlDesignToken
     /// 透明时候颜色色块大小
     /// </summary>
     public double TransparentBgSize { get; set; }
+
+    /// <summary>
+    /// 禁用状态下颜色色块的不透明度
+    /// </summary>
+    public double ColorBlockDisabledOpacity { get; set; }
     
     public ColorPickerToken()
         : base(ID)
@@ -187,6 +192,7 @@ public class ColorPickerToken : AbstractControlDesignToken
         ColorPickerHandlerDarkColor        = Color.Parse("#22075e");
         SliderContainerMargin              = new Thickness(0, 0, SharedToken.UniformlyMarginSM, 0);
         TransparentBgSize                  = SharedToken.SizeXS;
+        ColorBlockDisabledOpacity          = 0.4;
         ColorPickerPresetColorGroupPadding = new Thickness(0, SharedToken.UniformlyPaddingXXS);
     }
     

@@ -71,6 +71,10 @@
             </Style>
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+            <Style Selector="^ /template/ atom|ColorBlock#PART_ColorIndicator">
+                <Setter Property="Opacity"
+                        Value="{atom:ColorPickerTokenResource ColorBlockDisabledOpacity}" />
+            </Style>
         </Style>
     </Style>
 

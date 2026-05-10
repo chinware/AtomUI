@@ -348,20 +348,20 @@
             Title="With character counting"
             Description="Show character counting.">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <!-- <atom:LineEdit IsShowCount="True" MaxLength="20" /> -->
+                <atom:LineEdit IsShowCount="True" MaxLength="20" />
                 <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="can resize" IsResizable="True" />
-                <!-- <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="disable resize" Height="120" -->
-                <!--                IsResizable="False" /> -->
+                <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="disable resize" Height="120"
+                               IsResizable="False" />
             </StackPanel>
         </gallery:ShowCaseItem>
-        <!-- -->
-        <!-- <gallery:ShowCaseItem -->
-        <!--     Title="Status" -->
-        <!--     Description="Add status to TextArea with status, which could be error or warning."> -->
-        <!--     <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0"> -->
-        <!--         <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="Error" IsResizable="True" Status="Error" /> -->
-        <!--         <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="Warning" IsResizable="True" Status="Warning"/> -->
-        <!--     </StackPanel> -->
-        <!-- </gallery:ShowCaseItem> -->
+        
+        <gallery:ShowCaseItem
+            Title="Status"
+            Description="Add status to TextArea with status, which could be error or warning.">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="Error" IsResizable="True" Status="Error" />
+                <atom:TextArea IsShowCount="True" MaxLength="100" PlaceholderText="Warning" IsResizable="True" Status="Warning"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

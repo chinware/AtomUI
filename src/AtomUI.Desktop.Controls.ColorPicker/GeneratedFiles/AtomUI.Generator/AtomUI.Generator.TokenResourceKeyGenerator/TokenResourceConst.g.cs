@@ -6,6 +6,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
     public enum ColorPickerTokenKind
     {
         CheckedMarkSize,
+        ColorBlockDisabledOpacity,
         ColorBlockInnerShadows,
         ColorPickerAlphaInputWidth,
         ColorPickerHandlerDarkColor,

@@ -12,8 +12,8 @@
                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True">
                         <atom:IconPresenter Name="IconPresenter"
-                                             Icon="{TemplateBinding Icon}"
-                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            Icon="{TemplateBinding Icon}"
+                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter Name="Content"
                                           HorizontalContentAlignment="Center"
                                           VerticalContentAlignment="Center"
@@ -25,47 +25,45 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^[IsEnabled=True]">
-            <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+            <Setter Property="IconBrush"
+                    Value="{atom:SegmentedTokenResource ItemColor}" />
+        </Style>
+
+        <Style Selector="^:selected">
+            <Setter Property="Foreground"
+                    Value="{atom:SegmentedTokenResource ItemSelectedColor}" />
+            <Setter Property="Background"
+                    Value="{atom:SegmentedTokenResource ItemSelectedBg}" />
+
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="IconBrush"
-                        Value="{atom:SegmentedTokenResource ItemColor}" />
+                        Value="{atom:SegmentedTokenResource ItemSelectedColor}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:not(^:selected)">
+            <Setter Property="Foreground" Value="{atom:SegmentedTokenResource ItemColor}" />
+            <Setter Property="Background" Value="Transparent" />
+
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground"
+                        Value="{atom:SegmentedTokenResource ItemHoverColor}" />
+                <Setter Property="Background"
+                        Value="{atom:SegmentedTokenResource ItemHoverBg}" />
+                <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                    <Setter Property="IconBrush"
+                            Value="{atom:SegmentedTokenResource ItemHoverColor}" />
+                </Style>
             </Style>
 
-            <Style Selector="^:selected">
-                <Setter Property="Foreground"
-                        Value="{atom:SegmentedTokenResource ItemSelectedColor}" />
+            <Style Selector="^:pressed">
                 <Setter Property="Background"
-                        Value="{atom:SegmentedTokenResource ItemSelectedBg}" />
-
+                        Value="{atom:SegmentedTokenResource ItemActiveBg}" />
                 <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                     <Setter Property="IconBrush"
                             Value="{atom:SegmentedTokenResource ItemSelectedColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:not(^:selected)">
-                <Setter Property="Foreground" Value="{atom:SegmentedTokenResource ItemColor}" />
-                <Setter Property="Background" Value="Transparent" />
-
-                <Style Selector="^:pointerover">
-                    <Setter Property="Foreground"
-                            Value="{atom:SegmentedTokenResource ItemHoverColor}" />
-                    <Setter Property="Background"
-                            Value="{atom:SegmentedTokenResource ItemHoverBg}" />
-                    <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SegmentedTokenResource ItemHoverColor}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Setter Property="Background"
-                            Value="{atom:SegmentedTokenResource ItemActiveBg}" />
-                    <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SegmentedTokenResource ItemSelectedColor}" />
-                    </Style>
                 </Style>
             </Style>
         </Style>
@@ -73,7 +71,8 @@
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>
-                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Background"
+                                                    Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                 </Transitions>
             </Setter>
         </Style>
@@ -110,14 +109,14 @@
             <Setter Property="Padding"
                     Value="{atom:SegmentedTokenResource SegmentedItemPaddingSM}" />
         </Style>
-        
+
         <Style Selector="^:has-icon">
             <Style Selector="^ /template/ ContentPresenter#Content">
                 <Setter Property="Margin"
                         Value="{atom:SegmentedTokenResource SegmentedItemContentMargin}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="Width"
@@ -144,10 +143,14 @@
                         Value="{atom:SharedTokenResource IconSizeSM}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^:disabled">
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
+                <Setter Property="IconBrush"
+                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
+            </Style>
         </Style>
 
     </ControlTheme>
