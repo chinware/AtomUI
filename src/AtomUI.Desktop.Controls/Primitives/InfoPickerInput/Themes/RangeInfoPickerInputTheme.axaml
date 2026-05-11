@@ -34,12 +34,12 @@
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:SharedTokenResource SpacingXS}">
                             <atom:PickerClearUpButton
-                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}" />
+                                Name="PART_ClearUpButton" />
                             <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <Grid ColumnDefinitions="*, Auto, *">
-                        <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
+                        <atom:TextBox Name="PART_InfoInputBox"
                                       Grid.Column="0"
                                       HorizontalContentAlignment="Stretch"
                                       VerticalContentAlignment="Center"
@@ -57,10 +57,10 @@
                                       Text="{TemplateBinding Text}"
                                       PlaceholderText="{TemplateBinding PlaceholderText}" />
                         <antdicons:SwapRightOutlined
-                            Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerArrowPart}"
+                            Name="PART_RangePickerArrow"
                             Grid.Column="1" />
                         <atom:TextBox
-                            Name="{x:Static atom:RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart}"
+                            Name="PART_SecondaryInfoInputBox"
                             Grid.Column="2"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Center"
@@ -80,7 +80,7 @@
                     </Grid>
                 </atom:AddOnDecoratedBox>
                 <Canvas>
-                    <Rectangle Name="{x:Static atom:RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart}"
+                    <Rectangle Name="PART_RangePickerIndicator"
                                Opacity="{TemplateBinding RangePickerIndicatorOpacity}" />
                 </Canvas>
                 <atom:Popup Name="PART_Popup"

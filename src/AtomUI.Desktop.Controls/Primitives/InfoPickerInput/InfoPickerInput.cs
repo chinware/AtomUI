@@ -467,8 +467,8 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
 
         DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        InfoInputBox = e.NameScope.Get<TextBox>(InfoPickerInputThemeConstants.InfoInputBoxPart);
-        PickerClearUpButton = e.NameScope.Find<PickerClearUpButton>(InfoPickerInputThemeConstants.ClearUpButtonPart);
+        InfoInputBox = e.NameScope.Get<TextBox>("PART_InfoInputBox");
+        PickerClearUpButton = e.NameScope.Find<PickerClearUpButton>("PART_ClearUpButton");
         if (PickerPopup != null && InfoInputBox != null)
         {
             PickerPopup.OverlayInputPassThroughElement = InfoInputBox;

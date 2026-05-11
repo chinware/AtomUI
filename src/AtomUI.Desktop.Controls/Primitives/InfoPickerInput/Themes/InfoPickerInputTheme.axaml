@@ -28,11 +28,11 @@
                     <atom:AddOnDecoratedBox.ContentRightAddOn>
                         <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXS}">
                             <atom:PickerClearUpButton
-                                Name="{x:Static atom:InfoPickerInputThemeConstants.ClearUpButtonPart}" />
+                                Name="PART_ClearUpButton" />
                             <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
                         </StackPanel>
                     </atom:AddOnDecoratedBox.ContentRightAddOn>
-                    <atom:TextBox Name="{x:Static atom:InfoPickerInputThemeConstants.InfoInputBoxPart}"
+                    <atom:TextBox Name="PART_InfoInputBox"
                                   HorizontalContentAlignment="Stretch"
                                   VerticalContentAlignment="Center"
                                   VerticalAlignment="Stretch"

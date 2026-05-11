@@ -7,13 +7,13 @@
             <ControlTemplate>
                 <Panel>
                     <atom:InputClearIconButton
-                        Name="{x:Static atom:PickerClearUpButtonThemeConstants.ClearButtonPart}"
+                        Name="PART_ClearButton"
                         IsVisible="{TemplateBinding IsInClearMode}" />
                     <StackPanel Name="IconLayout"
                                 Orientation="Horizontal"
                                 IsVisible="{TemplateBinding IsInClearMode, Converter={x:Static BoolConverters.Not}}">
                         <atom:IconPresenter
-                            Name="{x:Static atom:PickerClearUpButtonThemeConstants.InfoIconPresenterPart}"
+                            Name="PART_InfoIconPresenter"
                             Icon="{TemplateBinding Icon}" />
                         <ContentPresenter
                             Name="FormFeedBack"

@@ -95,9 +95,9 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SecondaryInfoInputBox = e.NameScope.Get<TextBox>(RangeInfoPickerInputThemeConstants.SecondaryInfoInputBoxPart);
-        RangePickerIndicator  = e.NameScope.Get<Rectangle>(RangeInfoPickerInputThemeConstants.RangePickerIndicatorPart);
-        RangePickerArrow = e.NameScope.Get<PathIcon>(RangeInfoPickerInputThemeConstants.RangePickerArrowPart);
+        SecondaryInfoInputBox = e.NameScope.Get<TextBox>("PART_SecondaryInfoInputBox");
+        RangePickerIndicator  = e.NameScope.Get<Rectangle>("PART_RangePickerIndicator");
+        RangePickerArrow = e.NameScope.Get<PathIcon>("PART_RangePickerArrow");
         if (PickerPopup != null)
         {
             PickerPopup.OverlayInputPassThroughElement = DecoratedBox;
