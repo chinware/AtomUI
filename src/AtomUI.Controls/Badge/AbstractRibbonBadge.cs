@@ -208,7 +208,10 @@ public abstract class AbstractRibbonBadge : Control
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        PrepareAdorner();
+        if (BadgeIsVisible)
+        {
+            PrepareAdorner();
+        }
         if (DecoratedTarget is null)
         {
             CreateBadgeAdorner();

@@ -148,13 +148,13 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        if (BadgeIsVisible)
+        {
+            PrepareAdorner();
+        }
         if (DecoratedTarget is null)
         {
             CreateDotBadgeAdorner();
-        }
-        else
-        {
-            PrepareAdorner();
         }
     }
 
