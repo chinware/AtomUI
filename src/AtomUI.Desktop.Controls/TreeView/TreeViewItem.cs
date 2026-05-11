@@ -10,7 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -743,7 +742,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         return bounds.Contains(point);
     }
     
-    protected virtual void NotifyHeaderClick()
+    protected internal virtual void NotifyHeaderClick()
     {
     }
     

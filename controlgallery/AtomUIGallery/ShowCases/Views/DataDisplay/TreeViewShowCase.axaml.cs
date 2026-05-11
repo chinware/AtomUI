@@ -330,5 +330,62 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
             SearchTreeView.FilterValue = searchEdit.Text?.Trim();
         }
     }
+
+    private TreeViewItem? _contextMenuTargetItem;
+
+    private void HandleContextMenuTreeItemContextMenuRequest(object? sender, TreeItemContextMenuEventArgs e)
+    {
+        _contextMenuTargetItem = e.ViewItem;
+        if (ContextMenuTree.Resources.TryGetValue("TreeItemContextMenu", out var resource) &&
+            resource is MenuFlyout flyout)
+        {
+            flyout.ShowAt(e.ViewItem);
+        }
+    }
+
+    private void HandleContextMenuNewNodeClick(object? sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTargetItem is null)
+        {
+            return;
+        }
+
+        var header = _contextMenuTargetItem.Header?.ToString() ?? "node";
+        var newItem = new TreeViewItem
+        {
+            Header = $"{header} / new ({_contextMenuTargetItem.Items.Count + 1})"
+        };
+        _contextMenuTargetItem.Items.Add(newItem);
+        _contextMenuTargetItem.IsExpanded = true;
+    }
+
+    private void HandleContextMenuRenameClick(object? sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTargetItem is null)
+        {
+            return;
+        }
+
+        var header = _contextMenuTargetItem.Header?.ToString() ?? "node";
+        _contextMenuTargetItem.Header = $"{header} (renamed)";
+    }
+
+    private void HandleContextMenuDeleteClick(object? sender, RoutedEventArgs e)
+    {
+        if (_contextMenuTargetItem is null)
+        {
+            return;
+        }
+
+        if (_contextMenuTargetItem.Parent is TreeViewItem parentItem)
+        {
+            parentItem.Items.Remove(_contextMenuTargetItem);
+        }
+        else if (_contextMenuTargetItem.Parent is TreeView parentTree)
+        {
+            parentTree.Items.Remove(_contextMenuTargetItem);
+        }
+        _contextMenuTargetItem = null;
+    }
 }
 

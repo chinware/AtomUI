@@ -116,6 +116,7 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
         {
             if (item.PointInHeaderBounds(e))
             {
+                item.NotifyHeaderClick();
                 Click(item);
                 e.Handled = true;
             }
@@ -125,9 +126,54 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
         {
             if (item.PointInHeaderBounds(e))
             {
+                if (TreeView?.IsSelectOnRightClick == true)
+                {
+                    EnsureItemSelectedForContextMenu(item);
+                }
+                CloseOpenContextMenus(item);
                 item.RaiseContextMenuRequest();
                 e.Handled = true;
             }
+        }
+    }
+
+    // Light-dismiss pass-through from an already open ContextMenu may swallow the
+    // selection-updating PointerPressed, leaving the previously right-clicked item
+    // visually selected. Force selection to the currently right-clicked item here.
+    private void EnsureItemSelectedForContextMenu(TreeViewItem item)
+    {
+        if (TreeView is null || !TreeView.IsSelectable || !item.IsSelectable)
+        {
+            return;
+        }
+
+        if (item.IsSelected)
+        {
+            return;
+        }
+
+        var treeItem = TreeView.TreeItemFromContainer(item) ?? item;
+        TreeView.SelectedItem = treeItem;
+    }
+
+    // ContextMenu.Open() is a no-op while IsOpen==true, so a menu opened on A stays
+    // pinned over A when the user right-clicks B. Close any still-open menu on the
+    // TreeView or on any ancestor TreeViewItem before re-raising the request.
+    private void CloseOpenContextMenus(TreeViewItem item)
+    {
+        if (TreeView?.ContextMenu is { IsOpen: true } treeMenu)
+        {
+            treeMenu.Close();
+        }
+
+        Control? cursor = item;
+        while (cursor is not null)
+        {
+            if (cursor.ContextMenu is { IsOpen: true } menu)
+            {
+                menu.Close();
+            }
+            cursor = cursor.Parent as Control;
         }
     }
 

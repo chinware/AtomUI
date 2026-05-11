@@ -522,7 +522,10 @@ internal class TreeViewItemHeader : ContentControl
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        SetCurrentValue(IsPressedProperty, true);
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            SetCurrentValue(IsPressedProperty, true);
+        }
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)

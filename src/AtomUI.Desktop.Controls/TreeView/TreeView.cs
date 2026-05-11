@@ -15,7 +15,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -85,9 +84,12 @@ public partial class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<bool> IsSwitcherRotationProperty = 
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsSwitcherRotation), true);
     
-    public static readonly StyledProperty<bool> IsSelectableProperty = 
+    public static readonly StyledProperty<bool> IsSelectableProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsSelectable), true);
-    
+
+    public static readonly StyledProperty<bool> IsSelectOnRightClickProperty =
+        AvaloniaProperty.Register<TreeView, bool>(nameof(IsSelectOnRightClick), true);
+
     public static readonly StyledProperty<bool> IsCheckStrictlyProperty = 
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsCheckStrictly), false);
 
@@ -235,7 +237,13 @@ public partial class TreeView : AvaloniaTreeView,
         get => GetValue(IsSelectableProperty);
         set => SetValue(IsSelectableProperty, value);
     }
-    
+
+    public bool IsSelectOnRightClick
+    {
+        get => GetValue(IsSelectOnRightClickProperty);
+        set => SetValue(IsSelectOnRightClickProperty, value);
+    }
+
     public bool IsCheckStrictly
     {
         get => GetValue(IsCheckStrictlyProperty);
@@ -1571,9 +1579,13 @@ public partial class TreeView : AvaloniaTreeView,
             var point = e.GetCurrentPoint(source);
             if (point.Properties.IsLeftButtonPressed || point.Properties.IsRightButtonPressed)
             {
-                if (IsSelectable && e.Source is Control container)
+                if (IsSelectable)
                 {
-                    e.Handled = UpdateSelectionFromEvent(container, e);
+                    var container = DefaultTreeViewInteractionHandler.GetTreeViewItemCore(e.Source as Control);
+                    if (container is not null)
+                    {
+                        e.Handled = UpdateSelectionFromEvent(container, e);
+                    }
                 }
             }
         }
@@ -1585,6 +1597,19 @@ public partial class TreeView : AvaloniaTreeView,
             e.Pointer.Capture(this);
             e.PreventGestureRecognition();
         }
+    }
+
+    public override bool UpdateSelectionFromEvent(Control container, RoutedEventArgs eventArgs)
+    {
+        if (!IsSelectOnRightClick &&
+            eventArgs is PointerEventArgs pointerEvent &&
+            pointerEvent.GetCurrentPoint(container).Properties.PointerUpdateKind is
+                PointerUpdateKind.RightButtonPressed or PointerUpdateKind.RightButtonReleased)
+        {
+            return false;
+        }
+
+        return base.UpdateSelectionFromEvent(container, eventArgs);
     }
 
     private List<object> GetTreePathFromItem(object item)
