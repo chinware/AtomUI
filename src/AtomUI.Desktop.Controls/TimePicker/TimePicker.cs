@@ -114,7 +114,7 @@ public class TimePicker : InfoPickerInput
     internal string? PmText
     {
         get => _pmText;
-        set => SetAndRaise(AmTextProperty, ref _pmText, value);
+        set => SetAndRaise(PmTextProperty, ref _pmText, value);
     }
     
     #endregion
@@ -241,6 +241,13 @@ public class TimePicker : InfoPickerInput
         {
             Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
                 ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+        }
+        else if (change.Property == AmTextProperty ||
+                 change.Property == PmTextProperty)
+        {
+            Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
+                ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+            CalculatePreferredWidth();
         }
         else if (change.Property == FontSizeProperty ||
                  change.Property == FontFamilyProperty ||

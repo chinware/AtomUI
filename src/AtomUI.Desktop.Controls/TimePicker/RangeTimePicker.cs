@@ -144,7 +144,7 @@ public class RangeTimePicker : RangeInfoPickerInput
     internal string? PmText
     {
         get => _pmText;
-        set => SetAndRaise(AmTextProperty, ref _pmText, value);
+        set => SetAndRaise(PmTextProperty, ref _pmText, value);
     }
 
     #endregion
@@ -330,7 +330,14 @@ public class RangeTimePicker : RangeInfoPickerInput
         {
             CalculatePreferredWidth();
         }
-        
+
+        if (change.Property == AmTextProperty ||
+            change.Property == PmTextProperty)
+        {
+            RefreshRangeTexts();
+            CalculatePreferredWidth();
+        }
+
         if (this.IsAttachedToVisualTree())
         {
             if (change.Property == RangeStartSelectedTimeProperty)
@@ -357,6 +364,29 @@ public class RangeTimePicker : RangeInfoPickerInput
                     ResetRangeEndTimeValue();
                 }
             }
+        }
+    }
+
+    private void RefreshRangeTexts()
+    {
+        if (RangeStartSelectedTime.HasValue)
+        {
+            Text = DateTimeUtils.FormatTimeSpan(RangeStartSelectedTime.Value,
+                ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+        }
+        else
+        {
+            ResetRangeStartTimeValue();
+        }
+
+        if (RangeEndSelectedTime.HasValue)
+        {
+            SecondaryText = DateTimeUtils.FormatTimeSpan(RangeEndSelectedTime.Value,
+                ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+        }
+        else
+        {
+            ResetRangeEndTimeValue();
         }
     }
     

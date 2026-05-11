@@ -101,12 +101,38 @@ public class RangeDatePicker : RangeInfoPickerInput
             o => o.PreferredWidth,
             (o, v) => o.PreferredWidth = v);
 
+    internal static readonly DirectProperty<RangeDatePicker, string?> AmTextProperty =
+        AvaloniaProperty.RegisterDirect<RangeDatePicker, string?>(nameof(AmText),
+            o => o.AmText,
+            (o, v) => o.AmText = v);
+
+    internal static readonly DirectProperty<RangeDatePicker, string?> PmTextProperty =
+        AvaloniaProperty.RegisterDirect<RangeDatePicker, string?>(nameof(PmText),
+            o => o.PmText,
+            (o, v) => o.PmText = v);
+
     private double _preferredWidth;
 
     internal double PreferredWidth
     {
         get => _preferredWidth;
         set => SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
+    }
+
+    private string? _amText;
+
+    internal string? AmText
+    {
+        get => _amText;
+        set => SetAndRaise(AmTextProperty, ref _amText, value);
+    }
+
+    private string? _pmText;
+
+    internal string? PmText
+    {
+        get => _pmText;
+        set => SetAndRaise(PmTextProperty, ref _pmText, value);
     }
     
     #endregion
@@ -269,8 +295,10 @@ public class RangeDatePicker : RangeInfoPickerInput
         if (ClockIdentifier == ClockIdentifierType.HourClock12)
         {
             var formatInfo = new DateTimeFormatInfo();
-            formatInfo.AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
-            formatInfo.PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
+            formatInfo.AMDesignator = AmText ??
+                                      LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
+            formatInfo.PMDesignator = PmText ??
+                                      LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
             return dateTime.Value.ToString(format, formatInfo);
         }
 
@@ -335,7 +363,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         if (change.Property == RangeActivatedPartProperty)
         {
             HandleRangeActivatedPartChanged();
-        } 
+        }
         else if (change.Property == IsShowTimeProperty)
         {
             if (IsShowTime)
@@ -361,6 +389,14 @@ public class RangeDatePicker : RangeInfoPickerInput
                  change.Property == MaxWidthProperty ||
                  change.Property == HorizontalAlignmentProperty)
         {
+            CalculatePreferredWidth();
+        }
+
+        if (change.Property == AmTextProperty ||
+            change.Property == PmTextProperty)
+        {
+            Text          = FormatDateTime(RangeStartSelectedDate);
+            SecondaryText = FormatDateTime(RangeEndSelectedDate);
             CalculatePreferredWidth();
         }
 
@@ -391,8 +427,10 @@ public class RangeDatePicker : RangeInfoPickerInput
             {
                 formatInfo = new DateTimeFormatInfo
                 {
-                    AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
-                    PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
+                    AMDesignator = AmText ??
+                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
+                    PMDesignator = PmText ??
+                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
                 };
             }
             var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(

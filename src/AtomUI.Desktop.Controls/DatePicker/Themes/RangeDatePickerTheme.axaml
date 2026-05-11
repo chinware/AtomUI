@@ -7,5 +7,7 @@
         <ControlTheme.BasedOn>
             <atom:RangeInfoPickerInputTheme TargetType="atom:RangeDatePicker" />
         </ControlTheme.BasedOn>
+        <Setter Property="AmText" Value="{atom:TimePickerLangResource AMText}" />
+        <Setter Property="PmText" Value="{atom:TimePickerLangResource PMText}" />
     </ControlTheme>
 </ResourceDictionary>

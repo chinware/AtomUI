@@ -86,6 +86,36 @@ public class DatePicker : InfoPickerInput
 
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<DatePicker, string?> AmTextProperty =
+        AvaloniaProperty.RegisterDirect<DatePicker, string?>(nameof(AmText),
+            o => o.AmText,
+            (o, v) => o.AmText = v);
+
+    internal static readonly DirectProperty<DatePicker, string?> PmTextProperty =
+        AvaloniaProperty.RegisterDirect<DatePicker, string?>(nameof(PmText),
+            o => o.PmText,
+            (o, v) => o.PmText = v);
+
+    private string? _amText;
+
+    internal string? AmText
+    {
+        get => _amText;
+        set => SetAndRaise(AmTextProperty, ref _amText, value);
+    }
+
+    private string? _pmText;
+
+    internal string? PmText
+    {
+        get => _pmText;
+        set => SetAndRaise(PmTextProperty, ref _pmText, value);
+    }
+
+    #endregion
+
     public DatePicker()
     {
         this.RegisterTokenResourceScope(DatePickerToken.ScopeProvider);
@@ -149,8 +179,10 @@ public class DatePicker : InfoPickerInput
         if (ClockIdentifier == ClockIdentifierType.HourClock12)
         {
             var formatInfo = new DateTimeFormatInfo();
-            formatInfo.AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
-            formatInfo.PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
+            formatInfo.AMDesignator = AmText ??
+                                      LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
+            formatInfo.PMDesignator = PmText ??
+                                      LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
             return dateTime.Value.ToString(format, formatInfo);
         }
 
@@ -255,6 +287,12 @@ public class DatePicker : InfoPickerInput
         {
             Text = FormatDateTime(SelectedDateTime);
         }
+        else if (change.Property == AmTextProperty ||
+                 change.Property == PmTextProperty)
+        {
+            Text = FormatDateTime(SelectedDateTime);
+            CalculatePreferredWidth();
+        }
         else if (change.Property == FontSizeProperty ||
                  change.Property == FontFamilyProperty ||
                  change.Property == FontFamilyProperty ||
@@ -283,8 +321,10 @@ public class DatePicker : InfoPickerInput
             {
                 formatInfo = new DateTimeFormatInfo
                 {
-                    AMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
-                    PMDesignator = LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
+                    AMDesignator = AmText ??
+                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
+                    PMDesignator = PmText ??
+                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
                 };
             }
             var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(

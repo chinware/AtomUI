@@ -175,7 +175,7 @@ internal class TimeView : TemplatedControl
     internal string? PmText
     {
         get => _pmText;
-        set => SetAndRaise(AmTextProperty, ref _pmText, value);
+        set => SetAndRaise(PmTextProperty, ref _pmText, value);
     }
 
 
@@ -311,6 +311,8 @@ internal class TimeView : TemplatedControl
             _periodSelector.SelectionChanged += HandleSelectionChanged;
             _periodSelector.CellHovered      += HandleSelectorCellHovered;
             _periodSelector.CellDbClicked    += HandleSelectorCellDbClicked;
+            _periodSelector[!DateTimePickerPanel.AmTextProperty] = this[!AmTextProperty];
+            _periodSelector[!DateTimePickerPanel.PmTextProperty] = this[!PmTextProperty];
         }
     }
 
@@ -429,6 +431,24 @@ internal class TimeView : TemplatedControl
         {
             SetupPickerSelectorContainerHeight();
         }
+
+        if (change.Property == AmTextProperty || change.Property == PmTextProperty)
+        {
+            RefreshHeaderText();
+        }
+    }
+
+    private void RefreshHeaderText()
+    {
+        if (!IsShowHeader || _headerText is null ||
+            _hourSelector is null || _minuteSelector is null ||
+            _secondSelector is null || _periodSelector is null)
+        {
+            return;
+        }
+
+        _headerText.Text = DateTimeUtils.FormatTimeSpan(CollectValue(),
+            ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
     }
 
     private void SyncTimeValueToPanel(TimeSpan time)

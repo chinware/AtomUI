@@ -106,10 +106,28 @@ internal class DateTimePickerPanel : Panel,
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DateTimePickerPanel>();
 
+    internal static readonly StyledProperty<string?> AmTextProperty =
+        AvaloniaProperty.Register<DateTimePickerPanel, string?>(nameof(AmText));
+
+    internal static readonly StyledProperty<string?> PmTextProperty =
+        AvaloniaProperty.Register<DateTimePickerPanel, string?>(nameof(PmText));
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal string? AmText
+    {
+        get => GetValue(AmTextProperty);
+        set => SetValue(AmTextProperty, value);
+    }
+
+    internal string? PmText
+    {
+        get => GetValue(PmTextProperty);
+        set => SetValue(PmTextProperty, value);
     }
     
     #endregion
@@ -642,9 +660,13 @@ internal class DateTimePickerPanel : Panel,
             case DateTimePickerPanelType.Second:
                 return new TimeSpan(0, 0, value).ToString(ItemFormat);
             case DateTimePickerPanelType.TimePeriod:
-                return value == MinimumValue
-                    ? LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!
-                    : LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
+                if (value == MinimumValue)
+                {
+                    return AmText ??
+                           LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
+                }
+                return PmText ??
+                       LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
             default:
                 return "";
         }
@@ -757,6 +779,13 @@ internal class DateTimePickerPanel : Panel,
             if (change.Property == IsMotionEnabledProperty)
             {
                 EnableCellHoverAnimation();
+            }
+            else if (change.Property == AmTextProperty || change.Property == PmTextProperty)
+            {
+                if (PanelType == DateTimePickerPanelType.TimePeriod)
+                {
+                    UpdateItems();
+                }
             }
         }
     }

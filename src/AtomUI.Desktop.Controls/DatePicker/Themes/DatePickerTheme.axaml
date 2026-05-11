@@ -7,5 +7,7 @@
         <ControlTheme.BasedOn>
             <atom:InfoPickerInputTheme TargetType="atom:DatePicker" />
         </ControlTheme.BasedOn>
+        <Setter Property="AmText" Value="{atom:TimePickerLangResource AMText}" />
+        <Setter Property="PmText" Value="{atom:TimePickerLangResource PMText}" />
     </ControlTheme>
 </ResourceDictionary>
