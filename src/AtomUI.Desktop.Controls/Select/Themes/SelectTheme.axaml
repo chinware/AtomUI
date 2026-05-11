@@ -75,12 +75,12 @@
                         </Panel>
                     </atom:SelectAddOnDecoratedBox>
                     <atom:Popup Name="PART_Popup"
-                                 WindowManagerAddShadowHint="False"
-                                 IsLightDismissEnabled="True"
-                                 OverlayDismissEventPassThrough="True"
-                                 Placement="BottomEdgeAlignedLeft"
-                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                                 IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
+                                WindowManagerAddShadowHint="False"
+                                IsLightDismissEnabled="True"
+                                OverlayDismissEventPassThrough="True"
+                                RequestedPlacement="BottomEdgeAlignedLeft"
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
+                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
                         <Border Name="PopupFrame"
                                 MaxHeight="{TemplateBinding MaxPopupHeight}"
                                 MinWidth="{TemplateBinding EffectivePopupWidth}"
