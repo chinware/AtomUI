@@ -65,13 +65,17 @@ public sealed record LanguageVariant
 
     public static LanguageVariant FromCultureInfo(CultureInfo cultureInfo)
     {
-        var codeStr =  cultureInfo.ToString();
-        if (!Enum.TryParse<LanguageCode>(codeStr, out var code))
+        // CultureInfo.ToString() returns the hyphen form (e.g. "zh-CN"); LanguageCode enum names use '_'.
+        var codeStr = cultureInfo.ToString().Replace('-', '_');
+        if (Enum.TryParse<LanguageCode>(codeStr, out var code))
         {
-            // TODO 输出日志
-            return zh_CN;
+            return FromCode(code);
         }
-        return FromCode(code);
+
+        // Fuzzy fallback: map any Chinese locale to zh_CN, everything else to en_US.
+        return cultureInfo.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase)
+            ? zh_CN
+            : en_US;
     }
 
     public CultureInfo ToCultureInfo()

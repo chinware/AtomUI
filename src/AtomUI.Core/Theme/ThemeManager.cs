@@ -82,7 +82,7 @@ internal class ThemeManager : Styles, IThemeManager
     
     public ITheme? ActivatedTheme => _activatedTheme;
     public IReadOnlyList<string> CustomThemeDirs => _customThemeDirs;
-    public static ThemeManager? Current { get; internal set; } = AvaloniaLocator.Current.GetService(typeof(ThemeManager)) as ThemeManager;
+    public static ThemeManager? Current => AvaloniaLocator.Current.GetService(typeof(ThemeManager)) as ThemeManager;
     public string DefaultThemeId { get; set; }
     public FontFamily? FontFamily { get; internal set; }
     internal List<Type> ControlTokenTypes { get; set; }
@@ -361,6 +361,31 @@ internal class ThemeManager : Styles, IThemeManager
         }
         _controlThemesProviders.Clear();
         BuildLanguageResources();
+        SwitchLanguageResource(null, LanguageVariant);
+    }
+
+    private void SwitchLanguageResource(LanguageVariant? oldVariant, LanguageVariant? newVariant)
+    {
+        if (oldVariant != null)
+        {
+            var oldResource = TryGetLanguageResource(oldVariant);
+            if (oldResource != null)
+            {
+                Resources.MergedDictionaries.Remove(oldResource);
+            }
+        }
+
+        newVariant ??= IThemeManager.DEFAULT_LANGUAGE;
+        var languageResource = TryGetLanguageResource(newVariant);
+        if (_languages.TryGetValue(IThemeManager.DEFAULT_LANGUAGE, out var defaultLang))
+        {
+            languageResource ??= defaultLang;
+        }
+
+        if (languageResource != null && !Resources.MergedDictionaries.Contains(languageResource))
+        {
+            Resources.MergedDictionaries.Add(languageResource);
+        }
     }
 
     private void BuildLanguageResources()
@@ -397,27 +422,7 @@ internal class ThemeManager : Styles, IThemeManager
         base.OnPropertyChanged(change);
         if (change.Property == LanguageVariantProperty)
         {
-            if (change.OldValue is LanguageVariant oldLangVariant)
-            {
-                var oldResource = TryGetLanguageResource(oldLangVariant);
-                if (oldResource != null)
-                {
-                    Resources.MergedDictionaries.Remove(oldResource);
-                }
-            }
-            
-            var langVariant = change.NewValue as LanguageVariant;
-            langVariant ??= IThemeManager.DEFAULT_LANGUAGE;
-            var languageResource = TryGetLanguageResource(langVariant);
-            if (_languages.TryGetValue(IThemeManager.DEFAULT_LANGUAGE, out var defaultLang))
-            {
-                languageResource ??= defaultLang;
-            }
-
-            if (languageResource != null)
-            {
-                Resources.MergedDictionaries.Add(languageResource);
-            }
+            SwitchLanguageResource(change.OldValue as LanguageVariant, change.NewValue as LanguageVariant);
             NotifyLanguageVariantChanged();
             LanguageVariantChanged?.Invoke(this, new LanguageVariantChangedEventArgs(LanguageVariant, change.GetOldValue<LanguageVariant>()));
         }
