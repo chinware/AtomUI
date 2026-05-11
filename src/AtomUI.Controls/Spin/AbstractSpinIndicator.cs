@@ -12,6 +12,7 @@ using Avalonia.Media.Transformation;
 using Avalonia.Metadata;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
 
@@ -133,21 +134,36 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
     {
         base.OnAttachedToVisualTree(e);
         BuildIndicatorAnimation();
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
-        if (_animation != null)
+        if (IsVisible)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await _animation.RunInfiniteAsync(this, _cancellationTokenSource.Token);
-            });
+            StartIndicatorAnimation();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        StopIndicatorAnimation();
+    }
+
+    private void StartIndicatorAnimation()
+    {
+        if (_animation is null)
+        {
+            return;
+        }
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = new CancellationTokenSource();
+        var token = _cancellationTokenSource.Token;
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await _animation.RunInfiniteAsync(this, token);
+        });
+    }
+
+    private void StopIndicatorAnimation()
+    {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
@@ -275,6 +291,20 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         else if (change.Property == IndicatorAngleProperty)
         {
             HandleIndicatorAngleChanged();
+        }
+        else if (change.Property == IsVisibleProperty)
+        {
+            if (this.IsAttachedToVisualTree())
+            {
+                if (change.GetNewValue<bool>())
+                {
+                    StartIndicatorAnimation();
+                }
+                else
+                {
+                    StopIndicatorAnimation();
+                }
+            }
         }
     }
 

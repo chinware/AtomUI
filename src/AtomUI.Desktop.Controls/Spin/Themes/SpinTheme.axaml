@@ -22,6 +22,7 @@
                                                 MotionDuration="{TemplateBinding MotionDuration}"
                                                 MotionEasingCurve="{TemplateBinding MotionEasingCurve}"
                                                 HorizontalAlignment="Center"
+                                                IsVisible="{TemplateBinding IsSpinning}"
                                                 CustomIndicator="{TemplateBinding CustomIndicator}"
                                                 CustomIndicatorTemplate="{TemplateBinding CustomIndicatorTemplate}"/>
                             <atom:TextBlock

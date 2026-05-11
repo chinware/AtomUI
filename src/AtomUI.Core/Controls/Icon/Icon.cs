@@ -328,7 +328,8 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             }
 
             if (change.Property == LoadingAnimationDurationProperty ||
-                change.Property == LoadingAnimationProperty)
+                change.Property == LoadingAnimationProperty ||
+                change.Property == IsVisibleProperty)
             {
                 SetupRotateAnimation(true);
             }
@@ -390,6 +391,16 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     
     private void SetupRotateAnimation(bool force)
     {
+        if (!IsVisible)
+        {
+            if (_animationStyle != null)
+            {
+                Styles.Remove(_animationStyle);
+                _animationStyle = null;
+            }
+            return;
+        }
+
         if (LoadingAnimation == IconAnimation.Spin || LoadingAnimation == IconAnimation.Pulse)
         {
             if (_animationStyle == null || force)
@@ -429,6 +440,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         else if (_animationStyle != null)
         {
             Styles.Remove(_animationStyle);
+            _animationStyle = null;
         }
     }
 
