@@ -20,7 +20,7 @@
                             VerticalAlignment="Stretch"
                             VerticalContentAlignment="Center"
                             HorizontalAlignment="Right"
-                            IsVisible="{Binding FormFeedback.IsVisible, FallbackValue=false, RelativeSource={RelativeSource TemplatedParent}}"
+                            IsVisible="{TemplateBinding IsFormFeedbackVisible}"
                             Content="{TemplateBinding FormFeedback}" />
                     </StackPanel>
                 </Panel>

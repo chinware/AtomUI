@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -110,8 +111,13 @@ public class TextBox : AvaloniaTextBox,
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<TextBlock>();
     
-    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
+    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<TextBox, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly DirectProperty<TextBox, bool> IsFormFeedbackVisibleProperty =
+        AvaloniaProperty.RegisterDirect<TextBox, bool>(
+            nameof(IsFormFeedbackVisible),
+            o => o.IsFormFeedbackVisible);
 
     private bool _isEffectiveShowClearButton;
 
@@ -160,10 +166,19 @@ public class TextBox : AvaloniaTextBox,
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
     }
+
+    private bool _isFormFeedbackVisible;
+
+    internal bool IsFormFeedbackVisible
+    {
+        get => _isFormFeedbackVisible;
+        private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
+    }
     
     #endregion
-    
+
     private IconButton? _clearButton;
+    private IDisposable? _feedbackStatusSubscription;
 
     static TextBox()
     {
@@ -206,7 +221,33 @@ public class TextBox : AvaloniaTextBox,
         {
             ConfigureCornerRadius();
         }
-        
+        else if (change.Property == FormFeedbackProperty)
+        {
+            ConfigureFormFeedbackSubscription();
+        }
+
+    }
+
+    private void ConfigureFormFeedbackSubscription()
+    {
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
+        if (FormFeedback is { } feedback)
+        {
+            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
+                                                  .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
+        }
+        else
+        {
+            IsFormFeedbackVisible = false;
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
     }
 
     private void ConfigureCornerRadius()

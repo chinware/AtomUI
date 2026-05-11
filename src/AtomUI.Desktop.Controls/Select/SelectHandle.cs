@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -40,6 +41,11 @@ internal class SelectHandle : TemplatedControl
 
     public static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<SelectHandle, FormValidateFeedback?>(nameof (FormFeedback));
+
+    public static readonly DirectProperty<SelectHandle, bool> IsFormFeedbackVisibleProperty =
+        AvaloniaProperty.RegisterDirect<SelectHandle, bool>(
+            nameof(IsFormFeedbackVisible),
+            o => o.IsFormFeedbackVisible);
 
     public bool IsInputHover
     {
@@ -107,6 +113,14 @@ internal class SelectHandle : TemplatedControl
         set => SetValue(FormFeedbackProperty, value);
     }
 
+    private bool _isFormFeedbackVisible;
+
+    public bool IsFormFeedbackVisible
+    {
+        get => _isFormFeedbackVisible;
+        private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
+    }
+
     public static readonly RoutedEvent<RoutedEventArgs> ClearRequestedEvent =
         RoutedEvent.Register<Button, RoutedEventArgs>(nameof(ClearRequested), RoutingStrategies.Bubble);
 
@@ -117,6 +131,7 @@ internal class SelectHandle : TemplatedControl
     }
 
     private IconButton? _clearButton;
+    private IDisposable? _feedbackStatusSubscription;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -130,6 +145,37 @@ internal class SelectHandle : TemplatedControl
         {
             _clearButton.Click += HandleClearButtonClicked;
         }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == FormFeedbackProperty)
+        {
+            ConfigureFormFeedbackSubscription();
+        }
+    }
+
+    private void ConfigureFormFeedbackSubscription()
+    {
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
+        if (FormFeedback is { } feedback)
+        {
+            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
+                                                  .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
+        }
+        else
+        {
+            IsFormFeedbackVisible = false;
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
     }
 
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs e)

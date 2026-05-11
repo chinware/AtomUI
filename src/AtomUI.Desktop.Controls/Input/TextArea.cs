@@ -11,6 +11,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.TextFormatting;
 
@@ -153,8 +154,13 @@ public class TextArea : AvaloniaTextBox,
             o => o.CountText,
             (o, v) => o.CountText = v);
     
-    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
+    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<TextArea, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly DirectProperty<TextArea, bool> IsFormFeedbackVisibleProperty =
+        AvaloniaProperty.RegisterDirect<TextArea, bool>(
+            nameof(IsFormFeedbackVisible),
+            o => o.IsFormFeedbackVisible);
 
     private bool _isEffectiveShowClearButton;
 
@@ -177,6 +183,14 @@ public class TextArea : AvaloniaTextBox,
         get => GetValue(FormFeedbackProperty);
         set => SetValue(FormFeedbackProperty, value);
     }
+
+    private bool _isFormFeedbackVisible;
+
+    internal bool IsFormFeedbackVisible
+    {
+        get => _isFormFeedbackVisible;
+        private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
+    }
     
     #endregion
 
@@ -184,6 +198,7 @@ public class TextArea : AvaloniaTextBox,
     private IconButton? _clearButton;
     private ResizeHandle? _resizeHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
+    private IDisposable? _feedbackStatusSubscription;
     private double? _originHeight; // 拖动改变高度的初始值
     private double _minResizeHeight; // 拖动改变高度时允许的最小 TextArea.Height
     private double _maxResizeHeight; // 拖动改变高度时允许的最大 TextArea.Height
@@ -215,7 +230,7 @@ public class TextArea : AvaloniaTextBox,
         {
             UpdatePseudoClasses();
         }
-        
+
         if (change.Property == AcceptsReturnProperty ||
             change.Property == IsReadOnlyProperty ||
             change.Property == TextProperty ||
@@ -227,6 +242,32 @@ public class TextArea : AvaloniaTextBox,
         {
             HandleInputChanged(Text);
         }
+        else if (change.Property == FormFeedbackProperty)
+        {
+            ConfigureFormFeedbackSubscription();
+        }
+    }
+
+    private void ConfigureFormFeedbackSubscription()
+    {
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
+        if (FormFeedback is { } feedback)
+        {
+            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
+                                                  .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
+        }
+        else
+        {
+            IsFormFeedbackVisible = false;
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -279,7 +320,7 @@ public class TextArea : AvaloniaTextBox,
         if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
         {
             _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(FormFeedback)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+                new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
             _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
         }

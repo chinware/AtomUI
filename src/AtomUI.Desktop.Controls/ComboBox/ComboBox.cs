@@ -9,6 +9,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -184,8 +185,13 @@ public class ComboBox : AvaloniaComboBox,
     internal static readonly StyledProperty<Thickness> PopupContentPaddingProperty =
         AvaloniaProperty.Register<ComboBox, Thickness>(nameof(PopupContentPadding));
     
-    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
+    internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<ComboBox, FormValidateFeedback?>(nameof(FormFeedback));
+
+    internal static readonly DirectProperty<ComboBox, bool> IsFormFeedbackVisibleProperty =
+        AvaloniaProperty.RegisterDirect<ComboBox, bool>(
+            nameof(IsFormFeedbackVisible),
+            o => o.IsFormFeedbackVisible);
     
     private double _effectivePopupWidth;
 
@@ -213,12 +219,21 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(FormFeedbackProperty, value);
     }
 
+    private bool _isFormFeedbackVisible;
+
+    internal bool IsFormFeedbackVisible
+    {
+        get => _isFormFeedbackVisible;
+        private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
+    }
+
     #endregion
-    
+
     private Popup? _popup;
     private Window? _attachedWindow;
     private ComboBoxHandle? _comboBoxHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
+    private IDisposable? _feedbackStatusSubscription;
 
     public ComboBox()
     {
@@ -278,7 +293,7 @@ public class ComboBox : AvaloniaComboBox,
         if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
         {
             _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(FormFeedback)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+                new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
             _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
         }
@@ -388,6 +403,32 @@ public class ComboBox : AvaloniaComboBox,
                 SetCurrentValue(IsDropDownOpenProperty, false);
             }
         }
+        else if (change.Property == FormFeedbackProperty)
+        {
+            ConfigureFormFeedbackSubscription();
+        }
+    }
+
+    private void ConfigureFormFeedbackSubscription()
+    {
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
+        if (FormFeedback is { } feedback)
+        {
+            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
+                                                  .Subscribe(status => IsFormFeedbackVisible = status != FormValidateStatus.Default);
+        }
+        else
+        {
+            IsFormFeedbackVisible = false;
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)

@@ -157,7 +157,7 @@ public class LineEdit : TextBox,
             _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
             _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(FormFeedback)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+                new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("InnerRightContentPresenter") is { } innerRightContent)
