@@ -4,6 +4,8 @@ using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Theme;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -898,8 +900,9 @@ internal class CalendarItem : TemplatedControl
     {
         if (HeaderButton != null)
         {
-            HeaderButton.Content = decade.ToString(CultureInfo.CurrentCulture) + "-" +
-                                   decadeEnd.ToString(CultureInfo.CurrentCulture);
+            var format = DateTimeHelper.GetCurrentDateFormat();
+            HeaderButton.Content = decade.ToString(format) + "-" +
+                                   decadeEnd.ToString(format);
             HeaderButton.IsEnabled = false;
         }
     }
@@ -1183,19 +1186,78 @@ internal class CalendarItem : TemplatedControl
     {
     }
 
+    private IThemeManager? _subscribedThemeManager;
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
         _pointerPositionDisposable = inputManager?.Process.Subscribe(DetectPointerPosition);
         SetCalendarDayButtons();
+        AttachLanguageVariantListener();
+        RefreshLocalizedContent();
     }
-    
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _pointerPositionDisposable?.Dispose();
         _pointerPositionDisposable = null;
+        DetachLanguageVariantListener();
+    }
+
+    private void AttachLanguageVariantListener()
+    {
+        if (_subscribedThemeManager is not null)
+        {
+            return;
+        }
+
+        var themeManager = ThemeManager.Current;
+        if (themeManager is null)
+        {
+            return;
+        }
+
+        themeManager.LanguageVariantChanged += HandleLanguageVariantChanged;
+        _subscribedThemeManager = themeManager;
+    }
+
+    private void DetachLanguageVariantListener()
+    {
+        if (_subscribedThemeManager is null)
+        {
+            return;
+        }
+
+        _subscribedThemeManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
+        _subscribedThemeManager = null;
+    }
+
+    private void HandleLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e)
+    {
+        RefreshLocalizedContent();
+    }
+
+    protected virtual void RefreshLocalizedContent()
+    {
+        if (Owner is null)
+        {
+            return;
+        }
+
+        switch (Owner.DisplayMode)
+        {
+            case CalendarMode.Month:
+                UpdateMonthMode();
+                break;
+            case CalendarMode.Year:
+                UpdateYearMode();
+                break;
+            case CalendarMode.Decade:
+                UpdateDecadeMode();
+                break;
+        }
     }
 
     protected virtual bool IsPointerInMonthView(Point position)

@@ -178,12 +178,19 @@ public class DatePicker : InfoPickerInput
         var format = GetEffectiveFormat();
         if (ClockIdentifier == ClockIdentifierType.HourClock12)
         {
-            var formatInfo = new DateTimeFormatInfo();
-            formatInfo.AMDesignator = AmText ??
-                                      LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!;
-            formatInfo.PMDesignator = PmText ??
-                                      LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!;
-            return dateTime.Value.ToString(format, formatInfo);
+            var amDesignator = AmText ??
+                               LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText);
+            var pmDesignator = PmText ??
+                               LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText);
+            if (amDesignator is not null && pmDesignator is not null)
+            {
+                var formatInfo = new DateTimeFormatInfo
+                {
+                    AMDesignator = amDesignator,
+                    PMDesignator = pmDesignator
+                };
+                return dateTime.Value.ToString(format, formatInfo);
+            }
         }
 
         return dateTime.Value.ToString(format);
@@ -319,13 +326,18 @@ public class DatePicker : InfoPickerInput
             DateTimeFormatInfo? formatInfo = null;
             if (ClockIdentifier == ClockIdentifierType.HourClock12)
             {
-                formatInfo = new DateTimeFormatInfo
+                var amDesignator = AmText ??
+                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText);
+                var pmDesignator = PmText ??
+                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText);
+                if (amDesignator is not null && pmDesignator is not null)
                 {
-                    AMDesignator = AmText ??
-                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText)!,
-                    PMDesignator = PmText ??
-                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText)!
-                };
+                    formatInfo = new DateTimeFormatInfo
+                    {
+                        AMDesignator = amDesignator,
+                        PMDesignator = pmDesignator
+                    };
+                }
             }
             var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
                 format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
