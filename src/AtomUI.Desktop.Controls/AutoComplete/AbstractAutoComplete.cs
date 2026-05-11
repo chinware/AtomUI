@@ -1717,7 +1717,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         PseudoClasses.Set(StdPseudoClass.Pressed, false);
         base.OnPointerReleased(e);
     }
-    
+
     #region 实现 FormItem 接口
     private EventHandler? _formValueChanged;
     event EventHandler? IFormItemAware.ValueChanged

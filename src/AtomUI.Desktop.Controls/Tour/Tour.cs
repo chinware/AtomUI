@@ -779,10 +779,4 @@ public class Tour : TemplatedControl, IMotionAwareControl
      
          public void Dispose() => _owner._ignorePropertyChanged = false;
      }
-
-     protected override void OnPointerWheelChanged(PointerWheelEventArgs args)
-     {
-         base.OnPointerWheelChanged(args);
-         args.Handled = true;
-     }
 }

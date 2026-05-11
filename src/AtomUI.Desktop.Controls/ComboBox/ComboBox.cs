@@ -452,7 +452,7 @@ public class ComboBox : AvaloniaComboBox,
             item = item.Parent;
         }
     }
-    
+
     #region 实现 FormItem 接口
     
     private EventHandler? _formValueChanged;

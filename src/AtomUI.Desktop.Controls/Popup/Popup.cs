@@ -10,6 +10,8 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 
@@ -173,6 +175,10 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     #endregion
 
+    // 避免 popup 内的 wheel 事件冒泡出去触发 PlacementTarget 所在祖先 ScrollViewer 的意外滚动。
+    // 订阅对象要记录下来,保证 open/close 成对摘挂。
+    private InputElement? _wheelGuardSubscribedOn;
+
     public Popup()
     {
         this.ConfigureMotionBindingStyle();
@@ -182,17 +188,19 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
         this.AddClosingEventHandler(HandlePopupClosing);
         Opened += HandlePopupOpened;
+        Closed += HandlePopupClosed;
     }
 
     #region 动画逻辑
 
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
+        AttachWheelGuard();
         if (!IsMotionEnabled || OpenMotion is null || _motionActor is null)
         {
             return;
         }
-        
+
         _motionCts?.Cancel();
         _motionCts = new CancellationTokenSource();
 
@@ -200,6 +208,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         motion.Duration      = MotionDuration;
         _motionActor.Opacity = 0.0d;
         Dispatcher.InvokeAsync(() => PlayMotionAsync(motion, _motionActor, _motionCts.Token));
+    }
+
+    private void HandlePopupClosed(object? sender, EventArgs e)
+    {
+        DetachWheelGuard();
     }
 
     private void HandlePopupClosing(object? sender, CancelEventArgs e)
@@ -484,6 +497,38 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         {
             FrameShadow = PopupRootShadow;
         }
+    }
+
+    private void AttachWheelGuard()
+    {
+        if (_wheelGuardSubscribedOn is not null)
+        {
+            return;
+        }
+        if (Child is not InputElement child)
+        {
+            return;
+        }
+        child.AddHandler(InputElement.PointerWheelChangedEvent, HandleChildPointerWheelBubbled,
+            RoutingStrategies.Bubble);
+        _wheelGuardSubscribedOn = child;
+    }
+
+    private void DetachWheelGuard()
+    {
+        if (_wheelGuardSubscribedOn is null)
+        {
+            return;
+        }
+        _wheelGuardSubscribedOn.RemoveHandler(InputElement.PointerWheelChangedEvent, HandleChildPointerWheelBubbled);
+        _wheelGuardSubscribedOn = null;
+    }
+
+    private static void HandleChildPointerWheelBubbled(object? sender, PointerWheelEventArgs e)
+    {
+        // AddHandler 未指定 handledEventsToo,内部 ScrollViewer/列表若已把事件标 Handled,到此不会被调用。
+        // 走到这里意味着 popup 内没有消费者,在 popup 边界处吞掉,防止泄漏到外层 ScrollViewer 引发意外滚动。
+        e.Handled = true;
     }
 }
 
