@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Controls.AsyncLoad;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Desktop.Controls.Primitives;
@@ -138,11 +139,16 @@ public class Mentions : TemplatedControl,
         AvaloniaProperty.Register<Mentions, DefaultFilterValueSelector?>(
             nameof(FilterValueSelector));
     
-    public static readonly StyledProperty<TimeSpan> MinimumPopulateDelayProperty =
+    public static readonly StyledProperty<TimeSpan> AsyncLoadDebounceProperty =
         AvaloniaProperty.Register<Mentions, TimeSpan>(
-            nameof(MinimumPopulateDelay),
+            nameof(AsyncLoadDebounce),
             TimeSpan.Zero,
-            validate: IsValidMinimumPopulateDelay);
+            validate: IsValidAsyncLoadDebounce);
+
+    public static readonly StyledProperty<TimeSpan> AsyncLoadTimeoutProperty =
+        AvaloniaProperty.Register<Mentions, TimeSpan>(
+            nameof(AsyncLoadTimeout),
+            TimeSpan.FromSeconds(10));
     
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<Mentions, bool>(
@@ -353,10 +359,16 @@ public class Mentions : TemplatedControl,
         set => SetValue(FilterValueSelectorProperty, value);
     }
     
-    public TimeSpan MinimumPopulateDelay
+    public TimeSpan AsyncLoadDebounce
     {
-        get => GetValue(MinimumPopulateDelayProperty);
-        set => SetValue(MinimumPopulateDelayProperty, value);
+        get => GetValue(AsyncLoadDebounceProperty);
+        set => SetValue(AsyncLoadDebounceProperty, value);
+    }
+
+    public TimeSpan AsyncLoadTimeout
+    {
+        get => GetValue(AsyncLoadTimeoutProperty);
+        set => SetValue(AsyncLoadTimeoutProperty, value);
     }
     
     public bool IsDropDownOpen
@@ -501,7 +513,7 @@ public class Mentions : TemplatedControl,
     }
     #endregion
     
-    private static bool IsValidMinimumPopulateDelay(TimeSpan value) => value.TotalMilliseconds >= 0.0;
+    private static bool IsValidAsyncLoadDebounce(TimeSpan value) => value.TotalMilliseconds >= 0.0;
 
     private MentionTextArea? _textArea;
     private Popup? _popup;
@@ -515,7 +527,7 @@ public class Mentions : TemplatedControl,
     private bool _popupHasOpened;
     private bool _ignorePropertyChange;
     private IDisposable? _collectionChangeSubscription;
-    private CancellationTokenSource? _populationCancellationTokenSource;
+    private readonly AsyncSearchLoadCoordinator<string?, MentionOptionsLoadResult> _asyncLoadCoordinator = new();
     private Window? _attachedWindow;
     
     static Mentions()
@@ -524,7 +536,7 @@ public class Mentions : TemplatedControl,
         LinesProperty.OverrideDefaultValue<Mentions>(1);
         
         IsDropDownOpenProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleIsDropDownOpenChanged(e));
-        MinimumPopulateDelayProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleMinimumPopulateDelayChanged(e));
+        AsyncLoadDebounceProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleAsyncLoadDebounceChanged(e));
         PlacementProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.ConfigurePopupPlacement());
         OptionsSourceProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleItemsSourceChanged((IEnumerable?)e.NewValue));
         FilterValueProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleFilterValueChanged());
@@ -556,7 +568,7 @@ public class Mentions : TemplatedControl,
         UpdatePseudoClasses();
     }
     
-    private void HandleMinimumPopulateDelayChanged(AvaloniaPropertyChangedEventArgs e)
+    private void HandleAsyncLoadDebounceChanged(AvaloniaPropertyChangedEventArgs e)
     {
         var newValue = (TimeSpan)e.NewValue!;
 
@@ -781,71 +793,65 @@ public class Mentions : TemplatedControl,
     
     private bool TryPopulateAsync(string? searchText)
     {
-        _populationCancellationTokenSource?.Cancel(false);
-        _populationCancellationTokenSource?.Dispose();
-        _populationCancellationTokenSource = null;
-        
         if (OptionsAsyncLoader == null)
         {
             return false;
         }
-        
-        _populationCancellationTokenSource = new CancellationTokenSource();
-        IsLoading                          = true;
-        var task = PopulateAsync(searchText, _populationCancellationTokenSource.Token);
-        if (task.Status == TaskStatus.Created)
-        {
-            task.Start();
-        }
-        
+
+        _asyncLoadCoordinator.Timeout = AsyncLoadTimeout;
+        IsLoading = true;
+        _ = PopulateAsync(searchText);
         return true;
     }
-    
-    private async Task PopulateAsync(string? filterValue, CancellationToken cancellationToken)
+
+    private async Task PopulateAsync(string? filterValue)
     {
-        try
+        var loader = OptionsAsyncLoader;
+        if (loader == null)
         {
-            if (OptionsAsyncLoader == null)
-            {
-                return;
-            }
-
-            var result = await OptionsAsyncLoader.LoadAsync(filterValue, cancellationToken);
             IsLoading = false;
-            OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, result));
-            var resultList = result.Data;
+            return;
+        }
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
+        var outcome = await _asyncLoadCoordinator.LoadAsync(
+            filterValue,
+            (ctx, token) => loader.LoadAsync(ctx, token));
+
+        if (outcome.IsSkipped)
+        {
+            return;
+        }
+
+        IsLoading = false;
+
+        if (outcome.IsSuccess && outcome.Result != null)
+        {
+            var result = outcome.Result;
+            OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, result));
 
             await Dispatcher.InvokeAsync(() =>
             {
-                if (!cancellationToken.IsCancellationRequested)
+                if (result.IsSuccess)
                 {
-                    if (result.IsSuccess)
-                    {
-                        SetCurrentValue(OptionsSourceProperty, resultList);
-                        PopulateComplete();
-                    }
+                    SetCurrentValue(OptionsSourceProperty, result.Data);
+                    PopulateComplete();
                 }
             });
+            return;
         }
-        catch (TaskCanceledException e)
+
+        var statusCode = outcome.Status switch
         {
-            IsLoading = false;
-            OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, new MentionOptionsLoadResult()
-            {
-                UserFriendlyMessage = e.Message,
-                StatusCode           = RpcStatusCode.Cancelled
-            }));
-        }
-        finally
+            AsyncLoadStatus.TimedOut  => RpcStatusCode.Timeout,
+            AsyncLoadStatus.Cancelled => RpcStatusCode.Cancelled,
+            _                         => RpcStatusCode.Unknown
+        };
+
+        OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, new MentionOptionsLoadResult()
         {
-            _populationCancellationTokenSource?.Dispose();
-            _populationCancellationTokenSource = null;
-        }
+            UserFriendlyMessage = outcome.Error?.Message,
+            StatusCode          = statusCode
+        }));
     }
     
     public void PopulateComplete()

@@ -682,14 +682,6 @@ public partial class CascaderView : TemplatedControl,
         }
         
         // 清理所有待处理的异步加载操作
-        if (_loadingTokens != null)
-        {
-            foreach (var cts in _loadingTokens)
-            {
-                cts.Cancel();
-                cts.Dispose();
-            }
-            _loadingTokens.Clear();
-        }
+        _asyncLoadCoordinator.CancelAll();
     }
 }

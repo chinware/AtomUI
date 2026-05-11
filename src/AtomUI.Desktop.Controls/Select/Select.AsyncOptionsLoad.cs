@@ -1,11 +1,12 @@
 using AtomUI.Controls;
+using AtomUI.Controls.AsyncLoad;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
 public partial class Select
 {
-    private CancellationTokenSource? _optionsLoadCTS;
+    private readonly AsyncSearchLoadCoordinator<object?, SelectOptionsLoadResult> _asyncLoadCoordinator = new();
     private bool _asyncOptionsLoaded;
 
     private void LoadOptionsAsync()
@@ -36,67 +37,61 @@ public partial class Select
 
     private bool TryLoadOptionsAsync(object? context)
     {
-        _optionsLoadCTS?.Cancel(false);
-        _optionsLoadCTS?.Dispose();
-        _optionsLoadCTS = null;
-
         if (OptionsLoader == null)
         {
             return false;
         }
 
-        _optionsLoadCTS = new CancellationTokenSource();
-        var task = LoadOptionAsync(context, _optionsLoadCTS.Token);
-        if (task.Status == TaskStatus.Created)
-        {
-            task.Start();
-        }
-
+        _asyncLoadCoordinator.Timeout = AsyncLoadTimeout;
+        _ = LoadOptionAsync(context);
         return true;
     }
 
-    private async Task LoadOptionAsync(object? context, CancellationToken cancellationToken)
+    private async Task LoadOptionAsync(object? context)
     {
-        try
+        var loader = OptionsLoader;
+        if (loader == null)
         {
-            if (OptionsLoader == null)
-            {
-                return;
-            }
+            return;
+        }
 
-            IsLoading = true;
-            var result     = await OptionsLoader.LoadAsync(context, cancellationToken);
-            var resultList = result.Data;
+        IsLoading = true;
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
+        var outcome = await _asyncLoadCoordinator.LoadAsync(
+            context,
+            (ctx, token) => loader.LoadAsync(ctx, token));
 
+        if (outcome.IsSkipped)
+        {
+            return;
+        }
+
+        if (outcome.IsSuccess && outcome.Result != null)
+        {
+            var result = outcome.Result;
             await Dispatcher.InvokeAsync(() =>
             {
-                if (!cancellationToken.IsCancellationRequested)
-                {
-                    SetCurrentValue(OptionsSourceProperty, resultList);
-                    OptionsLoadComplete(context, result);
-                    _asyncOptionsLoaded = true;
-                    IsLoading = false;
-                }
+                SetCurrentValue(OptionsSourceProperty, result.Data);
+                OptionsLoadComplete(context, result);
+                _asyncOptionsLoaded = true;
+                IsLoading = false;
             });
+            return;
         }
-        catch (TaskCanceledException e)
+
+        var statusCode = outcome.Status switch
         {
-            OptionsLoaded?.Invoke(this, new SelectOptionsLoadedEventArgs(context, new SelectOptionsLoadResult()
-            {
-                UserFriendlyMessage = e.Message,
-                StatusCode          = RpcStatusCode.Cancelled
-            }));
-        }
-        finally
+            AsyncLoadStatus.TimedOut  => RpcStatusCode.Timeout,
+            AsyncLoadStatus.Cancelled => RpcStatusCode.Cancelled,
+            _                         => RpcStatusCode.Unknown
+        };
+
+        IsLoading = false;
+        OptionsLoaded?.Invoke(this, new SelectOptionsLoadedEventArgs(context, new SelectOptionsLoadResult()
         {
-            _optionsLoadCTS?.Dispose();
-            _optionsLoadCTS = null;
-        }
+            UserFriendlyMessage = outcome.Error?.Message,
+            StatusCode          = statusCode
+        }));
     }
 
     private void OptionsLoadComplete(object? context, SelectOptionsLoadResult? loadResult = null)

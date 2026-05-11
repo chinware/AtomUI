@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using AtomUI.Controls;
+using AtomUI.Controls.AsyncLoad;
 using Avalonia;
 using Avalonia.Threading;
 using DynamicData;
@@ -12,7 +14,7 @@ public partial class TreeView
         AvaloniaProperty.RegisterDirect<TreeView, bool>(nameof(HasTreeItemDataLoader),
             o => o.HasTreeItemDataLoader,
             (o, v) => o.HasTreeItemDataLoader = v);
-    
+
     private bool _hasTreeItemDataLoader;
 
     internal bool HasTreeItemDataLoader
@@ -34,9 +36,8 @@ public partial class TreeView
     }
     #endregion
 
-    #region 私有字段
-    private List<CancellationTokenSource>? _loadingTokens;
-    #endregion
+    private readonly AsyncExpandLoadCoordinator<ITreeItemNode, TreeItemLoadResult> _asyncLoadCoordinator
+        = new(ReferenceEqualityComparer<ITreeItemNode>.Instance);
 
     private void HandleNodeLoadRequest(TreeViewItem viewItem)
     {
@@ -44,53 +45,65 @@ public partial class TreeView
         {
             return;
         }
-        if (DataLoader != null && ItemsSource == null)
+        if (ItemsSource == null)
         {
             throw new InvalidOperationException("ITreeNodeDataLoader is set, but the tree nodes are not initially set via ItemsSource.");
         }
         var data = TreeItemFromContainer(viewItem);
         if (data is ITreeItemNode treeItemData)
         {
-            var cts = new CancellationTokenSource(AsyncLoadTimeout);
-            _loadingTokens ??= new();
-            _loadingTokens.Add(cts);
-            
-            viewItem.IsLoading = true;
-            Dispatcher.InvokeAsync(async () =>
-            {
-                try
-                {
-                    Debug.Assert(DataLoader != null);
-                    var result = await DataLoader.LoadAsync(treeItemData, cts.Token);
-                    if (!cts.Token.IsCancellationRequested)
-                    {
-                        viewItem.IsLoading   = false;
-                        viewItem.AsyncLoaded = true; // TODO 是不是应该多给几次机会？
-                        TreeItemLoaded?.Invoke(this, new TreeViewItemLoadedEventArgs(viewItem, result));
-                        if (result.IsSuccess)
-                        {
-                            if (result.Data?.Count > 0)
-                            {
-                                foreach (var child in result.Data)
-                                {
-                                    child.UpdateParentNode(treeItemData);
-                                }
-                                ((IList<ITreeItemNode>)treeItemData.Children).AddRange(result.Data);
-                                viewItem.IsExpanded = true;
-                            }
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    viewItem.IsLoading = false;
-                }
-                finally
-                {
-                    cts.Dispose();
-                    _loadingTokens?.Remove(cts);
-                }
-            });
+            _ = LoadNodeDataAsync(viewItem, treeItemData);
         }
+    }
+
+    private async Task LoadNodeDataAsync(TreeViewItem viewItem, ITreeItemNode treeItemData)
+    {
+        _asyncLoadCoordinator.Timeout = AsyncLoadTimeout;
+        viewItem.IsLoading = true;
+
+        var outcome = await _asyncLoadCoordinator.LoadOrJoinAsync(
+            treeItemData,
+            (ctx, token) =>
+            {
+                Debug.Assert(DataLoader != null);
+                return DataLoader!.LoadAsync(ctx, token);
+            });
+
+        await Dispatcher.InvokeAsync(() =>
+        {
+            viewItem.IsLoading = false;
+
+            if (outcome.IsSuccess && outcome.Result != null)
+            {
+                var result = outcome.Result;
+                viewItem.AsyncLoaded = true;
+                TreeItemLoaded?.Invoke(this, new TreeViewItemLoadedEventArgs(viewItem, result));
+
+                if (result.IsSuccess && result.Data?.Count > 0)
+                {
+                    foreach (var child in result.Data)
+                    {
+                        child.UpdateParentNode(treeItemData);
+                    }
+                    ((IList<ITreeItemNode>)treeItemData.Children).AddRange(result.Data);
+                    viewItem.IsExpanded = true;
+                }
+                return;
+            }
+
+            var statusCode = outcome.Status switch
+            {
+                AsyncLoadStatus.TimedOut  => RpcStatusCode.Timeout,
+                AsyncLoadStatus.Cancelled => RpcStatusCode.Cancelled,
+                _                         => RpcStatusCode.Unknown
+            };
+
+            TreeItemLoaded?.Invoke(this, new TreeViewItemLoadedEventArgs(viewItem, new TreeItemLoadResult()
+            {
+                IsSuccess           = false,
+                StatusCode          = statusCode,
+                UserFriendlyMessage = outcome.Error?.Message
+            }));
+        });
     }
 }

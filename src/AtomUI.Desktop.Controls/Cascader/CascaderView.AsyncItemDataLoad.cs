@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using AtomUI.Controls;
+using AtomUI.Controls.AsyncLoad;
 using Avalonia;
 using Avalonia.Threading;
 using DynamicData;
@@ -23,7 +25,7 @@ public partial class CascaderView
         AvaloniaProperty.RegisterDirect<CascaderView, bool>(nameof(HasItemAsyncDataLoader),
             o => o.HasItemAsyncDataLoader,
             (o, v) => o.HasItemAsyncDataLoader = v);
-    
+
     private bool _hasItemAsyncDataLoader;
 
     internal bool HasItemAsyncDataLoader
@@ -33,9 +35,8 @@ public partial class CascaderView
     }
     #endregion
 
-    #region 私有字段
-    private List<CancellationTokenSource>? _loadingTokens;
-    #endregion
+    private readonly AsyncExpandLoadCoordinator<ICascaderOption, CascaderItemLoadResult> _asyncLoadCoordinator
+        = new(ReferenceEqualityComparer<ICascaderOption>.Instance);
 
     private async Task LoadItemDataAsync(CascaderViewItem item)
     {
@@ -45,47 +46,56 @@ public partial class CascaderView
         }
 
         var option = item.AttachedOption;
-        if (option != null)
+        if (option == null)
         {
-            var cts = new CancellationTokenSource(AsyncLoadTimeout);
-            _loadingTokens ??= new();
-            _loadingTokens.Add(cts);
-            
-            item.IsLoading = true;
-            await Dispatcher.InvokeAsync(async () =>
-            {
-                try
-                {
-                    Debug.Assert(DataLoader != null);
-                    var result = await DataLoader.LoadAsync(option, cts.Token);
-                    if (!cts.Token.IsCancellationRequested)
-                    {
-                        item.IsLoading   = false;
-                        item.AsyncLoaded = true;
-                        ItemAsyncLoaded?.Invoke(this, new CascaderViewItemLoadedEventArgs(item, result));
-                        if (result.IsSuccess)
-                        {
-                            if (result.Data?.Count > 0)
-                            {
-                                foreach (var child in result.Data)
-                                {
-                                    child.UpdateParentNode(option);
-                                }
-                                ((IList<ICascaderOption>)option.Children).AddRange(result.Data);
-                            }
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    item.IsLoading = false;
-                }
-                finally
-                {
-                    cts.Dispose();
-                    _loadingTokens?.Remove(cts);
-                }
-            });
+            return;
         }
+
+        _asyncLoadCoordinator.Timeout = AsyncLoadTimeout;
+        item.IsLoading = true;
+
+        var outcome = await _asyncLoadCoordinator.LoadOrJoinAsync(
+            option,
+            (ctx, token) =>
+            {
+                Debug.Assert(DataLoader != null);
+                return DataLoader!.LoadAsync(ctx, token);
+            });
+
+        await Dispatcher.InvokeAsync(() =>
+        {
+            item.IsLoading = false;
+
+            if (outcome.IsSuccess && outcome.Result != null)
+            {
+                var result = outcome.Result;
+                item.AsyncLoaded = true;
+                ItemAsyncLoaded?.Invoke(this, new CascaderViewItemLoadedEventArgs(item, result));
+
+                if (result.IsSuccess && result.Data?.Count > 0)
+                {
+                    foreach (var child in result.Data)
+                    {
+                        child.UpdateParentNode(option);
+                    }
+                    ((IList<ICascaderOption>)option.Children).AddRange(result.Data);
+                }
+                return;
+            }
+
+            var statusCode = outcome.Status switch
+            {
+                AsyncLoadStatus.TimedOut  => RpcStatusCode.Timeout,
+                AsyncLoadStatus.Cancelled => RpcStatusCode.Cancelled,
+                _                         => RpcStatusCode.Unknown
+            };
+
+            ItemAsyncLoaded?.Invoke(this, new CascaderViewItemLoadedEventArgs(item, new CascaderItemLoadResult()
+            {
+                IsSuccess           = false,
+                StatusCode          = statusCode,
+                UserFriendlyMessage = outcome.Error?.Message
+            }));
+        });
     }
 }

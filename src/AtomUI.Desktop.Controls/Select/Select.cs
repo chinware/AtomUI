@@ -81,6 +81,11 @@ public partial class Select : AbstractSelect
     public static readonly StyledProperty<ISelectOptionsAsyncLoader?> OptionsLoaderProperty =
         AvaloniaProperty.Register<Select, ISelectOptionsAsyncLoader?>(nameof(OptionsLoader));
 
+    public static readonly StyledProperty<TimeSpan> AsyncLoadTimeoutProperty =
+        AvaloniaProperty.Register<Select, TimeSpan>(
+            nameof(AsyncLoadTimeout),
+            TimeSpan.FromSeconds(10));
+
     public static readonly StyledProperty<IValueFilter?> FilterProperty =
         AvaloniaProperty.Register<AbstractSelect, IValueFilter?>(nameof(Filter));
 
@@ -186,6 +191,12 @@ public partial class Select : AbstractSelect
     {
         get => GetValue(OptionsLoaderProperty);
         set => SetValue(OptionsLoaderProperty, value);
+    }
+
+    public TimeSpan AsyncLoadTimeout
+    {
+        get => GetValue(AsyncLoadTimeoutProperty);
+        set => SetValue(AsyncLoadTimeoutProperty, value);
     }
     #endregion
 
