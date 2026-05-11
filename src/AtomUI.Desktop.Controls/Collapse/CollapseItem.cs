@@ -9,7 +9,6 @@ using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
-using Avalonia.Threading;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -38,11 +37,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     public static readonly StyledProperty<IDataTemplate?> AddOnContentTemplateProperty =
         AvaloniaProperty.Register<CollapseItem, IDataTemplate?>(nameof(AddOnContentTemplate));
     
-    public static readonly StyledProperty<Thickness?> HeaderPaddingProperty =
-        AvaloniaProperty.Register<CollapseItem, Thickness?>(nameof(HeaderPadding));
-    
-    public static readonly StyledProperty<Thickness?> ContentPaddingProperty =
-        AvaloniaProperty.Register<CollapseItem, Thickness?>(nameof(ContentPadding));
+    public static readonly StyledProperty<Thickness> HeaderPaddingProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(HeaderPadding));
+
+    public static readonly StyledProperty<Thickness> ContentPaddingProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(ContentPadding));
 
     public bool IsSelected
     {
@@ -74,13 +73,13 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         set => SetValue(AddOnContentTemplateProperty, value);
     }
     
-    public Thickness? HeaderPadding
+    public Thickness HeaderPadding
     {
         get => GetValue(HeaderPaddingProperty);
         set => SetValue(HeaderPaddingProperty, value);
     }
 
-    public Thickness? ContentPadding
+    public Thickness ContentPadding
     {
         get => GetValue(ContentPaddingProperty);
         set => SetValue(ContentPaddingProperty, value);
@@ -261,8 +260,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             _expandButton.Click += HandleExpandButtonClick;
         }
-
-        UpdatePseudoClasses();
     }
 
     private void HandleExpandButtonClick(object? sender, RoutedEventArgs args)
@@ -302,12 +299,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             {
                 HandleSelectedChanged();
             }
-        }
-
-        if (change.Property == ContentPaddingProperty ||
-            change.Property == HeaderPaddingProperty)
-        {
-            UpdatePseudoClasses();
         }
     }
 
@@ -381,12 +372,6 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         return false;
     }
     
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(CollapseItemPseudoClass.CustomHeaderPadding, HeaderPadding != null);
-        PseudoClasses.Set(CollapseItemPseudoClass.CustomContentPadding, ContentPadding != null);
-    }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();

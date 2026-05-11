@@ -222,7 +222,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
         {
             _flyoutDisposables?.Dispose();
             _flyoutDisposables = new CompositeDisposable();
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.RequestedPlacementProperty, (PlacementMode v) => (PlacementMode?)v));
+            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.RequestedPlacementProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty));
             _flyoutDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, Flyout, FlyoutControl.IsArrowVisibleProperty));

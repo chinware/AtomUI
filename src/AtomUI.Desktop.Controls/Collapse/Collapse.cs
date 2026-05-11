@@ -6,6 +6,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
@@ -50,11 +51,11 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Collapse>();
     
-    public static readonly StyledProperty<Thickness?> ItemHeaderPaddingProperty =
-        AvaloniaProperty.Register<Collapse, Thickness?>(nameof(ItemHeaderPadding));
-    
-    public static readonly StyledProperty<Thickness?> ItemContentPaddingProperty =
-        AvaloniaProperty.Register<Collapse, Thickness?>(nameof(ItemContentPadding));
+    public static readonly StyledProperty<Thickness> ItemHeaderPaddingProperty =
+        AvaloniaProperty.Register<Collapse, Thickness>(nameof(ItemHeaderPadding));
+
+    public static readonly StyledProperty<Thickness> ItemContentPaddingProperty =
+        AvaloniaProperty.Register<Collapse, Thickness>(nameof(ItemContentPadding));
 
     public SizeType SizeType
     {
@@ -98,13 +99,13 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public Thickness? ItemHeaderPadding
+    public Thickness ItemHeaderPadding
     {
         get => GetValue(ItemHeaderPaddingProperty);
         set => SetValue(ItemHeaderPaddingProperty, value);
     }
 
-    public Thickness? ItemContentPadding
+    public Thickness ItemContentPadding
     {
         get => GetValue(ItemContentPaddingProperty);
         set => SetValue(ItemContentPaddingProperty, value);
@@ -396,14 +397,18 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     
     private void ConfigureItemPaddings(CollapseItem collapseItem)
     {
-        if (collapseItem.HeaderPadding == null)
+        if (IsSet(ItemHeaderPaddingProperty) &&
+            !collapseItem.IsSet(CollapseItem.HeaderPaddingProperty))
         {
-            collapseItem.SetCurrentValue(CollapseItem.HeaderPaddingProperty, ItemHeaderPadding);
+            collapseItem.SetValue(CollapseItem.HeaderPaddingProperty, ItemHeaderPadding,
+                BindingPriority.LocalValue);
         }
 
-        if (collapseItem.ContentPadding == null)
+        if (IsSet(ItemContentPaddingProperty) &&
+            !collapseItem.IsSet(CollapseItem.ContentPaddingProperty))
         {
-            collapseItem.SetCurrentValue(CollapseItem.ContentPaddingProperty, ItemContentPadding);
+            collapseItem.SetValue(CollapseItem.ContentPaddingProperty, ItemContentPadding,
+                BindingPriority.LocalValue);
         }
     }
 }
