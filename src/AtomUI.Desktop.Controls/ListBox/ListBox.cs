@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -58,14 +59,17 @@ public class ListBox : AvaloniaListBox,
     public static readonly StyledProperty<bool> IsShowEmptyIndicatorProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(IsShowEmptyIndicator), true);
     
-    public static readonly StyledProperty<IListBoxItemFilter?> ItemFilterProperty =
-        AvaloniaProperty.Register<ListBox, IListBoxItemFilter?>(nameof(ItemFilter));
-    
-    public static readonly StyledProperty<object?> ItemFilterValueProperty =
-        AvaloniaProperty.Register<ListBox, object?>(nameof(ItemFilterValue));
-    
-    public static readonly StyledProperty<TextBlockHighlightStrategy> ItemFilterHighlightStrategyProperty =
-        AvaloniaProperty.Register<ListBox, TextBlockHighlightStrategy>(nameof(ItemFilterHighlightStrategy), TextBlockHighlightStrategy.All);
+    public static readonly StyledProperty<IValueFilter?> FilterProperty =
+        AvaloniaProperty.Register<ListBox, IValueFilter?>(nameof(Filter));
+
+    public static readonly StyledProperty<object?> FilterValueProperty =
+        AvaloniaProperty.Register<ListBox, object?>(nameof(FilterValue));
+
+    public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
+        AvaloniaProperty.Register<ListBox, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
+
+    public static readonly StyledProperty<TextBlockHighlightStrategy> FilterHighlightStrategyProperty =
+        AvaloniaProperty.Register<ListBox, TextBlockHighlightStrategy>(nameof(FilterHighlightStrategy), TextBlockHighlightStrategy.All);
     
     public static readonly DirectProperty<ListBox, int> FilterResultCountProperty =
         AvaloniaProperty.RegisterDirect<ListBox, int>(nameof(FilterResultCount),
@@ -151,22 +155,28 @@ public class ListBox : AvaloniaListBox,
         set => SetValue(IsShowEmptyIndicatorProperty, value);
     }
 
-    public IListBoxItemFilter? ItemFilter
+    public IValueFilter? Filter
     {
-        get => GetValue(ItemFilterProperty);
-        set => SetValue(ItemFilterProperty, value);
+        get => GetValue(FilterProperty);
+        set => SetValue(FilterProperty, value);
     }
-    
-    public object? ItemFilterValue
+
+    public object? FilterValue
     {
-        get => GetValue(ItemFilterValueProperty);
-        set => SetValue(ItemFilterValueProperty, value);
+        get => GetValue(FilterValueProperty);
+        set => SetValue(FilterValueProperty, value);
     }
-    
-    public TextBlockHighlightStrategy ItemFilterHighlightStrategy
+
+    public DefaultFilterValueSelector? FilterValueSelector
     {
-        get => GetValue(ItemFilterHighlightStrategyProperty);
-        set => SetValue(ItemFilterHighlightStrategyProperty, value);
+        get => GetValue(FilterValueSelectorProperty);
+        set => SetValue(FilterValueSelectorProperty, value);
+    }
+
+    public TextBlockHighlightStrategy FilterHighlightStrategy
+    {
+        get => GetValue(FilterHighlightStrategyProperty);
+        set => SetValue(FilterHighlightStrategyProperty, value);
     }
 
     private int _filterResultCount;
@@ -248,9 +258,9 @@ public class ListBox : AvaloniaListBox,
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (ItemFilter == null)
+        if (Filter == null)
         {
-            SetCurrentValue(ItemFilterProperty, new DefaultListBoxItemFilter());
+            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
         }
 
         ConfigureEmptyIndicator();
@@ -278,8 +288,8 @@ public class ListBox : AvaloniaListBox,
         {
             ConfigureEffectiveBorderThickness();
         }
-        else if (change.Property == ItemFilterValueProperty ||
-                 change.Property == ItemFilterProperty)
+        else if (change.Property == FilterValueProperty ||
+                 change.Property == FilterProperty)
         {
             ConfigureIsFiltering();
             FilterItems();
@@ -298,7 +308,7 @@ public class ListBox : AvaloniaListBox,
     
     private void ConfigureIsFiltering()
     {
-        IsFiltering = ItemFilter != null && ItemFilterValue != null;
+        IsFiltering = Filter != null && FilterValue != null;
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -339,7 +349,7 @@ public class ListBox : AvaloniaListBox,
             listBoxItem[!ListBoxItem.ItemHoverBgProperty]               = this[!ItemHoverBgProperty];
             listBoxItem[!ListBoxItem.ItemSelectedBgProperty]            = this[!ItemSelectedBgProperty];
             listBoxItem[!ListBoxItem.IsShowSelectedIndicatorProperty]   = this[!IsShowSelectedIndicatorProperty];
-            listBoxItem[!ListBoxItem.FilterHighlightStrategyProperty]   = this[!ItemFilterHighlightStrategyProperty];
+            listBoxItem[!ListBoxItem.FilterHighlightStrategyProperty]   = this[!FilterHighlightStrategyProperty];
             listBoxItem[!ListBoxItem.FilterHighlightForegroundProperty] = this[!FilterHighlightForegroundProperty];
            
             PrepareListBoxItem(listBoxItem, item, index);
@@ -413,18 +423,37 @@ public class ListBox : AvaloniaListBox,
 
     protected bool FilterItem(ListBoxItem item)
     {
-        if (ItemFilter == null)
+        if (Filter == null)
         {
             return false;
         }
-        return ItemFilter.Filter(this, item, ItemFilterValue);
+        var value = SelectFilterValue(item);
+        return Filter.Filter(value, FilterValue);
+    }
+
+    private object? SelectFilterValue(ListBoxItem item)
+    {
+        var selector = FilterValueSelector;
+        if (selector != null)
+        {
+            return selector(item.Content);
+        }
+        if (item.Content is IListItemData listItemData)
+        {
+            return listItemData.Content?.ToString();
+        }
+        if (item.Content is string header)
+        {
+            return header;
+        }
+        return item.Content;
     }
 
     private void FilterItems()
     {
-        if (ItemFilter != null && ItemFilterValue != null && IsLoaded)
+        if (Filter != null && FilterValue != null && IsLoaded)
         {
-            if (ItemFilterHighlightStrategy.HasFlag(TextBlockHighlightStrategy.HideUnMatched))
+            if (FilterHighlightStrategy.HasFlag(TextBlockHighlightStrategy.HideUnMatched))
             {
                 if (_filterContext.Count == 0)
                 {
@@ -456,13 +485,13 @@ public class ListBox : AvaloniaListBox,
                             ++count;
                         }
 
-                        if (ItemFilterHighlightStrategy.HasFlag(TextBlockHighlightStrategy.HideUnMatched))
+                        if (FilterHighlightStrategy.HasFlag(TextBlockHighlightStrategy.HideUnMatched))
                         {
                             listBoxItem.SetCurrentValue(ListBoxItem.IsVisibleProperty, filterResult);
                         }
-                       
+
                         listBoxItem.IsFiltering = true;
-                        listBoxItem.FilterValue = ItemFilterValue;
+                        listBoxItem.FilterValue = FilterValue;
                     }
                 }
             }

@@ -30,7 +30,7 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
                     {
                         return listItemData.Content;
                     }
-                    return record.ToString();
+                    return record?.ToString();
                 };
                 InitAdvanceTransferItems(viewModel);
                 InitTreeViewTransferItems(viewModel);

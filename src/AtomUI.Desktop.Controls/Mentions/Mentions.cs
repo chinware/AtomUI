@@ -9,7 +9,6 @@ using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Desktop.Controls.Primitives;
-using AtomUI.Desktop.Controls.Themes;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Input;
 using AtomUI.Theme;
@@ -26,8 +25,6 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
-
-public delegate object? MentionsFilterValueSelector(IMentionOption option);
 
 [PseudoClasses(MentionPseudoClass.CandidatePopupOpen)]
 public class Mentions : TemplatedControl,
@@ -56,10 +53,7 @@ public class Mentions : TemplatedControl,
 
     public static readonly StyledProperty<string?> DefaultValueProperty =
         AvaloniaProperty.Register<Mentions, string?>(nameof(DefaultValue));
-    
-    public static readonly StyledProperty<IMentionOptionFilter?> OptionFilterProperty =
-        AvaloniaProperty.Register<Mentions, IMentionOptionFilter?>(nameof(OptionFilter));
-    
+
     public static readonly StyledProperty<MentionsPlacementMode> PlacementProperty =
         AvaloniaProperty.Register<Mentions, MentionsPlacementMode>(nameof(Placement), MentionsPlacementMode.Bottom);
     
@@ -140,8 +134,8 @@ public class Mentions : TemplatedControl,
     public static readonly StyledProperty<IValueFilter?> FilterProperty =
         AvaloniaProperty.Register<Mentions, IValueFilter?>(nameof(Filter));
     
-    public static readonly StyledProperty<MentionsFilterValueSelector?> FilterValueSelectorProperty =
-        AvaloniaProperty.Register<Mentions, MentionsFilterValueSelector?>(
+    public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
+        AvaloniaProperty.Register<Mentions, DefaultFilterValueSelector?>(
             nameof(FilterValueSelector));
     
     public static readonly StyledProperty<TimeSpan> MinimumPopulateDelayProperty =
@@ -217,13 +211,7 @@ public class Mentions : TemplatedControl,
         get => GetValue(EmptyIndicatorPaddingProperty);
         set => SetValue(EmptyIndicatorPaddingProperty, value);
     }
-    
-    public IMentionOptionFilter? OptionFilter
-    {
-        get => GetValue(OptionFilterProperty);
-        set => SetValue(OptionFilterProperty, value);
-    }
-    
+
     public string? DefaultValue
     {
         get => GetValue(DefaultValueProperty);
@@ -359,7 +347,7 @@ public class Mentions : TemplatedControl,
         set => SetValue(FilterProperty, value);
     }
     
-    public MentionsFilterValueSelector? FilterValueSelector
+    public DefaultFilterValueSelector? FilterValueSelector
     {
         get => GetValue(FilterValueSelectorProperty);
         set => SetValue(FilterValueSelectorProperty, value);
@@ -398,11 +386,11 @@ public class Mentions : TemplatedControl,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<Mentions, string?> OptionFilterValueProperty =
+    internal static readonly DirectProperty<Mentions, string?> FilterValueProperty =
         AvaloniaProperty.RegisterDirect<Mentions, string?>(
-            nameof(OptionFilterValue),
-            o => o.OptionFilterValue,
-            (o, v) => o.OptionFilterValue = v);
+            nameof(FilterValue),
+            o => o.FilterValue,
+            (o, v) => o.FilterValue = v);
     
     internal static readonly DirectProperty<Mentions, double> ItemHeightProperty =
         AvaloniaProperty.RegisterDirect<Mentions, double>(
@@ -435,12 +423,12 @@ public class Mentions : TemplatedControl,
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
         AvaloniaProperty.Register<Mentions, FormValidateFeedback?>(nameof(FormFeedback));
     
-    private string? _optionFilterValue;
-    
-    internal string? OptionFilterValue
+    private string? _filterValue;
+
+    internal string? FilterValue
     {
-        get => _optionFilterValue;
-        set => SetAndRaise(OptionFilterValueProperty, ref _optionFilterValue, value);
+        get => _filterValue;
+        set => SetAndRaise(FilterValueProperty, ref _filterValue, value);
     }
     
     private double _itemHeight;
@@ -539,7 +527,7 @@ public class Mentions : TemplatedControl,
         MinimumPopulateDelayProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleMinimumPopulateDelayChanged(e));
         PlacementProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.ConfigurePopupPlacement());
         OptionsSourceProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleItemsSourceChanged((IEnumerable?)e.NewValue));
-        OptionFilterValueProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleOptionFilterValueChanged());
+        FilterValueProperty.Changed.AddClassHandler<Mentions>((mentions,e) => mentions.HandleFilterValueChanged());
         ValueProperty.Changed.AddClassHandler<Mentions>((mentions, args) => mentions.HandleValueChanged());
     }
     
@@ -608,7 +596,7 @@ public class Mentions : TemplatedControl,
         ClearView();
     }
 
-    private void HandleOptionFilterValueChanged()
+    private void HandleFilterValueChanged()
     {
         if (IsDropDownOpen)
         {
@@ -725,7 +713,7 @@ public class Mentions : TemplatedControl,
 
     private void HandleCandidateListCanceled(object? sender, RoutedEventArgs e)
     {
-        OptionFilterValue = null;
+        FilterValue = null;
         SetCurrentValue(IsDropDownOpenProperty, false);
         _textArea!.Focus();
     }
@@ -774,7 +762,7 @@ public class Mentions : TemplatedControl,
     {
         _delayTimer?.Stop();
         
-        if (TryPopulateAsync(OptionFilterValue))
+        if (TryPopulateAsync(FilterValue))
         {
             return;
         }
@@ -783,7 +771,7 @@ public class Mentions : TemplatedControl,
         // client needs to directly update the ItemsSource collection or
         // call the Populate method on the control to continue the
         // display process if Cancel is set to true.
-        var populating = new MentionsPopulatingEventArgs(OptionFilterValue);
+        var populating = new MentionsPopulatingEventArgs(FilterValue);
         NotifyPopulating(populating);
         if (!populating.Cancel)
         {
@@ -884,7 +872,7 @@ public class Mentions : TemplatedControl,
 
     private void HandleCandidateCloseRequest(object? sender, EventArgs eventArgs)
     {
-        OptionFilterValue = null;
+        FilterValue = null;
         SetCurrentValue(IsDropDownOpenProperty, false);
         _textArea!.Focus();
     }
@@ -1166,7 +1154,7 @@ public class Mentions : TemplatedControl,
                     return;
                 }
 
-                bool inResults = string.IsNullOrWhiteSpace(OptionFilterValue) || filter.Filter(GetValueByOption(item), OptionFilterValue);
+                bool inResults = string.IsNullOrWhiteSpace(FilterValue) || filter.Filter(GetValueByOption(item), FilterValue);
               
                 if (inResults)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Input;
 using AtomUI.Theme;
@@ -64,7 +65,7 @@ public class Cascader : AbstractSelect
     public static readonly StyledProperty<ICascaderItemDataLoader?> DataLoaderProperty =
         CascaderView.DataLoaderProperty.AddOwner<Cascader>();
     
-    public static readonly StyledProperty<ICascaderItemFilter?> FilterProperty =
+    public static readonly StyledProperty<IValueFilter?> FilterProperty =
         CascaderView.FilterProperty.AddOwner<Cascader>();
     
     public static readonly StyledProperty<TextBlockHighlightStrategy> FilterHighlightStrategyProperty =
@@ -144,7 +145,7 @@ public class Cascader : AbstractSelect
         set => SetValue(DataLoaderProperty, value);
     }
     
-    public ICascaderItemFilter? Filter
+    public IValueFilter? Filter
     {
         get => GetValue(FilterProperty);
         set => SetValue(FilterProperty, value);
@@ -282,7 +283,7 @@ public class Cascader : AbstractSelect
         base.OnInitialized();
         if (Filter == null)
         {
-            SetCurrentValue(FilterProperty, new DefaultCascaderItemFilter());
+            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
         }
     }
     

@@ -427,8 +427,8 @@ public class CandidateList : ListBox, ICandidateList
         {
             ConfigureEmptyIndicator();
         }
-        if (change.Property == ItemFilterValueProperty ||
-            change.Property == ItemFilterProperty)
+        if (change.Property == FilterValueProperty ||
+            change.Property == FilterProperty)
         {
             CandidateSelectedIndex = -1;
             CandidateSelectedItem  = null;

@@ -1,8 +1,8 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -79,9 +79,12 @@ public class TreeSelect : AbstractSelect
         AvaloniaProperty.Register<TreeSelect, ITreeItemNodeLoader?>(
             nameof(DataLoader));
     
-    public static readonly StyledProperty<ITreeItemFilter?> FilterProperty =
-        AvaloniaProperty.Register<TreeSelect, ITreeItemFilter?>(
+    public static readonly StyledProperty<IValueFilter?> FilterProperty =
+        AvaloniaProperty.Register<TreeSelect, IValueFilter?>(
             nameof(Filter));
+
+    public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
+        AvaloniaProperty.Register<TreeSelect, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
     
     public static readonly DirectProperty<TreeSelect, TreeFilterHighlightStrategy> FilterHighlightStrategyProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, TreeFilterHighlightStrategy>(
@@ -197,10 +200,16 @@ public class TreeSelect : AbstractSelect
         set => SetValue(DataLoaderProperty, value);
     }
     
-    public ITreeItemFilter? Filter
+    public IValueFilter? Filter
     {
         get => GetValue(FilterProperty);
         set => SetValue(FilterProperty, value);
+    }
+
+    public DefaultFilterValueSelector? FilterValueSelector
+    {
+        get => GetValue(FilterValueSelectorProperty);
+        set => SetValue(FilterValueSelectorProperty, value);
     }
 
     private TreeFilterHighlightStrategy _itemFilterAction = TreeFilterHighlightStrategy.HighlightedWhole | TreeFilterHighlightStrategy.BoldedMatch | TreeFilterHighlightStrategy.ExpandPath | TreeFilterHighlightStrategy.HideUnMatched;
@@ -358,7 +367,7 @@ public class TreeSelect : AbstractSelect
         base.OnInitialized();
         if (Filter == null)
         {
-            SetCurrentValue(FilterProperty, new DefaultTreeItemFilter());
+            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
         }
         ConfigureMaxSelectReached();
     }

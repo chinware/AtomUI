@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using Avalonia;
@@ -126,11 +127,14 @@ public partial class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<ITreeItemNodeLoader?> DataLoaderProperty =
         AvaloniaProperty.Register<TreeView, ITreeItemNodeLoader?>(nameof(DataLoader));
     
-    public static readonly StyledProperty<ITreeItemFilter?> FilterProperty =
-        AvaloniaProperty.Register<TreeView, ITreeItemFilter?>(nameof(Filter), new DefaultTreeItemFilter());
-    
+    public static readonly StyledProperty<IValueFilter?> FilterProperty =
+        AvaloniaProperty.Register<TreeView, IValueFilter?>(nameof(Filter));
+
     public static readonly StyledProperty<object?> FilterValueProperty =
         AvaloniaProperty.Register<TreeView, object?>(nameof(FilterValue));
+
+    public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
+        AvaloniaProperty.Register<TreeView, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
     
     public static readonly StyledProperty<TreeFilterHighlightStrategy> FilterHighlightStrategyProperty =
         AvaloniaProperty.Register<TreeView, TreeFilterHighlightStrategy>(nameof(FilterHighlightStrategy), TreeFilterHighlightStrategy.All);
@@ -304,7 +308,7 @@ public partial class TreeView : AvaloniaTreeView,
         set => SetValue(DataLoaderProperty, value);
     }
     
-    public ITreeItemFilter? Filter
+    public IValueFilter? Filter
     {
         get => GetValue(FilterProperty);
         set => SetValue(FilterProperty, value);
@@ -314,6 +318,12 @@ public partial class TreeView : AvaloniaTreeView,
     {
         get => GetValue(FilterValueProperty);
         set => SetValue(FilterValueProperty, value);
+    }
+
+    public DefaultFilterValueSelector? FilterValueSelector
+    {
+        get => GetValue(FilterValueSelectorProperty);
+        set => SetValue(FilterValueSelectorProperty, value);
     }
 
     public TreeFilterHighlightStrategy FilterHighlightStrategy
@@ -473,9 +483,27 @@ public partial class TreeView : AvaloniaTreeView,
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Filter ??= new DefaultTreeItemFilter();
+        Filter ??= ValueFilterFactory.BuildFilter(ValueFilterMode.Contains);
+        FilterValueSelector ??= DefaultTreeFilterValueSelector;
         ConfigureEmptyIndicator();
     }
+
+    internal static readonly DefaultFilterValueSelector DefaultTreeFilterValueSelector = value =>
+    {
+        if (value is TreeViewItem treeViewItem)
+        {
+            if (treeViewItem.Header is ITreeItemNode treeItemData)
+            {
+                return treeItemData.Header?.ToString();
+            }
+            if (treeViewItem.Header is string header)
+            {
+                return header;
+            }
+            return treeViewItem.Header?.ToString();
+        }
+        return null;
+    };
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {

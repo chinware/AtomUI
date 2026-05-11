@@ -28,7 +28,7 @@
                                           ClearIcon="{TemplateBinding ClearIcon}"
                                           SizeType="{TemplateBinding SizeType}"
                                           Focusable="{TemplateBinding IsReadOnly, Converter={x:Static BoolConverters.Not}}"
-                                          FilterValue="{TemplateBinding OptionFilterValue, Mode=TwoWay}"
+                                          FilterValue="{TemplateBinding FilterValue, Mode=TwoWay}"
                                           FormFeedback="{TemplateBinding FormFeedback}"/>
                     <atom:Popup Name="PART_Popup"
                                 WindowManagerAddShadowHint="False"

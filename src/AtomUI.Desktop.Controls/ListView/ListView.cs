@@ -522,7 +522,7 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
         TryInitializeSelectionSource(_selection, _updateState is null);
     }
     
-    private object? GroupSelector(object item)
+    private object? GroupSelector(object? item)
     {
         if (item is IGroupHeader groupHeader)
         {

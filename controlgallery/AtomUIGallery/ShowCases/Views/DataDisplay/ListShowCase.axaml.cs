@@ -306,7 +306,7 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
     {
         if (sender is SearchEdit searchEdit)
         {
-            SearchListBox.ItemFilterValue = searchEdit.Text?.Trim();
+            SearchListBox.FilterValue = searchEdit.Text?.Trim();
         }
     }
 

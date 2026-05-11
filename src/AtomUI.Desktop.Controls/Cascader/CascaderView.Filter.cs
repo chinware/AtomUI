@@ -59,7 +59,8 @@ public partial class CascaderView
                 _allPathInfos = result;
             }
             
-            FilteredPathInfos = _allPathInfos.Where(data => Filter.Filter(this, data, FilterValue)).ToList();
+            var selector = FilterValueSelector ?? DefaultCascaderFilterValueSelector;
+            FilteredPathInfos = _allPathInfos.Where(data => Filter.Filter(selector(data), FilterValue)).ToList();
             IsFiltering       = true;
             FilterResultCount = FilteredPathInfos.Count;
         }

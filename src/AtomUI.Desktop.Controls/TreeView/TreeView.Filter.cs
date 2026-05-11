@@ -155,7 +155,8 @@ public partial class TreeView
         }
 
         treeViewItem.IsFilterMode = true;
-        var filterResult = Filter.Filter(this, treeViewItem, FilterValue);
+        var selector     = FilterValueSelector ?? DefaultTreeFilterValueSelector;
+        var filterResult = Filter.Filter(selector(treeViewItem), FilterValue);
         treeViewItem.IsFilterMatch = filterResult;
         if (filterResult)
         {

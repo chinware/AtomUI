@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Theme;
 using Avalonia;
@@ -12,7 +13,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -56,11 +56,14 @@ public partial class CascaderView : TemplatedControl,
     public static readonly StyledProperty<ICascaderItemDataLoader?> DataLoaderProperty =
         AvaloniaProperty.Register<CascaderView, ICascaderItemDataLoader?>(nameof(DataLoader));
     
-    public static readonly StyledProperty<ICascaderItemFilter?> FilterProperty =
-        AvaloniaProperty.Register<CascaderView, ICascaderItemFilter?>(nameof(Filter));
-    
+    public static readonly StyledProperty<IValueFilter?> FilterProperty =
+        AvaloniaProperty.Register<CascaderView, IValueFilter?>(nameof(Filter));
+
     public static readonly StyledProperty<object?> FilterValueProperty =
         AvaloniaProperty.Register<CascaderView, object?>(nameof(FilterValue));
+
+    public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
+        AvaloniaProperty.Register<CascaderView, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
     
     public static readonly StyledProperty<TextBlockHighlightStrategy> FilterHighlightStrategyProperty =
         AvaloniaProperty.Register<CascaderView, TextBlockHighlightStrategy>(nameof(FilterHighlightStrategy), TextBlockHighlightStrategy.All);
@@ -154,7 +157,7 @@ public partial class CascaderView : TemplatedControl,
         set => SetValue(DataLoaderProperty, value);
     }
     
-    public ICascaderItemFilter? Filter
+    public IValueFilter? Filter
     {
         get => GetValue(FilterProperty);
         set => SetValue(FilterProperty, value);
@@ -164,6 +167,12 @@ public partial class CascaderView : TemplatedControl,
     {
         get => GetValue(FilterValueProperty);
         set => SetValue(FilterValueProperty, value);
+    }
+
+    public DefaultFilterValueSelector? FilterValueSelector
+    {
+        get => GetValue(FilterValueSelectorProperty);
+        set => SetValue(FilterValueSelectorProperty, value);
     }
     
     public TextBlockHighlightStrategy FilterHighlightStrategy
@@ -326,11 +335,24 @@ public partial class CascaderView : TemplatedControl,
         base.OnInitialized();
         if (Filter == null)
         {
-            SetCurrentValue(FilterProperty, new DefaultCascaderItemFilter());
+            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
+        }
+        if (FilterValueSelector == null)
+        {
+            SetCurrentValue(FilterValueSelectorProperty, DefaultCascaderFilterValueSelector);
         }
         ConfigureEmptyIndicator();
         ConfigureEffectiveToggleType();
     }
+
+    internal static readonly DefaultFilterValueSelector DefaultCascaderFilterValueSelector = value =>
+    {
+        if (value is ICascaderItemInfo info)
+        {
+            return info.Path;
+        }
+        return null;
+    };
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

@@ -33,8 +33,6 @@ public enum AutoCompletePlacementMode
     Bottom
 }
 
-public delegate object? AutoCompleteFilterValueSelector(IAutoCompleteOption option);
-
 [PseudoClasses(AutoCompletePseudoClass.CandidatePopupOpen)]
 public abstract class AbstractAutoComplete : TemplatedControl, 
                                              ISizeTypeAware,
@@ -141,8 +139,8 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             o => o.FilterValue,
             unsetValue: string.Empty);
     
-    public static readonly StyledProperty<AutoCompleteFilterValueSelector?> FilterValueSelectorProperty =
-        AvaloniaProperty.Register<AbstractAutoComplete, AutoCompleteFilterValueSelector?>(
+    public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
+        AvaloniaProperty.Register<AbstractAutoComplete, DefaultFilterValueSelector?>(
             nameof(FilterValueSelector));
     
     public static readonly StyledProperty<ICompleteOptionsAsyncLoader?> OptionsAsyncLoaderProperty =
@@ -351,7 +349,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         }
     }
     
-    public AutoCompleteFilterValueSelector? FilterValueSelector
+    public DefaultFilterValueSelector? FilterValueSelector
     {
         get => GetValue(FilterValueSelectorProperty);
         set => SetValue(FilterValueSelectorProperty, value);
