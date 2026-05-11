@@ -376,27 +376,32 @@ public class Space : Control,
             // Flow passes its own constraint to children
             child.Measure(childConstraint);
 
+            if (!child.IsVisible)
+            {
+                continue;
+            }
+
             // This is the size of the child in UV space
             UVSize childSize = new UVSize(orientation,
                 itemWidthSet ? itemWidth : child.DesiredSize.Width,
                 itemHeightSet ? itemHeight : child.DesiredSize.Height);
 
-            var nextSpacing = itemExists && child.IsVisible ? itemSpacing : 0;
+            var nextSpacing = itemExists ? itemSpacing : 0;
             if (MathUtils.GreaterThan(curLineSize.U + childSize.U + nextSpacing, uvConstraint.U)) // Need to switch to another line
             {
                 panelSize.U =  Math.Max(curLineSize.U, panelSize.U);
                 panelSize.V += curLineSize.V + (lineExists ? lineSpacing : 0);
                 curLineSize =  childSize;
 
-                itemExists = child.IsVisible;
+                itemExists = true;
                 lineExists = true;
             }
             else // Continue to accumulate a line
             {
                 curLineSize.U += childSize.U + nextSpacing;
                 curLineSize.V =  Math.Max(childSize.V, curLineSize.V);
-                    
-                itemExists |= child.IsVisible; // keep true
+
+                itemExists = true;
             }
         }
 
@@ -432,11 +437,15 @@ public class Space : Control,
         {
             var child = children[i] as Control;
             Debug.Assert(child != null);
+            if (!child.IsVisible)
+            {
+                continue;
+            }
             var childSize = new UVSize(orientation,
                 itemWidthSet ? itemWidth : child.DesiredSize.Width,
                 itemHeightSet ? itemHeight : child.DesiredSize.Height);
 
-            var nextSpacing = itemExists && child.IsVisible ? itemSpacing : 0;
+            var nextSpacing = itemExists ? itemSpacing : 0;
             if (MathUtils.GreaterThan(curLineSize.U + childSize.U + nextSpacing, uvFinalSize.U)) // Need to switch to another line
             {
                 accumulatedV += lineExists ? lineSpacing : 0; // add spacing to arrange line first
@@ -446,7 +455,7 @@ public class Space : Control,
 
                 firstInLine = i;
 
-                itemExists = child.IsVisible;
+                itemExists = true;
                 lineExists = true;
             }
             else // Continue to accumulate a line
@@ -454,7 +463,7 @@ public class Space : Control,
                 curLineSize.U += childSize.U + nextSpacing;
                 curLineSize.V =  Math.Max(childSize.V, curLineSize.V);
 
-                itemExists |= child.IsVisible; // keep true
+                itemExists = true;
             }
         }
 
@@ -473,12 +482,21 @@ public class Space : Control,
             bool   useItemV = isHorizontal ? itemHeightSet : itemWidthSet;
             double v        = accumulatedV;
             double u        = 0;
+            bool   first    = true;
             for (int i = start; i < end; ++i)
             {
                 var    newChild    = children[i] as Control;
                 Debug.Assert(newChild != null);
+                if (!newChild.IsVisible)
+                {
+                    continue;
+                }
                 double layoutSlotV = GetChildV(i);
                 double layoutSlotU = GetChildU(i);
+                if (!first)
+                {
+                    u += itemSpacing;
+                }
                 if (ItemsAlignment != SpaceItemsAlignment.Start)
                 {
                     v = ItemsAlignment switch
@@ -490,7 +508,8 @@ public class Space : Control,
                     };
                 }
                 newChild.Arrange(isHorizontal ? new(u, v, layoutSlotU, layoutSlotV) : new(v, u, layoutSlotV, layoutSlotU));
-                u += layoutSlotU + (!children[i].IsVisible ? 0 : itemSpacing);
+                u += layoutSlotU;
+                first = false;
             }
 
             return;
