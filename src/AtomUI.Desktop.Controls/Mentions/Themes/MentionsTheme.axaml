@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atom:MentionTextArea Name="{x:Static atom:MentionsThemeConstants.TextAreaPart}"
+                    <atom:MentionTextArea Name="PART_TextArea"
                                           IsAutoSize="{TemplateBinding IsAutoSize}"
                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                           IsAllowClear="{TemplateBinding IsAllowClear}"
@@ -30,7 +30,7 @@
                                           Focusable="{TemplateBinding IsReadOnly, Converter={x:Static BoolConverters.Not}}"
                                           FilterValue="{TemplateBinding OptionFilterValue, Mode=TwoWay}"
                                           FormFeedback="{TemplateBinding FormFeedback}"/>
-                    <atom:Popup Name="{x:Static atom:MentionsThemeConstants.PopupPart}"
+                    <atom:Popup Name="PART_Popup"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="True"
                                 OverlayDismissEventPassThrough="True"
@@ -49,7 +49,7 @@
                                            HorizontalAlignment="Center"
                                            IsVisible="{TemplateBinding IsLoading}"/>
                                 <atom:CandidateList
-                                    Name="{x:Static atom:MentionsThemeConstants.CandidateListPart}"
+                                    Name="PART_CandidateList"
                                     SelectionMode="Single"
                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                     AutoScrollToSelectedItem="True"

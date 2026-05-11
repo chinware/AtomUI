@@ -692,9 +692,9 @@ public class Mentions : TemplatedControl,
             _popup.Closed -= HandlePopupClosed;
         }
         
-        _textArea     = e.NameScope.Find<MentionTextArea>(MentionsThemeConstants.TextAreaPart);
-        _popup        = e.NameScope.Find<Popup>(MentionsThemeConstants.PopupPart);
-        CandidateList = e.NameScope.Find<ICandidateList>(MentionsThemeConstants.CandidateListPart);
+        _textArea     = e.NameScope.Find<MentionTextArea>("PART_TextArea");
+        _popup        = e.NameScope.Find<Popup>("PART_Popup");
+        CandidateList = e.NameScope.Find<ICandidateList>("PART_CandidateList");
 
         if (_textArea != null)
         {
