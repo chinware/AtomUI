@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.DataLoad;
@@ -372,7 +371,6 @@ public class Cascader : AbstractSelect
         base.OnPropertyChanged(change);
         if (change.Property == IsDropDownOpenProperty)
         {
-            PseudoClasses.Set(SelectPseudoClass.DropdownOpen, change.GetNewValue<bool>());
             ConfigureSingleFilterTextBox();
         }
         if (change.Property == StyleVariantProperty ||
@@ -430,13 +428,7 @@ public class Cascader : AbstractSelect
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
-        if (Popup != null)
-        {
-            Popup.Opened -= HandlePopupOpened;
-            Popup.Closed -= HandlePopupClosed;
-        }
-        
+
         if (_cascaderView != null)
         {
             _cascaderView.SelectedOptionsChanged -= HandleCascaderViewItemsCheckedChanged;
@@ -445,11 +437,10 @@ public class Cascader : AbstractSelect
             _cascaderView.OptionSelected         -= HandleCascaderViewItemSelected;
             _cascaderView.OptionsSource          =  null;
         }
-        
+
         _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
-        Popup              = e.NameScope.Find<Popup>("PART_Popup");
         _cascaderView      = e.NameScope.Find<CascaderView>("PART_CascaderView");
-        
+
         if (_cascaderView != null)
         {
             _cascaderView.SelectedOptionsChanged += HandleCascaderViewItemsCheckedChanged;
@@ -458,13 +449,7 @@ public class Cascader : AbstractSelect
             _cascaderView.OptionSelected         += HandleCascaderViewItemSelected;
             _cascaderView.OptionsSource          =  Options.Cast<ICascaderOption>().ToList();
         }
-        
-        if (Popup != null)
-        {
-            Popup.Opened += HandlePopupOpened;
-            Popup.Closed += HandlePopupClosed;
-        }
-        
+
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
@@ -531,27 +516,20 @@ public class Cascader : AbstractSelect
         }
     }
     
-    private void HandlePopupClosed(object? sender, EventArgs e)
+    protected override void PopupClosed(object? sender, EventArgs e)
     {
-        SubscriptionsOnOpen.Clear();
-        NotifyPopupClosed();
-        if (!IsMultiple)
+        if (!IsMultiple && _singleFilterInput != null)
         {
-            if (_singleFilterInput != null)
-            {
-                _singleFilterInput.Clear();
-                _singleFilterInput.Width = double.NaN;
-                FilterValue              = null;
-            }
+            _singleFilterInput.Clear();
+            _singleFilterInput.Width = double.NaN;
+            FilterValue              = null;
         }
+        base.PopupClosed(sender, e);
     }
 
-    private void HandlePopupOpened(object? sender, EventArgs e)
+    protected override void PopupOpened(object? sender, EventArgs e)
     {
-        SubscriptionsOnOpen.Clear();
-        this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(SubscriptionsOnOpen);
-        this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, SubscriptionsOnOpen);
-        NotifyPopupOpened();
+        base.PopupOpened(sender, e);
         if (!IsMultiple)
         {
             _singleFilterInput?.Focus();
@@ -600,14 +578,6 @@ public class Cascader : AbstractSelect
         }
     }
 
-    private void HandleIsVisibleChanged(bool isVisible)
-    {
-        if (!isVisible && IsDropDownOpen)
-        {
-            SetCurrentValue(IsDropDownOpenProperty, false);
-        }
-    }
-    
     private void ConfigureSelectionIsEmpty()
     {
         if (IsMultiple)

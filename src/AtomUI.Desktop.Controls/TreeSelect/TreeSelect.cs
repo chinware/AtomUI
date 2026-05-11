@@ -379,7 +379,6 @@ public class TreeSelect : AbstractSelect
         base.OnPropertyChanged(change);
         if (change.Property == IsDropDownOpenProperty)
         {
-            PseudoClasses.Set(SelectPseudoClass.DropdownOpen, change.GetNewValue<bool>());
             ConfigureSingleFilterTextBox();
         }
         if (change.Property == StyleVariantProperty ||
@@ -447,12 +446,6 @@ public class TreeSelect : AbstractSelect
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        
-        if (Popup != null)
-        {
-            Popup.Opened -= HandlePopupOpened;
-            Popup.Closed -= HandlePopupClosed;
-        }
 
         if (_treeView != null)
         {
@@ -462,9 +455,8 @@ public class TreeSelect : AbstractSelect
         }
 
         _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
-        Popup              = e.NameScope.Find<Popup>("PART_Popup");
         _treeView          = e.NameScope.Find<TreeView>("PART_TreeView");
-        
+
         if (_treeView != null)
         {
             _treeView.SelectionChanged    += HandleTreeViewSelectionChanged;
@@ -472,12 +464,6 @@ public class TreeSelect : AbstractSelect
             _treeView.ItemsSource         =  Items.Cast<object?>().ToList();
         }
 
-        if (Popup != null)
-        {
-            Popup.Opened             += HandlePopupOpened;
-            Popup.Closed             += HandlePopupClosed;
-        }
-        
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
@@ -545,28 +531,20 @@ public class TreeSelect : AbstractSelect
         }
     }
     
-    private void HandlePopupClosed(object? sender, EventArgs e)
+    protected override void PopupClosed(object? sender, EventArgs e)
     {
-        SubscriptionsOnOpen.Clear();
-        NotifyPopupClosed();
-        if (!IsMultiple)
+        if (!IsMultiple && _singleFilterInput != null)
         {
-            if (_singleFilterInput != null)
-            {
-                _singleFilterInput.Clear();
-                _singleFilterInput.Width = double.NaN;
-                FilterValue              = null;
-            }
+            _singleFilterInput.Clear();
+            _singleFilterInput.Width = double.NaN;
+            FilterValue              = null;
         }
+        base.PopupClosed(sender, e);
     }
 
-    private void HandlePopupOpened(object? sender, EventArgs e)
+    protected override void PopupOpened(object? sender, EventArgs e)
     {
-        SubscriptionsOnOpen.Clear();
-        this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(SubscriptionsOnOpen);
-        this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, SubscriptionsOnOpen);
-        NotifyPopupOpened();
-     
+        base.PopupOpened(sender, e);
         if (!IsMultiple)
         {
             SyncSelectedItemToTreeView();
@@ -663,14 +641,6 @@ public class TreeSelect : AbstractSelect
         }
     }
 
-    private void HandleIsVisibleChanged(bool isVisible)
-    {
-        if (!isVisible && IsDropDownOpen)
-        {
-            SetCurrentValue(IsDropDownOpenProperty, false);
-        }
-    }
-    
     private void ConfigureSelectionIsEmpty()
     {
         SetCurrentValue(IsSelectionEmptyProperty, SelectedItem == null && (SelectedItems == null || SelectedItems?.Count == 0));
