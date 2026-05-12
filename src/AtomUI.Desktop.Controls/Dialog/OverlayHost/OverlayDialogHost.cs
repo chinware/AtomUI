@@ -458,8 +458,6 @@ internal class OverlayDialogHost : ContentControl,
             return (RelativePoint.Center, default);
         }
 
-        // Popup 与 PlacementTarget 通常在不同的 TopLevel 可视树，不能 TranslatePoint；
-        // 走屏幕像素再按 RenderScaling 回到 DIP。
         var hostRoot   = host.GetVisualRoot();
         var targetRoot = target.GetVisualRoot();
         if (hostRoot is null || targetRoot is null)
@@ -467,17 +465,36 @@ internal class OverlayDialogHost : ContentControl,
             return (RelativePoint.Center, default);
         }
 
-        var scaling = (hostRoot as TopLevel)?.RenderScaling
-                      ?? (targetRoot as TopLevel)?.RenderScaling
-                      ?? 1.0;
+        Point? rPoint = null;
 
-        var hostTopLeft  = host.PointToScreen(default);
-        var targetCenter = target.PointToScreen(
-            new Point(target.Bounds.Width / 2, target.Bounds.Height / 2));
+        // ShouldUseOverlayLayer 模式下 host（OverlayPopupHost）与 target 同在一个 Window 的
+        // visual tree，直接 TranslatePoint 得到 target 中心在 host 本地坐标下的 R。
+        // 相对屏幕坐标 + RenderScaling 往返更稳——Linux CSD 的 WindowDecorationMargin 会
+        // 让 OverlayLayer 整体内缩，PointToScreen 口径容易与 target 不一致。
+        if (ReferenceEquals(hostRoot, targetRoot))
+        {
+            var targetCenterLocal = new Point(target.Bounds.Width / 2, target.Bounds.Height / 2);
+            rPoint = target.TranslatePoint(targetCenterLocal, host);
+        }
 
-        // R: target 中点投影到 host 本地 DIP
-        var rx = (targetCenter.X - hostTopLeft.X) / scaling;
-        var ry = (targetCenter.Y - hostTopLeft.Y) / scaling;
+        if (rPoint is null)
+        {
+            // 跨 TopLevel fallback：屏幕像素 + RenderScaling 回到 DIP。
+            var scaling = (hostRoot as TopLevel)?.RenderScaling
+                          ?? (targetRoot as TopLevel)?.RenderScaling
+                          ?? 1.0;
+
+            var hostTopLeft  = host.PointToScreen(default);
+            var targetCenter = target.PointToScreen(
+                new Point(target.Bounds.Width / 2, target.Bounds.Height / 2));
+
+            rPoint = new Point(
+                (targetCenter.X - hostTopLeft.X) / scaling,
+                (targetCenter.Y - hostTopLeft.Y) / scaling);
+        }
+
+        var rx = rPoint.Value.X;
+        var ry = rPoint.Value.Y;
 
         var cx = hostWidth  / 2;
         var cy = hostHeight / 2;
