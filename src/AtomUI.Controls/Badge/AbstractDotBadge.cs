@@ -39,7 +39,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
         AvaloniaProperty.Register<AbstractDotBadge, Point>(nameof(Offset));
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
-        AvaloniaProperty.Register<AbstractDotBadge, bool>(nameof(BadgeIsVisible));
+        AvaloniaProperty.Register<AbstractDotBadge, bool>(nameof(BadgeIsVisible), true);
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty
         = MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractDotBadge>();

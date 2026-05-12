@@ -325,9 +325,9 @@ public class Window : AvaloniaWindow,
         ConfigureCsdStatus();
         if (OperatingSystem.IsLinux())
         {
-            this.AttachClickThroughShadow(
-                new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty },
-                () => FrameShadowThickness);
+            // this.AttachClickThroughShadow(
+            //     new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty },
+            //     () => FrameShadowThickness);
         }
     }
     

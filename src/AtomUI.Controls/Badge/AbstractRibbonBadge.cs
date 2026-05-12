@@ -36,7 +36,7 @@ public abstract class AbstractRibbonBadge : Control
             RibbonBadgePlacement.End);
 
     public static readonly StyledProperty<bool> BadgeIsVisibleProperty =
-        AvaloniaProperty.Register<AbstractRibbonBadge, bool>(nameof(BadgeIsVisible));
+        AvaloniaProperty.Register<AbstractRibbonBadge, bool>(nameof(BadgeIsVisible), true);
 
     [Content]
     public Control? DecoratedTarget
