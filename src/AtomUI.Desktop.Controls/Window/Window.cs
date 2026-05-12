@@ -362,10 +362,23 @@ public class Window : AvaloniaWindow,
         SetValue(OsVersionProperty, version);
     }
     
+    private bool _mediaQueryReady;
+
     internal void NotifyMediaBreakPointChanged(MediaBreakPoint breakPoint)
     {
         SetCurrentValue(MediaBreakPointProperty, breakPoint);
+        if (!_mediaQueryReady)
+        {
+            return;
+        }
         MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(breakPoint));
+    }
+
+    private void HandleFirstLayoutUpdatedForMediaQuery(object? sender, EventArgs e)
+    {
+        LayoutUpdated -= HandleFirstLayoutUpdatedForMediaQuery;
+        _mediaQueryReady = true;
+        MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(MediaBreakPoint));
     }
     
     internal void NotifyCloseRequestByUser()
@@ -589,6 +602,11 @@ public class Window : AvaloniaWindow,
         if (OperatingSystem.IsWindows())
         {
             this.InitializeWinWindow();
+        }
+
+        if (!_mediaQueryReady)
+        {
+            LayoutUpdated += HandleFirstLayoutUpdatedForMediaQuery;
         }
     }
 

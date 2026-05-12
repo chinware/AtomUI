@@ -333,7 +333,7 @@
             </Style>
         </ContainerQuery.Children>
     </ContainerQuery>
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:576">
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:576 and max-width:767">
         <ContainerQuery.Children>
             <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
                 <Setter Property="MediaBreakPoint" Value="Small" />
@@ -341,7 +341,7 @@
         </ContainerQuery.Children>
     </ContainerQuery>
 
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:768">
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:768 and max-width:991">
         <ContainerQuery.Children>
             <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
                 <Setter Property="MediaBreakPoint" Value="Medium" />
@@ -349,7 +349,7 @@
         </ContainerQuery.Children>
     </ContainerQuery>
 
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:992">
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:992 and max-width:1199">
         <ContainerQuery.Children>
             <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
                 <Setter Property="MediaBreakPoint" Value="Large" />
@@ -357,7 +357,7 @@
         </ContainerQuery.Children>
     </ContainerQuery>
 
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:1200">
+    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:1200 and max-width:1599">
         <ContainerQuery.Children>
             <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
                 <Setter Property="MediaBreakPoint" Value="ExtraLarge" />
