@@ -726,6 +726,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         return new DragPreviewAdorner(_header!);
     }
 
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+    }
+
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);

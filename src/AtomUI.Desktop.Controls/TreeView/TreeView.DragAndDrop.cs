@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -277,6 +276,7 @@ public partial class TreeView
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
+     
         if (_lastPoint.HasValue)
         {
             e.Handled = true;

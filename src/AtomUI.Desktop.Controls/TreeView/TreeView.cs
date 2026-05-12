@@ -1594,28 +1594,23 @@ public partial class TreeView : AvaloniaTreeView,
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
-        if (e.Source is Visual source)
+        var container = DefaultTreeViewInteractionHandler.GetTreeViewItemCore(e.Source as Control);
+        if (container is not null && e.Source is Visual source)
         {
             var point = e.GetCurrentPoint(source);
             if (point.Properties.IsLeftButtonPressed || point.Properties.IsRightButtonPressed)
             {
                 if (IsSelectable)
                 {
-                    var container = DefaultTreeViewInteractionHandler.GetTreeViewItemCore(e.Source as Control);
-                    if (container is not null)
-                    {
-                        e.Handled = UpdateSelectionFromEvent(container, e);
-                    }
+                    UpdateSelectionFromEvent(container, e);
                 }
             }
-        }
 
-        if (IsDraggable)
-        {
-            e.Handled  = true;
-            _lastPoint = e.GetPosition(this);
-            e.Pointer.Capture(this);
-            e.PreventGestureRecognition();
+            if (point.Properties.IsLeftButtonPressed && IsDraggable)
+            {
+                _lastPoint = e.GetPosition(this);
+                e.PreventGestureRecognition();
+            }
         }
     }
 
