@@ -489,7 +489,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 }
                 placement.Offset = new Point(placement.Offset.X + dx, placement.Offset.Y + dy);
             }
-            placement.Offset -= new Point(windowShadowThickness.Left, windowShadowThickness.Top);
+
+            if (isUseOverlayHost)
+            {
+                placement.Offset -= new Point(windowShadowThickness.Left, windowShadowThickness.Top);
+            }
             NotifyFlipped(flipX, flipY);
             CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, flipX, flipY);
             return;
@@ -499,8 +503,12 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         // 居中不存在翻转，直接设置 Offset 并通知 (false, false)。
         placement.Anchor  =  anchor;
         placement.Gravity =  gravity;
-        hOffset           -= windowShadowThickness.Left;
-        vOffset           -= windowShadowThickness.Top;
+        if (isUseOverlayHost)
+        {
+            hOffset -= windowShadowThickness.Left;
+            vOffset -= windowShadowThickness.Top;
+        }
+
         placement.Offset  =  new Point(hOffset, vOffset);
         NotifyFlipped(false, false);
         CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, false, false);
