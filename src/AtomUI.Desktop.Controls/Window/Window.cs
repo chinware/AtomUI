@@ -392,7 +392,7 @@ public class Window : AvaloniaWindow,
 
         HandleCreateTitleBar();
 
-        var mediaQueryIndicator = e.NameScope.Find<WindowMediaQueryIndicator>("PART_MediaQueryIndicator");
+        var mediaQueryIndicator = e.NameScope.Find<WindowMediaQueryIndicator>(WindowMediaQueryIndicator.MediaQueryIndicatorName);
         if (mediaQueryIndicator != null)
         {
             mediaQueryIndicator.OwnerWindow = this;

@@ -6,6 +6,7 @@ namespace AtomUI.Desktop.Controls;
 
 internal class WindowMediaQueryIndicator : Control
 {
+    public const string MediaQueryIndicatorName = "PART_MediaQueryIndicator";
     public static readonly StyledProperty<MediaBreakPoint> MediaBreakPointProperty = 
         MediaBreakAwareControlProperty.MediaBreakPointProperty.AddOwner<WindowMediaQueryIndicator>();
     

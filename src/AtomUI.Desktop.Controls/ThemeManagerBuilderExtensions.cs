@@ -39,5 +39,10 @@ public static class ThemeManagerBuilderExtensions
         var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
         Debug.Assert(inputManager != null);
         AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));
+
+        if (sender is ThemeManager themeManager)
+        {
+            MediaBreakPointThemeBootstrapper.Attach(themeManager);
+        }
     }
 }

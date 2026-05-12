@@ -52,7 +52,7 @@
                                     <Border Name="ContentFrame"
                                             ClipToBounds="True"
                                             Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                                            Container.Sizing="WidthAndHeight"
+                                            Container.Sizing="Width"
                                             Padding="{TemplateBinding Padding}">
                                         <Panel>
                                             <ContentPresenter Name="PART_ContentPresenter"
@@ -60,7 +60,7 @@
                                                               Content="{TemplateBinding Content}"
                                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                            <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
+                                            <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                                         </Panel>
                                     </Border>
                                 </Panel>
@@ -80,7 +80,9 @@
         <Style Selector="^[OsType=Windows][IsCsdEnabled=False]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
-                    <Panel>
+                    <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
+                           Container.Sizing="Width">
+                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -122,17 +124,12 @@
                                                       ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
                                     <Border Name="ContentFrame"
                                             ClipToBounds="True"
-                                            Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                                            Container.Sizing="WidthAndHeight"
                                             Padding="{TemplateBinding Padding}">
-                                        <Panel>
-                                            <ContentPresenter Name="PART_ContentPresenter"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              Content="{TemplateBinding Content}"
-                                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                            <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
-                                        </Panel>
+                                        <ContentPresenter Name="PART_ContentPresenter"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          Content="{TemplateBinding Content}"
+                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                     </Border>
                                 </Panel>
                             </DockPanel>
@@ -146,7 +143,9 @@
         <Style Selector="^[OsType=macOS][IsCsdEnabled=False]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
-                    <Panel>
+                    <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
+                           Container.Sizing="Width">
+                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -188,17 +187,12 @@
                                                       ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
                                     <Border Name="ContentFrame"
                                             ClipToBounds="True"
-                                            Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                                            Container.Sizing="WidthAndHeight"
                                             Padding="{TemplateBinding Padding}">
-                                        <Panel>
-                                            <ContentPresenter Name="PART_ContentPresenter"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              Content="{TemplateBinding Content}"
-                                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                            <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
-                                        </Panel>
+                                        <ContentPresenter Name="PART_ContentPresenter"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          Content="{TemplateBinding Content}"
+                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                     </Border>
                                 </Panel>
                             </DockPanel>
@@ -211,7 +205,9 @@
         <Style Selector="^[IsCsdEnabled=True]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
-                    <Panel>
+                    <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
+                           Container.Sizing="Width">
+                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
                         <Border Name="WindowFullScreenFrame"
@@ -234,17 +230,12 @@
                                                   ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
                                 <Border Name="ContentFrame"
                                         ClipToBounds="True"
-                                        Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                                        Container.Sizing="WidthAndHeight"
                                         Padding="{TemplateBinding Padding}">
-                                    <Panel>
-                                        <ContentPresenter Name="PART_ContentPresenter"
-                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                          Content="{TemplateBinding Content}"
-                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                        <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
-                                    </Panel>
+                                    <ContentPresenter Name="PART_ContentPresenter"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      Content="{TemplateBinding Content}"
+                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                 </Border>
                             </Panel>
                         </VisualLayerManager>
@@ -324,53 +315,5 @@
             </Style>
         </Style>
     </Style>
-
-    <!-- media query -->
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="max-width:575">
-        <ContainerQuery.Children>
-            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
-                <Setter Property="MediaBreakPoint" Value="ExtraSmall" />
-            </Style>
-        </ContainerQuery.Children>
-    </ContainerQuery>
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:576 and max-width:767">
-        <ContainerQuery.Children>
-            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
-                <Setter Property="MediaBreakPoint" Value="Small" />
-            </Style>
-        </ContainerQuery.Children>
-    </ContainerQuery>
-
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:768 and max-width:991">
-        <ContainerQuery.Children>
-            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
-                <Setter Property="MediaBreakPoint" Value="Medium" />
-            </Style>
-        </ContainerQuery.Children>
-    </ContainerQuery>
-
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:992 and max-width:1199">
-        <ContainerQuery.Children>
-            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
-                <Setter Property="MediaBreakPoint" Value="Large" />
-            </Style>
-        </ContainerQuery.Children>
-    </ContainerQuery>
-
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:1200 and max-width:1599">
-        <ContainerQuery.Children>
-            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
-                <Setter Property="MediaBreakPoint" Value="ExtraLarge" />
-            </Style>
-        </ContainerQuery.Children>
-    </ContainerQuery>
-
-    <ContainerQuery Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}" Query="min-width:1600">
-        <ContainerQuery.Children>
-            <Style Selector="atom|WindowMediaQueryIndicator#PART_MediaQueryIndicator">
-                <Setter Property="MediaBreakPoint" Value="ExtraExtraLarge" />
-            </Style>
-        </ContainerQuery.Children>
-    </ContainerQuery>
 
 </ControlTheme>
