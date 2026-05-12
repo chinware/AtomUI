@@ -6,7 +6,9 @@
     <ControlTheme x:Key="{x:Type atom:OverlayDialogMask}" TargetType="atom:OverlayDialogMask">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame" Background="{TemplateBinding Background}"/>
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"/>
             </ControlTemplate>
         </Setter>
         <Setter Property="Opacity" Value="1"/>

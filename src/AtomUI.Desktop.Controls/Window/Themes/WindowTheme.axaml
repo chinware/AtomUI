@@ -207,7 +207,8 @@
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                            Container.Sizing="Width"
-                           Margin="{Binding $parent[Window].WindowDecorationMargin}">
+                           Margin="{Binding $parent[Window].WindowDecorationMargin}"
+                           ClipToBounds="True">
                         <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />

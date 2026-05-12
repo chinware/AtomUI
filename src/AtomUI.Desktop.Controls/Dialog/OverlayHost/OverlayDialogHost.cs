@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
@@ -200,6 +201,7 @@ internal class OverlayDialogHost : ContentControl,
     private Action? _closeCallback;
     private OverlayPopupHost? _animatedOverlayHost;
     private Panel? _animatedOverlayLayer;
+    private TopLevel? _observedTopLevel;
 
     private const double MinVisibleX = 100;
     private const double MinVisibleY = 40;
@@ -516,6 +518,7 @@ internal class OverlayDialogHost : ContentControl,
         {
             overlayLayer.Children.Remove(_dialogMask);
         }
+        DetachOwnerTopLevel();
         _animatedOverlayHost  = null;
         _animatedOverlayLayer = null;
         _isCloseRequested     = false;
@@ -528,7 +531,8 @@ internal class OverlayDialogHost : ContentControl,
         var topLevel = TopLevel.GetTopLevel(placementTarget);
         if (topLevel != null)
         {
-            _ownerBounds = new Rect(default, topLevel.ClientSize);
+            AttachOwnerTopLevel(topLevel);
+            _ownerBounds = CalculateOwnerBounds(topLevel);
             ConfigureModalRootSize();
         }
     }
@@ -553,7 +557,8 @@ internal class OverlayDialogHost : ContentControl,
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel != null)
         {
-            _ownerBounds = new Rect(default, topLevel.ClientSize);
+            AttachOwnerTopLevel(topLevel);
+            _ownerBounds = CalculateOwnerBounds(topLevel);
             ConfigureModalRootSize();
         }
 
@@ -610,6 +615,68 @@ internal class OverlayDialogHost : ContentControl,
         // Popup 只装 dialog；mask 走 OverlayLayer 做 popupHost 的兄弟节点（见 AttachMaskToOverlayLayer），
         // 避免被 OverlayPopupHost 的 scale/translate 动画带着一起缩放。
         _popup.Child = this;
+    }
+
+    // Linux CSD 下 Avalonia 只把 WindowDecorationMargin 抛给模板去自适应，OverlayLayer 仍然
+    // 按原始 ClientSize 铺满整个客户区，连装饰阴影区也覆盖进去了。这里手动把装饰区减掉，
+    // 拿到真正可见的 inner client 区域，用于 mask 尺寸与拖动 constraint。
+    private static Rect CalculateOwnerBounds(TopLevel topLevel)
+    {
+        var size = topLevel.ClientSize;
+        if (topLevel is Window { IsCsdEnabled: true } window)
+        {
+            var margin = window.WindowDecorationMargin;
+            var width  = Math.Max(0, size.Width - margin.Left - margin.Right);
+            var height = Math.Max(0, size.Height - margin.Top - margin.Bottom);
+            return new Rect(default, new Size(width, height));
+        }
+        return new Rect(default, size);
+    }
+
+    // 宿主 TopLevel 的 resize / 最大化 / CSD 装饰变化都不会经过 UpdatePlacement，
+    // 订阅一次 SizeChanged 来重算 mask 尺寸和拖动约束。
+    private void AttachOwnerTopLevel(TopLevel topLevel)
+    {
+        if (ReferenceEquals(_observedTopLevel, topLevel))
+        {
+            return;
+        }
+
+        DetachOwnerTopLevel();
+        _observedTopLevel            =  topLevel;
+        _observedTopLevel.SizeChanged += HandleOwnerTopLevelSizeChanged;
+
+        // Window 的圆角会随 WindowState 变化（Maximized/FullScreen 置 0），mask 只保留底部圆角。
+        if (topLevel is Window window)
+        {
+            _dialogMask.Bind(TemplatedControl.CornerRadiusProperty,
+                window.GetObservable(TemplatedControl.CornerRadiusProperty)
+                      .Select(static cr => new CornerRadius(0, 0, cr.BottomRight, cr.BottomLeft)));
+        }
+    }
+
+    private void DetachOwnerTopLevel()
+    {
+        if (_observedTopLevel is null)
+        {
+            return;
+        }
+        _observedTopLevel.SizeChanged -= HandleOwnerTopLevelSizeChanged;
+        _observedTopLevel             =  null;
+    }
+
+    private void HandleOwnerTopLevelSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        if (_observedTopLevel is null)
+        {
+            return;
+        }
+        _ownerBounds = CalculateOwnerBounds(_observedTopLevel);
+        SyncMaskBounds();
+        if (_hostSize != default)
+        {
+            UpdatePlacement();
+        }
     }
 
     private void ConfigureModalRootSize()
