@@ -1,5 +1,4 @@
 ﻿using AtomUI.Animations;
-using AtomUI.Desktop.Controls.Primitives.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -183,7 +182,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         base.OnPropertyChanged(change);
         if (change.Property == RangeActivatedPartProperty)
         {
-            HandleRangeActivatedPartChanged();
+            NotifyRangeActivatedPartChanged();
         }
     }
     
@@ -260,7 +259,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         RangeActivatedPart = RangeActivatedPart.None;
     }
     
-    protected virtual void HandleRangeActivatedPartChanged()
+    protected virtual void NotifyRangeActivatedPartChanged()
     {
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {

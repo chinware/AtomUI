@@ -317,7 +317,7 @@ public class RangeTimePicker : RangeInfoPickerInput
         base.OnPropertyChanged(change);
         if (change.Property == RangeActivatedPartProperty)
         {
-            HandleRangeActivatedPartChanged();
+            NotifyRangeActivatedPartChanged();
         }
         else if (change.Property == FontSizeProperty ||
                  change.Property == FontFamilyProperty ||
@@ -458,9 +458,9 @@ public class RangeTimePicker : RangeInfoPickerInput
         }
     }
     
-    protected override void HandleRangeActivatedPartChanged()
+    protected override void NotifyRangeActivatedPartChanged()
     {
-        base.HandleRangeActivatedPartChanged();
+        base.NotifyRangeActivatedPartChanged();
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {
             if (RangeEndSelectedTime is null)
@@ -471,7 +471,6 @@ public class RangeTimePicker : RangeInfoPickerInput
             {
                 _pickerPresenter.SelectedTime = RangeStartSelectedTime;
             }
-
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {

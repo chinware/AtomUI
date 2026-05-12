@@ -96,8 +96,8 @@ public class RangeDatePicker : RangeInfoPickerInput
     
     #region 内部属性定义
     
-    internal static readonly DirectProperty<RangeDatePicker, double> PreferredWidthProperty
-        = AvaloniaProperty.RegisterDirect<RangeDatePicker, double>(nameof(PreferredWidth),
+    internal static readonly DirectProperty<RangeDatePicker, double> PreferredWidthProperty =
+        AvaloniaProperty.RegisterDirect<RangeDatePicker, double>(nameof(PreferredWidth),
             o => o.PreferredWidth,
             (o, v) => o.PreferredWidth = v);
 
@@ -110,7 +110,17 @@ public class RangeDatePicker : RangeInfoPickerInput
         AvaloniaProperty.RegisterDirect<RangeDatePicker, string?>(nameof(PmText),
             o => o.PmText,
             (o, v) => o.PmText = v);
-
+    
+    internal static readonly DirectProperty<RangeDatePicker, double> RangePickerIndicatorOffsetStartProperty =
+        AvaloniaProperty.RegisterDirect<RangeDatePicker, double>(nameof(RangePickerIndicatorOffsetStart),
+            o => o.RangePickerIndicatorOffsetStart,
+            (o, v) => o.RangePickerIndicatorOffsetStart = v);
+    
+    internal static readonly DirectProperty<RangeDatePicker, double> RangePickerIndicatorOffsetEndProperty =
+        AvaloniaProperty.RegisterDirect<RangeDatePicker, double>(nameof(RangePickerIndicatorOffsetEnd),
+            o => o.RangePickerIndicatorOffsetEnd,
+            (o, v) => o.RangePickerIndicatorOffsetEnd = v);
+    
     private double _preferredWidth;
 
     internal double PreferredWidth
@@ -135,6 +145,22 @@ public class RangeDatePicker : RangeInfoPickerInput
         set => SetAndRaise(PmTextProperty, ref _pmText, value);
     }
     
+    private double _rangePickerIndicatorStart;
+
+    internal double RangePickerIndicatorOffsetStart
+    {
+        get => _rangePickerIndicatorStart;
+        set => SetAndRaise(RangePickerIndicatorOffsetStartProperty, ref _rangePickerIndicatorStart, value);
+    }
+    
+    private double _rangePickerIndicatorEnd;
+
+    internal double RangePickerIndicatorOffsetEnd
+    {
+        get => _rangePickerIndicatorEnd;
+        set => SetAndRaise(RangePickerIndicatorOffsetEndProperty, ref _rangePickerIndicatorEnd, value);
+    }
+
     #endregion
 
     private RangeDatePickerPresenter? _pickerPresenter;
@@ -369,7 +395,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         base.OnPropertyChanged(change);
         if (change.Property == RangeActivatedPartProperty)
         {
-            HandleRangeActivatedPartChanged();
+            NotifyRangeActivatedPartChanged();
         }
         else if (change.Property == IsShowTimeProperty)
         {
@@ -472,7 +498,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         }
     }
     
-    protected override void HandleRangeActivatedPartChanged()
+    protected override void NotifyRangeActivatedPartChanged()
     {
         SetupPickerIndicatorPosition();
         if (RangeActivatedPart == RangeActivatedPart.Start)
@@ -503,6 +529,28 @@ public class RangeDatePicker : RangeInfoPickerInput
                 SecondaryInfoInputBox?.Clear();
             }
         }
+    }
+
+    protected override Size ArrangeOverride(Size finalSize)
+    {
+        var size = base.ArrangeOverride(finalSize);
+        if (InfoInputBox is not null && SecondaryInfoInputBox != null)
+        {
+            Rect targetBounds = default;
+            if (RangeActivatedPart == RangeActivatedPart.Start)
+            {
+                targetBounds = InfoInputBox.Bounds;
+            }
+            else if (RangeActivatedPart == RangeActivatedPart.End)
+            {
+                targetBounds = SecondaryInfoInputBox.Bounds;
+            }
+
+            var delta = targetBounds.Width * 0.1;
+            RangePickerIndicatorOffsetStart = targetBounds.X + delta;
+            RangePickerIndicatorOffsetEnd   = DesiredSize.Width - targetBounds.X - delta;
+        }
+        return size;
     }
 
     protected override bool ShowClearButtonPredicate()

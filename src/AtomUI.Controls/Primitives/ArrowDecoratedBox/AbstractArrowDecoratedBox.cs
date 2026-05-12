@@ -189,9 +189,9 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     // 相对坐标
     internal (double, double) ArrowVertexPoint => GetArrowVertexPoint();
     private Border? _contentDecorator;
-    private Control? _arrowIndicatorLayout;
-    private ArrowIndicator? _arrowIndicator;
-    private bool _arrowPlacementFlipped;
+    private protected Control? ArrowIndicatorLayout;
+    private protected ArrowIndicator? ArrowIndicator;
+    private protected bool ArrowPlacementFlipped;
 
     static AbstractArrowDecoratedBox()
     {
@@ -241,11 +241,9 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
                 (oldDirection == Direction.Top && newDirection == Direction.Bottom) ||
                 (oldDirection == Direction.Bottom && newDirection == Direction.Top))
             {
-                _arrowPlacementFlipped = true;
+                ArrowPlacementFlipped = true;
             }
-            
         }
-        
     }
 
     public CornerRadius GetMaskCornerRadius()
@@ -260,10 +258,10 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
 
     public Rect GetMaskBounds()
     {
-        Debug.Assert(_arrowIndicatorLayout != null && _contentDecorator != null);
+        Debug.Assert(ArrowIndicatorLayout != null && _contentDecorator != null);
         var targetRect = _contentDecorator.Bounds;
-        var arrowSize  = _arrowIndicatorLayout.DesiredSize;
-        if (_arrowPlacementFlipped)
+        var arrowSize  = ArrowIndicatorLayout.DesiredSize;
+        if (ArrowPlacementFlipped)
         {
             if (ArrowDirection == Direction.Top)
             {
@@ -289,30 +287,30 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _contentDecorator     = e.NameScope.Get<Border>("PART_ContentDecorator");
-        _arrowIndicatorLayout = e.NameScope.Get<Control>("PART_ArrowIndicatorLayout");
-        _arrowIndicator       = e.NameScope.Get<ArrowIndicator>("PART_ArrowIndicator");
-        ArrowDirection        = GetDirection(ArrowPosition);
+        _contentDecorator    = e.NameScope.Get<Border>("PART_ContentDecorator");
+        ArrowIndicatorLayout = e.NameScope.Get<Control>("PART_ArrowIndicatorLayout");
+        ArrowIndicator       = e.NameScope.Get<ArrowIndicator>("PART_ArrowIndicator");
+        ArrowDirection       = GetDirection(ArrowPosition);
     }
 
     private (double, double) GetArrowVertexPoint()
     {
-        if (_arrowIndicatorLayout is null)
+        if (ArrowIndicatorLayout is null)
         {
             return default;
         }
 
-        if (!_arrowIndicatorLayout.IsMeasureValid)
+        if (!ArrowIndicatorLayout.IsMeasureValid)
         {
             LayoutHelper.MeasureChild(this, Size.Infinity, Padding);
         }
 
-        if (!_arrowIndicatorLayout.IsArrangeValid)
+        if (!ArrowIndicatorLayout.IsArrangeValid)
         {
             Arrange(new Rect(DesiredSize));
         }
         
-        var targetRect  = _arrowIndicatorLayout.Bounds;
+        var targetRect  = ArrowIndicatorLayout.Bounds;
         var center      = targetRect.Center;
         var controlSize = Bounds.Size;
 
@@ -339,7 +337,7 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
 
     private void ArrangeArrow(Size finalSize)
     {
-        if (_arrowIndicatorLayout is null)
+        if (ArrowIndicatorLayout is null)
         {
             return;
         }
@@ -347,7 +345,7 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
         var offsetX  = 0d;
         var offsetY  = 0d;
         var position = ArrowPosition;
-        var size     = _arrowIndicatorLayout.DesiredSize;
+        var size     = ArrowIndicatorLayout.DesiredSize;
 
         var minValue = Math.Min(size.Width, size.Height);
         var maxValue = Math.Max(size.Width, size.Height);
@@ -450,14 +448,20 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
             }
         }
 
-        _arrowIndicatorLayout.Arrange(new Rect(new Point(offsetX, offsetY), size));
-        if (_arrowIndicator != null)
+        var adjustedOffset = AdjustArrowOffset(new Point(offsetX, offsetY), finalSize, size);
+        ArrowIndicatorLayout.Arrange(new Rect(adjustedOffset, size));
+        if (ArrowIndicator != null)
         {
-            ArrowIndicatorBounds = _arrowIndicator.Bounds;
+            ArrowIndicatorBounds = ArrowIndicator.Bounds;
         }
 
-        ArrowIndicatorLayoutBounds = _arrowIndicatorLayout.Bounds;
-        _arrowPlacementFlipped     = false;
+        ArrowIndicatorLayoutBounds = ArrowIndicatorLayout.Bounds;
+        ArrowPlacementFlipped     = false;
+    }
+
+    protected virtual Point AdjustArrowOffset(Point offset, Size finalSize, Size arrowSize)
+    {
+        return offset;
     }
 
     ArrowPosition IArrowAwareShadowMaskInfoProvider.GetArrowPosition()
