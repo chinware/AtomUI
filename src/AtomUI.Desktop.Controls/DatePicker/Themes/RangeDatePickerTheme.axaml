@@ -101,6 +101,7 @@
                                                          IsArrowVisible="{TemplateBinding IsArrowVisibleEffective}"
                                                          ArrowPosition="{TemplateBinding ArrowPosition}"
                                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                         IsFloatingArrowPosition="{TemplateBinding IsShowTime, Converter={x:Static BoolConverters.Not}}"
                                                          IsHorizontalFlipped="{Binding $parent[atom:Popup].IsHorizontalFlipped}"
                                                          RangePickerIndicatorOffsetStart="{TemplateBinding RangePickerIndicatorOffsetStart}"
                                                          RangePickerIndicatorOffsetEnd="{TemplateBinding RangePickerIndicatorOffsetEnd}"/>

@@ -20,6 +20,9 @@ internal class DualMonthArrowDecoratedBox : ArrowDecoratedBox
             o => o.IsHorizontalFlipped,
             (o, v) => o.IsHorizontalFlipped = v);
     
+    public static readonly StyledProperty<bool> IsFloatingArrowPositionProperty =
+        AvaloniaProperty.Register<DualMonthArrowDecoratedBox, bool>(nameof(IsFloatingArrowPosition));
+    
     private double _rangePickerIndicatorStart;
 
     internal double RangePickerIndicatorOffsetStart
@@ -44,27 +47,31 @@ internal class DualMonthArrowDecoratedBox : ArrowDecoratedBox
         private set => SetAndRaise(IsHorizontalFlippedProperty, ref _isHorizontalFlipped, value);
     }
     
+    public bool IsFloatingArrowPosition
+    {
+        get => GetValue(IsFloatingArrowPositionProperty);
+        set => SetValue(IsFloatingArrowPositionProperty, value);
+    }
+    
     static DualMonthArrowDecoratedBox()
     {
-        AffectsArrange<DualMonthArrowDecoratedBox>(RangePickerIndicatorOffsetStartProperty, RangePickerIndicatorOffsetEndProperty, IsHorizontalFlippedProperty);
+        AffectsArrange<DualMonthArrowDecoratedBox>(RangePickerIndicatorOffsetStartProperty,
+            RangePickerIndicatorOffsetEndProperty,
+            IsHorizontalFlippedProperty,
+            IsFloatingArrowPositionProperty);
     }
-
-    // protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    // {
-    //     base.OnPropertyChanged(change);
-    //     if (change.Property == RangePickerIndicatorBoundsProperty)
-    //     {
-    //         Console.WriteLine($"RangePickerIndicatorBounds changed: {RangePickerIndicatorBounds}");
-    //     }
-    // }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (IsArrowVisible)
+        if (IsFloatingArrowPosition)
         {
-            ArrangeArrow(finalSize);
+            if (IsArrowVisible)
+            {
+                ArrangeArrow(finalSize);
+            }
         }
+
         return size;
     }
     
