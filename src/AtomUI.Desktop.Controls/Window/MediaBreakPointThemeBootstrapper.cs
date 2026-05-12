@@ -1,5 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
@@ -17,9 +18,22 @@ namespace AtomUI.Desktop.Controls;
 /// </summary>
 internal static class MediaBreakPointThemeBootstrapper
 {
+    // 注意:ContainerQuery.SetParent 只允许 ControlTheme 作为 parent,不接受 null,
+    // 意味着一旦加入 ControlTheme.Children 就无法 Remove。因此首次加载后缓存 CQ,
+    // 后续主题切换只就地更新 Query (断点阈值),不再增删节点。
     private static readonly List<ContainerQuery> InjectedQueries = new();
     private static ControlTheme? _windowTheme;
     private static ThemeManager? _themeManager;
+
+    private static readonly (Func<DesignToken, double?> Min, Func<DesignToken, double?> Max, MediaBreakPoint Bp)[] Rows =
+    {
+        (t => t.ScreenXXLMin, _ => null,                 MediaBreakPoint.ExtraExtraLarge),
+        (t => t.ScreenXLMin,  t => t.ScreenXLMax,        MediaBreakPoint.ExtraLarge),
+        (t => t.ScreenLGMin,  t => t.ScreenLGMax,        MediaBreakPoint.Large),
+        (t => t.ScreenMDMin,  t => t.ScreenMDMax,        MediaBreakPoint.Medium),
+        (t => t.ScreenSMMin,  t => t.ScreenSMMax,        MediaBreakPoint.Small),
+        (_ => null,           t => t.ScreenSMMin - 1,    MediaBreakPoint.ExtraSmall),
+    };
 
     public static void Attach(ThemeManager themeManager)
     {
@@ -54,34 +68,29 @@ internal static class MediaBreakPointThemeBootstrapper
             _windowTheme = controlTheme;
         }
 
-        var children = _windowTheme.Children;
-        foreach (var cq in InjectedQueries)
-        {
-            children.Remove(cq);
-        }
-        InjectedQueries.Clear();
-
         var token = theme.SharedToken;
 
-        var rows = new (double? Min, double? Max, MediaBreakPoint Bp)[]
+        if (InjectedQueries.Count == 0)
         {
-            (token.ScreenXXLMin,    (double?)null,         MediaBreakPoint.ExtraExtraLarge),
-            (token.ScreenXLMin,     token.ScreenXLMax,     MediaBreakPoint.ExtraLarge),
-            (token.ScreenLGMin,     token.ScreenLGMax,     MediaBreakPoint.Large),
-            (token.ScreenMDMin,     token.ScreenMDMax,     MediaBreakPoint.Medium),
-            (token.ScreenSMMin,     token.ScreenSMMax,     MediaBreakPoint.Small),
-            (null,                  token.ScreenSMMin - 1, MediaBreakPoint.ExtraSmall),
-        };
-
-        foreach (var (min, max, bp) in rows)
+            var children = _windowTheme.Children;
+            foreach (var (minFn, maxFn, bp) in Rows)
+            {
+                var cq = BuildContainerQuery(minFn(token), maxFn(token), bp);
+                children.Add(cq);
+                InjectedQueries.Add(cq);
+            }
+        }
+        else
         {
-            var cq = BuildContainerQuery(min, max, bp);
-            children.Add(cq);
-            InjectedQueries.Add(cq);
+            for (var i = 0; i < Rows.Length; i++)
+            {
+                var (minFn, maxFn, _) = Rows[i];
+                InjectedQueries[i].Query = BuildStyleQuery(minFn(token), maxFn(token));
+            }
         }
     }
 
-    private static ContainerQuery BuildContainerQuery(double? min, double? max, MediaBreakPoint bp)
+    private static StyleQuery? BuildStyleQuery(double? min, double? max)
     {
         StyleQuery? query = null;
         if (min.HasValue)
@@ -92,11 +101,15 @@ internal static class MediaBreakPointThemeBootstrapper
         {
             query = query.Width(StyleQueryComparisonOperator.LessThanOrEquals, max.Value);
         }
+        return query;
+    }
 
+    private static ContainerQuery BuildContainerQuery(double? min, double? max, MediaBreakPoint bp)
+    {
         var cq = new ContainerQuery
         {
             Name  = IMediaBreakAwareControl.GlobalQueryContainerName,
-            Query = query
+            Query = BuildStyleQuery(min, max)
         };
 
         var style = new Style(s => s.OfType<WindowMediaQueryIndicator>().Name(WindowMediaQueryIndicator.MediaQueryIndicatorName));
