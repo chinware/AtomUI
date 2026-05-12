@@ -178,6 +178,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
     // 避免 popup 内的 wheel 事件冒泡出去触发 PlacementTarget 所在祖先 ScrollViewer 的意外滚动。
     // 订阅对象要记录下来,保证 open/close 成对摘挂。
     private InputElement? _wheelGuardSubscribedOn;
+    private int _ignoreRequestedPlacementChange;
 
     public Popup()
     {
@@ -318,7 +319,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             {
                 var originalPlacement = Placement;
                 CustomPopupPlacementCallback = HandleCustomPlacement;
-                Placement                    = PlacementMode.Custom;
+                SetCurrentValue(PlacementProperty, PlacementMode.Custom);
                 if (originalPlacement == PlacementMode.Custom)
                 {
                     this.HandlePositionChange();
@@ -327,6 +328,28 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
             else
             {
                 CustomPopupPlacementCallback = null;
+            }
+        }
+        else if (change.Property == PlacementProperty)
+        {
+            if (_ignoreRequestedPlacementChange > 0)
+            {
+                return;
+            }
+            try
+            {
+                _ignoreRequestedPlacementChange++;
+                if (Placement != PlacementMode.Custom)
+                {
+                    CustomPopupPlacementCallback = HandleCustomPlacement;
+                    SetCurrentValue(RequestedPlacementProperty, Placement);
+                    SetCurrentValue(PlacementProperty, PlacementMode.Custom);
+                    this.HandlePositionChange();
+                }
+            }
+            finally
+            {
+                _ignoreRequestedPlacementChange--;
             }
         }
         else if (change.Property == PopupRootShadowProperty ||
@@ -347,12 +370,15 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var          marginToAnchor     = MarginToAnchor;
         PopupAnchor  anchor;
         PopupGravity gravity;
-
+        var          target                = PlacementTarget ?? Parent as Control;
+        var          topLevel              = TopLevel.GetTopLevel(target);
+        Thickness    windowShadowThickness = default;
+        if (topLevel is Window window)
+        {
+            windowShadowThickness = window.WindowDecorationMargin;
+        }
         if (requestedPlacement == PlacementMode.Center)
         {
-            // Center 不依赖具体的 PlacementTarget，直接从 Popup 自身向上找 TopLevel。
-            var referenceControl = (PlacementTarget ?? Parent as Control) ?? this;
-            var topLevel         = TopLevel.GetTopLevel(referenceControl);
             if (topLevel == null)
             {
                 return;
@@ -379,7 +405,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         }
         else
         {
-            var target = PlacementTarget ?? Parent as Control;
             if (target is null)
             {
                 return;
@@ -387,7 +412,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
             if (requestedPlacement == PlacementMode.Pointer)
             {
-                var topLevel = TopLevel.GetTopLevel(target);
                 if (topLevel == null)
                 {
                     return;
@@ -465,6 +489,7 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 }
                 placement.Offset = new Point(placement.Offset.X + dx, placement.Offset.Y + dy);
             }
+            placement.Offset -= new Point(windowShadowThickness.Left, windowShadowThickness.Top);
             NotifyFlipped(flipX, flipY);
             CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, flipX, flipY);
             return;
@@ -472,9 +497,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
         // Center 走到这里：AnchorRectangle 已设为整个窗口客户区，Anchor/Gravity=None 定位器自动居中。
         // 居中不存在翻转，直接设置 Offset 并通知 (false, false)。
-        placement.Anchor  = anchor;
-        placement.Gravity = gravity;
-        placement.Offset  = new Point(hOffset, vOffset);
+        placement.Anchor  =  anchor;
+        placement.Gravity =  gravity;
+        hOffset           -= windowShadowThickness.Left;
+        vOffset           -= windowShadowThickness.Top;
+        placement.Offset  =  new Point(hOffset, vOffset);
         NotifyFlipped(false, false);
         CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, false, false);
     }

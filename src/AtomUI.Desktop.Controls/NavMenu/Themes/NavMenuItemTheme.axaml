@@ -157,7 +157,7 @@
 
         <Style Selector="^[Mode=Horizontal],^[Mode=Vertical]">
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
-                <Setter Property="Placement" Value="RightEdgeAlignedTop" />
+                <Setter Property="RequestedPlacement" Value="RightEdgeAlignedTop" />
                 <Setter Property="HorizontalOffset" Value="{atom:SharedTokenResource SpacingXS}" />
                 <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
             </Style>
@@ -166,7 +166,7 @@
         <Style Selector="^[Mode=Horizontal]:toplevel">
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
             <Style Selector="^ /template/ atom|Popup#PART_Popup">
-                <Setter Property="Placement" Value="Bottom" />
+                <Setter Property="RequestedPlacement" Value="Bottom" />
                 <Setter Property="VerticalOffset" Value="{atom:SharedTokenResource SpacingXXS}" />
                 <Setter Property="HorizontalOffset" Value="0" />
             </Style>

@@ -124,6 +124,7 @@ public class ContextMenu : AvaloniaContextMenu,
 
     private Popup? _popup;
     private WindowBase? _attachedWindow;
+    private bool _ignorePlacementChanged;
 
     static ContextMenu()
     {
@@ -314,17 +315,47 @@ public class ContextMenu : AvaloniaContextMenu,
         {
             ConfigureMaxPopupHeight();
         }
+        else if (change.Property == PlacementProperty)
+        {
+            ConfigurePlacement();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         ConfigureMaxPopupHeight();
+        ConfigurePlacement();
     }
 
     private void ConfigureMaxPopupHeight()
     {
         SetCurrentValue(MaxPopupHeightProperty,
             ItemHeight * DisplayPageSize + Padding.Top + Padding.Bottom);
+    }
+    
+    private void ConfigurePlacement()
+    {
+        try
+        {
+            if (_ignorePlacementChanged)
+            {
+                return;
+            }
+
+            _ignorePlacementChanged = true;
+            if (_popup != null)
+            {
+                if (Placement != PlacementMode.Custom)
+                {
+                    _popup.RequestedPlacement = Placement;
+                    Placement                 = PlacementMode.Custom;
+                }
+            }
+        }
+        finally
+        {
+            _ignorePlacementChanged = false;
+        }
     }
 }

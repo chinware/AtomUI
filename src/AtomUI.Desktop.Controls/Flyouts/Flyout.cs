@@ -207,6 +207,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     private object? _pointerVerticalOffsetTokenKey;
     private IDisposable? _pointerHorizontalOffsetBinding;
     private IDisposable? _pointerVerticalOffsetBinding;
+    private bool _ignorePlacementChanged;
 
     static Flyout()
     {
@@ -250,6 +251,12 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         popup.AddClosingEventHandler(HandlePopupClosing);
         popup.KeyUp += this.OnPlacementTargetOrPopupKeyUp;
         popup.PropertyChanged += HandlePopupPropertyChanged;
+        
+        if (CustomPopupPlacementCallback == null)
+        {
+            CustomPopupPlacementCallback = popup.HandleCustomPlacement;
+        }
+        
         return popup;
     }
 
@@ -265,15 +272,8 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         {
             return;
         }
-
-        if (e.Property == AvaloniaPopup.PlacementProperty)
-        {
-            if (e.GetNewValue<PlacementMode>() != PlacementMode.Custom)
-            {
-                popup.Placement = PlacementMode.Custom;
-            }
-        }
-        else if (e.Property == AvaloniaPopup.CustomPopupPlacementCallbackProperty)
+     
+        if (e.Property == AvaloniaPopup.CustomPopupPlacementCallbackProperty)
         {
             if (e.GetNewValue<CustomPopupPlacementCallback?>() != popup.HandleCustomPlacement)
             {
@@ -335,6 +335,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
         if (change.Property == RequestedPlacementProperty)
         {
+            SetCurrentValue(PlacementProperty, PlacementMode.Custom);
             ConfigurePointerPlacementOffsets();
         }
     }

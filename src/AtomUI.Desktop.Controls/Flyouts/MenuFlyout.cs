@@ -109,7 +109,6 @@ public class MenuFlyout : Flyout
                 MenuFlyoutPresenter.ArrowPositionProperty));
         ConfigureArrowPosition();
         ConfigureShowArrowEffective();
-
         return Presenter;
     }
 

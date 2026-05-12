@@ -60,8 +60,7 @@
                                                               Content="{TemplateBinding Content}"
                                                               HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                            <atom:WindowMediaQueryIndicator
-                                                Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                                            <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                                         </Panel>
                                     </Border>
                                 </Panel>
@@ -83,8 +82,7 @@
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                            Container.Sizing="Width">
-                        <atom:WindowMediaQueryIndicator
-                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -147,8 +145,7 @@
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                            Container.Sizing="Width">
-                        <atom:WindowMediaQueryIndicator
-                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -209,22 +206,17 @@
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                           Container.Sizing="Width">
-                        <atom:WindowMediaQueryIndicator
-                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                           Container.Sizing="Width"
+                           Margin="{Binding $parent[Window].WindowDecorationMargin}">
+                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
                         <Border Name="WindowFullScreenFrame"
                                 Background="{TemplateBinding Background}"
                                 IsHitTestVisible="False"
-                                IsVisible="False">
-                            <ContentPresenter Name="WindowFrameLayer"
-                                              Content="{TemplateBinding WindowFrameLayer}"
-                                              Opacity="{TemplateBinding WindowFrameLayerOpacity}"
-                                              ContentTemplate="{TemplateBinding WindowFrameLayerTemplate}" />
-                        </Border>
+                                IsVisible="False"/>
                         <VisualLayerManager Name="PART_VisualLayerManager"
-                                            Margin="{Binding $parent[Window].WindowDecorationMargin}">
+                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
                             <Panel>
                                 <ContentPresenter Name="ContentFrameLayer"
                                                   Background="{TemplateBinding ContentFrameBackground}"
