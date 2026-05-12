@@ -77,7 +77,7 @@ public class Row : Panel
 
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)
     {
-        _breakPoint = args.MediaBreakPoint;
+        _breakPoint           = args.MediaBreakPoint;
         _orderedChildrenDirty = true;
         InvalidateMeasure();
     }

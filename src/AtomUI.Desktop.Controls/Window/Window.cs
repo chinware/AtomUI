@@ -366,6 +366,10 @@ public class Window : AvaloniaWindow,
 
     internal void NotifyMediaBreakPointChanged(MediaBreakPoint breakPoint)
     {
+        if (MediaBreakPoint == breakPoint)
+        {
+            return;
+        }
         SetCurrentValue(MediaBreakPointProperty, breakPoint);
         if (!_mediaQueryReady)
         {
