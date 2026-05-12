@@ -1,5 +1,6 @@
 using System.Reactive;
 using AtomUI.Controls;
+using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using ReactiveUI;
@@ -18,6 +19,20 @@ public class WorkspaceWindowViewModel : ReactiveObject, IScreen
     public ReactiveCommand<bool, Unit> ToggleWaveSpiritCommand  { get; }
     public ReactiveCommand<Unit, Unit> SwitchToZhCNCommand      { get; }
     public ReactiveCommand<Unit, Unit> SwitchToEnUSCommand      { get; }
+
+    private bool _isZhCN;
+    public bool IsZhCN
+    {
+        get => _isZhCN;
+        private set => this.RaiseAndSetIfChanged(ref _isZhCN, value);
+    }
+
+    private bool _isEnUS;
+    public bool IsEnUS
+    {
+        get => _isEnUS;
+        private set => this.RaiseAndSetIfChanged(ref _isEnUS, value);
+    }
 
     public WorkspaceWindowViewModel()
     {
@@ -40,5 +55,18 @@ public class WorkspaceWindowViewModel : ReactiveObject, IScreen
 
         SwitchToEnUSCommand = ReactiveCommand.Create(() =>
             Application.Current?.SetLanguageVariant(LanguageVariant.en_US));
+
+        var themeManager = Application.Current?.GetThemeManager();
+        SyncLanguageState(themeManager?.LanguageVariant);
+        if (themeManager != null)
+        {
+            themeManager.LanguageVariantChanged += (_, args) => SyncLanguageState(args.NewLanguage);
+        }
+    }
+
+    private void SyncLanguageState(LanguageVariant? variant)
+    {
+        IsZhCN = variant == LanguageVariant.zh_CN;
+        IsEnUS = variant == LanguageVariant.en_US;
     }
 }

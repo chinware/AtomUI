@@ -4,7 +4,9 @@
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:workspaceviews="using:AtomUIGallery.Workspace.Views"
+             xmlns:vm="using:AtomUIGallery.Workspace.ViewModels"
              x:Class="AtomUIGallery.Workspace.Views.WorkspaceWindow"
+             x:DataType="vm:WorkspaceWindowViewModel"
              Icon="/Assets/AtomUIGallery.ico"
              IsPinCaptionButtonVisible="True"
              IsFullScreenCaptionButtonVisible="True"
@@ -67,10 +69,11 @@
             <atom:MenuItem Header="{gallery:WorkspaceWindowLangResource MenuItemLanguage}">
                 <atom:MenuItem Header="简体中文"
                                ToggleType="Radio"
-                               IsChecked="True"
+                               IsChecked="{Binding IsZhCN}"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageZhCN}" />
                 <atom:MenuItem Header="English"
                                ToggleType="Radio"
+                               IsChecked="{Binding IsEnUS}"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageEnUS}" />
             </atom:MenuItem>
         </atom:Menu>
