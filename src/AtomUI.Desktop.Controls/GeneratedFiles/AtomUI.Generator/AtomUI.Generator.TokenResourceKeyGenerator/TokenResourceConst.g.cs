@@ -1256,6 +1256,8 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         CloseHoverBackgroundColor,
         ClosePressedBackgroundColor,
         ForegroundColor,
+        FullscreenCaptionButtonSize,
+        HeaderHorizontalSpacing,
         Height,
         HoverBackgroundColor,
         InactiveBgColor,

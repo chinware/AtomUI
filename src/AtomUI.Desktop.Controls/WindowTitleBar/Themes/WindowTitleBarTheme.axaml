@@ -9,7 +9,7 @@
                 <Border Name="Frame" Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True"
-                               HorizontalSpacing="{atom:SharedTokenResource SpacingXS}">
+                               HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}">
                         <StackPanel Orientation="Horizontal"
                                     Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
                                     DockPanel.Dock="Left">

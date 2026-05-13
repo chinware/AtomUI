@@ -73,8 +73,8 @@
             <Setter Property="IsWindowActive" Value="True" />
             <Setter Property="IconWidth" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
             <Setter Property="IconHeight" Value="{atom:WindowTitleBarTokenResource CaptionButtonIconSize}" />
-            <Setter Property="Width" Value="{atom:SharedTokenResource SizeLG}" />
-            <Setter Property="Height" Value="{atom:SharedTokenResource SizeLG}" />
+            <Setter Property="Width" Value="{atom:WindowTitleBarTokenResource FullscreenCaptionButtonSize}" />
+            <Setter Property="Height" Value="{atom:WindowTitleBarTokenResource FullscreenCaptionButtonSize}" />
         </Style>
 
         <Style Selector="^ /template/ StackPanel#FullscreenCaptionButtonGroup">
