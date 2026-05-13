@@ -373,7 +373,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var          target                = PlacementTarget ?? Parent as Control;
         var          topLevel              = TopLevel.GetTopLevel(target);
         Thickness    windowShadowThickness = default;
-        if (topLevel is Window window)
+        // 目前这里暂时只考虑 Linux 平台，因为就他绘制主窗体的阴影
+        if (OperatingSystem.IsLinux() && topLevel is Window window)
         {
             windowShadowThickness = window.WindowDecorationMargin;
         }

@@ -753,7 +753,7 @@ internal static class PopupUtils
 
         var cursor = visual;
         var guard = 0;
-        while (cursor != null && guard++ < 8)
+        while (guard++ < 8)
         {
             var owningPopup = FindOwningPopup(cursor);
             if (owningPopup == null)
