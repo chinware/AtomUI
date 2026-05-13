@@ -61,6 +61,12 @@ Welcome to communicate and give suggestions to AtomUI, thank you for giving the 
   render a consistent UI experience.
 - Based on Avalonia's powerful style system, Ant Design's theme customization capabilities are fully implemented.
 
+#### Requirements
+
+.NET 8 or later (development supports .NET 10)<br>
+Avalonia 12.0.x<br>
+Windows, macOS and Linux<br>
+
 #### Incubator
 
 Thanks to Tongming Lake Center for their incubation support of AtomUI OSS
@@ -98,18 +104,24 @@ has not released a long-term support version, so it is recommended to install th
 
 The packages we have released are as follows:
 
-| Package                             | Description                                                                                                                                |
-|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| AtomUI.Core                         | Core infrastructure — Theme system, Token system, animations                                                                               |
-| AtomUI.Controls.Shared              | Shared interfaces and enums for control development                                                                                        |
-| AtomUI.Desktop.Controls             | Desktop control library — the main package                                                                                                 |
-| AtomUI.Desktop.Controls.DataGrid    | DataGrid control (opt-in)                                                                                                                  |
-| AtomUI.Desktop.Controls.ColorPicker | ColorPicker control (opt-in)                                                                                                               |
-| AtomUI.Generator                    | Source generators for custom control development                                                                                           |
-| AtomUI.Fonts.AlibabaSans            | Alibaba Sans font package                                                                                                                  |
+| Package                             | Description                                                                |
+|-------------------------------------|----------------------------------------------------------------------------|
+| AtomUI.Native                       | Native platform infrastructure                                             |
+| AtomUI.Core                         | Core infrastructure — theme system, token system and animations             |
+| AtomUI.Fonts.AlibabaSans            | Alibaba Sans font package                                                  |
+| AtomUI.Icons.Shared                 | Icon infrastructure                                                        |
+| AtomUI.Icons.AntDesign              | Ant Design icon package                                                    |
+| AtomUI.Controls.Shared              | Shared interfaces and enums for control development                        |
+| AtomUI.Controls                     | Base controls and shared control capabilities                              |
+| AtomUI.Desktop.Controls             | Desktop control library — the main package                                 |
+| AtomUI.Desktop.Controls.DataGrid    | DataGrid control (opt-in)                                                  |
+| AtomUI.Desktop.Controls.ColorPicker | ColorPicker control (opt-in)                                               |
+| AtomUI.Generator                    | Source generators for custom controls, tokens and localization             |
 
 ```bash
-dotnet add package AtomUI --version 5.2.0-build.4
+dotnet add package AtomUI.Desktop.Controls --version 6.0.0-build.1
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.0-build.1
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.0-build.1
 ```
 
 You can install nuget packages one by one directly. If the above command line fails to complete the installation, please go to the NuGet package manager. In Rider, you can click on the following steps:
@@ -128,19 +140,18 @@ Searching for "AtomUI" will find available AtomUI packages. Then, install them o
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI" Version="5.2.0-build.4"/>
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.12">
-            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-        </PackageReference>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.0-build.1"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.0-build.1"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.0-build.1"/>
+        <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
 ```
@@ -150,19 +161,25 @@ Searching for "AtomUI" will find available AtomUI packages. Then, install them o
 ```csharp
 using Avalonia;
 using System;
+using AtomUI;
+using ReactiveUI.Avalonia;
+
 namespace AtomUIProgressApp;
-class Program
+
+internal class Program
 {
     [STAThread]
     public static void Main(string[] args) => BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
+
     public static AppBuilder BuildAvaloniaApp()
     {
         return AppBuilder.Configure<App>()
-            .UseReactiveUI()
-            .UsePlatformDetect()
-            .With(new Win32PlatformOptions())
-            .LogToTrace();
+                         .UseReactiveUI()
+                         .UsePlatformDetect()
+                         .WithAtomUIDefaultOptions()
+                         .WithDeveloperTools()
+                         .LogToTrace();
     }
 }
 ```
@@ -170,19 +187,27 @@ class Program
 ###### Enable `AtomUI` in the `Application` Class
 
 ```csharp
+using System.Globalization;
+using AtomUI;
+using AtomUI.Desktop.Controls;
+using AtomUI.Theme;
+using Avalonia;
+using Avalonia.Markup.Xaml;
+
 public partial class App : Application
 {
     public override void Initialize()
     {
-        base.Initialize();
         AvaloniaXamlLoader.Load(this);
+
         this.UseAtomUI(builder =>
         {
+            builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
-            builder.UseDesktopDataGrid();      // optional
             builder.UseDesktopColorPicker();   // optional
+            builder.UseDesktopDataGrid();      // optional
         });
     }
 }
