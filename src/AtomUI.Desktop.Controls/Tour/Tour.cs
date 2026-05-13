@@ -659,25 +659,18 @@ public class Tour : TemplatedControl, IMotionAwareControl
         {
             target = stepOption.Target;
         }
-        if (target == null || _layer == null)
+        if (target == null)
         {
             TargetClipBounds = default;
             return;
         }
-
-        // TODO(avalonia-csd): Linux CSD 下 TopLevel 坐标带 WindowDecorationMargin 偏移，
-        // 直接把 target 的 (0,0) 投到 TourLayer 本地坐标避开该偏差，否则镂空区域会整体
-        // 偏移一个装饰阴影厚度。临时方案：上游把 VisualLayer 与装饰阴影坐标系打平后，可
-        // 恢复原本的 target.TranslatePoint(..., topLevel) 实现。
-        var offset = target.TranslatePoint(new Point(0, 0), _layer);
-        if (offset is null)
+        var topLevel = TopLevel.GetTopLevel(target);
+        if (topLevel != null)
         {
-            TargetClipBounds = default;
-            return;
+            var offset       = target.TranslatePoint(new Point(0, 0), topLevel) ?? default;
+            var targetBounds = new Rect(offset, target.Bounds.Size);
+            TargetClipBounds = targetBounds.Inflate(new Thickness(GapOffsetX, GapOffsetY));
         }
-
-        var targetBounds = new Rect(offset.Value, target.Bounds.Size);
-        TargetClipBounds = targetBounds.Inflate(new Thickness(GapOffsetX, GapOffsetY));
     }
 
     private PlacementMode GetPopupPlacement(TourPlacementMode placement)

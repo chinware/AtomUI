@@ -9,7 +9,10 @@
         <Style Selector="^[OsType=Linux][IsCsdEnabled=False]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
-                    <Panel>
+                    <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
+                           Container.Sizing="Width">
+                        <atom:WindowMediaQueryIndicator
+                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -28,9 +31,9 @@
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
 
                         <VisualLayerManager Name="PART_VisualLayerManager"
-                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}"
-                                            Margin="{TemplateBinding FrameShadowThickness}">
-                            <DockPanel LastChildFill="True">
+                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                            <DockPanel LastChildFill="True"
+                                       Margin="{TemplateBinding FrameShadowThickness}">
                                 <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
                                        DockPanel.Dock="Top">
                                     <ContentPresenter Name="TitleBarFrameLayer"
@@ -51,17 +54,12 @@
                                                       ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
                                     <Border Name="ContentFrame"
                                             ClipToBounds="True"
-                                            Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                                            Container.Sizing="Width"
                                             Padding="{TemplateBinding Padding}">
-                                        <Panel>
-                                            <ContentPresenter Name="PART_ContentPresenter"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              Content="{TemplateBinding Content}"
-                                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                            <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
-                                        </Panel>
+                                        <ContentPresenter Name="PART_ContentPresenter"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          Content="{TemplateBinding Content}"
+                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                                     </Border>
                                 </Panel>
                             </DockPanel>
@@ -82,7 +80,8 @@
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                            Container.Sizing="Width">
-                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                        <atom:WindowMediaQueryIndicator
+                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -145,7 +144,8 @@
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                            Container.Sizing="Width">
-                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                        <atom:WindowMediaQueryIndicator
+                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Border Name="WindowFrame"
                                 Background="{TemplateBinding Background}"
@@ -164,9 +164,9 @@
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
 
                         <VisualLayerManager Name="PART_VisualLayerManager"
-                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}"
-                                            Margin="{TemplateBinding FrameShadowThickness}">
-                            <DockPanel LastChildFill="True">
+                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                            <DockPanel LastChildFill="True"
+                                       Margin="{TemplateBinding FrameShadowThickness}">
                                 <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
                                        DockPanel.Dock="Top">
                                     <ContentPresenter Name="TitleBarFrameLayer"
@@ -207,18 +207,18 @@
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
                            Container.Sizing="Width"
-                           Margin="{Binding $parent[Window].WindowDecorationMargin}"
                            ClipToBounds="True">
-                        <atom:WindowMediaQueryIndicator Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
+                        <atom:WindowMediaQueryIndicator
+                            Name="{x:Static atom:WindowMediaQueryIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
                         <Border Name="WindowFullScreenFrame"
                                 Background="{TemplateBinding Background}"
                                 IsHitTestVisible="False"
-                                IsVisible="False"/>
+                                IsVisible="False" />
                         <VisualLayerManager Name="PART_VisualLayerManager"
                                             Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                            <Panel>
+                            <Panel Margin="{Binding $parent[Window].WindowDecorationMargin}">
                                 <ContentPresenter Name="ContentFrameLayer"
                                                   Background="{TemplateBinding ContentFrameBackground}"
                                                   ClipToBounds="True"

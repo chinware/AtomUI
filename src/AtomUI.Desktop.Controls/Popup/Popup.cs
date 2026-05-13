@@ -370,17 +370,8 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var          marginToAnchor     = MarginToAnchor;
         PopupAnchor  anchor;
         PopupGravity gravity;
-        var          target                = PlacementTarget ?? Parent as Control;
-        var          topLevel              = TopLevel.GetTopLevel(target);
-        Thickness    windowShadowThickness = default;
-        // TODO(avalonia-csd): Linux CSD 下 Avalonia 把装饰阴影算进 ClientSize，OverlayLayer 坐标
-        // 系带 WindowDecorationMargin 偏移。这里手动扣减是临时方案，等上游把 OverlayLayer
-        // 与装饰阴影解耦后删除整块 windowShadowThickness 处理（含下方 isUseOverlayHost 两处扣减）。
-        // 目前这里暂时只考虑 Linux 平台，因为就他绘制主窗体的阴影
-        if (OperatingSystem.IsLinux() && topLevel is Window window)
-        {
-            windowShadowThickness = window.WindowDecorationMargin;
-        }
+        var          target             = PlacementTarget ?? Parent as Control;
+        var          topLevel           = TopLevel.GetTopLevel(target);
         if (requestedPlacement == PlacementMode.Center)
         {
             if (topLevel == null)
@@ -494,10 +485,6 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
                 placement.Offset = new Point(placement.Offset.X + dx, placement.Offset.Y + dy);
             }
 
-            if (isUseOverlayHost)
-            {
-                placement.Offset -= new Point(windowShadowThickness.Left, windowShadowThickness.Top);
-            }
             NotifyFlipped(flipX, flipY);
             CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, flipX, flipY);
             return;
@@ -505,15 +492,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
         // Center 走到这里：AnchorRectangle 已设为整个窗口客户区，Anchor/Gravity=None 定位器自动居中。
         // 居中不存在翻转，直接设置 Offset 并通知 (false, false)。
-        placement.Anchor  =  anchor;
-        placement.Gravity =  gravity;
-        if (isUseOverlayHost)
-        {
-            hOffset -= windowShadowThickness.Left;
-            vOffset -= windowShadowThickness.Top;
-        }
-
-        placement.Offset  =  new Point(hOffset, vOffset);
+        placement.Anchor  = anchor;
+        placement.Gravity = gravity;
+        placement.Offset  = new Point(hOffset, vOffset);
         NotifyFlipped(false, false);
         CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, false, false);
     }

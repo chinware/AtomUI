@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -95,6 +96,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     private TopLevel? _topLevel;
     private bool _isDisposed;
     private AdornerLayer? _adornerLayer;
+    private IDisposable? _safeAreaMarginSubscription;
     private IList? _items;
     private readonly Queue<NotificationCard> _cleanupQueue;
     private readonly HashSet<NotificationCard> _cleanupSet;
@@ -308,6 +310,20 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             _adornerLayer.Children.Add(this);
             AdornerLayer.SetAdornedElement(this, _adornerLayer);
         }
+
+        // AdornerLayer 实测覆盖整个 TopLevel（含 CSD 装饰阴影 / 非 CSD 自绘阴影那一圈），
+        // 不会跟着 VisualLayerManager.Margin 内缩。这里给 manager 自己加 Margin 把内容收到可见客户区，
+        // 不然 Top/Right/Bottom/Left 的对齐都会贴到 AdornerLayer 边沿（即装饰外沿），卡片就漏到窗外了。
+        _safeAreaMarginSubscription?.Dispose();
+        if (topLevel is Window window)
+        {
+            _safeAreaMarginSubscription = window.GetObservable(Window.IsCsdEnabledProperty)
+                                                .CombineLatest(
+                                                    window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
+                                                    window.GetObservable(Window.FrameShadowThicknessProperty),
+                                                    static (isCsd, wdm, fst) => isCsd ? wdm : fst)
+                                                .Subscribe(margin => Margin = margin);
+        }
     }
 
     private void TopLevelOnTemplateApplied(object? sender, TemplateAppliedEventArgs e)
@@ -322,6 +338,8 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     
     private void RemoveFromAdornerLayer()
     {
+        _safeAreaMarginSubscription?.Dispose();
+        _safeAreaMarginSubscription = null;
         if (_adornerLayer is not null)
         {
             _adornerLayer.Children.Remove(this);
@@ -350,6 +368,9 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             _cleanupSet.Clear();
             // 卸载事件订阅
             _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+
+            _safeAreaMarginSubscription?.Dispose();
+            _safeAreaMarginSubscription = null;
 
             // 从 AdornerLayer 中移除
             if (_adornerLayer is not null)

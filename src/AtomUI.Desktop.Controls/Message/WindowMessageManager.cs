@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -63,6 +64,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     private TopLevel? _topLevel;
     private bool _isDisposed;
     private AdornerLayer? _adornerLayer;
+    private IDisposable? _safeAreaMarginSubscription;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
@@ -181,6 +183,20 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
             _adornerLayer.Children.Add(this);
             AdornerLayer.SetAdornedElement(this, _adornerLayer);
         }
+
+        // AdornerLayer 覆盖整个 TopLevel（含 CSD 装饰阴影 / 非 CSD 自绘阴影那一圈）不会跟着
+        // VisualLayerManager.Margin 内缩。给 manager 自己加 Margin 把内容收到可见客户区，
+        // 否则 Top/Center 等对齐会贴到装饰外沿、卡片漏到窗外。
+        _safeAreaMarginSubscription?.Dispose();
+        if (topLevel is Window window)
+        {
+            _safeAreaMarginSubscription = window.GetObservable(Window.IsCsdEnabledProperty)
+                                                .CombineLatest(
+                                                    window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
+                                                    window.GetObservable(Window.FrameShadowThicknessProperty),
+                                                    static (isCsd, wdm, fst) => isCsd ? wdm : fst)
+                                                .Subscribe(margin => Margin = margin);
+        }
     }
 
     public void Dispose()
@@ -195,6 +211,8 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
             // 卸载事件订阅
             _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
             _items?.Clear();
+            _safeAreaMarginSubscription?.Dispose();
+            _safeAreaMarginSubscription = null;
             // 从 AdornerLayer 中移除
             if (_adornerLayer is not null)
             {
@@ -214,6 +232,8 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
     private void RemoveFromAdornerLayer()
     {
+        _safeAreaMarginSubscription?.Dispose();
+        _safeAreaMarginSubscription = null;
         if (_adornerLayer is not null)
         {
             _adornerLayer.Children.Remove(this);

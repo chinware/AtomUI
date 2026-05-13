@@ -54,7 +54,7 @@ public static class AppBuilderExtensions
             })
             .With(new X11PlatformOptions
             {
-                EnableDrawnDecorations = true
+                EnableDrawnDecorations = false
             })
             .With(new FontManagerOptions
             {

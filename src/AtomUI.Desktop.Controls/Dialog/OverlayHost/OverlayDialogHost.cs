@@ -440,8 +440,11 @@ internal class OverlayDialogHost : ContentControl,
 
     private void SyncMaskBounds()
     {
+        // OverlayLayer 是 Canvas，子元素用 Canvas.Left/Top 定位，Margin 在这里不生效。
         _dialogMask.Width  = _ownerBounds.Width;
         _dialogMask.Height = _ownerBounds.Height;
+        Canvas.SetLeft(_dialogMask, _ownerBounds.X);
+        Canvas.SetTop(_dialogMask, _ownerBounds.Y);
     }
 
     private (RelativePoint origin, Point translate) CalculateCollapsedTransformState(Visual host)
@@ -584,6 +587,8 @@ internal class OverlayDialogHost : ContentControl,
         // 拆掉 _popupRoot Canvas 后，this 直接作为 _popup.Child，不再有 Canvas 座标层；
         // modal 和非 modal 都走 _popupOffset + popup 原生 placement 定位。
         var offset = _dialog.CalculatePlacementOffset(_hostSize, _ownerBounds.Size);
+        // _ownerBounds 在 CSD 下不再以 (0,0) 起算，OverlayLayer 坐标系起点要补回 owner origin。
+        offset = new Point(offset.X + _ownerBounds.X, offset.Y + _ownerBounds.Y);
         if (IsModal)
         {
             offset = ConstrainOffset(offset, _hostSize);
@@ -604,26 +609,25 @@ internal class OverlayDialogHost : ContentControl,
 
     private Point ConstrainOffset(Point offset, Size popupSize)
     {
-        var ownerSize = _ownerBounds.Size;
-        var minVisX   = Math.Min(MinVisibleX, popupSize.Width);
-        var minVisY   = Math.Min(MinVisibleY, popupSize.Height);
-        
-        // 上边界：硬约束
-        offset = offset.WithY(Math.Max(0, offset.Y));
+        var minVisX = Math.Min(MinVisibleX, popupSize.Width);
+        var minVisY = Math.Min(MinVisibleY, popupSize.Height);
+
+        // 上边界：硬约束（不能超出 owner 顶部）
+        offset = offset.WithY(Math.Max(_ownerBounds.Y, offset.Y));
 
         // 左边界：保留 minVisX 可见
-        offset = offset.WithX(Math.Max(-(popupSize.Width - minVisX), offset.X));
+        offset = offset.WithX(Math.Max(_ownerBounds.X - (popupSize.Width - minVisX), offset.X));
 
         // 右边界：保留 minVisX 可见
-        if (offset.X > ownerSize.Width - minVisX)
+        if (offset.X > _ownerBounds.Right - minVisX)
         {
-            offset = offset.WithX(ownerSize.Width - minVisX);
+            offset = offset.WithX(_ownerBounds.Right - minVisX);
         }
 
         // 下边界：保留 minVisY（标题栏）可见
-        if (offset.Y > ownerSize.Height - minVisY)
+        if (offset.Y > _ownerBounds.Bottom - minVisY)
         {
-            offset = offset.WithY(ownerSize.Height - minVisY);
+            offset = offset.WithY(_ownerBounds.Bottom - minVisY);
         }
 
         return offset;
@@ -636,20 +640,28 @@ internal class OverlayDialogHost : ContentControl,
         _popup.Child = this;
     }
 
-    // TODO(avalonia-csd): Linux CSD 下 Avalonia 只把 WindowDecorationMargin 抛给模板去自适应，
-    // OverlayLayer 仍然按原始 ClientSize 铺满整个客户区，连装饰阴影区也覆盖进去了。这里手动把
-    // 装饰区减掉，拿到真正可见的 inner client 区域，用于 mask 尺寸与拖动 constraint。
-    // 临时方案：上游把 OverlayLayer 与 WindowDecorationMargin 联动后，删除整段 Window 特判，
-    // 直接 return new Rect(default, size) 即可。
     private static Rect CalculateOwnerBounds(TopLevel topLevel)
     {
         var size = topLevel.ClientSize;
-        if (topLevel is Window { IsCsdEnabled: true } window)
+        if (topLevel is Window window)
         {
-            var margin = window.WindowDecorationMargin;
-            var width  = Math.Max(0, size.Width - margin.Left - margin.Right);
-            var height = Math.Max(0, size.Height - margin.Top - margin.Bottom);
-            return new Rect(default, new Size(width, height));
+            if (window.IsCsdEnabled)
+            {
+                // CSD 下 VisualLayerManager 没有 Margin，OverlayLayer 覆盖整个 TopLevel（含 WindowDecorationMargin
+                // 那圈装饰阴影）。把 owner 收到可见客户区：origin 推到装饰内沿，size 扣两侧 margin。
+                var m = window.WindowDecorationMargin;
+                var w = Math.Max(0, size.Width - m.Left - m.Right);
+                var h = Math.Max(0, size.Height - m.Top - m.Bottom);
+                return new Rect(m.Left, m.Top, w, h);
+            }
+
+            // 非 CSD 下 VisualLayerManager 虽然自带 Margin=FrameShadowThickness，但实测 OverlayLayer
+            // （挂在 VLM.VisualChildren 而非 LogicalChildren 上）并没有跟着 Margin 内缩，依然从 TopLevel 原点
+            // 起算。mask 要手动把 shadow 的 Left/Top 加到 origin，size 扣两侧 shadow。
+            var s  = window.FrameShadowThickness;
+            var sw = Math.Max(0, size.Width - s.Left - s.Right);
+            var sh = Math.Max(0, size.Height - s.Top - s.Bottom);
+            return new Rect(s.Left, s.Top, sw, sh);
         }
         return new Rect(default, size);
     }
@@ -667,12 +679,17 @@ internal class OverlayDialogHost : ContentControl,
         _observedTopLevel            =  topLevel;
         _observedTopLevel.SizeChanged += HandleOwnerTopLevelSizeChanged;
 
-        // Window 的圆角会随 WindowState 变化（Maximized/FullScreen 置 0），mask 只保留底部圆角。
+        // Window 的圆角会随 WindowState 变化（Maximized/FullScreen 置 0）。CSD 下 title bar 由
+        // WindowDrawnDecorations 盖在顶部，mask 只需要底部圆角；非 CSD 下 mask 作为一整块，要四个角都圆。
         if (topLevel is Window window)
         {
             _dialogMask.Bind(TemplatedControl.CornerRadiusProperty,
                 window.GetObservable(TemplatedControl.CornerRadiusProperty)
-                      .Select(static cr => new CornerRadius(0, 0, cr.BottomRight, cr.BottomLeft)));
+                      .CombineLatest(
+                          window.GetObservable(Window.IsCsdEnabledProperty),
+                          static (cr, isCsd) => isCsd
+                              ? new CornerRadius(0, 0, cr.BottomRight, cr.BottomLeft)
+                              : cr));
         }
     }
 

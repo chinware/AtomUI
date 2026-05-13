@@ -26,9 +26,6 @@
         <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0"/>
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.3"/>
-
-        <!-- 安全漏洞修复: CVE-2026-39959 (GHSA-xrw6-gwf8-vvr9) — Tmds.DBus.Protocol 0.21.2 高危漏洞覆盖 -->
-        <PackageVersion Include="Tmds.DBus.Protocol" Version="0.21.3"/>
         
         <!-- 其他依赖 -->
         <PackageVersion Include="ThomasLevesque.WeakEvent" Version="4.1.0"/>
