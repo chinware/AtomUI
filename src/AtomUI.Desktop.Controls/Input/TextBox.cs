@@ -103,13 +103,13 @@ public class TextBox : AvaloniaTextBox,
             (o, v) => o.EffectiveCornerRadius = v);
     
     internal static readonly StyledProperty<SpaceItemPosition?> CompactSpaceItemPositionProperty = 
-        CompactSpaceAwareControlProperty.CompactSpaceItemPositionProperty.AddOwner<TextBlock>();
+        CompactSpaceAwareControlProperty.CompactSpaceItemPositionProperty.AddOwner<TextBox>();
     
     internal static readonly StyledProperty<Orientation> CompactSpaceOrientationProperty = 
-        CompactSpaceAwareControlProperty.CompactSpaceOrientationProperty.AddOwner<TextBlock>();
+        CompactSpaceAwareControlProperty.CompactSpaceOrientationProperty.AddOwner<TextBox>();
     
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
-        CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<TextBlock>();
+        CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<TextBox>();
     
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<TextBox, FormValidateFeedback?>(nameof(FormFeedback));
