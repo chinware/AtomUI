@@ -207,7 +207,6 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     private object? _pointerVerticalOffsetTokenKey;
     private IDisposable? _pointerHorizontalOffsetBinding;
     private IDisposable? _pointerVerticalOffsetBinding;
-    private bool _ignorePlacementChanged;
 
     static Flyout()
     {

@@ -467,10 +467,12 @@ internal class OverlayDialogHost : ContentControl,
 
         Point? rPoint = null;
 
+        // TODO(avalonia-csd): Linux CSD 下 Avalonia 把装饰阴影算进 ClientSize，OverlayLayer 被
+        // 整体内缩，PointToScreen 的口径和 target 不一致。这里优先走同根的 TranslatePoint 绕开
+        // 该问题，属于临时方案；上游把 OverlayLayer 坐标系与装饰阴影解耦后，恢复 PointToScreen
+        // 单路径即可。
         // ShouldUseOverlayLayer 模式下 host（OverlayPopupHost）与 target 同在一个 Window 的
         // visual tree，直接 TranslatePoint 得到 target 中心在 host 本地坐标下的 R。
-        // 相对屏幕坐标 + RenderScaling 往返更稳——Linux CSD 的 WindowDecorationMargin 会
-        // 让 OverlayLayer 整体内缩，PointToScreen 口径容易与 target 不一致。
         if (ReferenceEquals(hostRoot, targetRoot))
         {
             var targetCenterLocal = new Point(target.Bounds.Width / 2, target.Bounds.Height / 2);
@@ -634,9 +636,11 @@ internal class OverlayDialogHost : ContentControl,
         _popup.Child = this;
     }
 
-    // Linux CSD 下 Avalonia 只把 WindowDecorationMargin 抛给模板去自适应，OverlayLayer 仍然
-    // 按原始 ClientSize 铺满整个客户区，连装饰阴影区也覆盖进去了。这里手动把装饰区减掉，
-    // 拿到真正可见的 inner client 区域，用于 mask 尺寸与拖动 constraint。
+    // TODO(avalonia-csd): Linux CSD 下 Avalonia 只把 WindowDecorationMargin 抛给模板去自适应，
+    // OverlayLayer 仍然按原始 ClientSize 铺满整个客户区，连装饰阴影区也覆盖进去了。这里手动把
+    // 装饰区减掉，拿到真正可见的 inner client 区域，用于 mask 尺寸与拖动 constraint。
+    // 临时方案：上游把 OverlayLayer 与 WindowDecorationMargin 联动后，删除整段 Window 特判，
+    // 直接 return new Rect(default, size) 即可。
     private static Rect CalculateOwnerBounds(TopLevel topLevel)
     {
         var size = topLevel.ClientSize;

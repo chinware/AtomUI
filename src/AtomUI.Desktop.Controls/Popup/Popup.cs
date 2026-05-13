@@ -373,6 +373,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         var          target                = PlacementTarget ?? Parent as Control;
         var          topLevel              = TopLevel.GetTopLevel(target);
         Thickness    windowShadowThickness = default;
+        // TODO(avalonia-csd): Linux CSD 下 Avalonia 把装饰阴影算进 ClientSize，OverlayLayer 坐标
+        // 系带 WindowDecorationMargin 偏移。这里手动扣减是临时方案，等上游把 OverlayLayer
+        // 与装饰阴影解耦后删除整块 windowShadowThickness 处理（含下方 isUseOverlayHost 两处扣减）。
         // 目前这里暂时只考虑 Linux 平台，因为就他绘制主窗体的阴影
         if (OperatingSystem.IsLinux() && topLevel is Window window)
         {
