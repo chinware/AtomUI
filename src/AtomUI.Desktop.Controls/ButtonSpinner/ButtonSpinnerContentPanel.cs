@@ -1,9 +1,9 @@
+using AtomUI.Controls.Primitives;
 using Avalonia;
-using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class ButtonSpinnerContentPanel : DockPanel
+internal class ButtonSpinnerContentPanel : AdaptiveSpacingDockPanel
 {
     #region 公共属性定义
 
