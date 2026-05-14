@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class CaretUpOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class CaretUpOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(152.90000000000001, 297.30000000000001, 718.20000000000005, 426.69999999999999);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1755251980254851, 0, 0, 1.1755251980254851, -89.868901389048347, -89.868901389048347);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

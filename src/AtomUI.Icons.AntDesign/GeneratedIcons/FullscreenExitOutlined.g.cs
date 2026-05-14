@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class FullscreenExitOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class FullscreenExitOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(146.29999999999998, 146.30000000000001, 734.50000000000011, 734.5);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1708209467184998, 0, 0, 1.1708209467184998, -87.460324719871892, -87.460324719871892);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class LeftOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class LeftOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(260.30000000000001, 130.59999999999999, 463.69999999999999, 762.70000000000005);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1461831206626372, 0, 0, 1.1461831206626372, -74.84575777927023, -74.84575777927023);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

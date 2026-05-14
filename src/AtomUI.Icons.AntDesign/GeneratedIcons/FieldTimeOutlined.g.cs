@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class FieldTimeOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class FieldTimeOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(71.599999999999994, 118.40000000000008, 881.39999999999998, 784.59999999999991);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.0758562723261189, 0, 0, 1.0758562723261189, -38.838411430972883, -38.838411430972883);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

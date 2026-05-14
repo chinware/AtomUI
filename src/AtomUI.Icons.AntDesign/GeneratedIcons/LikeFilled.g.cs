@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class LikeFilled : AntDesignIcon
@@ -16,6 +15,11 @@ public class LikeFilled : AntDesignIcon
         IconTheme = IconThemeType.Filled;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(112, 99.900000000000006, 800, 824.10000000000002);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1081051834217075, 0, 0, 1.1081051834217075, -55.349853911914238, -55.349853911914238);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

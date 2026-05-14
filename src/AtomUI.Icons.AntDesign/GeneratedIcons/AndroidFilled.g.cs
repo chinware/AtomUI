@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class AndroidFilled : AntDesignIcon
@@ -16,6 +15,11 @@ public class AndroidFilled : AntDesignIcon
         IconTheme = IconThemeType.Filled;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(128.09999999999994, 62.800000000000004, 767.90000000000009, 897.20000000000005);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.0653349979192677, 0, 0, 1.0653349979192677, -33.451518934665046, -33.451518934665046);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

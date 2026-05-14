@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class AliyunOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class AliyunOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(64.700000000000017, 235.29999999999998, 894.5, 554.30000000000007);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.067445011987908, 0, 0, 1.067445011987908, -34.531846137808884, -34.531846137808884);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
