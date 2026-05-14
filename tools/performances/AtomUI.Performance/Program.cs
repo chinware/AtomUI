@@ -4,6 +4,7 @@ using System.Text;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.Primitives.Themes;
+using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -54,7 +55,7 @@ internal static class Program
             return verified ? 0 : 1;
         }
 
-        var scenarios = CreateScenarios();
+        var scenarios = CreateScenarios(options.Suite);
         foreach (var scenario in scenarios)
         {
             RunWarmup(scenario, Math.Min(5, options.Count));
@@ -68,7 +69,7 @@ internal static class Program
 
         if (!string.IsNullOrWhiteSpace(options.MarkdownOutputPath))
         {
-            var markdown = RenderMarkdown(results, options.Count);
+            var markdown = RenderMarkdown(results, options);
             var fullPath = Path.GetFullPath(options.MarkdownOutputPath);
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
             File.WriteAllText(fullPath, markdown, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
@@ -86,7 +87,14 @@ internal static class Program
                   .SetupWithLifetime(new ClassicDesktopStyleApplicationLifetime());
     }
 
-    private static IReadOnlyList<PerfScenario> CreateScenarios()
+    private static IReadOnlyList<PerfScenario> CreateScenarios(string suite)
+    {
+        return suite.Equals("icon", StringComparison.OrdinalIgnoreCase)
+            ? CreateIconScenarios()
+            : CreateAddOnScenarios();
+    }
+
+    private static IReadOnlyList<PerfScenario> CreateAddOnScenarios()
     {
         return
         [
@@ -141,6 +149,66 @@ internal static class Program
             new PerfScenario("CompactSpace.LineEdit.Horizontal", _ => CreateCompactSpace(Orientation.Horizontal)),
             new PerfScenario("CompactSpace.LineEdit.Vertical", _ => CreateCompactSpace(Orientation.Vertical))
         ];
+    }
+
+    private static IReadOnlyList<PerfScenario> CreateIconScenarios()
+    {
+        return
+        [
+            new PerfScenario("Icon.SearchOutlined.Direct", _ => CreateSearchIcon()),
+            new PerfScenario("Icon.SearchOutlined.Presenter", _ => new IconPresenter
+            {
+                Width = 16,
+                Height = 16,
+                Icon = CreateSearchIcon()
+            }),
+            new PerfScenario("Icon.SearchOutlined.Many10", _ => CreateIconBatch()),
+            new PerfScenario("Icon.LoadingOutlined.Spin", _ => new LoadingOutlined
+            {
+                Width = 16,
+                Height = 16,
+                LoadingAnimation = IconAnimation.Spin
+            }),
+            new PerfScenario("Icon.TwoTone.Bulb", _ => new BulbTwoTone
+            {
+                Width = 16,
+                Height = 16
+            }),
+            new PerfScenario("Icon.Provider.SearchOutlined", _ =>
+                (Control)new AntDesignIconProvider(AntDesignIconKind.SearchOutlined).ProvideValue(null!)),
+            new PerfScenario("Icon.HiddenSlots.SelectDefault", _ => new Select
+            {
+                Width = 260,
+                PlaceholderText = "Select"
+            }),
+            new PerfScenario("Icon.HiddenSlots.MenuItemLeaf", _ => new AtomUI.Desktop.Controls.MenuItem
+            {
+                Header = "Leaf item"
+            })
+        ];
+    }
+
+    private static Icon CreateSearchIcon()
+    {
+        return new SearchOutlined
+        {
+            Width  = 16,
+            Height = 16
+        };
+    }
+
+    private static Panel CreateIconBatch()
+    {
+        var panel = new WrapPanel
+        {
+            Width = 240
+        };
+        for (var i = 0; i < 10; i++)
+        {
+            panel.Children.Add(CreateSearchIcon());
+        }
+
+        return panel;
     }
 
     private static LineEdit CreateLineEdit(
@@ -948,8 +1016,8 @@ internal static class Program
     private static string RenderTable(IReadOnlyList<PerfResult> results)
     {
         var builder = new StringBuilder();
-        builder.AppendLine("Scenario                                Count  Total ms  ms/item  KB/item  Visual  Logical  CP  Button  TB  Icon  Stack  AODB  IconUpdates  BrushCalls  Scanned");
-        builder.AppendLine("----------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        builder.AppendLine("Scenario                                Count  Total ms  ms/item  KB/item  Visual  Logical  CP  Button  TB  Icon  IconP  PathI  Stack  AODB  IconUpdates  BrushCalls  Scanned");
+        builder.AppendLine("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         foreach (var result in results)
         {
@@ -960,7 +1028,7 @@ internal static class Program
             builder.Append(CultureInfo.InvariantCulture,
                 $"{result.TreeStats.ContentPresenterPerRoot,4:0.0}{result.TreeStats.ButtonPerRoot,8:0.0}{result.TreeStats.TextBlockPerRoot,5:0.0}{result.TreeStats.IconPerRoot,6:0.0}");
             builder.Append(CultureInfo.InvariantCulture,
-                $"{result.TreeStats.StackPanelPerRoot,7:0.0}{result.TreeStats.AddOnDecoratedBoxPerRoot,6:0.0}");
+                $"{result.TreeStats.IconPresenterPerRoot,7:0.0}{result.TreeStats.PathIconPerRoot,7:0.0}{result.TreeStats.StackPanelPerRoot,7:0.0}{result.TreeStats.AddOnDecoratedBoxPerRoot,6:0.0}");
             builder.Append(CultureInfo.InvariantCulture,
                 $"{result.ProbeSnapshot.UpdateIconStatusColorsCalls,13}{result.ProbeSnapshot.ApplyIconBrushCalls,12}{result.ProbeSnapshot.ApplyIconBrushScannedVisuals,9}");
             builder.AppendLine();
@@ -969,18 +1037,21 @@ internal static class Program
         return builder.ToString();
     }
 
-    private static string RenderMarkdown(IReadOnlyList<PerfResult> results, int count)
+    private static string RenderMarkdown(IReadOnlyList<PerfResult> results, PerfOptions options)
     {
         var builder = new StringBuilder();
-        builder.AppendLine("# AddOnDecoratedBox / LineEdit Baseline");
+        builder.AppendLine(options.Suite.Equals("icon", StringComparison.OrdinalIgnoreCase)
+            ? "# Icon Baseline"
+            : "# AddOnDecoratedBox / LineEdit Baseline");
         builder.AppendLine();
         builder.AppendLine($"- Date: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
         builder.AppendLine($"- Configuration: Debug");
-        builder.AppendLine($"- Count per scenario: {count}");
+        builder.AppendLine($"- Suite: `{options.Suite}`");
+        builder.AppendLine($"- Count per scenario: {options.Count}");
         builder.AppendLine($"- Runner: `tools/performances/AtomUI.Performance`");
         builder.AppendLine();
-        builder.AppendLine("| Scenario | Count | Total ms | ms/item | KB/item | Visual/root | Logical/root | ContentPresenter/root | Button/root | TextBlock/root | Icon/root | StackPanel/root | AddOnDecoratedBox/root | Icon status calls | Icon brush calls | Icon scan visuals | Icon matches |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Scenario | Count | Total ms | ms/item | KB/item | Visual/root | Logical/root | ContentPresenter/root | Button/root | TextBlock/root | Icon/root | IconPresenter/root | PathIcon/root | StackPanel/root | AddOnDecoratedBox/root | Icon status calls | Icon brush calls | Icon scan visuals | Icon matches |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
 
         foreach (var result in results)
         {
@@ -990,6 +1061,8 @@ internal static class Program
                 $"{result.TreeStats.VisualPerRoot:0.0} | {result.TreeStats.LogicalPerRoot:0.0} | {result.TreeStats.ContentPresenterPerRoot:0.0} | ");
             builder.Append(CultureInfo.InvariantCulture,
                 $"{result.TreeStats.ButtonPerRoot:0.0} | {result.TreeStats.TextBlockPerRoot:0.0} | {result.TreeStats.IconPerRoot:0.0} | ");
+            builder.Append(CultureInfo.InvariantCulture,
+                $"{result.TreeStats.IconPresenterPerRoot:0.0} | {result.TreeStats.PathIconPerRoot:0.0} | ");
             builder.Append(CultureInfo.InvariantCulture,
                 $"{result.TreeStats.StackPanelPerRoot:0.0} | {result.TreeStats.AddOnDecoratedBoxPerRoot:0.0} | ");
             builder.Append(CultureInfo.InvariantCulture,
@@ -1004,6 +1077,7 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine("- `Visual/root` and `Logical/root` include the scenario root control itself.");
         builder.AppendLine("- CompactSpace scenarios use three `LineEdit` children per root.");
+        builder.AppendLine("- Icon suite measures materialization, template application and layout in headless mode; it does not isolate GPU/platform render cost.");
         builder.AppendLine("- Icon probe data is Debug-only and records `AddOnDecoratedBox.UpdateIconStatusColors()` plus `ApplyIconBrush()` scans.");
         builder.AppendLine("- Binding expression count is not directly measured yet; current baseline uses node counts, allocation, timing, and AddOnDecoratedBox probe counters.");
         builder.AppendLine("- This measures control-level template/style/materialization cost, not Gallery navigation.");
@@ -1013,6 +1087,7 @@ internal static class Program
 
 internal sealed record PerfOptions(
     int Count,
+    string Suite,
     string? MarkdownOutputPath,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
@@ -1021,6 +1096,7 @@ internal sealed record PerfOptions(
     public static PerfOptions Parse(string[] args)
     {
         var count                  = Program.DefaultCount;
+        var suite                  = "addon";
         string? markdownOutput     = null;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
@@ -1038,6 +1114,10 @@ internal sealed record PerfOptions(
                     markdownOutput = args[i + 1];
                     i++;
                     break;
+                case "--suite" when i + 1 < args.Length:
+                    suite = args[i + 1];
+                    i++;
+                    break;
                 case "--verify-accessories":
                     verifyAccessories = true;
                     break;
@@ -1052,6 +1132,7 @@ internal sealed record PerfOptions(
 
         return new PerfOptions(
             Math.Max(1, count),
+            suite,
             markdownOutput,
             verifyAccessories,
             verifyEffectiveBrushes,
@@ -1153,6 +1234,8 @@ internal sealed record TreeStats(
     double ButtonPerRoot,
     double TextBlockPerRoot,
     double IconPerRoot,
+    double IconPresenterPerRoot,
+    double PathIconPerRoot,
     double StackPanelPerRoot,
     double AddOnDecoratedBoxPerRoot)
 {
@@ -1164,6 +1247,8 @@ internal sealed record TreeStats(
         var buttonCount              = 0;
         var textBlockCount           = 0;
         var iconCount                = 0;
+        var iconPresenterCount       = 0;
+        var pathIconCount            = 0;
         var stackPanelCount          = 0;
         var addOnDecoratedBoxCount   = 0;
 
@@ -1191,6 +1276,14 @@ internal sealed record TreeStats(
                 {
                     iconCount++;
                 }
+                if (visual is IconPresenter)
+                {
+                    iconPresenterCount++;
+                }
+                if (visual is PathIcon)
+                {
+                    pathIconCount++;
+                }
                 if (visual is StackPanel)
                 {
                     stackPanelCount++;
@@ -1212,6 +1305,8 @@ internal sealed record TreeStats(
             buttonCount / (double)rootCount,
             textBlockCount / (double)rootCount,
             iconCount / (double)rootCount,
+            iconPresenterCount / (double)rootCount,
+            pathIconCount / (double)rootCount,
             stackPanelCount / (double)rootCount,
             addOnDecoratedBoxCount / (double)rootCount);
     }

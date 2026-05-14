@@ -24,15 +24,40 @@ namespace AtomUI.GalleryPerformance;
 
 internal static class Program
 {
-    private const string LineEditShowCaseRouteType = "AtomUIGallery.ShowCases.Views.LineEditShowCase";
-    private const string LineEditShowCaseXamlPath  = "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/LineEditShowCase.axaml";
     private static readonly Size WindowSize = new(1300, 900);
     private static readonly Rect WindowBounds = new(0, 0, WindowSize.Width, WindowSize.Height);
+    private static readonly ShowCaseSpec AboutUs = new(
+        "AboutUsPage",
+        AboutUsViewModel.ID,
+        "AtomUIGallery.ShowCases.Views.AboutUsPage",
+        "controlgallery/AtomUIGallery/ShowCases/Views/General/AboutUsPage.axaml",
+        stats => stats.VisualCount > 0);
+    private static readonly IReadOnlyDictionary<string, ShowCaseSpec> ShowCases =
+        new Dictionary<string, ShowCaseSpec>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["lineedit"] = new(
+                "LineEditShowCase",
+                LineEditViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.LineEditShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/LineEditShowCase.axaml",
+                stats => stats.LineEditCount > 0),
+            ["icon"] = new(
+                "IconShowCase",
+                IconViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.IconShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/General/IconShowCase.axaml",
+                stats => stats.IconCount > 0)
+        };
 
     [STAThread]
     public static int Main(string[] args)
     {
         var options = PerfOptions.Parse(args);
+        if (!ShowCases.TryGetValue(options.ShowCase, out var showCase))
+        {
+            Console.Error.WriteLine($"Unknown showcase '{options.ShowCase}'. Available: {string.Join(", ", ShowCases.Keys)}.");
+            return 1;
+        }
 
         try
         {
@@ -48,26 +73,26 @@ internal static class Program
             window.Height        = WindowSize.Height;
             window.Show();
 
-            WaitForRoute(window, "AtomUIGallery.ShowCases.Views.AboutUsPage", options.Timeout);
+            WaitForRoute(window, AboutUs, options.Timeout);
 
-            var coldRun = MeasureNavigation(window, 0, "Cold", options);
+            var coldRun = MeasureNavigation(window, 0, "Cold", options, showCase);
             NavigateToAboutUs(window, options);
 
             for (var i = 0; i < options.Warmup; i++)
             {
-                _ = MeasureNavigation(window, i + 1, "Warmup", options);
+                _ = MeasureNavigation(window, i + 1, "Warmup", options, showCase);
                 NavigateToAboutUs(window, options);
             }
 
             var samples = new List<NavigationSample>(options.Iterations);
             for (var i = 0; i < options.Iterations; i++)
             {
-                samples.Add(MeasureNavigation(window, i + 1, "Measured", options));
+                samples.Add(MeasureNavigation(window, i + 1, "Measured", options, showCase));
                 NavigateToAboutUs(window, options);
             }
 
             var result = NavigationResult.Create(options.Label, coldRun, samples);
-            var output = RenderResult(result, options);
+            var output = RenderResult(result, options, showCase);
             Console.WriteLine(output);
 
             if (!string.IsNullOrWhiteSpace(options.MarkdownOutputPath))
@@ -108,7 +133,8 @@ internal static class Program
     private static NavigationSample MeasureNavigation(WorkspaceWindow window,
                                                        int iteration,
                                                        string phase,
-                                                       PerfOptions options)
+                                                       PerfOptions options,
+                                                       ShowCaseSpec showCase)
     {
         GC.Collect();
         GC.WaitForPendingFinalizers();
@@ -116,8 +142,8 @@ internal static class Program
 
         var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
         var stopwatch       = Stopwatch.StartNew();
-        var trigger         = TriggerLineEditNavigation(window);
-        var route           = WaitForRoute(window, LineEditShowCaseRouteType, options.Timeout);
+        var trigger         = TriggerNavigation(window, showCase);
+        var route           = WaitForRoute(window, showCase, options.Timeout);
         stopwatch.Stop();
 
         var allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
@@ -125,14 +151,13 @@ internal static class Program
         return new NavigationSample(iteration, phase, trigger, stopwatch.Elapsed, allocatedBytes, stats);
     }
 
-    private static string TriggerLineEditNavigation(WorkspaceWindow window)
+    private static string TriggerNavigation(WorkspaceWindow window, ShowCaseSpec showCase)
     {
-        var lineEditKey = LineEditViewModel.ID;
-        var navMenu     = window.GetSelfAndVisualDescendants().OfType<NavMenu>().FirstOrDefault();
-        var navItem     = window.GetSelfAndVisualDescendants()
-                                .OfType<INavMenuItem>()
-                                .FirstOrDefault(item => item.ItemKey.HasValue &&
-                                                        item.ItemKey.Value == lineEditKey);
+        var navMenu = window.GetSelfAndVisualDescendants().OfType<NavMenu>().FirstOrDefault();
+        var navItem = window.GetSelfAndVisualDescendants()
+                            .OfType<INavMenuItem>()
+                            .FirstOrDefault(item => item.ItemKey.HasValue &&
+                                                    item.ItemKey.Value == showCase.Key);
 
         if (navMenu is not null && navItem is not null)
         {
@@ -140,14 +165,14 @@ internal static class Program
             return "NavMenuItemClick";
         }
 
-        ExecuteNavigateCommand(window, lineEditKey);
+        ExecuteNavigateCommand(window, showCase.Key);
         return "NavigateToCommand";
     }
 
     private static void NavigateToAboutUs(WorkspaceWindow window, PerfOptions options)
     {
         ExecuteNavigateCommand(window, AboutUsViewModel.ID);
-        WaitForRoute(window, "AtomUIGallery.ShowCases.Views.AboutUsPage", options.Timeout);
+        WaitForRoute(window, AboutUs, options.Timeout);
     }
 
     private static void ExecuteNavigateCommand(WorkspaceWindow window, EntityKey key)
@@ -162,13 +187,12 @@ internal static class Program
         }
     }
 
-    private static Control WaitForRoute(WorkspaceWindow window, string routeTypeName, TimeSpan timeout)
+    private static Control WaitForRoute(WorkspaceWindow window, ShowCaseSpec showCase, TimeSpan timeout)
     {
         var stopwatch          = Stopwatch.StartNew();
         var stableLayoutPasses = 0;
         var previousStats      = default(RouteStats);
         Control? route         = null;
-        var requiresLineEdit   = routeTypeName.EndsWith(".LineEditShowCase", StringComparison.Ordinal);
 
         while (stopwatch.Elapsed < timeout)
         {
@@ -176,12 +200,12 @@ internal static class Program
 
             route = window.GetSelfAndVisualDescendants()
                           .OfType<Control>()
-                          .FirstOrDefault(control => control.GetType().FullName == routeTypeName);
+                          .FirstOrDefault(control => control.GetType().FullName == showCase.RouteTypeName);
 
             if (route is not null && route.IsVisible && route.Bounds.Width > 0 && route.Bounds.Height > 0)
             {
                 var currentStats = RouteStats.Collect(route);
-                if (currentStats.IsDisplayReady(requiresLineEdit) &&
+                if (currentStats.IsDisplayReady(showCase) &&
                     previousStats is not null &&
                     currentStats.HasSameShape(previousStats))
                 {
@@ -202,7 +226,7 @@ internal static class Program
         var routeLabel = route is null
             ? "route was not found"
             : $"route was found but did not stabilize, bounds={route.Bounds}";
-        throw new TimeoutException($"Timed out waiting for {routeTypeName}: {routeLabel}.");
+        throw new TimeoutException($"Timed out waiting for {showCase.RouteTypeName}: {routeLabel}.");
     }
 
     private static void PumpLayout(Avalonia.Controls.Window window)
@@ -214,31 +238,31 @@ internal static class Program
         Dispatcher.UIThread.RunJobs();
     }
 
-    private static string RenderResult(NavigationResult result, PerfOptions options)
+    private static string RenderResult(NavigationResult result, PerfOptions options, ShowCaseSpec showCase)
     {
         var builder = new StringBuilder();
-        builder.AppendLine($"# LineEditShowCase navigation performance - {result.Label}");
+        builder.AppendLine($"# {showCase.Label} navigation performance - {result.Label}");
         builder.AppendLine();
         builder.AppendLine($"- Timestamp: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
         builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width.ToString(CultureInfo.InvariantCulture)}x{WindowSize.Height.ToString(CultureInfo.InvariantCulture)} window");
-        builder.AppendLine($"- Measurement: AboutUs route settled -> trigger LineEdit navigation -> LineEditShowCase visual tree and layout stable");
-        builder.AppendLine($"- Route type: `{LineEditShowCaseRouteType}`");
-        builder.AppendLine($"- XAML source: `{Path.GetFullPath(LineEditShowCaseXamlPath)}`");
+        builder.AppendLine($"- Measurement: AboutUs route settled -> trigger {showCase.Label} navigation -> visual tree and layout stable");
+        builder.AppendLine($"- Route type: `{showCase.RouteTypeName}`");
+        builder.AppendLine($"- XAML source: `{Path.GetFullPath(showCase.XamlPath)}`");
         builder.AppendLine($"- Warmup: {options.Warmup}, measured iterations: {options.Iterations}, timeout: {options.Timeout.TotalSeconds.ToString("0.#", CultureInfo.InvariantCulture)}s");
         builder.AppendLine();
         builder.AppendLine("## Gallery source shape");
         builder.AppendLine();
-        builder.AppendLine(SourceXamlStats.Read(LineEditShowCaseXamlPath).RenderMarkdown());
+        builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | LineEdit total | LineEdit direct | SearchEdit | TextArea | ShowCaseItem | AddOnDecoratedBox |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | LineEdit total | LineEdit direct | SearchEdit | TextArea | ShowCaseItem | AddOnDecoratedBox |");
-        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSample(result.ColdRun));
         foreach (var sample in result.Samples)
         {
@@ -270,11 +294,16 @@ internal static class Program
             Format(allocKb),
             stats.VisualCount.ToString(CultureInfo.InvariantCulture),
             stats.LogicalCount.ToString(CultureInfo.InvariantCulture),
+            stats.IconCount.ToString(CultureInfo.InvariantCulture),
+            stats.IconPresenterCount.ToString(CultureInfo.InvariantCulture),
+            stats.PathIconCount.ToString(CultureInfo.InvariantCulture),
             stats.LineEditCount.ToString(CultureInfo.InvariantCulture),
             stats.LineEditDirectCount.ToString(CultureInfo.InvariantCulture),
             stats.SearchEditCount.ToString(CultureInfo.InvariantCulture),
             stats.TextAreaCount.ToString(CultureInfo.InvariantCulture),
             stats.ShowCaseItemCount.ToString(CultureInfo.InvariantCulture),
+            stats.IconGalleryCount.ToString(CultureInfo.InvariantCulture),
+            stats.IconInfoItemCount.ToString(CultureInfo.InvariantCulture),
             stats.AddOnDecoratedBoxCount.ToString(CultureInfo.InvariantCulture) + " |");
     }
 
@@ -288,11 +317,16 @@ internal static class Program
             Format(sample.AllocatedBytes / 1024.0),
             sample.Stats.VisualCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.LogicalCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.IconCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.IconPresenterCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.PathIconCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.LineEditCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.LineEditDirectCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SearchEditCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.TextAreaCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.ShowCaseItemCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.IconGalleryCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.IconInfoItemCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.AddOnDecoratedBoxCount.ToString(CultureInfo.InvariantCulture) + " |");
     }
 
@@ -329,6 +363,7 @@ internal sealed record PerfOptions(
     int Iterations,
     int Warmup,
     string Label,
+    string ShowCase,
     string? MarkdownOutputPath,
     TimeSpan Timeout)
 {
@@ -337,6 +372,7 @@ internal sealed record PerfOptions(
         var iterations = 20;
         var warmup     = 3;
         var label      = "current";
+        var showCase   = "lineedit";
         var markdown   = default(string);
         var timeout    = TimeSpan.FromSeconds(10);
 
@@ -358,6 +394,10 @@ internal sealed record PerfOptions(
                     label = args[i + 1];
                     i++;
                     break;
+                case "--showcase" when i + 1 < args.Length:
+                    showCase = args[i + 1];
+                    i++;
+                    break;
                 case "--markdown" when i + 1 < args.Length:
                     markdown = args[i + 1];
                     i++;
@@ -374,10 +414,18 @@ internal sealed record PerfOptions(
             Math.Max(1, iterations),
             Math.Max(0, warmup),
             label,
+            showCase,
             markdown,
             timeout);
     }
 }
+
+internal sealed record ShowCaseSpec(
+    string Label,
+    EntityKey Key,
+    string RouteTypeName,
+    string XamlPath,
+    Func<RouteStats, bool> IsReady);
 
 internal sealed record NavigationResult(
     string Label,
@@ -403,31 +451,53 @@ internal sealed record NavigationSample(
 internal sealed record RouteStats(
     int VisualCount,
     int LogicalCount,
+    int IconCount,
+    int IconPresenterCount,
+    int PathIconCount,
     int LineEditCount,
     int LineEditDirectCount,
     int SearchEditCount,
     int TextAreaCount,
     int ShowCaseItemCount,
+    int IconGalleryCount,
+    int IconInfoItemCount,
     int AddOnDecoratedBoxCount)
 {
-    public bool IsDisplayReady(bool requiresLineEdit)
+    public bool IsDisplayReady(ShowCaseSpec showCase)
     {
-        return VisualCount > 0 && (!requiresLineEdit || LineEditCount > 0);
+        return VisualCount > 0 && showCase.IsReady(this);
     }
 
     public static RouteStats Collect(Control root)
     {
         var visuals                 = root.GetSelfAndVisualDescendants().ToList();
+        var iconCount               = 0;
+        var iconPresenterCount      = 0;
+        var pathIconCount           = 0;
         var lineEditCount           = 0;
         var lineEditDirectCount     = 0;
         var searchEditCount         = 0;
         var textAreaCount           = 0;
         var showCaseItemCount       = 0;
+        var iconGalleryCount        = 0;
+        var iconInfoItemCount       = 0;
         var addOnDecoratedBoxCount  = 0;
 
         foreach (var visual in visuals)
         {
             var type = visual.GetType();
+            if (IsTypeOrDerived(type, "AtomUI.Controls.Icon"))
+            {
+                iconCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Controls.IconPresenter"))
+            {
+                iconPresenterCount++;
+            }
+            if (visual is PathIcon)
+            {
+                pathIconCount++;
+            }
             if (type.FullName == "AtomUI.Desktop.Controls.LineEdit")
             {
                 lineEditDirectCount++;
@@ -448,6 +518,14 @@ internal sealed record RouteStats(
             {
                 showCaseItemCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUIGallery.Controls.IconGallery"))
+            {
+                iconGalleryCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUIGallery.Controls.IconInfoItem"))
+            {
+                iconInfoItemCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AddOnDecoratedBox"))
             {
                 addOnDecoratedBoxCount++;
@@ -457,11 +535,16 @@ internal sealed record RouteStats(
         return new RouteStats(
             visuals.Count,
             root.GetSelfAndLogicalDescendants().Count(),
+            iconCount,
+            iconPresenterCount,
+            pathIconCount,
             lineEditCount,
             lineEditDirectCount,
             searchEditCount,
             textAreaCount,
             showCaseItemCount,
+            iconGalleryCount,
+            iconInfoItemCount,
             addOnDecoratedBoxCount);
     }
 
@@ -469,11 +552,16 @@ internal sealed record RouteStats(
     {
         return VisualCount == other.VisualCount &&
                LogicalCount == other.LogicalCount &&
+               IconCount == other.IconCount &&
+               IconPresenterCount == other.IconPresenterCount &&
+               PathIconCount == other.PathIconCount &&
                LineEditCount == other.LineEditCount &&
                LineEditDirectCount == other.LineEditDirectCount &&
                SearchEditCount == other.SearchEditCount &&
                TextAreaCount == other.TextAreaCount &&
                ShowCaseItemCount == other.ShowCaseItemCount &&
+               IconGalleryCount == other.IconGalleryCount &&
+               IconInfoItemCount == other.IconInfoItemCount &&
                AddOnDecoratedBoxCount == other.AddOnDecoratedBoxCount;
     }
 
@@ -499,6 +587,9 @@ internal sealed record RouteStats(
 internal sealed record SourceXamlStats(
     string SourcePath,
     bool IsAvailable,
+    int AntDesignIconProviderCount,
+    int IconPresenterCount,
+    int IconGalleryCount,
     int LineEditDirectCount,
     int SearchEditCount,
     int TextAreaCount,
@@ -512,13 +603,17 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0);
         }
 
+        var text     = File.ReadAllText(sourcePath);
         var document = XDocument.Load(sourcePath, LoadOptions.None);
         return new SourceXamlStats(
             sourcePath,
             true,
+            CountText(text, "AntDesignIconProvider"),
+            CountElements(document, AtomNamespace, "IconPresenter"),
+            CountElements(document, GalleryNamespace, "IconGallery"),
             CountElements(document, AtomNamespace, "LineEdit"),
             CountElements(document, AtomNamespace, "SearchEdit"),
             CountElements(document, AtomNamespace, "TextArea"),
@@ -534,11 +629,17 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | LineEdit direct | SearchEdit | LineEdit total | TextArea | ShowCaseItem |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | IconPresenter | IconGallery | LineEdit direct | SearchEdit | LineEdit total | TextArea | ShowCaseItem |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
+        builder.Append(AntDesignIconProviderCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(IconPresenterCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(IconGalleryCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
         builder.Append(LineEditDirectCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(SearchEditCount.ToString(CultureInfo.InvariantCulture));
@@ -557,5 +658,18 @@ internal sealed record SourceXamlStats(
         return document.Descendants()
                        .Count(element => element.Name.NamespaceName == ns &&
                                          element.Name.LocalName == localName);
+    }
+
+    private static int CountText(string source, string pattern)
+    {
+        var count = 0;
+        var index = 0;
+        while ((index = source.IndexOf(pattern, index, StringComparison.Ordinal)) >= 0)
+        {
+            count++;
+            index += pattern.Length;
+        }
+
+        return count;
     }
 }
