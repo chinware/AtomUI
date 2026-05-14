@@ -162,8 +162,8 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 
 | Set | Before lazy load | After lazy load | Timing | Before alloc | After alloc | Allocation |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Cold first navigation | 604.13ms | 277.73ms | -54.0% | 54484.45KB | 15769.03KB | -71.1% |
-| Repeated navigation | 173.36ms | 76.67ms | -55.8% | 46331.65KB | 11771.88KB | -74.6% |
+| Cold first navigation | 604.13ms | 302.12ms | -50.0% | 54484.45KB | 15769.03KB | -71.1% |
+| Repeated navigation | 173.36ms | 82.11ms | -52.6% | 46331.65KB | 11771.88KB | -74.6% |
 
 运行时结构：
 

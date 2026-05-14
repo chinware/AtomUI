@@ -146,18 +146,38 @@ public class Col : ContentControl
 
     internal GridColLayout ResolveLayout(MediaBreakPoint breakPoint)
     {
-        var span = Span.GetValue(breakPoint);
-        var layout = new GridColLayout(span, Offset, Order, Push, Pull);
-        var responsive = breakPoint switch
-        {
-            MediaBreakPoint.ExtraSmall => Xs,
-            MediaBreakPoint.Small => Sm,
-            MediaBreakPoint.Medium => Md,
-            MediaBreakPoint.Large => Lg,
-            MediaBreakPoint.ExtraLarge => Xl,
-            _ => Xxl
-        };
+        var layout = new GridColLayout(Span.GetValue(breakPoint), Offset, Order, Push, Pull);
 
-        return responsive?.ApplyTo(layout) ?? layout;
+        if (Xs is not null)
+        {
+            layout = Xs.ApplyTo(layout);
+        }
+
+        if (breakPoint >= MediaBreakPoint.Small && Sm is not null)
+        {
+            layout = Sm.ApplyTo(layout);
+        }
+
+        if (breakPoint >= MediaBreakPoint.Medium && Md is not null)
+        {
+            layout = Md.ApplyTo(layout);
+        }
+
+        if (breakPoint >= MediaBreakPoint.Large && Lg is not null)
+        {
+            layout = Lg.ApplyTo(layout);
+        }
+
+        if (breakPoint >= MediaBreakPoint.ExtraLarge && Xl is not null)
+        {
+            layout = Xl.ApplyTo(layout);
+        }
+
+        if (breakPoint >= MediaBreakPoint.ExtraExtraLarge && Xxl is not null)
+        {
+            layout = Xxl.ApplyTo(layout);
+        }
+
+        return layout;
     }
 }
