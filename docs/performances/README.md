@@ -43,6 +43,7 @@
 | AddOnDecoratedBox | 本轮已完成 | [AddOnDecoratedBox](AddOnDecoratedBox/README.md) | 默认 LineEdit visual/root `26 -> 20`，KB/item `503.8 -> 398.4`，默认 icon scan `360 -> 0` |
 | Icon | 本轮已完成 | [Icon](Icon/README.md) | `IconShowCase` repeated `193.31ms -> 173.36ms`，alloc `57900.83KB -> 46331.65KB`；generated metadata 与 transform literal 已同步 AntDesign/Material/IconPark；`Select.Default` 默认隐藏 slot 从 `Icon/root 3 -> 1`、`Button/root 1 -> 0` |
 | LineEdit | 本轮已完成 Gallery 实测 | [LineEdit](LineEdit/README.md) | `LineEditShowCase` 重复导航均值 `229.07ms -> 183.98ms`，提升 `19.68%` |
+| Button | 本轮已完成 | [Button](Button/README.md) | loading/icon/wave 默认 slot 已按需创建；`ButtonShowCase` visuals `1128 -> 964`，IconPresenter `92 -> 51`，repeated mean `134.60ms -> 101.53ms` |
 
 ## 总列表
 
@@ -50,9 +51,9 @@
 | --- | --- | --- | --- |
 | Shared Primitive | AddOnDecoratedBox | Done | 输入类控件共享视觉与 addon 体系 |
 | Shared Primitive | Icon | Done | Phase 6 已完成；Material/IconPark 外部包已同步 generated metadata 与 transform literal；Provider cache 清理语义已补齐 |
-| General | Button | Pending | 待建立基线 |
+| General | Button | Done | loading/icon/wave 默认 slot 已按需创建；selector brush 状态保留在 XAML |
 | General | FloatButton | Pending | 待建立基线 |
-| General | SplitButton | Pending | 待建立基线 |
+| General | SplitButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | General | Separator | Pending | 待建立基线 |
 | General | ButtonSpinner | Pending | 待建立基线 |
 | Layout | FlexPanel | Pending | 待建立基线 |
@@ -61,7 +62,7 @@
 | Layout | Splitter | Pending | 待建立基线 |
 | Navigation | Breadcrumb | Pending | 待建立基线 |
 | Navigation | ComboBox | Pending | 待建立基线 |
-| Navigation | DropdownButton | Pending | 待建立基线 |
+| Navigation | DropdownButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | Navigation | Menu | Pending | 待建立基线 |
 | Navigation | Pagination | Pending | 待建立基线 |
 | Navigation | Steps | Pending | 待建立基线 |

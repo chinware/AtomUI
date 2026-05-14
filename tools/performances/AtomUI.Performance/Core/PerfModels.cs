@@ -47,10 +47,17 @@ internal sealed record TreeStats(
     double ContentPresenterPerRoot,
     double ButtonPerRoot,
     double TextBlockPerRoot,
+    double PanelPerRoot,
+    double BorderPerRoot,
+    double DockPanelPerRoot,
     double IconPerRoot,
     double IconPresenterPerRoot,
+    double ButtonIconPresenterPerRoot,
     double PathIconPerRoot,
     double StackPanelPerRoot,
+    double WaveSpiritDecoratorPerRoot,
+    double DashedBorderPerRoot,
+    double ButtonLoadingHostPerRoot,
     double AddOnDecoratedBoxPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
@@ -60,10 +67,17 @@ internal sealed record TreeStats(
         var contentPresenterCount    = 0;
         var buttonCount              = 0;
         var textBlockCount           = 0;
+        var panelCount               = 0;
+        var borderCount              = 0;
+        var dockPanelCount           = 0;
         var iconCount                = 0;
         var iconPresenterCount       = 0;
+        var buttonIconPresenterCount = 0;
         var pathIconCount            = 0;
         var stackPanelCount          = 0;
+        var waveSpiritDecoratorCount = 0;
+        var dashedBorderCount        = 0;
+        var buttonLoadingHostCount   = 0;
         var addOnDecoratedBoxCount   = 0;
 
         foreach (var root in roots)
@@ -86,13 +100,33 @@ internal sealed record TreeStats(
                 {
                     textBlockCount++;
                 }
+                if (visual is Panel panel)
+                {
+                    panelCount++;
+                    if (panel.Name == "PART_LoadingIconHost")
+                    {
+                        buttonLoadingHostCount++;
+                    }
+                }
+                if (visual is Border)
+                {
+                    borderCount++;
+                }
+                if (visual is DockPanel)
+                {
+                    dockPanelCount++;
+                }
                 if (type.Name.EndsWith("Icon", StringComparison.Ordinal) || IsAtomIcon(type))
                 {
                     iconCount++;
                 }
-                if (visual is IconPresenter)
+                if (visual is IconPresenter iconPresenter)
                 {
                     iconPresenterCount++;
+                    if (iconPresenter.Name == "PART_ButtonIcon")
+                    {
+                        buttonIconPresenterCount++;
+                    }
                 }
                 if (visual is PathIcon)
                 {
@@ -101,6 +135,14 @@ internal sealed record TreeStats(
                 if (visual is StackPanel)
                 {
                     stackPanelCount++;
+                }
+                if (type.Name == "WaveSpiritDecorator")
+                {
+                    waveSpiritDecoratorCount++;
+                }
+                if (type.Name == "DashedBorder")
+                {
+                    dashedBorderCount++;
                 }
                 if (IsAddOnDecoratedBox(type))
                 {
@@ -118,10 +160,17 @@ internal sealed record TreeStats(
             contentPresenterCount / (double)rootCount,
             buttonCount / (double)rootCount,
             textBlockCount / (double)rootCount,
+            panelCount / (double)rootCount,
+            borderCount / (double)rootCount,
+            dockPanelCount / (double)rootCount,
             iconCount / (double)rootCount,
             iconPresenterCount / (double)rootCount,
+            buttonIconPresenterCount / (double)rootCount,
             pathIconCount / (double)rootCount,
             stackPanelCount / (double)rootCount,
+            waveSpiritDecoratorCount / (double)rootCount,
+            dashedBorderCount / (double)rootCount,
+            buttonLoadingHostCount / (double)rootCount,
             addOnDecoratedBoxCount / (double)rootCount);
     }
 

@@ -13,6 +13,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -224,10 +225,13 @@ public class Button : AvaloniaButton,
     #endregion
     
     private const string LoadingIconName = "PART_LoadingIcon";
+    private const string ButtonIconPresenterName = "PART_ButtonIcon";
 
+    private Panel? _frameLayout;
     private WaveSpiritDecorator? _waveSpiritDecorator;
-    private Panel? _loadingIconHost;
+    private DockPanel? _contentLayout;
     private LoadingOutlined? _loadingIcon;
+    private IconPresenter? _buttonIconPresenter;
 
     static Button()
     {
@@ -285,12 +289,14 @@ public class Button : AvaloniaButton,
         base.OnPropertyChanged(change);
         if (change.Property == IsPressedProperty)
         {
-            if (!IsLoading &&
-                IsWaveSpiritEnabled &&
-                (change.OldValue as bool? == true) &&
-                (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default || ButtonType == ButtonType.Dashed))
+            if (ShouldUseWaveSpirit() &&
+                change.OldValue as bool? == true)
             {
-                Debug.Assert(_waveSpiritDecorator != null);
+                UpdateWaveSpiritDecorator();
+                if (_waveSpiritDecorator is null)
+                {
+                    return;
+                }
                 
                 IBrush? waveBrush = null;
                 if (IsDanger)
@@ -317,24 +323,40 @@ public class Button : AvaloniaButton,
             }
         }
 
-        if (change.Property == ButtonTypeProperty)
+        if (change.Property == ButtonTypeProperty ||
+            change.Property == ShapeProperty)
         {
             ConfigureWaveSpiritType();
+            UpdateWaveSpiritDecorator();
         }
 
         if (change.Property == ContentProperty ||
-            change.Property == IsLoadingProperty)
+            change.Property == IconProperty ||
+            change.Property == IsLoadingProperty ||
+            change.Property == ButtonTypeProperty ||
+            change.Property == IsDangerProperty)
         {
             UpdatePseudoClasses();
             if (change.Property == IsLoadingProperty)
             {
                 UpdateLoadingIcon();
+                UpdateWaveSpiritDecorator();
             }
         }
-        else if (change.Property == BorderBrushProperty ||
-                 change.Property == ButtonTypeProperty ||
-                 change.Property == IsEnabledProperty ||
-                 change.Property == BorderThicknessProperty)
+        if (change.Property == IconProperty ||
+            change.Property == IsIconVisibleProperty ||
+            change.Property == IsLoadingProperty)
+        {
+            UpdateButtonIconPresenter();
+        }
+        if (change.Property == IsWaveSpiritEnabledProperty)
+        {
+            UpdateWaveSpiritDecorator();
+        }
+        if (change.Property == BorderBrushProperty ||
+            change.Property == ButtonTypeProperty ||
+            change.Property == IsEnabledProperty ||
+            change.Property == BorderThicknessProperty)
         {
             ConfigureEffectiveBorderThickness();
         }
@@ -344,6 +366,7 @@ public class Button : AvaloniaButton,
             change.Property == CompactSpaceOrientationProperty)
         {
             ConfigureEffectiveCornerRadius();
+            SyncWaveSpiritDecorator();
         }
     }
     
@@ -368,13 +391,18 @@ public class Button : AvaloniaButton,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachWaveSpiritDecorator();
         DetachLoadingIcon();
+        DetachButtonIconPresenter();
         base.OnApplyTemplate(e);
-        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
-        _loadingIconHost     = e.NameScope.Find<Panel>("PART_LoadingIconHost");
+        _frameLayout         = e.NameScope.Find<Panel>("PART_FrameLayout");
+        _contentLayout       = e.NameScope.Find<DockPanel>("PART_ContentLayout");
         UpdatePseudoClasses();
-        UpdateLoadingIcon();
         ConfigureWaveSpiritType();
+        ConfigureEffectiveCornerRadius();
+        UpdateWaveSpiritDecorator();
+        UpdateLoadingIcon();
+        UpdateButtonIconPresenter();
         ConfigureEffectiveBorderThickness();
     }
 
@@ -401,6 +429,72 @@ public class Button : AvaloniaButton,
             CompactSpaceOrientation);
     }
 
+    private bool ShouldUseWaveSpirit()
+    {
+        return IsWaveSpiritEnabled &&
+               !IsLoading &&
+               (ButtonType == ButtonType.Primary ||
+                ButtonType == ButtonType.Default ||
+                ButtonType == ButtonType.Dashed);
+    }
+
+    private void UpdateWaveSpiritDecorator()
+    {
+        if (!ShouldUseWaveSpirit())
+        {
+            DetachWaveSpiritDecorator();
+            return;
+        }
+
+        if (_frameLayout is null)
+        {
+            return;
+        }
+
+        if (_waveSpiritDecorator is null)
+        {
+            _waveSpiritDecorator = new WaveSpiritDecorator
+            {
+                Name = WaveSpiritDecorator.WaveSpiritPart
+            };
+            _waveSpiritDecorator.SetTemplatedParent(this);
+            _frameLayout.Children.Insert(0, _waveSpiritDecorator);
+        }
+
+        SyncWaveSpiritDecorator();
+    }
+
+    private void SyncWaveSpiritDecorator()
+    {
+        if (_waveSpiritDecorator is null)
+        {
+            return;
+        }
+
+        _waveSpiritDecorator.SetCurrentValue(WaveSpiritDecorator.CornerRadiusProperty, EffectiveCornerRadius);
+        _waveSpiritDecorator.SetCurrentValue(WaveSpiritDecorator.WaveTypeProperty, WaveSpiritType);
+    }
+
+    private void DetachWaveSpiritDecorator()
+    {
+        if (_waveSpiritDecorator is null)
+        {
+            return;
+        }
+
+        if (_waveSpiritDecorator.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_waveSpiritDecorator);
+        }
+        else
+        {
+            _frameLayout?.Children.Remove(_waveSpiritDecorator);
+        }
+
+        _waveSpiritDecorator.SetTemplatedParent(null);
+        _waveSpiritDecorator = null;
+    }
+
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(ButtonPseudoClass.IconOnly, Icon is not null && Content is null);
@@ -415,14 +509,14 @@ public class Button : AvaloniaButton,
 
     private void UpdateLoadingIcon()
     {
-        if (_loadingIconHost is null)
-        {
-            return;
-        }
-
         if (!IsLoading)
         {
             DetachLoadingIcon();
+            return;
+        }
+
+        if (_contentLayout is null)
+        {
             return;
         }
 
@@ -436,8 +530,9 @@ public class Button : AvaloniaButton,
             Name             = LoadingIconName,
             LoadingAnimation = IconAnimation.Spin
         };
+        DockPanel.SetDock(_loadingIcon, Dock.Left);
         _loadingIcon.SetTemplatedParent(this);
-        _loadingIconHost.Children.Add(_loadingIcon);
+        _contentLayout.Children.Insert(GetLoadingIconInsertIndex(), _loadingIcon);
     }
 
     private void DetachLoadingIcon()
@@ -447,9 +542,96 @@ public class Button : AvaloniaButton,
             return;
         }
 
-        _loadingIconHost?.Children.Remove(_loadingIcon);
+        if (_loadingIcon.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_loadingIcon);
+        }
+        else
+        {
+            _contentLayout?.Children.Remove(_loadingIcon);
+        }
         _loadingIcon.SetTemplatedParent(null);
         _loadingIcon = null;
+    }
+
+    private bool ShouldShowButtonIcon() => Icon is not null && IsIconVisible && !IsLoading;
+
+    private void UpdateButtonIconPresenter()
+    {
+        if (!ShouldShowButtonIcon())
+        {
+            DetachButtonIconPresenter();
+            return;
+        }
+
+        if (_contentLayout is null)
+        {
+            return;
+        }
+
+        if (_buttonIconPresenter is null)
+        {
+            _buttonIconPresenter = new IconPresenter
+            {
+                Name = ButtonIconPresenterName
+            };
+            DockPanel.SetDock(_buttonIconPresenter, Dock.Left);
+            _buttonIconPresenter.SetTemplatedParent(this);
+            _contentLayout.Children.Insert(GetButtonIconInsertIndex(), _buttonIconPresenter);
+        }
+
+        _buttonIconPresenter.SetCurrentValue(IconPresenter.IconProperty, Icon);
+    }
+
+    private void DetachButtonIconPresenter()
+    {
+        if (_buttonIconPresenter is null)
+        {
+            return;
+        }
+
+        if (_buttonIconPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_buttonIconPresenter);
+        }
+        else
+        {
+            _contentLayout?.Children.Remove(_buttonIconPresenter);
+        }
+
+        _buttonIconPresenter.SetCurrentValue(IconPresenter.IconProperty, null);
+        _buttonIconPresenter.SetTemplatedParent(null);
+        _buttonIconPresenter = null;
+    }
+
+    private int GetLoadingIconInsertIndex()
+    {
+        Debug.Assert(_contentLayout is not null);
+        for (var i = 0; i < _contentLayout.Children.Count; i++)
+        {
+            var child = _contentLayout.Children[i];
+            if (child.Name == ButtonIconPresenterName ||
+                child.Name == "PART_ContentPresenter")
+            {
+                return i;
+            }
+        }
+
+        return _contentLayout.Children.Count;
+    }
+
+    private int GetButtonIconInsertIndex()
+    {
+        Debug.Assert(_contentLayout is not null);
+        for (var i = 0; i < _contentLayout.Children.Count; i++)
+        {
+            if (_contentLayout.Children[i].Name == "PART_ContentPresenter")
+            {
+                return i;
+            }
+        }
+
+        return _contentLayout.Children.Count;
     }
 
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)

@@ -262,11 +262,6 @@ public class DropdownButton : Button
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (RightExtraContent == null)
-        {
-            SetCurrentValue(RightExtraContentProperty, new Border());
-        }
-
         ConfigureContentVisible();
     }
 

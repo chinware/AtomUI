@@ -21,7 +21,7 @@ internal class WaveSpiritDecorator : Control
         AvaloniaProperty.Register<WaveSpiritDecorator, TimeSpan>(nameof(SizeMotionDuration));
     
     public static readonly StyledProperty<TimeSpan> OpacityMotionDurationProperty =
-        AvaloniaProperty.Register<WaveSpiritDecorator, TimeSpan>(nameof(SizeMotionDuration));
+        AvaloniaProperty.Register<WaveSpiritDecorator, TimeSpan>(nameof(OpacityMotionDuration));
     
     public static readonly StyledProperty<Easing> SizeEasingCurveProperty =
         AvaloniaProperty.Register<WaveSpiritDecorator, Easing>(nameof(SizeEasingCurve));
@@ -166,9 +166,7 @@ internal class WaveSpiritDecorator : Control
             change.Property == OpacityEasingCurveProperty ||
             change.Property == CornerRadiusProperty)
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
+            CancelActiveAnimation();
             ConfigureWavePainter();
         }
         else if (change.Property == BoundsProperty)
@@ -255,6 +253,11 @@ internal class WaveSpiritDecorator : Control
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        CancelActiveAnimation();
+    }
+
+    private void CancelActiveAnimation()
+    {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
@@ -292,17 +295,32 @@ internal class WaveSpiritDecorator : Control
         _wavePainter.NotifyBuildSizeAnimation(sizeAnimation, targetProperty);
         _wavePainter.NotifyBuildOpacityAnimation(opacityAnimation, LastWaveOpacityProperty);
 
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
+        CancelActiveAnimation();
+        var cancellationTokenSource = new CancellationTokenSource();
+        _cancellationTokenSource = cancellationTokenSource;
 
-        var sizeAnimationTask    = sizeAnimation.RunAsync(this, _cancellationTokenSource.Token);
-        var opacityAnimationTask = opacityAnimation.RunAsync(this, _cancellationTokenSource.Token);
+        var sizeAnimationTask    = sizeAnimation.RunAsync(this, cancellationTokenSource.Token);
+        var opacityAnimationTask = opacityAnimation.RunAsync(this, cancellationTokenSource.Token);
         _isPlaying = true;
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await Task.WhenAll(sizeAnimationTask, opacityAnimationTask);
-            _isPlaying = false;
+            try
+            {
+                await Task.WhenAll(sizeAnimationTask, opacityAnimationTask);
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when the decorator is removed or reconfigured while the wave is running.
+            }
+            finally
+            {
+                if (ReferenceEquals(_cancellationTokenSource, cancellationTokenSource))
+                {
+                    _cancellationTokenSource = null;
+                    cancellationTokenSource.Dispose();
+                    _isPlaying = false;
+                }
+            }
         });
     }
 }

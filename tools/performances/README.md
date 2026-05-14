@@ -16,6 +16,7 @@
 - `Program.cs`: 入口、参数解析后的调度，不放具体控件创建和验证逻辑。
 - `Core/`: runner、结果模型、树统计、Markdown/table 渲染。
 - `Suites/AddOnDecoratedBox/`: AddOnDecoratedBox、LineEdit、TextArea、SearchEdit、CompactSpace 相关场景和专项验证。
+- `Suites/Button/`: Button、DropdownButton、SplitButton 相关场景和状态/模板验证。
 - `Suites/Icon/`: Icon micro benchmark、隐藏 icon slot、AntDesign metadata、provider cache 验证。
 - `TestSupport/`: 断言、测试 brush、marker template、probe icon 等测试辅助类型。
 
@@ -49,6 +50,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown /tmp/icon-micro-baseline.md
 ```
 
+控件级 Button 基准：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite button --count 60 \
+  --markdown docs/performances/Button/button-baseline.md
+```
+
 Icon / AddOn 专项行为验证：
 
 ```bash
@@ -56,6 +66,14 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   -c Debug --framework net10.0 --no-build -- \
   --verify-accessories --verify-effective-brushes --verify-addon-states \
   --verify-antdesign-metadata --verify-icon-hidden-slots --verify-icon-provider-cache
+```
+
+Button 状态和模板验证：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --verify-button-states
 ```
 
 Gallery 真实 `LineEditShowCase` 导航基准：
@@ -77,7 +95,7 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
   --markdown /tmp/icon-showcase-navigation-baseline.md
 ```
 
-Gallery 工具当前支持 `lineedit`、`icon`、`button`、`select`、`menu`。例如验证 Icon Phase 4 影响到的控件真实场景：
+Gallery 工具当前支持 `lineedit`、`icon`、`button`、`dropdownbutton`、`splitbutton`、`select`、`menu`。例如验证 Icon Phase 4 影响到的控件真实场景：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \

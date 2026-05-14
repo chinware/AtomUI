@@ -53,6 +53,18 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ButtonShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/General/ButtonShowCase.axaml",
                 stats => stats.ButtonCount > 0),
+            ["dropdownbutton"] = new(
+                "DropdownButtonShowCase",
+                DropdownButtonViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.DropdownButtonShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/Navigation/DropdownButtonShowCase.axaml",
+                stats => stats.ButtonCount > 0),
+            ["splitbutton"] = new(
+                "SplitButtonShowCase",
+                SplitButtonViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.SplitButtonShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/General/SplitButtonShowCase.axaml",
+                stats => stats.ButtonCount > 0),
             ["select"] = new(
                 "SelectShowCase",
                 SelectViewModel.ID,

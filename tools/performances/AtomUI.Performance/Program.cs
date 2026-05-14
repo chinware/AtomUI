@@ -22,7 +22,8 @@ internal static partial class Program
             options.VerifyAddonStates ||
             options.VerifyAntDesignMetadata ||
             options.VerifyIconHiddenSlots ||
-            options.VerifyIconProviderCache)
+            options.VerifyIconProviderCache ||
+            options.VerifyButtonStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -48,6 +49,10 @@ internal static partial class Program
             if (options.VerifyIconProviderCache)
             {
                 verified &= RunIconProviderCacheVerification();
+            }
+            if (options.VerifyButtonStates)
+            {
+                verified &= RunButtonStateVerification();
             }
             return verified ? 0 : 1;
         }
@@ -86,8 +91,11 @@ internal static partial class Program
 
     private static IReadOnlyList<PerfScenario> CreateScenarios(string suite)
     {
-        return suite.Equals("icon", StringComparison.OrdinalIgnoreCase)
-            ? CreateIconScenarios()
-            : CreateAddOnScenarios();
+        return suite.ToLowerInvariant() switch
+        {
+            "icon" => CreateIconScenarios(),
+            "button" => CreateButtonScenarios(),
+            _ => CreateAddOnScenarios()
+        };
     }
 }
