@@ -36,4 +36,12 @@ internal class CascaderAddOnDecoratedBox : AddOnDecoratedBox
         get => GetValue(IsDropDownOpenProperty);
         set => SetValue(IsDropDownOpenProperty, value);
     }
+
+    private protected override bool IsInnerBoxActive => base.IsInnerBoxActive || IsDropDownOpen;
+
+    private protected override bool IsEffectiveInnerBoxBrushStateProperty(AvaloniaProperty property)
+    {
+        return base.IsEffectiveInnerBoxBrushStateProperty(property) ||
+               property == IsDropDownOpenProperty;
+    }
 }

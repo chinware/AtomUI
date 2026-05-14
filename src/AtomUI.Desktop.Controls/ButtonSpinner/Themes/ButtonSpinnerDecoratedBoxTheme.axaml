@@ -41,8 +41,8 @@
                         <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                                 BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
                                 CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding EffectiveInnerBoxBorderBrush}"
+                                Background="{TemplateBinding EffectiveInnerBoxBackground}"
                                 BackgroundSizing="InnerBorderEdge">
                             <atom:ButtonSpinnerContentPanel Name="ContentLayout"
                                                             LastChildFill="True"

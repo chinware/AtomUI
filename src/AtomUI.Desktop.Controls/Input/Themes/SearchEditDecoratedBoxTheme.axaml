@@ -40,8 +40,8 @@
                     <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                             BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
                             CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding EffectiveInnerBoxBorderBrush}"
+                            Background="{TemplateBinding EffectiveInnerBoxBackground}"
                             BackgroundSizing="OuterBorderEdge">
                         <DockPanel Name="ContentLayout" LastChildFill="True">
                             <ContentPresenter

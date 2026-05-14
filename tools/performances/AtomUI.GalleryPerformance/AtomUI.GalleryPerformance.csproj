@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>AtomUI.GalleryPerformance</RootNamespace>
+        <AssemblyName>AtomUI.GalleryPerformance</AssemblyName>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Headless" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj" />
+    </ItemGroup>
+
+</Project>
