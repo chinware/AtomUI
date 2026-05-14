@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using AtomUI.Controls;
 using AtomUI.Reflection;
 using AtomUI.Theme;
@@ -7,6 +8,7 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -88,6 +90,10 @@ public class CompactSpace : TemplatedControl,
 
     private Grid? _contentLayout;
     private readonly Dictionary<object, NotifyCollectionChangedEventHandler> _childClassesChangedHandlers = new();
+    private readonly Dictionary<Control, IDisposable> _childSizeTypeBindings = new();
+    private readonly HashSet<Control> _childPropertyChangedTargets = new();
+    private readonly HashSet<Control> _childInteractionTargets = new();
+    private int? _sizeDefinitionsSignature;
 
     static CompactSpace()
     {
@@ -117,22 +123,18 @@ public class CompactSpace : TemplatedControl,
         {
             return;
         }
+        ValidateFillerUsage();
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
             {
-                var compactSpaceItems = new List<CompactSpaceItem>();
+                var layoutChildren = new List<Control>();
                 foreach (var newItem in e.NewItems!.OfType<Control>())
                 {
                     EnsureCompactSpaceItem(newItem);
-                    var compactSpaceItem = new CompactSpaceItem()
-                    {
-                        Child = newItem
-                    };
-                    NotifyAddCompactSpaceItem(compactSpaceItem);
-                    compactSpaceItems.Add(compactSpaceItem);
+                    layoutChildren.Add(CreateLayoutChild(newItem));
                 }
-                _contentLayout.Children.InsertRange(e.NewStartingIndex, compactSpaceItems);
+                _contentLayout.Children.InsertRange(e.NewStartingIndex, layoutChildren);
                 break;
             }
 
@@ -142,23 +144,30 @@ public class CompactSpace : TemplatedControl,
 
             case NotifyCollectionChangedAction.Remove:
             {
-                var oldItems             = new HashSet<Control>(e.OldItems!.OfType<Control>());
-                var oldCompactSpaceItems = new List<CompactSpaceItem>();
-                foreach (var oldItem in _contentLayout.Children)
+                var oldItems                = new HashSet<Control>(e.OldItems!.OfType<Control>());
+                var oldLayoutChildren       = new List<Control>();
+                var oldCompactSpaceWrappers = new List<CompactSpaceItem>();
+                foreach (var layoutChild in _contentLayout.Children)
                 {
-                    if (oldItem is CompactSpaceItem compactSpaceItem)
+                    if (layoutChild is CompactSpaceItem compactSpaceItem)
                     {
                         if (oldItems.Contains(compactSpaceItem.Child!))
                         {
-                            oldCompactSpaceItems.Add(compactSpaceItem);
+                            oldCompactSpaceWrappers.Add(compactSpaceItem);
+                            oldLayoutChildren.Add(compactSpaceItem);
                         }
                     }
+                    else if (oldItems.Contains(layoutChild))
+                    {
+                        layoutChild.SetTemplatedParent(null);
+                        oldLayoutChildren.Add(layoutChild);
+                    }
                 }
-                foreach (var compactSpaceItem in oldCompactSpaceItems)
+                foreach (var compactSpaceItem in oldCompactSpaceWrappers)
                 {
                     NotifyRemoveCompactSpaceItem(compactSpaceItem);
                 }
-                _contentLayout.Children.RemoveAll(oldCompactSpaceItems);
+                _contentLayout.Children.RemoveAll(oldLayoutChildren);
                 break;
             }
 
@@ -180,23 +189,35 @@ public class CompactSpace : TemplatedControl,
         }
     }
 
+    private Control CreateLayoutChild(Control child)
+    {
+        if (child is CompactSpaceFiller)
+        {
+            child.SetTemplatedParent(TemplatedParent);
+            return child;
+        }
+
+        var compactSpaceItem = new CompactSpaceItem
+        {
+            Child = child
+        };
+        NotifyAddCompactSpaceItem(compactSpaceItem);
+        return compactSpaceItem;
+    }
+
     private void NotifyAddCompactSpaceItem(CompactSpaceItem compactSpaceItem)
     {
         if (compactSpaceItem.Child != null)
         {
             var target                  = compactSpaceItem.Child;
             var targetCompactSpaceAware = target as ICompactSpaceAware;
-            if (targetCompactSpaceAware != null && !targetCompactSpaceAware.IgnoreZIndexChange())
-            {
-                target.GotFocus       += HandleGotFocus;
-                target.PointerEntered += HandlePointerEntered;
-                target.PointerExited  += HandlePointerExited;
-            }
 
-            target.PropertyChanged += CompactSpaceItemChildPropertyChanged;
+            if (_childPropertyChangedTargets.Add(target))
+            {
+                target.PropertyChanged += CompactSpaceItemChildPropertyChanged;
+            }
             SetItemSize(compactSpaceItem, GetItemSize(target));
 
-            RegisterChildClassesChangedHandler(compactSpaceItem, target);
             if (targetCompactSpaceAware != null && targetCompactSpaceAware.IsAlwaysActiveZIndex())
             {
                 compactSpaceItem.ZIndex = ACTIVE_ZINDEX;
@@ -204,7 +225,11 @@ public class CompactSpace : TemplatedControl,
 
             if (target is ISizeTypeAware)
             {
-                target[!SizeTypeProperty] = this[!SizeTypeProperty];
+                if (_childSizeTypeBindings.Remove(target, out var existingSizeTypeBinding))
+                {
+                    existingSizeTypeBinding.Dispose();
+                }
+                _childSizeTypeBindings[target] = target.Bind(SizeTypeProperty, this.GetObservable(SizeTypeProperty), BindingPriority.LocalValue);
             }
             target.SetTemplatedParent(TemplatedParent);
         }
@@ -215,21 +240,30 @@ public class CompactSpace : TemplatedControl,
         if (compactSpaceItem.Child != null)
         {
             var target                  = compactSpaceItem.Child;
-            var targetCompactSpaceAware = target as ICompactSpaceAware;
-            if (targetCompactSpaceAware != null && !targetCompactSpaceAware.IgnoreZIndexChange())
+            DetachInteractionHandlers(target);
+            if (_childPropertyChangedTargets.Remove(target))
             {
-                target.GotFocus       -= HandleGotFocus;
-                target.PointerEntered -= HandlePointerEntered;
-                target.PointerExited  -= HandlePointerExited;
+                target.PropertyChanged -= CompactSpaceItemChildPropertyChanged;
             }
-            target.PropertyChanged -= CompactSpaceItemChildPropertyChanged;
         
             if (_childClassesChangedHandlers.TryGetValue(target, out var childClassesChangedHandler))
             {
                 target.Classes.CollectionChanged -= childClassesChangedHandler;
                 _childClassesChangedHandlers.Remove(target);
             }
+            if (target is ICompactSpaceAware targetCompactSpaceAware)
+            {
+                targetCompactSpaceAware.NotifyPositionChange(null);
+            }
+            if (target is ISizeTypeAware)
+            {
+                if (_childSizeTypeBindings.Remove(target, out var sizeTypeBinding))
+                {
+                    sizeTypeBinding.Dispose();
+                }
+            }
             target.SetTemplatedParent(null);
+            compactSpaceItem.Child = null;
         }
         
     }
@@ -242,6 +276,8 @@ public class CompactSpace : TemplatedControl,
             if (compactSpaceItem != null && e.Property == ItemSizeProperty && e.NewValue is CompactSpaceSize compactSpaceSize)
             {
                 SetItemSize(compactSpaceItem, compactSpaceSize);
+                ConfigureSizeDefinitions();
+                InvalidateMeasureOnChildrenChanged();
             }
         }
     }
@@ -292,7 +328,9 @@ public class CompactSpace : TemplatedControl,
 
     private void HandlePointerExited(object? sender, PointerEventArgs e)
     {
-        if (sender is CompactSpaceItem compactSpaceItem && compactSpaceItem.Child is ICompactSpaceAware compactSpaceAware)
+        if (sender is Control currentControl &&
+            TryFindCompactSpaceItem(currentControl, out var compactSpaceItem) &&
+            compactSpaceItem.Child is ICompactSpaceAware compactSpaceAware)
         {
             if (!IsEffectiveFocused(compactSpaceItem) && !compactSpaceAware.IsAlwaysActiveZIndex())
             {
@@ -301,11 +339,17 @@ public class CompactSpace : TemplatedControl,
         }
     }
 
-    private void HandleChildFocusWithinChanged(Control control, bool focused)
+    private void HandleChildFocusWithinChanged(CompactSpaceItem compactSpaceItem, Control target, bool focused)
     {
         if (focused)
         {
-            control.ZIndex = ACTIVE_ZINDEX;
+            compactSpaceItem.ZIndex = ACTIVE_ZINDEX;
+        }
+        else if (!target.IsPointerOver &&
+                 compactSpaceItem.Child is ICompactSpaceAware compactSpaceAware &&
+                 !compactSpaceAware.IsAlwaysActiveZIndex())
+        {
+            compactSpaceItem.ZIndex = NORMAL_ZINDEX;
         }
     }
 
@@ -318,6 +362,24 @@ public class CompactSpace : TemplatedControl,
         var target = control.Child;
         return target.Classes.Contains(StdPseudoClass.FocusWithIn) || target.IsFocused;
     }
+
+    private bool TryFindCompactSpaceItem(Control target, out CompactSpaceItem compactSpaceItem)
+    {
+        if (_contentLayout != null)
+        {
+            foreach (var child in _contentLayout.Children)
+            {
+                if (child is CompactSpaceItem currentItem && currentItem.Child == target)
+                {
+                    compactSpaceItem = currentItem;
+                    return true;
+                }
+            }
+        }
+
+        compactSpaceItem = null!;
+        return false;
+    }
     #endregion
     
     private protected virtual void InvalidateMeasureOnChildrenChanged()
@@ -328,20 +390,16 @@ public class CompactSpace : TemplatedControl,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        ClearChildClassesChangedHandlers();
+        DetachCompactSpaceItems();
         _contentLayout = e.NameScope.Get<Grid>("PART_ContentLayout");
-        var compactSpaceItems = new List<CompactSpaceItem>();
+        ValidateFillerUsage();
+        var layoutChildren = new List<Control>();
         foreach (var child in Children)
         {
             EnsureCompactSpaceItem(child);
-            var compactSpaceItem = new CompactSpaceItem()
-            {
-                Child = child,
-            };
-            NotifyAddCompactSpaceItem(compactSpaceItem);
-            compactSpaceItems.Add(compactSpaceItem);
+            layoutChildren.Add(CreateLayoutChild(child));
         }
-        _contentLayout.Children.AddRange(compactSpaceItems);
+        _contentLayout.Children.AddRange(layoutChildren);
 
         ConfigureSizeDefinitions();
         _childIndexChanged?.Invoke(this, ChildIndexChangedEventArgs.ChildIndexesReset);
@@ -350,29 +408,6 @@ public class CompactSpace : TemplatedControl,
 
     protected override Size MeasureCore(Size availableSize)
     {
-        if (_contentLayout != null)
-        {
-            // 检查 filler 位置和数量
-            var fillerCount   = 0;
-            var childrenCount = _contentLayout.Children.Count;
-            for (var i = 0; i < childrenCount; i++)
-            {
-                var child = _contentLayout.Children[i];
-                if (child is CompactSpaceFiller)
-                {
-                    ++fillerCount;
-                    if (i != fillerCount - 1)
-                    {
-                        throw new InvalidSpaceFillerUsageException("The CompactSpaceFiller is misplaced, it can only be the last child.");
-                    }
-                }
-            }
-
-            if (fillerCount > 1)
-            {
-                throw new InvalidSpaceFillerUsageException("There can only be one CompactSpaceFiller.");
-            }
-        }
         return base.MeasureCore(availableSize);
     }
 
@@ -380,12 +415,13 @@ public class CompactSpace : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
         ClearChildClassesChangedHandlers();
+        DetachAllInteractionHandlers();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        ReRegisterChildClassesChangedHandlers();
+        UpdateInteractionTracking();
     }
 
     private void ClearChildClassesChangedHandlers()
@@ -400,22 +436,6 @@ public class CompactSpace : TemplatedControl,
         _childClassesChangedHandlers.Clear();
     }
 
-    private void ReRegisterChildClassesChangedHandlers()
-    {
-        if (_contentLayout == null)
-        {
-            return;
-        }
-
-        foreach (var child in _contentLayout.Children)
-        {
-            if (child is CompactSpaceItem compactSpaceItem && compactSpaceItem.Child is { } target)
-            {
-                RegisterChildClassesChangedHandler(compactSpaceItem, target);
-            }
-        }
-    }
-
     private void RegisterChildClassesChangedHandler(CompactSpaceItem compactSpaceItem, Control target)
     {
         if (_childClassesChangedHandlers.ContainsKey(target))
@@ -425,102 +445,318 @@ public class CompactSpace : TemplatedControl,
 
         NotifyCollectionChangedEventHandler handler = (_, _) =>
         {
-            HandleChildFocusWithinChanged(compactSpaceItem, target.Classes.Contains(StdPseudoClass.FocusWithIn));
+            HandleChildFocusWithinChanged(compactSpaceItem, target, target.Classes.Contains(StdPseudoClass.FocusWithIn));
         };
         _childClassesChangedHandlers.Add(target, handler);
         target.Classes.CollectionChanged += handler;
     }
 
+    private void UnregisterChildClassesChangedHandler(Control target)
+    {
+        if (_childClassesChangedHandlers.TryGetValue(target, out var childClassesChangedHandler))
+        {
+            target.Classes.CollectionChanged -= childClassesChangedHandler;
+            _childClassesChangedHandlers.Remove(target);
+        }
+    }
+
+    private void AttachInteractionHandlers(Control target)
+    {
+        if (_childInteractionTargets.Add(target))
+        {
+            target.GotFocus       += HandleGotFocus;
+            target.PointerEntered += HandlePointerEntered;
+            target.PointerExited  += HandlePointerExited;
+        }
+    }
+
+    private void DetachInteractionHandlers(Control target)
+    {
+        if (_childInteractionTargets.Remove(target))
+        {
+            target.GotFocus       -= HandleGotFocus;
+            target.PointerEntered -= HandlePointerEntered;
+            target.PointerExited  -= HandlePointerExited;
+        }
+    }
+
+    private void DetachAllInteractionHandlers()
+    {
+        foreach (var target in _childInteractionTargets.ToList())
+        {
+            target.GotFocus       -= HandleGotFocus;
+            target.PointerEntered -= HandlePointerEntered;
+            target.PointerExited  -= HandlePointerExited;
+        }
+        _childInteractionTargets.Clear();
+    }
+
+    private void DetachAllPropertyChangedHandlers()
+    {
+        foreach (var target in _childPropertyChangedTargets.ToList())
+        {
+            target.PropertyChanged -= CompactSpaceItemChildPropertyChanged;
+        }
+        _childPropertyChangedTargets.Clear();
+    }
+
+    private void DetachAllSizeTypeBindings()
+    {
+        foreach (var binding in _childSizeTypeBindings.Values)
+        {
+            binding.Dispose();
+        }
+        _childSizeTypeBindings.Clear();
+    }
+
+    private void UpdateInteractionTracking()
+    {
+        if (_contentLayout == null)
+        {
+            DetachAllInteractionHandlers();
+            ClearChildClassesChangedHandlers();
+            return;
+        }
+
+        var realItemCount = CountRealCompactItems(_contentLayout.Children);
+        foreach (var child in _contentLayout.Children)
+        {
+            if (child is not CompactSpaceItem compactSpaceItem || compactSpaceItem.Child is not { } target)
+            {
+                continue;
+            }
+
+            var compactSpaceAware = target as ICompactSpaceAware;
+            if (compactSpaceAware?.IsAlwaysActiveZIndex() == true)
+            {
+                compactSpaceItem.ZIndex = ACTIVE_ZINDEX;
+            }
+            else if (compactSpaceAware == null || compactSpaceAware.IgnoreZIndexChange() || realItemCount <= 1)
+            {
+                compactSpaceItem.ZIndex = NORMAL_ZINDEX;
+            }
+
+            if (ShouldTrackZIndex(target, realItemCount))
+            {
+                AttachInteractionHandlers(target);
+                RegisterChildClassesChangedHandler(compactSpaceItem, target);
+            }
+            else
+            {
+                DetachInteractionHandlers(target);
+                UnregisterChildClassesChangedHandler(target);
+            }
+        }
+    }
+
+    private static bool ShouldTrackZIndex(Control target, int realItemCount)
+    {
+        if (realItemCount <= 1)
+        {
+            return false;
+        }
+        if (target is not ICompactSpaceAware compactSpaceAware)
+        {
+            return false;
+        }
+        return !compactSpaceAware.IgnoreZIndexChange() && !compactSpaceAware.IsAlwaysActiveZIndex();
+    }
+
+    private static bool IsRealCompactItem(Control child)
+    {
+        return child is CompactSpaceItem { Child: not null } compactSpaceItem &&
+               compactSpaceItem.Child is not CompactSpaceFiller;
+    }
+
+    private static int CountRealCompactItems(IReadOnlyList<Control> children)
+    {
+        var count = 0;
+        for (var i = 0; i < children.Count; i++)
+        {
+            if (IsRealCompactItem(children[i]))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private void ConfigureSizeDefinitions()
     {
-        if (_contentLayout == null || _contentLayout.Children.Count == 0)
+        if (_contentLayout == null)
         {
             return;
         }
+        ValidateFillerUsage();
         var children = _contentLayout.Children;
-        if (Orientation == Orientation.Horizontal)
+        if (children.Count == 0)
         {
-            var columnDefinitions = new ColumnDefinitions();
-            for (var i = 0; i < children.Count; i++)
-            {
-                var child    = children[i];
-                Grid.SetColumn(child, i);
-                var itemSize = GetItemSize(child);
-                if (itemSize.IsAbsolute)
-                {
-                    columnDefinitions.Add(new ColumnDefinition(itemSize.Value, GridUnitType.Pixel));
-                }
-                else if (itemSize.IsAuto)
-                {
-                    columnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-                }
-                else
-                {
-                    columnDefinitions.Add(new ColumnDefinition(itemSize.Value, GridUnitType.Star));
-                }
-            }
-            _contentLayout.ColumnDefinitions = columnDefinitions;
+            _sizeDefinitionsSignature = null;
+            UpdateInteractionTracking();
+            return;
         }
-        else
+
+        var signature = CreateSizeDefinitionsSignature(children);
+        if (_sizeDefinitionsSignature != signature)
         {
-            var rowDefinitions = new RowDefinitions();
-            for (var i = 0; i < children.Count; i++)
+            if (Orientation == Orientation.Horizontal)
             {
-                var child    = children[i];
-                Grid.SetRow(child, i);
-                var itemSize = GetItemSize(child);
-                if (itemSize.IsAbsolute)
+                var columnDefinitions = new ColumnDefinitions();
+                for (var i = 0; i < children.Count; i++)
                 {
-                    rowDefinitions.Add(new RowDefinition(itemSize.Value, GridUnitType.Pixel));
-                }
-                else if (itemSize.IsAuto)
-                {
-                    rowDefinitions.Add(new RowDefinition(GridLength.Auto));
-                }
-                else
-                {
-                    rowDefinitions.Add(new RowDefinition(itemSize.Value, GridUnitType.Star));
-                }
-            }
-            _contentLayout.RowDefinitions = rowDefinitions;
-        }
-        
-        // 计算位置
-        var realChildren = children.Where(child => child is CompactSpaceItem compactSpaceItem && compactSpaceItem.Child is not CompactSpaceFiller).ToList();
-        if (realChildren.Count == 1)
-        {
-            if (realChildren[0] is ICompactSpaceAware compactSpaceAware)
-            {
-                compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
-            }
-        }
-        else
-        {
-            for (var i = 0; i < realChildren.Count; i++)
-            {
-                var child = realChildren[i];
-                if (child is CompactSpaceItem compactSpaceItem)
-                {
-                    compactSpaceItem.PositionIndex = i;
-                }
-                if (child is ICompactSpaceAware compactSpaceAware)
-                {
-                    compactSpaceAware.NotifyOrientationChange(Orientation);
-                    if (i == 0)
+                    var child = children[i];
+                    Grid.SetColumn(child, i);
+                    var itemSize = GetItemSize(child);
+                    if (itemSize.IsAbsolute)
                     {
-                        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First);
+                        columnDefinitions.Add(new ColumnDefinition(itemSize.Value, GridUnitType.Pixel));
                     }
-                    else if (i == realChildren.Count - 1)
+                    else if (itemSize.IsAuto)
                     {
-                        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.Last);
+                        columnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
                     }
                     else
                     {
-                        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.Middle);
+                        columnDefinitions.Add(new ColumnDefinition(itemSize.Value, GridUnitType.Star));
                     }
                 }
+                _contentLayout.ColumnDefinitions = columnDefinitions;
+                _contentLayout.RowDefinitions    = new RowDefinitions();
+            }
+            else
+            {
+                var rowDefinitions = new RowDefinitions();
+                for (var i = 0; i < children.Count; i++)
+                {
+                    var child = children[i];
+                    Grid.SetRow(child, i);
+                    var itemSize = GetItemSize(child);
+                    if (itemSize.IsAbsolute)
+                    {
+                        rowDefinitions.Add(new RowDefinition(itemSize.Value, GridUnitType.Pixel));
+                    }
+                    else if (itemSize.IsAuto)
+                    {
+                        rowDefinitions.Add(new RowDefinition(GridLength.Auto));
+                    }
+                    else
+                    {
+                        rowDefinitions.Add(new RowDefinition(itemSize.Value, GridUnitType.Star));
+                    }
+                }
+                _contentLayout.RowDefinitions    = rowDefinitions;
+                _contentLayout.ColumnDefinitions = new ColumnDefinitions();
+            }
+
+            _sizeDefinitionsSignature = signature;
+        }
+
+        ConfigureItemPositions(children);
+        UpdateInteractionTracking();
+    }
+
+    private int CreateSizeDefinitionsSignature(IReadOnlyList<Control> children)
+    {
+        var hash = new HashCode();
+        hash.Add(Orientation);
+        hash.Add(children.Count);
+        for (var i = 0; i < children.Count; i++)
+        {
+            var child = children[i];
+            hash.Add(RuntimeHelpers.GetHashCode(child));
+            hash.Add(GetItemSize(child));
+        }
+        return hash.ToHashCode();
+    }
+
+    private void ConfigureItemPositions(IReadOnlyList<Control> children)
+    {
+        var realChildrenCount = CountRealCompactItems(children);
+        if (realChildrenCount == 0)
+        {
+            return;
+        }
+
+        var realIndex = 0;
+        for (var i = 0; i < children.Count; i++)
+        {
+            if (children[i] is not CompactSpaceItem compactSpaceItem ||
+                compactSpaceItem.Child is CompactSpaceFiller ||
+                compactSpaceItem.Child is null)
+            {
+                continue;
+            }
+
+            if (compactSpaceItem.PositionIndex != realIndex)
+            {
+                compactSpaceItem.PositionIndex = realIndex;
+            }
+
+            var position = realChildrenCount == 1
+                ? SpaceItemPosition.First | SpaceItemPosition.Last
+                : realIndex == 0
+                    ? SpaceItemPosition.First
+                    : realIndex == realChildrenCount - 1
+                        ? SpaceItemPosition.Last
+                        : SpaceItemPosition.Middle;
+
+            ((ICompactSpaceAware)compactSpaceItem).NotifyOrientationChange(Orientation);
+            ((ICompactSpaceAware)compactSpaceItem).NotifyPositionChange(position);
+            realIndex++;
+        }
+    }
+
+    private void ValidateFillerUsage()
+    {
+        var fillerCount = 0;
+        for (var i = 0; i < Children.Count; i++)
+        {
+            if (Children[i] is not CompactSpaceFiller)
+            {
+                continue;
+            }
+
+            fillerCount++;
+            if (fillerCount > 1)
+            {
+                throw new InvalidSpaceFillerUsageException("There can only be one CompactSpaceFiller.");
+            }
+            if (i != Children.Count - 1)
+            {
+                throw new InvalidSpaceFillerUsageException("The CompactSpaceFiller is misplaced, it can only be the last child.");
             }
         }
+    }
+
+    private void DetachCompactSpaceItems()
+    {
+        if (_contentLayout == null)
+        {
+            ClearChildClassesChangedHandlers();
+            DetachAllInteractionHandlers();
+            DetachAllPropertyChangedHandlers();
+            DetachAllSizeTypeBindings();
+            _sizeDefinitionsSignature = null;
+            return;
+        }
+
+        foreach (var layoutChild in _contentLayout.Children)
+        {
+            if (layoutChild is CompactSpaceItem compactSpaceItem)
+            {
+                NotifyRemoveCompactSpaceItem(compactSpaceItem);
+            }
+            else
+            {
+                layoutChild.SetTemplatedParent(null);
+            }
+        }
+        _contentLayout.Children.Clear();
+        ClearChildClassesChangedHandlers();
+        DetachAllInteractionHandlers();
+        DetachAllPropertyChangedHandlers();
+        DetachAllSizeTypeBindings();
+        _sizeDefinitionsSignature = null;
     }
     
     private void HandleChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)

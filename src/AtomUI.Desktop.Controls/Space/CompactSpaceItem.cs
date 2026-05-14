@@ -1,5 +1,3 @@
-using System.Reactive.Disposables;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -45,7 +43,9 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         set => SetValue(PositionIndexProperty, value);
     }
     
-    private CompositeDisposable? _disposables;
+    private TranslateTransform? _overlapTransform;
+    private double _currentOverlapX = double.NaN;
+    private double _currentOverlapY = double.NaN;
 
     static CompactSpaceItem()
     {
@@ -58,34 +58,44 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         base.OnPropertyChanged(change);
         if (change.Property == ChildProperty)
         {
-            if (change.OldValue != null)
+            if (change.OldValue is ICompactSpaceAware oldCompactSpaceAware)
             {
-                _disposables?.Dispose();
-                _disposables = null;
+                oldCompactSpaceAware.NotifyPositionChange(null);
             }
 
-            if (change.NewValue != null && change.NewValue is ICompactSpaceAware && Child != null)
+            if (change.NewValue is ICompactSpaceAware newCompactSpaceAware)
             {
-                _disposables = new CompositeDisposable();
-                _disposables.Add(BindUtils.RelayBind(this, CompactSpaceItemPositionProperty, Child, CompactSpaceItemPositionProperty));
-                _disposables.Add(BindUtils.RelayBind(this, CompactSpaceOrientationProperty, Child, CompactSpaceOrientationProperty));
-                _disposables.Add(BindUtils.RelayBind(this, IsUsedInCompactSpaceProperty, Child, IsUsedInCompactSpaceProperty));
+                newCompactSpaceAware.NotifyOrientationChange(CompactSpaceOrientation);
+                newCompactSpaceAware.NotifyPositionChange(CompactSpaceItemPosition);
             }
         }
         if (change.Property == ChildProperty ||
             change.Property == CompactSpace.ItemSizeProperty ||
             change.Property == CompactSpaceOrientationProperty ||
+            change.Property == PositionIndexProperty ||
             change.Property == IsUsedInCompactSpaceProperty ||
             change.Property == CompactSpaceItemPositionProperty)
         {
             ConfigureItemSize(CompactSpace.GetItemSize(this), IsUsedInCompactSpace, CompactSpaceOrientation);
+            UpdateOverlapTransform();
         }
     }
     
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
-        IsUsedInCompactSpace     = position != null;
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace == isUsedInCompactSpace &&
+            CompactSpaceItemPosition == position)
+        {
+            return;
+        }
+
+        IsUsedInCompactSpace     = isUsedInCompactSpace;
         CompactSpaceItemPosition = position;
+        if (Child is ICompactSpaceAware compactSpaceAware)
+        {
+            compactSpaceAware.NotifyPositionChange(position);
+        }
     }
 
     bool ICompactSpaceAware.IsAlwaysActiveZIndex()
@@ -111,29 +121,68 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
+        UpdateOverlapTransform();
+        return size;
+    }
 
+    private void UpdateOverlapTransform()
+    {
         if (CompactSpaceItemPosition == null ||
             CompactSpaceItemPosition == SpaceItemPosition.First ||
             (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) && CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
         {
-            return size;
+            ClearOverlapTransform();
+            return;
         }
         var borderThickness = (this as ICompactSpaceAware).GetBorderThickness();
         var delta           = borderThickness * PositionIndex;
-        if (CompactSpaceOrientation == Orientation.Horizontal)
+        var x               = CompactSpaceOrientation == Orientation.Horizontal ? -delta : 0;
+        var y               = CompactSpaceOrientation == Orientation.Horizontal ? 0 : -delta;
+        if (Math.Abs(x) < 0.001 && Math.Abs(y) < 0.001)
         {
-            RenderTransform = new TranslateTransform(-delta, 0);
+            ClearOverlapTransform();
+            return;
         }
-        else
+
+        _overlapTransform ??= new TranslateTransform();
+        if (!ReferenceEquals(RenderTransform, _overlapTransform))
         {
-            RenderTransform = new TranslateTransform(0, -delta);
+            RenderTransform = _overlapTransform;
         }
-        return size;
+        if (double.IsNaN(_currentOverlapX) || Math.Abs(_currentOverlapX - x) > 0.001)
+        {
+            _overlapTransform.X = x;
+            _currentOverlapX    = x;
+        }
+        if (double.IsNaN(_currentOverlapY) || Math.Abs(_currentOverlapY - y) > 0.001)
+        {
+            _overlapTransform.Y = y;
+            _currentOverlapY    = y;
+        }
+    }
+
+    private void ClearOverlapTransform()
+    {
+        if (RenderTransform != null)
+        {
+            RenderTransform = null;
+        }
+        _currentOverlapX = double.NaN;
+        _currentOverlapY = double.NaN;
     }
 
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
+        if (CompactSpaceOrientation == orientation)
+        {
+            return;
+        }
+
         CompactSpaceOrientation = orientation;
+        if (Child is ICompactSpaceAware compactSpaceAware)
+        {
+            compactSpaceAware.NotifyOrientationChange(orientation);
+        }
     }
 
     double ICompactSpaceAware.GetBorderThickness()
@@ -183,7 +232,7 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
                 if (size.IsStar)
                 {
                     ClearValue(HeightProperty);
-                    SetCurrentValue(VerticalAlignmentProperty, HorizontalAlignment.Stretch);
+                    SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
                 }
                 else if (size.IsAbsolute)
                 {

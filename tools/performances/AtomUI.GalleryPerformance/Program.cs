@@ -65,6 +65,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.SplitButtonShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/General/SplitButtonShowCase.axaml",
                 stats => stats.ButtonCount > 0),
+            ["space"] = new(
+                "SpaceShowCase",
+                SpaceViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.SpaceShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/Layout/SpaceShowCase.axaml",
+                stats => stats.SpaceCount > 0 || stats.CompactSpaceCount > 0),
             ["select"] = new(
                 "SelectShowCase",
                 SelectViewModel.ID,
@@ -285,15 +291,15 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSample(result.ColdRun));
         foreach (var sample in result.Samples)
         {
@@ -325,6 +331,9 @@ internal static class Program
             Format(allocKb),
             stats.VisualCount.ToString(CultureInfo.InvariantCulture),
             stats.LogicalCount.ToString(CultureInfo.InvariantCulture),
+            stats.SpaceCount.ToString(CultureInfo.InvariantCulture),
+            stats.CompactSpaceCount.ToString(CultureInfo.InvariantCulture),
+            stats.CompactSpaceItemCount.ToString(CultureInfo.InvariantCulture),
             stats.IconCount.ToString(CultureInfo.InvariantCulture),
             stats.IconPresenterCount.ToString(CultureInfo.InvariantCulture),
             stats.PathIconCount.ToString(CultureInfo.InvariantCulture),
@@ -354,6 +363,9 @@ internal static class Program
             Format(sample.AllocatedBytes / 1024.0),
             sample.Stats.VisualCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.LogicalCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.SpaceCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CompactSpaceCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CompactSpaceItemCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.IconCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.IconPresenterCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.PathIconCount.ToString(CultureInfo.InvariantCulture),
@@ -494,6 +506,9 @@ internal sealed record NavigationSample(
 internal sealed record RouteStats(
     int VisualCount,
     int LogicalCount,
+    int SpaceCount,
+    int CompactSpaceCount,
+    int CompactSpaceItemCount,
     int IconCount,
     int IconPresenterCount,
     int PathIconCount,
@@ -520,6 +535,9 @@ internal sealed record RouteStats(
     public static RouteStats Collect(Control root)
     {
         var visuals                 = root.GetSelfAndVisualDescendants().ToList();
+        var spaceCount              = 0;
+        var compactSpaceCount       = 0;
+        var compactSpaceItemCount   = 0;
         var iconCount               = 0;
         var iconPresenterCount      = 0;
         var pathIconCount           = 0;
@@ -541,6 +559,18 @@ internal sealed record RouteStats(
         foreach (var visual in visuals)
         {
             var type = visual.GetType();
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Space"))
+            {
+                spaceCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CompactSpace"))
+            {
+                compactSpaceCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CompactSpaceItem"))
+            {
+                compactSpaceItemCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Controls.Icon"))
             {
                 iconCount++;
@@ -614,6 +644,9 @@ internal sealed record RouteStats(
         return new RouteStats(
             visuals.Count,
             root.GetSelfAndLogicalDescendants().Count(),
+            spaceCount,
+            compactSpaceCount,
+            compactSpaceItemCount,
             iconCount,
             iconPresenterCount,
             pathIconCount,
@@ -637,6 +670,9 @@ internal sealed record RouteStats(
     {
         return VisualCount == other.VisualCount &&
                LogicalCount == other.LogicalCount &&
+               SpaceCount == other.SpaceCount &&
+               CompactSpaceCount == other.CompactSpaceCount &&
+               CompactSpaceItemCount == other.CompactSpaceItemCount &&
                IconCount == other.IconCount &&
                IconPresenterCount == other.IconPresenterCount &&
                PathIconCount == other.PathIconCount &&
@@ -679,6 +715,10 @@ internal sealed record SourceXamlStats(
     string SourcePath,
     bool IsAvailable,
     int AntDesignIconProviderCount,
+    int SpaceCount,
+    int CompactSpaceCount,
+    int CompactSpaceFillerCount,
+    int CompactSpaceAddOnCount,
     int IconPresenterCount,
     int IconGalleryCount,
     int LineEditDirectCount,
@@ -699,7 +739,7 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         var text     = File.ReadAllText(sourcePath);
@@ -708,6 +748,10 @@ internal sealed record SourceXamlStats(
             sourcePath,
             true,
             CountText(text, "AntDesignIconProvider"),
+            CountElements(document, AtomNamespace, "Space"),
+            CountElements(document, AtomNamespace, "CompactSpace"),
+            CountElements(document, AtomNamespace, "CompactSpaceFiller"),
+            CountElements(document, AtomNamespace, "CompactSpaceAddOn"),
             CountElements(document, AtomNamespace, "IconPresenter"),
             CountElements(document, GalleryNamespace, "IconGallery"),
             CountElements(document, AtomNamespace, "LineEdit"),
@@ -730,12 +774,20 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | AntDesignIconProvider | IconPresenter | IconGallery | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | ShowCaseItem |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | ShowCaseItem |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
         builder.Append(AntDesignIconProviderCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(SpaceCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CompactSpaceCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CompactSpaceFillerCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CompactSpaceAddOnCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(IconPresenterCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");

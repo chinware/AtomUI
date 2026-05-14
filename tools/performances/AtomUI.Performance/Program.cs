@@ -23,7 +23,8 @@ internal static partial class Program
             options.VerifyAntDesignMetadata ||
             options.VerifyIconHiddenSlots ||
             options.VerifyIconProviderCache ||
-            options.VerifyButtonStates)
+            options.VerifyButtonStates ||
+            options.VerifySpaceStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -53,6 +54,10 @@ internal static partial class Program
             if (options.VerifyButtonStates)
             {
                 verified &= RunButtonStateVerification();
+            }
+            if (options.VerifySpaceStates)
+            {
+                verified &= RunSpaceStateVerification();
             }
             return verified ? 0 : 1;
         }
@@ -95,6 +100,7 @@ internal static partial class Program
         {
             "icon" => CreateIconScenarios(),
             "button" => CreateButtonScenarios(),
+            "space" => CreateSpaceScenarios(),
             _ => CreateAddOnScenarios()
         };
     }

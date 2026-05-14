@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
@@ -10,6 +9,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -146,7 +146,9 @@ public class Space : Control,
     
     #region 内部属性定义
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
-    private CompositeDisposable? _spacingBindings;
+    private IDisposable? _itemSpacingBinding;
+    private IDisposable? _lineSpacingBinding;
+    private bool _isUpdatingSpacingBindings;
     #endregion
     
     static Space()
@@ -170,19 +172,23 @@ public class Space : Control,
 
     private void ApplySpacingTokenBinding()
     {
-        _spacingBindings?.Dispose();
-        var tokenKind = SizeType switch
+        _isUpdatingSpacingBindings = true;
+        try
         {
-            CustomizableSizeType.Small  => SpaceTokenKind.GapSmallSize,
-            CustomizableSizeType.Middle => SpaceTokenKind.GapMiddleSize,
-            CustomizableSizeType.Large  => SpaceTokenKind.GapLargeSize,
-            _                           => SpaceTokenKind.GapSmallSize
-        };
-        _spacingBindings = new CompositeDisposable
+            DisposeItemSpacingBinding();
+            DisposeLineSpacingBinding();
+            if (SizeType == CustomizableSizeType.Custom)
+            {
+                return;
+            }
+
+            EnsureSpacingTokenBinding(ItemSpacingProperty);
+            EnsureSpacingTokenBinding(LineSpacingProperty);
+        }
+        finally
         {
-            TokenResourceBinder.CreateTokenBinding(this, ItemSpacingProperty, tokenKind),
-            TokenResourceBinder.CreateTokenBinding(this, LineSpacingProperty, tokenKind)
-        };
+            _isUpdatingSpacingBindings = false;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -192,6 +198,11 @@ public class Space : Control,
         {
             ApplySpacingTokenBinding();
         }
+        else if (change.Property == ItemSpacingProperty ||
+                 change.Property == LineSpacingProperty)
+        {
+            HandleSpacingPropertyChanged(change);
+        }
         else if (this.IsAttachedToVisualTree())
         {
             if (change.Property == SplitTemplateProperty)
@@ -199,6 +210,73 @@ public class Space : Control,
                 HandleSplitTemplateChanged();
             }
         }
+    }
+
+    private void HandleSpacingPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (_isUpdatingSpacingBindings)
+        {
+            return;
+        }
+
+        if (change.Priority == BindingPriority.LocalValue ||
+            change.Priority == BindingPriority.Animation)
+        {
+            if (change.Property == ItemSpacingProperty)
+            {
+                DisposeItemSpacingBinding();
+            }
+            else
+            {
+                DisposeLineSpacingBinding();
+            }
+            return;
+        }
+
+        if (SizeType != CustomizableSizeType.Custom)
+        {
+            EnsureSpacingTokenBinding(change.Property);
+        }
+    }
+
+    private void EnsureSpacingTokenBinding(AvaloniaProperty property)
+    {
+        var tokenKind = SizeType switch
+        {
+            CustomizableSizeType.Small  => SpaceTokenKind.GapSmallSize,
+            CustomizableSizeType.Middle => SpaceTokenKind.GapMiddleSize,
+            CustomizableSizeType.Large  => SpaceTokenKind.GapLargeSize,
+            _                           => SpaceTokenKind.GapSmallSize
+        };
+
+        if (property == ItemSpacingProperty)
+        {
+            _itemSpacingBinding ??= TokenResourceBinder.CreateTokenBinding(
+                this,
+                ItemSpacingProperty,
+                tokenKind,
+                BindingPriority.StyleTrigger);
+        }
+        else if (property == LineSpacingProperty)
+        {
+            _lineSpacingBinding ??= TokenResourceBinder.CreateTokenBinding(
+                this,
+                LineSpacingProperty,
+                tokenKind,
+                BindingPriority.StyleTrigger);
+        }
+    }
+
+    private void DisposeItemSpacingBinding()
+    {
+        _itemSpacingBinding?.Dispose();
+        _itemSpacingBinding = null;
+    }
+
+    private void DisposeLineSpacingBinding()
+    {
+        _lineSpacingBinding?.Dispose();
+        _lineSpacingBinding = null;
     }
 
     protected virtual void HandleChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
