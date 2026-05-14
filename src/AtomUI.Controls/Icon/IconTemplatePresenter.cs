@@ -1,5 +1,8 @@
+using System.Reactive.Disposables;
+using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.Metadata;
 
@@ -37,10 +40,14 @@ public class IconTemplatePresenter : Control, IMotionAwareControl
     }
 
     #endregion
+
+    private CompositeDisposable? _disposables;
+    private PathIcon? _childIcon;
+    private PathIcon? _configuredIcon;
     
     static IconTemplatePresenter()
     {
-        AffectsMeasure<IconTemplatePresenter>( IconTemplateProperty);
+        AffectsMeasure<IconTemplatePresenter>(IconTemplateProperty);
         AffectsRender<IconTemplatePresenter>(IconBrushProperty);
         IconTemplateProperty.Changed.AddClassHandler<IconTemplatePresenter>((x, e) => x.HandleIconTemplateChanged(e));
     }
@@ -51,8 +58,7 @@ public class IconTemplatePresenter : Control, IMotionAwareControl
         var newIconTemplate = (IconTemplate?)change.NewValue;
         if (oldIconTemplate != null)
         {
-            LogicalChildren.Clear();
-            VisualChildren.Clear();
+            ClearIcon();
         }
 
         if (newIconTemplate != null)
@@ -60,19 +66,73 @@ public class IconTemplatePresenter : Control, IMotionAwareControl
             var pathIcon = newIconTemplate.Build();
             if (pathIcon != null)
             {
-                ConfigureIcon(pathIcon);
+                AddIcon(pathIcon);
             }
         }
     }
 
-    private void ConfigureIcon(PathIcon pathIcon)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        pathIcon[!WidthProperty]            = this[!WidthProperty];
-        pathIcon[!HeightProperty]           = this[!HeightProperty];
-        pathIcon[!IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
-        pathIcon[!Icon.StrokeBrushProperty] = this[!IconBrushProperty];
-        pathIcon[!Icon.FillBrushProperty]   = this[!IconBrushProperty];
+        base.OnAttachedToVisualTree(e);
+        if (_childIcon != null && (_configuredIcon != _childIcon || _disposables == null))
+        {
+            ConfigureIcon(_childIcon);
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _disposables?.Dispose();
+        _disposables = null;
+        _configuredIcon = null;
+    }
+
+    private void AddIcon(PathIcon pathIcon)
+    {
+        ClearIcon();
+        _childIcon = pathIcon;
+        ConfigureIcon(pathIcon);
+        ((ISetLogicalParent)pathIcon).SetParent(null);
+        pathIcon.SetVisualParent(null);
         VisualChildren.Add(pathIcon);
         LogicalChildren.Add(pathIcon);
+    }
+
+    private void ConfigureIcon(PathIcon pathIcon)
+    {
+        _disposables?.Dispose();
+        _configuredIcon = pathIcon;
+        _disposables = new CompositeDisposable(5);
+        _disposables.Add(BindUtils.RelayBind(this, WidthProperty, pathIcon, WidthProperty));
+        _disposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty));
+        if (pathIcon is Icon icon)
+        {
+            _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, Icon.IsMotionEnabledProperty));
+            _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, Icon.StrokeBrushProperty, BindingMode.Default, BindingPriority.Template));
+            _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, Icon.FillBrushProperty, BindingMode.Default, BindingPriority.Template));
+        }
+        else
+        {
+            _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, pathIcon, PathIcon.ForegroundProperty, BindingMode.Default, BindingPriority.Template));
+        }
+    }
+
+    private void ClearIcon()
+    {
+        _disposables?.Dispose();
+        _disposables = null;
+        _configuredIcon = null;
+
+        if (_childIcon == null)
+        {
+            return;
+        }
+
+        ((ISetLogicalParent)_childIcon).SetParent(null);
+        _childIcon.SetVisualParent(null);
+        LogicalChildren.Remove(_childIcon);
+        VisualChildren.Remove(_childIcon);
+        _childIcon = null;
     }
 }

@@ -44,6 +44,7 @@ public class IconPresenter : Control, IMotionAwareControl
     #endregion
     
     private CompositeDisposable? _disposables;
+    private PathIcon? _configuredIcon;
     
     static IconPresenter()
     {
@@ -60,6 +61,7 @@ public class IconPresenter : Control, IMotionAwareControl
         {
             _disposables?.Dispose();
             _disposables = null;
+            _configuredIcon = null;
             ((ISetLogicalParent)oldChild).SetParent(null);
             LogicalChildren.Remove(oldChild);
             VisualChildren.Remove(oldChild);
@@ -74,7 +76,7 @@ public class IconPresenter : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (Icon != null)
+        if (Icon != null && (_configuredIcon != Icon || _disposables == null))
         {
             ConfigureIcon(Icon);
         }
@@ -85,6 +87,7 @@ public class IconPresenter : Control, IMotionAwareControl
         base.OnDetachedFromVisualTree(e);
         _disposables?.Dispose();
         _disposables = null;
+        _configuredIcon = null;
     }
 
     private void AddIcon(PathIcon pathIcon)
@@ -99,7 +102,8 @@ public class IconPresenter : Control, IMotionAwareControl
     private void ConfigureIcon(PathIcon pathIcon)
     {
         _disposables?.Dispose();
-        _disposables = new CompositeDisposable(4);
+        _configuredIcon = pathIcon;
+        _disposables = new CompositeDisposable(5);
         _disposables.Add(BindUtils.RelayBind(this, WidthProperty, pathIcon, WidthProperty));
         _disposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty));
         if (pathIcon is Icon icon)

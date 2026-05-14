@@ -63,6 +63,73 @@
 
 这是当前架构里比较好的部分：没有每个实例重复解析 SVG path。
 
+### IconPark 图标包兼容性
+
+外部包位置：
+
+- `/Users/chinboy/Projects/dotnet/IconParkIconsPackage`
+
+关键实现：
+
+- `src/AtomUI.Icons.IconPark/IconParkIcon.cs`
+- `src/AtomUI.Icons.IconPark/IconParkIconProvider.cs`
+- `src/AtomUI.Icons.IconPark.Generator/IconParkIconsPackageGenerator.cs`
+- `src/AtomUI.Icons.IconPark/GeneratedIcons/*.g.cs`
+
+IconPark 的生成图标类继承 `IconParkIcon`，而 `IconParkIcon` 继承 `Icon`。和 AntDesign/Material 不同，IconPark 不为每个主题生成独立类，而是同一个 generated icon class 设置默认 `IconThemeType.Filled`，再通过 `IconParkIcon.FindIconBrush()` 根据当前 `IconTheme` 动态映射 brush：
+
+- `Outlined`：只绘制 stroke 与 secondary stroke。
+- `Filled` / `Rounded` / `Sharp`：把 fill、secondary brush 映射到 stroke/fallback。
+- `TwoTone`：stroke/fill 分别映射。
+- `MultiColor`：stroke/fill/secondary stroke/secondary fill 全部保留。
+
+同时，IconPark 依赖：
+
+- `StrokeBrush` / `FillBrush` / `SecondaryStrokeBrush` / `SecondaryFillBrush` / `FallbackBrush`
+- `StrokeWidth` / `StrokeLineCap` / `StrokeLineJoin`
+- `IconTheme`
+- `ProcessBrush()`：当前会把带透明度的 `ImmutableSolidColorBrush` 转成白底不透明色。
+- `FindIconBrush()`：IconPark 在派生类里覆盖它实现主题映射。
+
+结论：
+
+- 不能把多色、stroke、theme switch、fallback brush 视为无用功能删除。
+- 可以优化为按 instruction 需要懒初始化 brush/pen/transition。
+- 可以把 `IconTheme` 状态变化成本收敛，但必须保留 IconPark 的运行时主题切换能力。
+
+### Material 图标包兼容性
+
+外部包位置：
+
+- `/Users/chinboy/Projects/dotnet/MaterialIconsPackages`
+
+关键实现：
+
+- `src/AtomUI.Icons.Material/MaterialIconProvider.cs`
+- `src/AtomUI.Icons.Material.Generator/MaterialIconsPackageGenerator.cs`
+- `src/AtomUI.Icons.Material/GeneratedIcons/*.g.cs`
+
+Material 生成方式与 IconPark 不同：
+
+- 每个主题是独立 generated class，例如 `ActionAlarmFilled`、`ActionAlarmTwoTone`。
+- generated class 直接继承 `Icon`。
+- 构造函数设置固定 `IconTheme`。
+- `Filled` / `Rounded` / `Sharp` 主要生成 `FillBrush = IconBrushType.Fill`。
+- `Outlined` 生成 `FillBrush = IconBrushType.Stroke`。
+- `TwoTone` 根据 path opacity 区分 `Fill` 与 `Stroke`。
+
+Material Gallery 额外说明：
+
+- `IconInfoRepository` 初次只物化 96 个图标，滚动加载更多。
+- 但 generated repository 文件非常大，Material 约 10732 个 generated icon classes，IconPark 约 2659 个 generated icon classes。
+- Gallery 的大规模列表性能不能只看单个 icon，还要看 repository、item、presenter 和 scroll incremental load。
+
+结论：
+
+- `IconProvider<TIconKind>` 的 enum -> type -> factory 缓存仍然必要。
+- 不应缓存 `Icon` Control 实例；Material/IconPark Gallery 都通过 `Creator` 创建新 control。
+- 后续如果优化 generator，可以为 Material/IconPark 生成静态 bounds/matrix 等不可变元数据，但不能破坏现有 generated class 继承模型。
+
 ### Provider 与缓存
 
 `IconProvider<TIconKind>` 是 XAML MarkupExtension。每次 XAML 使用会返回一个新的 `Icon` Control 实例。Control 实例不能跨 visual tree 共享，所以这里不能缓存 Icon Control 本身。
@@ -309,6 +376,8 @@ find src/AtomUI.Icons.AntDesign/GeneratedIcons -name '*.g.cs' | wc -l
 
 - 保留现有 `Icon` / `PathIcon` / `IconProvider` public API。
 - 保留 AntDesign 图标包的 XAML 使用方式。
+- 保留 IconPark 图标包通过单个图标类动态切换 `IconTheme` 的能力。
+- 保留 Material 图标包按主题生成独立图标类的能力。
 - 保留单色、双色、多色、stroke、fill、loading animation 行为。
 - 保留现有主题 token 对颜色、尺寸、stroke 的控制。
 - 保留控件允许外部传入 `PathIcon` 的能力。
@@ -345,21 +414,23 @@ find src/AtomUI.Icons.AntDesign/GeneratedIcons -name '*.g.cs' | wc -l
 
 ### Phase 0: Baseline 与观测
 
-- [ ] 在 `tools/performances/AtomUI.Performance` 增加 Icon micro benchmark。
-- [ ] 记录 direct Icon、IconPresenter、animated Icon、TwoTone Icon 的 baseline。
-- [ ] 记录 SelectHandle/MenuItem 等隐藏图标模板成本。
-- [ ] 在 `tools/performances/AtomUI.GalleryPerformance` 增加或复用真实 Gallery route。
-- [ ] 记录 IconShowCase、DropdownButtonShowCase、ComboBoxShowCase、LineEditShowCase 的 baseline。
-- [ ] 输出 `docs/performances/Icon/icon-baseline.md`。
+- [x] 在 `tools/performances/AtomUI.Performance` 增加 Icon micro benchmark。
+- [x] 记录 direct Icon、IconPresenter、animated Icon、TwoTone Icon 的 baseline。
+- [x] 记录 SelectHandle/MenuItem 等隐藏图标模板成本。
+- [x] 在 `tools/performances/AtomUI.GalleryPerformance` 增加真实 `--showcase icon` route。
+- [x] 记录 IconShowCase baseline。
+- [x] 输出 `docs/performances/Icon/icon-baseline.md`。
+- [ ] 记录 DropdownButtonShowCase、ComboBoxShowCase、LineEditShowCase 的 Icon 叠加 baseline。
+- [x] 阅读 IconParkIconsPackage 与 MaterialIconsPackages，补齐兼容性约束。
 
 ### Phase 1: Icon 低风险修复
 
-- [ ] 修正 `Icon.OnInitialized()` 中 `strokeIndex` 错误。
-- [ ] 将默认 pen 初始化改为按需创建或按实际 instruction 创建。
-- [ ] 将 transition 初始化限制到实际需要动画的 brush。
-- [ ] 避免 `IconPresenter` attach 阶段重复配置同一个 icon。
-- [ ] 为 `IconTemplatePresenter` 增加 disposable 清理与 parent 解除逻辑。
-- [ ] 验证无订阅泄露、无 visual parent 残留。
+- [x] 修正 `Icon.OnInitialized()` 中 `strokeIndex` 错误。
+- [x] 将默认 pen 初始化改为按需创建或按实际 instruction 创建。
+- [x] 将 transition 初始化限制到实际需要动画的 brush。
+- [x] 避免 `IconPresenter` attach 阶段重复配置同一个 icon。
+- [x] 为 `IconTemplatePresenter` 增加 disposable 清理与 parent 解除逻辑。
+- [x] 验证无订阅泄露、无 visual parent 残留。
 
 ### Phase 2: Render 热路径收敛
 

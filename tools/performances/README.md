@@ -28,13 +28,32 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown docs/performances/AddOnDecoratedBox/addon-decorated-box-final.md
 ```
 
+控件级 Icon 基准：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite icon --count 60 \
+  --markdown /tmp/icon-micro-baseline.md
+```
+
 Gallery 真实 `LineEditShowCase` 导航基准：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
   -c Debug --framework net10.0 --no-build -- \
-  --label optimized --iterations 30 --warmup 5 --timeout-ms 30000 \
+  --showcase lineedit --label optimized --iterations 30 --warmup 5 --timeout-ms 30000 \
   --markdown /tmp/lineedit-showcase-navigation-optimized.md
+```
+
+Gallery 真实 `IconShowCase` 导航基准：
+
+```bash
+dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --showcase icon --label icon-baseline \
+  --iterations 10 --warmup 5 --timeout-ms 30000 \
+  --markdown /tmp/icon-showcase-navigation-baseline.md
 ```
 
 ## 扩展建议

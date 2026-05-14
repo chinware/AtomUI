@@ -181,6 +181,8 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     protected readonly IBrush?[] DrawBrushes = new IBrush[5];
     protected readonly Pen?[] DrawPens = new Pen?[5];
     private Style? _animationStyle;
+    private int _usedFillBrushMask;
+    private int _usedStrokeBrushMask;
 
     static Icon()
     {
@@ -199,11 +201,12 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        var strokeIndex          = (int)IconBrushType.Fallback;
+        var strokeIndex          = (int)IconBrushType.Stroke;
         var fillIndex            = (int)IconBrushType.Fill;
         var secondaryStrokeIndex = (int)IconBrushType.SecondaryStroke;
         var secondaryFillIndex   = (int)IconBrushType.SecondaryFill;
         var fallbackIndex        = (int)IconBrushType.Fallback;
+        InitializeUsedBrushTypes();
         
         var strokeBrush          = ProcessBrush(StrokeBrush);
         var fillBrush            = ProcessBrush(FillBrush);
@@ -216,12 +219,8 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         DrawBrushes[secondaryStrokeIndex] = secondaryStrokeBrush;
         DrawBrushes[secondaryFillIndex]   = secondaryFillBrush;
         DrawBrushes[fallbackIndex]        = fallbackBrush;
-        
-        DrawPens[strokeIndex]          = new Pen(strokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        DrawPens[fillIndex]            = new Pen(fillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        DrawPens[secondaryStrokeIndex] = new Pen(secondaryStrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        DrawPens[secondaryFillIndex]   = new Pen(secondaryFillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        DrawPens[fallbackIndex]        = new Pen(fallbackBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
+
+        InitializeUsedPens();
         ConfigureTransitions(false);
         this.DisableTransitions();
     }
@@ -243,23 +242,32 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         {
             if (force || Transitions == null)
             {
-                Transitions = [
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(StrokeBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FillBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(SecondaryFillBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(SecondaryStrokeBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FallbackBrushProperty,
-                        FillAnimationDuration)
-                ];
+                Transitions = CreateBrushTransitions();
             }
         }
         else
         {
             Transitions = null;
+        }
+    }
+
+    private Transitions CreateBrushTransitions()
+    {
+        var transitions = new Transitions();
+        AddBrushTransition(transitions, IconBrushType.Stroke, StrokeBrushProperty);
+        AddBrushTransition(transitions, IconBrushType.Fill, FillBrushProperty);
+        AddBrushTransition(transitions, IconBrushType.SecondaryStroke, SecondaryStrokeBrushProperty);
+        AddBrushTransition(transitions, IconBrushType.SecondaryFill, SecondaryFillBrushProperty);
+        AddBrushTransition(transitions, IconBrushType.Fallback, FallbackBrushProperty);
+        return transitions;
+    }
+
+    private void AddBrushTransition(Transitions transitions, IconBrushType brushType, AvaloniaProperty property)
+    {
+        if (UsesBrushForTransition(brushType))
+        {
+            transitions.Add(BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(property,
+                FillAnimationDuration));
         }
     }
 
@@ -352,8 +360,81 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
             DrawBrushes[brushIndex] = brush;
         }
 
-        DrawPens[brushIndex] = new Pen(DrawBrushes[brushIndex], StrokeWidth, lineCap: StrokeLineCap,
-            lineJoin: StrokeLineJoin);
+        DrawPens[brushIndex] = UsesStrokeBrush(brushType)
+            ? new Pen(DrawBrushes[brushIndex], StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin)
+            : null;
+    }
+
+    private void InitializeUsedBrushTypes()
+    {
+        _usedFillBrushMask   = 0;
+        _usedStrokeBrushMask = 0;
+        foreach (var instruction in DrawingInstructions)
+        {
+            if (instruction.FillBrush is { } fillBrush)
+            {
+                _usedFillBrushMask |= CreateBrushMask(fillBrush);
+            }
+
+            if (instruction.IsStrokeEnabled && instruction.StrokeBrush is { } strokeBrush)
+            {
+                _usedStrokeBrushMask |= CreateBrushMask(strokeBrush);
+            }
+        }
+    }
+
+    private void InitializeUsedPens()
+    {
+        CreateUsedPen(IconBrushType.Stroke);
+        CreateUsedPen(IconBrushType.Fill);
+        CreateUsedPen(IconBrushType.SecondaryStroke);
+        CreateUsedPen(IconBrushType.SecondaryFill);
+        CreateUsedPen(IconBrushType.Fallback);
+    }
+
+    private void CreateUsedPen(IconBrushType brushType)
+    {
+        var brushIndex = (int)brushType;
+        DrawPens[brushIndex] = UsesStrokeBrush(brushType)
+            ? new Pen(DrawBrushes[brushIndex], StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin)
+            : null;
+    }
+
+    private bool UsesBrush(IconBrushType brushType)
+    {
+        return UsesFillBrush(brushType) || UsesStrokeBrush(brushType);
+    }
+
+    private bool UsesBrushForTransition(IconBrushType brushType)
+    {
+        if (brushType is IconBrushType.Stroke or IconBrushType.Fill)
+        {
+            return UsesBrush(IconBrushType.Stroke) || UsesBrush(IconBrushType.Fill);
+        }
+
+        return UsesBrush(brushType);
+    }
+
+    private bool UsesFillBrush(IconBrushType brushType)
+    {
+        var brushMask = CreateBrushMask(brushType);
+        return brushMask != 0 && (_usedFillBrushMask & brushMask) == brushMask;
+    }
+
+    private bool UsesStrokeBrush(IconBrushType brushType)
+    {
+        var brushMask = CreateBrushMask(brushType);
+        return brushMask != 0 && (_usedStrokeBrushMask & brushMask) == brushMask;
+    }
+
+    private static int CreateBrushMask(IconBrushType brushType)
+    {
+        if (brushType == IconBrushType.None)
+        {
+            return 0;
+        }
+        var index = (int)brushType;
+        return index is >= 0 and < 5 ? 1 << index : 0;
     }
 
     private void HandleStrokeWidthChanged(double strokeWidth)
