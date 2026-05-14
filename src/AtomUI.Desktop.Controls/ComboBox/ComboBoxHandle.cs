@@ -23,13 +23,20 @@ internal class ComboBoxHandle : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_iconButton != null)
+        {
+            _iconButton.Click -= HandleIconButtonClick;
+        }
+
         _iconButton = e.NameScope.Find<IconButton>("PART_OpenIndicatorButton");
         if (_iconButton != null)
         {
-            _iconButton.Click += (sender, args) =>
-            {
-                HandleClick?.Invoke(this, args);
-            };
+            _iconButton.Click += HandleIconButtonClick;
         }
+    }
+
+    private void HandleIconButtonClick(object? sender, RoutedEventArgs args)
+    {
+        HandleClick?.Invoke(this, args);
     }
 }

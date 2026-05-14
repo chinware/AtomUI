@@ -22,17 +22,6 @@
                         IsEnabled="{TemplateBinding IsEnabled}"
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}">
-                        <atom:AddOnDecoratedBox.ContentRightAddOn>
-                             <StackPanel Orientation="Horizontal" Spacing="{atom:SharedTokenResource SpacingXS}">
-                                 <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
-                                 <ContentPresenter
-                                     Name="PART_FormFeedBack"
-                                     VerticalAlignment="Stretch"
-                                     VerticalContentAlignment="Center"
-                                     HorizontalAlignment="Right" />
-                                 <atom:ComboBoxHandle Name="PART_ComboBoxHandle" />
-                             </StackPanel>
-                        </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
                             <atom:TextBlock
                                 Name="PlaceholderText"

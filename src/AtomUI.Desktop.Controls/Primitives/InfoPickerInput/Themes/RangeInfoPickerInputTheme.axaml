@@ -30,14 +30,6 @@
                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                     CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                    <atom:AddOnDecoratedBox.ContentRightAddOn>
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:SharedTokenResource SpacingXS}">
-                            <atom:PickerClearUpButton
-                                Name="PART_ClearUpButton" />
-                            <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
-                        </StackPanel>
-                    </atom:AddOnDecoratedBox.ContentRightAddOn>
                     <Grid ColumnDefinitions="*, Auto, *">
                         <atom:TextBox Name="PART_InfoInputBox"
                                       Grid.Column="0"

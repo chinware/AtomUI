@@ -1,7 +1,8 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Primitives.Themes;
+using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -353,6 +354,8 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private protected AddOnDecoratedBox? DecoratedBox;
     private protected PickerClearUpButton? PickerClearUpButton;
+    private PickerAccessoryHost? _accessoryHost;
+    private IDisposable? _accessoryHostSpacingBinding;
     private CompositeDisposable? _contentRightAddOnBindings;
     private protected Popup? PickerPopup;
     protected bool CurrentValidSelected;
@@ -445,6 +448,15 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = null;
+        ClearOwnerDrivenAccessoryHost();
+        if (_accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
+
         if (DecoratedBox != null)
         {
             DecoratedBox.TemplateApplied -= HandleDecoratedBoxTemplateApplied;
@@ -488,7 +500,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
 
         SetupPopupProperties();
-        SetupContentRightAddOnBindings(e);
+        if (!SetupContentRightAddOnBindings(e))
+        {
+            ConfigureOwnerDrivenAccessoryHost();
+        }
         ConfigureArrowPosition();
         ConfigureShowArrowEffective();
     }
@@ -523,12 +538,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     
     protected bool ClickInClearUpButtonWithClearMode(PointerReleasedEventArgs args)
     {
-        if (PickerClearUpButton != null)
-        {
-            var sourceControl = args.Source as Control;
-            return sourceControl.FindLogicalAncestorOfType<InputClearIconButton>() is not null;
-        }
-        return false;
+        var sourceControl = args.Source as Control;
+        return sourceControl.FindLogicalAncestorOfType<InputClearIconButton>() is not null;
     }
 
     private bool IsPointerInInfoInputBox(Point position)
@@ -566,32 +577,45 @@ public abstract class InfoPickerInput : TemplatedControl,
         return false;
     }
     
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private bool SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
     {
         _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _contentRightAddOnBindings = null;
+        var bindings    = new CompositeDisposable();
+        var hasBindings = false;
 
         if (PickerClearUpButton is { } clearUpButton)
         {
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.IsInClearModeProperty,
+            hasBindings = true;
+            bindings.Add(clearUpButton.Bind(PickerClearUpButton.IsInClearModeProperty,
                 new Binding(nameof(IsClearButtonVisible)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.IconProperty,
+            bindings.Add(clearUpButton.Bind(PickerClearUpButton.IconProperty,
                 new Binding(nameof(InfoIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.FormFeedbackProperty,
+            bindings.Add(clearUpButton.Bind(PickerClearUpButton.FormFeedbackProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(Visual.IsVisibleProperty,
+            bindings.Add(clearUpButton.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(InfoIcon)) { Source = this, Converter = ObjectConverters.IsNotNull }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
         {
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
+            hasBindings = true;
+            bindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
+            bindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
                 new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
+            bindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
         }
+
+        if (hasBindings)
+        {
+            _contentRightAddOnBindings = bindings;
+            return true;
+        }
+
+        bindings.Dispose();
+        return _addOnDecoratedBox?.ContentRightAddOn != null;
     }
 
     protected virtual void ConfigureIsClearButtonVisible()
@@ -606,6 +630,67 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         Clear();
         SetCurrentValue(IsClearButtonVisibleProperty, false);
+    }
+
+    internal void NotifyAccessoryClearButtonClicked()
+    {
+        NotifyClearButtonClicked();
+    }
+
+    private void ConfigureOwnerDrivenAccessoryHost()
+    {
+        if (_addOnDecoratedBox == null)
+        {
+            return;
+        }
+
+        if (!NeedsRightAccessoryHost())
+        {
+            ClearOwnerDrivenAccessoryHost();
+            return;
+        }
+
+        if (_accessoryHost == null)
+        {
+            _accessoryHost = new PickerAccessoryHost();
+            _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
+                _accessoryHost,
+                StackPanel.SpacingProperty,
+                SharedTokenKind.SpacingXS);
+            _accessoryHost.AttachOwner(this);
+        }
+
+        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+        }
+    }
+
+    private void ClearOwnerDrivenAccessoryHost()
+    {
+        if (_addOnDecoratedBox != null &&
+            _accessoryHost != null &&
+            ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _addOnDecoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        _accessoryHostSpacingBinding?.Dispose();
+        _accessoryHostSpacingBinding = null;
+
+        if (_accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
+    }
+
+    private bool NeedsRightAccessoryHost()
+    {
+        return InfoIcon != null ||
+               IsClearButtonVisible ||
+               FormFeedback != null ||
+               ContentRightAddOn != null;
     }
 
     protected virtual void NotifyPickerPresenterCreated(Control pickerPresenter)
@@ -755,6 +840,21 @@ public abstract class InfoPickerInput : TemplatedControl,
         {
             ConfigureArrowPosition();
         }
+
+        if (IsAccessoryStateProperty(change.Property))
+        {
+            ConfigureOwnerDrivenAccessoryHost();
+        }
+    }
+
+    private static bool IsAccessoryStateProperty(AvaloniaProperty property)
+    {
+        return property == IsClearButtonVisibleProperty ||
+               property == InfoIconProperty ||
+               property == FormFeedbackProperty ||
+               property == ContentRightAddOnProperty ||
+               property == ContentRightAddOnTemplateProperty ||
+               property == IsMotionEnabledProperty;
     }
     
     protected void ConfigureShowArrowEffective()

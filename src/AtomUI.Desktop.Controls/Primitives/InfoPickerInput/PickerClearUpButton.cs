@@ -1,5 +1,4 @@
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls.Primitives.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -57,11 +56,21 @@ internal class PickerClearUpButton : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_clearButton is not null)
+        {
+            _clearButton.Click -= HandleClearButtonClick;
+        }
+
         _clearButton = e.NameScope.Get<IconButton>("PART_ClearButton");
         if (_clearButton is not null)
         {
-            _clearButton.Click += (sender, args) => { ClearRequest?.Invoke(this, EventArgs.Empty); };
+            _clearButton.Click += HandleClearButtonClick;
         }
+    }
+
+    private void HandleClearButtonClick(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        ClearRequest?.Invoke(this, EventArgs.Empty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

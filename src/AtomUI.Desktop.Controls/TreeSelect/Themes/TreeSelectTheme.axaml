@@ -29,14 +29,6 @@
                         CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                        <atom:AddOnDecoratedBox.ContentRightAddOn>
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="{atom:SharedTokenResource SpacingXS}">
-                                <atom:SelectMaxCountIndicator Name="PART_SelectMaxCountIndicator" />
-                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
-                                <atom:SelectHandle Name="PART_SelectHandle" />
-                            </StackPanel>
-                        </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
                             <atom:TextBlock
                                 Name="PlaceholderText"

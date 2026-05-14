@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Primitives.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -200,6 +201,39 @@ internal class AddOnDecoratedBox : ContentControl,
     internal static readonly StyledProperty<IBrush?> InnerBoxWarningHoverBackgroundProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(InnerBoxWarningHoverBackground));
 
+    internal static readonly StyledProperty<IBrush?> OuterAddOnDefaultBackgroundProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnDefaultBackground));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnDefaultBorderBrushProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnDefaultBorderBrush));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnFilledBackgroundProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnFilledBackground));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnFilledBorderBrushProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnFilledBorderBrush));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnErrorBorderBrushProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnErrorBorderBrush));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnWarningBorderBrushProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnWarningBorderBrush));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnErrorFilledBackgroundProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnErrorFilledBackground));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnWarningFilledBackgroundProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnWarningFilledBackground));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnDisabledBackgroundProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnDisabledBackground));
+
+    internal static readonly StyledProperty<IBrush?> OuterAddOnDisabledBorderBrushProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(OuterAddOnDisabledBorderBrush));
+
+    internal static readonly StyledProperty<Thickness> OuterAddOnPaddingProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, Thickness>(nameof(OuterAddOnPadding));
+
     internal IBrush? AddOnStatusForeground
     {
         get => GetValue(AddOnStatusForegroundProperty);
@@ -318,6 +352,72 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         get => GetValue(InnerBoxWarningHoverBackgroundProperty);
         set => SetValue(InnerBoxWarningHoverBackgroundProperty, value);
+    }
+
+    internal IBrush? OuterAddOnDefaultBackground
+    {
+        get => GetValue(OuterAddOnDefaultBackgroundProperty);
+        set => SetValue(OuterAddOnDefaultBackgroundProperty, value);
+    }
+
+    internal IBrush? OuterAddOnDefaultBorderBrush
+    {
+        get => GetValue(OuterAddOnDefaultBorderBrushProperty);
+        set => SetValue(OuterAddOnDefaultBorderBrushProperty, value);
+    }
+
+    internal IBrush? OuterAddOnFilledBackground
+    {
+        get => GetValue(OuterAddOnFilledBackgroundProperty);
+        set => SetValue(OuterAddOnFilledBackgroundProperty, value);
+    }
+
+    internal IBrush? OuterAddOnFilledBorderBrush
+    {
+        get => GetValue(OuterAddOnFilledBorderBrushProperty);
+        set => SetValue(OuterAddOnFilledBorderBrushProperty, value);
+    }
+
+    internal IBrush? OuterAddOnErrorBorderBrush
+    {
+        get => GetValue(OuterAddOnErrorBorderBrushProperty);
+        set => SetValue(OuterAddOnErrorBorderBrushProperty, value);
+    }
+
+    internal IBrush? OuterAddOnWarningBorderBrush
+    {
+        get => GetValue(OuterAddOnWarningBorderBrushProperty);
+        set => SetValue(OuterAddOnWarningBorderBrushProperty, value);
+    }
+
+    internal IBrush? OuterAddOnErrorFilledBackground
+    {
+        get => GetValue(OuterAddOnErrorFilledBackgroundProperty);
+        set => SetValue(OuterAddOnErrorFilledBackgroundProperty, value);
+    }
+
+    internal IBrush? OuterAddOnWarningFilledBackground
+    {
+        get => GetValue(OuterAddOnWarningFilledBackgroundProperty);
+        set => SetValue(OuterAddOnWarningFilledBackgroundProperty, value);
+    }
+
+    internal IBrush? OuterAddOnDisabledBackground
+    {
+        get => GetValue(OuterAddOnDisabledBackgroundProperty);
+        set => SetValue(OuterAddOnDisabledBackgroundProperty, value);
+    }
+
+    internal IBrush? OuterAddOnDisabledBorderBrush
+    {
+        get => GetValue(OuterAddOnDisabledBorderBrushProperty);
+        set => SetValue(OuterAddOnDisabledBorderBrushProperty, value);
+    }
+
+    internal Thickness OuterAddOnPadding
+    {
+        get => GetValue(OuterAddOnPaddingProperty);
+        set => SetValue(OuterAddOnPaddingProperty, value);
     }
 
     internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> InnerBoxBorderThicknessProperty =
@@ -473,8 +573,15 @@ internal class AddOnDecoratedBox : ContentControl,
     
     private protected Control? _leftAddOn;
     private protected Control? _rightAddOn;
+    private Panel? _rootLayout;
     private ContentPresenter? _contentLeftAddOn;
     private ContentPresenter? _contentRightAddOn;
+    private DockPanel? _contentLayout;
+    private ContentPresenter? _contentPresenter;
+    private bool _isLeftAddOnPresenterDynamic;
+    private bool _isRightAddOnPresenterDynamic;
+    private bool _isContentLeftAddOnPresenterDynamic;
+    private bool _isContentRightAddOnPresenterDynamic;
     private bool _borderInfoDirty;
     private bool _cornerRadiusDirty;
     private bool _borderThicknessDirty;
@@ -539,7 +646,9 @@ internal class AddOnDecoratedBox : ContentControl,
         }
 
         if (change.Property == LeftAddOnProperty ||
+            change.Property == LeftAddOnTemplateProperty ||
             change.Property == RightAddOnProperty ||
+            change.Property == RightAddOnTemplateProperty ||
             change.Property == CornerRadiusProperty ||
             change.Property == StyleVariantProperty ||
             change.Property == CompactSpaceItemPositionProperty ||
@@ -561,16 +670,40 @@ internal class AddOnDecoratedBox : ContentControl,
             change.Property == IsEffectivelyEnabledProperty ||
             change.Property == ContentLeftAddOnProperty ||
             change.Property == ContentRightAddOnProperty ||
+            change.Property == LeftAddOnProperty ||
+            change.Property == RightAddOnProperty ||
             change.Property == AddOnStatusForegroundProperty ||
             change.Property == AddOnStatusIconBrushProperty)
         {
             UpdateIconStatusColors();
         }
 
+        if (change.Property == LeftAddOnProperty ||
+            change.Property == LeftAddOnTemplateProperty ||
+            change.Property == RightAddOnProperty ||
+            change.Property == RightAddOnTemplateProperty)
+        {
+            ConfigureOuterAddOnPresenters();
+        }
+
+        if (change.Property == ContentLeftAddOnProperty ||
+            change.Property == ContentLeftAddOnTemplateProperty ||
+            change.Property == ContentRightAddOnProperty ||
+            change.Property == ContentRightAddOnTemplateProperty)
+        {
+            ConfigureContentAddOnPresenters();
+        }
+
         if (IsEffectiveInnerBoxBrushStateProperty(change.Property) ||
             IsInnerBoxBrushSourceProperty(change.Property))
         {
             ConfigureEffectiveInnerBoxBrushes();
+        }
+
+        if (IsEffectiveOuterAddOnVisualStateProperty(change.Property) ||
+            IsOuterAddOnVisualSourceProperty(change.Property))
+        {
+            ConfigureOuterAddOnPresenterVisuals();
         }
 
         if (_cornerRadiusDirty || _borderInfoDirty || _borderThicknessDirty)
@@ -609,6 +742,28 @@ internal class AddOnDecoratedBox : ContentControl,
                property == InnerBoxWarningBackgroundProperty ||
                property == InnerBoxWarningFilledBorderBrushProperty ||
                property == InnerBoxWarningHoverBackgroundProperty;
+    }
+
+    private static bool IsEffectiveOuterAddOnVisualStateProperty(AvaloniaProperty property)
+    {
+        return property == StyleVariantProperty ||
+               property == StatusProperty ||
+               property == IsEffectivelyEnabledProperty ||
+               property == OuterAddOnPaddingProperty;
+    }
+
+    private static bool IsOuterAddOnVisualSourceProperty(AvaloniaProperty property)
+    {
+        return property == OuterAddOnDefaultBackgroundProperty ||
+               property == OuterAddOnDefaultBorderBrushProperty ||
+               property == OuterAddOnFilledBackgroundProperty ||
+               property == OuterAddOnFilledBorderBrushProperty ||
+               property == OuterAddOnErrorBorderBrushProperty ||
+               property == OuterAddOnWarningBorderBrushProperty ||
+               property == OuterAddOnErrorFilledBackgroundProperty ||
+               property == OuterAddOnWarningFilledBackgroundProperty ||
+               property == OuterAddOnDisabledBackgroundProperty ||
+               property == OuterAddOnDisabledBorderBrushProperty;
     }
 
     private protected virtual bool IsInnerBoxActive => IsInnerBoxPressed || IsKeyboardFocusWithin;
@@ -896,6 +1051,7 @@ internal class AddOnDecoratedBox : ContentControl,
         }
 
         NotifyAddOnBorderInfoCalculated();
+        ConfigureOuterAddOnPresenterVisuals();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -925,10 +1081,17 @@ internal class AddOnDecoratedBox : ContentControl,
         }
         ClearPendingAddOnChildAttachListeners();
 
-        _leftAddOn   = e.NameScope.Find<Control>("PART_LeftAddOn");
-        _rightAddOn  = e.NameScope.Find<Control>("PART_RightAddOn");
+        _rootLayout = e.NameScope.Find<Panel>("RootLayout");
+        _leftAddOn  = e.NameScope.Find<Control>("PART_LeftAddOn");
+        _rightAddOn = e.NameScope.Find<Control>("PART_RightAddOn");
+        _contentLayout = e.NameScope.Find<DockPanel>("ContentLayout");
+        _contentPresenter = e.NameScope.Find<ContentPresenter>("PART_ContentPresenter");
         _contentLeftAddOn  = e.NameScope.Find<ContentPresenter>("PART_ContentLeftAddOn");
         _contentRightAddOn = e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOn");
+        _isLeftAddOnPresenterDynamic         = false;
+        _isRightAddOnPresenterDynamic        = false;
+        _isContentLeftAddOnPresenterDynamic  = false;
+        _isContentRightAddOnPresenterDynamic = false;
         InvalidateAllIconCaches();
 
         // 订阅新的 ContentPresenter Child 变化
@@ -951,7 +1114,6 @@ internal class AddOnDecoratedBox : ContentControl,
         {
             newRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
         }
-        
         if (ContentFrame != null)
         {
             ContentFrame.PointerEntered  -= HandleContentFramePointerEnter;
@@ -968,6 +1130,9 @@ internal class AddOnDecoratedBox : ContentControl,
             ContentFrame.PointerPressed  += HandleContentFramePointerPressed;
             ContentFrame.PointerReleased += HandleContentFramePointerReleased;
         }
+
+        ConfigureOuterAddOnPresenters();
+        ConfigureContentAddOnPresenters();
 
         ConfigureInnerBoxCornerRadius();
         ConfigureAddOnBorderInfo();
@@ -1005,6 +1170,405 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         IsInnerBoxPressed = false;
         IsInnerBoxHover   = true;
+    }
+
+    private void ConfigureOuterAddOnPresenters()
+    {
+        if (_rootLayout == null)
+        {
+            return;
+        }
+
+        ConfigureLeftAddOnPresenter();
+        ConfigureRightAddOnPresenter();
+        EnsureOuterAddOnPresenterOrder();
+        ConfigureOuterAddOnPresenterVisuals();
+        UpdateIconStatusColors();
+    }
+
+    private void ConfigureLeftAddOnPresenter()
+    {
+        if (LeftAddOn == null)
+        {
+            ClearLeftAddOnPresenter();
+            return;
+        }
+
+        if (_leftAddOn == null)
+        {
+            var presenter = CreateOuterAddOnPresenter(Dock.Left);
+            presenter.PropertyChanged += HandleContentPresenterChildChanged;
+            _leftAddOn = presenter;
+            _isLeftAddOnPresenterDynamic = true;
+            InvalidateIconCacheForPresenter(_leftAddOn);
+        }
+
+        if (_leftAddOn is ContentPresenter contentPresenter)
+        {
+            contentPresenter.SetCurrentValue(ContentPresenter.ContentProperty, LeftAddOn);
+            contentPresenter.SetCurrentValue(ContentPresenter.ContentTemplateProperty, LeftAddOnTemplate);
+        }
+    }
+
+    private void ConfigureRightAddOnPresenter()
+    {
+        if (RightAddOn == null)
+        {
+            ClearRightAddOnPresenter();
+            return;
+        }
+
+        if (_rightAddOn == null)
+        {
+            var presenter = CreateOuterAddOnPresenter(Dock.Right);
+            presenter.PropertyChanged += HandleContentPresenterChildChanged;
+            _rightAddOn = presenter;
+            _isRightAddOnPresenterDynamic = true;
+            InvalidateIconCacheForPresenter(_rightAddOn);
+        }
+
+        if (_rightAddOn is ContentPresenter contentPresenter)
+        {
+            contentPresenter.SetCurrentValue(ContentPresenter.ContentProperty, RightAddOn);
+            contentPresenter.SetCurrentValue(ContentPresenter.ContentTemplateProperty, RightAddOnTemplate);
+        }
+    }
+
+    private static ContentPresenter CreateOuterAddOnPresenter(Dock dock)
+    {
+        var presenter = new ContentPresenter
+        {
+            Name                     = dock == Dock.Left
+                ? AddOnDecoratedBoxThemeConstants.LeftAddOnPart
+                : AddOnDecoratedBoxThemeConstants.RightAddOnPart,
+            VerticalAlignment        = VerticalAlignment.Stretch,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            Focusable                = false,
+            BackgroundSizing         = BackgroundSizing.InnerBorderEdge
+        };
+        DockPanel.SetDock(presenter, dock);
+        return presenter;
+    }
+
+    private void ClearLeftAddOnPresenter()
+    {
+        if (_leftAddOn == null)
+        {
+            return;
+        }
+
+        if (!_isLeftAddOnPresenterDynamic ||
+            _leftAddOn is not ContentPresenter presenter)
+        {
+            return;
+        }
+
+        presenter.PropertyChanged -= HandleContentPresenterChildChanged;
+        presenter.ClearValue(ContentPresenter.ContentProperty);
+        presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+        RemoveFromParentPanel(presenter);
+        _leftAddOn = null;
+        _isLeftAddOnPresenterDynamic = false;
+        _leftAddOnIcons = null;
+        _addOnStatusContentVersion++;
+    }
+
+    private void ClearRightAddOnPresenter()
+    {
+        if (_rightAddOn == null)
+        {
+            return;
+        }
+
+        if (!_isRightAddOnPresenterDynamic ||
+            _rightAddOn is not ContentPresenter presenter)
+        {
+            return;
+        }
+
+        presenter.PropertyChanged -= HandleContentPresenterChildChanged;
+        presenter.ClearValue(ContentPresenter.ContentProperty);
+        presenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+        RemoveFromParentPanel(presenter);
+        _rightAddOn = null;
+        _isRightAddOnPresenterDynamic = false;
+        _rightAddOnIcons = null;
+        _addOnStatusContentVersion++;
+    }
+
+    private void EnsureOuterAddOnPresenterOrder()
+    {
+        if (_rootLayout == null || ContentFrame == null)
+        {
+            return;
+        }
+
+        var index = 0;
+        EnsureOuterAddOnPresenterAt(_leftAddOn, ref index);
+        EnsureOuterAddOnPresenterAt(_rightAddOn, ref index);
+
+        var contentFrameIndex = _rootLayout.Children.IndexOf(ContentFrame);
+        if (contentFrameIndex >= 0 && contentFrameIndex != _rootLayout.Children.Count - 1)
+        {
+            _rootLayout.Children.RemoveAt(contentFrameIndex);
+            _rootLayout.Children.Add(ContentFrame);
+        }
+    }
+
+    private void EnsureOuterAddOnPresenterAt(Control? presenter, ref int index)
+    {
+        if (presenter == null || _rootLayout == null)
+        {
+            return;
+        }
+
+        var currentIndex = _rootLayout.Children.IndexOf(presenter);
+        if (currentIndex == index)
+        {
+            index++;
+            return;
+        }
+
+        if (currentIndex >= 0)
+        {
+            _rootLayout.Children.RemoveAt(currentIndex);
+        }
+
+        var insertIndex = Math.Min(index, _rootLayout.Children.Count);
+        _rootLayout.Children.Insert(insertIndex, presenter);
+        index++;
+    }
+
+    private static void RemoveFromParentPanel(Control control)
+    {
+        if (control.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(control);
+        }
+    }
+
+    private void ConfigureOuterAddOnPresenterVisuals()
+    {
+        ConfigureOuterAddOnPresenterVisual(_leftAddOn as ContentPresenter,
+            LeftAddOnBorderThickness,
+            LeftAddOnCornerRadius);
+        ConfigureOuterAddOnPresenterVisual(_rightAddOn as ContentPresenter,
+            RightAddOnBorderThickness,
+            RightAddOnCornerRadius);
+    }
+
+    private void ConfigureOuterAddOnPresenterVisual(
+        ContentPresenter? presenter,
+        Thickness borderThickness,
+        CornerRadius cornerRadius)
+    {
+        if (presenter == null)
+        {
+            return;
+        }
+
+        presenter.SetCurrentValue(ContentPresenter.BackgroundProperty, CalculateOuterAddOnBackground());
+        presenter.SetCurrentValue(ContentPresenter.BorderBrushProperty, CalculateOuterAddOnBorderBrush());
+        presenter.SetCurrentValue(ContentPresenter.PaddingProperty, OuterAddOnPadding);
+        presenter.SetCurrentValue(ContentPresenter.BorderThicknessProperty, borderThickness);
+        presenter.SetCurrentValue(ContentPresenter.CornerRadiusProperty, cornerRadius);
+    }
+
+    private IBrush? CalculateOuterAddOnBackground()
+    {
+        if (!IsEffectivelyEnabled &&
+            StyleVariant is InputControlStyleVariant.Outlined or InputControlStyleVariant.Filled)
+        {
+            return OuterAddOnDisabledBackground;
+        }
+
+        return StyleVariant switch
+        {
+            InputControlStyleVariant.Filled => Status switch
+            {
+                InputControlStatus.Error   => OuterAddOnErrorFilledBackground,
+                InputControlStatus.Warning => OuterAddOnWarningFilledBackground,
+                _                          => OuterAddOnFilledBackground
+            },
+            InputControlStyleVariant.Borderless or InputControlStyleVariant.Underlined => Brushes.Transparent,
+            _ => OuterAddOnDefaultBackground
+        };
+    }
+
+    private IBrush? CalculateOuterAddOnBorderBrush()
+    {
+        if (!IsEffectivelyEnabled &&
+            StyleVariant is InputControlStyleVariant.Outlined or InputControlStyleVariant.Filled)
+        {
+            return OuterAddOnDisabledBorderBrush;
+        }
+
+        if (StyleVariant == InputControlStyleVariant.Filled)
+        {
+            return OuterAddOnFilledBorderBrush;
+        }
+
+        if (StyleVariant == InputControlStyleVariant.Outlined)
+        {
+            return Status switch
+            {
+                InputControlStatus.Error   => OuterAddOnErrorBorderBrush,
+                InputControlStatus.Warning => OuterAddOnWarningBorderBrush,
+                _                          => OuterAddOnDefaultBorderBrush
+            };
+        }
+
+        return OuterAddOnDefaultBorderBrush;
+    }
+
+    private void ConfigureContentAddOnPresenters()
+    {
+        if (_contentLayout == null)
+        {
+            return;
+        }
+
+        ConfigureContentLeftAddOnPresenter();
+        ConfigureContentRightAddOnPresenter();
+        EnsureContentAddOnPresenterOrder();
+        UpdateIconStatusColors();
+    }
+
+    private void ConfigureContentLeftAddOnPresenter()
+    {
+        if (ContentLeftAddOn == null)
+        {
+            ClearContentLeftAddOnPresenter();
+            return;
+        }
+
+        if (_contentLeftAddOn == null)
+        {
+            _contentLeftAddOn = CreateContentAddOnPresenter(Dock.Left, HorizontalAlignment.Left);
+            _contentLeftAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+            _isContentLeftAddOnPresenterDynamic = true;
+            InvalidateIconCacheForPresenter(_contentLeftAddOn);
+        }
+
+        _contentLeftAddOn.SetCurrentValue(ContentPresenter.ContentProperty, ContentLeftAddOn);
+        _contentLeftAddOn.SetCurrentValue(ContentPresenter.ContentTemplateProperty, ContentLeftAddOnTemplate);
+    }
+
+    private void ConfigureContentRightAddOnPresenter()
+    {
+        if (ContentRightAddOn == null)
+        {
+            ClearContentRightAddOnPresenter();
+            return;
+        }
+
+        if (_contentRightAddOn == null)
+        {
+            _contentRightAddOn = CreateContentAddOnPresenter(Dock.Right, HorizontalAlignment.Right);
+            _contentRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+            _isContentRightAddOnPresenterDynamic = true;
+            InvalidateIconCacheForPresenter(_contentRightAddOn);
+        }
+
+        _contentRightAddOn.SetCurrentValue(ContentPresenter.ContentProperty, ContentRightAddOn);
+        _contentRightAddOn.SetCurrentValue(ContentPresenter.ContentTemplateProperty, ContentRightAddOnTemplate);
+    }
+
+    private static ContentPresenter CreateContentAddOnPresenter(Dock dock, HorizontalAlignment horizontalAlignment)
+    {
+        var presenter = new ContentPresenter
+        {
+            Name                     = dock == Dock.Left
+                ? AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart
+                : AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart,
+            VerticalAlignment        = VerticalAlignment.Stretch,
+            VerticalContentAlignment = VerticalAlignment.Center,
+            HorizontalAlignment      = horizontalAlignment,
+            Focusable                = false
+        };
+        DockPanel.SetDock(presenter, dock);
+        return presenter;
+    }
+
+    private void ClearContentLeftAddOnPresenter()
+    {
+        if (_contentLeftAddOn == null || !_isContentLeftAddOnPresenterDynamic)
+        {
+            return;
+        }
+
+        _contentLeftAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+        _contentLeftAddOn.ClearValue(ContentPresenter.ContentProperty);
+        _contentLeftAddOn.ClearValue(ContentPresenter.ContentTemplateProperty);
+        RemoveFromParentPanel(_contentLeftAddOn);
+        _contentLeftAddOn = null;
+        _isContentLeftAddOnPresenterDynamic = false;
+        _contentLeftAddOnIcons = null;
+        _addOnStatusContentVersion++;
+    }
+
+    private void ClearContentRightAddOnPresenter()
+    {
+        if (_contentRightAddOn == null || !_isContentRightAddOnPresenterDynamic)
+        {
+            return;
+        }
+
+        _contentRightAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+        _contentRightAddOn.ClearValue(ContentPresenter.ContentProperty);
+        _contentRightAddOn.ClearValue(ContentPresenter.ContentTemplateProperty);
+        RemoveFromParentPanel(_contentRightAddOn);
+        _contentRightAddOn = null;
+        _isContentRightAddOnPresenterDynamic = false;
+        _contentRightAddOnIcons = null;
+        _addOnStatusContentVersion++;
+    }
+
+    private void EnsureContentAddOnPresenterOrder()
+    {
+        if (_contentLayout == null)
+        {
+            return;
+        }
+
+        var index = 0;
+        EnsureContentAddOnPresenterAt(_contentLeftAddOn, ref index, _isContentLeftAddOnPresenterDynamic);
+        EnsureContentAddOnPresenterAt(_contentRightAddOn, ref index, _isContentRightAddOnPresenterDynamic);
+
+        if (_contentPresenter != null)
+        {
+            var contentPresenterIndex = _contentLayout.Children.IndexOf(_contentPresenter);
+            if (contentPresenterIndex >= 0 &&
+                contentPresenterIndex != _contentLayout.Children.Count - 1)
+            {
+                _contentLayout.Children.RemoveAt(contentPresenterIndex);
+                _contentLayout.Children.Add(_contentPresenter);
+            }
+        }
+    }
+
+    private void EnsureContentAddOnPresenterAt(Control? presenter, ref int index, bool isDynamic)
+    {
+        if (presenter == null || _contentLayout == null || !isDynamic)
+        {
+            return;
+        }
+
+        var currentIndex = _contentLayout.Children.IndexOf(presenter);
+        if (currentIndex == index)
+        {
+            index++;
+            return;
+        }
+
+        if (currentIndex >= 0)
+        {
+            _contentLayout.Children.RemoveAt(currentIndex);
+        }
+
+        var insertIndex = Math.Min(index, _contentLayout.Children.Count);
+        _contentLayout.Children.Insert(insertIndex, presenter);
+        index++;
     }
 
     private void HandleContentPresenterChildChanged(object? sender, AvaloniaPropertyChangedEventArgs e)

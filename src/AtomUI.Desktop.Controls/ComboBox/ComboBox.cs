@@ -1,6 +1,8 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -231,7 +233,10 @@ public class ComboBox : AvaloniaComboBox,
 
     private Popup? _popup;
     private Window? _attachedWindow;
+    private AddOnDecoratedBox? _addOnDecoratedBox;
     private ComboBoxHandle? _comboBoxHandle;
+    private ComboBoxAccessoryHost? _accessoryHost;
+    private IDisposable? _accessoryHostSpacingBinding;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
 
@@ -253,63 +258,134 @@ public class ComboBox : AvaloniaComboBox,
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        this.SetPopup(null); // 清空父类，防止鼠标点击的错误处理
-
-        _popup = e.NameScope.Find<Popup>("PART_Popup");
-
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = null;
+        ClearOwnerDrivenAccessoryHost();
+        if (_accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
         if (_comboBoxHandle != null)
         {
             _comboBoxHandle.HandleClick -= HandleOpenPopupClicked;
+            _comboBoxHandle = null;
         }
 
+        base.OnApplyTemplate(e);
+        this.SetPopup(null); // 清空父类，防止鼠标点击的错误处理
+
+        _popup             = e.NameScope.Find<Popup>("PART_Popup");
+        _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         _comboBoxHandle = e.NameScope.Find<ComboBoxHandle>("PART_ComboBoxHandle");
-
-        if (_comboBoxHandle != null)
-        {
-            _comboBoxHandle.HandleClick += HandleOpenPopupClicked;
-        }
 
         UpdatePseudoClasses();
         ConfigureMaxDropdownHeight();
-        SetupContentRightAddOnBindings(e);
+        if (!SetupContentRightAddOnBindings(e))
+        {
+            ConfigureOwnerDrivenAccessoryHost();
+        }
     }
 
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private bool SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
     {
         _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _contentRightAddOnBindings = null;
+        var bindings    = new CompositeDisposable();
+        var hasBindings = false;
 
         if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
         {
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
+            hasBindings = true;
+            bindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
+            bindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
                 new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
+            bindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
         {
-            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
+            hasBindings = true;
+            bindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
-            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
+            bindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
         }
 
         if (_comboBoxHandle != null)
         {
-            _contentRightAddOnBindings.Add(_comboBoxHandle.Bind(InputElement.IsEnabledProperty,
+            hasBindings = true;
+            var handle = _comboBoxHandle;
+            handle.HandleClick += HandleOpenPopupClicked;
+            bindings.Add(Disposable.Create(() => handle.HandleClick -= HandleOpenPopupClicked));
+            bindings.Add(handle.Bind(InputElement.IsEnabledProperty,
                 new Binding(nameof(IsEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(_comboBoxHandle.Bind(ComboBoxHandle.IsMotionEnabledProperty,
+            bindings.Add(handle.Bind(ComboBoxHandle.IsMotionEnabledProperty,
                 new Binding(nameof(IsMotionEnabled)) { Source = this }));
         }
+
+        if (hasBindings)
+        {
+            _contentRightAddOnBindings = bindings;
+            return true;
+        }
+
+        bindings.Dispose();
+        return _addOnDecoratedBox?.ContentRightAddOn != null;
     }
     
     private void HandleOpenPopupClicked(object? sender, EventArgs e)
     {
         SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+    }
+
+    internal void NotifyAccessoryHandleClicked()
+    {
+        SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+    }
+
+    private void ConfigureOwnerDrivenAccessoryHost()
+    {
+        if (_addOnDecoratedBox == null)
+        {
+            return;
+        }
+
+        if (_accessoryHost == null)
+        {
+            _accessoryHost = new ComboBoxAccessoryHost();
+            _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
+                _accessoryHost,
+                StackPanel.SpacingProperty,
+                SharedTokenKind.SpacingXS);
+            _accessoryHost.AttachOwner(this);
+        }
+
+        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+        }
+    }
+
+    private void ClearOwnerDrivenAccessoryHost()
+    {
+        if (_addOnDecoratedBox != null &&
+            _accessoryHost != null &&
+            ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _addOnDecoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        _accessoryHostSpacingBinding?.Dispose();
+        _accessoryHostSpacingBinding = null;
+
+        if (_accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

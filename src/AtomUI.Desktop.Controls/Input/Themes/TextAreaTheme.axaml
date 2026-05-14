@@ -31,27 +31,6 @@
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
                             IsScrollChainingEnabled="{TemplateBinding ScrollViewer.IsScrollChainingEnabled}">
-                            <atom:TextAreaDecoratedBox.ContentRightAddOn>
-                                <StackPanel Orientation="Vertical"
-                                            Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                                    <atom:InputClearIconButton
-                                        Name="PART_ClearButton"
-                                        VerticalAlignment="Center" />
-                                    <ContentPresenter
-                                        Name="PART_FormFeedBack"
-                                        VerticalAlignment="Stretch"
-                                        VerticalContentAlignment="Center"
-                                        HorizontalAlignment="Right" />
-                                    <ContentPresenter
-                                        Name="PART_InnerRightContentPresenter"
-                                        VerticalAlignment="Center"
-                                        VerticalContentAlignment="Center"
-                                        HorizontalAlignment="Right"
-                                        Focusable="False"
-                                        IsVisible="False" />
-                                </StackPanel>
-                            </atom:TextAreaDecoratedBox.ContentRightAddOn>
-
                             <Panel Name="ContentLayout">
                                 <atom:TextBlock
                                     Name="Placeholder"
