@@ -133,6 +133,11 @@ internal static class Program
                 Width = 260,
                 PlaceholderText = "Cascader"
             }),
+            new PerfScenario("ButtonSpinner.Default", _ => new AtomUI.Desktop.Controls.ButtonSpinner
+            {
+                Width   = 160,
+                Content = new Avalonia.Controls.TextBlock { Text = "100" }
+            }),
             new PerfScenario("CompactSpace.LineEdit.Horizontal", _ => CreateCompactSpace(Orientation.Horizontal)),
             new PerfScenario("CompactSpace.LineEdit.Vertical", _ => CreateCompactSpace(Orientation.Vertical))
         ];
@@ -257,6 +262,7 @@ internal static class Program
     {
         var failures = new List<string>();
         VerifyLineEditAccessoryLifecycle(failures);
+        VerifyTextAreaAccessoryLifecycle(failures);
         VerifySearchEditAccessoryLifecycle(failures);
 
         if (failures.Count == 0)
@@ -717,6 +723,48 @@ internal static class Program
         Expect(feedbackPresenter?.Content == null, "LineEdit feedback presenter should clear Content after detach.", failures);
     }
 
+    private static void VerifyTextAreaAccessoryLifecycle(ICollection<string> failures)
+    {
+        var textArea = new TextArea
+        {
+            Text  = "abc",
+            Width = 260
+        };
+        using var realized = RealizeControl(textArea);
+        var decoratedBox = GetAddOnDecoratedBox(textArea, failures, "TextArea");
+        if (decoratedBox == null)
+        {
+            return;
+        }
+
+        Expect(decoratedBox.ContentRightAddOn == null, "TextArea default should not materialize ContentRightAddOn.", failures);
+
+        textArea.SetCurrentValue(TextArea.IsAllowClearProperty, true);
+        RefreshLayout(realized.Window);
+        var clearHost = ExpectTextAreaHost(decoratedBox, failures, "TextArea clear");
+        var clearButton = clearHost?.Children.OfType<InputClearIconButton>().SingleOrDefault();
+        Expect(clearButton != null, "TextArea clear should create InputClearIconButton.", failures);
+        clearButton?.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, clearButton));
+        RefreshLayout(realized.Window);
+        Expect(string.IsNullOrEmpty(textArea.Text), "TextArea clear button should clear Text.", failures);
+        Expect(decoratedBox.ContentRightAddOn == null, "TextArea clear host should be removed after text is cleared.", failures);
+        Expect(clearHost?.Children.Count == 0, "TextArea clear host should clear children after detach.", failures);
+        Expect(clearHost?.GetVisualParent() == null, "TextArea detached clear host should leave the visual tree.", failures);
+
+        var innerRightContent = new Avalonia.Controls.TextBlock { Text = "rows" };
+        textArea.SetCurrentValue(Avalonia.Controls.TextBox.InnerRightContentProperty, innerRightContent);
+        RefreshLayout(realized.Window);
+        var innerRightHost = ExpectTextAreaHost(decoratedBox, failures, "TextArea inner right");
+        var innerRightPresenter = innerRightHost?.Children.OfType<ContentPresenter>()
+                                               .SingleOrDefault(presenter => presenter.Name == "PART_InnerRightContentPresenter");
+        Expect(ReferenceEquals(innerRightPresenter?.Content, innerRightContent), "TextArea inner right presenter should hold InnerRightContent.", failures);
+        textArea.SetCurrentValue(Avalonia.Controls.TextBox.InnerRightContentProperty, null);
+        RefreshLayout(realized.Window);
+        Expect(decoratedBox.ContentRightAddOn == null, "TextArea inner right host should be removed after clearing content.", failures);
+        Expect(innerRightHost?.Children.Count == 0, "TextArea inner right host should clear children after detach.", failures);
+        Expect(innerRightPresenter?.Content == null, "TextArea inner right presenter should clear Content after detach.", failures);
+    }
+
     private static void VerifySearchEditAccessoryLifecycle(ICollection<string> failures)
     {
         var searchEdit = new SearchEdit
@@ -785,6 +833,19 @@ internal static class Program
         }
 
         failures.Add($"{label} should materialize LineEditAccessoryHost.");
+        return null;
+    }
+
+    private static TextAreaAccessoryHost? ExpectTextAreaHost(AddOnDecoratedBox decoratedBox,
+                                                             ICollection<string> failures,
+                                                             string label)
+    {
+        if (decoratedBox.ContentRightAddOn is TextAreaAccessoryHost host)
+        {
+            return host;
+        }
+
+        failures.Add($"{label} should materialize TextAreaAccessoryHost.");
         return null;
     }
 

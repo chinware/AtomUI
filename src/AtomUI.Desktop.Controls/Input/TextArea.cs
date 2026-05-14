@@ -1,15 +1,16 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -194,8 +195,10 @@ public class TextArea : AvaloniaTextBox,
     
     #endregion
 
+    private TextAreaDecoratedBox? _decoratedBox;
     private ScrollViewer? _scrollViewer;
-    private IconButton? _clearButton;
+    private TextAreaAccessoryHost? _accessoryHost;
+    private IDisposable? _accessoryHostSpacingBinding;
     private ResizeHandle? _resizeHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
@@ -246,6 +249,11 @@ public class TextArea : AvaloniaTextBox,
         {
             ConfigureFormFeedbackSubscription();
         }
+
+        if (IsAccessoryStateProperty(change.Property))
+        {
+            ConfigureOwnerDrivenAccessoryHost();
+        }
     }
 
     private void ConfigureFormFeedbackSubscription()
@@ -273,21 +281,19 @@ public class TextArea : AvaloniaTextBox,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        var decorator = e.NameScope.Find<TextAreaDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        if (decorator != null)
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = null;
+        ClearOwnerDrivenAccessoryHost();
+        if (_accessoryHost != null)
         {
-            decorator.Owner = this;
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
         }
 
-        if (_clearButton != null)
+        _decoratedBox = e.NameScope.Find<TextAreaDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (_decoratedBox != null)
         {
-            _clearButton.Click -= HandleClearButtonClicked;
-        }
-
-        _clearButton   = e.NameScope.Find<IconButton>("PART_ClearButton");
-        if (_clearButton != null)
-        {
-            _clearButton.Click += HandleClearButtonClicked;
+            _decoratedBox.Owner = this;
         }
 
         _resizeHandle = e.NameScope.Find<ResizeHandle>("PART_ResizeHandle");
@@ -299,37 +305,58 @@ public class TextArea : AvaloniaTextBox,
         UpdatePseudoClasses();
         ConfigureEffectiveShowClearButton();
         HandleInputChanged(Text);
-        SetupContentRightAddOnBindings(e);
+        if (!SetupContentRightAddOnBindings(e))
+        {
+            ConfigureOwnerDrivenAccessoryHost();
+        }
     }
 
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private bool SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
     {
         _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _contentRightAddOnBindings = null;
+        var bindings    = new CompositeDisposable();
+        var hasBindings = false;
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
+            hasBindings = true;
+            clearButton.Click += HandleClearButtonClicked;
+            bindings.Add(Disposable.Create(() => clearButton.Click -= HandleClearButtonClicked));
+            bindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
                 new Binding(nameof(IsMotionEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
+            bindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
+            bindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
                 new Binding(nameof(ClearIcon)) { Source = this }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
         {
-            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
+            hasBindings = true;
+            bindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
-            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
+            bindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
         {
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
+            hasBindings = true;
+            bindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(InnerRightContent)) { Source = this }));
         }
+
+        if (hasBindings)
+        {
+            _contentRightAddOnBindings = bindings;
+        }
+        else
+        {
+            bindings.Dispose();
+        }
+
+        return hasBindings;
     }
 
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
@@ -341,6 +368,77 @@ public class TextArea : AvaloniaTextBox,
     {
         _scrollViewer = scrollViewer;
         this.SetScrollViewer(scrollViewer);
+    }
+
+    internal void NotifyAccessoryClearButtonClicked()
+    {
+        NotifyClearButtonClicked();
+    }
+
+    private static bool IsAccessoryStateProperty(AvaloniaProperty property)
+    {
+        return property == IsEffectiveShowClearButtonProperty ||
+               property == ClearIconProperty ||
+               property == IsMotionEnabledProperty ||
+               property == FormFeedbackProperty ||
+               property == IsFormFeedbackVisibleProperty ||
+               property == InnerRightContentProperty ||
+               property == InnerRightContentTemplateProperty;
+    }
+
+    private void ConfigureOwnerDrivenAccessoryHost()
+    {
+        if (_decoratedBox == null)
+        {
+            return;
+        }
+
+        if (!NeedsRightAccessoryHost())
+        {
+            ClearOwnerDrivenAccessoryHost();
+            return;
+        }
+
+        if (_accessoryHost == null)
+        {
+            _accessoryHost = new TextAreaAccessoryHost();
+            _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
+                _accessoryHost,
+                StackPanel.SpacingProperty,
+                SharedTokenKind.UniformlyPaddingXXS);
+            _accessoryHost.AttachOwner(this);
+        }
+
+        if (!ReferenceEquals(_decoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _decoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+        }
+    }
+
+    private void ClearOwnerDrivenAccessoryHost()
+    {
+        if (_decoratedBox != null &&
+            _accessoryHost != null &&
+            ReferenceEquals(_decoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _decoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        _accessoryHostSpacingBinding?.Dispose();
+        _accessoryHostSpacingBinding = null;
+
+        if (_accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
+    }
+
+    private bool NeedsRightAccessoryHost()
+    {
+        return IsEffectiveShowClearButton ||
+               (IsFormFeedbackVisible && FormFeedback != null) ||
+               InnerRightContent != null;
     }
 
     private void ValidateLinesValue(int lines)

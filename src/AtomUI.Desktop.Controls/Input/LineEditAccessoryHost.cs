@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Theme.Styling;
@@ -7,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using System.Reactive.Disposables;
 
@@ -69,6 +69,8 @@ internal class LineEditAccessoryHost : StackPanel
     private TextBlock? _countTextIndicator;
     private IDisposable? _countTextForegroundBinding;
     private bool _isAttachingOwner;
+    private bool _isUpdateQueued;
+    private int _updateVersion;
 
     public LineEditAccessoryHost()
     {
@@ -86,7 +88,7 @@ internal class LineEditAccessoryHost : StackPanel
             change.Property == IsInnerRightContentSlotEnabledProperty ||
             change.Property == IsCountIndicatorSlotEnabledProperty)
         {
-            UpdateAccessoryState();
+            QueueUpdateAccessoryState();
         }
     }
 
@@ -116,11 +118,14 @@ internal class LineEditAccessoryHost : StackPanel
             owner.GetObservable(TextBox.CountTextProperty).Subscribe(_ => HandleOwnerPropertyChanged())
         };
         _isAttachingOwner = false;
+        _updateVersion++;
         UpdateAccessoryState();
     }
 
     internal void DetachOwner()
     {
+        _updateVersion++;
+        _isUpdateQueued = false;
         _ownerSubscriptions?.Dispose();
         _ownerSubscriptions = null;
 
@@ -139,8 +144,27 @@ internal class LineEditAccessoryHost : StackPanel
     {
         if (!_isAttachingOwner)
         {
-            UpdateAccessoryState();
+            QueueUpdateAccessoryState();
         }
+    }
+
+    private void QueueUpdateAccessoryState()
+    {
+        if (_owner == null || _isUpdateQueued)
+        {
+            return;
+        }
+
+        _isUpdateQueued = true;
+        var version = _updateVersion;
+        Dispatcher.UIThread.Post(() =>
+        {
+            _isUpdateQueued = false;
+            if (_owner != null && version == _updateVersion)
+            {
+                UpdateAccessoryState();
+            }
+        }, DispatcherPriority.Render);
     }
 
     private void UpdateAccessoryState()

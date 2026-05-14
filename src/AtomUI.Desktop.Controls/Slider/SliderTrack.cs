@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using AtomUI.Animations;
-using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Media;
 using AtomUI.Utils;

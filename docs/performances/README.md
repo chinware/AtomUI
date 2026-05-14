@@ -41,6 +41,7 @@
 | 控件/体系 | 状态 | 目录 | 关键结果 |
 | --- | --- | --- | --- |
 | AddOnDecoratedBox | 本轮已完成 | [AddOnDecoratedBox](AddOnDecoratedBox/README.md) | 默认 LineEdit visual/root `26 -> 20`，KB/item `503.8 -> 398.4`，默认 icon scan `360 -> 0` |
+| Icon | 方案已形成，待基线 | [Icon](Icon/README.md) | 基础高频控件，重点关注默认初始化、模板节点、render 分配和隐藏图标按需创建 |
 | LineEdit | 本轮已完成 Gallery 实测 | [LineEdit](LineEdit/README.md) | `LineEditShowCase` 重复导航均值 `229.07ms -> 183.98ms`，提升 `19.68%` |
 
 ## 总列表
@@ -48,6 +49,7 @@
 | 分类 | 控件/体系 | 状态 | 备注 |
 | --- | --- | --- | --- |
 | Shared Primitive | AddOnDecoratedBox | Done | 输入类控件共享视觉与 addon 体系 |
+| Shared Primitive | Icon | Plan | 基础高频视觉原语，已形成优化分析与实施计划 |
 | General | Button | Pending | 待建立基线 |
 | General | FloatButton | Pending | 待建立基线 |
 | General | SplitButton | Pending | 待建立基线 |
@@ -121,6 +123,7 @@
 | 状态 | 含义 |
 | --- | --- |
 | Pending | 尚未建立控件级性能基线 |
+| Plan | 已形成分析方案，尚未建立控件级性能基线 |
 | Baseline | 已有基线，尚未实施优化 |
 | In Progress | 正在优化或验证 |
 | Done | 已有基线、优化记录和最终数据 |
