@@ -41,7 +41,7 @@
 | 控件/体系 | 状态 | 目录 | 关键结果 |
 | --- | --- | --- | --- |
 | AddOnDecoratedBox | 本轮已完成 | [AddOnDecoratedBox](AddOnDecoratedBox/README.md) | 默认 LineEdit visual/root `26 -> 20`，KB/item `503.8 -> 398.4`，默认 icon scan `360 -> 0` |
-| Icon | Phase 2 已完成 | [Icon](Icon/README.md) | `IconShowCase` repeated navigation `193.31ms -> 151.15ms`，提升 `21.8%`，分配下降 `18.8%` |
+| Icon | 本轮已完成 | [Icon](Icon/README.md) | `IconShowCase` repeated `193.31ms -> 173.36ms`，alloc `57900.83KB -> 46331.65KB`；generated metadata 与 transform literal 已同步 AntDesign/Material/IconPark；`Select.Default` 默认隐藏 slot 从 `Icon/root 3 -> 1`、`Button/root 1 -> 0` |
 | LineEdit | 本轮已完成 Gallery 实测 | [LineEdit](LineEdit/README.md) | `LineEditShowCase` 重复导航均值 `229.07ms -> 183.98ms`，提升 `19.68%` |
 
 ## 总列表
@@ -49,7 +49,7 @@
 | 分类 | 控件/体系 | 状态 | 备注 |
 | --- | --- | --- | --- |
 | Shared Primitive | AddOnDecoratedBox | Done | 输入类控件共享视觉与 addon 体系 |
-| Shared Primitive | Icon | In Progress | Phase 2 已完成；静态元数据缓存、隐藏 icon slot 待继续 |
+| Shared Primitive | Icon | Done | Phase 6 已完成；Material/IconPark 外部包已同步 generated metadata 与 transform literal；Provider cache 清理语义已补齐 |
 | General | Button | Pending | 待建立基线 |
 | General | FloatButton | Pending | 待建立基线 |
 | General | SplitButton | Pending | 待建立基线 |

@@ -1,7 +1,6 @@
 <ControlTheme xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atom="https://atomui.net"
-              xmlns:antdicons="https://atomui.net/icons/antdesign"
               x:Class="AtomUI.Desktop.Controls.Themes.ButtonTheme"
               TargetType="atom:Button">
     <Style Selector="^:is(atom|Button)">
@@ -25,10 +24,8 @@
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <antdicons:LoadingOutlined
-                                    Name="PART_LoadingIcon"
-                                    LoadingAnimation="Spin"
-                                    DockPanel.Dock="Left" />
+                                <Panel Name="PART_LoadingIconHost"
+                                       DockPanel.Dock="Left" />
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
@@ -78,10 +75,8 @@
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <antdicons:LoadingOutlined
-                                    Name="PART_LoadingIcon"
-                                    LoadingAnimation="Spin"
-                                    DockPanel.Dock="Left" />
+                                <Panel Name="PART_LoadingIconHost"
+                                       DockPanel.Dock="Left" />
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
@@ -1060,10 +1055,8 @@
                                     </MultiBinding>
                                 </atom:IconPresenter.IsVisible>
                             </atom:IconPresenter>
-                            <antdicons:LoadingOutlined
-                                Name="PART_LoadingIcon"
-                                LoadingAnimation="Spin"
-                                DockPanel.Dock="Left" />
+                            <Panel Name="PART_LoadingIconHost"
+                                   DockPanel.Dock="Left" />
                             <ContentPresenter
                                 Name="PART_ContentPresenter"
                                 Content="{TemplateBinding Content}"

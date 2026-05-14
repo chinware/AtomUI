@@ -1,14 +1,24 @@
 using AtomUI.Controls;
+using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
+[TemplatePart("PART_IndicatorHost", typeof(Panel))]
 internal class SelectHandle : TemplatedControl
 {
+    private const string OpenIndicatorName = "OpenIndicator";
+    private const string LoadingIndicatorName = "LoadingIndicator";
+    private const string SearchIndicatorName = "SearchIndicator";
+    private const string ClearButtonName = "PART_ClearButton";
+
     public static readonly StyledProperty<bool> IsInputHoverProperty =
         AvaloniaProperty.Register<SelectHandle, bool>(nameof(IsInputHover));
 
@@ -130,21 +140,19 @@ internal class SelectHandle : TemplatedControl
         remove => RemoveHandler(ClearRequestedEvent, value);
     }
 
-    private IconButton? _clearButton;
+    private Panel? _indicatorHost;
+    private IconPresenter? _openIndicatorPresenter;
+    private IconPresenter? _loadingIndicatorPresenter;
+    private SearchOutlined? _searchIndicator;
+    private InputClearIconButton? _clearButton;
     private IDisposable? _feedbackStatusSubscription;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachIndicators();
         base.OnApplyTemplate(e);
-        if (_clearButton != null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-        }
-        _clearButton = e.NameScope.Find<IconButton>("PART_ClearButton");
-        if (_clearButton != null)
-        {
-            _clearButton.Click += HandleClearButtonClicked;
-        }
+        _indicatorHost = e.NameScope.Find<Panel>("PART_IndicatorHost");
+        UpdateIndicators();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -153,6 +161,19 @@ internal class SelectHandle : TemplatedControl
         if (change.Property == FormFeedbackProperty)
         {
             ConfigureFormFeedbackSubscription();
+        }
+        else if (change.Property == OpenIndicatorProperty ||
+                 change.Property == LoadingIconProperty ||
+                 change.Property == IsMotionEnabledProperty ||
+                 change.Property == IsLoadingProperty ||
+                 change.Property == IsFilterEnabledProperty ||
+                 change.Property == IsDropDownOpenProperty ||
+                 change.Property == IsAllowClearProperty ||
+                 change.Property == IsSelectionEmptyProperty ||
+                 change.Property == IsInputHoverProperty ||
+                 change.Property == IsInputPressedProperty)
+        {
+            UpdateIndicators();
         }
     }
 
@@ -181,5 +202,208 @@ internal class SelectHandle : TemplatedControl
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs e)
     {
         RaiseEvent(new RoutedEventArgs(ClearRequestedEvent, this));
+    }
+
+    private void UpdateIndicators()
+    {
+        if (_indicatorHost is null)
+        {
+            return;
+        }
+
+        var isClearVisible  = IsAllowClear && !IsSelectionEmpty && (IsInputHover || IsInputPressed);
+        var isSearchVisible = IsFilterEnabled && IsDropDownOpen && !isClearVisible;
+        var isOpenVisible   = !IsLoading && !isSearchVisible && !isClearVisible && OpenIndicator is not null;
+
+        UpdateOpenIndicator(isOpenVisible);
+        UpdateLoadingIndicator(IsLoading && LoadingIcon is not null);
+        UpdateSearchIndicator(isSearchVisible);
+        UpdateClearButton(isClearVisible);
+        EnsureIndicatorOrder();
+    }
+
+    private void UpdateOpenIndicator(bool isVisible)
+    {
+        if (!isVisible)
+        {
+            DetachOpenIndicator();
+            return;
+        }
+
+        _openIndicatorPresenter ??= CreateIconPresenter(OpenIndicatorName);
+        _openIndicatorPresenter.SetCurrentValue(IconPresenter.IconProperty, OpenIndicator);
+        _openIndicatorPresenter.SetCurrentValue(IconPresenter.IsMotionEnabledProperty, IsMotionEnabled);
+        EnsureIndicatorAttached(_openIndicatorPresenter);
+    }
+
+    private void UpdateLoadingIndicator(bool isVisible)
+    {
+        if (!isVisible)
+        {
+            DetachLoadingIndicator();
+            return;
+        }
+
+        _loadingIndicatorPresenter ??= CreateIconPresenter(LoadingIndicatorName);
+        _loadingIndicatorPresenter.SetCurrentValue(IconPresenter.IconProperty, LoadingIcon);
+        _loadingIndicatorPresenter.SetCurrentValue(IconPresenter.IsMotionEnabledProperty, IsMotionEnabled);
+        EnsureIndicatorAttached(_loadingIndicatorPresenter);
+    }
+
+    private void UpdateSearchIndicator(bool isVisible)
+    {
+        if (!isVisible)
+        {
+            DetachSearchIndicator();
+            return;
+        }
+
+        _searchIndicator ??= CreateSearchIndicator();
+        _searchIndicator.SetCurrentValue(Icon.IsMotionEnabledProperty, IsMotionEnabled);
+        EnsureIndicatorAttached(_searchIndicator);
+    }
+
+    private void UpdateClearButton(bool isVisible)
+    {
+        if (!isVisible)
+        {
+            DetachClearButton();
+            return;
+        }
+
+        if (_clearButton is null)
+        {
+            _clearButton = new InputClearIconButton
+            {
+                Name = ClearButtonName
+            };
+            _clearButton.SetTemplatedParent(this);
+            _clearButton.Click += HandleClearButtonClicked;
+        }
+        _clearButton.SetCurrentValue(IconButton.IsMotionEnabledProperty, IsMotionEnabled);
+        EnsureIndicatorAttached(_clearButton);
+    }
+
+    private IconPresenter CreateIconPresenter(string name)
+    {
+        var presenter = new IconPresenter
+        {
+            Name                = name,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        presenter.SetTemplatedParent(this);
+        return presenter;
+    }
+
+    private SearchOutlined CreateSearchIndicator()
+    {
+        var indicator = new SearchOutlined
+        {
+            Name                = SearchIndicatorName,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        indicator.SetTemplatedParent(this);
+        return indicator;
+    }
+
+    private void EnsureIndicatorAttached(Control indicator)
+    {
+        if (_indicatorHost != null && !_indicatorHost.Children.Contains(indicator))
+        {
+            _indicatorHost.Children.Add(indicator);
+        }
+    }
+
+    private void EnsureIndicatorOrder()
+    {
+        var index = 0;
+        EnsureIndicatorAt(_openIndicatorPresenter, ref index);
+        EnsureIndicatorAt(_loadingIndicatorPresenter, ref index);
+        EnsureIndicatorAt(_searchIndicator, ref index);
+        EnsureIndicatorAt(_clearButton, ref index);
+    }
+
+    private void EnsureIndicatorAt(Control? indicator, ref int index)
+    {
+        if (_indicatorHost is null || indicator is null)
+        {
+            return;
+        }
+
+        var currentIndex = _indicatorHost.Children.IndexOf(indicator);
+        if (currentIndex == index)
+        {
+            index++;
+            return;
+        }
+
+        if (currentIndex >= 0)
+        {
+            _indicatorHost.Children.RemoveAt(currentIndex);
+        }
+
+        _indicatorHost.Children.Insert(index, indicator);
+        index++;
+    }
+
+    private void DetachIndicators()
+    {
+        DetachOpenIndicator();
+        DetachLoadingIndicator();
+        DetachSearchIndicator();
+        DetachClearButton();
+    }
+
+    private void DetachOpenIndicator()
+    {
+        if (_openIndicatorPresenter is null)
+        {
+            return;
+        }
+
+        _openIndicatorPresenter.SetCurrentValue(IconPresenter.IconProperty, null);
+        _indicatorHost?.Children.Remove(_openIndicatorPresenter);
+        _openIndicatorPresenter.SetTemplatedParent(null);
+        _openIndicatorPresenter = null;
+    }
+
+    private void DetachLoadingIndicator()
+    {
+        if (_loadingIndicatorPresenter is null)
+        {
+            return;
+        }
+
+        _loadingIndicatorPresenter.SetCurrentValue(IconPresenter.IconProperty, null);
+        _indicatorHost?.Children.Remove(_loadingIndicatorPresenter);
+        _loadingIndicatorPresenter.SetTemplatedParent(null);
+        _loadingIndicatorPresenter = null;
+    }
+
+    private void DetachSearchIndicator()
+    {
+        if (_searchIndicator is null)
+        {
+            return;
+        }
+
+        _indicatorHost?.Children.Remove(_searchIndicator);
+        _searchIndicator.SetTemplatedParent(null);
+        _searchIndicator = null;
+    }
+
+    private void DetachClearButton()
+    {
+        if (_clearButton is null)
+        {
+            return;
+        }
+
+        _clearButton.Click -= HandleClearButtonClicked;
+        _indicatorHost?.Children.Remove(_clearButton);
+        _clearButton.SetTemplatedParent(null);
+        _clearButton = null;
     }
 }

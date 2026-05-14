@@ -63,6 +63,10 @@ public class HorizontalNavMenuItemHeader : BaseNavMenuItemHeader
         {
             ConfigureActiveIndicator();
         }
+        else if (change.Property == IsTopLevelProperty)
+        {
+            UpdateMenuIndicatorIcon();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

@@ -128,12 +128,6 @@
             </Style>
         </Style>
 
-        <Style Selector="^[HasSubMenu=False]">
-            <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
-                <Setter Property="IsVisible" Value="False" />
-            </Style>
-        </Style>
-
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="IsVisible" Value="False" />
             <Setter Property="Margin"

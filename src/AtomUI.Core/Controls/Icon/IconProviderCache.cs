@@ -17,6 +17,9 @@ internal static class IconProviderCache
     
     private static readonly ConcurrentDictionary<Type, Func<Icon>> TypeToCreator = 
         new();
+
+    private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<Type, byte>> EnumTypeToIconTypes =
+        new();
     
     /// <summary>
     /// Tracks insertion order for FIFO eviction when cache exceeds MaxCacheSize.
@@ -61,8 +64,15 @@ internal static class IconProviderCache
         return cache.GetOrAdd(enumValue, value =>
         {
             var type = GetOrAddType(enumType, value, typeFactory);
+            RegisterIconType(enumType, type);
             return TypeToCreator.GetOrAdd(type, creatorFactory);
         });
+    }
+
+    private static void RegisterIconType(Type enumType, Type iconType)
+    {
+        var iconTypes = EnumTypeToIconTypes.GetOrAdd(enumType, _ => new ConcurrentDictionary<Type, byte>());
+        iconTypes.TryAdd(iconType, 0);
     }
     
     /// <summary>
@@ -72,12 +82,57 @@ internal static class IconProviderCache
     {
         lock (_lockObject)
         {
-            while (TypeCache.Count > MaxCacheSize && CacheInsertionOrder.Count > 0)
+            while (Math.Max(TypeCache.Count, CreatorCache.Count) > MaxCacheSize)
             {
-                var oldestType = CacheInsertionOrder.Dequeue();
-                TypeCache.TryRemove(oldestType, out _);
-                CreatorCache.TryRemove(oldestType, out _);
+                if (!TryDequeueActiveEnumType(out var oldestType))
+                {
+                    oldestType = TypeCache.Keys.Concat(CreatorCache.Keys).FirstOrDefault();
+                    if (oldestType is null)
+                    {
+                        break;
+                    }
+                }
+
+                RemoveEnumCache(oldestType);
             }
+        }
+    }
+
+    private static bool TryDequeueActiveEnumType(out Type enumType)
+    {
+        while (CacheInsertionOrder.Count > 0)
+        {
+            enumType = CacheInsertionOrder.Dequeue();
+            if (TypeCache.ContainsKey(enumType) ||
+                CreatorCache.ContainsKey(enumType) ||
+                EnumTypeToIconTypes.ContainsKey(enumType))
+            {
+                return true;
+            }
+        }
+
+        enumType = null!;
+        return false;
+    }
+
+    private static void RemoveEnumCache(Type enumType)
+    {
+        var iconTypes = new HashSet<Type>();
+        if (EnumTypeToIconTypes.TryRemove(enumType, out var trackedIconTypes))
+        {
+            iconTypes.UnionWith(trackedIconTypes.Keys);
+        }
+
+        if (TypeCache.TryRemove(enumType, out var typeCache))
+        {
+            iconTypes.UnionWith(typeCache.Values);
+        }
+
+        CreatorCache.TryRemove(enumType, out _);
+
+        foreach (var iconType in iconTypes)
+        {
+            TypeToCreator.TryRemove(iconType, out _);
         }
     }
     
@@ -85,8 +140,7 @@ internal static class IconProviderCache
     {
         lock (_lockObject)
         {
-            TypeCache.TryRemove(enumType, out _);
-            CreatorCache.TryRemove(enumType, out _);
+            RemoveEnumCache(enumType);
             // Note: We don't remove from CacheInsertionOrder to avoid lock contention
             // The queue will naturally be cleaned up during EnsureCacheSize operations
         }
@@ -99,6 +153,7 @@ internal static class IconProviderCache
             TypeCache.Clear();
             CreatorCache.Clear();
             TypeToCreator.Clear();
+            EnumTypeToIconTypes.Clear();
             CacheInsertionOrder.Clear();
         }
     }

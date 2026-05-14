@@ -80,13 +80,15 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 - `/Users/chinboy/Projects/dotnet/IconParkIconsPackage`
 - `/Users/chinboy/Projects/dotnet/MaterialIconsPackages`
 
-需要作为后续优化约束：
+基线时需要作为后续优化约束：
 
-- Material 当前生成约 `10732` 个图标类，每个主题是独立类，直接继承 `Icon`。
-- IconPark 当前生成约 `2659` 个图标类，所有主题复用同一个图标类，通过 `IconParkIcon.FindIconBrush()` 根据 `IconTheme` 动态映射 brush。
+- Material 生成约 `10732` 个图标类，每个主题是独立类，当时直接继承 `Icon`。
+- IconPark 生成约 `2659` 个图标类，所有主题复用同一个图标类，通过 `IconParkIcon.FindIconBrush()` 根据 `IconTheme` 动态映射 brush。
 - IconPark 依赖 `StrokeBrush`、`FillBrush`、`SecondaryStrokeBrush`、`SecondaryFillBrush`、`FallbackBrush`、`StrokeWidth`、`StrokeLineCap`、`StrokeLineJoin` 和 `ProcessBrush()`。
 - Material 主要依赖 `FillBrush` / `StrokeBrush` 的 theme 映射，但仍使用 `IconTheme` 表达 generated class 的主题类型。
 - 因此，Icon 基类优化不能删除多色、stroke、theme switch、brush processing、animation 等能力，只能把它们改成按需付费。
+
+Phase 3 后，Material 已改为 generated class 继承 `MaterialIcon`，并与 IconPark 一起生成静态 geometry metadata；这些变化不改变上述 public API 与能力约束。
 
 ## 当前结论
 

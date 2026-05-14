@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Icons.AntDesign;
 using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -13,8 +14,11 @@ namespace AtomUI.Desktop.Controls;
 using AvaloniaMenuItem = Avalonia.Controls.MenuItem;
 
 [PseudoClasses(MenuItemPseudoClass.TopLevel)]
+[TemplatePart("PART_MenuIndicatorIconHost", typeof(Panel))]
 public class MenuItem : AvaloniaMenuItem, IMenuItemData
 {
+    private const string MenuIndicatorIconName = "MenuIndicatorIcon";
+
     #region 公共属性定义
 
     public new static readonly StyledProperty<PathIcon?> IconProperty =
@@ -49,6 +53,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     IEnumerable<IMenuItemData> ITreeNode<IMenuItemData>.Children => Items.OfType<IMenuItemData>();
     public ITreeNode<IMenuItemData>? ParentNode => Parent as ITreeNode<IMenuItemData>;
     public EntityKey? ItemKey { get; set; }
+
+    private Panel? _menuIndicatorIconHost;
+    private RightOutlined? _menuIndicatorIcon;
 
     #region 公共事件定义
 
@@ -148,6 +155,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         {
             ConfigureMaxPopupHeight();
         }
+        else if (change.Property == ItemCountProperty)
+        {
+            UpdateMenuIndicatorIcon();
+        }
     }
 
     private void UpdatePseudoClasses()
@@ -241,9 +252,12 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachMenuIndicatorIcon();
         base.OnApplyTemplate(e);
+        _menuIndicatorIconHost = e.NameScope.Find<Panel>("PART_MenuIndicatorIconHost");
         UpdatePseudoClasses();
         ConfigureMaxPopupHeight();
+        UpdateMenuIndicatorIcon();
     }
 
     public async Task CloseItemAsync(CancellationToken cancellationToken = default)
@@ -264,6 +278,46 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     {
         SetCurrentValue(MaxPopupHeightProperty,
             ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom);
+    }
+
+    private void UpdateMenuIndicatorIcon()
+    {
+        if (_menuIndicatorIconHost is null)
+        {
+            return;
+        }
+
+        if (ItemCount == 0)
+        {
+            DetachMenuIndicatorIcon();
+            return;
+        }
+
+        if (_menuIndicatorIcon is not null)
+        {
+            return;
+        }
+
+        _menuIndicatorIcon = new RightOutlined
+        {
+            Name                = MenuIndicatorIconName,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _menuIndicatorIcon.SetTemplatedParent(this);
+        _menuIndicatorIconHost.Children.Add(_menuIndicatorIcon);
+    }
+
+    private void DetachMenuIndicatorIcon()
+    {
+        if (_menuIndicatorIcon is null)
+        {
+            return;
+        }
+
+        _menuIndicatorIconHost?.Children.Remove(_menuIndicatorIcon);
+        _menuIndicatorIcon.SetTemplatedParent(null);
+        _menuIndicatorIcon = null;
     }
 
     protected override void OnInitialized()
