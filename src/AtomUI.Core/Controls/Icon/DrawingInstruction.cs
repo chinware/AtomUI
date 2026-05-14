@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Media;
 
@@ -28,26 +29,35 @@ public abstract class DrawingInstruction
             fillBrush = icon.FindIconBrush(FillBrush.Value);
         }
 
-        var        pen             = BuildPen(icon);
-        Transform? originTransform = null;
-        try
+        var transform = Transform != null
+            ? Transform.Value * globalGeometryMatrix
+            : globalGeometryMatrix;
+        var pen = BuildPen(icon);
+
+        if (transform.IsIdentity)
         {
-            originTransform = _geometry.Transform;
-            if (Transform != null)
+            if (MathUtils.AreClose(Opacity, 1.0))
             {
-                _geometry.Transform = new MatrixTransform(Transform.Value * globalGeometryMatrix);
+                drawingContext.DrawGeometry(fillBrush, pen, _geometry);
             }
             else
             {
-                _geometry.Transform = new MatrixTransform(globalGeometryMatrix);
+                using var opacityState = drawingContext.PushOpacity(Opacity);
+                drawingContext.DrawGeometry(fillBrush, pen, _geometry);
             }
-
-            using var opacityState = drawingContext.PushOpacity(Opacity);
-            drawingContext.DrawGeometry(fillBrush, pen, _geometry);
         }
-        finally
+        else
         {
-            _geometry.Transform = originTransform;
+            using var transformState = drawingContext.PushTransform(transform);
+            if (MathUtils.AreClose(Opacity, 1.0))
+            {
+                drawingContext.DrawGeometry(fillBrush, pen, _geometry);
+            }
+            else
+            {
+                using var opacityState = drawingContext.PushOpacity(Opacity);
+                drawingContext.DrawGeometry(fillBrush, pen, _geometry);
+            }
         }
     }
     

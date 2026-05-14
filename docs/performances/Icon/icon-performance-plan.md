@@ -434,10 +434,10 @@ find src/AtomUI.Icons.AntDesign/GeneratedIcons -name '*.g.cs' | wc -l
 
 ### Phase 2: Render 热路径收敛
 
-- [ ] 将 `DrawingInstruction.Draw()` 改为 `PushTransform`，避免每帧创建 `MatrixTransform`。
-- [ ] 绘制时不再写入共享 geometry 的 `Transform`。
-- [ ] 复测首次 render 与稳定 render allocations。
-- [ ] 验证 transform、opacity、TwoTone、多 path 图标视觉一致。
+- [x] 将 `DrawingInstruction.Draw()` 改为 `PushTransform`，避免每帧创建 `MatrixTransform`。
+- [x] 绘制时不再写入共享 geometry 的 `Transform`。
+- [x] 复测首次 render 与稳定 render allocations。
+- [x] 验证 transform、opacity、TwoTone、多 path 图标视觉一致。
 
 ### Phase 3: AntDesign 静态元数据缓存
 
