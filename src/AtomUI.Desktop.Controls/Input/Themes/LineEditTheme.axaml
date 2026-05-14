@@ -24,31 +24,6 @@
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}"
                     Focusable="True"
                     ClipToBounds="{TemplateBinding ClipToBounds}">
-                    <atom:AddOnDecoratedBox.ContentRightAddOn>
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton
-                                Name="PART_ClearButton" />
-                            <!-- 新增显示密码按钮 -->
-                            <atom:RevealButton
-                                Name="PART_RevealButton" />
-                            <ContentPresenter
-                                Name="FormFeedBack"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Right" />
-                            <ContentPresenter
-                                Name="InnerRightContentPresenter"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Right"
-                                Focusable="False" />
-                            <atom:TextBlock Name="TextCountIndicator"
-                                            VerticalAlignment="Center"
-                                            Foreground="{atom:SharedTokenResource ColorTextPlaceholder}" />
-                        </StackPanel>
-                    </atom:AddOnDecoratedBox.ContentRightAddOn>
-
                     <atom:ScrollViewer
                         Name="PART_ScrollViewer"
                         Cursor="Ibeam"

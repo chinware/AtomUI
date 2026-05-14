@@ -25,21 +25,6 @@
                     CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}"
                     Focusable="True">
-                    <atom:SearchEditDecoratedBox.ContentRightAddOn>
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton Name="PART_ClearButton" />
-                            <!-- 新增显示密码按钮 -->
-                            <atom:RevealButton Name="PART_RevealButton" />
-                            <ContentPresenter
-                                Name="InnerRightContentPresenter"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Right"
-                                Focusable="False" />
-                        </StackPanel>
-                    </atom:SearchEditDecoratedBox.ContentRightAddOn>
-
                     <atom:ScrollViewer
                         Name="PART_ScrollViewer"
                         Cursor="Ibeam"

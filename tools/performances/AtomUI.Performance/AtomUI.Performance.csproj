@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>AtomUI.Performance</RootNamespace>
+        <AssemblyName>AtomUI.Performance</AssemblyName>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Headless" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
+        <ProjectReference Include="../../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+    </ItemGroup>
+
+</Project>

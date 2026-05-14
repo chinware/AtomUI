@@ -159,6 +159,8 @@ $RECYCLE.BIN/
 #################
 tools/*
 !tools/packages.config
+!tools/performances/
+!tools/performances/**
 .nuget
 artifacts/
 nuget

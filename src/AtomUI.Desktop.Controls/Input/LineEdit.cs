@@ -1,7 +1,9 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
+using AtomUI.Data;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -95,7 +97,11 @@ public class LineEdit : TextBox,
     #endregion
 
     private AddOnDecoratedBox? _addOnDecoratedBox;
+    private LineEditAccessoryHost? _accessoryHost;
+    private IDisposable? _accessoryHostSpacingBinding;
     private CompositeDisposable? _contentRightAddOnBindings;
+    private bool _isTemplateProvidedAccessoryHost;
+    private bool _isUsingLegacyAccessoryTemplate;
     
     public LineEdit()
     {
@@ -119,62 +125,197 @@ public class LineEdit : TextBox,
         {
             UpdatePseudoClasses();
         }
+
+        if (IsAccessoryStateProperty(change.Property))
+        {
+            ConfigureOwnerDrivenAccessoryHost();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         UpdatePseudoClasses();
+        _contentRightAddOnBindings?.Dispose();
+        _contentRightAddOnBindings = null;
+        ClearOwnerDrivenAccessoryHost();
+        if (_accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
+
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        SetupContentRightAddOnBindings(e);
+        _accessoryHost    = e.NameScope.Find<LineEditAccessoryHost>("PART_RightAccessoryHost");
+        if (_accessoryHost != null)
+        {
+            _isTemplateProvidedAccessoryHost = true;
+            _isUsingLegacyAccessoryTemplate  = false;
+            _accessoryHost.AttachOwner(this);
+        }
+        else
+        {
+            _isTemplateProvidedAccessoryHost = false;
+            _isUsingLegacyAccessoryTemplate  = SetupContentRightAddOnBindings(e);
+            if (!_isUsingLegacyAccessoryTemplate)
+            {
+                ConfigureOwnerDrivenAccessoryHost();
+            }
+        }
     }
 
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private bool SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
     {
         _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _contentRightAddOnBindings = null;
+        var bindings    = new CompositeDisposable();
+        var hasBindings = false;
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
+            hasBindings = true;
+            bindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
                 new Binding(nameof(ClearIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
+            bindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
+            bindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
                 new Binding(nameof(IsMotionEnabled)) { Source = this }));
         }
 
         if (e.NameScope.Find<RevealButton>("PART_RevealButton") is { } revealButton)
         {
-            _contentRightAddOnBindings.Add(revealButton.Bind(ToggleButton.IsCheckedProperty,
+            hasBindings = true;
+            bindings.Add(revealButton.Bind(ToggleButton.IsCheckedProperty,
                 new Binding(nameof(RevealPassword)) { Source = this, Mode = BindingMode.TwoWay }));
-            _contentRightAddOnBindings.Add(revealButton.Bind(Visual.IsVisibleProperty,
+            bindings.Add(revealButton.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsEnableRevealButton)) { Source = this }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("FormFeedBack") is { } formFeedback)
         {
-            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
+            hasBindings = true;
+            bindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(FormFeedback)) { Source = this }));
-            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
+            bindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
         }
 
         if (e.NameScope.Find<ContentPresenter>("InnerRightContentPresenter") is { } innerRightContent)
         {
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
+            hasBindings = true;
+            bindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(InnerRightContent)) { Source = this }));
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
+            bindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(InnerRightContent)) { Source = this, Converter = ObjectConverters.IsNotNull }));
         }
 
         if (e.NameScope.Find<TextBlock>("TextCountIndicator") is { } textCountIndicator)
         {
-            _contentRightAddOnBindings.Add(textCountIndicator.Bind(Avalonia.Controls.TextBlock.TextProperty,
+            hasBindings = true;
+            bindings.Add(textCountIndicator.Bind(Avalonia.Controls.TextBlock.TextProperty,
                 new Binding(nameof(CountText)) { Source = this }));
-            _contentRightAddOnBindings.Add(textCountIndicator.Bind(Visual.IsVisibleProperty,
+            bindings.Add(textCountIndicator.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(IsShowCount)) { Source = this }));
         }
+
+        if (hasBindings)
+        {
+            _contentRightAddOnBindings = bindings;
+        }
+        else
+        {
+            bindings.Dispose();
+        }
+
+        return hasBindings;
+    }
+
+    internal void NotifyAccessoryClearButtonClicked()
+    {
+        NotifyClearButtonClicked();
+    }
+
+    private static bool IsAccessoryStateProperty(AvaloniaProperty property)
+    {
+        return property == IsEffectiveShowClearButtonProperty ||
+               property == ClearIconProperty ||
+               property == IsMotionEnabledProperty ||
+               property == IsEnableRevealButtonProperty ||
+               property == RevealPasswordProperty ||
+               property == FormFeedbackProperty ||
+               property == IsFormFeedbackVisibleProperty ||
+               property == InnerRightContentProperty ||
+               property == InnerRightContentTemplateProperty ||
+               property == IsShowCountProperty ||
+               property == CountTextProperty;
+    }
+
+    private void ConfigureOwnerDrivenAccessoryHost()
+    {
+        if (_addOnDecoratedBox == null ||
+            _isTemplateProvidedAccessoryHost ||
+            _isUsingLegacyAccessoryTemplate)
+        {
+            return;
+        }
+
+        if (!NeedsRightAccessoryHost())
+        {
+            ClearOwnerDrivenAccessoryHost();
+            return;
+        }
+
+        if (_accessoryHost == null)
+        {
+            _accessoryHost = CreateAccessoryHost();
+            _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
+                _accessoryHost,
+                StackPanel.SpacingProperty,
+                SharedTokenKind.UniformlyPaddingXXS);
+            _accessoryHost.AttachOwner(this);
+        }
+
+        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+        }
+    }
+
+    private void ClearOwnerDrivenAccessoryHost()
+    {
+        if (_addOnDecoratedBox != null &&
+            _accessoryHost != null &&
+            ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        {
+            _addOnDecoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        _accessoryHostSpacingBinding?.Dispose();
+        _accessoryHostSpacingBinding = null;
+
+        if (!_isTemplateProvidedAccessoryHost && _accessoryHost != null)
+        {
+            _accessoryHost.DetachOwner();
+            _accessoryHost = null;
+        }
+    }
+
+    private protected virtual LineEditAccessoryHost CreateAccessoryHost()
+    {
+        return new LineEditAccessoryHost();
+    }
+
+    private protected virtual bool IsFormFeedbackAccessoryEnabled => true;
+
+    private protected virtual bool IsCountIndicatorAccessoryEnabled => true;
+
+    private bool NeedsRightAccessoryHost()
+    {
+        return IsEffectiveShowClearButton ||
+               IsEnableRevealButton ||
+               (IsFormFeedbackAccessoryEnabled && IsFormFeedbackVisible && FormFeedback != null) ||
+               InnerRightContent != null ||
+               (IsCountIndicatorAccessoryEnabled && IsShowCount);
     }
     
     protected override double GetBorderThicknessForCompactSpace()

@@ -86,4 +86,17 @@ public class SearchEdit : LineEdit
         var eventArgs = new RoutedEventArgs(SearchButtonClickEvent, this);
         RaiseEvent(eventArgs);
     }
+
+    private protected override LineEditAccessoryHost CreateAccessoryHost()
+    {
+        return new LineEditAccessoryHost
+        {
+            IsFormFeedbackSlotEnabled    = false,
+            IsCountIndicatorSlotEnabled  = false
+        };
+    }
+
+    private protected override bool IsFormFeedbackAccessoryEnabled => false;
+
+    private protected override bool IsCountIndicatorAccessoryEnabled => false;
 }
