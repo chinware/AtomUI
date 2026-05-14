@@ -9,7 +9,8 @@ internal sealed record PerfOptions(
     bool VerifyAddonStates,
     bool VerifyAntDesignMetadata,
     bool VerifyIconHiddenSlots,
-    bool VerifyIconProviderCache)
+    bool VerifyIconProviderCache,
+    bool VerifyButtonStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -22,6 +23,7 @@ internal sealed record PerfOptions(
         var verifyAntDesignMetadata = false;
         var verifyIconHiddenSlots  = false;
         var verifyIconProviderCache = false;
+        var verifyButtonStates    = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -57,6 +59,9 @@ internal sealed record PerfOptions(
                 case "--verify-icon-provider-cache":
                     verifyIconProviderCache = true;
                     break;
+                case "--verify-button-states":
+                    verifyButtonStates = true;
+                    break;
             }
         }
 
@@ -69,6 +74,7 @@ internal sealed record PerfOptions(
             verifyAddonStates,
             verifyAntDesignMetadata,
             verifyIconHiddenSlots,
-            verifyIconProviderCache);
+            verifyIconProviderCache,
+            verifyButtonStates);
     }
 }

@@ -11,10 +11,7 @@
         <Style Selector="^[ButtonType=Default], ^[ButtonType=Link], ^[ButtonType=Primary], ^[ButtonType=Text]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Panel>
-                        <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                                  CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                                  WaveType="{TemplateBinding WaveSpiritType}" />
+                    <Panel Name="PART_FrameLayout">
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                         <Border Name="Frame"
@@ -24,7 +21,7 @@
                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                 Background="{TemplateBinding Background}">
-                            <DockPanel Name="PART_RootLayout"
+                            <DockPanel Name="PART_ContentLayout"
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
@@ -36,20 +33,6 @@
                                     IconBrush="{TemplateBinding Foreground}"
                                     IsMotionEnabled="False"
                                     IsVisible="{TemplateBinding IsShowOpenIndicator}" />
-                                <atom:IconPresenter
-                                    Name="PART_ButtonIcon"
-                                    Icon="{TemplateBinding Icon}"
-                                    DockPanel.Dock="Left">
-                                    <atom:IconPresenter.IsVisible>
-                                        <MultiBinding
-                                            Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                     Path="IsIconVisible" />
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
-                                        </MultiBinding>
-                                    </atom:IconPresenter.IsVisible>
-                                </atom:IconPresenter>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
                                     Content="{TemplateBinding Content}"

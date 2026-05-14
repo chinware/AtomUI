@@ -7,10 +7,7 @@
         <Style Selector="^[ButtonType=Default], ^[ButtonType=Link], ^[ButtonType=Primary], ^[ButtonType=Text]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Panel>
-                        <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                                  CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                                  WaveType="{TemplateBinding WaveSpiritType}" />
+                    <Panel Name="PART_FrameLayout">
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                         <Border Name="Frame"
@@ -20,27 +17,10 @@
                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                 Background="{TemplateBinding Background}">
-                            <DockPanel Name="PART_RootLayout"
+                            <DockPanel Name="PART_ContentLayout"
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <Panel Name="PART_LoadingIconHost"
-                                       DockPanel.Dock="Left" />
-
-                                <atom:IconPresenter
-                                    Name="PART_ButtonIcon"
-                                    Icon="{TemplateBinding Icon}"
-                                    DockPanel.Dock="Left">
-                                    <atom:IconPresenter.IsVisible>
-                                        <MultiBinding
-                                            Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                     Path="IsIconVisible" />
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
-                                        </MultiBinding>
-                                    </atom:IconPresenter.IsVisible>
-                                </atom:IconPresenter>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
                                     Content="{TemplateBinding Content}"
@@ -56,10 +36,7 @@
         <Style Selector="^[ButtonType=Dashed]">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Panel>
-                        <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                                  CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                                  WaveType="{TemplateBinding WaveSpiritType}" />
+                    <Panel Name="PART_FrameLayout">
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                 Background="{TemplateBinding Background}" />
@@ -71,27 +48,10 @@
                                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                            Background="{TemplateBinding Background}"
                                            StrokeDashArray="{x:Static atom:ButtonTheme.DashedStyle}">
-                            <DockPanel Name="PART_RootLayout"
+                            <DockPanel Name="PART_ContentLayout"
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                <Panel Name="PART_LoadingIconHost"
-                                       DockPanel.Dock="Left" />
-
-                                <atom:IconPresenter
-                                    Name="PART_ButtonIcon"
-                                    Icon="{TemplateBinding Icon}"
-                                    DockPanel.Dock="Left">
-                                    <atom:IconPresenter.IsVisible>
-                                        <MultiBinding
-                                            Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                     Path="IsIconVisible" />
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
-                                        </MultiBinding>
-                                    </atom:IconPresenter.IsVisible>
-                                </atom:IconPresenter>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
                                     Content="{TemplateBinding Content}"
@@ -1019,53 +979,6 @@
             </Style>
         </Style>
         <!-- 文字按钮样式结束 -->
-
-        <!-- 虚线按钮样式开始 -->
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:Button">
-                <Panel>
-                    <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                              CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                              WaveType="{TemplateBinding WaveSpiritType}" />
-                    <Border Name="ShadowsFrame"
-                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Background="{TemplateBinding Background}" />
-                    <atom:DashedBorder Name="Frame"
-                                       Padding="{TemplateBinding Padding}"
-                                       BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                                       BorderBrush="{TemplateBinding BorderBrush}"
-                                       BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                       CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                       Background="{TemplateBinding Background}"
-                                       StrokeDashArray="{x:Static atom:ButtonTheme.DashedStyle}">
-                        <DockPanel Name="PART_RootLayout"
-                                   LastChildFill="True"
-                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <atom:IconPresenter
-                                Name="PART_ButtonIcon"
-                                Icon="{TemplateBinding Icon}"
-                                DockPanel.Dock="Left">
-                                <atom:IconPresenter.IsVisible>
-                                    <MultiBinding
-                                        Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIconVisible" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
-                                    </MultiBinding>
-                                </atom:IconPresenter.IsVisible>
-                            </atom:IconPresenter>
-                            <Panel Name="PART_LoadingIconHost"
-                                   DockPanel.Dock="Left" />
-                            <ContentPresenter
-                                Name="PART_ContentPresenter"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </DockPanel>
-                    </atom:DashedBorder>
-                </Panel>
-            </ControlTemplate>
-        </Setter>
 
         <Style Selector="^[ButtonType=Dashed]">
             <Style Selector="^:not(:disabled)">

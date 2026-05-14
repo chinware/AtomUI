@@ -16,7 +16,7 @@
                 <Setter Property="Source" Value="/Assets/qinware-logo-white.png" />
             </Style>
             <Style Selector="^ Image#TLAIC">
-                <Setter Property="Source" Value="/Assets/TLAIC.png" />
+                <Setter Property="Source" Value="/Assets/TLAIC-white.png" />
             </Style>
         </Style>
     </UserControl.Styles>
@@ -25,12 +25,8 @@
                        AllowAutoHide="False">
         <StackPanel MinWidth="800" MinHeight="600">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="50">
-                <Image
-                    Name="QinwareLogo"
-                    Width="300"/>
-                <Image
-                    Name="TLAIC"
-                    Width="200"/>
+                <Image Name="QinwareLogo" Width="300"/>
+                <Image Name="TLAIC" Width="200"/>
             </StackPanel>
             <StackPanel Spacing="10" HorizontalAlignment="Center">
                 <atom:TextBlock HorizontalAlignment="Center" FontWeight="Bold" FontSize="18">
