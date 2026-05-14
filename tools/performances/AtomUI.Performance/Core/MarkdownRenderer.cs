@@ -8,8 +8,8 @@ internal static partial class Program
         private static string RenderTable(IReadOnlyList<PerfResult> results)
         {
             var builder = new StringBuilder();
-            builder.AppendLine("Scenario                                Count  Total ms  ms/item  KB/item  Visual  Logical  CP  Button  TB Panel Border Dock  Icon  IconP BtnIconP  PathI  Stack  Wave Dashed LoadHost  AODB  IconUpdates  BrushCalls  Scanned");
-            builder.AppendLine("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            builder.AppendLine("Scenario                                Count  Total ms  ms/item  KB/item  Visual  Logical  CP Space  CSp CSpIt CSpAO  Button  TB Panel Border Dock  Icon  IconP BtnIconP  PathI  Stack  Wave Dashed LoadHost  AODB  IconUpdates  BrushCalls  Scanned");
+            builder.AppendLine("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
             foreach (var result in results)
             {
@@ -18,7 +18,9 @@ internal static partial class Program
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.VisualPerRoot,8:0.0}{result.TreeStats.LogicalPerRoot,9:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.ContentPresenterPerRoot,4:0.0}{result.TreeStats.ButtonPerRoot,8:0.0}{result.TreeStats.TextBlockPerRoot,5:0.0}");
+                    $"{result.TreeStats.ContentPresenterPerRoot,4:0.0}{result.TreeStats.SpacePerRoot,6:0.0}{result.TreeStats.CompactSpacePerRoot,5:0.0}{result.TreeStats.CompactSpaceItemPerRoot,6:0.0}{result.TreeStats.CompactSpaceAddOnPerRoot,6:0.0}");
+                builder.Append(CultureInfo.InvariantCulture,
+                    $"{result.TreeStats.ButtonPerRoot,8:0.0}{result.TreeStats.TextBlockPerRoot,5:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.PanelPerRoot,6:0.0}{result.TreeStats.BorderPerRoot,7:0.0}{result.TreeStats.DockPanelPerRoot,5:0.0}{result.TreeStats.IconPerRoot,6:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
@@ -40,6 +42,7 @@ internal static partial class Program
             {
                 "icon" => "# Icon Baseline",
                 "button" => "# Button Baseline",
+                "space" => "# Space Baseline",
                 _ => "# AddOnDecoratedBox / LineEdit Baseline"
             });
             builder.AppendLine();
@@ -49,8 +52,8 @@ internal static partial class Program
             builder.AppendLine($"- Count per scenario: {options.Count}");
             builder.AppendLine($"- Runner: `tools/performances/AtomUI.Performance`");
             builder.AppendLine();
-            builder.AppendLine("| Scenario | Count | Total ms | ms/item | KB/item | Visual/root | Logical/root | ContentPresenter/root | Button/root | TextBlock/root | Panel/root | Border/root | DockPanel/root | Icon/root | IconPresenter/root | ButtonIconPresenter/root | PathIcon/root | StackPanel/root | WaveSpiritDecorator/root | DashedBorder/root | ButtonLoadingHost/root | AddOnDecoratedBox/root | Icon status calls | Icon brush calls | Icon scan visuals | Icon matches |");
-            builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+            builder.AppendLine("| Scenario | Count | Total ms | ms/item | KB/item | Visual/root | Logical/root | ContentPresenter/root | Space/root | CompactSpace/root | CompactSpaceItem/root | CompactSpaceAddOn/root | Button/root | TextBlock/root | Panel/root | Border/root | DockPanel/root | Icon/root | IconPresenter/root | ButtonIconPresenter/root | PathIcon/root | StackPanel/root | WaveSpiritDecorator/root | DashedBorder/root | ButtonLoadingHost/root | AddOnDecoratedBox/root | Icon status calls | Icon brush calls | Icon scan visuals | Icon matches |");
+            builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
 
             foreach (var result in results)
             {
@@ -58,6 +61,8 @@ internal static partial class Program
                     $"| {result.Name} | {result.Count} | {result.Elapsed.TotalMilliseconds:0.00} | {result.MillisecondsPerItem:0.000} | {result.KilobytesPerItem:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.VisualPerRoot:0.0} | {result.TreeStats.LogicalPerRoot:0.0} | {result.TreeStats.ContentPresenterPerRoot:0.0} | ");
+                builder.Append(CultureInfo.InvariantCulture,
+                    $"{result.TreeStats.SpacePerRoot:0.0} | {result.TreeStats.CompactSpacePerRoot:0.0} | {result.TreeStats.CompactSpaceItemPerRoot:0.0} | {result.TreeStats.CompactSpaceAddOnPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.ButtonPerRoot:0.0} | {result.TreeStats.TextBlockPerRoot:0.0} | {result.TreeStats.PanelPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,

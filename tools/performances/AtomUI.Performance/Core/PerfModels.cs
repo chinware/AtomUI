@@ -45,6 +45,10 @@ internal sealed record TreeStats(
     double VisualPerRoot,
     double LogicalPerRoot,
     double ContentPresenterPerRoot,
+    double SpacePerRoot,
+    double CompactSpacePerRoot,
+    double CompactSpaceItemPerRoot,
+    double CompactSpaceAddOnPerRoot,
     double ButtonPerRoot,
     double TextBlockPerRoot,
     double PanelPerRoot,
@@ -65,6 +69,10 @@ internal sealed record TreeStats(
         var visualCount              = 0;
         var logicalCount             = 0;
         var contentPresenterCount    = 0;
+        var spaceCount               = 0;
+        var compactSpaceCount        = 0;
+        var compactSpaceItemCount    = 0;
+        var compactSpaceAddOnCount   = 0;
         var buttonCount              = 0;
         var textBlockCount           = 0;
         var panelCount               = 0;
@@ -91,6 +99,22 @@ internal sealed record TreeStats(
                 if (type.Name == "ContentPresenter")
                 {
                     contentPresenterCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Space"))
+                {
+                    spaceCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CompactSpace"))
+                {
+                    compactSpaceCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CompactSpaceItem"))
+                {
+                    compactSpaceItemCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CompactSpaceAddOn"))
+                {
+                    compactSpaceAddOnCount++;
                 }
                 if (visual is Avalonia.Controls.Button)
                 {
@@ -158,6 +182,10 @@ internal sealed record TreeStats(
             visualCount / (double)rootCount,
             logicalCount / (double)rootCount,
             contentPresenterCount / (double)rootCount,
+            spaceCount / (double)rootCount,
+            compactSpaceCount / (double)rootCount,
+            compactSpaceItemCount / (double)rootCount,
+            compactSpaceAddOnCount / (double)rootCount,
             buttonCount / (double)rootCount,
             textBlockCount / (double)rootCount,
             panelCount / (double)rootCount,
@@ -191,14 +219,19 @@ internal sealed record TreeStats(
 
     private static bool IsAddOnDecoratedBox(Type type)
     {
-        if (type.FullName == "AtomUI.Desktop.Controls.AddOnDecoratedBox")
+        return IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AddOnDecoratedBox");
+    }
+
+    private static bool IsTypeOrDerived(Type type, string fullName)
+    {
+        if (type.FullName == fullName)
         {
             return true;
         }
 
         while (type.BaseType != null)
         {
-            if (type.BaseType.FullName == "AtomUI.Desktop.Controls.AddOnDecoratedBox")
+            if (type.BaseType.FullName == fullName)
             {
                 return true;
             }
