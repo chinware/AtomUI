@@ -5,19 +5,13 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <atom:TabControl>
         <atom:TabItem Header="Outlined">
-            <atom:ScrollViewer>
-                <gallery:IconGallery IconThemeType="Outlined" />
-            </atom:ScrollViewer>
+            <gallery:IconGallery IconThemeType="Outlined" />
         </atom:TabItem>
         <atom:TabItem Header="Filled">
-            <atom:ScrollViewer>
-                <gallery:IconGallery IconThemeType="Filled" />
-            </atom:ScrollViewer>
+            <gallery:IconGallery IconThemeType="Filled" />
         </atom:TabItem>
         <atom:TabItem Header="Two Tone">
-            <atom:ScrollViewer>
-                <gallery:IconGallery IconThemeType="TwoTone" />
-            </atom:ScrollViewer>
+            <gallery:IconGallery IconThemeType="TwoTone" />
         </atom:TabItem>
     </atom:TabControl>
 </UserControl>

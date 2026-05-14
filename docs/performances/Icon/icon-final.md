@@ -138,3 +138,43 @@ NUGET_PACKAGES=/tmp/atomui-iconpark-local-verify-pkgs \
 - Gallery timing 的噪声仍明显，后续要看趋势应保留同一机器、同一配置、同一 warmup/iteration 口径。
 - `IconShowCase` 仍一次 materialize 456 个 icon item，剩余成本更多来自 item/control/tree materialization，而不是单个 icon render。
 - `Icon` 默认模板已减重，但 Button、Select、Menu 之外的控件仍可能存在隐藏 icon slot，需要在对应控件优化时继续按“未使用不付费”原则检查。
+
+## Gallery Lazy Load Follow-up
+
+2026-05-14 后续按 `MaterialIconsPackages` Gallery 的做法，将 AtomUI Gallery 的 `IconGallery` 改为首批加载加滚动增量加载：
+
+- 初始加载 `96` 个 icon item。
+- 滚动接近底部时每次追加 `96` 个 icon item。
+- `IconShowCase` 移除外层 `ScrollViewer`，由 `IconGallery` 内部 `ScrollViewer` 提供真实懒加载视口。
+- 增加 Gallery 内部 `SearchEdit`，过滤时重新建立匹配列表并只激活首批结果。
+
+复现命令：
+
+```bash
+dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --showcase icon --warmup 3 --iterations 10 \
+  --label icon-gallery-lazy-load \
+  --markdown /tmp/icon-gallery-lazy-load-10.md
+```
+
+结果：
+
+| Set | Before lazy load | After lazy load | Timing | Before alloc | After alloc | Allocation |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Cold first navigation | 604.13ms | 277.73ms | -54.0% | 54484.45KB | 15769.03KB | -71.1% |
+| Repeated navigation | 173.36ms | 76.67ms | -55.8% | 46331.65KB | 11771.88KB | -74.6% |
+
+运行时结构：
+
+| Metric | Before lazy load | After lazy load |
+| --- | ---: | ---: |
+| Visuals | 3712 | 863 |
+| Icon | 456 | 97 |
+| IconPresenter | 459 | 100 |
+| IconInfoItem | 456 | 96 |
+
+说明：
+
+- 这是 Gallery 页面物化策略优化，不计入前面 Icon 控件架构优化收益。
+- 懒加载后 `IconShowCase` 首屏打开成本主要来自 96 个 item、搜索框与容器；滚动后的增量成本应按滚动路径单独测量。

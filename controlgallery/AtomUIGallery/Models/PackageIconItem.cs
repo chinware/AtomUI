@@ -5,11 +5,14 @@ namespace AtomUIGallery.Models;
 public record PackageIconItem
 {
     public string IconName { get; set; }
-    public Icon Icon { get; set; }
+    public Icon? Icon { get; set; }
+    public Type IconType { get; set; }
+    public Func<Icon>? Creator { get; set; }
 
-    public PackageIconItem(string iconName, Icon iconInfo)
+    public PackageIconItem(string iconName, Type iconType, Func<Icon>? creator)
     {
         IconName = iconName;
-        Icon = iconInfo;
+        IconType = iconType;
+        Creator  = creator;
     }
 }

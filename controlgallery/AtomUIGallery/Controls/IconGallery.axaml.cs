@@ -2,15 +2,25 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Reflection;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls;
 using AtomUIGallery.Models;
 using Avalonia;
 using Avalonia.Collections;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using ScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
 
 namespace AtomUIGallery.Controls;
 
 public class IconGallery : TemplatedControl
 {
+    private const int InitialIconLoadCount = 96;
+    private const int IncrementalIconLoadCount = 96;
+    private const double LoadMoreScrollThreshold = 240;
+    private const string ScrollViewerPart = "PART_ScrollViewer";
+    private const string SearchInputPart = "PART_SearchInput";
+
     public static readonly StyledProperty<IconThemeType?> IconThemeTypeProperty =
         AvaloniaProperty.Register<IconGallery, IconThemeType?>(nameof(IconThemeType));
 
@@ -33,10 +43,59 @@ public class IconGallery : TemplatedControl
 
     #endregion
 
+    private readonly List<PackageIconItem> _matchedIconInfos = new();
+    private AvaloniaList<PackageIconItem> _activatedIconInfos = new();
+    private ScrollViewer? _scrollViewer;
+    private SearchEdit? _searchEdit;
+    private int _loadedIconCount;
+
+    private bool HasMoreIconInfos => _loadedIconCount < _matchedIconInfos.Count;
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.ScrollChanged -= HandleScrollChanged;
+        }
+
+        if (_searchEdit != null)
+        {
+            _searchEdit.SearchButtonClick -= HandleSearchButtonClick;
+        }
+
+        _scrollViewer = e.NameScope.Find<ScrollViewer>(ScrollViewerPart);
+        _searchEdit   = e.NameScope.Find<SearchEdit>(SearchInputPart);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.ScrollChanged += HandleScrollChanged;
+        }
+
+        if (_searchEdit != null)
+        {
+            _searchEdit.SearchButtonClick += HandleSearchButtonClick;
+        }
+
         ReLoadIcons();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.ScrollChanged -= HandleScrollChanged;
+            _scrollViewer = null;
+        }
+
+        if (_searchEdit != null)
+        {
+            _searchEdit.SearchButtonClick -= HandleSearchButtonClick;
+            _searchEdit = null;
+        }
+
+        ResetActivatedIconInfos();
+        _matchedIconInfos.Clear();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -53,21 +112,85 @@ public class IconGallery : TemplatedControl
 
     private void ReLoadIcons()
     {
+        ResetActivatedIconInfos();
+        _matchedIconInfos.Clear();
+
         var allIconClasses = CachedLoadedAssemblyTypeScanner.GetInheritedTypes<Icon>("AtomUI.Icons.AntDesign");
+        var iconThemeName = IconThemeType?.ToString();
         var targetClasses = allIconClasses
-            .Where(t => t.FullName?.EndsWith(IconThemeType.ToString()!) ?? false)
+            .Where(t => string.IsNullOrEmpty(iconThemeName) || t.Name.EndsWith(iconThemeName, StringComparison.Ordinal))
             .OrderBy(t => t.Name)
-            .ToList();
-        var list = new AvaloniaList<PackageIconItem>();
+            .ToArray();
+
+        var filter = _searchEdit?.Text?.Trim();
         foreach (var iconInfoType in targetClasses)
         {
-            var obj = Activator.CreateInstance(iconInfoType);
-            if (obj is Icon icon)
+            if (!string.IsNullOrEmpty(filter) &&
+                !iconInfoType.Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
             {
-                list.Add(new PackageIconItem(iconInfoType.Name, icon));
+                continue;
             }
+
+            _matchedIconInfos.Add(new PackageIconItem(
+                iconInfoType.Name,
+                iconInfoType,
+                () => (Icon)Activator.CreateInstance(iconInfoType)!));
         }
-        IconInfos = list;
+
+        LoadMoreIconInfos(InitialIconLoadCount);
+    }
+
+    private void HandleScrollChanged(object? sender, ScrollChangedEventArgs e)
+    {
+        if (_scrollViewer == null || !HasMoreIconInfos)
+        {
+            return;
+        }
+
+        var remainingHeight = _scrollViewer.Extent.Height - _scrollViewer.Viewport.Height - _scrollViewer.Offset.Y;
+        if (remainingHeight <= LoadMoreScrollThreshold)
+        {
+            LoadMoreIconInfos(IncrementalIconLoadCount);
+        }
+    }
+
+    private void HandleSearchButtonClick(object? sender, RoutedEventArgs e)
+    {
+        ReLoadIcons();
+    }
+
+    private void LoadMoreIconInfos(int count)
+    {
+        if (!HasMoreIconInfos)
+        {
+            return;
+        }
+
+        var targetCount = Math.Min(_loadedIconCount + count, _matchedIconInfos.Count);
+        for (var i = _loadedIconCount; i < targetCount; i++)
+        {
+            var iconInfo = _matchedIconInfos[i];
+            iconInfo.Icon = iconInfo.Creator?.Invoke();
+            _activatedIconInfos.Add(iconInfo);
+        }
+
+        _loadedIconCount = targetCount;
+    }
+
+    private void ResetActivatedIconInfos()
+    {
+        foreach (var iconInfo in _activatedIconInfos)
+        {
+            iconInfo.Icon = null;
+        }
+
+        _loadedIconCount    = 0;
+        _activatedIconInfos = new AvaloniaList<PackageIconItem>();
+        SetCurrentValue(IconInfosProperty, _activatedIconInfos);
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.Offset = new Vector(0, 0);
+        }
     }
 }
 
