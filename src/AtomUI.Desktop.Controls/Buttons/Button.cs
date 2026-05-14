@@ -2,6 +2,8 @@ using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -221,7 +223,11 @@ public class Button : AvaloniaButton,
     
     #endregion
     
+    private const string LoadingIconName = "PART_LoadingIcon";
+
     private WaveSpiritDecorator? _waveSpiritDecorator;
+    private Panel? _loadingIconHost;
+    private LoadingOutlined? _loadingIcon;
 
     static Button()
     {
@@ -320,6 +326,10 @@ public class Button : AvaloniaButton,
             change.Property == IsLoadingProperty)
         {
             UpdatePseudoClasses();
+            if (change.Property == IsLoadingProperty)
+            {
+                UpdateLoadingIcon();
+            }
         }
         else if (change.Property == BorderBrushProperty ||
                  change.Property == ButtonTypeProperty ||
@@ -358,9 +368,12 @@ public class Button : AvaloniaButton,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachLoadingIcon();
         base.OnApplyTemplate(e);
         _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
+        _loadingIconHost     = e.NameScope.Find<Panel>("PART_LoadingIconHost");
         UpdatePseudoClasses();
+        UpdateLoadingIcon();
         ConfigureWaveSpiritType();
         ConfigureEffectiveBorderThickness();
     }
@@ -398,6 +411,45 @@ public class Button : AvaloniaButton,
         PseudoClasses.Set(ButtonPseudoClass.LinkType, ButtonType == ButtonType.Link);
         PseudoClasses.Set(ButtonPseudoClass.TextType, ButtonType == ButtonType.Text);
         PseudoClasses.Set(ButtonPseudoClass.IsDanger, IsDanger);
+    }
+
+    private void UpdateLoadingIcon()
+    {
+        if (_loadingIconHost is null)
+        {
+            return;
+        }
+
+        if (!IsLoading)
+        {
+            DetachLoadingIcon();
+            return;
+        }
+
+        if (_loadingIcon is not null)
+        {
+            return;
+        }
+
+        _loadingIcon = new LoadingOutlined
+        {
+            Name             = LoadingIconName,
+            LoadingAnimation = IconAnimation.Spin
+        };
+        _loadingIcon.SetTemplatedParent(this);
+        _loadingIconHost.Children.Add(_loadingIcon);
+    }
+
+    private void DetachLoadingIcon()
+    {
+        if (_loadingIcon is null)
+        {
+            return;
+        }
+
+        _loadingIconHost?.Children.Remove(_loadingIcon);
+        _loadingIcon.SetTemplatedParent(null);
+        _loadingIcon = null;
     }
 
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)

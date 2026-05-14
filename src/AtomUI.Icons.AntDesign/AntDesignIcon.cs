@@ -6,9 +6,21 @@ namespace AtomUI.Icons.AntDesign;
 public class AntDesignIcon : Icon
 {
     private Rect? _geometryBounds;
+
+    internal virtual bool HasGeneratedGeometryMetadata => false;
+    internal virtual Rect GeneratedViewBox => default;
+    internal virtual Rect GeneratedGeometryBounds => default;
+    internal virtual Matrix GeneratedZoomMatrix => Matrix.Identity;
     
     protected override Matrix CalculateGlobalGeometryMatrix()
     {
+        if (HasGeneratedGeometryMetadata)
+        {
+            return GeneratedViewBox.Equals(ViewBox)
+                ? GeneratedZoomMatrix
+                : CalculateZoomToFit(ViewBox, GeneratedGeometryBounds);
+        }
+
         _geometryBounds ??= CalculateGeometryBounds();
         return CalculateZoomToFit(ViewBox, _geometryBounds ?? default);
     }
@@ -113,4 +125,5 @@ public class AntDesignIcon : Icon
         
         return transform;
     }
+
 }

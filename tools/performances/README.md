@@ -37,6 +37,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown /tmp/icon-micro-baseline.md
 ```
 
+Icon / AddOn 专项行为验证：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --verify-accessories --verify-effective-brushes --verify-addon-states \
+  --verify-antdesign-metadata --verify-icon-hidden-slots --verify-icon-provider-cache
+```
+
 Gallery 真实 `LineEditShowCase` 导航基准：
 
 ```bash
@@ -54,6 +63,16 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
   --showcase icon --label icon-baseline \
   --iterations 10 --warmup 5 --timeout-ms 30000 \
   --markdown /tmp/icon-showcase-navigation-baseline.md
+```
+
+Gallery 工具当前支持 `lineedit`、`icon`、`button`、`select`、`menu`。例如验证 Icon Phase 4 影响到的控件真实场景：
+
+```bash
+dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --showcase select --label phase4-icon-slots \
+  --iterations 10 --warmup 2 --timeout-ms 30000 \
+  --markdown /tmp/select-showcase-navigation-phase4.md
 ```
 
 ## 扩展建议

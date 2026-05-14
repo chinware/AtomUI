@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Avalonia.Headless" />
         <ProjectReference Include="../AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj" />
     </ItemGroup>
 

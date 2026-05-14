@@ -90,6 +90,7 @@ IconPark 的生成图标类继承 `IconParkIcon`，而 `IconParkIcon` 继承 `Ic
 - `IconTheme`
 - `ProcessBrush()`：当前会把带透明度的 `ImmutableSolidColorBrush` 转成白底不透明色。
 - `FindIconBrush()`：IconPark 在派生类里覆盖它实现主题映射。
+- Phase 3 后 generator 会为每个 generated icon 写入 `GeneratedViewBox`、`GeneratedGeometryBounds`、`GeneratedZoomMatrix`。
 
 结论：
 
@@ -105,6 +106,7 @@ IconPark 的生成图标类继承 `IconParkIcon`，而 `IconParkIcon` 继承 `Ic
 
 关键实现：
 
+- `src/AtomUI.Icons.Material/MaterialIcon.cs`
 - `src/AtomUI.Icons.Material/MaterialIconProvider.cs`
 - `src/AtomUI.Icons.Material.Generator/MaterialIconsPackageGenerator.cs`
 - `src/AtomUI.Icons.Material/GeneratedIcons/*.g.cs`
@@ -112,23 +114,24 @@ IconPark 的生成图标类继承 `IconParkIcon`，而 `IconParkIcon` 继承 `Ic
 Material 生成方式与 IconPark 不同：
 
 - 每个主题是独立 generated class，例如 `ActionAlarmFilled`、`ActionAlarmTwoTone`。
-- generated class 直接继承 `Icon`。
+- generated class 继承 `MaterialIcon`，`MaterialIcon` 继承 `Icon` 并提供 generated geometry metadata fallback。
 - 构造函数设置固定 `IconTheme`。
 - `Filled` / `Rounded` / `Sharp` 主要生成 `FillBrush = IconBrushType.Fill`。
 - `Outlined` 生成 `FillBrush = IconBrushType.Stroke`。
 - `TwoTone` 根据 path opacity 区分 `Fill` 与 `Stroke`。
+- Phase 3 后 generator 会为每个 generated icon 写入 `GeneratedViewBox`、`GeneratedGeometryBounds`、`GeneratedZoomMatrix`。
 
 Material Gallery 额外说明：
 
 - `IconInfoRepository` 初次只物化 96 个图标，滚动加载更多。
-- 但 generated repository 文件非常大，Material 约 10732 个 generated icon classes，IconPark 约 2659 个 generated icon classes。
+- 但 generated repository 文件非常大，Material 约 10751 个 generated icon classes，IconPark 约 2658 个 generated icon classes。
 - Gallery 的大规模列表性能不能只看单个 icon，还要看 repository、item、presenter 和 scroll incremental load。
 
 结论：
 
 - `IconProvider<TIconKind>` 的 enum -> type -> factory 缓存仍然必要。
 - 不应缓存 `Icon` Control 实例；Material/IconPark Gallery 都通过 `Creator` 创建新 control。
-- 后续如果优化 generator，可以为 Material/IconPark 生成静态 bounds/matrix 等不可变元数据，但不能破坏现有 generated class 继承模型。
+- Material/IconPark 已同步生成静态 bounds/matrix 等不可变元数据，不能破坏现有 provider、theme 和 generated class 使用模型。
 
 ### Provider 与缓存
 
@@ -244,9 +247,9 @@ find src/AtomUI.Icons.AntDesign/GeneratedIcons -name '*.g.cs' | wc -l
 - 绘制时不要修改 geometry 本体。
 - 对 opacity 也保留 scoped push，不引入持久状态。
 
-### P1: AntDesign bounds 每个实例首次 render 重算
+### P1: Generated icon bounds 每个实例首次 render 重算
 
-`AntDesignIcon.CalculateGlobalGeometryMatrix()` 当前用实例字段 `_geometryBounds` 缓存 bounds。首次计算会调用 `CalculateGeometryBounds()`。
+`AntDesignIcon.CalculateGlobalGeometryMatrix()`、外部包专用 icon 基类在没有 generated metadata 时会用实例字段 `_geometryBounds` 缓存 bounds。首次计算会调用 `CalculateGeometryBounds()`。
 
 问题：
 
@@ -257,7 +260,7 @@ find src/AtomUI.Icons.AntDesign/GeneratedIcons -name '*.g.cs' | wc -l
 建议：
 
 - bounds 或 zoom matrix 按图标类型缓存。
-- 更理想的方式是在 generator 阶段生成静态 bounds 或静态 zoom matrix。
+- 更理想的方式是在 generator 阶段生成静态 bounds 或静态 zoom matrix；Phase 3 已对 AntDesign、Material、IconPark 采用该方式。
 - 新增缓存必须只保存不可变值，不保存 Control 实例。
 
 ### P1: 隐藏 Icon 被默认创建
@@ -439,36 +442,38 @@ find src/AtomUI.Icons.AntDesign/GeneratedIcons -name '*.g.cs' | wc -l
 - [x] 复测首次 render 与稳定 render allocations。
 - [x] 验证 transform、opacity、TwoTone、多 path 图标视觉一致。
 
-### Phase 3: AntDesign 静态元数据缓存
+### Phase 3: AntDesign/Material/IconPark 静态元数据缓存
 
-- [ ] 评估按图标类型缓存 geometry bounds。
-- [ ] 评估 generator 直接生成静态 bounds 或 zoom matrix。
-- [ ] 确认新增缓存不会持有 Control 实例。
-- [ ] 复测批量同类图标创建和首次 render。
+- [x] 评估按图标类型缓存 geometry bounds。
+- [x] generator 直接生成静态 bounds 和 zoom matrix。
+- [x] 确认新增缓存不会持有 Control 实例。
+- [x] 复测批量同类图标创建和首次 render。
+- [x] 同步 `MaterialIconsPackages` 与 `IconParkIconsPackage` 的 generator 和基类 fallback。
+- [x] 重新生成外部包 icon class 并完成 solution build 验证。
 
 ### Phase 4: 高频模板按需创建
 
-- [ ] SelectHandle：评估 open/loading/search/clear 单 slot 或按需 materialize。
-- [ ] MenuItem：submenu indicator 只在有子项时创建。
-- [ ] NavMenu：submenu indicator 和 item icon 按实际数据创建。
-- [ ] ToggleIconButton：评估单 presenter 切换 icon，避免双 presenter 常驻。
-- [ ] Button / IconButton：复核 loading icon、normal icon 的默认路径。
-- [ ] 每个模板改造都必须用对应 Gallery ShowCase 复测。
+- [x] SelectHandle：open/loading/search/clear 按可见状态 materialize。
+- [x] MenuItem：submenu indicator 只在有子项时创建。
+- [x] NavMenu：submenu indicator 按实际数据创建；item icon presenter 保持现状。
+- [x] ToggleIconButton：单 presenter 切换 icon，避免双 presenter 常驻。
+- [x] Button / IconButton：Button loading icon 按需创建；IconButton 暂未发现常驻 hidden loading slot。
+- [x] 每个模板改造增加专项验证；Gallery 已复测 LineEditShowCase / IconShowCase / ButtonShowCase / SelectShowCase / MenuShowCase。
 
 ### Phase 5: Provider / Generator 深化优化
 
-- [ ] 只有在 baseline 证明 Provider 是瓶颈时，再考虑生成 enum -> factory switch。
-- [ ] 明确 `IconProviderCache.ClearCache()` 与 `TypeToCreator` 的清理语义。
-- [ ] 评估生成代码移除不必要 using 和运行时解析路径。
-- [ ] 保持 XAML API 兼容。
+- [x] 只有在 baseline 证明 Provider 是瓶颈时，再考虑生成 enum -> factory switch；当前 provider micro `0.065ms/item`，不是主导瓶颈，暂不实施。
+- [x] 明确 `IconProviderCache.ClearCache()` 与 `TypeToCreator` 的清理语义。
+- [x] 评估生成代码移除不必要 using 和运行时解析路径；generated transform 已改为生成期 `Matrix` literal。
+- [x] 保持 XAML API 兼容。
 
 ### Phase 6: 最终验证与文档
 
-- [ ] 对比优化前后 micro benchmark。
-- [ ] 对比优化前后 Gallery 真实场景。
-- [ ] 补充 `docs/performances/Icon/icon-final.md`。
-- [ ] 更新 `docs/performances/README.md` 的关键结果。
-- [ ] 列出未完成风险和后续任务。
+- [x] 对比优化前后 micro benchmark。
+- [x] 对比优化前后 Gallery 真实场景。
+- [x] 补充 `docs/performances/Icon/icon-final.md`。
+- [x] 更新 `docs/performances/README.md` 的关键结果。
+- [x] 列出未完成风险和后续任务。
 
 ## 预期收益判断
 

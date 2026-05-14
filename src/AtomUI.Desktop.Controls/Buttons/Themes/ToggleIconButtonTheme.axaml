@@ -17,25 +17,21 @@
                 Padding="{TemplateBinding Padding}">
                 <Panel Name="PART_RootLayout">
                     <atom:IconPresenter
-                        Name="PART_CheckedIconPresenter"
-                        Icon="{TemplateBinding CheckedIcon}"
-                        IsVisible="{TemplateBinding IsChecked}"
+                        Name="PART_CurrentIconPresenter"
                         Width="{TemplateBinding IconWidth}"
                         Height="{TemplateBinding IconHeight}"
                         IconBrush="{TemplateBinding IconBrush}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                    <atom:IconPresenter
-                        Name="PART_UnCheckedIconPresenter"
-                        Icon="{TemplateBinding UnCheckedIcon}"
-                        Width="{TemplateBinding IconWidth}"
-                        Height="{TemplateBinding IconHeight}"
-                        IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
-                        IconBrush="{TemplateBinding IconBrush}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                        <atom:IconPresenter.Icon>
+                            <MultiBinding Converter="{x:Static atom:ToggleIconButtonTheme.CurrentIconConverter}">
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsChecked" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="CheckedIcon" />
+                                <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="UnCheckedIcon" />
+                            </MultiBinding>
+                        </atom:IconPresenter.Icon>
+                    </atom:IconPresenter>
                 </Panel>
             </Border>
         </ControlTemplate>

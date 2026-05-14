@@ -2,7 +2,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:antdicons="https://atomui.net/icons/antdesign"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:VerticalNavMenuItemHeader}" TargetType="atom:VerticalNavMenuItemHeader">
@@ -41,12 +40,10 @@
                             IsHitTestVisible="False"
                             Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemHeaderTheme.StringToTextBlockConverter}}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                        <antdicons:RightOutlined
-                            Grid.Column="2"
-                            Name="MenuIndicatorIcon"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            IsEnabled="{TemplateBinding IsEnabled}" />
+                        <Panel Name="PART_MenuIndicatorIconHost"
+                               Grid.Column="2"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center" />
                     </Grid>
                 </Border>
             </ControlTemplate>

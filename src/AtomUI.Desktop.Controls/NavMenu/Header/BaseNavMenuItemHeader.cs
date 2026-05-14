@@ -1,16 +1,23 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
+[TemplatePart("PART_MenuIndicatorIconHost", typeof(Panel))]
 public class BaseNavMenuItemHeader : TemplatedControl
 {
+    private const string MenuIndicatorIconName = "MenuIndicatorIcon";
+
     #region 公共属性定义
     public static readonly StyledProperty<object?> HeaderProperty =
         HeaderedContentControl.HeaderProperty.AddOwner<BaseNavMenuItemHeader>();
@@ -112,10 +119,16 @@ public class BaseNavMenuItemHeader : TemplatedControl
     }
     #endregion
 
+    private Panel? _menuIndicatorIconHost;
+    private RightOutlined? _menuIndicatorIcon;
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachMenuIndicatorIcon();
         base.OnApplyTemplate(e);
+        _menuIndicatorIconHost = e.NameScope.Find<Panel>("PART_MenuIndicatorIconHost");
         UpdatePseudoClasses();
+        UpdateMenuIndicatorIcon();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -125,11 +138,60 @@ public class BaseNavMenuItemHeader : TemplatedControl
         {
             UpdatePseudoClasses();
         }
+        else if (change.Property == HasSubMenuProperty)
+        {
+            UpdateMenuIndicatorIcon();
+        }
     }
 
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(NavMenuItemPseudoClass.Icon, Icon is not null);
+    }
+
+    protected void UpdateMenuIndicatorIcon()
+    {
+        if (_menuIndicatorIconHost is null)
+        {
+            return;
+        }
+
+        if (!ShouldShowMenuIndicator())
+        {
+            DetachMenuIndicatorIcon();
+            return;
+        }
+
+        if (_menuIndicatorIcon is not null)
+        {
+            return;
+        }
+
+        _menuIndicatorIcon = new RightOutlined
+        {
+            Name                = MenuIndicatorIconName,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _menuIndicatorIcon.SetTemplatedParent(this);
+        _menuIndicatorIconHost.Children.Add(_menuIndicatorIcon);
+    }
+
+    private bool ShouldShowMenuIndicator()
+    {
+        return HasSubMenu && this is not HorizontalNavMenuItemHeader { IsTopLevel: true };
+    }
+
+    private void DetachMenuIndicatorIcon()
+    {
+        if (_menuIndicatorIcon is null)
+        {
+            return;
+        }
+
+        _menuIndicatorIconHost?.Children.Remove(_menuIndicatorIcon);
+        _menuIndicatorIcon.SetTemplatedParent(null);
+        _menuIndicatorIcon = null;
     }
 
     protected override void OnInitialized()
