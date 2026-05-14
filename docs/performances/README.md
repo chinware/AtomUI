@@ -69,7 +69,7 @@
 | Navigation | Steps | Pending | 待建立基线 |
 | Navigation | TabControl | Pending | 待建立基线 |
 | Data Entry | AutoComplete | Pending | 待建立基线 |
-| Data Entry | Cascader | Pending | 受 AddOnDecoratedBox 优化影响 |
+| Data Entry | Cascader | Partial | Select 本轮同步完成 closed `CascaderView` lazy materialization；后续仍需独立 Cascader 深度优化 |
 | Data Entry | CheckBox | Pending | 待建立基线 |
 | Data Entry | ColorPicker | Pending | 待建立基线 |
 | Data Entry | DatePicker | Pending | 受 AddOnDecoratedBox 优化影响 |
@@ -80,10 +80,10 @@
 | Data Entry | NumberUpDown | Pending | 待建立基线 |
 | Data Entry | RadioButton | Pending | 待建立基线 |
 | Data Entry | Rate | Pending | 待建立基线 |
-| Data Entry | Select | Pending | 受 AddOnDecoratedBox 优化影响 |
+| Data Entry | Select | Done | [Select](Select/README.md)；`SelectShowCase` repeated mean `220.31ms -> 143.76ms`，alloc `28027.36KB -> 23904.61KB`；closed popup/list/accessory hidden cost 已按需化 |
 | Data Entry | Slider | Pending | 待建立基线 |
 | Data Entry | ToggleSwitch | Pending | 待建立基线 |
-| Data Entry | TreeSelect | Pending | 受 AddOnDecoratedBox 优化影响 |
+| Data Entry | TreeSelect | Partial | Select 本轮同步完成 closed `TreeSelectTreeView` lazy materialization；后续仍需独立 TreeSelect 深度优化 |
 | Data Entry | Transfer | Pending | 待建立基线 |
 | Data Entry | Upload | Pending | 待建立基线 |
 | Data Display | Avatar | Pending | 待建立基线 |

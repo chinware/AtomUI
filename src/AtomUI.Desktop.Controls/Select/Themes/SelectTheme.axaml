@@ -29,7 +29,7 @@
                         CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                        <Panel>
+                        <Panel Name="PART_ContentPanel">
                             <atom:TextBlock
                                 Name="PlaceholderText"
                                 HorizontalAlignment="Left"
@@ -47,23 +47,6 @@
                                     </DataTemplate>
                                 </ContentPresenter.ContentTemplate>
                             </ContentPresenter>
-                            <atom:SelectFilterTextBox Name="PART_SingleFilterInput"
-                                                      IsVisible="False"
-                                                      SizeType="{TemplateBinding SizeType}"
-                                                      PlaceholderText="{TemplateBinding SelectedOption, Converter={StaticResource OptionHeaderConverter}}" />
-                            <atom:SelectResultOptionsBox
-                                Name="SelectedOptionsBox"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center"
-                                Mode="{TemplateBinding Mode}"
-                                SizeType="{TemplateBinding SizeType}"
-                                SelectedOptions="{TemplateBinding SelectedOptions}"
-                                IsFilterEnabled="{TemplateBinding IsEffectiveFilterEnabled}"
-                                IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
-                                MaxTagCount="{TemplateBinding MaxTagCount}"
-                                IsResponsiveTagMode="{TemplateBinding IsResponsiveTagMode}"
-                                IsVisible="False"
-                                Focusable="True" />
                         </Panel>
                     </atom:SelectAddOnDecoratedBox>
                     <atom:Popup Name="PART_Popup"
@@ -72,28 +55,7 @@
                                 OverlayDismissEventPassThrough="True"
                                 RequestedPlacement="BottomEdgeAlignedLeft"
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
-                        <Border Name="PopupFrame"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding EffectivePopupWidth}"
-                                Padding="{TemplateBinding PopupContentPadding}">
-                            <atom:SelectCandidateList
-                                Name="PART_CandidateList"
-                                BorderThickness="0"
-                                Filter="{TemplateBinding Filter}"
-                                FilterValue="{TemplateBinding FilterValue}"
-                                FilterValueSelector="{TemplateBinding FilterValueSelector}"
-                                IsGroupEnabled="{TemplateBinding IsGroupEnabled}"
-                                GroupPropertySelector="{TemplateBinding GroupPropertySelector}"
-                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                IsShowEmptyIndicator="True"
-                                IsHideSelectedOptions="{TemplateBinding IsHideSelectedOptions}"
-                                MaxCount="{TemplateBinding MaxCount}"
-                                AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedOptions}"
-                                ItemTemplate="{TemplateBinding OptionTemplate}"
-                                ItemsSource="{Binding Options, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Border>
-                    </atom:Popup>
+                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}" />
                 </Panel>
             </ControlTemplate>
         </Setter>

@@ -28,7 +28,7 @@
                         CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                        <Panel>
+                        <Panel Name="PART_ContentPanel">
                             <atom:TextBlock
                                 Name="PlaceholderText"
                                 HorizontalAlignment="Left"
@@ -41,22 +41,6 @@
                                        Text="{TemplateBinding SelectedOptionPath}"
                                        IsVisible="False"
                                        TextTrimming="CharacterEllipsis" />
-                            <atom:SelectFilterTextBox
-                                Name="PART_SingleFilterInput"
-                                IsVisible="False"
-                                SizeType="{TemplateBinding SizeType}"
-                                PlaceholderText="{TemplateBinding SelectedOptionPath}" />
-                            <atom:SelectTagAwareTextBox Name="SelectedOptionsBox"
-                                                        HorizontalAlignment="Stretch"
-                                                        VerticalAlignment="Center"
-                                                        SizeType="{TemplateBinding SizeType}"
-                                                        SelectedItems="{TemplateBinding EffectiveSelectedOptions}"
-                                                        IsFilterEnabled="{TemplateBinding IsFilterEnabled}"
-                                                        IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
-                                                        MaxTagCount="{TemplateBinding MaxTagCount}"
-                                                        IsResponsiveTagMode="{TemplateBinding IsResponsiveTagMode}"
-                                                        IsVisible="False"
-                                                        Focusable="True" />
                         </Panel>
                     </atom:CascaderAddOnDecoratedBox>
                     <atom:Popup Name="PART_Popup"
@@ -66,33 +50,7 @@
                                 RequestedPlacement="{TemplateBinding PopupPlacement}"
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
-                        <Border Name="PopupFrame"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding EffectivePopupWidth}"
-                                Padding="{TemplateBinding PopupContentPadding}">
-                            <atom:CascaderView Name="PART_CascaderView"
-                                               HorizontalAlignment="Stretch"
-                                               VerticalAlignment="Stretch"
-                                               IsCheckable="{TemplateBinding IsMultiple}"
-                                               FilterValue="{TemplateBinding FilterValue}"
-                                               Filter="{TemplateBinding Filter}"
-                                               BorderThickness="0"
-                                               FilterHighlightStrategy="{TemplateBinding FilterHighlightStrategy}"
-                                               OptionTemplate="{TemplateBinding OptionTemplate}"
-                                               SelectedOption="{TemplateBinding SelectedOption, Mode=TwoWay}"
-                                               DataLoader="{TemplateBinding DataLoader}"
-                                               FilterHighlightForeground="{TemplateBinding FilterHighlightForeground}"
-                                               IsShowEmptyIndicator="{TemplateBinding IsShowEmptyIndicator}"
-                                               IsMaxSelectReached="{TemplateBinding IsMaxSelectReached}"
-                                               ExpandIcon="{TemplateBinding ExpandIcon}"
-                                               LoadingIcon="{TemplateBinding LoadingIcon}"
-                                               ExpandTrigger="{TemplateBinding ExpandTrigger}"
-                                               DefaultExpandedPath="{TemplateBinding DefaultSelectOptionPath}"
-                                               IsAllowSelectParent="{TemplateBinding IsAllowSelectParent}"
-                                               IsEffectiveEmptyVisible="{TemplateBinding IsEffectiveEmptyVisible, Mode=TwoWay}"/>
-                        </Border>
-                    </atom:Popup>
+                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -173,7 +131,7 @@
             </Style>
         </Style>
 
-            <Style Selector="^[IsMultiple=True]">
+        <Style Selector="^[IsMultiple=True]">
             <Style Selector="^ /template/ atom|SelectTagAwareTextBox#SelectedOptionsBox">
                 <Setter Property="IsVisible" Value="True" />
             </Style>

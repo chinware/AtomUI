@@ -4,6 +4,7 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -549,9 +550,12 @@ public abstract class AbstractSelect : TemplatedControl,
     private protected Popup? Popup;
     private protected bool PopupHasOpened;
     private protected bool IgnorePropertyChange;
+    private protected Border? PopupFrame;
     private AddOnDecoratedBox? _addOnDecoratedBox;
     private SelectAccessoryHost? _accessoryHost;
     private IDisposable? _accessoryHostSpacingBinding;
+    private SelectHandle? _lightweightSelectHandle;
+    private CompositeDisposable? _lightweightHandleInputSubscriptions;
     private CompositeDisposable? _contentRightAddOnBindings;
     private bool _isUsingLegacyAccessoryTemplate;
 
@@ -595,14 +599,6 @@ public abstract class AbstractSelect : TemplatedControl,
         {
             SetCurrentValue(SuffixIconProperty, new DownOutlined());
         }
-
-        if (SuffixLoadingIcon == null)
-        {
-            SetCurrentValue(SuffixLoadingIconProperty, new LoadingOutlined()
-            {
-                LoadingAnimation = IconAnimation.Spin
-            });
-        }
     }
 
     protected virtual void NotifyPopupClosed()
@@ -623,33 +619,55 @@ public abstract class AbstractSelect : TemplatedControl,
             ConfigurePopupPlacement();
         }
         else if (change.Property == DisplayPageSizeProperty ||
-                 change.Property == ItemHeightProperty)
+                 change.Property == ItemHeightProperty ||
+                 change.Property == PopupContentPaddingProperty)
         {
             ConfigureMaxDropdownHeight();
+        }
+        else if (change.Property == EffectivePopupWidthProperty ||
+                 change.Property == MaxPopupHeightProperty)
+        {
+            ConfigurePopupFrame();
+        }
+
+        if (change.Property == IsDropDownOpenProperty)
+        {
+            ConfigureWindowDeactivatedSubscription();
+        }
+
+        if (change.Property == IsShowMaxCountIndicatorProperty ||
+            change.Property == MaxCountProperty ||
+            change.Property == SelectedCountProperty ||
+            change.Property == ContentRightAddOnProperty ||
+            change.Property == ContentRightAddOnTemplateProperty ||
+            change.Property == FormFeedbackProperty ||
+            change.Property == SuffixLoadingIconProperty ||
+            change.Property == SuffixIconProperty ||
+            change.Property == IsFilterEnabledProperty ||
+            change.Property == IsMotionEnabledProperty ||
+            change.Property == IsLoadingProperty ||
+            change.Property == IsAllowClearProperty ||
+            change.Property == IsSelectionEmptyProperty ||
+            change.Property == IsDropDownOpenProperty ||
+            change.Property == InputElement.IsEnabledProperty)
+        {
+            UpdateOwnerDrivenAccessoryState();
         }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
+        ConfigureWindowDeactivatedSubscription();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
 
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-        }
-
-        _attachedWindow = null;
+        ClearWindowDeactivatedSubscription();
+        ClearPopupContent();
+        ClearPopupFrame();
     }
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -662,11 +680,8 @@ public abstract class AbstractSelect : TemplatedControl,
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = null;
         ClearOwnerDrivenAccessoryHost();
-        if (_accessoryHost != null)
-        {
-            _accessoryHost.DetachOwner();
-            _accessoryHost = null;
-        }
+        ClearPopupContent();
+        ClearPopupFrame();
 
         base.OnApplyTemplate(e);
         ConfigureMaxDropdownHeight();
@@ -685,6 +700,7 @@ public abstract class AbstractSelect : TemplatedControl,
         }
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         ConfigureContentRightAddOn(e);
+        ConfigureWindowDeactivatedSubscription();
     }
 
     private void ConfigureContentRightAddOn(TemplateAppliedEventArgs e)
@@ -773,6 +789,11 @@ public abstract class AbstractSelect : TemplatedControl,
         return this is Select ? nameof(Select.IsEffectiveFilterEnabled) : nameof(IsFilterEnabled);
     }
 
+    private bool GetEffectiveFilterEnabled()
+    {
+        return this is Select select ? select.IsEffectiveFilterEnabled : IsFilterEnabled;
+    }
+
     private void ConfigureOwnerDrivenAccessoryHost()
     {
         if (_addOnDecoratedBox == null ||
@@ -781,23 +802,48 @@ public abstract class AbstractSelect : TemplatedControl,
             return;
         }
 
-        if (_accessoryHost == null)
+        if (NeedsCompositeAccessoryHost())
         {
-            _accessoryHost = new SelectAccessoryHost();
-            _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
-                _accessoryHost,
-                StackPanel.SpacingProperty,
-                SharedTokenKind.SpacingXS);
-            _accessoryHost.AttachOwner(this, _addOnDecoratedBox);
+            ClearLightweightSelectHandle();
+
+            if (_accessoryHost == null)
+            {
+                _accessoryHost = new SelectAccessoryHost();
+                _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
+                    _accessoryHost,
+                    StackPanel.SpacingProperty,
+                    SharedTokenKind.SpacingXS);
+                _accessoryHost.AttachOwner(this, _addOnDecoratedBox);
+            }
+
+            if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+            {
+                _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+            }
+            return;
         }
 
-        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        ClearCompositeAccessoryHost();
+        if (_lightweightSelectHandle == null)
         {
-            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+            _lightweightSelectHandle = new SelectHandle();
+            _lightweightSelectHandle.SetTemplatedParent(this);
+        }
+        UpdateLightweightSelectHandleState();
+
+        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _lightweightSelectHandle))
+        {
+            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _lightweightSelectHandle);
         }
     }
 
     private void ClearOwnerDrivenAccessoryHost()
+    {
+        ClearLightweightSelectHandle();
+        ClearCompositeAccessoryHost();
+    }
+
+    private void ClearCompositeAccessoryHost()
     {
         if (_addOnDecoratedBox != null &&
             _accessoryHost != null &&
@@ -816,9 +862,111 @@ public abstract class AbstractSelect : TemplatedControl,
         }
     }
 
+    private bool NeedsCompositeAccessoryHost()
+    {
+        return IsShowMaxCountIndicator || ContentRightAddOn != null;
+    }
+
+    private void ClearLightweightSelectHandle()
+    {
+        _lightweightHandleInputSubscriptions?.Dispose();
+        _lightweightHandleInputSubscriptions = null;
+
+        if (_addOnDecoratedBox != null &&
+            _lightweightSelectHandle != null &&
+            ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _lightweightSelectHandle))
+        {
+            _addOnDecoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        if (_lightweightSelectHandle != null)
+        {
+            _lightweightSelectHandle.ClearValue(SelectHandle.FormFeedbackProperty);
+            _lightweightSelectHandle.ClearValue(SelectHandle.LoadingIconProperty);
+            _lightweightSelectHandle.ClearValue(SelectHandle.OpenIndicatorProperty);
+            _lightweightSelectHandle.SetTemplatedParent(null);
+            _lightweightSelectHandle = null;
+        }
+    }
+
+    private protected void UpdateOwnerDrivenAccessoryState()
+    {
+        if (_isUsingLegacyAccessoryTemplate)
+        {
+            return;
+        }
+
+        if (_accessoryHost != null && NeedsCompositeAccessoryHost())
+        {
+            _accessoryHost.AttachOwner(this, _addOnDecoratedBox);
+        }
+
+        ConfigureOwnerDrivenAccessoryHost();
+        UpdateLightweightSelectHandleState();
+    }
+
+    private void UpdateLightweightSelectHandleState()
+    {
+        if (_lightweightSelectHandle == null)
+        {
+            return;
+        }
+
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.FormFeedbackProperty, FormFeedback);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.LoadingIconProperty, SuffixLoadingIcon);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.OpenIndicatorProperty, SuffixIcon);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsFilterEnabledProperty, GetEffectiveFilterEnabled());
+        _lightweightSelectHandle.SetCurrentValue(InputElement.IsEnabledProperty, IsEnabled);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsMotionEnabledProperty, IsMotionEnabled);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsLoadingProperty, IsLoading);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsAllowClearProperty, IsAllowClear);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsSelectionEmptyProperty, IsSelectionEmpty);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsDropDownOpenProperty, IsDropDownOpen);
+        ConfigureLightweightHandleInputSubscriptions();
+        UpdateLightweightHandleInputState();
+    }
+
+    private void ConfigureLightweightHandleInputSubscriptions()
+    {
+        var shouldTrackInputState = _addOnDecoratedBox != null && IsAllowClear && !IsSelectionEmpty;
+        if (!shouldTrackInputState)
+        {
+            _lightweightHandleInputSubscriptions?.Dispose();
+            _lightweightHandleInputSubscriptions = null;
+            return;
+        }
+
+        if (_lightweightHandleInputSubscriptions != null || _addOnDecoratedBox == null)
+        {
+            return;
+        }
+
+        _lightweightHandleInputSubscriptions = new CompositeDisposable
+        {
+            _addOnDecoratedBox.GetObservable(AddOnDecoratedBox.IsInnerBoxHoverProperty)
+                              .Subscribe(_ => UpdateLightweightHandleInputState()),
+            _addOnDecoratedBox.GetObservable(AddOnDecoratedBox.IsInnerBoxPressedProperty)
+                              .Subscribe(_ => UpdateLightweightHandleInputState())
+        };
+    }
+
+    private void UpdateLightweightHandleInputState()
+    {
+        if (_lightweightSelectHandle == null)
+        {
+            return;
+        }
+
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsInputHoverProperty,
+            _addOnDecoratedBox?.IsInnerBoxHover ?? false);
+        _lightweightSelectHandle.SetCurrentValue(SelectHandle.IsInputPressedProperty,
+            _addOnDecoratedBox?.IsInnerBoxPressed ?? false);
+    }
+
     protected virtual void PopupClosed(object? sender, EventArgs e)
     {
         SubscriptionsOnOpen.Clear();
+        ClearWindowDeactivatedSubscription();
         NotifyPopupClosed();
     }
 
@@ -830,6 +978,37 @@ public abstract class AbstractSelect : TemplatedControl,
 
         ConfigurePopupMinWith(Bounds.Width);
         NotifyPopupOpened();
+    }
+
+    private void ConfigureWindowDeactivatedSubscription()
+    {
+        if (!IsDropDownOpen)
+        {
+            ClearWindowDeactivatedSubscription();
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (ReferenceEquals(_attachedWindow, topLevel))
+        {
+            return;
+        }
+
+        ClearWindowDeactivatedSubscription();
+        if (topLevel is Window window)
+        {
+            _attachedWindow    =  window;
+            window.Deactivated += HandleWindowDeactivated;
+        }
+    }
+
+    private void ClearWindowDeactivatedSubscription()
+    {
+        if (_attachedWindow != null)
+        {
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow = null;
+        }
     }
 
     private void IsVisibleChanged(bool isVisible)
@@ -909,6 +1088,8 @@ public abstract class AbstractSelect : TemplatedControl,
 
     protected void OpenDropDown()
     {
+        EnsurePopupContent();
+        ConfigureWindowDeactivatedSubscription();
         if (Popup != null)
         {
             Popup.IsOpen = true;
@@ -965,6 +1146,62 @@ public abstract class AbstractSelect : TemplatedControl,
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
+    }
+
+    private protected virtual void EnsurePopupContent()
+    {
+    }
+
+    private protected Border EnsurePopupFrame(Control child)
+    {
+        if (PopupFrame == null)
+        {
+            PopupFrame = new Border
+            {
+                Name  = "PopupFrame",
+                Child = child
+            };
+            PopupFrame.SetTemplatedParent(this);
+            Popup?.SetCurrentValue(Avalonia.Controls.Primitives.Popup.ChildProperty, PopupFrame);
+        }
+        else if (!ReferenceEquals(PopupFrame.Child, child))
+        {
+            PopupFrame.Child = child;
+        }
+
+        ConfigurePopupFrame();
+        return PopupFrame;
+    }
+
+    private protected virtual void ClearPopupContent()
+    {
+    }
+
+    private protected void ClearPopupFrame()
+    {
+        if (PopupFrame != null)
+        {
+            PopupFrame.Child = null;
+            PopupFrame.SetTemplatedParent(null);
+            PopupFrame = null;
+        }
+
+        if (Popup != null)
+        {
+            Popup.SetCurrentValue(Avalonia.Controls.Primitives.Popup.ChildProperty, null);
+        }
+    }
+
+    private void ConfigurePopupFrame()
+    {
+        if (PopupFrame == null)
+        {
+            return;
+        }
+
+        PopupFrame.SetCurrentValue(Border.MaxHeightProperty, MaxPopupHeight);
+        PopupFrame.SetCurrentValue(Border.MinWidthProperty, EffectivePopupWidth);
+        PopupFrame.SetCurrentValue(Border.PaddingProperty, PopupContentPadding);
     }
 
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)

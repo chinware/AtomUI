@@ -7,8 +7,10 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.Desktop;
+using AtomUIGallery.Controls;
 using AtomUIGallery.ShowCases;
 using AtomUIGallery.ShowCases.ViewModels;
+using AtomUIGallery.ShowCases.Views;
 using AtomUIGallery.Workspace.Views;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,6 +20,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using ReactiveUI;
 using ReactiveUI.Avalonia;
 
 namespace AtomUI.GalleryPerformance;
@@ -77,6 +80,18 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.SelectShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/SelectShowCase.axaml",
                 stats => stats.SelectCount > 0),
+            ["treeselect"] = new(
+                "TreeSelectShowCase",
+                TreeSelectViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.TreeSelectShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/TreeSelectShowCase.axaml",
+                stats => stats.TreeSelectCount > 0),
+            ["cascader"] = new(
+                "CascaderShowCase",
+                CascaderViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.CascaderShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/CascaderShowCase.axaml",
+                stats => stats.CascaderCount > 0),
             ["menu"] = new(
                 "MenuShowCase",
                 MenuViewModel.ID,
@@ -98,6 +113,14 @@ internal static class Program
         try
         {
             SetupAvalonia(out var lifetime);
+            if (options.SpaceItems)
+            {
+                var itemOutput = RunSpaceShowCaseItemBreakdown(options);
+                Console.WriteLine(itemOutput);
+                WriteMarkdownOutput(itemOutput, options);
+                return 0;
+            }
+
             if (lifetime.MainWindow is not WorkspaceWindow window)
             {
                 Console.Error.WriteLine("Gallery workspace window was not created.");
@@ -110,6 +133,16 @@ internal static class Program
             window.Show();
 
             WaitForRoute(window, AboutUs, options.Timeout);
+
+            if (options.TraceNavigation)
+            {
+                var traceOutput = RunNavigationTrace(window, options, showCase);
+                Console.WriteLine(traceOutput);
+                WriteMarkdownOutput(traceOutput, options);
+                window.Close();
+                Dispatcher.UIThread.RunJobs();
+                return 0;
+            }
 
             var coldRun = MeasureNavigation(window, 0, "Cold", options, showCase);
             NavigateToAboutUs(window, options);
@@ -133,11 +166,7 @@ internal static class Program
 
             if (!string.IsNullOrWhiteSpace(options.MarkdownOutputPath))
             {
-                var fullPath = Path.GetFullPath(options.MarkdownOutputPath);
-                Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
-                File.WriteAllText(fullPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-                Console.WriteLine();
-                Console.WriteLine($"Wrote markdown result: {fullPath}");
+                WriteMarkdownOutput(output, options);
             }
 
             window.Close();
@@ -164,6 +193,98 @@ internal static class Program
                   .UseHeadless(new AvaloniaHeadlessPlatformOptions())
                   .WithAtomUIDefaultOptions()
                   .SetupWithLifetime(lifetime);
+    }
+
+    private static string RunNavigationTrace(WorkspaceWindow window, PerfOptions options, ShowCaseSpec showCase)
+    {
+        var samples = new List<NavigationTraceSample>
+        {
+            MeasureNavigationTrace(window, 0, "Cold", options, showCase)
+        };
+        NavigateToAboutUs(window, options);
+        samples.Add(MeasureNavigationTrace(window, 1, "Second", options, showCase));
+
+        var builder = new StringBuilder();
+        builder.AppendLine($"# {showCase.Label} navigation trace - {options.Label}");
+        builder.AppendLine();
+        builder.AppendLine($"- Timestamp: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
+        builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width:0}x{WindowSize.Height:0} window");
+        builder.AppendLine("- Measurement: AboutUs route settled -> trigger navigation -> route visual tree and layout stable");
+        builder.AppendLine();
+        builder.AppendLine("| Phase | Trigger | Total ms | Trigger ms | First found ms | First ready ms | Stable ms | Pump count | Pump total ms | Max pump ms | Stats count | Stats total ms | Scan total ms | Alloc KB | Visuals | AddOnDecoratedBox | CompactSpace | CompactSpaceItem | LineEdit | Button | Select | TreeSelect | Cascader |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        foreach (var sample in samples)
+        {
+            builder.AppendLine(
+                $"| {sample.Phase} | {sample.Trigger} | {FormatMs(sample.Total)} | {FormatMs(sample.TriggerElapsed)} | {FormatOptionalMs(sample.FirstFoundElapsed)} | {FormatOptionalMs(sample.FirstReadyElapsed)} | {FormatMs(sample.StableElapsed)} | {sample.PumpCount} | {FormatMs(sample.PumpTotal)} | {FormatMs(sample.MaxPump)} | {sample.StatsCount} | {FormatMs(sample.StatsTotal)} | {FormatMs(sample.ScanTotal)} | {FormatKb(sample.AllocatedBytes)} | {sample.Stats.VisualCount} | {sample.Stats.AddOnDecoratedBoxCount} | {sample.Stats.CompactSpaceCount} | {sample.Stats.CompactSpaceItemCount} | {sample.Stats.LineEditCount} | {sample.Stats.ButtonCount} | {sample.Stats.SelectCount} | {sample.Stats.TreeSelectCount} | {sample.Stats.CascaderCount} |");
+        }
+
+        builder.AppendLine();
+        builder.AppendLine("## Shape Events");
+        builder.AppendLine();
+        foreach (var sample in samples)
+        {
+            builder.AppendLine($"### {sample.Phase}");
+            builder.AppendLine();
+            foreach (var item in sample.Events)
+            {
+                builder.AppendLine($"- {item}");
+            }
+            builder.AppendLine();
+        }
+        return builder.ToString();
+    }
+
+    private static NavigationTraceSample MeasureNavigationTrace(WorkspaceWindow window,
+                                                               int iteration,
+                                                               string phase,
+                                                               PerfOptions options,
+                                                               ShowCaseSpec showCase)
+    {
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+        var totalStopwatch  = Stopwatch.StartNew();
+        var trigger         = TriggerNavigation(window, showCase);
+        var triggerElapsed  = totalStopwatch.Elapsed;
+        var trace           = WaitForRouteTrace(window, showCase, options.Timeout, totalStopwatch);
+        totalStopwatch.Stop();
+
+        var allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+        return new NavigationTraceSample(
+            iteration,
+            phase,
+            trigger,
+            totalStopwatch.Elapsed,
+            triggerElapsed,
+            trace.FirstFoundElapsed,
+            trace.FirstReadyElapsed,
+            trace.StableElapsed,
+            trace.PumpCount,
+            trace.PumpTotal,
+            trace.MaxPump,
+            trace.StatsCount,
+            trace.StatsTotal,
+            trace.ScanTotal,
+            allocatedBytes,
+            trace.Stats,
+            trace.Events);
+    }
+
+    private static void WriteMarkdownOutput(string output, PerfOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(options.MarkdownOutputPath))
+        {
+            return;
+        }
+
+        var fullPath = Path.GetFullPath(options.MarkdownOutputPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+        File.WriteAllText(fullPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        Console.WriteLine();
+        Console.WriteLine($"Wrote markdown result: {fullPath}");
     }
 
     private static NavigationSample MeasureNavigation(WorkspaceWindow window,
@@ -266,6 +387,106 @@ internal static class Program
         throw new TimeoutException($"Timed out waiting for {showCase.RouteTypeName}: {routeLabel}.");
     }
 
+    private static NavigationTraceData WaitForRouteTrace(WorkspaceWindow window,
+                                                         ShowCaseSpec showCase,
+                                                         TimeSpan timeout,
+                                                         Stopwatch totalStopwatch)
+    {
+        var stableLayoutPasses = 0;
+        var previousStats      = default(RouteStats);
+        var events             = new List<string>();
+        var pumpCount          = 0;
+        var statsCount         = 0;
+        var pumpTotal          = TimeSpan.Zero;
+        var maxPump            = TimeSpan.Zero;
+        var statsTotal         = TimeSpan.Zero;
+        var scanTotal          = TimeSpan.Zero;
+        var firstFoundElapsed  = default(TimeSpan?);
+        var firstReadyElapsed  = default(TimeSpan?);
+        var latestStats        = default(RouteStats);
+
+        while (totalStopwatch.Elapsed < timeout)
+        {
+            var pumpStopwatch = Stopwatch.StartNew();
+            PumpLayout(window);
+            pumpStopwatch.Stop();
+            pumpCount++;
+            pumpTotal += pumpStopwatch.Elapsed;
+            if (pumpStopwatch.Elapsed > maxPump)
+            {
+                maxPump = pumpStopwatch.Elapsed;
+            }
+
+            var scanStopwatch = Stopwatch.StartNew();
+            var route = window.GetSelfAndVisualDescendants()
+                              .OfType<Control>()
+                              .FirstOrDefault(control => control.GetType().FullName == showCase.RouteTypeName);
+            scanStopwatch.Stop();
+            scanTotal += scanStopwatch.Elapsed;
+
+            if (route is null)
+            {
+                continue;
+            }
+
+            if (firstFoundElapsed is null)
+            {
+                firstFoundElapsed = totalStopwatch.Elapsed;
+                events.Add($"+{FormatMs(firstFoundElapsed.Value)} first route found");
+            }
+
+            if (!route.IsVisible || route.Bounds.Width <= 0 || route.Bounds.Height <= 0)
+            {
+                continue;
+            }
+
+            var statsStopwatch = Stopwatch.StartNew();
+            var currentStats   = RouteStats.Collect(route);
+            statsStopwatch.Stop();
+            statsCount++;
+            statsTotal += statsStopwatch.Elapsed;
+            latestStats = currentStats;
+
+            if (currentStats.IsDisplayReady(showCase) && firstReadyElapsed is null)
+            {
+                firstReadyElapsed = totalStopwatch.Elapsed;
+                events.Add($"+{FormatMs(firstReadyElapsed.Value)} first display-ready shape: {DescribeStats(currentStats)}");
+            }
+
+            if (previousStats is null || !currentStats.HasSameShape(previousStats))
+            {
+                events.Add($"+{FormatMs(totalStopwatch.Elapsed)} shape changed: {DescribeStats(currentStats)}");
+                stableLayoutPasses = 0;
+                previousStats      = currentStats;
+                continue;
+            }
+
+            if (currentStats.IsDisplayReady(showCase))
+            {
+                stableLayoutPasses++;
+                events.Add($"+{FormatMs(totalStopwatch.Elapsed)} stable pass {stableLayoutPasses}: {DescribeStats(currentStats)}");
+                if (stableLayoutPasses >= 2)
+                {
+                    return new NavigationTraceData(
+                        firstFoundElapsed,
+                        firstReadyElapsed,
+                        totalStopwatch.Elapsed,
+                        pumpCount,
+                        pumpTotal,
+                        maxPump,
+                        statsCount,
+                        statsTotal,
+                        scanTotal,
+                        currentStats,
+                        events);
+                }
+            }
+        }
+
+        throw new TimeoutException(
+            $"Timed out waiting for {showCase.RouteTypeName}: latest={DescribeStats(latestStats)}.");
+    }
+
     private static void PumpLayout(Avalonia.Controls.Window window)
     {
         Dispatcher.UIThread.RunJobs();
@@ -273,6 +494,308 @@ internal static class Program
         window.Arrange(WindowBounds);
         window.UpdateLayout();
         Dispatcher.UIThread.RunJobs();
+    }
+
+    private static string RunSpaceShowCaseItemBreakdown(PerfOptions options)
+    {
+        var itemInfos = GetSpaceShowCaseItemInfos();
+        var samples = new List<SpaceShowCaseItemSample>();
+        foreach (var itemInfo in itemInfos)
+        {
+            for (var i = 0; i < options.Warmup; i++)
+            {
+                _ = MeasureSpaceShowCaseItem(itemInfo, i + 1, "Warmup", options);
+            }
+
+            for (var i = 0; i < options.Iterations; i++)
+            {
+                samples.Add(MeasureSpaceShowCaseItem(itemInfo, i + 1, "Measured", options));
+            }
+        }
+
+        return RenderSpaceShowCaseItemBreakdown(samples, options);
+    }
+
+    private static IReadOnlyList<SpaceShowCaseItemInfo> GetSpaceShowCaseItemInfos()
+    {
+        var view  = CreateSpaceShowCase();
+        var panel = GetSpaceShowCasePanel(view);
+        return panel.Children
+                    .OfType<ShowCaseItem>()
+                    .Where(item => !item.IsFake)
+                    .Select((item, index) => new SpaceShowCaseItemInfo(
+                        index,
+                        string.IsNullOrWhiteSpace(item.Title) ? $"Item {index + 1}" : item.Title,
+                        string.IsNullOrWhiteSpace(item.Description) ? string.Empty : item.Description))
+                    .ToList();
+    }
+
+    private static SpaceShowCaseItemSample MeasureSpaceShowCaseItem(SpaceShowCaseItemInfo itemInfo,
+                                                                    int iteration,
+                                                                    string phase,
+                                                                    PerfOptions options)
+    {
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var view   = CreateSpaceShowCase();
+        var panel  = GetSpaceShowCasePanel(view);
+        var items  = panel.Children.OfType<ShowCaseItem>().Where(item => !item.IsFake).ToList();
+        var target = items[itemInfo.Index];
+        for (var i = panel.Children.Count - 1; i >= 0; i--)
+        {
+            if (!ReferenceEquals(panel.Children[i], target))
+            {
+                panel.Children.RemoveAt(i);
+            }
+        }
+        if (options.SpaceItemsWithoutTreeCascader ||
+            options.SpaceItemsWithoutTreeCascaderSelect)
+        {
+            RemoveSpaceItemVariantControls(target, options.SpaceItemsWithoutTreeCascaderSelect);
+        }
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width         = WindowSize.Width,
+            Height        = WindowSize.Height,
+            Content       = view,
+            ShowInTaskbar = false
+        };
+
+        var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+        var stopwatch       = Stopwatch.StartNew();
+        window.Show();
+        WaitForStableControl(window, target, options.Timeout);
+        stopwatch.Stop();
+
+        var allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+        var stats          = RouteStats.Collect(target);
+        window.Close();
+        Dispatcher.UIThread.RunJobs();
+
+        return new SpaceShowCaseItemSample(itemInfo, iteration, phase, stopwatch.Elapsed, allocatedBytes, stats);
+    }
+
+    private static void RemoveSpaceItemVariantControls(Control root, bool includeSelect)
+    {
+        RemoveMatchingChildren(root, control =>
+        {
+            var typeName = control.GetType().FullName;
+            return typeName is "AtomUI.Desktop.Controls.TreeSelect" or
+                               "AtomUI.Desktop.Controls.Cascader" ||
+                   includeSelect && typeName == "AtomUI.Desktop.Controls.Select";
+        });
+    }
+
+    private static void RemoveMatchingChildren(Control control, Func<Control, bool> shouldRemove)
+    {
+        if (control is Panel panel)
+        {
+            for (var i = panel.Children.Count - 1; i >= 0; i--)
+            {
+                if (panel.Children[i] is Control child)
+                {
+                    if (shouldRemove(child))
+                    {
+                        panel.Children.RemoveAt(i);
+                    }
+                    else
+                    {
+                        RemoveMatchingChildren(child, shouldRemove);
+                    }
+                }
+            }
+        }
+
+        if (control is Space space)
+        {
+            for (var i = space.Children.Count - 1; i >= 0; i--)
+            {
+                var child = space.Children[i];
+                if (shouldRemove(child))
+                {
+                    space.Children.RemoveAt(i);
+                }
+                else
+                {
+                    RemoveMatchingChildren(child, shouldRemove);
+                }
+            }
+        }
+
+        if (control is CompactSpace compactSpace)
+        {
+            for (var i = compactSpace.Children.Count - 1; i >= 0; i--)
+            {
+                var child = compactSpace.Children[i];
+                if (shouldRemove(child))
+                {
+                    compactSpace.Children.RemoveAt(i);
+                }
+                else
+                {
+                    RemoveMatchingChildren(child, shouldRemove);
+                }
+            }
+        }
+
+        if (control is ContentControl contentControl &&
+            contentControl.Content is Control content)
+        {
+            if (shouldRemove(content))
+            {
+                contentControl.Content = null;
+            }
+            else
+            {
+                RemoveMatchingChildren(content, shouldRemove);
+            }
+        }
+    }
+
+    private static SpaceShowCase CreateSpaceShowCase()
+    {
+        var viewModel = new SpaceViewModel(new ProbeScreen())
+        {
+            SizeType           = CustomizableSizeType.Small,
+            CustomSpacingValue = 24
+        };
+        return new SpaceShowCase
+        {
+            DataContext = viewModel
+        };
+    }
+
+    private static ShowCasePanel GetSpaceShowCasePanel(SpaceShowCase view)
+    {
+        if (view.Content is ShowCasePanel panel)
+        {
+            return panel;
+        }
+        throw new InvalidOperationException("SpaceShowCase root content is not ShowCasePanel.");
+    }
+
+    private static void WaitForStableControl(Avalonia.Controls.Window window, Control target, TimeSpan timeout)
+    {
+        var stopwatch          = Stopwatch.StartNew();
+        var stableLayoutPasses = 0;
+        var previousStats      = default(RouteStats);
+
+        while (stopwatch.Elapsed < timeout)
+        {
+            PumpLayout(window);
+
+            if (target.IsVisible && target.Bounds.Width > 0 && target.Bounds.Height > 0)
+            {
+                var currentStats = RouteStats.Collect(target);
+                if (previousStats is not null &&
+                    currentStats.HasSameShape(previousStats))
+                {
+                    stableLayoutPasses++;
+                    if (stableLayoutPasses >= 2)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    stableLayoutPasses = 0;
+                    previousStats      = currentStats;
+                }
+            }
+        }
+
+        throw new TimeoutException($"Timed out waiting for SpaceShowCase item layout: {target}.");
+    }
+
+    private static string RenderSpaceShowCaseItemBreakdown(IReadOnlyList<SpaceShowCaseItemSample> samples,
+                                                           PerfOptions options)
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine("# SpaceShowCase item performance breakdown");
+        builder.AppendLine();
+        builder.AppendLine($"- Timestamp: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss zzz}");
+        builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width.ToString(CultureInfo.InvariantCulture)}x{WindowSize.Height.ToString(CultureInfo.InvariantCulture)} window");
+        builder.AppendLine("- Measurement: construct the real SpaceShowCase, keep one real ShowCaseItem before ShowCasePanel template/layout, then time attach/template/layout until stable.");
+        if (options.SpaceItemsWithoutTreeCascaderSelect)
+        {
+            builder.AppendLine("- Variant: `TreeSelect`, `Cascader`, and exact `Select` controls are removed from each item content tree before attach/layout.");
+        }
+        else if (options.SpaceItemsWithoutTreeCascader)
+        {
+            builder.AppendLine("- Variant: `TreeSelect` and `Cascader` controls are removed from each item content tree before attach/layout.");
+        }
+        builder.AppendLine($"- Warmup per item: {options.Warmup}, measured iterations per item: {options.Iterations}, timeout: {options.Timeout.TotalSeconds.ToString("0.#", CultureInfo.InvariantCulture)}s");
+        builder.AppendLine();
+        builder.AppendLine("| # | Title | Description | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | Select | TreeSelect | Cascader | Menu | MenuItem | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        foreach (var group in samples.GroupBy(sample => sample.Item).OrderBy(group => group.Key.Index))
+        {
+            var ordered = group.Select(sample => sample.Elapsed.TotalMilliseconds).Order().ToArray();
+            var stats   = group.Last().Stats;
+            builder.AppendLine(string.Join(" | ",
+                "| " + (group.Key.Index + 1).ToString(CultureInfo.InvariantCulture),
+                EscapeCell(group.Key.Title),
+                EscapeCell(group.Key.Description),
+                Format(ordered.Average()),
+                Format(Percentile(ordered, 0.50)),
+                Format(Percentile(ordered, 0.95)),
+                Format(ordered.First()),
+                Format(ordered.Last()),
+                Format(group.Average(sample => sample.AllocatedBytes / 1024.0)),
+                stats.VisualCount.ToString(CultureInfo.InvariantCulture),
+                stats.LogicalCount.ToString(CultureInfo.InvariantCulture),
+                stats.SpaceCount.ToString(CultureInfo.InvariantCulture),
+                stats.CompactSpaceCount.ToString(CultureInfo.InvariantCulture),
+                stats.CompactSpaceItemCount.ToString(CultureInfo.InvariantCulture),
+                stats.LineEditCount.ToString(CultureInfo.InvariantCulture),
+                stats.LineEditDirectCount.ToString(CultureInfo.InvariantCulture),
+                stats.SearchEditCount.ToString(CultureInfo.InvariantCulture),
+                stats.TextAreaCount.ToString(CultureInfo.InvariantCulture),
+                stats.ButtonCount.ToString(CultureInfo.InvariantCulture),
+                stats.SelectCount.ToString(CultureInfo.InvariantCulture),
+                stats.TreeSelectCount.ToString(CultureInfo.InvariantCulture),
+                stats.CascaderCount.ToString(CultureInfo.InvariantCulture),
+                stats.MenuCount.ToString(CultureInfo.InvariantCulture),
+                stats.MenuItemCount.ToString(CultureInfo.InvariantCulture),
+                stats.AddOnDecoratedBoxCount.ToString(CultureInfo.InvariantCulture) + " |"));
+        }
+
+        builder.AppendLine();
+        builder.AppendLine("## Samples");
+        builder.AppendLine();
+        builder.AppendLine("| # | Title | Iteration | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | LineEdit total | SearchEdit | Button | Select | TreeSelect | Cascader | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        foreach (var sample in samples.OrderBy(sample => sample.Item.Index).ThenBy(sample => sample.Iteration))
+        {
+            builder.AppendLine(string.Join(" | ",
+                "| " + (sample.Item.Index + 1).ToString(CultureInfo.InvariantCulture),
+                EscapeCell(sample.Item.Title),
+                sample.Iteration.ToString(CultureInfo.InvariantCulture),
+                Format(sample.Elapsed.TotalMilliseconds),
+                Format(sample.AllocatedBytes / 1024.0),
+                sample.Stats.VisualCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.LogicalCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.SpaceCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.CompactSpaceCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.CompactSpaceItemCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.LineEditCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.SearchEditCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.ButtonCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.SelectCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.TreeSelectCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.CascaderCount.ToString(CultureInfo.InvariantCulture),
+                sample.Stats.AddOnDecoratedBoxCount.ToString(CultureInfo.InvariantCulture) + " |"));
+        }
+        return builder.ToString();
+    }
+
+    private static string EscapeCell(string value)
+    {
+        return value.Replace("|", "\\|", StringComparison.Ordinal)
+                    .ReplaceLineEndings(" ");
     }
 
     private static string RenderResult(NavigationResult result, PerfOptions options, ShowCaseSpec showCase)
@@ -291,15 +814,15 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSample(result.ColdRun));
         foreach (var sample in result.Samples)
         {
@@ -344,6 +867,8 @@ internal static class Program
             stats.ButtonCount.ToString(CultureInfo.InvariantCulture),
             stats.ToggleIconButtonCount.ToString(CultureInfo.InvariantCulture),
             stats.SelectCount.ToString(CultureInfo.InvariantCulture),
+            stats.TreeSelectCount.ToString(CultureInfo.InvariantCulture),
+            stats.CascaderCount.ToString(CultureInfo.InvariantCulture),
             stats.MenuCount.ToString(CultureInfo.InvariantCulture),
             stats.MenuItemCount.ToString(CultureInfo.InvariantCulture),
             stats.NavMenuItemHeaderCount.ToString(CultureInfo.InvariantCulture),
@@ -376,6 +901,8 @@ internal static class Program
             sample.Stats.ButtonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.ToggleIconButtonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SelectCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.TreeSelectCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CascaderCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.MenuCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.MenuItemCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.NavMenuItemHeaderCount.ToString(CultureInfo.InvariantCulture),
@@ -420,7 +947,10 @@ internal sealed record PerfOptions(
     string Label,
     string ShowCase,
     string? MarkdownOutputPath,
-    TimeSpan Timeout)
+    TimeSpan Timeout,
+    bool SpaceItems,
+    bool SpaceItemsWithoutTreeCascader,
+    bool SpaceItemsWithoutTreeCascaderSelect)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -430,6 +960,9 @@ internal sealed record PerfOptions(
         var showCase   = "lineedit";
         var markdown   = default(string);
         var timeout    = TimeSpan.FromSeconds(10);
+        var spaceItems = false;
+        var spaceItemsWithoutTreeCascader = false;
+        var spaceItemsWithoutTreeCascaderSelect = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -462,6 +995,20 @@ internal sealed record PerfOptions(
                     timeout = TimeSpan.FromMilliseconds(parsedTimeout);
                     i++;
                     break;
+                case "--space-items":
+                    showCase   = "space";
+                    spaceItems = true;
+                    break;
+                case "--space-items-without-tree-cascader":
+                    showCase                      = "space";
+                    spaceItems                    = true;
+                    spaceItemsWithoutTreeCascader = true;
+                    break;
+                case "--space-items-without-tree-cascader-select":
+                    showCase                            = "space";
+                    spaceItems                          = true;
+                    spaceItemsWithoutTreeCascaderSelect = true;
+                    break;
             }
         }
 
@@ -471,9 +1018,27 @@ internal sealed record PerfOptions(
             label,
             showCase,
             markdown,
-            timeout);
+            timeout,
+            spaceItems,
+            spaceItemsWithoutTreeCascader,
+            spaceItemsWithoutTreeCascaderSelect);
     }
 }
+
+internal sealed class ProbeScreen : IScreen
+{
+    public RoutingState Router { get; } = new();
+}
+
+internal sealed record SpaceShowCaseItemInfo(int Index, string Title, string Description);
+
+internal sealed record SpaceShowCaseItemSample(
+    SpaceShowCaseItemInfo Item,
+    int Iteration,
+    string Phase,
+    TimeSpan Elapsed,
+    long AllocatedBytes,
+    RouteStats Stats);
 
 internal sealed record ShowCaseSpec(
     string Label,
@@ -523,6 +1088,8 @@ internal sealed record RouteStats(
     int ButtonCount,
     int ToggleIconButtonCount,
     int SelectCount,
+    int TreeSelectCount,
+    int CascaderCount,
     int MenuCount,
     int MenuItemCount,
     int NavMenuItemHeaderCount)
@@ -552,6 +1119,8 @@ internal sealed record RouteStats(
         var buttonCount             = 0;
         var toggleIconButtonCount   = 0;
         var selectCount             = 0;
+        var treeSelectCount         = 0;
+        var cascaderCount           = 0;
         var menuCount               = 0;
         var menuItemCount           = 0;
         var navMenuItemHeaderCount  = 0;
@@ -627,6 +1196,14 @@ internal sealed record RouteStats(
             {
                 selectCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.TreeSelect"))
+            {
+                treeSelectCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Cascader"))
+            {
+                cascaderCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Menu"))
             {
                 menuCount++;
@@ -661,6 +1238,8 @@ internal sealed record RouteStats(
             buttonCount,
             toggleIconButtonCount,
             selectCount,
+            treeSelectCount,
+            cascaderCount,
             menuCount,
             menuItemCount,
             navMenuItemHeaderCount);
@@ -687,6 +1266,8 @@ internal sealed record RouteStats(
                ButtonCount == other.ButtonCount &&
                ToggleIconButtonCount == other.ToggleIconButtonCount &&
                SelectCount == other.SelectCount &&
+               TreeSelectCount == other.TreeSelectCount &&
+               CascaderCount == other.CascaderCount &&
                MenuCount == other.MenuCount &&
                MenuItemCount == other.MenuItemCount &&
                NavMenuItemHeaderCount == other.NavMenuItemHeaderCount;
@@ -727,6 +1308,8 @@ internal sealed record SourceXamlStats(
     int ButtonCount,
     int ToggleIconButtonCount,
     int SelectCount,
+    int TreeSelectCount,
+    int CascaderCount,
     int MenuCount,
     int MenuItemCount,
     int ShowCaseItemCount)
@@ -739,7 +1322,7 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         var text     = File.ReadAllText(sourcePath);
@@ -760,6 +1343,8 @@ internal sealed record SourceXamlStats(
             CountElements(document, AtomNamespace, "Button"),
             CountElements(document, AtomNamespace, "ToggleIconButton"),
             CountElements(document, AtomNamespace, "Select"),
+            CountElements(document, AtomNamespace, "TreeSelect"),
+            CountElements(document, AtomNamespace, "Cascader"),
             CountElements(document, AtomNamespace, "Menu"),
             CountElements(document, AtomNamespace, "MenuItem"),
             CountElements(document, GalleryNamespace, "ShowCaseItem"));
@@ -774,8 +1359,8 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ToggleIconButton | Select | Menu | MenuItem | ShowCaseItem |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | ShowCaseItem |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
@@ -806,6 +1391,10 @@ internal sealed record SourceXamlStats(
         builder.Append(ToggleIconButtonCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(SelectCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(TreeSelectCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CascaderCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(MenuCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");

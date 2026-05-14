@@ -1,4 +1,5 @@
 using AtomUI.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -245,8 +246,10 @@ public partial class Select : AbstractSelect
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingStackPanel());
 
+    private Panel? _contentPanel;
     private SelectCandidateList? _candidateList;
     private SelectFilterTextBox? _singleFilterInput;
+    private SelectResultOptionsBox? _selectedOptionsBox;
     private bool _ignoreSyncSelection;
     private bool _candidateListActivated;
     private ISelectOption? _addNewOption;
@@ -319,6 +322,56 @@ public partial class Select : AbstractSelect
         var strValue = value.ToString();
         var optValue = selectOption.Content?.ToString();
         return strValue == optValue;
+    }
+
+    private Dictionary<string, ISelectOption>? BuildDefaultValueLookup()
+    {
+        if (DefaultValueCompareFn != null)
+        {
+            return null;
+        }
+
+        var lookup = new Dictionary<string, ISelectOption>(StringComparer.Ordinal);
+        foreach (var item in Options)
+        {
+            if (item is ISelectOption option &&
+                option.Content?.ToString() is { } optionValue &&
+                !lookup.ContainsKey(optionValue))
+            {
+                lookup.Add(optionValue, option);
+            }
+        }
+        return lookup;
+    }
+
+    private bool TryFindDefaultOption(object defaultValue,
+                                      Dictionary<string, ISelectOption>? lookup,
+                                      out ISelectOption option)
+    {
+        if (lookup != null)
+        {
+            var key = defaultValue.ToString();
+            if (key != null && lookup.TryGetValue(key, out option!))
+            {
+                return true;
+            }
+
+            option = default!;
+            return false;
+        }
+
+        foreach (var item in Options)
+        {
+            if (item is ISelectOption candidate &&
+                OptionEqualByValue(defaultValue, candidate))
+            {
+                option = candidate;
+                return true;
+            }
+        }
+
+        option = default!;
+        return false;
     }
 
     private bool TryHandleDeleteKey(KeyEventArgs e)
@@ -511,35 +564,21 @@ public partial class Select : AbstractSelect
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearSingleFilterInput();
+        ClearSelectedOptionsBox();
+
         base.OnApplyTemplate(e);
 
-        if (_candidateList != null)
-        {
-            _candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
-            _candidateList.Commit           -= HandleCandidateListComplete;
-            _candidateList.Cancel           -= HandleCandidateListCanceled;
-        }
-
-        _candidateList = e.NameScope.Get<SelectCandidateList>("PART_CandidateList");
-
-        if (_candidateList != null)
-        {
-            _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
-            _candidateList.Commit           += HandleCandidateListComplete;
-            _candidateList.Cancel           += HandleCandidateListCanceled;
-        }
-
-        _singleFilterInput = e.NameScope.Get<SelectFilterTextBox>("PART_SingleFilterInput");
-        if (_candidateList != null)
-        {
-            ConfigureOptionsBoxSelectionMode();
-        }
+        _contentPanel     = e.NameScope.Find<Panel>("PART_ContentPanel");
+        _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
+        _selectedOptionsBox = e.NameScope.Find<SelectResultOptionsBox>("SelectedOptionsBox");
 
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
         ConfigureEffectiveSearchEnabled();
+        ConfigureModeSpecificContent();
     }
 
     private void HandleCandidateListComplete(object? sender, RoutedEventArgs e)
@@ -610,6 +649,8 @@ public partial class Select : AbstractSelect
         if (change.Property == IsDropDownOpenProperty)
         {
             ConfigureSingleFilterTextBox();
+            SyncSelectedOptionsBoxProperties();
+            SyncCandidateListProperties();
         }
         else if (change.Property == IsPopupMatchSelectWidthProperty)
         {
@@ -635,12 +676,45 @@ public partial class Select : AbstractSelect
         else if (change.Property == ModeProperty)
         {
             ConfigureOptionsBoxSelectionMode();
+            ConfigureModeSpecificContent();
+            SyncCandidateListProperties();
         }
 
         if (change.Property == IsFilterEnabledProperty ||
             change.Property == ModeProperty)
         {
             ConfigureEffectiveSearchEnabled();
+            ConfigureModeSpecificContent();
+            SyncCandidateListProperties();
+            UpdateOwnerDrivenAccessoryState();
+        }
+
+        if (change.Property == SizeTypeProperty ||
+            change.Property == SelectedOptionsProperty ||
+            change.Property == MaxTagCountProperty ||
+            change.Property == IsResponsiveTagModeProperty)
+        {
+            SyncSelectedOptionsBoxProperties();
+        }
+
+        if (change.Property == SelectedOptionProperty ||
+            change.Property == FilterValueProperty)
+        {
+            SyncSingleFilterInputProperties();
+        }
+
+        if (change.Property == FilterProperty ||
+            change.Property == FilterValueProperty ||
+            change.Property == FilterValueSelectorProperty ||
+            change.Property == IsGroupEnabledProperty ||
+            change.Property == GroupPropertySelectorProperty ||
+            change.Property == IsMotionEnabledProperty ||
+            change.Property == IsHideSelectedOptionsProperty ||
+            change.Property == MaxCountProperty ||
+            change.Property == AutoScrollToSelectedOptionsProperty ||
+            change.Property == OptionTemplateProperty)
+        {
+            SyncCandidateListProperties();
         }
     }
 
@@ -708,6 +782,133 @@ public partial class Select : AbstractSelect
 
         _candidateList.SetCurrentValue(ListView.SelectionModeProperty,
             Mode == SelectMode.Single ? SelectionMode.Single : SelectionMode.Multiple);
+    }
+
+    private void ConfigureModeSpecificContent()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (Mode == SelectMode.Single)
+        {
+            ClearSelectedOptionsBox();
+            if (IsEffectiveFilterEnabled)
+            {
+                EnsureSingleFilterInput();
+            }
+            else
+            {
+                ClearSingleFilterInput();
+            }
+        }
+        else
+        {
+            ClearSingleFilterInput();
+            EnsureSelectedOptionsBox();
+        }
+    }
+
+    private void EnsureSingleFilterInput()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (_singleFilterInput == null)
+        {
+            _singleFilterInput = new SelectFilterTextBox
+            {
+                Name      = "PART_SingleFilterInput",
+                IsVisible = true
+            };
+            _singleFilterInput.SetTemplatedParent(this);
+            _contentPanel.Children.Add(_singleFilterInput);
+        }
+
+        SyncSingleFilterInputProperties();
+    }
+
+    private void ClearSingleFilterInput()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.Clear();
+        _contentPanel?.Children.Remove(_singleFilterInput);
+        _singleFilterInput.SetTemplatedParent(null);
+        _singleFilterInput = null;
+    }
+
+    private void SyncSingleFilterInputProperties()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.SetCurrentValue(TextBox.SizeTypeProperty, SizeType);
+        _singleFilterInput.SetCurrentValue(TextBox.PlaceholderTextProperty,
+            SelectedOption?.Header?.ToString());
+        _singleFilterInput.SetCurrentValue(Visual.IsVisibleProperty, true);
+    }
+
+    private void EnsureSelectedOptionsBox()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (_selectedOptionsBox == null)
+        {
+            _selectedOptionsBox = new SelectResultOptionsBox
+            {
+                Name                = "SelectedOptionsBox",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Center,
+                Focusable           = true,
+                IsVisible           = true
+            };
+            _selectedOptionsBox.SetTemplatedParent(this);
+            _contentPanel.Children.Add(_selectedOptionsBox);
+        }
+
+        SyncSelectedOptionsBoxProperties();
+    }
+
+    private void ClearSelectedOptionsBox()
+    {
+        if (_selectedOptionsBox == null)
+        {
+            return;
+        }
+
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.SelectedOptionsProperty, null);
+        _contentPanel?.Children.Remove(_selectedOptionsBox);
+        _selectedOptionsBox.SetTemplatedParent(null);
+        _selectedOptionsBox = null;
+    }
+
+    private void SyncSelectedOptionsBoxProperties()
+    {
+        if (_selectedOptionsBox == null)
+        {
+            return;
+        }
+
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.ModeProperty, Mode);
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.SizeTypeProperty, SizeType);
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.SelectedOptionsProperty, SelectedOptions);
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.IsFilterEnabledProperty, IsEffectiveFilterEnabled);
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.IsDropDownOpenProperty, IsDropDownOpen);
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.MaxTagCountProperty, MaxTagCount);
+        _selectedOptionsBox.SetCurrentValue(SelectResultOptionsBox.IsResponsiveTagModeProperty, IsResponsiveTagMode);
+        _selectedOptionsBox.SetCurrentValue(Visual.IsVisibleProperty, true);
     }
 
     public void ClearValue()
@@ -858,16 +1059,10 @@ public partial class Select : AbstractSelect
                 if (DefaultValues?.Count > 0)
                 {
                     var defaultValue = DefaultValues.First();
-                    foreach (var item in Options)
+                    var lookup       = BuildDefaultValueLookup();
+                    if (TryFindDefaultOption(defaultValue, lookup, out var option))
                     {
-                        if (item is ISelectOption option)
-                        {
-                            if (OptionEqualByValue(defaultValue, option))
-                            {
-                                SelectedOption = option;
-                                break;
-                            }
-                        }
+                        SelectedOption = option;
                     }
                 }
             }
@@ -879,17 +1074,12 @@ public partial class Select : AbstractSelect
                 if (DefaultValues?.Count > 0)
                 {
                     var selectedOptions = new List<ISelectOption>();
+                    var lookup          = BuildDefaultValueLookup();
                     foreach (var defaultValue in DefaultValues)
                     {
-                        foreach (var item in Options)
+                        if (TryFindDefaultOption(defaultValue, lookup, out var option))
                         {
-                            if (item is ISelectOption option)
-                            {
-                                if (OptionEqualByValue(defaultValue, option))
-                                {
-                                    selectedOptions.Add(option);
-                                }
-                            }
+                            selectedOptions.Add(option);
                         }
                     }
 
@@ -915,6 +1105,70 @@ public partial class Select : AbstractSelect
         {
             SetCurrentValue(IsEffectiveFilterEnabledProperty, IsFilterEnabled);
         }
+    }
+
+    private protected override void EnsurePopupContent()
+    {
+        if (_candidateList != null)
+        {
+            return;
+        }
+
+        _candidateList = new SelectCandidateList
+        {
+            Name                = "PART_CandidateList",
+            BorderThickness     = new Thickness(0),
+            IsShowEmptyIndicator = true
+        };
+        _candidateList.SetTemplatedParent(this);
+        _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
+        _candidateList.Commit           += HandleCandidateListComplete;
+        _candidateList.Cancel           += HandleCandidateListCanceled;
+
+        SyncCandidateListProperties();
+        ConfigureOptionsBoxSelectionMode();
+        SyncSelectionToCandidateList();
+        EnsurePopupFrame(_candidateList);
+    }
+
+    private protected override void ClearPopupContent()
+    {
+        if (_candidateList == null)
+        {
+            return;
+        }
+
+        _candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
+        _candidateList.Commit           -= HandleCandidateListComplete;
+        _candidateList.Cancel           -= HandleCandidateListCanceled;
+        _candidateList.SetCurrentValue(ItemsControl.ItemsSourceProperty, null);
+        _candidateList.SelectedItems = null;
+        _candidateList.SelectedItem  = null;
+        _candidateList.SetTemplatedParent(null);
+        _candidateList = null;
+        _candidateListActivated = false;
+    }
+
+    private void SyncCandidateListProperties()
+    {
+        if (_candidateList == null)
+        {
+            return;
+        }
+
+        _candidateList.SetCurrentValue(SelectCandidateList.FilterProperty, Filter);
+        _candidateList.SetCurrentValue(SelectCandidateList.FilterValueProperty, FilterValue);
+        _candidateList.SetCurrentValue(SelectCandidateList.FilterValueSelectorProperty, FilterValueSelector);
+        _candidateList.SetCurrentValue(ListView.IsGroupEnabledProperty, IsGroupEnabled);
+        _candidateList.SetCurrentValue(ListView.GroupPropertySelectorProperty, GroupPropertySelector);
+        _candidateList.SetCurrentValue(SelectCandidateList.IsMotionEnabledProperty, IsMotionEnabled);
+        _candidateList.SetCurrentValue(SelectCandidateList.IsHideSelectedOptionsProperty, IsHideSelectedOptions);
+        _candidateList.SetCurrentValue(SelectCandidateList.MaxCountProperty, MaxCount);
+        _candidateList.SetCurrentValue(ListView.AutoScrollToSelectedItemProperty, AutoScrollToSelectedOptions);
+        _candidateList.SetCurrentValue(ItemsControl.ItemTemplateProperty, OptionTemplate);
+        _candidateList.SetCurrentValue(ItemsControl.ItemsSourceProperty, Options);
+        _candidateList.SetCurrentValue(ListView.IsShowSelectedIndicatorProperty, Mode != SelectMode.Single);
+        ConfigureOptionsBoxSelectionMode();
     }
 
     private void CleanDynamicAddedOptions()

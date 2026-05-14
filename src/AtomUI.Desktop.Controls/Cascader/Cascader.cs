@@ -5,6 +5,7 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Input;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -12,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -26,7 +28,7 @@ public class Cascader : AbstractSelect
     public static readonly StyledProperty<TreeSelectCheckedStrategy> ShowCheckedStrategyProperty =
         AvaloniaProperty.Register<Cascader, TreeSelectCheckedStrategy>(
             nameof(ShowCheckedStrategy), TreeSelectCheckedStrategy.All);
-    
+
     public static readonly StyledProperty<bool> IsMultipleProperty =
         AvaloniaProperty.Register<Cascader, bool>(
             nameof(IsMultiple));
@@ -236,8 +238,11 @@ public class Cascader : AbstractSelect
     #endregion
     
     private readonly ItemCollection _options = new();
+    private Panel? _contentPanel;
     private SelectFilterTextBox? _singleFilterInput;
+    private SelectTagAwareTextBox? _selectedOptionsBox;
     private CascaderView? _cascaderView;
+    private IDisposable? _cascaderEffectiveEmptySubscription;
     private bool _needSkipSyncSelectedOptions;
 
     static Cascader()
@@ -263,6 +268,7 @@ public class Cascader : AbstractSelect
     private void HandleCascaderSourceChanged(AvaloniaPropertyChangedEventArgs args)
     {
         _options.SetItemsSource(args.GetNewValue<IEnumerable<ICascaderOption>?>());
+        ConfigureDefaultSelectedOptionPath();
     }
 
     private void HandleCascaderOptionsChanged(object? sender, NotifyCollectionChangedEventArgs args)
@@ -271,6 +277,7 @@ public class Cascader : AbstractSelect
         {
             _cascaderView.OptionsSource = Options.Cast<ICascaderOption>().ToList();
         }
+        ConfigureDefaultSelectedOptionPath();
     }
 
     protected override void OnInitialized()
@@ -368,6 +375,8 @@ public class Cascader : AbstractSelect
         if (change.Property == IsDropDownOpenProperty)
         {
             ConfigureSingleFilterTextBox();
+            SyncSelectedOptionsBoxProperties();
+            SyncCascaderViewProperties();
         }
         if (change.Property == StyleVariantProperty ||
             change.Property == StatusProperty)
@@ -393,11 +402,14 @@ public class Cascader : AbstractSelect
             {
                 SetCurrentValue(SelectedCountProperty, SelectedOption != null ? 1 : 0);
             }
+            SyncSingleFilterInputProperties();
+            SyncSelectedOptionsBoxProperties();
         }
         
         if (change.Property == SelectedOptionsProperty ||
             change.Property == IsMultipleProperty)
         {
+            ConfigureModeSpecificContent();
             SyncSelectedOptionsToCascaderView();
         }
 
@@ -407,6 +419,7 @@ public class Cascader : AbstractSelect
             change.Property == IsMultipleProperty)
         {
             ConfigureMaxSelectReached();
+            SyncSelectedOptionsBoxProperties();
         }
         
         if (change.Property == SelectedOptionsProperty ||
@@ -419,37 +432,58 @@ public class Cascader : AbstractSelect
         {
             ConfigureSelectedOptionPath();
         }
+
+        if (change.Property == DefaultSelectOptionPathProperty)
+        {
+            ConfigureDefaultSelectedOptionPath();
+        }
+
+        if (change.Property == IsFilterEnabledProperty ||
+            change.Property == SizeTypeProperty ||
+            change.Property == MaxTagCountProperty ||
+            change.Property == IsResponsiveTagModeProperty)
+        {
+            ConfigureModeSpecificContent();
+            SyncSingleFilterInputProperties();
+            SyncSelectedOptionsBoxProperties();
+        }
+
+        if (change.Property == OptionsSourceProperty ||
+            change.Property == OptionTemplateProperty ||
+            change.Property == ExpandIconProperty ||
+            change.Property == LoadingIconProperty ||
+            change.Property == DataLoaderProperty ||
+            change.Property == FilterProperty ||
+            change.Property == FilterValueProperty ||
+            change.Property == FilterHighlightStrategyProperty ||
+            change.Property == FilterHighlightForegroundProperty ||
+            change.Property == IsShowEmptyIndicatorProperty ||
+            change.Property == ExpandTriggerProperty ||
+            change.Property == DefaultSelectOptionPathProperty ||
+            change.Property == IsAllowSelectParentProperty ||
+            change.Property == IsMotionEnabledProperty ||
+            change.Property == IsMaxSelectReachedProperty)
+        {
+            SyncCascaderViewProperties();
+        }
     }
-    
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearSingleFilterInput();
+        ClearSelectedOptionsBox();
+
         base.OnApplyTemplate(e);
 
-        if (_cascaderView != null)
-        {
-            _cascaderView.SelectedOptionsChanged -= HandleCascaderViewItemsCheckedChanged;
-            _cascaderView.ItemDoubleClicked      -= HandleCascaderViewItemDoubleClicked;
-            _cascaderView.ItemClicked            -= HandleCascaderViewItemClicked;
-            _cascaderView.OptionSelected         -= HandleCascaderViewItemSelected;
-            _cascaderView.OptionsSource          =  null;
-        }
-
+        _contentPanel      = e.NameScope.Find<Panel>("PART_ContentPanel");
         _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
-        _cascaderView      = e.NameScope.Find<CascaderView>("PART_CascaderView");
-
-        if (_cascaderView != null)
-        {
-            _cascaderView.SelectedOptionsChanged += HandleCascaderViewItemsCheckedChanged;
-            _cascaderView.ItemDoubleClicked      += HandleCascaderViewItemDoubleClicked;
-            _cascaderView.ItemClicked            += HandleCascaderViewItemClicked;
-            _cascaderView.OptionSelected         += HandleCascaderViewItemSelected;
-            _cascaderView.OptionsSource          =  Options.Cast<ICascaderOption>().ToList();
-        }
+        _selectedOptionsBox = e.NameScope.Find<SelectTagAwareTextBox>("SelectedOptionsBox");
 
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
+        ConfigureModeSpecificContent();
     }
     
     protected override void PopupClosed(object? sender, EventArgs e)
@@ -535,6 +569,131 @@ public class Cascader : AbstractSelect
                 _singleFilterInput.Width = _singleFilterInput.Bounds.Width;
             }
         }
+    }
+
+    private void ConfigureModeSpecificContent()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (IsMultiple)
+        {
+            ClearSingleFilterInput();
+            EnsureSelectedOptionsBox();
+        }
+        else
+        {
+            ClearSelectedOptionsBox();
+            if (IsFilterEnabled)
+            {
+                EnsureSingleFilterInput();
+            }
+            else
+            {
+                ClearSingleFilterInput();
+            }
+        }
+    }
+
+    private void EnsureSingleFilterInput()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (_singleFilterInput == null)
+        {
+            _singleFilterInput = new SelectFilterTextBox
+            {
+                Name      = "PART_SingleFilterInput",
+                IsVisible = true
+            };
+            _singleFilterInput.SetTemplatedParent(this);
+            _contentPanel.Children.Add(_singleFilterInput);
+        }
+
+        SyncSingleFilterInputProperties();
+    }
+
+    private void ClearSingleFilterInput()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.Clear();
+        _contentPanel?.Children.Remove(_singleFilterInput);
+        _singleFilterInput.SetTemplatedParent(null);
+        _singleFilterInput = null;
+    }
+
+    private void SyncSingleFilterInputProperties()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.SetCurrentValue(TextBox.SizeTypeProperty, SizeType);
+        _singleFilterInput.SetCurrentValue(TextBox.PlaceholderTextProperty, SelectedOptionPath);
+        _singleFilterInput.SetCurrentValue(Visual.IsVisibleProperty, true);
+    }
+
+    private void EnsureSelectedOptionsBox()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (_selectedOptionsBox == null)
+        {
+            _selectedOptionsBox = new SelectTagAwareTextBox
+            {
+                Name                = "SelectedOptionsBox",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Center,
+                Focusable           = true,
+                IsVisible           = true
+            };
+            _selectedOptionsBox.SetTemplatedParent(this);
+            _contentPanel.Children.Add(_selectedOptionsBox);
+        }
+
+        SyncSelectedOptionsBoxProperties();
+    }
+
+    private void ClearSelectedOptionsBox()
+    {
+        if (_selectedOptionsBox == null)
+        {
+            return;
+        }
+
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.SelectedItemsProperty, null);
+        _contentPanel?.Children.Remove(_selectedOptionsBox);
+        _selectedOptionsBox.SetTemplatedParent(null);
+        _selectedOptionsBox = null;
+    }
+
+    private void SyncSelectedOptionsBoxProperties()
+    {
+        if (_selectedOptionsBox == null)
+        {
+            return;
+        }
+
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.SizeTypeProperty, SizeType);
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.SelectedItemsProperty, EffectiveSelectedOptions);
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.IsFilterEnabledProperty, IsFilterEnabled);
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.IsDropDownOpenProperty, IsDropDownOpen);
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.MaxTagCountProperty, MaxTagCount);
+        _selectedOptionsBox.SetCurrentValue(SelectTagAwareTextBox.IsResponsiveTagModeProperty, IsResponsiveTagMode);
+        _selectedOptionsBox.SetCurrentValue(Visual.IsVisibleProperty, true);
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -682,6 +841,83 @@ public class Cascader : AbstractSelect
         {
             IsMaxSelectReached = false;
         }
+    }
+
+    private protected override void EnsurePopupContent()
+    {
+        if (_cascaderView != null)
+        {
+            return;
+        }
+
+        _cascaderView = new CascaderView
+        {
+            Name                = "PART_CascaderView",
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Stretch,
+            BorderThickness     = new Thickness(0)
+        };
+        _cascaderView.SetTemplatedParent(this);
+        _cascaderView.SelectedOptionsChanged += HandleCascaderViewItemsCheckedChanged;
+        _cascaderView.ItemDoubleClicked      += HandleCascaderViewItemDoubleClicked;
+        _cascaderView.ItemClicked            += HandleCascaderViewItemClicked;
+        _cascaderView.OptionSelected         += HandleCascaderViewItemSelected;
+        _cascaderEffectiveEmptySubscription = _cascaderView
+            .GetObservable(CascaderView.IsEffectiveEmptyVisibleProperty)
+            .Subscribe(value => IsEffectiveEmptyVisible = value);
+
+        SyncCascaderViewProperties();
+        EnsurePopupFrame(_cascaderView);
+        SyncSelectedOptionsToCascaderView();
+        if (!IsMultiple)
+        {
+            _cascaderView.SelectedOption = SelectedOption;
+        }
+    }
+
+    private protected override void ClearPopupContent()
+    {
+        if (_cascaderView == null)
+        {
+            return;
+        }
+
+        _cascaderEffectiveEmptySubscription?.Dispose();
+        _cascaderEffectiveEmptySubscription = null;
+        _cascaderView.SelectedOptionsChanged -= HandleCascaderViewItemsCheckedChanged;
+        _cascaderView.ItemDoubleClicked      -= HandleCascaderViewItemDoubleClicked;
+        _cascaderView.ItemClicked            -= HandleCascaderViewItemClicked;
+        _cascaderView.OptionSelected         -= HandleCascaderViewItemSelected;
+        _cascaderView.OptionsSource          =  null;
+        _cascaderView.SelectedOption         =  null;
+        _cascaderView.SelectedOptions        =  null;
+        _cascaderView.SetTemplatedParent(null);
+        _cascaderView = null;
+    }
+
+    private void SyncCascaderViewProperties()
+    {
+        if (_cascaderView == null)
+        {
+            return;
+        }
+
+        _cascaderView.SetCurrentValue(CascaderView.IsCheckableProperty, IsMultiple);
+        _cascaderView.SetCurrentValue(CascaderView.FilterValueProperty, FilterValue);
+        _cascaderView.SetCurrentValue(CascaderView.FilterProperty, Filter);
+        _cascaderView.SetCurrentValue(CascaderView.FilterHighlightStrategyProperty, FilterHighlightStrategy);
+        _cascaderView.SetCurrentValue(CascaderView.OptionTemplateProperty, OptionTemplate);
+        _cascaderView.SetCurrentValue(CascaderView.DataLoaderProperty, DataLoader);
+        _cascaderView.SetCurrentValue(CascaderView.FilterHighlightForegroundProperty, FilterHighlightForeground);
+        _cascaderView.SetCurrentValue(CascaderView.IsShowEmptyIndicatorProperty, IsShowEmptyIndicator);
+        _cascaderView.SetCurrentValue(CascaderView.ExpandIconProperty, ExpandIcon);
+        _cascaderView.SetCurrentValue(CascaderView.LoadingIconProperty, LoadingIcon);
+        _cascaderView.SetCurrentValue(CascaderView.ExpandTriggerProperty, ExpandTrigger);
+        _cascaderView.SetCurrentValue(CascaderView.DefaultExpandedPathProperty, DefaultSelectOptionPath);
+        _cascaderView.SetCurrentValue(CascaderView.IsAllowSelectParentProperty, IsAllowSelectParent);
+        _cascaderView.SetCurrentValue(CascaderView.IsMotionEnabledProperty, IsMotionEnabled);
+        _cascaderView.IsMaxSelectReached = IsMaxSelectReached;
+        _cascaderView.OptionsSource      = Options.Cast<ICascaderOption>().ToList();
     }
 
     private void HandleIsCheckableChanged()
@@ -874,21 +1110,55 @@ public class Cascader : AbstractSelect
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
+        ConfigureDefaultSelectedOptionPath();
+    }
+
+    private void ConfigureDefaultSelectedOptionPath()
+    {
         if (DefaultSelectOptionPath != null && SelectedOptionPath == null)
         {
-            if (_cascaderView != null)
+            if (TryParseSelectPath(DefaultSelectOptionPath, out var options))
             {
-                if (_cascaderView.TryParseSelectPath(DefaultSelectOptionPath, out var options))
+                var parts = new List<string>();
+                foreach (var option in options)
                 {
-                    var parts = new List<string>();
-                    foreach (var option in options)
-                    {
-                        parts.Add(option.Header?.ToString() ?? string.Empty);
-                    }
-                    SetCurrentValue(SelectedOptionPathProperty, string.Join("/", parts));
+                    parts.Add(option.Header?.ToString() ?? string.Empty);
                 }
+                SetCurrentValue(SelectedOptionPathProperty, string.Join("/", parts));
             }
         }
+    }
+
+    private bool TryParseSelectPath(TreeNodePath path, out IList<ICascaderOption> pathNodes)
+    {
+        var segments    = path.Segments;
+        var options     = new List<ICascaderOption>();
+        var currentItems = Options.Cast<ICascaderOption>().ToList();
+
+        foreach (var segment in segments)
+        {
+            ICascaderOption? matched = null;
+            foreach (var currentItem in currentItems)
+            {
+                if (segment == currentItem.ItemKey || segment == currentItem.Value?.ToString())
+                {
+                    matched = currentItem;
+                    break;
+                }
+            }
+
+            if (matched == null)
+            {
+                pathNodes = options;
+                return false;
+            }
+
+            options.Add(matched);
+            currentItems = matched.Children.ToList();
+        }
+
+        pathNodes = options;
+        return true;
     }
     
     #region 实现 FormItem 接口

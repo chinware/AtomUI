@@ -62,7 +62,20 @@ internal sealed record TreeStats(
     double WaveSpiritDecoratorPerRoot,
     double DashedBorderPerRoot,
     double ButtonLoadingHostPerRoot,
-    double AddOnDecoratedBoxPerRoot)
+    double AddOnDecoratedBoxPerRoot,
+    double SelectPerRoot,
+    double TreeSelectPerRoot,
+    double CascaderPerRoot,
+    double ComboBoxPerRoot,
+    double SelectHandlePerRoot,
+    double SelectAccessoryHostPerRoot,
+    double SelectCandidateListPerRoot,
+    double SelectFilterTextBoxPerRoot,
+    double SelectResultOptionsBoxPerRoot,
+    double SelectTagAwareTextBoxPerRoot,
+    double TreeSelectTreeViewPerRoot,
+    double CascaderViewPerRoot,
+    double PopupPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -87,6 +100,19 @@ internal sealed record TreeStats(
         var dashedBorderCount        = 0;
         var buttonLoadingHostCount   = 0;
         var addOnDecoratedBoxCount   = 0;
+        var selectCount              = 0;
+        var treeSelectCount          = 0;
+        var cascaderCount            = 0;
+        var comboBoxCount            = 0;
+        var selectHandleCount        = 0;
+        var selectAccessoryHostCount = 0;
+        var selectCandidateListCount = 0;
+        var selectFilterTextBoxCount = 0;
+        var selectResultOptionsBoxCount = 0;
+        var selectTagAwareTextBoxCount  = 0;
+        var treeSelectTreeViewCount     = 0;
+        var cascaderViewCount           = 0;
+        var popupCount                  = 0;
 
         foreach (var root in roots)
         {
@@ -172,6 +198,58 @@ internal sealed record TreeStats(
                 {
                     addOnDecoratedBoxCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Select"))
+                {
+                    selectCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.TreeSelect"))
+                {
+                    treeSelectCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Cascader"))
+                {
+                    cascaderCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ComboBox"))
+                {
+                    comboBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectHandle"))
+                {
+                    selectHandleCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectAccessoryHost"))
+                {
+                    selectAccessoryHostCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectCandidateList"))
+                {
+                    selectCandidateListCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectFilterTextBox"))
+                {
+                    selectFilterTextBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectResultOptionsBox"))
+                {
+                    selectResultOptionsBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectTagAwareTextBox"))
+                {
+                    selectTagAwareTextBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.TreeSelectTreeView"))
+                {
+                    treeSelectTreeViewCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CascaderView"))
+                {
+                    cascaderViewCount++;
+                }
+                if (visual is Avalonia.Controls.Primitives.Popup)
+                {
+                    popupCount++;
+                }
             }
 
             logicalCount += root.GetSelfAndLogicalDescendants().Count();
@@ -199,7 +277,20 @@ internal sealed record TreeStats(
             waveSpiritDecoratorCount / (double)rootCount,
             dashedBorderCount / (double)rootCount,
             buttonLoadingHostCount / (double)rootCount,
-            addOnDecoratedBoxCount / (double)rootCount);
+            addOnDecoratedBoxCount / (double)rootCount,
+            selectCount / (double)rootCount,
+            treeSelectCount / (double)rootCount,
+            cascaderCount / (double)rootCount,
+            comboBoxCount / (double)rootCount,
+            selectHandleCount / (double)rootCount,
+            selectAccessoryHostCount / (double)rootCount,
+            selectCandidateListCount / (double)rootCount,
+            selectFilterTextBoxCount / (double)rootCount,
+            selectResultOptionsBoxCount / (double)rootCount,
+            selectTagAwareTextBoxCount / (double)rootCount,
+            treeSelectTreeViewCount / (double)rootCount,
+            cascaderViewCount / (double)rootCount,
+            popupCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)
