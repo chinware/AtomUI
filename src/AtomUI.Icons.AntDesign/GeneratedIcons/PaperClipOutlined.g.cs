@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class PaperClipOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class PaperClipOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(173.99999999999997, 102.39999999999999, 676.10000000000002, 795.60000000000002);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1111111111111112, 0, 0, 1.1111111111111112, -56.888888888888914, -56.888888888888914);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

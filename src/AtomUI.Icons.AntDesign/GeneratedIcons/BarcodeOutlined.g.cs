@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class BarcodeOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class BarcodeOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(64, 160, 897, 704);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.0677789363920751, 0, 0, 1.0677789363920751, -34.702815432742455, -34.702815432742455);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

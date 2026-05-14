@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class PushpinFilled : AntDesignIcon
@@ -16,6 +15,11 @@ public class PushpinFilled : AntDesignIcon
         IconTheme = IconThemeType.Filled;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(135.19999999999999, 136, 756, 751.89999999999998);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1552346570397112, 0, 0, 1.1552346570397112, -79.480144404332123, -79.480144404332123);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

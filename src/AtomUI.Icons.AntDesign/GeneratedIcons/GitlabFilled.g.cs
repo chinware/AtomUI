@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class GitlabFilled : AntDesignIcon
@@ -16,6 +15,11 @@ public class GitlabFilled : AntDesignIcon
         IconTheme = IconThemeType.Filled;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(109.80000000000001, 148.30000000000004, 804.79999999999995, 730.69999999999993);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1205953162617639, 0, 0, 1.1205953162617639, -61.744801926023115, -61.744801926023115);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

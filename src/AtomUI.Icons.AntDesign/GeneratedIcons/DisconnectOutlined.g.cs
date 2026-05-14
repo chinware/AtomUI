@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class DisconnectOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class DisconnectOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(106.79999999999995, 106.80000000000001, 810.30000000000007, 810.29999999999995);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.116441343218491, 0, 0, 1.116441343218491, -59.617967727867381, -59.617967727867381);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

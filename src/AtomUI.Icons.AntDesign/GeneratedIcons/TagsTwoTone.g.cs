@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class TagsTwoTone : AntDesignIcon
@@ -16,6 +15,11 @@ public class TagsTwoTone : AntDesignIcon
         IconTheme = IconThemeType.TwoTone;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(135.69999999999999, 64.099999999999994, 757.10000000000014, 896.69999999999982);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.0677789363920749, 0, 0, 1.0677789363920749, -34.702815432742341, -34.702815432742341);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()

@@ -2,11 +2,10 @@
 // Copyright (c) Qinware Technologies Co., Ltd. 2019-2025. All rights reserved.
 // Copyright (c) Ant Design Authors 2025 https://github.com/ant-design/ant-design
 
+using System.Collections.Generic;
 using Avalonia;
-using System;
 using Avalonia.Media;
 using AtomUI.Controls;
-using AtomUI.Media;
 namespace AtomUI.Icons.AntDesign;
 
 public class InstagramOutlined : AntDesignIcon
@@ -16,6 +15,11 @@ public class InstagramOutlined : AntDesignIcon
         IconTheme = IconThemeType.Outlined;
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
+
+    internal override bool HasGeneratedGeometryMetadata => true;
+    internal override Rect GeneratedViewBox => new Rect(0, 0, 1024, 1024);
+    internal override Rect GeneratedGeometryBounds => new Rect(111.90000000000001, 111.80000000000001, 800.50000000000011, 800.40000000000009);
+    internal override Matrix GeneratedZoomMatrix => new Matrix(1.1228070175438598, 0, 0, 1.1228070175438598, -62.877192982456222, -62.877192982456222);
 
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
