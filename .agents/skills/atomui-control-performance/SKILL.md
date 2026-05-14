@@ -13,6 +13,17 @@ description: Use when optimizing AtomUI controls, investigating control performa
 - Every optimization that creates, removes, subscribes, binds, or lazily materializes objects must have a cleanup path and a regression verification.
 - Gallery scenarios must be tested with the real Gallery example shape when the user is discussing Gallery-visible behavior. Synthetic control-only tests are not enough.
 
+## Popup Lazy Content Rule
+
+Many AtomUI controls use `Popup` in `ControlTheme`. Keep the distinction between the lightweight popup shell and heavy popup content explicit.
+
+- A lightweight `Popup` shell may stay in `ControlTheme` when it preserves placement, light-dismiss, overlay, theme styling, or required template contracts.
+- Heavy popup content must not be created for the default closed state. Examples include candidate lists, `TreeView`, `CascaderView`, calendar/time panels, complex item presenters, filter lists, empty indicators, and large popup layout trees.
+- Prefer first-open materialization: create heavy popup content immediately before the first open, wire events and bindings there, and sync pending selection/filter/items state after creation.
+- By default, keep materialized popup content after close to avoid open/close churn. Release it on re-template, detach, or explicit disposal paths.
+- Closed controls must not pay for popup-only event subscriptions, item source copies, filter setup, selection synchronization, or heavy visual tree creation.
+- All lazy popup content must have lifecycle verification covering first open, close, second open, re-template, detach, visual parent cleanup, event unsubscribe, binding disposal, and state toggles such as loading/filter/selection.
+
 ## Avalonia Binding Priority Guardrails
 
 This skill must prevent the Space `ItemSpacing`/`LineSpacing` bug from recurring.
@@ -54,4 +65,3 @@ For any control performance optimization:
 - Avoid creating duplicate bindings on repeated property changes.
 - If a mode disables a feature, detach visuals and dispose subscriptions in that mode.
 - Add a regression test that toggles the feature on, off, and on again.
-

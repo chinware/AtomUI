@@ -143,6 +143,7 @@ internal class SelectHandle : TemplatedControl
     private Panel? _indicatorHost;
     private IconPresenter? _openIndicatorPresenter;
     private IconPresenter? _loadingIndicatorPresenter;
+    private LoadingOutlined? _defaultLoadingIcon;
     private SearchOutlined? _searchIndicator;
     private InputClearIconButton? _clearButton;
     private IDisposable? _feedbackStatusSubscription;
@@ -216,7 +217,7 @@ internal class SelectHandle : TemplatedControl
         var isOpenVisible   = !IsLoading && !isSearchVisible && !isClearVisible && OpenIndicator is not null;
 
         UpdateOpenIndicator(isOpenVisible);
-        UpdateLoadingIndicator(IsLoading && LoadingIcon is not null);
+        UpdateLoadingIndicator(IsLoading);
         UpdateSearchIndicator(isSearchVisible);
         UpdateClearButton(isClearVisible);
         EnsureIndicatorOrder();
@@ -244,10 +245,20 @@ internal class SelectHandle : TemplatedControl
             return;
         }
 
+        var loadingIcon = LoadingIcon ?? EnsureDefaultLoadingIcon();
         _loadingIndicatorPresenter ??= CreateIconPresenter(LoadingIndicatorName);
-        _loadingIndicatorPresenter.SetCurrentValue(IconPresenter.IconProperty, LoadingIcon);
+        _loadingIndicatorPresenter.SetCurrentValue(IconPresenter.IconProperty, loadingIcon);
         _loadingIndicatorPresenter.SetCurrentValue(IconPresenter.IsMotionEnabledProperty, IsMotionEnabled);
         EnsureIndicatorAttached(_loadingIndicatorPresenter);
+    }
+
+    private LoadingOutlined EnsureDefaultLoadingIcon()
+    {
+        _defaultLoadingIcon ??= new LoadingOutlined
+        {
+            LoadingAnimation = IconAnimation.Spin
+        };
+        return _defaultLoadingIcon;
     }
 
     private void UpdateSearchIndicator(bool isVisible)
@@ -380,6 +391,7 @@ internal class SelectHandle : TemplatedControl
         _indicatorHost?.Children.Remove(_loadingIndicatorPresenter);
         _loadingIndicatorPresenter.SetTemplatedParent(null);
         _loadingIndicatorPresenter = null;
+        _defaultLoadingIcon = null;
     }
 
     private void DetachSearchIndicator()

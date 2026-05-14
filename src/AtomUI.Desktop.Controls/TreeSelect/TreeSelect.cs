@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -313,6 +315,8 @@ public class TreeSelect : AbstractSelect
     #endregion
     
     private SelectFilterTextBox? _singleFilterInput;
+    private Panel? _contentPanel;
+    private SelectTagAwareTextBox? _selectedItemsBox;
     private TreeView? _treeView;
     private bool _needSkipSyncSelection;
     private bool _needSkipCollectionChangedEvent;
@@ -384,6 +388,8 @@ public class TreeSelect : AbstractSelect
         if (change.Property == IsDropDownOpenProperty)
         {
             ConfigureSingleFilterTextBox();
+            SyncSelectedItemsBoxProperties();
+            SyncTreeViewProperties();
         }
         if (change.Property == StyleVariantProperty ||
             change.Property == StatusProperty)
@@ -411,6 +417,8 @@ public class TreeSelect : AbstractSelect
         else if (change.Property == IsMultipleProperty)
         {
             ConfigureTreeSelectionMode();
+            ConfigureModeSpecificContent();
+            SyncTreeViewProperties();
         }
         else if (change.Property == IsTreeCheckableProperty)
         {
@@ -440,6 +448,41 @@ public class TreeSelect : AbstractSelect
         {
             BuildEffectiveSelectedItems();
         }
+
+        if (change.Property == IsFilterEnabledProperty ||
+            change.Property == SizeTypeProperty ||
+            change.Property == SelectedItemProperty ||
+            change.Property == SelectedItemsProperty ||
+            change.Property == EffectiveSelectedItemsProperty ||
+            change.Property == MaxTagCountProperty ||
+            change.Property == IsResponsiveTagModeProperty)
+        {
+            ConfigureModeSpecificContent();
+            SyncSingleFilterInputProperties();
+            SyncSelectedItemsBoxProperties();
+        }
+
+        if (change.Property == AutoScrollToSelectedItemProperty ||
+            change.Property == TreeViewToggleTypeProperty ||
+            change.Property == IsDefaultExpandAllProperty ||
+            change.Property == FilterValueProperty ||
+            change.Property == FilterProperty ||
+            change.Property == FilterHighlightStrategyProperty ||
+            change.Property == ItemTemplateProperty ||
+            change.Property == DataLoaderProperty ||
+            change.Property == FilterHighlightForegroundProperty ||
+            change.Property == TreeViewSelectionModeProperty ||
+            change.Property == IsTreeViewSelectableProperty ||
+            change.Property == IsTreeCheckStrictlyProperty ||
+            change.Property == IsShowIconProperty ||
+            change.Property == IsShowLeafIconProperty ||
+            change.Property == IsShowLineProperty ||
+            change.Property == IsShowEmptyIndicatorProperty ||
+            change.Property == IsSwitcherRotationProperty ||
+            change.Property == IsMaxSelectReachedProperty)
+        {
+            SyncTreeViewProperties();
+        }
     }
     
     private void ConfigurePlaceholderVisible()
@@ -449,29 +492,20 @@ public class TreeSelect : AbstractSelect
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearSingleFilterInput();
+        ClearSelectedItemsBox();
+
         base.OnApplyTemplate(e);
 
-        if (_treeView != null)
-        {
-            _treeView.SelectionChanged    -= HandleTreeViewSelectionChanged;
-            _treeView.CheckedItemsChanged -= HandleTreeViewItemsCheckedChanged;
-            _treeView.ItemsSource         =  null;
-        }
-
+        _contentPanel      = e.NameScope.Find<Panel>("PART_ContentPanel");
         _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
-        _treeView          = e.NameScope.Find<TreeView>("PART_TreeView");
-
-        if (_treeView != null)
-        {
-            _treeView.SelectionChanged    += HandleTreeViewSelectionChanged;
-            _treeView.CheckedItemsChanged += HandleTreeViewItemsCheckedChanged;
-            _treeView.ItemsSource         =  Items.Cast<object?>().ToList();
-        }
+        _selectedItemsBox  = e.NameScope.Find<SelectTagAwareTextBox>("SelectedItemsBox");
 
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
         ConfigurePlaceholderVisible();
+        ConfigureModeSpecificContent();
         UpdatePseudoClasses();
     }
     
@@ -599,6 +633,132 @@ public class TreeSelect : AbstractSelect
                 _singleFilterInput.Width = _singleFilterInput.Bounds.Width;
             }
         }
+    }
+
+    private void ConfigureModeSpecificContent()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (IsMultiple)
+        {
+            ClearSingleFilterInput();
+            EnsureSelectedItemsBox();
+        }
+        else
+        {
+            ClearSelectedItemsBox();
+            if (IsFilterEnabled)
+            {
+                EnsureSingleFilterInput();
+            }
+            else
+            {
+                ClearSingleFilterInput();
+            }
+        }
+    }
+
+    private void EnsureSingleFilterInput()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (_singleFilterInput == null)
+        {
+            _singleFilterInput = new SelectFilterTextBox
+            {
+                Name      = "PART_SingleFilterInput",
+                IsVisible = true
+            };
+            _singleFilterInput.SetTemplatedParent(this);
+            _contentPanel.Children.Add(_singleFilterInput);
+        }
+
+        SyncSingleFilterInputProperties();
+    }
+
+    private void ClearSingleFilterInput()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.Clear();
+        _contentPanel?.Children.Remove(_singleFilterInput);
+        _singleFilterInput.SetTemplatedParent(null);
+        _singleFilterInput = null;
+    }
+
+    private void SyncSingleFilterInputProperties()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.SetCurrentValue(TextBox.SizeTypeProperty, SizeType);
+        _singleFilterInput.SetCurrentValue(TextBox.PlaceholderTextProperty,
+            SelectedItem?.Header?.ToString());
+        _singleFilterInput.SetCurrentValue(Visual.IsVisibleProperty, true);
+    }
+
+    private void EnsureSelectedItemsBox()
+    {
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        if (_selectedItemsBox == null)
+        {
+            _selectedItemsBox = new SelectTagAwareTextBox
+            {
+                Name                = "SelectedItemsBox",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Center,
+                Focusable           = true,
+                IsVisible           = true
+            };
+            _selectedItemsBox.SetTemplatedParent(this);
+            _contentPanel.Children.Add(_selectedItemsBox);
+        }
+
+        SyncSelectedItemsBoxProperties();
+    }
+
+    private void ClearSelectedItemsBox()
+    {
+        if (_selectedItemsBox == null)
+        {
+            return;
+        }
+
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.SelectedItemsProperty, null);
+        _contentPanel?.Children.Remove(_selectedItemsBox);
+        _selectedItemsBox.SetTemplatedParent(null);
+        _selectedItemsBox = null;
+    }
+
+    private void SyncSelectedItemsBoxProperties()
+    {
+        if (_selectedItemsBox == null)
+        {
+            return;
+        }
+
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.SizeTypeProperty, SizeType);
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.SelectedItemsProperty, EffectiveSelectedItems);
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.IsFilterEnabledProperty, IsFilterEnabled);
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.IsDropDownOpenProperty, IsDropDownOpen);
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.MaxTagCountProperty, MaxTagCount);
+        _selectedItemsBox.SetCurrentValue(SelectTagAwareTextBox.IsResponsiveTagModeProperty, IsResponsiveTagMode);
+        _selectedItemsBox.SetCurrentValue(Visual.IsVisibleProperty, true);
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -733,6 +893,74 @@ public class TreeSelect : AbstractSelect
         {
             IsMaxSelectReached = false;
         }
+    }
+
+    private protected override void EnsurePopupContent()
+    {
+        if (_treeView != null)
+        {
+            return;
+        }
+
+        _treeView = new TreeSelectTreeView
+        {
+            Name                = "PART_TreeView",
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Stretch,
+            NodeHoverMode       = TreeItemHoverMode.Block
+        };
+        _treeView.SetTemplatedParent(this);
+        _treeView.SelectionChanged    += HandleTreeViewSelectionChanged;
+        _treeView.CheckedItemsChanged += HandleTreeViewItemsCheckedChanged;
+        SyncTreeViewProperties();
+        EnsurePopupFrame(_treeView);
+        SyncSelectedItemsToTreeView();
+        SyncSelectedItemToTreeView();
+    }
+
+    private protected override void ClearPopupContent()
+    {
+        if (_treeView == null)
+        {
+            return;
+        }
+
+        _treeView.SelectionChanged    -= HandleTreeViewSelectionChanged;
+        _treeView.CheckedItemsChanged -= HandleTreeViewItemsCheckedChanged;
+        _treeView.ItemsSource         =  null;
+        _treeView.SetTemplatedParent(null);
+        _treeView = null;
+    }
+
+    private void SyncTreeViewProperties()
+    {
+        if (_treeView == null)
+        {
+            return;
+        }
+
+        _treeView.SetCurrentValue(SelectingItemsControl.AutoScrollToSelectedItemProperty, AutoScrollToSelectedItem);
+        _treeView.SetCurrentValue(TreeView.ToggleTypeProperty, TreeViewToggleType);
+        _treeView.SetCurrentValue(TreeView.IsDefaultExpandAllProperty, IsDefaultExpandAll);
+        _treeView.SetCurrentValue(TreeView.FilterValueProperty, FilterValue);
+        _treeView.SetCurrentValue(TreeView.FilterProperty, Filter);
+        _treeView.SetCurrentValue(TreeView.FilterHighlightStrategyProperty, FilterHighlightStrategy);
+        _treeView.SetCurrentValue(ItemsControl.ItemTemplateProperty, ItemTemplate);
+        _treeView.SetCurrentValue(TreeView.DataLoaderProperty, DataLoader);
+        _treeView.SetCurrentValue(TreeView.FilterHighlightForegroundProperty, FilterHighlightForeground);
+        _treeView.SelectionMode = TreeViewSelectionMode;
+        _treeView.SetCurrentValue(TreeView.IsSelectableProperty, IsTreeViewSelectable);
+        _treeView.SetCurrentValue(TreeView.IsCheckStrictlyProperty, IsTreeCheckStrictly);
+        _treeView.SetCurrentValue(TreeView.IsShowIconProperty, IsShowIcon);
+        _treeView.SetCurrentValue(TreeView.IsShowLeafIconProperty, IsShowLeafIcon);
+        _treeView.SetCurrentValue(TreeView.IsShowLineProperty, IsShowLine);
+        _treeView.SetCurrentValue(TreeView.IsShowEmptyIndicatorProperty, IsShowEmptyIndicator);
+        _treeView.SetCurrentValue(TreeView.IsSwitcherRotationProperty, IsSwitcherRotation);
+        if (_treeView is TreeSelectTreeView treeSelectTreeView)
+        {
+            treeSelectTreeView.IsMaxSelectReached = IsMaxSelectReached;
+        }
+        _treeView.ItemsSource = Items.Cast<object?>().ToList();
     }
 
     private void HandleIsCheckableChanged()
