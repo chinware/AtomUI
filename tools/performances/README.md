@@ -9,6 +9,18 @@
 | [AtomUI.Performance](AtomUI.Performance/AtomUI.Performance.csproj) | 控件级基准 | 批量创建单个控件或小组合，观测实例化、布局、visual tree、分配和专项行为验证 | 微基准，不代表 Gallery 页面打开体验 |
 | [AtomUI.GalleryPerformance](AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj) | Gallery 场景复现 | 启动 Gallery Workspace，走真实 route/view/XAML，测量 showcase 从导航触发到视觉树和布局稳定 | 体验路径基准，必须复现 Gallery 真实使用方式 |
 
+## AtomUI.Performance 结构
+
+`AtomUI.Performance` 按职责和控件体系拆分：
+
+- `Program.cs`: 入口、参数解析后的调度，不放具体控件创建和验证逻辑。
+- `Core/`: runner、结果模型、树统计、Markdown/table 渲染。
+- `Suites/AddOnDecoratedBox/`: AddOnDecoratedBox、LineEdit、TextArea、SearchEdit、CompactSpace 相关场景和专项验证。
+- `Suites/Icon/`: Icon micro benchmark、隐藏 icon slot、AntDesign metadata、provider cache 验证。
+- `TestSupport/`: 断言、测试 brush、marker template、probe icon 等测试辅助类型。
+
+新增控件级基准时优先在 `Suites/<ControlName>/` 下建文件；跨控件复用能力放到 `Core/` 或 `TestSupport/`。
+
 ## 使用原则
 
 - 控件优化先用 `AtomUI.Performance` 建立低噪声控件级基线，定位单实例和批量实例化成本。
