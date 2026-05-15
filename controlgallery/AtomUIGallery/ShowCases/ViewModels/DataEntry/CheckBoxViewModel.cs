@@ -207,18 +207,10 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
 
     private void HandleCheckedAllStatus()
     {
-        if (!CheckedAllStatus.HasValue || !CheckedAllStatus.Value)
-        {
-            AppleCheckedStatus  = true;
-            PearCheckedStatus   = true;
-            OrangeCheckedStatus = true;
-        }
-        else
-        {
-            AppleCheckedStatus  = false;
-            PearCheckedStatus   = false;
-            OrangeCheckedStatus = false;
-        }
+        var isChecked = CheckedAllStatus == true;
+        AppleCheckedStatus  = isChecked;
+        PearCheckedStatus   = isChecked;
+        OrangeCheckedStatus = isChecked;
     }
 
     private void HandleCheckedItemStatus()

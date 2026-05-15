@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.VisualTree;
@@ -79,6 +80,7 @@ internal static partial class Program
         Expect(initialCheckedMark != null,
             "Initially checked CheckBox should create checked mark.",
             failures);
+        VerifyCheckedMarkLayout(checkedBox, initialCheckedMark, failures);
         Expect(FindVisualByTypeName(checkedBox, "CheckBoldOutlined", "CheckedMark") == null,
             "CheckBox checked mark should not use full AntDesign Icon control.",
             failures);
@@ -176,5 +178,38 @@ internal static partial class Program
                    .FirstOrDefault(checkBox => ReferenceEquals(checkBox.Content, option) ||
                                                ReferenceEquals(checkBox.Content, option.Content) ||
                                                Equals(checkBox.Content, option.Content));
+    }
+
+    private static void VerifyCheckedMarkLayout(
+        Control checkBox,
+        Control? checkedMark,
+        ICollection<string> failures)
+    {
+        var indicator = FindVisualByTypeName(checkBox, "CheckBoxIndicator", "Indicator");
+        if (indicator == null || checkedMark == null)
+        {
+            return;
+        }
+
+        Expect(checkedMark.Bounds.Height < checkedMark.Bounds.Width * 0.8,
+            "CheckBox checked mark layout should preserve the source icon viewBox vertical padding.",
+            failures);
+
+        var markCenter = checkedMark.TranslatePoint(
+            new Avalonia.Point(checkedMark.Bounds.Width / 2, checkedMark.Bounds.Height / 2),
+            indicator);
+        if (!markCenter.HasValue)
+        {
+            failures.Add("CheckBox checked mark should be transformable to its indicator.");
+            return;
+        }
+
+        var indicatorCenter = new Avalonia.Point(
+            indicator.Bounds.Width / 2,
+            indicator.Bounds.Height / 2);
+        Expect(Math.Abs(markCenter.Value.X - indicatorCenter.X) < 0.75 &&
+               Math.Abs(markCenter.Value.Y - indicatorCenter.Y) < 0.75,
+            $"CheckBox checked mark should be centered in indicator, actual ({markCenter.Value.X:0.###}, {markCenter.Value.Y:0.###}), expected ({indicatorCenter.X:0.###}, {indicatorCenter.Y:0.###}).",
+            failures);
     }
 }

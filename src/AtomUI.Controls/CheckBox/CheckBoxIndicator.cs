@@ -107,6 +107,9 @@ internal class CheckBoxIndicator : TemplatedControl
 
     private static readonly Geometry CheckedMarkGeometry =
         StreamGeometry.Parse("M1014.4 233.2l-84.6-84.6c-6-6-15.8-6-21.8 0L383.6 673.2 115.8 405.4c-6-6-15.8-6-21.8 0L9.6 490c-6 6-6 15.8 0 21.8l362.6 362.6c8.6 7.2 14.6 7.2 22.8 0l619.4-619.4C1020.4 249 1020.4 239.2 1014.4 233.2z");
+    private const double CheckedMarkViewBoxSize       = 1024.0;
+    private const double CheckedMarkGeometryBoxWidth  = 1016.8;
+    private const double CheckedMarkGeometryBoxHeight = 739.0;
     
     private Panel? _rootLayout;
     private WaveSpiritDecorator? _waveSpiritDecorator;
@@ -257,8 +260,10 @@ internal class CheckBoxIndicator : TemplatedControl
         }
 
         _checkedMark.SetCurrentValue(Shape.FillProperty, CheckedMarkBrush);
-        _checkedMark.SetCurrentValue(Layoutable.WidthProperty, CheckedMarkSize);
-        _checkedMark.SetCurrentValue(Layoutable.HeightProperty, CheckedMarkSize);
+        _checkedMark.SetCurrentValue(Layoutable.WidthProperty,
+            CheckedMarkSize * CheckedMarkGeometryBoxWidth / CheckedMarkViewBoxSize);
+        _checkedMark.SetCurrentValue(Layoutable.HeightProperty,
+            CheckedMarkSize * CheckedMarkGeometryBoxHeight / CheckedMarkViewBoxSize);
         _checkedMark.SetCurrentValue(RenderTransformProperty, CheckedMarkRenderTransform);
     }
 
