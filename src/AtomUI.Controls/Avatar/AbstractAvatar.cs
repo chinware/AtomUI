@@ -1,13 +1,18 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Data;
 using AtomUI.Media;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
+using SvgControl = Avalonia.Svg.Svg;
 
 namespace AtomUI.Controls.Commons;
 
@@ -19,7 +24,6 @@ internal enum AvatarContentType
     Text
 }
 
-[TemplatePart("PART_TextPresenter",  typeof(TextBlock))]
 public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
 {
     #region 公共属性定义
@@ -144,8 +148,13 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
     #endregion
 
     private CustomizableSizeType? _originSizeType;
+    private Panel? _contentHost;
+    private Control? _activeContentPresenter;
+    private AvatarContentType? _activeContentType;
+    private CompositeDisposable? _contentPresenterDisposables;
     private TextBlock? _textPresenter;
-    
+    private TextRenderTransformCache? _textRenderTransformCache;
+
     static AbstractAvatar()
     {
         AffectsMeasure<AbstractAvatar>(SizeTypeProperty, TextProperty);
@@ -175,17 +184,29 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
             ConfigureIconSize();
         }
         else if (change.Property == SrcProperty ||
+                 change.Property == BitmapSrcProperty ||
                  change.Property == IconProperty ||
                  change.Property == TextProperty)
         {
+            ConfigureIconSize();
             ConfigureContentType();
         }
+
         if (change.Property == ContentTypeProperty ||
-            change.Property == GapProperty)
+            change.Property == GapProperty ||
+            change.Property == TextProperty ||
+            change.Property == FontSizeProperty ||
+            change.Property == FontFamilyProperty ||
+            change.Property == WidthProperty)
         {
             ConfigureTextRenderTransform();
         }
-        else if (change.Property == ShapeProperty)
+        if (change.Property == ContentTypeProperty)
+        {
+            UpdateContentPresenter();
+        }
+        if (change.Property == ShapeProperty ||
+            change.Property == WidthProperty)
         {
             ConfigureShape();
         }
@@ -194,18 +215,12 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_textPresenter != null)
-        {
-            _textPresenter.SizeChanged -= HandleTextPresenterSizeChanged;
-        }
-        _textPresenter = e.NameScope.Find<TextBlock>("PART_TextPresenter");
-        if (_textPresenter != null)
-        {
-            _textPresenter.SizeChanged += HandleTextPresenterSizeChanged;
-        }
+        DetachActiveContentPresenter();
+        _contentHost = e.NameScope.Find<Panel>("RootLayout");
         ConfigureShape();
         ConfigureIconSize();
         ConfigureContentType();
+        UpdateContentPresenter();
     }
 
     private void HandleTextPresenterSizeChanged(object? sender, SizeChangedEventArgs e)
@@ -228,21 +243,173 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
 
     private void ConfigureContentType()
     {
+        var contentType = AvatarContentType.Icon;
         if (Src != null)
         {
-            ContentType = AvatarContentType.SvgImage;
+            contentType = AvatarContentType.SvgImage;
         }
         else if (BitmapSrc != null)
         {
-            ContentType = AvatarContentType.BitmapImage;
+            contentType = AvatarContentType.BitmapImage;
         }
         else if (Text != null)
         {
-            ContentType = AvatarContentType.Text;
+            contentType = AvatarContentType.Text;
+        }
+
+        if (ContentType == contentType)
+        {
+            UpdateContentPresenter();
         }
         else
         {
-            ContentType = AvatarContentType.Icon;
+            ContentType = contentType;
+        }
+    }
+
+    private void UpdateContentPresenter()
+    {
+        if (_contentHost == null)
+        {
+            return;
+        }
+
+        if (_activeContentPresenter != null &&
+            _activeContentType == ContentType)
+        {
+            return;
+        }
+
+        DetachActiveContentPresenter();
+        _activeContentType      = ContentType;
+        _activeContentPresenter = CreateContentPresenter(ContentType);
+        _activeContentPresenter.SetTemplatedParent(this);
+        _contentHost.Children.Add(_activeContentPresenter);
+        ConfigureTextRenderTransform();
+    }
+
+    private Control CreateContentPresenter(AvatarContentType contentType)
+    {
+        _contentPresenterDisposables = new CompositeDisposable();
+        return contentType switch
+        {
+            AvatarContentType.BitmapImage => CreateImagePresenter(),
+            AvatarContentType.SvgImage    => CreateSvgPresenter(),
+            AvatarContentType.Text        => CreateTextPresenter(),
+            _                             => CreateIconPresenter()
+        };
+    }
+
+    private IconPresenter CreateIconPresenter()
+    {
+        Debug.Assert(_contentPresenterDisposables != null);
+        var presenter = new IconPresenter
+        {
+            Name                = "IconPresenter",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, EffectiveIconSizeProperty, presenter, WidthProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, EffectiveIconSizeProperty, presenter, HeightProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, IconProperty, presenter, IconPresenter.IconProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, ForegroundProperty, presenter, IconPresenter.IconBrushProperty, BindingMode.Default, BindingPriority.Template));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, presenter, IconPresenter.IsMotionEnabledProperty));
+        return presenter;
+    }
+
+    private Image CreateImagePresenter()
+    {
+        Debug.Assert(_contentPresenterDisposables != null);
+        var presenter = new Image
+        {
+            Name                = "ImagePresenter",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, WidthProperty, presenter, WidthProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, HeightProperty, presenter, HeightProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, BitmapSrcProperty, presenter, Image.SourceProperty));
+        return presenter;
+    }
+
+    private SvgControl CreateSvgPresenter()
+    {
+        Debug.Assert(_contentPresenterDisposables != null);
+        var presenter = new SvgControl(new Uri("avares://AtomUI.Controls/"))
+        {
+            Name                = "SvgPresenter",
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, WidthProperty, presenter, WidthProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, HeightProperty, presenter, HeightProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, SrcProperty, presenter, SvgControl.PathProperty));
+        return presenter;
+    }
+
+    private TextBlock CreateTextPresenter()
+    {
+        Debug.Assert(_contentPresenterDisposables != null);
+        _textPresenter = new TextBlock
+        {
+            Name                = "PART_TextPresenter",
+            ClipToBounds        = false,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment   = VerticalAlignment.Center
+        };
+        _textPresenter.SizeChanged += HandleTextPresenterSizeChanged;
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, TextProperty, _textPresenter, TextBlock.TextProperty));
+        _contentPresenterDisposables.Add(BindUtils.RelayBind(this, TextRenderTransformProperty, _textPresenter, RenderTransformProperty));
+        return _textPresenter;
+    }
+
+    private void DetachActiveContentPresenter()
+    {
+        if (_activeContentPresenter == null)
+        {
+            return;
+        }
+
+        _contentPresenterDisposables?.Dispose();
+        _contentPresenterDisposables = null;
+        if (_textPresenter != null)
+        {
+            _textPresenter.SizeChanged -= HandleTextPresenterSizeChanged;
+            _textPresenter = null;
+        }
+
+        ClearContentPresenterValue(_activeContentPresenter);
+        if (_activeContentPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_activeContentPresenter);
+        }
+        else
+        {
+            _contentHost?.Children.Remove(_activeContentPresenter);
+        }
+        _activeContentPresenter.SetTemplatedParent(null);
+        _activeContentPresenter = null;
+        _activeContentType      = null;
+        _textRenderTransformCache = null;
+    }
+
+    private static void ClearContentPresenterValue(Control presenter)
+    {
+        switch (presenter)
+        {
+            case IconPresenter iconPresenter:
+                iconPresenter.SetCurrentValue(IconPresenter.IconProperty, null);
+                break;
+            case Image image:
+                image.SetCurrentValue(Image.SourceProperty, null);
+                break;
+            case SvgControl svg:
+                svg.SetCurrentValue(SvgControl.PathProperty, null);
+                break;
+            case TextBlock textBlock:
+                textBlock.SetCurrentValue(TextBlock.TextProperty, null);
+                textBlock.SetCurrentValue(RenderTransformProperty, null);
+                break;
         }
     }
 
@@ -250,16 +417,24 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
     {
         if (ContentType != AvatarContentType.Text)
         {
+            _textRenderTransformCache = null;
             TextRenderTransform = null;
         }
         else
         {
             if (_textPresenter != null && Gap * 2 < Width)
             {
+                var cache = new TextRenderTransformCache(Text ?? string.Empty, FontSize, FontFamily, Width, Gap);
+                if (_textRenderTransformCache == cache)
+                {
+                    return;
+                }
+                _textRenderTransformCache = cache;
+
                 double scale     = 1;
                 double offsetX   = 0;
                 var    textWidth = TextUtils.CalculateTextSize(Text ?? string.Empty, FontSize, FontFamily).Width;
-                if (Gap * 2 < Width)
+                if (textWidth > 0 && Gap * 2 < Width)
                 {
                     scale = (Width - Gap * 2) / textWidth;
                     scale = Math.Min(scale, 1.0);
@@ -275,6 +450,7 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
             }
             else
             {
+                _textRenderTransformCache = null;
                 TextRenderTransform = null;
             }
         }
@@ -287,4 +463,11 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
             SetValue(CornerRadiusProperty, new CornerRadius(Width / 2), BindingPriority.Template);
         }
     }
+
+    private readonly record struct TextRenderTransformCache(
+        string Text,
+        double FontSize,
+        FontFamily FontFamily,
+        double Width,
+        double Gap);
 }

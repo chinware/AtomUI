@@ -82,7 +82,12 @@ internal sealed record TreeStats(
     double AutoCompleteTextAreaPerRoot,
     double CandidateListPerRoot,
     double AutoCompletePopupFieldPerRoot,
-    double AutoCompleteCandidateListFieldPerRoot)
+    double AutoCompleteCandidateListFieldPerRoot,
+    double AvatarPerRoot,
+    double AvatarGroupPerRoot,
+    double ImagePerRoot,
+    double SvgPerRoot,
+    double FlyoutHostPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -126,6 +131,11 @@ internal sealed record TreeStats(
         var candidateListCount          = 0;
         var autoCompletePopupFieldCount = 0;
         var autoCompleteCandidateListFieldCount = 0;
+        var avatarCount                 = 0;
+        var avatarGroupCount            = 0;
+        var imageCount                  = 0;
+        var svgCount                    = 0;
+        var flyoutHostCount             = 0;
 
         foreach (var root in roots)
         {
@@ -194,6 +204,26 @@ internal sealed record TreeStats(
                 if (visual is PathIcon)
                 {
                     pathIconCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Avatar"))
+                {
+                    avatarCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AvatarGroup"))
+                {
+                    avatarGroupCount++;
+                }
+                if (visual is Image)
+                {
+                    imageCount++;
+                }
+                if (IsTypeOrDerived(type, "Avalonia.Svg.Svg"))
+                {
+                    svgCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FlyoutHost"))
+                {
+                    flyoutHostCount++;
                 }
                 if (visual is StackPanel)
                 {
@@ -333,7 +363,12 @@ internal sealed record TreeStats(
             autoCompleteTextAreaCount / (double)rootCount,
             candidateListCount / (double)rootCount,
             autoCompletePopupFieldCount / (double)rootCount,
-            autoCompleteCandidateListFieldCount / (double)rootCount);
+            autoCompleteCandidateListFieldCount / (double)rootCount,
+            avatarCount / (double)rootCount,
+            avatarGroupCount / (double)rootCount,
+            imageCount / (double)rootCount,
+            svgCount / (double)rootCount,
+            flyoutHostCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)

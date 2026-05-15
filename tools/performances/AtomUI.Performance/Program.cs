@@ -26,7 +26,8 @@ internal static partial class Program
             options.VerifyButtonStates ||
             options.VerifySpaceStates ||
             options.VerifySelectStates ||
-            options.VerifyAutoCompleteStates)
+            options.VerifyAutoCompleteStates ||
+            options.VerifyAvatarStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -69,6 +70,10 @@ internal static partial class Program
             {
                 verified &= RunAutoCompleteStateVerification();
             }
+            if (options.VerifyAvatarStates)
+            {
+                verified &= RunAvatarStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -109,6 +114,7 @@ internal static partial class Program
         return suite.ToLowerInvariant() switch
         {
             "icon" => CreateIconScenarios(),
+            "avatar" => CreateAvatarScenarios(),
             "button" => CreateButtonScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
