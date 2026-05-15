@@ -32,7 +32,8 @@ internal static partial class Program
             options.VerifyButtonSpinnerStates ||
             options.VerifyCardStates ||
             options.VerifyCarouselStates ||
-            options.VerifyCascaderStates)
+            options.VerifyCascaderStates ||
+            options.VerifyCheckBoxStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -99,6 +100,10 @@ internal static partial class Program
             {
                 verified &= RunCascaderStateVerification();
             }
+            if (options.VerifyCheckBoxStates)
+            {
+                verified &= RunCheckBoxStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -146,6 +151,7 @@ internal static partial class Program
             "card" => CreateCardScenarios(),
             "carousel" => CreateCarouselScenarios(),
             "cascader" => CreateCascaderScenarios(),
+            "checkbox" => CreateCheckBoxScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

@@ -124,7 +124,13 @@ internal sealed record TreeStats(
     double RibbonBadgeAdornerPerRoot,
     double DotBadgeIndicatorPerRoot,
     double MotionActorPerRoot,
-    double LabelPerRoot)
+    double LabelPerRoot,
+    double CheckBoxPerRoot,
+    double CheckBoxGroupPerRoot,
+    double CheckBoxItemsControlPerRoot,
+    double CheckBoxIndicatorPerRoot,
+    double CheckBoxCheckedMarkPerRoot,
+    double CheckBoxTristateMarkPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -210,6 +216,12 @@ internal sealed record TreeStats(
         var dotBadgeIndicatorCount      = 0;
         var motionActorCount            = 0;
         var labelCount                  = 0;
+        var checkBoxCount               = 0;
+        var checkBoxGroupCount          = 0;
+        var checkBoxItemsControlCount   = 0;
+        var checkBoxIndicatorCount      = 0;
+        var checkBoxCheckedMarkCount    = 0;
+        var checkBoxTristateMarkCount   = 0;
 
         foreach (var root in roots)
         {
@@ -449,6 +461,30 @@ internal sealed record TreeStats(
                 {
                     labelCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CheckBox"))
+                {
+                    checkBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CheckBoxGroup"))
+                {
+                    checkBoxGroupCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CheckBoxItemsControl"))
+                {
+                    checkBoxItemsControlCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Controls.CheckBoxIndicator"))
+                {
+                    checkBoxIndicatorCount++;
+                }
+                if (visual is Control { Name: "CheckedMark" })
+                {
+                    checkBoxCheckedMarkCount++;
+                }
+                if (visual is Control { Name: "TristateMark" })
+                {
+                    checkBoxTristateMarkCount++;
+                }
                 if (visual is StackPanel)
                 {
                     stackPanelCount++;
@@ -629,7 +665,13 @@ internal sealed record TreeStats(
             ribbonBadgeAdornerCount / (double)rootCount,
             dotBadgeIndicatorCount / (double)rootCount,
             motionActorCount / (double)rootCount,
-            labelCount / (double)rootCount);
+            labelCount / (double)rootCount,
+            checkBoxCount / (double)rootCount,
+            checkBoxGroupCount / (double)rootCount,
+            checkBoxItemsControlCount / (double)rootCount,
+            checkBoxIndicatorCount / (double)rootCount,
+            checkBoxCheckedMarkCount / (double)rootCount,
+            checkBoxTristateMarkCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)

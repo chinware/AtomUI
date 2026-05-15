@@ -77,7 +77,7 @@
 | Navigation | TabControl | Pending | 待建立基线 |
 | Data Entry | AutoComplete | Done | 关闭态 CandidateList/PopupFrame 已按需创建；Gallery repeated mean 提升约 `25.79%` |
 | Data Entry | Cascader | Done | [Cascader](Cascader/README.md)；closed popup、filter input、multiple tags、filter list、checkbox/loading slot 已按需创建，Gallery repeated mean 小幅下降 |
-| Data Entry | CheckBox | Pending | 待建立基线 |
+| Data Entry | CheckBox | Plan | [CheckBox](CheckBox/README.md)；已完成结构瓶颈分析，待 Phase 0 建立控件级和真实 Gallery 基线 |
 | Data Entry | ColorPicker | Pending | 待建立基线 |
 | Data Entry | DatePicker | Pending | 受 AddOnDecoratedBox 优化影响 |
 | Data Entry | TimePicker | Pending | 待建立基线 |
