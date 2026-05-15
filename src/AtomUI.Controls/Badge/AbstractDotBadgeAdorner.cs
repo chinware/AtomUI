@@ -1,11 +1,11 @@
 ﻿using AtomUI.MotionScene;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -102,6 +102,8 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
 
     private BaseMotionActor? _indicatorMotionActor;
     private CancellationTokenSource? _motionCancellationTokenSource;
+    private DockPanel? _rootLayout;
+    private Label? _textLabel;
 
     static AbstractDotBadgeAdorner()
     {
@@ -111,7 +113,10 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        DetachTextLabel();
+        _rootLayout             = e.NameScope.Find<DockPanel>("RootLayout");
         _indicatorMotionActor = e.NameScope.Get<BaseMotionActor>(BaseMotionActor.MotionActorPart);
+        ConfigureTextLabel();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -120,6 +125,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         _motionCancellationTokenSource?.Cancel();
         _motionCancellationTokenSource?.Dispose();
         _motionCancellationTokenSource = null;
+        DetachTextLabel();
     }
 
     private async Task ApplyShowMotionAsync()
@@ -151,6 +157,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         }
 
         adornerLayer.Children.Remove(this);
+        AdornerLayer.SetAdornedElement(this, null);
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -222,6 +229,56 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
         else
         {
             adornerLayer.Children.Remove(this);
+            AdornerLayer.SetAdornedElement(this, null);
         }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == TextProperty ||
+            change.Property == IsAdornerModeProperty)
+        {
+            ConfigureTextLabel();
+        }
+    }
+
+    private void ConfigureTextLabel()
+    {
+        if (_rootLayout is null)
+        {
+            return;
+        }
+
+        if (IsAdornerMode || string.IsNullOrEmpty(Text))
+        {
+            DetachTextLabel();
+            return;
+        }
+
+        if (_textLabel is null)
+        {
+            _textLabel = new Label
+            {
+                Name = "Label"
+            };
+            _textLabel.SetTemplatedParent(this);
+            _rootLayout.Children.Add(_textLabel);
+        }
+
+        _textLabel.Content = Text;
+    }
+
+    private void DetachTextLabel()
+    {
+        if (_textLabel is null)
+        {
+            return;
+        }
+
+        _rootLayout?.Children.Remove(_textLabel);
+        _textLabel.Content = null;
+        _textLabel.SetTemplatedParent(null);
+        _textLabel = null;
     }
 }

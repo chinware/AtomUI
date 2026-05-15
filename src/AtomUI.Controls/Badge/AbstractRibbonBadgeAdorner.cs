@@ -103,6 +103,7 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
     
     private TextBlock? _labelText;
     private Geometry? _cornerGeometry;
+    private IBrush? _cornerBrush;
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static AbstractRibbonBadgeAdorner()
@@ -122,6 +123,7 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
         base.OnApplyTemplate(e);
         _labelText = e.NameScope.Find<TextBlock>("PART_LabelPart");
         BuildCornerGeometry();
+        BuildCornerBrush();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -157,6 +159,11 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
             {
                 BuildCornerGeometry(true);
             }
+            if (change.Property == RibbonColorProperty ||
+                change.Property == BadgeRibbonCornerDarkenAmountProperty)
+            {
+                BuildCornerBrush();
+            }
         }
     }
 
@@ -186,11 +193,7 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
         {
             var       cornerRect      = GetCornerRect();
             using var state           = context.PushTransform(Matrix.CreateTranslation(cornerRect.X, cornerRect.Y));
-            var       backgroundColor = backgroundBrush?.Color;
-            var cornerBrush = backgroundColor.HasValue
-                ? new SolidColorBrush(backgroundColor.Value.Darken(BadgeRibbonCornerDarkenAmount))
-                : default;
-            context.DrawGeometry(cornerBrush, null, _cornerGeometry!);
+            context.DrawGeometry(_cornerBrush, null, _cornerGeometry!);
         }
     }
 
@@ -281,5 +284,12 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
 
             _cornerGeometry.Transform = transforms;
         }
+    }
+
+    private void BuildCornerBrush()
+    {
+        _cornerBrush = RibbonColor is ISolidColorBrush backgroundBrush
+            ? new SolidColorBrush(backgroundBrush.Color.Darken(BadgeRibbonCornerDarkenAmount))
+            : null;
     }
 }

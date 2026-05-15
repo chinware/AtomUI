@@ -27,7 +27,8 @@ internal static partial class Program
             options.VerifySpaceStates ||
             options.VerifySelectStates ||
             options.VerifyAutoCompleteStates ||
-            options.VerifyAvatarStates)
+            options.VerifyAvatarStates ||
+            options.VerifyBadgeStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -74,6 +75,10 @@ internal static partial class Program
             {
                 verified &= RunAvatarStateVerification();
             }
+            if (options.VerifyBadgeStates)
+            {
+                verified &= RunBadgeStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -115,6 +120,7 @@ internal static partial class Program
         {
             "icon" => CreateIconScenarios(),
             "avatar" => CreateAvatarScenarios(),
+            "badge" => CreateBadgeScenarios(),
             "button" => CreateButtonScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),

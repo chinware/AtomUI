@@ -125,20 +125,29 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
 
     private void PrepareAdorner()
     {
-        var badgeAdorner = CreateBadgeAdorner();
+        if (!IsBadgeEffectivelyVisible())
+        {
+            return;
+        }
+
         if (DecoratedTarget is not null)
         {
-            _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(this);
             // 这里需要抛出异常吗？
-            if (_adornerLayer == null)
+            if (adornerLayer == null)
             {
                 return;
             }
 
-            badgeAdorner.ApplyToTarget(_adornerLayer, this);
+            _adornerLayer = adornerLayer;
+            var badgeAdorner = CreateBadgeAdorner();
+            DetachBadgeAdornerFromControl();
+            badgeAdorner.ApplyToTarget(adornerLayer, this);
         }
         else
         {
+            var badgeAdorner = CreateBadgeAdorner();
+            EnsureBadgeAdornerAttached();
             badgeAdorner.ApplyToTarget(null, this, () => IsVisible = true);
         }
     }
@@ -151,11 +160,15 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             return;
         }
 
-        _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
-        if (!enableMotion)
+        var adornerLayer = _adornerLayer;
+        _adornerLayer = null;
+        var shouldAnimate = enableMotion && DecoratedTarget is not null;
+        _badgeAdorner.DetachFromTarget(adornerLayer, shouldAnimate);
+        if (!shouldAnimate)
         {
             if (DecoratedTarget is null)
             {
+                DetachBadgeAdornerFromControl();
                 IsVisible = false;
             }
         }
@@ -164,16 +177,12 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (BadgeIsVisible)
+        EnsureDecoratedTargetAttached();
+        SetupShowZero();
+        if (IsBadgeEffectivelyVisible())
         {
             PrepareAdorner();
         }
-        if (DecoratedTarget is null)
-        {
-            CreateBadgeAdorner();
-        }
-
-        SetupShowZero();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -200,17 +209,14 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         {
             if (DecoratedTarget is null)
             {
-                _badgeAdorner.SetLogicalParent(this);
-                VisualChildren.Add(_badgeAdorner);
-                LogicalChildren.Add(_badgeAdorner);
+                EnsureBadgeAdornerAttached();
                 _badgeAdorner.IsAdornerMode = false;
             }
             else if (DecoratedTarget is not null)
             {
+                DetachBadgeAdornerFromControl();
                 _badgeAdorner.IsAdornerMode = true;
-                DecoratedTarget.SetLogicalParent(this);
-                VisualChildren.Add(DecoratedTarget);
-                LogicalChildren.Add(DecoratedTarget);
+                EnsureDecoratedTargetAttached();
             }
         }
     }
@@ -235,7 +241,17 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         {
             if (change.Property == DecoratedTargetProperty)
             {
+                if (change.GetOldValue<Control?>() is { } oldTarget)
+                {
+                    DetachControlChild(oldTarget);
+                }
+                HideAdorner(false);
+                EnsureDecoratedTargetAttached();
                 NotifyDecoratedTargetChanged();
+                if (IsBadgeEffectivelyVisible())
+                {
+                    PrepareAdorner();
+                }
             }
 
             if (change.Property == BadgeColorProperty)
@@ -253,18 +269,77 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
 
     private void SetupShowZero()
     {
-        if (Count == 0 && !IsZeroVisible)
+        BadgeIsVisible = Count > 0 || IsZeroVisible;
+    }
+
+    private bool IsBadgeEffectivelyVisible()
+    {
+        return BadgeIsVisible && (Count > 0 || IsZeroVisible);
+    }
+
+    private void EnsureDecoratedTargetAttached()
+    {
+        if (DecoratedTarget is null)
         {
-            BadgeIsVisible = false;
+            return;
         }
-        else if (Count > 0)
+
+        if (!VisualChildren.Contains(DecoratedTarget))
         {
-            BadgeIsVisible = true;
+            DecoratedTarget.SetLogicalParent(this);
+            VisualChildren.Add(DecoratedTarget);
+            LogicalChildren.Add(DecoratedTarget);
         }
     }
-    
-    private protected virtual void ConfigureDotColor(string colorStr)
+
+    private void DetachDecoratedTarget()
     {
-        _badgeAdorner!.BadgeColor = BadgeColorUtils.CalculateColor(colorStr);
+        if (DecoratedTarget is not null)
+        {
+            DetachControlChild(DecoratedTarget);
+        }
+    }
+
+    private void EnsureBadgeAdornerAttached()
+    {
+        if (_badgeAdorner is null)
+        {
+            return;
+        }
+
+        DetachDecoratedTarget();
+        if (!VisualChildren.Contains(_badgeAdorner))
+        {
+            _badgeAdorner.SetLogicalParent(this);
+            VisualChildren.Add(_badgeAdorner);
+            LogicalChildren.Add(_badgeAdorner);
+        }
+    }
+
+    private void DetachBadgeAdornerFromControl()
+    {
+        if (_badgeAdorner is null)
+        {
+            return;
+        }
+
+        VisualChildren.Remove(_badgeAdorner);
+        LogicalChildren.Remove(_badgeAdorner);
+        _badgeAdorner.SetLogicalParent(null);
+    }
+
+    private void DetachControlChild(Control child)
+    {
+        VisualChildren.Remove(child);
+        LogicalChildren.Remove(child);
+        child.SetLogicalParent(null);
+    }
+    
+    private protected virtual void ConfigureDotColor(string? colorStr)
+    {
+        if (_badgeAdorner is not null)
+        {
+            _badgeAdorner.BadgeColor = BadgeColorUtils.CalculateColor(colorStr);
+        }
     }
 }

@@ -14,7 +14,8 @@ internal sealed record PerfOptions(
     bool VerifySpaceStates,
     bool VerifySelectStates,
     bool VerifyAutoCompleteStates,
-    bool VerifyAvatarStates)
+    bool VerifyAvatarStates,
+    bool VerifyBadgeStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -32,6 +33,7 @@ internal sealed record PerfOptions(
         var verifySelectStates    = false;
         var verifyAutoCompleteStates = false;
         var verifyAvatarStates    = false;
+        var verifyBadgeStates     = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -82,6 +84,9 @@ internal sealed record PerfOptions(
                 case "--verify-avatar-states":
                     verifyAvatarStates = true;
                     break;
+                case "--verify-badge-states":
+                    verifyBadgeStates = true;
+                    break;
             }
         }
 
@@ -99,6 +104,7 @@ internal sealed record PerfOptions(
             verifySpaceStates,
             verifySelectStates,
             verifyAutoCompleteStates,
-            verifyAvatarStates);
+            verifyAvatarStates,
+            verifyBadgeStates);
     }
 }

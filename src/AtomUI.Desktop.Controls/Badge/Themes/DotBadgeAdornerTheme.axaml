@@ -19,9 +19,6 @@
                             Name="Indicator"
                             BadgeDotColor="{TemplateBinding BadgeDotColor}" />
                     </atom:MotionActor>
-                    <Label Name="Label"
-                           Content="{TemplateBinding Text}"
-                           IsVisible="{TemplateBinding IsAdornerMode, Converter={x:Static BoolConverters.Not}}" />
                 </DockPanel>
             </ControlTemplate>
         </Setter>

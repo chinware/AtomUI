@@ -1,8 +1,6 @@
-﻿using AtomUI.Theme.Palette;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -93,37 +91,23 @@ public abstract class AbstractRibbonBadge : Control
         {
             if (DecoratedTarget is null)
             {
-                _ribbonBadgeAdorner.SetLogicalParent(this);
                 _ribbonBadgeAdorner.IsAdornerMode = false;
-                VisualChildren.Add(_ribbonBadgeAdorner);
-                LogicalChildren.Add(_ribbonBadgeAdorner);
+                EnsureRibbonBadgeAdornerAttached();
             }
             else if (DecoratedTarget is not null)
             {
+                DetachRibbonBadgeAdornerFromControl();
                 _ribbonBadgeAdorner.IsAdornerMode = true;
-                DecoratedTarget.SetLogicalParent(this);
-                VisualChildren.Add(DecoratedTarget);
-                LogicalChildren.Add(DecoratedTarget);
+                EnsureDecoratedTargetAttached();
             }
         }
     }
 
-    private protected void SetupRibbonColor(string colorStr)
+    private protected void SetupRibbonColor(string? colorStr)
     {
-        colorStr = colorStr.Trim().ToLower();
-
-        foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
+        if (_ribbonBadgeAdorner is not null)
         {
-            if (presetColor.Type.ToString().ToLower() == colorStr)
-            {
-                _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
-                return;
-            }
-        }
-
-        if (Color.TryParse(colorStr, out var color))
-        {
-            _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
+            _ribbonBadgeAdorner.RibbonColor = BadgeColorUtils.CalculateColor(colorStr);
         }
     }
 
@@ -163,7 +147,17 @@ public abstract class AbstractRibbonBadge : Control
         {
             if (change.Property == DecoratedTargetProperty)
             {
+                if (change.GetOldValue<Control?>() is { } oldTarget)
+                {
+                    DetachControlChild(oldTarget);
+                }
+                HideAdorner();
+                EnsureDecoratedTargetAttached();
                 HandleDecoratedTargetChanged();
+                if (BadgeIsVisible)
+                {
+                    PrepareAdorner();
+                }
             }
 
             if (change.Property == RibbonColorProperty)
@@ -177,44 +171,63 @@ public abstract class AbstractRibbonBadge : Control
 
     private void PrepareAdorner()
     {
+        if (!BadgeIsVisible)
+        {
+            return;
+        }
+
         if (_adornerLayer is null && DecoratedTarget is not null)
         {
-            var ribbonBadgeAdorner = CreateBadgeAdorner();
-            _adornerLayer = AdornerLayer.GetAdornerLayer(this);
+            var adornerLayer = AdornerLayer.GetAdornerLayer(this);
             // 这里需要抛出异常吗？
-            if (_adornerLayer == null)
+            if (adornerLayer == null)
             {
                 return;
             }
 
+            _adornerLayer = adornerLayer;
+            var ribbonBadgeAdorner = CreateBadgeAdorner();
+            DetachRibbonBadgeAdornerFromControl();
             AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
             AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, true);
-            _adornerLayer.Children.Add(ribbonBadgeAdorner);
+            adornerLayer.Children.Add(ribbonBadgeAdorner);
+        }
+        else if (DecoratedTarget is null)
+        {
+            CreateBadgeAdorner();
+            EnsureRibbonBadgeAdornerAttached();
+            IsVisible = true;
         }
     }
 
     private void HideAdorner()
     {
         // 这里需要抛出异常吗？
-        if (_adornerLayer is null || _ribbonBadgeAdorner is null)
+        if (_ribbonBadgeAdorner is null)
         {
             return;
         }
 
-        _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
-        _adornerLayer = null;
+        if (_adornerLayer is not null)
+        {
+            _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
+            AdornerLayer.SetAdornedElement(_ribbonBadgeAdorner, null);
+            _adornerLayer = null;
+        }
+        else if (DecoratedTarget is null)
+        {
+            DetachRibbonBadgeAdornerFromControl();
+            IsVisible = false;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        EnsureDecoratedTargetAttached();
         if (BadgeIsVisible)
         {
             PrepareAdorner();
-        }
-        if (DecoratedTarget is null)
-        {
-            CreateBadgeAdorner();
         }
     }
 
@@ -222,5 +235,63 @@ public abstract class AbstractRibbonBadge : Control
     {
         base.OnDetachedFromVisualTree(e);
         HideAdorner();
+    }
+
+    private void EnsureDecoratedTargetAttached()
+    {
+        if (DecoratedTarget is null)
+        {
+            return;
+        }
+
+        if (!VisualChildren.Contains(DecoratedTarget))
+        {
+            DecoratedTarget.SetLogicalParent(this);
+            VisualChildren.Add(DecoratedTarget);
+            LogicalChildren.Add(DecoratedTarget);
+        }
+    }
+
+    private void DetachDecoratedTarget()
+    {
+        if (DecoratedTarget is not null)
+        {
+            DetachControlChild(DecoratedTarget);
+        }
+    }
+
+    private void EnsureRibbonBadgeAdornerAttached()
+    {
+        if (_ribbonBadgeAdorner is null)
+        {
+            return;
+        }
+
+        DetachDecoratedTarget();
+        if (!VisualChildren.Contains(_ribbonBadgeAdorner))
+        {
+            _ribbonBadgeAdorner.SetLogicalParent(this);
+            VisualChildren.Add(_ribbonBadgeAdorner);
+            LogicalChildren.Add(_ribbonBadgeAdorner);
+        }
+    }
+
+    private void DetachRibbonBadgeAdornerFromControl()
+    {
+        if (_ribbonBadgeAdorner is null)
+        {
+            return;
+        }
+
+        VisualChildren.Remove(_ribbonBadgeAdorner);
+        LogicalChildren.Remove(_ribbonBadgeAdorner);
+        _ribbonBadgeAdorner.SetLogicalParent(null);
+    }
+
+    private void DetachControlChild(Control child)
+    {
+        VisualChildren.Remove(child);
+        LogicalChildren.Remove(child);
+        child.SetLogicalParent(null);
     }
 }

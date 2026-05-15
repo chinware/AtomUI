@@ -87,7 +87,16 @@ internal sealed record TreeStats(
     double AvatarGroupPerRoot,
     double ImagePerRoot,
     double SvgPerRoot,
-    double FlyoutHostPerRoot)
+    double FlyoutHostPerRoot,
+    double CountBadgePerRoot,
+    double DotBadgePerRoot,
+    double RibbonBadgePerRoot,
+    double CountBadgeAdornerPerRoot,
+    double DotBadgeAdornerPerRoot,
+    double RibbonBadgeAdornerPerRoot,
+    double DotBadgeIndicatorPerRoot,
+    double MotionActorPerRoot,
+    double LabelPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -136,6 +145,15 @@ internal sealed record TreeStats(
         var imageCount                  = 0;
         var svgCount                    = 0;
         var flyoutHostCount             = 0;
+        var countBadgeCount             = 0;
+        var dotBadgeCount               = 0;
+        var ribbonBadgeCount            = 0;
+        var countBadgeAdornerCount      = 0;
+        var dotBadgeAdornerCount        = 0;
+        var ribbonBadgeAdornerCount     = 0;
+        var dotBadgeIndicatorCount      = 0;
+        var motionActorCount            = 0;
+        var labelCount                  = 0;
 
         foreach (var root in roots)
         {
@@ -224,6 +242,42 @@ internal sealed record TreeStats(
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FlyoutHost"))
                 {
                     flyoutHostCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CountBadge"))
+                {
+                    countBadgeCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DotBadge"))
+                {
+                    dotBadgeCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.RibbonBadge"))
+                {
+                    ribbonBadgeCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CountBadgeAdorner"))
+                {
+                    countBadgeAdornerCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DotBadgeAdorner"))
+                {
+                    dotBadgeAdornerCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.RibbonBadgeAdorner"))
+                {
+                    ribbonBadgeAdornerCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Controls.Commons.DotBadgeIndicator"))
+                {
+                    dotBadgeIndicatorCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.MotionScene.BaseMotionActor"))
+                {
+                    motionActorCount++;
+                }
+                if (visual is Label)
+                {
+                    labelCount++;
                 }
                 if (visual is StackPanel)
                 {
@@ -368,7 +422,16 @@ internal sealed record TreeStats(
             avatarGroupCount / (double)rootCount,
             imageCount / (double)rootCount,
             svgCount / (double)rootCount,
-            flyoutHostCount / (double)rootCount);
+            flyoutHostCount / (double)rootCount,
+            countBadgeCount / (double)rootCount,
+            dotBadgeCount / (double)rootCount,
+            ribbonBadgeCount / (double)rootCount,
+            countBadgeAdornerCount / (double)rootCount,
+            dotBadgeAdornerCount / (double)rootCount,
+            ribbonBadgeAdornerCount / (double)rootCount,
+            dotBadgeIndicatorCount / (double)rootCount,
+            motionActorCount / (double)rootCount,
+            labelCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)

@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -193,6 +192,10 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
                 Color   = ((ISolidColorBrush)BadgeShadowColor).Color
             });
         }
+        else
+        {
+            BoxShadow = default;
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -212,7 +215,11 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
 
     private void BuildCountText()
     {
-        CountText = Count > OverflowCount ? $"{OverflowCount}+" : $"{Count}";
+        var countText = Count > OverflowCount ? $"{OverflowCount}+" : $"{Count}";
+        if (CountText != countText)
+        {
+            CountText = countText;
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -267,11 +274,13 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             var motion = new BadgeZoomBadgeOutMotion(MotionDuration);
             await motion.RunAsync(_indicatorMotionActor, cancellationToken: cancellationToken);
             adornerLayer?.Children.Remove(this);
+            AdornerLayer.SetAdornedElement(this, null);
         }
         else
         {
             _pendingTemplateAction = () => _indicatorMotionActor!.IsVisible = false;
             adornerLayer?.Children.Remove(this);
+            AdornerLayer.SetAdornedElement(this, null);
         }
     }
 
@@ -336,6 +345,7 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             if (adornerLayer is not null)
             {
                 adornerLayer.Children.Remove(this);
+                AdornerLayer.SetAdornedElement(this, null);
             }
         }
     }
