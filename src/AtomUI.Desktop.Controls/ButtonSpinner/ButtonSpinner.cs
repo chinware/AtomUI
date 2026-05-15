@@ -291,24 +291,80 @@ public class ButtonSpinner : Spinner,
         {
             UpdatePseudoClasses();
         }
+
+        if (change.Property == IsButtonSpinnerVisibleProperty)
+        {
+            ConfigureSpinnerHandle();
+        }
         
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        if (_spinnerHandle != null)
-        {
-            _spinnerHandle.ButtonsCreated -= HandleButtonCreated;
-        }
+        ClearSpinnerHandle();
         DecoratedBox = e.NameScope.Find<ButtonSpinnerDecoratedBox>("PART_DecoratedBox");
         base.OnApplyTemplate(e);
-        if (DecoratedBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
-        {
-            _spinnerHandle                =  spinnerHandle;
-            _spinnerHandle.ButtonsCreated += HandleButtonCreated;
-        }
+        ConfigureSpinnerHandle();
         SetButtonUsage();
         ConfigureAddOns();
+    }
+
+    private void ConfigureSpinnerHandle()
+    {
+        if (DecoratedBox == null)
+        {
+            return;
+        }
+
+        if (!IsButtonSpinnerVisible)
+        {
+            ClearSpinnerHandle();
+            return;
+        }
+
+        if (_spinnerHandle == null)
+        {
+            _spinnerHandle                 = CreateSpinnerHandle();
+            _spinnerHandle.ButtonsCreated += HandleButtonCreated;
+        }
+
+        if (!ReferenceEquals(DecoratedBox.SpinnerContent, _spinnerHandle))
+        {
+            DecoratedBox.SpinnerContent = _spinnerHandle;
+        }
+    }
+
+    private ButtonSpinnerHandle CreateSpinnerHandle()
+    {
+        var spinnerHandle = new ButtonSpinnerHandle();
+        spinnerHandle[!ButtonSpinnerHandle.ButtonSpinnerLocationProperty] = this[!ButtonSpinnerLocationProperty];
+        spinnerHandle[!ButtonSpinnerHandle.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
+        spinnerHandle[!TemplatedControl.CornerRadiusProperty]             = this[!TemplatedControl.CornerRadiusProperty];
+        spinnerHandle[!Layoutable.WidthProperty]                          = this[!SpinnerHandleWidthProperty];
+        return spinnerHandle;
+    }
+
+    private void ClearSpinnerHandle()
+    {
+        if (_spinnerHandle == null)
+        {
+            return;
+        }
+
+        _spinnerHandle.ButtonsCreated -= HandleButtonCreated;
+        IncreaseButton = null;
+        DecreaseButton = null;
+
+        if (DecoratedBox != null && ReferenceEquals(DecoratedBox.SpinnerContent, _spinnerHandle))
+        {
+            DecoratedBox.SpinnerContent = null;
+        }
+
+        _spinnerHandle.ClearValue(ButtonSpinnerHandle.ButtonSpinnerLocationProperty);
+        _spinnerHandle.ClearValue(ButtonSpinnerHandle.IsMotionEnabledProperty);
+        _spinnerHandle.ClearValue(TemplatedControl.CornerRadiusProperty);
+        _spinnerHandle.ClearValue(Layoutable.WidthProperty);
+        _spinnerHandle = null;
     }
 
     private void HandleButtonCreated(object? sender, EventArgs e)

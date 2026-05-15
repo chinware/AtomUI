@@ -51,18 +51,24 @@ internal sealed record TreeStats(
     double CompactSpaceItemPerRoot,
     double CompactSpaceAddOnPerRoot,
     double ButtonPerRoot,
+    double IconButtonPerRoot,
     double TextBlockPerRoot,
     double PanelPerRoot,
     double BorderPerRoot,
     double DockPanelPerRoot,
     double IconPerRoot,
     double IconPresenterPerRoot,
+    double SizeTypeAwareIconPresenterPerRoot,
     double ButtonIconPresenterPerRoot,
     double PathIconPerRoot,
     double StackPanelPerRoot,
     double WaveSpiritDecoratorPerRoot,
     double DashedBorderPerRoot,
     double ButtonLoadingHostPerRoot,
+    double ButtonSpinnerPerRoot,
+    double ButtonSpinnerDecoratedBoxPerRoot,
+    double ButtonSpinnerHandlePerRoot,
+    double ButtonSpinnerContentPanelPerRoot,
     double AddOnDecoratedBoxPerRoot,
     double SelectPerRoot,
     double TreeSelectPerRoot,
@@ -108,18 +114,24 @@ internal sealed record TreeStats(
         var compactSpaceItemCount    = 0;
         var compactSpaceAddOnCount   = 0;
         var buttonCount              = 0;
+        var iconButtonCount          = 0;
         var textBlockCount           = 0;
         var panelCount               = 0;
         var borderCount              = 0;
         var dockPanelCount           = 0;
         var iconCount                = 0;
         var iconPresenterCount       = 0;
+        var sizeTypeAwareIconPresenterCount = 0;
         var buttonIconPresenterCount = 0;
         var pathIconCount            = 0;
         var stackPanelCount          = 0;
         var waveSpiritDecoratorCount = 0;
         var dashedBorderCount        = 0;
         var buttonLoadingHostCount   = 0;
+        var buttonSpinnerCount       = 0;
+        var buttonSpinnerDecoratedBoxCount   = 0;
+        var buttonSpinnerHandleCount         = 0;
+        var buttonSpinnerContentPanelCount   = 0;
         var addOnDecoratedBoxCount   = 0;
         var selectCount              = 0;
         var treeSelectCount          = 0;
@@ -187,6 +199,10 @@ internal sealed record TreeStats(
                 {
                     buttonCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.IconButton"))
+                {
+                    iconButtonCount++;
+                }
                 if (type.Name == "TextBlock")
                 {
                     textBlockCount++;
@@ -219,9 +235,29 @@ internal sealed record TreeStats(
                         buttonIconPresenterCount++;
                     }
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SizeTypeAwareIconPresenter"))
+                {
+                    sizeTypeAwareIconPresenterCount++;
+                }
                 if (visual is PathIcon)
                 {
                     pathIconCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ButtonSpinner"))
+                {
+                    buttonSpinnerCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ButtonSpinnerDecoratedBox"))
+                {
+                    buttonSpinnerDecoratedBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ButtonSpinnerHandle"))
+                {
+                    buttonSpinnerHandleCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ButtonSpinnerContentPanel"))
+                {
+                    buttonSpinnerContentPanelCount++;
                 }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Avatar"))
                 {
@@ -386,18 +422,24 @@ internal sealed record TreeStats(
             compactSpaceItemCount / (double)rootCount,
             compactSpaceAddOnCount / (double)rootCount,
             buttonCount / (double)rootCount,
+            iconButtonCount / (double)rootCount,
             textBlockCount / (double)rootCount,
             panelCount / (double)rootCount,
             borderCount / (double)rootCount,
             dockPanelCount / (double)rootCount,
             iconCount / (double)rootCount,
             iconPresenterCount / (double)rootCount,
+            sizeTypeAwareIconPresenterCount / (double)rootCount,
             buttonIconPresenterCount / (double)rootCount,
             pathIconCount / (double)rootCount,
             stackPanelCount / (double)rootCount,
             waveSpiritDecoratorCount / (double)rootCount,
             dashedBorderCount / (double)rootCount,
             buttonLoadingHostCount / (double)rootCount,
+            buttonSpinnerCount / (double)rootCount,
+            buttonSpinnerDecoratedBoxCount / (double)rootCount,
+            buttonSpinnerHandleCount / (double)rootCount,
+            buttonSpinnerContentPanelCount / (double)rootCount,
             addOnDecoratedBoxCount / (double)rootCount,
             selectCount / (double)rootCount,
             treeSelectCount / (double)rootCount,

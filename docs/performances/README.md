@@ -44,6 +44,7 @@
 | Icon | 本轮已完成 | [Icon](Icon/README.md) | `IconShowCase` repeated `193.31ms -> 173.36ms`，alloc `57900.83KB -> 46331.65KB`；generated metadata 与 transform literal 已同步 AntDesign/Material/IconPark；`Select.Default` 默认隐藏 slot 从 `Icon/root 3 -> 1`、`Button/root 1 -> 0` |
 | LineEdit | 本轮已完成 Gallery 实测 | [LineEdit](LineEdit/README.md) | `LineEditShowCase` 重复导航均值 `229.07ms -> 183.98ms`，提升 `19.68%` |
 | Button | 本轮已完成 | [Button](Button/README.md) | loading/icon/wave 默认 slot 已按需创建；`ButtonShowCase` visuals `1128 -> 964`，IconPresenter `92 -> 51`，repeated mean `134.60ms -> 101.53ms` |
+| ButtonSpinner | 本轮已完成 | [ButtonSpinner](ButtonSpinner/README.md) | `HiddenHandle` visuals `25 -> 10`，KB/item `474.4 -> 212.5`；`ButtonSpinnerShowCase` visuals `725 -> 681`，alloc `14900.81KB -> 13514.36KB` |
 | Space | 本轮已完成 | [Space](Space/README.md) | `CompactSpaceItem 93 -> 75`，visuals `1864 -> 1846`，`SpaceShowCase` repeated mean `165.32ms -> 150.48ms` |
 | AutoComplete | 本轮已完成 | [AutoComplete](AutoComplete/README.md) | 关闭态 `_candidateList 13 -> 0`；`AutoCompleteShowCase` repeated mean `74.97ms -> 55.63ms`，alloc `8143KB -> 7664.37KB` |
 | Avatar | 本轮已完成 | [Avatar](Avatar/README.md) | `AvatarShowCase` repeated mean `42.33ms -> 32.54ms`，visuals `360 -> 258`，alloc `7252.55KB -> 5824.01KB` |
@@ -59,7 +60,7 @@
 | General | FloatButton | Pending | 待建立基线 |
 | General | SplitButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | General | Separator | Pending | 待建立基线 |
-| General | ButtonSpinner | Pending | 待建立基线 |
+| General | ButtonSpinner | Done | [ButtonSpinner](ButtonSpinner/README.md)；handle/presenter/outer addon 已按需创建，floatable 全局 input 订阅生命周期已验证 |
 | Layout | FlexPanel | Pending | 待建立基线 |
 | Layout | Grid | Pending | 待建立基线 |
 | Layout | Space | Done | 已完成 Phase 0-7；`CompactSpaceFiller` 不再承担 wrapper，repeated timing 小幅改善，cold 仍需后续针对子控件/Gallery 拆解 |

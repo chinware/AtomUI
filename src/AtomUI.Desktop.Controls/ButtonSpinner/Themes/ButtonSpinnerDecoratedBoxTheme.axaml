@@ -12,32 +12,7 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ButtonSpinnerDecoratedBox">
                 <DockPanel Name="RootLayout" LastChildFill="True"> 
-                    <ContentPresenter
-                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
-                        VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
-                        Focusable="False"
-                        DockPanel.Dock="Left"
-                        Content="{TemplateBinding LeftAddOn}"
-                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
-                        BackgroundSizing="InnerBorderEdge"
-                        BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
-                        CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
-                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                    <ContentPresenter
-                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
-                        VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
-                        DockPanel.Dock="Right"
-                        Focusable="False"
-                        Content="{TemplateBinding RightAddOn}"
-                        ContentTemplate="{TemplateBinding RightAddOnTemplate}"
-                        BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
-                        BackgroundSizing="InnerBorderEdge"
-                        CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
-                        IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-
-                    <Panel>
+                    <Panel Name="PART_OverlayLayout">
                         <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                                 BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
                                 CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
@@ -90,16 +65,6 @@
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
                             </atom:ButtonSpinnerContentPanel>
                         </Border>
-
-                        <ContentPresenter
-                            Name="PART_SpinnerHandle"
-                            ZIndex="{x:Static atom:AddOnDecoratedBoxThemeConstants.ActivatedZIndex}"
-                            Content="{TemplateBinding SpinnerContent}"
-                            Opacity="{TemplateBinding HandleOpacity}">
-                            <ContentPresenter.RenderTransform>
-                                <TranslateTransform X="{Binding HandleOffset, RelativeSource={RelativeSource TemplatedParent}}"/>
-                            </ContentPresenter.RenderTransform>
-                        </ContentPresenter>
                     </Panel>
                 </DockPanel>
             </ControlTemplate>
@@ -116,8 +81,8 @@
             <Style Selector="^[IsMotionEnabled=True]">
                 <Setter Property="Transitions">
                     <Transitions>
-                        <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
-                        <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                        <atom:SolidColorBrushTransition Property="EffectiveInnerBoxBorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                        <atom:SolidColorBrushTransition Property="EffectiveInnerBoxBackground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                         <DoubleTransition Property="HandleOpacity" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                         <DoubleTransition Property="HandleOffset" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                         <DoubleTransition Property="ContentLeftShift" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />

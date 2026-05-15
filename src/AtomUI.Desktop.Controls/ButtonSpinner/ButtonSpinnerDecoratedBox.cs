@@ -1,10 +1,14 @@
 using AtomUI.Animations;
+using AtomUI.Desktop.Controls.Primitives.Themes;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -167,6 +171,9 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     #endregion
     
     private IDisposable? _mouseMoveDisposable;
+    private Panel? _overlayLayout;
+    private ContentPresenter? _spinnerHandlePresenter;
+    private TranslateTransform? _spinnerHandleOffsetTransform;
     
     protected void ConfigureEffectiveContentPadding()
     {
@@ -200,23 +207,43 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _mouseMoveDisposable?.Dispose();
-        _mouseMoveDisposable = null;
+        DisposeMoveProcessor();
     }
 
     private void ConfigureMoveProcessor()
     {
-        if (IsEffectivelyEnabled && IsShowHandle && IsHandleFloatable)
+        if (!ShouldTrackPointer())
         {
-            _mouseMoveDisposable?.Dispose();
-            var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;;
-            _mouseMoveDisposable = inputManager?.Process.Subscribe(HandleMouseMove);
+            DisposeMoveProcessor();
+            return;
         }
+
+        if (_mouseMoveDisposable != null)
+        {
+            return;
+        }
+
+        var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
+        _mouseMoveDisposable = inputManager?.Process.Subscribe(HandleMouseMove);
+    }
+
+    private bool ShouldTrackPointer()
+    {
+        return this.IsAttachedToVisualTree() &&
+               IsEffectivelyEnabled &&
+               IsShowHandle &&
+               IsHandleFloatable;
+    }
+
+    private void DisposeMoveProcessor()
+    {
+        _mouseMoveDisposable?.Dispose();
+        _mouseMoveDisposable = null;
     }
 
     private void HandleMouseMove(RawInputEventArgs args)
     {
-        if (!IsEffectivelyEnabled)
+        if (!ShouldTrackPointer())
         {
             return;
         }
@@ -227,28 +254,24 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
                 pointerEventArgs.Type == RawPointerEventType.LeftButtonUp || 
                 pointerEventArgs.Type == RawPointerEventType.RightButtonDown)
             {
-                var pos = this.TranslatePoint(new Point(0, 0), TopLevel.GetTopLevel(this)!);
+                var topLevel = TopLevel.GetTopLevel(this);
+                if (topLevel == null)
+                {
+                    return;
+                }
+
+                var pos = this.TranslatePoint(new Point(0, 0), topLevel);
                 if (!pos.HasValue)
                 {
                     return;
                 }
 
                 var bounds = new Rect(pos.Value, Bounds.Size);
-                if (bounds.Contains(pointerEventArgs.Position))
+                var isHover = bounds.Contains(pointerEventArgs.Position);
+                if (IsSpinnerContentHover != isHover)
                 {
-                    if (IsShowHandle && IsHandleFloatable)
-                    {
-                        IsSpinnerContentHover = true;
-                        UpdateHandleVisualState();
-                    }
-                }
-                else
-                {
-                    if (IsShowHandle && IsHandleFloatable)
-                    {
-                        IsSpinnerContentHover = false;
-                        UpdateHandleVisualState();
-                    }
+                    IsSpinnerContentHover = isHover;
+                    UpdateHandleVisualState();
                 }
             }
         }
@@ -260,38 +283,13 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
         if (change.Property == IsShowHandleProperty ||
             change.Property == IsHandleFloatableProperty)
         {
+            ConfigureMoveProcessor();
             UpdateHandleVisualState();
-        }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IsHandleFloatableProperty)
-            {
-                if (change.OldValue is bool oldValue)
-                {
-                    if (oldValue)
-                    {
-                        _mouseMoveDisposable?.Dispose();
-                    }
-                }
-
-                if (IsHandleFloatable)
-                {
-                    ConfigureMoveProcessor();
-                }
-            }
         }
 
         if (change.Property == IsEffectivelyEnabledProperty)
         {
-            if (!IsEffectivelyEnabled)
-            {
-                _mouseMoveDisposable?.Dispose();
-            }
-            else
-            {
-                ConfigureMoveProcessor();
-            }
+            ConfigureMoveProcessor();
             UpdateHandleVisualState();
         }
 
@@ -307,15 +305,111 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
         if (change.Property == SpinnerHandleWidthProperty ||
             change.Property == ButtonSpinnerLocationProperty)
         {
+            if (change.Property == ButtonSpinnerLocationProperty)
+            {
+                UpdateSpinnerHandlePresenterAlignment();
+            }
             UpdateHandleVisualState();
+        }
+
+        if (change.Property == SpinnerContentProperty)
+        {
+            ConfigureSpinnerContentPresenter();
         }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearSpinnerContentPresenter(clearOverlay: true);
         base.OnApplyTemplate(e);
+        _overlayLayout = e.NameScope.Find<Panel>("PART_OverlayLayout");
+        ConfigureSpinnerContentPresenter();
         ConfigureEffectiveContentPadding();
         UpdateHandleVisualState();
+    }
+
+    private void ConfigureSpinnerContentPresenter()
+    {
+        if (SpinnerContent == null)
+        {
+            ClearSpinnerContentPresenter();
+            return;
+        }
+
+        if (_overlayLayout == null)
+        {
+            return;
+        }
+
+        if (_spinnerHandlePresenter == null)
+        {
+            _spinnerHandlePresenter = CreateSpinnerHandlePresenter();
+            _overlayLayout.Children.Add(_spinnerHandlePresenter);
+        }
+
+        _spinnerHandlePresenter.SetCurrentValue(ContentPresenter.ContentProperty, SpinnerContent);
+        UpdateSpinnerHandlePresenterAlignment();
+    }
+
+    private ContentPresenter CreateSpinnerHandlePresenter()
+    {
+        _spinnerHandleOffsetTransform = new TranslateTransform();
+        _spinnerHandleOffsetTransform[!TranslateTransform.XProperty] = this[!HandleOffsetProperty];
+
+        var presenter = new ContentPresenter
+        {
+            Name            = "PART_SpinnerHandle",
+            RenderTransform = _spinnerHandleOffsetTransform
+        };
+        presenter.SetTemplatedParent(this);
+        presenter[!Visual.OpacityProperty] = this[!HandleOpacityProperty];
+        presenter.SetValue(Panel.ZIndexProperty, AddOnDecoratedBoxThemeConstants.ActivatedZIndex);
+        return presenter;
+    }
+
+    private void ClearSpinnerContentPresenter(bool clearOverlay = false)
+    {
+        if (_spinnerHandlePresenter == null)
+        {
+            if (clearOverlay)
+            {
+                _overlayLayout = null;
+            }
+            return;
+        }
+
+        _spinnerHandlePresenter.ClearValue(ContentPresenter.ContentProperty);
+        _spinnerHandlePresenter.ClearValue(Visual.OpacityProperty);
+        _spinnerHandlePresenter.RenderTransform = null;
+        _spinnerHandlePresenter.SetTemplatedParent(null);
+        if (_spinnerHandleOffsetTransform != null)
+        {
+            _spinnerHandleOffsetTransform.ClearValue(TranslateTransform.XProperty);
+            _spinnerHandleOffsetTransform = null;
+        }
+
+        if (_spinnerHandlePresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_spinnerHandlePresenter);
+        }
+
+        _spinnerHandlePresenter = null;
+        if (clearOverlay)
+        {
+            _overlayLayout = null;
+        }
+    }
+
+    private void UpdateSpinnerHandlePresenterAlignment()
+    {
+        if (_spinnerHandlePresenter == null)
+        {
+            return;
+        }
+
+        _spinnerHandlePresenter.HorizontalAlignment = ButtonSpinnerLocation == ButtonSpinnerLocation.Left
+            ? Avalonia.Layout.HorizontalAlignment.Left
+            : Avalonia.Layout.HorizontalAlignment.Right;
     }
 
     private double GetHiddenOffset()

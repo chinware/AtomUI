@@ -15,7 +15,8 @@ internal sealed record PerfOptions(
     bool VerifySelectStates,
     bool VerifyAutoCompleteStates,
     bool VerifyAvatarStates,
-    bool VerifyBadgeStates)
+    bool VerifyBadgeStates,
+    bool VerifyButtonSpinnerStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -34,6 +35,7 @@ internal sealed record PerfOptions(
         var verifyAutoCompleteStates = false;
         var verifyAvatarStates    = false;
         var verifyBadgeStates     = false;
+        var verifyButtonSpinnerStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -87,6 +89,9 @@ internal sealed record PerfOptions(
                 case "--verify-badge-states":
                     verifyBadgeStates = true;
                     break;
+                case "--verify-buttonspinner-states":
+                    verifyButtonSpinnerStates = true;
+                    break;
             }
         }
 
@@ -105,6 +110,7 @@ internal sealed record PerfOptions(
             verifySelectStates,
             verifyAutoCompleteStates,
             verifyAvatarStates,
-            verifyBadgeStates);
+            verifyBadgeStates,
+            verifyButtonSpinnerStates);
     }
 }

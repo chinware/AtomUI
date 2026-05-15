@@ -8,7 +8,7 @@ internal static partial class Program
         private static string RenderTable(IReadOnlyList<PerfResult> results)
         {
             var builder = new StringBuilder();
-            builder.AppendLine("Scenario                                Count  Total ms  ms/item  KB/item  Visual  Logical  CP Space  CSp CSpIt CSpAO  Button  TB Panel Border Dock  Icon  IconP BtnIconP  PathI  Stack  Wave Dashed LoadHost  AODB Select TreeSel Cascader ComboBox SelHandle SelHost SelList SelFilter SelResult SelTags TreeView CascView Popup AutoC ACSearch ACTArea CandList ACPopFld ACCandFld Avatar AvGroup Image Svg Flyout CBadge DBadge RBadge CBAd DBAd RBAd DotInd Motion Label  IconUpdates  BrushCalls  Scanned");
+            builder.AppendLine("Scenario                                Count  Total ms  ms/item  KB/item  Visual  Logical  CP Space  CSp CSpIt CSpAO  Button IconBtn  TB Panel Border Dock  Icon  IconP STIconP BtnIconP  PathI  Stack  Wave Dashed LoadHost BtnSpin BSpinBox BSpinH BSpinCP  AODB Select TreeSel Cascader ComboBox SelHandle SelHost SelList SelFilter SelResult SelTags TreeView CascView Popup AutoC ACSearch ACTArea CandList ACPopFld ACCandFld Avatar AvGroup Image Svg Flyout CBadge DBadge RBadge CBAd DBAd RBAd DotInd Motion Label  IconUpdates  BrushCalls  Scanned");
             builder.AppendLine("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
             foreach (var result in results)
@@ -20,13 +20,13 @@ internal static partial class Program
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.ContentPresenterPerRoot,4:0.0}{result.TreeStats.SpacePerRoot,6:0.0}{result.TreeStats.CompactSpacePerRoot,5:0.0}{result.TreeStats.CompactSpaceItemPerRoot,6:0.0}{result.TreeStats.CompactSpaceAddOnPerRoot,6:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.ButtonPerRoot,8:0.0}{result.TreeStats.TextBlockPerRoot,5:0.0}");
+                    $"{result.TreeStats.ButtonPerRoot,8:0.0}{result.TreeStats.IconButtonPerRoot,7:0.0}{result.TreeStats.TextBlockPerRoot,5:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.PanelPerRoot,6:0.0}{result.TreeStats.BorderPerRoot,7:0.0}{result.TreeStats.DockPanelPerRoot,5:0.0}{result.TreeStats.IconPerRoot,6:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.IconPresenterPerRoot,7:0.0}{result.TreeStats.ButtonIconPresenterPerRoot,9:0.0}{result.TreeStats.PathIconPerRoot,7:0.0}{result.TreeStats.StackPanelPerRoot,7:0.0}");
+                    $"{result.TreeStats.IconPresenterPerRoot,7:0.0}{result.TreeStats.SizeTypeAwareIconPresenterPerRoot,8:0.0}{result.TreeStats.ButtonIconPresenterPerRoot,9:0.0}{result.TreeStats.PathIconPerRoot,7:0.0}{result.TreeStats.StackPanelPerRoot,7:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.WaveSpiritDecoratorPerRoot,6:0.0}{result.TreeStats.DashedBorderPerRoot,7:0.0}{result.TreeStats.ButtonLoadingHostPerRoot,9:0.0}{result.TreeStats.AddOnDecoratedBoxPerRoot,6:0.0}");
+                    $"{result.TreeStats.WaveSpiritDecoratorPerRoot,6:0.0}{result.TreeStats.DashedBorderPerRoot,7:0.0}{result.TreeStats.ButtonLoadingHostPerRoot,9:0.0}{result.TreeStats.ButtonSpinnerPerRoot,8:0.0}{result.TreeStats.ButtonSpinnerDecoratedBoxPerRoot,9:0.0}{result.TreeStats.ButtonSpinnerHandlePerRoot,7:0.0}{result.TreeStats.ButtonSpinnerContentPanelPerRoot,8:0.0}{result.TreeStats.AddOnDecoratedBoxPerRoot,6:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.SelectPerRoot,7:0.0}{result.TreeStats.TreeSelectPerRoot,8:0.0}{result.TreeStats.CascaderPerRoot,9:0.0}{result.TreeStats.ComboBoxPerRoot,9:0.0}");
                 builder.Append(CultureInfo.InvariantCulture,
@@ -56,6 +56,7 @@ internal static partial class Program
                 "avatar" => "# Avatar Baseline",
                 "badge" => "# Badge Baseline",
                 "button" => "# Button Baseline",
+                "buttonspinner" => "# ButtonSpinner Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",
@@ -68,8 +69,8 @@ internal static partial class Program
             builder.AppendLine($"- Count per scenario: {options.Count}");
             builder.AppendLine($"- Runner: `tools/performances/AtomUI.Performance`");
             builder.AppendLine();
-            builder.AppendLine("| Scenario | Count | Total ms | ms/item | KB/item | Visual/root | Logical/root | ContentPresenter/root | Space/root | CompactSpace/root | CompactSpaceItem/root | CompactSpaceAddOn/root | Button/root | TextBlock/root | Panel/root | Border/root | DockPanel/root | Icon/root | IconPresenter/root | ButtonIconPresenter/root | PathIcon/root | StackPanel/root | WaveSpiritDecorator/root | DashedBorder/root | ButtonLoadingHost/root | AddOnDecoratedBox/root | Select/root | TreeSelect/root | Cascader/root | ComboBox/root | SelectHandle/root | SelectAccessoryHost/root | SelectCandidateList/root | SelectFilterTextBox/root | SelectResultOptionsBox/root | SelectTagAwareTextBox/root | TreeSelectTreeView/root | CascaderView/root | Popup/root | AutoComplete/root | AutoCompleteSearchEdit/root | AutoCompleteTextArea/root | CandidateList/root | AutoComplete popup field/root | AutoComplete candidate field/root | Avatar/root | AvatarGroup/root | Image/root | Svg/root | FlyoutHost/root | CountBadge/root | DotBadge/root | RibbonBadge/root | CountBadgeAdorner/root | DotBadgeAdorner/root | RibbonBadgeAdorner/root | DotBadgeIndicator/root | MotionActor/root | Label/root | Icon status calls | Icon brush calls | Icon scan visuals | Icon matches |");
-            builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+            builder.AppendLine("| Scenario | Count | Total ms | ms/item | KB/item | Visual/root | Logical/root | ContentPresenter/root | Space/root | CompactSpace/root | CompactSpaceItem/root | CompactSpaceAddOn/root | Button/root | IconButton/root | TextBlock/root | Panel/root | Border/root | DockPanel/root | Icon/root | IconPresenter/root | SizeTypeAwareIconPresenter/root | ButtonIconPresenter/root | PathIcon/root | StackPanel/root | WaveSpiritDecorator/root | DashedBorder/root | ButtonLoadingHost/root | ButtonSpinner/root | ButtonSpinnerDecoratedBox/root | ButtonSpinnerHandle/root | ButtonSpinnerContentPanel/root | AddOnDecoratedBox/root | Select/root | TreeSelect/root | Cascader/root | ComboBox/root | SelectHandle/root | SelectAccessoryHost/root | SelectCandidateList/root | SelectFilterTextBox/root | SelectResultOptionsBox/root | SelectTagAwareTextBox/root | TreeSelectTreeView/root | CascaderView/root | Popup/root | AutoComplete/root | AutoCompleteSearchEdit/root | AutoCompleteTextArea/root | CandidateList/root | AutoComplete popup field/root | AutoComplete candidate field/root | Avatar/root | AvatarGroup/root | Image/root | Svg/root | FlyoutHost/root | CountBadge/root | DotBadge/root | RibbonBadge/root | CountBadgeAdorner/root | DotBadgeAdorner/root | RibbonBadgeAdorner/root | DotBadgeIndicator/root | MotionActor/root | Label/root | Icon status calls | Icon brush calls | Icon scan visuals | Icon matches |");
+            builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
 
             foreach (var result in results)
             {
@@ -80,15 +81,15 @@ internal static partial class Program
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.SpacePerRoot:0.0} | {result.TreeStats.CompactSpacePerRoot:0.0} | {result.TreeStats.CompactSpaceItemPerRoot:0.0} | {result.TreeStats.CompactSpaceAddOnPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.ButtonPerRoot:0.0} | {result.TreeStats.TextBlockPerRoot:0.0} | {result.TreeStats.PanelPerRoot:0.0} | ");
+                    $"{result.TreeStats.ButtonPerRoot:0.0} | {result.TreeStats.IconButtonPerRoot:0.0} | {result.TreeStats.TextBlockPerRoot:0.0} | {result.TreeStats.PanelPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.BorderPerRoot:0.0} | {result.TreeStats.DockPanelPerRoot:0.0} | {result.TreeStats.IconPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.IconPresenterPerRoot:0.0} | {result.TreeStats.ButtonIconPresenterPerRoot:0.0} | {result.TreeStats.PathIconPerRoot:0.0} | ");
+                    $"{result.TreeStats.IconPresenterPerRoot:0.0} | {result.TreeStats.SizeTypeAwareIconPresenterPerRoot:0.0} | {result.TreeStats.ButtonIconPresenterPerRoot:0.0} | {result.TreeStats.PathIconPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.StackPanelPerRoot:0.0} | {result.TreeStats.WaveSpiritDecoratorPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
-                    $"{result.TreeStats.DashedBorderPerRoot:0.0} | {result.TreeStats.ButtonLoadingHostPerRoot:0.0} | {result.TreeStats.AddOnDecoratedBoxPerRoot:0.0} | ");
+                    $"{result.TreeStats.DashedBorderPerRoot:0.0} | {result.TreeStats.ButtonLoadingHostPerRoot:0.0} | {result.TreeStats.ButtonSpinnerPerRoot:0.0} | {result.TreeStats.ButtonSpinnerDecoratedBoxPerRoot:0.0} | {result.TreeStats.ButtonSpinnerHandlePerRoot:0.0} | {result.TreeStats.ButtonSpinnerContentPanelPerRoot:0.0} | {result.TreeStats.AddOnDecoratedBoxPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
                     $"{result.TreeStats.SelectPerRoot:0.0} | {result.TreeStats.TreeSelectPerRoot:0.0} | {result.TreeStats.CascaderPerRoot:0.0} | {result.TreeStats.ComboBoxPerRoot:0.0} | ");
                 builder.Append(CultureInfo.InvariantCulture,
@@ -112,7 +113,7 @@ internal static partial class Program
             builder.AppendLine("Notes:");
             builder.AppendLine();
             builder.AppendLine("- `Visual/root` and `Logical/root` include the scenario root control itself.");
-            if (!options.Suite.Equals("button", StringComparison.OrdinalIgnoreCase))
+            if (options.Suite.Equals("addon", StringComparison.OrdinalIgnoreCase))
             {
                 builder.AppendLine("- CompactSpace scenarios use three `LineEdit` children per root.");
             }
