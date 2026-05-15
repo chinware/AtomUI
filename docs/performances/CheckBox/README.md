@@ -2,9 +2,9 @@
 
 `CheckBox` 是基础输入控件，但使用面不只在 `CheckBoxShowCase`。它还出现在 `Form`、`DataGridCheckBoxColumn`、`TreeView` checkbox mode、`Transfer`、`MenuItem` toggle checkbox、Gallery workspace filter menu 等场景。单个控件成本如果偏高，会被 DataGrid 行、TreeView 节点、Transfer 列表和表单页面放大。
 
-本轮暂未实施代码优化，当前文档用于 review。后续必须先执行 Phase 0 建立数据基线，再按收益和风险排序实施。
+本轮已完成 Phase 0-7。优化边界是保持 public API、视觉状态、交互语义和动画行为不变；所有 lazy visual 都有对应释放路径，并通过专项状态验证覆盖。
 
-## 当前结构判断
+## 优化前结构判断
 
 ### 已确认的高概率瓶颈
 
@@ -52,6 +52,81 @@
 - 6 个 `ShowCaseItem`
 
 运行时 `BasicCheckBoxGroup` 会通过 `ItemsSource` 再生成 3 个 option，因此预期运行时约 26 个 `CheckBox`。这个页面本身数量不大，优化重点不应只看 `CheckBoxShowCase`；更关键的是 DataGrid / TreeView / Transfer / Menu 等高复用场景。
+
+## 本轮实现
+
+- `CheckBoxIndicatorTheme.axaml` 不再固定创建 `WaveSpiritDecorator`、`CheckBoldOutlined` 和 `Rectangle#TristateMark`，模板只保留 frame。
+- `CheckBoxIndicator` 按状态创建轻量 visual：
+  - unchecked：只保留 frame。
+  - checked：创建 `Path#CheckedMark`，使用 AntDesign `CheckBoldOutlined` 的静态 geometry，不再创建 Icon 控件。
+  - indeterminate：仅创建 `Rectangle#TristateMark`。
+  - wave：仅在 loaded 后状态切到 checked 且 wave/motion/enabled 都满足时创建并播放；关闭 wave/motion/disabled 时释放。
+- `AbstractCheckBox` 按需创建 `ContentPresenter#ContentPresenter`，contentless 场景不再承担 presenter 成本。
+- `CheckBox -> CheckBoxIndicator` 的状态同步从 `TemplateBinding + CheckBoxIndicatorStateConverter` 收敛到代码直写，删除内部 converter。
+- `CheckBoxGroup` 同步修正：
+  - 外部替换 `CheckedItems` 会同步清理 stale checked item。
+  - `PrepareContainerForItemOverride()` 避免重复添加 selected item。
+  - `SelectionChanged` 处理去掉弱 `Debug.Assert`，并避免对同一个 `CheckedItems` 列表重复写入。
+
+## 最终数据
+
+控件级命令：
+
+```bash
+dotnet run --framework net10.0 --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --suite checkbox --count 60
+```
+
+| 场景 | 指标 | 优化前 | 优化后 | 变化 |
+| --- | --- | ---: | ---: | ---: |
+| `CheckBox.Default.Unchecked` | ms/item | 1.730 | 0.762 | -55.95% |
+| `CheckBox.Default.Unchecked` | KB/item | 148.5 | 83.1 | -44.04% |
+| `CheckBox.Default.Unchecked` | visuals/root | 12 | 8 | -33.33% |
+| `CheckBox.Default.Checked` | ms/item | 1.172 | 0.812 | -30.72% |
+| `CheckBox.Default.Checked` | KB/item | 160.1 | 92.9 | -41.97% |
+| `CheckBox.Contentless.Unchecked` | ms/item | 1.013 | 0.473 | -53.31% |
+| `CheckBox.Contentless.Unchecked` | KB/item | 137.3 | 66.9 | -51.27% |
+| `CheckBox.Batch50.Mixed` | ms/item | 25.831 | 15.956 | -38.23% |
+| `CheckBox.Batch50.Mixed` | KB/item | 7670.9 | 4359.4 | -43.17% |
+| `CheckBox.Batch50.Mixed` | visuals/root | 605 | 403 | -33.39% |
+
+真实 Gallery 命令：
+
+```bash
+dotnet run --framework net10.0 --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj -- --showcase checkbox --warmup 3 --iterations 10
+```
+
+| 场景 | 指标 | 优化前 | 优化后 | 变化 |
+| --- | --- | ---: | ---: | ---: |
+| `CheckBoxShowCase` cold | mean ms | 198.95 | 193.65 | -2.66% |
+| `CheckBoxShowCase` repeated | mean ms | 65.03 | 59.92 | -7.86% |
+| `CheckBoxShowCase` repeated | alloc KB | 6385.60 | 4629.80 | -27.50% |
+| `CheckBoxShowCase` | visuals | 420 | 318 | -24.29% |
+| `CheckBoxShowCase` | Icon | 26 | 0 | -100% |
+| `CheckBoxShowCase` | checked mark | 26 | 10 | 按需创建 |
+| `CheckBoxShowCase` | tristate mark | 26 | 2 | 按需创建 |
+
+补充真实页面 smoke：
+
+- `MenuShowCase` 的 `ToggleType=CheckBox` 当前不走 `AtomUI.Desktop.Controls.CheckBox`，因此本轮没有直接收益。
+- `TreeViewShowCase` 运行时有 `55` 个 CheckBox、`19` 个 `CheckBoxIndicator`，当前只创建 `4` 个 checked mark 和 `4` 个 tristate mark。
+- `DataGridShowCase` 运行时有 `17` 个 CheckBox/Indicator，当前只创建 `7` 个 checked mark。
+- `TransferShowCase` 运行时有 `41` 个 CheckBox、`40` 个 Indicator，默认 unchecked 项不创建 mark/wave。
+
+## 验证
+
+```bash
+dotnet build tools/performances/AtomUI.Performance/AtomUI.Performance.csproj --framework net10.0
+dotnet run --framework net10.0 --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-checkbox-states
+dotnet build tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj --framework net10.0
+dotnet run --framework net10.0 --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj -- --showcase checkbox --warmup 3 --iterations 10
+```
+
+结果：
+
+- CheckBox state verification passed.
+- `AtomUI.Performance` build passed.
+- `AtomUI.GalleryPerformance` build passed.
+- Gallery build 过程中没有 CheckBox 相关 warning；曾出现的 DataGrid 未使用字段 warning 不属于本次改动。
 
 ## 优化边界
 

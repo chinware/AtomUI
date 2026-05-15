@@ -52,6 +52,7 @@
 | Card | 本轮已完成 | [Card](Card/README.md) | `CardShowCase` repeated mean `78.11ms -> 50.66ms`，visuals `784 -> 582`；`CardActionPanel 18 -> 3`，`Skeleton 18 -> 0` |
 | Carousel | 本轮已完成 | [Carousel](Carousel/README.md) | `CarouselShowCase` alloc `6113.86KB -> 5213.10KB`，visuals `369 -> 326`；nav `14 -> 4`，progress `28 -> 1`，transition `7 -> 0`，repeated mean 基本持平 |
 | Cascader | 本轮已完成 | [Cascader](Cascader/README.md) | filter/multiple closed visual `41/25 -> 20`；`CascaderShowCase` visuals `1250 -> 1169`，repeated mean `141.81ms -> 133.27ms` |
+| CheckBox | 本轮已完成 | [CheckBox](CheckBox/README.md) | 默认 unchecked `visuals 12 -> 8`，contentless unchecked `11 -> 6`，`CheckBoxShowCase` visuals `420 -> 318`，repeated alloc `6385.60KB -> 4629.80KB` |
 
 ## 总列表
 
@@ -77,7 +78,7 @@
 | Navigation | TabControl | Pending | 待建立基线 |
 | Data Entry | AutoComplete | Done | 关闭态 CandidateList/PopupFrame 已按需创建；Gallery repeated mean 提升约 `25.79%` |
 | Data Entry | Cascader | Done | [Cascader](Cascader/README.md)；closed popup、filter input、multiple tags、filter list、checkbox/loading slot 已按需创建，Gallery repeated mean 小幅下降 |
-| Data Entry | CheckBox | Plan | [CheckBox](CheckBox/README.md)；已完成结构瓶颈分析，待 Phase 0 建立控件级和真实 Gallery 基线 |
+| Data Entry | CheckBox | Done | [CheckBox](CheckBox/README.md)；unchecked/contentless 默认路径不再创建 wave、Icon mark、tristate mark；`CheckBoxShowCase` visuals `420 -> 318`，alloc `6385.60KB -> 4629.80KB` |
 | Data Entry | ColorPicker | Pending | 待建立基线 |
 | Data Entry | DatePicker | Pending | 受 AddOnDecoratedBox 优化影响 |
 | Data Entry | TimePicker | Pending | 待建立基线 |

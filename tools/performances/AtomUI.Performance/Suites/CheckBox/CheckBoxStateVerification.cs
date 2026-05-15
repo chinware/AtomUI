@@ -75,7 +75,8 @@ internal static partial class Program
             IsChecked = true
         };
         using var checkedRealized = RealizeControl(checkedBox);
-        Expect(FindVisualByTypeName(checkedBox, "Path", "CheckedMark") != null,
+        var initialCheckedMark = FindVisualByTypeName(checkedBox, "Path", "CheckedMark");
+        Expect(initialCheckedMark != null,
             "Initially checked CheckBox should create checked mark.",
             failures);
         Expect(FindVisualByTypeName(checkedBox, "CheckBoldOutlined", "CheckedMark") == null,
@@ -89,6 +90,9 @@ internal static partial class Program
         RefreshLayout(checkedRealized.Window);
         Expect(FindVisualByTypeName(checkedBox, "Path", "CheckedMark") == null,
             "CheckBox should remove checked mark when unchecked.",
+            failures);
+        Expect(initialCheckedMark?.GetVisualParent() == null,
+            "Removed CheckBox checked mark should not keep a visual parent.",
             failures);
 
         var indeterminateBox = new AtomUI.Desktop.Controls.CheckBox
@@ -169,6 +173,8 @@ internal static partial class Program
     {
         return root.GetSelfAndVisualDescendants()
                    .OfType<AtomUI.Desktop.Controls.CheckBox>()
-                   .FirstOrDefault(checkBox => ReferenceEquals(checkBox.Content, option));
+                   .FirstOrDefault(checkBox => ReferenceEquals(checkBox.Content, option) ||
+                                               ReferenceEquals(checkBox.Content, option.Content) ||
+                                               Equals(checkBox.Content, option.Content));
     }
 }

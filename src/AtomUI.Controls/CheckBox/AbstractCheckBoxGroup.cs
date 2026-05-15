@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -150,26 +149,32 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
 
     private void HandleItemsSelectedChanged(object? sender, SelectionChangedEventArgs change)
     {
+        var itemsControl = sender as AbstractCheckBoxItemsControl ?? _itemsControl;
         if (CheckedItems != null)
         {
-            foreach (var item in change.RemovedItems)
+            if (!ReferenceEquals(CheckedItems, itemsControl?.CheckedItems))
             {
-                CheckedItems.Remove(item);
-            }
+                foreach (var item in change.RemovedItems)
+                {
+                    CheckedItems.Remove(item);
+                }
 
-            foreach (var item in change.AddedItems)
-            {
-                CheckedItems.Add(item);
+                foreach (var item in change.AddedItems)
+                {
+                    if (!CheckedItems.Contains(item))
+                    {
+                        CheckedItems.Add(item);
+                    }
+                }
             }
         }
         else
         {
             IList? checkedItems = null;
-            Debug.Assert(_itemsControl != null);
-            if (_itemsControl.CheckedItems != null)
+            if (itemsControl?.CheckedItems != null)
             {
                 checkedItems = new AvaloniaList<object>();
-                foreach (var item in _itemsControl.CheckedItems)
+                foreach (var item in itemsControl.CheckedItems)
                 {
                     checkedItems.Add(item);
                 }

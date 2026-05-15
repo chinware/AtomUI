@@ -81,8 +81,9 @@ internal abstract class AbstractCheckBoxItemsControl : SelectingItemsControl
                     if (item is ICheckBoxOption checkBoxOption)
                     {
                         checkbox.SetCurrentValue(AbstractCheckBox.IsEnabledProperty, checkBoxOption.IsEnabled);
-                        checkbox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, checkBoxOption.IsChecked);
-                        if (checkBoxOption.IsChecked)
+                        var isChecked = checkBoxOption.IsChecked || ContainsSelectedItem(item);
+                        checkbox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, isChecked);
+                        if (isChecked && SelectedItems?.Contains(checkBoxOption) != true)
                         {
                             SelectedItems?.Add(checkBoxOption);
                         }
@@ -138,32 +139,23 @@ internal abstract class AbstractCheckBoxItemsControl : SelectingItemsControl
 
     private void UpdateCheckBoxCheckedStates()
     {
-        if (SelectedItems == null)
+        foreach (var item in Items)
         {
-            foreach (var item in Items)
+            if (item == null)
             {
-                if (item != null)
-                {
-                    if (ContainerFromItem(item) is AbstractCheckBox checkBox)
-                    {
-                        checkBox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, false);
-                    }
-                }
+                continue;
+            }
+
+            if (ContainerFromItem(item) is AbstractCheckBox checkBox)
+            {
+                checkBox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, ContainsSelectedItem(item));
             }
         }
-        else
-        {
-            foreach (var item in SelectedItems)
-            {
-                if (item != null)
-                {
-                    if (ContainerFromItem(item) is AbstractCheckBox checkBox)
-                    {
-                        checkBox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, true);
-                    }
-                }
-            }
-        }
+    }
+
+    private bool ContainsSelectedItem(object item)
+    {
+        return SelectedItems?.Contains(item) == true;
     }
     
     internal IList? CheckedItems

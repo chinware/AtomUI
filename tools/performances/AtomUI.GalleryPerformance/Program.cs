@@ -135,6 +135,24 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.CheckBoxShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/CheckBoxShowCase.axaml",
                 stats => stats.CheckBoxCount > 0),
+            ["datagrid"] = new(
+                "DataGridShowCase",
+                DataGridViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.DataGridShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataGridShowCase.axaml",
+                stats => stats.VisualCount > 0),
+            ["treeview"] = new(
+                "TreeViewShowCase",
+                TreeViewViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.TreeViewShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/TreeViewShowCase.axaml",
+                stats => stats.VisualCount > 0),
+            ["transfer"] = new(
+                "TransferShowCase",
+                TransferViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.TransferShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/TransferShowCase.axaml",
+                stats => stats.VisualCount > 0),
             ["menu"] = new(
                 "MenuShowCase",
                 MenuViewModel.ID,
