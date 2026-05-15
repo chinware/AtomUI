@@ -1,3 +1,4 @@
+using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
@@ -75,7 +76,13 @@ internal sealed record TreeStats(
     double SelectTagAwareTextBoxPerRoot,
     double TreeSelectTreeViewPerRoot,
     double CascaderViewPerRoot,
-    double PopupPerRoot)
+    double PopupPerRoot,
+    double AutoCompletePerRoot,
+    double AutoCompleteSearchEditPerRoot,
+    double AutoCompleteTextAreaPerRoot,
+    double CandidateListPerRoot,
+    double AutoCompletePopupFieldPerRoot,
+    double AutoCompleteCandidateListFieldPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -113,6 +120,12 @@ internal sealed record TreeStats(
         var treeSelectTreeViewCount     = 0;
         var cascaderViewCount           = 0;
         var popupCount                  = 0;
+        var autoCompleteCount           = 0;
+        var autoCompleteSearchEditCount = 0;
+        var autoCompleteTextAreaCount   = 0;
+        var candidateListCount          = 0;
+        var autoCompletePopupFieldCount = 0;
+        var autoCompleteCandidateListFieldCount = 0;
 
         foreach (var root in roots)
         {
@@ -250,6 +263,30 @@ internal sealed record TreeStats(
                 {
                     popupCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AbstractAutoComplete"))
+                {
+                    autoCompleteCount++;
+                    if (HasFieldValue(visual, "AtomUI.Desktop.Controls.AbstractAutoComplete", "_popup"))
+                    {
+                        autoCompletePopupFieldCount++;
+                    }
+                    if (HasFieldValue(visual, "AtomUI.Desktop.Controls.AbstractAutoComplete", "_candidateList"))
+                    {
+                        autoCompleteCandidateListFieldCount++;
+                    }
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AutoCompleteSearchEdit"))
+                {
+                    autoCompleteSearchEditCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AutoCompleteTextArea"))
+                {
+                    autoCompleteTextAreaCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Primitives.CandidateList"))
+                {
+                    candidateListCount++;
+                }
             }
 
             logicalCount += root.GetSelfAndLogicalDescendants().Count();
@@ -290,7 +327,13 @@ internal sealed record TreeStats(
             selectTagAwareTextBoxCount / (double)rootCount,
             treeSelectTreeViewCount / (double)rootCount,
             cascaderViewCount / (double)rootCount,
-            popupCount / (double)rootCount);
+            popupCount / (double)rootCount,
+            autoCompleteCount / (double)rootCount,
+            autoCompleteSearchEditCount / (double)rootCount,
+            autoCompleteTextAreaCount / (double)rootCount,
+            candidateListCount / (double)rootCount,
+            autoCompletePopupFieldCount / (double)rootCount,
+            autoCompleteCandidateListFieldCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)
@@ -325,6 +368,23 @@ internal sealed record TreeStats(
             if (type.BaseType.FullName == fullName)
             {
                 return true;
+            }
+
+            type = type.BaseType;
+        }
+
+        return false;
+    }
+
+    private static bool HasFieldValue(object target, string declaringTypeName, string fieldName)
+    {
+        var type = target.GetType();
+        while (type is not null)
+        {
+            if (type.FullName == declaringTypeName)
+            {
+                var field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+                return field?.GetValue(target) is not null;
             }
 
             type = type.BaseType;

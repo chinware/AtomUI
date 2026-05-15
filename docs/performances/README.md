@@ -45,6 +45,7 @@
 | LineEdit | 本轮已完成 Gallery 实测 | [LineEdit](LineEdit/README.md) | `LineEditShowCase` 重复导航均值 `229.07ms -> 183.98ms`，提升 `19.68%` |
 | Button | 本轮已完成 | [Button](Button/README.md) | loading/icon/wave 默认 slot 已按需创建；`ButtonShowCase` visuals `1128 -> 964`，IconPresenter `92 -> 51`，repeated mean `134.60ms -> 101.53ms` |
 | Space | 本轮已完成 | [Space](Space/README.md) | `CompactSpaceItem 93 -> 75`，visuals `1864 -> 1846`，`SpaceShowCase` repeated mean `165.32ms -> 150.48ms` |
+| AutoComplete | 本轮已完成 | [AutoComplete](AutoComplete/README.md) | 关闭态 `_candidateList 13 -> 0`；`AutoCompleteShowCase` repeated mean `74.97ms -> 55.63ms`，alloc `8143KB -> 7664.37KB` |
 
 ## 总列表
 
@@ -68,7 +69,7 @@
 | Navigation | Pagination | Pending | 待建立基线 |
 | Navigation | Steps | Pending | 待建立基线 |
 | Navigation | TabControl | Pending | 待建立基线 |
-| Data Entry | AutoComplete | Pending | 待建立基线 |
+| Data Entry | AutoComplete | Done | 关闭态 CandidateList/PopupFrame 已按需创建；Gallery repeated mean 提升约 `25.79%` |
 | Data Entry | Cascader | Partial | Select 本轮同步完成 closed `CascaderView` lazy materialization；后续仍需独立 Cascader 深度优化 |
 | Data Entry | CheckBox | Pending | 待建立基线 |
 | Data Entry | ColorPicker | Pending | 待建立基线 |

@@ -25,7 +25,8 @@ internal static partial class Program
             options.VerifyIconProviderCache ||
             options.VerifyButtonStates ||
             options.VerifySpaceStates ||
-            options.VerifySelectStates)
+            options.VerifySelectStates ||
+            options.VerifyAutoCompleteStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -63,6 +64,10 @@ internal static partial class Program
             if (options.VerifySelectStates)
             {
                 verified &= RunSelectStateVerification();
+            }
+            if (options.VerifyAutoCompleteStates)
+            {
+                verified &= RunAutoCompleteStateVerification();
             }
             return verified ? 0 : 1;
         }
@@ -107,6 +112,7 @@ internal static partial class Program
             "button" => CreateButtonScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
+            "autocomplete" => CreateAutoCompleteScenarios(),
             _ => CreateAddOnScenarios()
         };
     }
