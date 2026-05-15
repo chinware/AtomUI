@@ -12,7 +12,8 @@ internal sealed record PerfOptions(
     bool VerifyIconProviderCache,
     bool VerifyButtonStates,
     bool VerifySpaceStates,
-    bool VerifySelectStates)
+    bool VerifySelectStates,
+    bool VerifyAutoCompleteStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -28,6 +29,7 @@ internal sealed record PerfOptions(
         var verifyButtonStates    = false;
         var verifySpaceStates     = false;
         var verifySelectStates    = false;
+        var verifyAutoCompleteStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -72,6 +74,9 @@ internal sealed record PerfOptions(
                 case "--verify-select-states":
                     verifySelectStates = true;
                     break;
+                case "--verify-autocomplete-states":
+                    verifyAutoCompleteStates = true;
+                    break;
             }
         }
 
@@ -87,6 +92,7 @@ internal sealed record PerfOptions(
             verifyIconProviderCache,
             verifyButtonStates,
             verifySpaceStates,
-            verifySelectStates);
+            verifySelectStates,
+            verifyAutoCompleteStates);
     }
 }

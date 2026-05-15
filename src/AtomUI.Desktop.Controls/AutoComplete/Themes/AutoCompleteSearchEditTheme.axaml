@@ -40,17 +40,7 @@
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                 Placement="{TemplateBinding PopupPlacement}"
-                                RequestedPlacement="{TemplateBinding PopupPlacement}">
-                        <Border Name="PopupFrame"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding MinPopupWidth}"
-                                Padding="{TemplateBinding PopupContentPadding}">
-                            <atom:CandidateList Name="{x:Static atom:AutoCompleteThemeConstants.CandidateListPart}"
-                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                SelectionMode="Single"
-                                                ItemTemplate="{TemplateBinding OptionTemplate}" />
-                        </Border>
-                    </atom:Popup>
+                                RequestedPlacement="{TemplateBinding PopupPlacement}" />
                 </Panel>
             </ControlTemplate>
         </Setter>

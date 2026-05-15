@@ -9,6 +9,7 @@ using AtomUI.Controls.AsyncLoad;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Input;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -18,6 +19,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Threading;
@@ -43,6 +45,11 @@ public abstract class AbstractAutoComplete : TemplatedControl,
                                              IInputControlStyleVariantAware,
                                              IFormItemFeedbackAware
 {
+    private static readonly IValueFilter StartsWithFilter = ValueFilterFactory.BuildFilter(ValueFilterMode.StartsWith)!;
+    private static readonly IValueFilter DefaultFilter = StartsWithFilter;
+    private static readonly IValueFilter EqualsCaseSensitiveFilter =
+        ValueFilterFactory.BuildFilter(ValueFilterMode.EqualsCaseSensitive)!;
+
     #region 公共属性定义
     public static readonly StyledProperty<PathIcon?> ClearIconProperty =
         AvaloniaProperty.Register<AbstractAutoComplete, PathIcon?>(nameof(ClearIcon));
@@ -556,6 +563,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         set
         {
             _textInputBoxSubscriptions?.Dispose();
+            _textInputBoxSubscriptions = null;
             _textInputBox = value;
 
             // Attach handlers
@@ -629,6 +637,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     private protected IList<IAutoCompleteOption>? _view;
     private protected ICandidateList? _candidateList;
     private protected Popup? _popup;
+    private Border? _popupFrame;
     private protected bool _ignorePopupClose;
     private bool _allowWrite;
     private bool _cancelRequested;
@@ -644,7 +653,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     private bool _ignoreTextSelectionChange;
     private bool _skipSelectedOptionTextUpdate;
     private bool _isFocused;
-    private Window? _attachedWindow;
+    private Window? _deactivatedWindow;
     static AbstractAutoComplete()
     {
         IsTabStopProperty.OverrideDefaultValue<AbstractAutoComplete>(false);
@@ -670,7 +679,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         HandlePlacementChanged();
         if (Filter == null)
         {
-            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.StartsWith));
+            SetCurrentValue(FilterProperty, DefaultFilter);
         }
     }
 
@@ -701,6 +710,23 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         else if (change.Property == PopupPlacementProperty)
         {
             ConfigurePopupMotion();
+        }
+        else if (change.Property == MaxPopupHeightProperty ||
+                 change.Property == MinPopupWidthProperty ||
+                 change.Property == PopupContentPaddingProperty ||
+                 change.Property == EffectivePopupWidthProperty)
+        {
+            ConfigurePopupFrame();
+        }
+        else if (change.Property == OptionTemplateProperty ||
+                 change.Property == IsMotionEnabledProperty)
+        {
+            SyncCandidateListProperties();
+        }
+
+        if (change.Property == IsDropDownOpenProperty)
+        {
+            ConfigureWindowDeactivatedSubscription();
         }
     }
 
@@ -871,13 +897,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     {
         var newValue = (TimeSpan)e.NewValue!;
 
-        // Always clean up the old timer first
-        if (_delayTimer != null)
-        {
-            _delayTimer.Stop();
-            _delayTimer.Tick -= PopulateDropDown;
-            _delayTimer      =  null;
-        }
+        ClearDelayTimer();
 
         // Create a new timer with the new delay value if needed
         if (newValue > TimeSpan.Zero)
@@ -886,6 +906,18 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             _delayTimer.Interval  =  newValue;
             _delayTimer.Tick      += PopulateDropDown;
         }
+    }
+
+    private void ClearDelayTimer()
+    {
+        if (_delayTimer == null)
+        {
+            return;
+        }
+
+        _delayTimer.Stop();
+        _delayTimer.Tick -= PopulateDropDown;
+        _delayTimer = null;
     }
 
     private void PopulateDropDown(object? sender, EventArgs e)
@@ -1251,24 +1283,35 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     
     private void OpenDropDown()
     {
+        EnsurePopupContent();
+        ConfigureWindowDeactivatedSubscription();
         if (_popup != null)
         {
             _popup.IsOpen = true;
         }
-        _popupHasOpened = true;
-        NotifyDropDownOpened(EventArgs.Empty);
+        if (!_popupHasOpened)
+        {
+            _popupHasOpened = true;
+            NotifyDropDownOpened(EventArgs.Empty);
+        }
     }
     
     private void CloseDropDown()
     {
-        if (_popupHasOpened)
+        if (!_popupHasOpened)
         {
-            if (_popup != null)
-            {
-                _popup.IsOpen = false;
-            }
-            NotifyDropDownClosed(EventArgs.Empty);
+            return;
         }
+
+        _popupHasOpened = false;
+        if (_popup != null)
+        {
+            _popup.IsOpen = false;
+        }
+        _subscriptionsOnOpen?.Dispose();
+        _subscriptionsOnOpen = null;
+        ClearWindowDeactivatedSubscription();
+        NotifyDropDownClosed(EventArgs.Empty);
     }
     
     private void OpeningDropDown(bool oldValue)
@@ -1296,19 +1339,137 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         PseudoClasses.Set(AutoCompletePseudoClass.CandidatePopupOpen, IsDropDownOpen);
     }
 
+    private protected virtual void EnsurePopupContent()
+    {
+        if (_candidateList != null)
+        {
+            return;
+        }
+
+        var candidateList = new CandidateList
+        {
+            Name          = AutoCompleteThemeConstants.CandidateListPart,
+            SelectionMode = SelectionMode.Single
+        };
+        candidateList.SetTemplatedParent(this);
+        CandidateList = candidateList;
+
+        SyncCandidateListProperties();
+        EnsurePopupFrame(candidateList);
+    }
+
+    private Border EnsurePopupFrame(Control child)
+    {
+        if (_popupFrame == null)
+        {
+            _popupFrame = new Border
+            {
+                Name  = "PopupFrame",
+                Child = child
+            };
+            _popupFrame.SetTemplatedParent(this);
+            _popup?.SetCurrentValue(Popup.ChildProperty, _popupFrame);
+        }
+        else if (!ReferenceEquals(_popupFrame.Child, child))
+        {
+            _popupFrame.Child = child;
+        }
+
+        ConfigurePopupFrame();
+        return _popupFrame;
+    }
+
+    private protected virtual void ClearPopupContent()
+    {
+        if (_candidateList == null)
+        {
+            return;
+        }
+
+        var candidateList = _candidateList;
+        CandidateList = null;
+        candidateList.SelectedItem          = null;
+        candidateList.SelectedItems         = null;
+        candidateList.CandidateSelectedItem = null;
+
+        if (candidateList is Control control)
+        {
+            if (ReferenceEquals(_popupFrame?.Child, control))
+            {
+                _popupFrame.Child = null;
+            }
+            control.SetTemplatedParent(null);
+        }
+    }
+
+    private void ClearPopupFrame()
+    {
+        if (_popupFrame != null)
+        {
+            _popupFrame.Child = null;
+            _popupFrame.SetTemplatedParent(null);
+            _popupFrame = null;
+        }
+
+        _popup?.SetCurrentValue(Popup.ChildProperty, null);
+    }
+
+    private void ConfigurePopupFrame()
+    {
+        if (_popupFrame == null)
+        {
+            return;
+        }
+
+        _popupFrame.SetCurrentValue(Layoutable.MaxHeightProperty, MaxPopupHeight);
+        _popupFrame.SetCurrentValue(Layoutable.MinWidthProperty, MinPopupWidth);
+        _popupFrame.SetCurrentValue(Border.PaddingProperty, PopupContentPadding);
+
+        if (IsPopupMatchSelectWidth)
+        {
+            _popupFrame.SetCurrentValue(Layoutable.WidthProperty, EffectivePopupWidth);
+        }
+        else
+        {
+            _popupFrame.ClearValue(Layoutable.WidthProperty);
+        }
+    }
+
+    private void SyncCandidateListProperties()
+    {
+        if (_candidateList is not ItemsControl itemsControl)
+        {
+            return;
+        }
+
+        if (_candidateList is ListBox listBox)
+        {
+            listBox.SetCurrentValue(ListBox.IsMotionEnabledProperty, IsMotionEnabled);
+        }
+
+        itemsControl.SetCurrentValue(ItemsControl.ItemTemplateProperty, OptionTemplate);
+        if (!ReferenceEquals(_candidateList.ItemsSource, _view))
+        {
+            _candidateList.ItemsSource = _view;
+        }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        
         if (_popup != null)
         {
             _popup.Opened -= HandlePopupOpened;
             _popup.Closed -= HandlePopupClosed;
         }
 
+        ClearPopupContent();
+        ClearPopupFrame();
+        TextInputBox = null;
+
+        base.OnApplyTemplate(e);
+
         TextInputBox       = e.NameScope.Find<AvaloniaTextBox>(AutoCompleteThemeConstants.TextBoxPart);
         _popup        = e.NameScope.Find<Popup>(AutoCompleteThemeConstants.PopupPart);
-        CandidateList = e.NameScope.Find<ICandidateList>(AutoCompleteThemeConstants.CandidateListPart);
 
         if (_popup != null)
         {
@@ -1329,28 +1490,65 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
+        ConfigureWindowDeactivatedSubscription();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-        }
 
-        _attachedWindow = null;
+        if (IsDropDownOpen)
+        {
+            _ignorePropertyChange = true;
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+        CloseDropDown();
+        _subscriptionsOnOpen?.Dispose();
+        _subscriptionsOnOpen = null;
+        ClearWindowDeactivatedSubscription();
+        ClearDelayTimer();
+        _asyncLoadCoordinator.Cancel();
+        ClearPopupContent();
+        ClearPopupFrame();
+        TextInputBox = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)
     {
         SetCurrentValue(IsDropDownOpenProperty, false);
+    }
+
+    private void ConfigureWindowDeactivatedSubscription()
+    {
+        if (!IsDropDownOpen)
+        {
+            ClearWindowDeactivatedSubscription();
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (ReferenceEquals(_deactivatedWindow, topLevel))
+        {
+            return;
+        }
+
+        ClearWindowDeactivatedSubscription();
+        if (topLevel is Window window)
+        {
+            _deactivatedWindow    =  window;
+            window.Deactivated += HandleWindowDeactivated;
+        }
+    }
+
+    private void ClearWindowDeactivatedSubscription()
+    {
+        if (_deactivatedWindow == null)
+        {
+            return;
+        }
+
+        _deactivatedWindow.Deactivated -= HandleWindowDeactivated;
+        _deactivatedWindow = null;
     }
 
     private void HandlePopupOpened(object? sender, EventArgs e)
@@ -1360,27 +1558,31 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
         this.GetObservable(IsEnabledProperty).Subscribe(HandleIsEnabledChanged).DisposeWith(_subscriptionsOnOpen);
         this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, _subscriptionsOnOpen);
-        NotifyDropDownOpened(EventArgs.Empty);
-        var selectedItem = TryGetMatch(Value, _view, ValueFilterFactory.BuildFilter(ValueFilterMode.EqualsCaseSensitive));
-        CandidateList!.SelectedItem = selectedItem;
+        ConfigureWindowDeactivatedSubscription();
+        var selectedItem = TryGetMatch(Value, _view, EqualsCaseSensitiveFilter);
+        if (CandidateList != null)
+        {
+            CandidateList.SelectedItem = selectedItem;
+        }
     }
     
     private void HandlePopupClosed(object? sender, EventArgs e)
     {
         _subscriptionsOnOpen?.Dispose();
         _subscriptionsOnOpen = null;
+        ClearWindowDeactivatedSubscription();
         // Force the drop down dependency property to be false.
         if (IsDropDownOpen)
         {
+            _ignorePropertyChange = true;
             SetCurrentValue(IsDropDownOpenProperty, false);
         }
 
-        // Fire the DropDownClosed event
         if (_popupHasOpened)
         {
+            _popupHasOpened = false;
             NotifyDropDownClosed(EventArgs.Empty);
         }
-        NotifyDropDownClosed(EventArgs.Empty);
     }
     
     private void HandleIsVisibleChanged(bool isVisible)
@@ -1437,6 +1639,11 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             filterValue,
             (ctx, token) => loader.LoadAsync(ctx, token));
 
+        if (!ReferenceEquals(loader, OptionsAsyncLoader) || this.GetVisualRoot() == null)
+        {
+            return;
+        }
+
         if (outcome.IsSkipped)
         {
             return;
@@ -1448,7 +1655,13 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             OptionsLoaded?.Invoke(this, new CompleteOptionsLoadedEventArgs(filterValue, result));
             SetCurrentValue(OptionsSourceProperty, result.Data);
 
-            Dispatcher.Post(PopulateComplete);
+            Dispatcher.Post(() =>
+            {
+                if (ReferenceEquals(loader, OptionsAsyncLoader) && this.GetVisualRoot() != null)
+                {
+                    PopulateComplete();
+                }
+            });
             return;
         }
 
@@ -1519,7 +1732,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
                     // case sensitive matching function for their scenario.
                     var top = Filter?.Mode == ValueFilterMode.StartsWith || Filter?.Mode == ValueFilterMode.StartsWithCaseSensitive
                         ? _view[0]
-                        : TryGetMatch(value, _view, ValueFilterFactory.BuildFilter(ValueFilterMode.StartsWith));
+                        : TryGetMatch(value, _view, StartsWithFilter);
                 
                     // If the search was successful, update SelectedOption
                     if (top != null)
@@ -1549,7 +1762,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
                 //
                 // This change provides the behavior that most people expect
                 // to find: a lookup for the value is always performed.
-                newSelectedItem = TryGetMatch(value, _view, ValueFilterFactory.BuildFilter(ValueFilterMode.EqualsCaseSensitive));
+                newSelectedItem = TryGetMatch(value, _view, EqualsCaseSensitiveFilter);
             }
         }
         
@@ -1650,6 +1863,11 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         {
             SetCurrentValue(EffectivePopupWidthProperty, selectWidth);
         }
+        else
+        {
+            SetCurrentValue(EffectivePopupWidthProperty, 0.0);
+        }
+        ConfigurePopupFrame();
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)

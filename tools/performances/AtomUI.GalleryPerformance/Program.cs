@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Reactive.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -80,6 +81,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.SelectShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/SelectShowCase.axaml",
                 stats => stats.SelectCount > 0),
+            ["autocomplete"] = new(
+                "AutoCompleteShowCase",
+                AutoCompleteViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.AutoCompleteShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/AutoCompleteShowCase.axaml",
+                stats => stats.AutoCompleteCount > 0),
             ["treeselect"] = new(
                 "TreeSelectShowCase",
                 TreeSelectViewModel.ID,
@@ -211,12 +218,12 @@ internal static class Program
         builder.AppendLine($"- Configuration: Debug, headless, {WindowSize.Width:0}x{WindowSize.Height:0} window");
         builder.AppendLine("- Measurement: AboutUs route settled -> trigger navigation -> route visual tree and layout stable");
         builder.AppendLine();
-        builder.AppendLine("| Phase | Trigger | Total ms | Trigger ms | First found ms | First ready ms | Stable ms | Pump count | Pump total ms | Max pump ms | Stats count | Stats total ms | Scan total ms | Alloc KB | Visuals | AddOnDecoratedBox | CompactSpace | CompactSpaceItem | LineEdit | Button | Select | TreeSelect | Cascader |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Phase | Trigger | Total ms | Trigger ms | First found ms | First ready ms | Stable ms | Pump count | Pump total ms | Max pump ms | Stats count | Stats total ms | Scan total ms | Alloc KB | Visuals | AddOnDecoratedBox | CompactSpace | CompactSpaceItem | LineEdit | Button | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         foreach (var sample in samples)
         {
             builder.AppendLine(
-                $"| {sample.Phase} | {sample.Trigger} | {FormatMs(sample.Total)} | {FormatMs(sample.TriggerElapsed)} | {FormatOptionalMs(sample.FirstFoundElapsed)} | {FormatOptionalMs(sample.FirstReadyElapsed)} | {FormatMs(sample.StableElapsed)} | {sample.PumpCount} | {FormatMs(sample.PumpTotal)} | {FormatMs(sample.MaxPump)} | {sample.StatsCount} | {FormatMs(sample.StatsTotal)} | {FormatMs(sample.ScanTotal)} | {FormatKb(sample.AllocatedBytes)} | {sample.Stats.VisualCount} | {sample.Stats.AddOnDecoratedBoxCount} | {sample.Stats.CompactSpaceCount} | {sample.Stats.CompactSpaceItemCount} | {sample.Stats.LineEditCount} | {sample.Stats.ButtonCount} | {sample.Stats.SelectCount} | {sample.Stats.TreeSelectCount} | {sample.Stats.CascaderCount} |");
+                $"| {sample.Phase} | {sample.Trigger} | {FormatMs(sample.Total)} | {FormatMs(sample.TriggerElapsed)} | {FormatOptionalMs(sample.FirstFoundElapsed)} | {FormatOptionalMs(sample.FirstReadyElapsed)} | {FormatMs(sample.StableElapsed)} | {sample.PumpCount} | {FormatMs(sample.PumpTotal)} | {FormatMs(sample.MaxPump)} | {sample.StatsCount} | {FormatMs(sample.StatsTotal)} | {FormatMs(sample.ScanTotal)} | {FormatKb(sample.AllocatedBytes)} | {sample.Stats.VisualCount} | {sample.Stats.AddOnDecoratedBoxCount} | {sample.Stats.CompactSpaceCount} | {sample.Stats.CompactSpaceItemCount} | {sample.Stats.LineEditCount} | {sample.Stats.ButtonCount} | {sample.Stats.SelectCount} | {sample.Stats.AutoCompleteCount} | {sample.Stats.AutoCompletePopupFieldCount} | {sample.Stats.AutoCompleteCandidateListFieldCount} | {sample.Stats.CandidateListCount} | {sample.Stats.TreeSelectCount} | {sample.Stats.CascaderCount} |");
         }
 
         builder.AppendLine();
@@ -248,6 +255,7 @@ internal static class Program
         var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
         var totalStopwatch  = Stopwatch.StartNew();
         var trigger         = TriggerNavigation(window, showCase);
+        ApplyNavigationVariant(window, options);
         var triggerElapsed  = totalStopwatch.Elapsed;
         var trace           = WaitForRouteTrace(window, showCase, options.Timeout, totalStopwatch);
         totalStopwatch.Stop();
@@ -300,6 +308,7 @@ internal static class Program
         var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
         var stopwatch       = Stopwatch.StartNew();
         var trigger         = TriggerNavigation(window, showCase);
+        ApplyNavigationVariant(window, options);
         var route           = WaitForRoute(window, showCase, options.Timeout);
         stopwatch.Stop();
 
@@ -325,6 +334,35 @@ internal static class Program
 
         ExecuteNavigateCommand(window, showCase.Key);
         return "NavigateToCommand";
+    }
+
+    private static void ApplyNavigationVariant(WorkspaceWindow window, PerfOptions options)
+    {
+        if (options.SpaceRemoveItem is not { } itemNumber)
+        {
+            return;
+        }
+
+        var route = window.GetSelfAndVisualDescendants()
+                          .OfType<SpaceShowCase>()
+                          .FirstOrDefault() ??
+                    window.GetSelfAndLogicalDescendants()
+                          .OfType<SpaceShowCase>()
+                          .FirstOrDefault();
+        if (route is null)
+        {
+            return;
+        }
+
+        var panel = GetSpaceShowCasePanel(route);
+        var items = panel.Children.OfType<ShowCaseItem>().Where(item => !item.IsFake).ToList();
+        var index = itemNumber - 1;
+        if (index < 0 || index >= items.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(options.SpaceRemoveItem),
+                $"SpaceShowCase item {itemNumber} is out of range. Count={items.Count}.");
+        }
+        panel.Children.Remove(items[index]);
     }
 
     private static void NavigateToAboutUs(WorkspaceWindow window, PerfOptions options)
@@ -814,15 +852,15 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | ToggleIconButton | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSample(result.ColdRun));
         foreach (var sample in result.Samples)
         {
@@ -867,6 +905,10 @@ internal static class Program
             stats.ButtonCount.ToString(CultureInfo.InvariantCulture),
             stats.ToggleIconButtonCount.ToString(CultureInfo.InvariantCulture),
             stats.SelectCount.ToString(CultureInfo.InvariantCulture),
+            stats.AutoCompleteCount.ToString(CultureInfo.InvariantCulture),
+            stats.AutoCompletePopupFieldCount.ToString(CultureInfo.InvariantCulture),
+            stats.AutoCompleteCandidateListFieldCount.ToString(CultureInfo.InvariantCulture),
+            stats.CandidateListCount.ToString(CultureInfo.InvariantCulture),
             stats.TreeSelectCount.ToString(CultureInfo.InvariantCulture),
             stats.CascaderCount.ToString(CultureInfo.InvariantCulture),
             stats.MenuCount.ToString(CultureInfo.InvariantCulture),
@@ -901,6 +943,10 @@ internal static class Program
             sample.Stats.ButtonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.ToggleIconButtonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SelectCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.AutoCompleteCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.AutoCompletePopupFieldCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.AutoCompleteCandidateListFieldCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CandidateListCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.TreeSelectCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.CascaderCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.MenuCount.ToString(CultureInfo.InvariantCulture),
@@ -939,6 +985,31 @@ internal static class Program
     {
         return value.ToString("0.00", CultureInfo.InvariantCulture);
     }
+
+    private static string FormatMs(TimeSpan value)
+    {
+        return value.TotalMilliseconds.ToString("0.00", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatOptionalMs(TimeSpan? value)
+    {
+        return value.HasValue ? FormatMs(value.Value) : string.Empty;
+    }
+
+    private static string FormatKb(long bytes)
+    {
+        return (bytes / 1024.0).ToString("0.00", CultureInfo.InvariantCulture);
+    }
+
+    private static string DescribeStats(RouteStats? stats)
+    {
+        if (stats is null)
+        {
+            return "none";
+        }
+
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, select={stats.SelectCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+    }
 }
 
 internal sealed record PerfOptions(
@@ -950,7 +1021,9 @@ internal sealed record PerfOptions(
     TimeSpan Timeout,
     bool SpaceItems,
     bool SpaceItemsWithoutTreeCascader,
-    bool SpaceItemsWithoutTreeCascaderSelect)
+    bool SpaceItemsWithoutTreeCascaderSelect,
+    bool TraceNavigation,
+    int? SpaceRemoveItem)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -963,6 +1036,8 @@ internal sealed record PerfOptions(
         var spaceItems = false;
         var spaceItemsWithoutTreeCascader = false;
         var spaceItemsWithoutTreeCascaderSelect = false;
+        var traceNavigation = false;
+        var spaceRemoveItem = default(int?);
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -1009,6 +1084,15 @@ internal sealed record PerfOptions(
                     spaceItems                          = true;
                     spaceItemsWithoutTreeCascaderSelect = true;
                     break;
+                case "--trace-navigation":
+                    traceNavigation = true;
+                    break;
+                case "--space-remove-item" when i + 1 < args.Length &&
+                                                int.TryParse(args[i + 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedItem):
+                    showCase        = "space";
+                    spaceRemoveItem = parsedItem;
+                    i++;
+                    break;
             }
         }
 
@@ -1021,7 +1105,9 @@ internal sealed record PerfOptions(
             timeout,
             spaceItems,
             spaceItemsWithoutTreeCascader,
-            spaceItemsWithoutTreeCascaderSelect);
+            spaceItemsWithoutTreeCascaderSelect,
+            traceNavigation,
+            spaceRemoveItem);
     }
 }
 
@@ -1068,6 +1154,38 @@ internal sealed record NavigationSample(
     long AllocatedBytes,
     RouteStats Stats);
 
+internal sealed record NavigationTraceData(
+    TimeSpan? FirstFoundElapsed,
+    TimeSpan? FirstReadyElapsed,
+    TimeSpan StableElapsed,
+    int PumpCount,
+    TimeSpan PumpTotal,
+    TimeSpan MaxPump,
+    int StatsCount,
+    TimeSpan StatsTotal,
+    TimeSpan ScanTotal,
+    RouteStats Stats,
+    IReadOnlyList<string> Events);
+
+internal sealed record NavigationTraceSample(
+    int Iteration,
+    string Phase,
+    string Trigger,
+    TimeSpan Total,
+    TimeSpan TriggerElapsed,
+    TimeSpan? FirstFoundElapsed,
+    TimeSpan? FirstReadyElapsed,
+    TimeSpan StableElapsed,
+    int PumpCount,
+    TimeSpan PumpTotal,
+    TimeSpan MaxPump,
+    int StatsCount,
+    TimeSpan StatsTotal,
+    TimeSpan ScanTotal,
+    long AllocatedBytes,
+    RouteStats Stats,
+    IReadOnlyList<string> Events);
+
 internal sealed record RouteStats(
     int VisualCount,
     int LogicalCount,
@@ -1088,6 +1206,12 @@ internal sealed record RouteStats(
     int ButtonCount,
     int ToggleIconButtonCount,
     int SelectCount,
+    int AutoCompleteCount,
+    int AutoCompleteSearchEditCount,
+    int AutoCompleteTextAreaCount,
+    int AutoCompletePopupFieldCount,
+    int AutoCompleteCandidateListFieldCount,
+    int CandidateListCount,
     int TreeSelectCount,
     int CascaderCount,
     int MenuCount,
@@ -1119,6 +1243,12 @@ internal sealed record RouteStats(
         var buttonCount             = 0;
         var toggleIconButtonCount   = 0;
         var selectCount             = 0;
+        var autoCompleteCount       = 0;
+        var autoCompleteSearchEditCount = 0;
+        var autoCompleteTextAreaCount   = 0;
+        var autoCompletePopupFieldCount = 0;
+        var autoCompleteCandidateListFieldCount = 0;
+        var candidateListCount      = 0;
         var treeSelectCount         = 0;
         var cascaderCount           = 0;
         var menuCount               = 0;
@@ -1196,6 +1326,30 @@ internal sealed record RouteStats(
             {
                 selectCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AbstractAutoComplete"))
+            {
+                autoCompleteCount++;
+                if (HasFieldValue(visual, "AtomUI.Desktop.Controls.AbstractAutoComplete", "_popup"))
+                {
+                    autoCompletePopupFieldCount++;
+                }
+                if (HasFieldValue(visual, "AtomUI.Desktop.Controls.AbstractAutoComplete", "_candidateList"))
+                {
+                    autoCompleteCandidateListFieldCount++;
+                }
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AutoCompleteSearchEdit"))
+            {
+                autoCompleteSearchEditCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.AutoCompleteTextArea"))
+            {
+                autoCompleteTextAreaCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Primitives.CandidateList"))
+            {
+                candidateListCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.TreeSelect"))
             {
                 treeSelectCount++;
@@ -1238,6 +1392,12 @@ internal sealed record RouteStats(
             buttonCount,
             toggleIconButtonCount,
             selectCount,
+            autoCompleteCount,
+            autoCompleteSearchEditCount,
+            autoCompleteTextAreaCount,
+            autoCompletePopupFieldCount,
+            autoCompleteCandidateListFieldCount,
+            candidateListCount,
             treeSelectCount,
             cascaderCount,
             menuCount,
@@ -1266,6 +1426,12 @@ internal sealed record RouteStats(
                ButtonCount == other.ButtonCount &&
                ToggleIconButtonCount == other.ToggleIconButtonCount &&
                SelectCount == other.SelectCount &&
+               AutoCompleteCount == other.AutoCompleteCount &&
+               AutoCompleteSearchEditCount == other.AutoCompleteSearchEditCount &&
+               AutoCompleteTextAreaCount == other.AutoCompleteTextAreaCount &&
+               AutoCompletePopupFieldCount == other.AutoCompletePopupFieldCount &&
+               AutoCompleteCandidateListFieldCount == other.AutoCompleteCandidateListFieldCount &&
+               CandidateListCount == other.CandidateListCount &&
                TreeSelectCount == other.TreeSelectCount &&
                CascaderCount == other.CascaderCount &&
                MenuCount == other.MenuCount &&
@@ -1289,6 +1455,21 @@ internal sealed record RouteStats(
 
             type = type.BaseType;
         }
+    }
+
+    private static bool HasFieldValue(object target, string declaringTypeName, string fieldName)
+    {
+        var type = target.GetType();
+        while (type is not null)
+        {
+            if (type.FullName == declaringTypeName)
+            {
+                var field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+                return field?.GetValue(target) is not null;
+            }
+            type = type.BaseType;
+        }
+        return false;
     }
 }
 
