@@ -9,9 +9,12 @@ description: Use when optimizing AtomUI controls, investigating control performa
 
 - Correctness bugs outrank performance work. If a performance optimization changes behavior, fix or revert that behavior before continuing.
 - Follow the principle: unused features must not pay runtime cost.
+- Hard boundary: no performance optimization may introduce resource leaks. If an optimization creates, subscribes, binds, caches, lazily materializes, or reparents anything, it must also define and verify the matching release path before the work is considered complete.
 - Prefer no API change. AtomUI has no formal release yet, so API changes are allowed only when required and explicitly justified.
 - Every optimization that creates, removes, subscribes, binds, or lazily materializes objects must have a cleanup path and a regression verification.
 - Gallery scenarios must be tested with the real Gallery example shape when the user is discussing Gallery-visible behavior. Synthetic control-only tests are not enough.
+- Do not write `Debug.Assert(value != null)` immediately followed by a nullable guard for the same value. Express the invariant in the type or helper return value, or choose a real runtime guard with an explicit recovery path.
+- Do not leave unused `using` directives after optimization work. Any newly introduced unused imports must be removed before the change is considered complete.
 
 ## Popup Lazy Content Rule
 

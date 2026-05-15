@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using AtomUI.Controls;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -118,6 +119,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     private Avatar? _foldCountAvatar;
     private FlyoutHost? _foldCountFlyout;
     private StackPanel? _foldCountStackPanel;
+    private bool _isAttachedToVisualTree;
 
     static AvatarGroup()
     {
@@ -143,105 +145,30 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
                         ConfigureAvatar(avatar);
                     }
                 }
-                if (!MaxDisplayCount.HasValue || LogicalChildren.Count < MaxDisplayCount.Value)
-                {
-                    var startingIndex = e.NewStartingIndex;
-                    foreach (var item in e.NewItems!.OfType<Control>())
-                    {
-                        LogicalChildren.Insert(startingIndex, item);
-                        VisualChildren.Insert(startingIndex, item);
-                        startingIndex++;
-                    }
-                }
-                break;
-
-            case NotifyCollectionChangedAction.Move:
-                if (!MaxDisplayCount.HasValue)
-                {
-                    LogicalChildren.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
-                    VisualChildren.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
-                }
-                else
-                {
-                    if (e.OldStartingIndex < MaxDisplayCount.Value && 
-                        e.OldStartingIndex + e.OldItems!.Count <= MaxDisplayCount.Value &&
-                        e.NewStartingIndex <= MaxDisplayCount.Value)
-                    {
-                        LogicalChildren.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
-                        VisualChildren.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
-                    }
-                }
-                break;
-
-            case NotifyCollectionChangedAction.Remove:
-                var removedItems = e.OldItems!.OfType<Control>();
-                LogicalChildren.RemoveAll(removedItems);
-                VisualChildren.RemoveAll(removedItems);
                 break;
 
             case NotifyCollectionChangedAction.Replace:
-                if (!MaxDisplayCount.HasValue)
+                foreach (var item in e.NewItems!.OfType<Control>())
                 {
-                    for (var i = 0; i < e.OldItems!.Count; ++i)
+                    if (item is Avatar avatar)
                     {
-                        var index = i + e.OldStartingIndex;
-                        var child = (Control)e.NewItems![i]!;
-                        LogicalChildren[index] = child;
-                        VisualChildren[index]  = child;
+                        ConfigureAvatar(avatar);
                     }
                 }
-                else
-                {
-                    for (var i = 0; i < e.OldItems!.Count; ++i)
-                    {
-                        var index = i + e.OldStartingIndex;
-                        if (index < MaxDisplayCount.Value)
-                        {
-                            var child = (Control)e.NewItems![i]!;
-                            LogicalChildren[index] = child;
-                            VisualChildren[index]  = child;
-                        }
-                    }
-                }
-                
                 break;
 
-            case NotifyCollectionChangedAction.Reset:
-                throw new NotSupportedException();
         }
 
-        UpdateChildrenZIndex(e);
-        ConfigureFoldInfo();
+        UpdateChildrenZIndex();
+        MarkFoldInfoDirty();
         InvalidateMeasureOnChildrenChanged();
     }
 
-    private void UpdateChildrenZIndex(NotifyCollectionChangedEventArgs e)
+    private void UpdateChildrenZIndex()
     {
-        switch (e.Action)
+        for (var i = 0; i < Children.Count; i++)
         {
-            case NotifyCollectionChangedAction.Add:
-            case NotifyCollectionChangedAction.Remove:
-            case NotifyCollectionChangedAction.Replace:
-                // Update ZIndex for all children after the change
-                var startIndex = e.Action == NotifyCollectionChangedAction.Remove
-                    ? e.OldStartingIndex
-                    : e.NewStartingIndex;
-                for (var i = startIndex; i < Children.Count; i++)
-                {
-                    Children[i].ZIndex = i + 1;
-                }
-                break;
-
-            case NotifyCollectionChangedAction.Move:
-                // Update ZIndex for affected range
-                var minIndex = Math.Min(e.OldStartingIndex, e.NewStartingIndex);
-                var maxIndex = Math.Max(e.OldStartingIndex + e.OldItems!.Count,
-                                       e.NewStartingIndex + e.OldItems!.Count);
-                for (var i = minIndex; i < Math.Min(maxIndex, Children.Count); i++)
-                {
-                    Children[i].ZIndex = i + 1;
-                }
-                break;
+            Children[i].ZIndex = i + 1;
         }
     }
 
@@ -276,50 +203,153 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var foldCountAvatar = GetFoldCountAvatar();
-        if (_foldCountFlyout == null)
-        {
-            _foldCountFlyout                       = new FlyoutHost();
-            _foldCountFlyout.ZIndex                = Int32.MaxValue;
-            _foldCountFlyout.Content               = foldCountAvatar;
-            _foldCountFlyout.ShouldUseOverlayPopup = true;
-            _foldCountStackPanel                   = new StackPanel();
-            _foldCountStackPanel.Orientation       = Orientation.Horizontal;
-            
-            _foldCountStackPanel[!StackPanel.SpacingProperty] = this[!GroupSpaceProperty];
-            _foldCountFlyout[!FlyoutHost.TriggerProperty]     = this[!FoldAvatarFlyoutTriggerTypeProperty];
-            
-            _foldCountFlyout.Flyout = new Flyout
-            {
-                Content = _foldCountStackPanel
-            };
-        }
-
+        _isAttachedToVisualTree = true;
         ConfigureFoldInfo();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _isAttachedToVisualTree = false;
+        ReleaseFoldInfrastructure();
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private void MarkFoldInfoDirty()
+    {
+        if (_isAttachedToVisualTree)
+        {
+            ConfigureFoldInfo();
+        }
     }
     
     private void ConfigureFoldInfo()
     {
-        var foldCountAvatar = GetFoldCountAvatar();
-        if (_foldCountFlyout != null && _foldCountStackPanel != null)
+        var shouldFold = MaxDisplayCount.HasValue && Children.Count > MaxDisplayCount.Value;
+        var visibleCount = shouldFold
+            ? Math.Max(0, MaxDisplayCount!.Value)
+            : Children.Count;
+
+        RebuildVisibleChildren(visibleCount);
+        if (!shouldFold)
         {
-            if (MaxDisplayCount.HasValue && Children.Count > MaxDisplayCount.Value)
-            {
-                foldCountAvatar.Text = $"+{Children.Count - MaxDisplayCount.Value}";
-                LogicalChildren.Add(_foldCountFlyout);
-                VisualChildren.Add(_foldCountFlyout);
-                for (var i = MaxDisplayCount.Value; i < Children.Count; ++i)
-                {
-                    _foldCountStackPanel.Children.Add(Children[i]);
-                }
-            }
-            else
-            {
-                LogicalChildren.Remove(_foldCountFlyout);
-                VisualChildren.Remove(_foldCountFlyout);
-                _foldCountStackPanel.Children.Clear();
-            }
+            ReleaseFoldInfrastructure();
+            return;
         }
+
+        var (foldHost, stackPanel) = EnsureFoldInfrastructure();
+        var foldCountAvatar = GetFoldCountAvatar();
+        foldCountAvatar.Text = $"+{Children.Count - visibleCount}";
+        AddFoldHostToGroup(foldHost);
+        for (var i = visibleCount; i < Children.Count; ++i)
+        {
+            stackPanel.Children.Add(Children[i]);
+        }
+    }
+
+    private void RebuildVisibleChildren(int visibleCount)
+    {
+        ClearFoldStackPanel();
+        RemoveFoldHostFromGroup();
+        foreach (var child in Children)
+        {
+            LogicalChildren.Remove(child);
+            VisualChildren.Remove(child);
+        }
+
+        var count = Math.Min(visibleCount, Children.Count);
+        for (var i = 0; i < count; i++)
+        {
+            LogicalChildren.Add(Children[i]);
+            VisualChildren.Add(Children[i]);
+        }
+    }
+
+    private (FlyoutHost FoldHost, StackPanel StackPanel) EnsureFoldInfrastructure()
+    {
+        if (_foldCountFlyout != null &&
+            _foldCountStackPanel != null)
+        {
+            return (_foldCountFlyout, _foldCountStackPanel);
+        }
+
+        ReleaseFoldInfrastructure();
+
+        var foldCountAvatar = GetFoldCountAvatar();
+        var flyout = new FlyoutHost
+        {
+            ZIndex                = Int32.MaxValue,
+            Content               = foldCountAvatar,
+            ShouldUseOverlayPopup = true
+        };
+        flyout.SetTemplatedParent(this);
+        var stackPanel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal
+        };
+        stackPanel[!StackPanel.SpacingProperty] = this[!GroupSpaceProperty];
+        flyout[!FlyoutHost.TriggerProperty]     = this[!FoldAvatarFlyoutTriggerTypeProperty];
+        flyout.Flyout = new Flyout
+        {
+            Content = stackPanel
+        };
+        _foldCountFlyout     = flyout;
+        _foldCountStackPanel = stackPanel;
+        ConfigureFoldAvatarCursor();
+        return (flyout, stackPanel);
+    }
+
+    private void AddFoldHostToGroup(FlyoutHost flyout)
+    {
+        if (!LogicalChildren.Contains(flyout))
+        {
+            LogicalChildren.Add(flyout);
+        }
+        if (!VisualChildren.Contains(flyout))
+        {
+            VisualChildren.Add(flyout);
+        }
+    }
+
+    private void RemoveFoldHostFromGroup()
+    {
+        if (_foldCountFlyout == null)
+        {
+            return;
+        }
+
+        LogicalChildren.Remove(_foldCountFlyout);
+        VisualChildren.Remove(_foldCountFlyout);
+    }
+
+    private void ClearFoldStackPanel()
+    {
+        _foldCountStackPanel?.Children.Clear();
+    }
+
+    private void ReleaseFoldInfrastructure()
+    {
+        if (_foldCountFlyout == null &&
+            _foldCountStackPanel == null &&
+            _foldCountAvatar == null)
+        {
+            return;
+        }
+
+        ClearFoldStackPanel();
+        RemoveFoldHostFromGroup();
+        if (_foldCountFlyout != null)
+        {
+            if (_foldCountFlyout.Flyout is { } flyout)
+            {
+                flyout.Content = null!;
+            }
+            _foldCountFlyout.Flyout  = null;
+            _foldCountFlyout.Content = null;
+            _foldCountFlyout.SetTemplatedParent(null);
+        }
+        _foldCountAvatar     = null;
+        _foldCountFlyout     = null;
+        _foldCountStackPanel = null;
     }
     
     private protected virtual void InvalidateMeasureOnChildrenChanged()
@@ -359,14 +389,22 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
         {
             ConfigureFoldAvatarCursor();
         }
+        else if (change.Property == MaxDisplayCountProperty)
+        {
+            MarkFoldInfoDirty();
+            InvalidateMeasureOnChildrenChanged();
+        }
     }
 
     private void ConfigureFoldAvatarCursor()
     {
-        var foldCountAvatar = GetFoldCountAvatar();
+        var foldCountAvatar = _foldCountAvatar;
+        if (foldCountAvatar == null)
+        {
+            return;
+        }
         if (FoldAvatarFlyoutTriggerType == FlyoutTriggerType.Click)
         {
-           
             foldCountAvatar.Cursor = new Cursor(StandardCursorType.Hand);
         }
         else
