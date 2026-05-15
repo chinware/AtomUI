@@ -69,6 +69,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.CardShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/CardShowCase.axaml",
                 stats => stats.CardCount > 0),
+            ["carousel"] = new(
+                "CarouselShowCase",
+                CarouselViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.CarouselShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/CarouselShowCase.axaml",
+                stats => stats.CarouselCount > 0),
             ["button"] = new(
                 "ButtonShowCase",
                 ButtonViewModel.ID,
@@ -876,14 +882,14 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Skeleton | SkeletonLine | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
         builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Skeleton | SkeletonLine | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
         builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSample(result.ColdRun));
         foreach (var sample in result.Samples)
@@ -955,6 +961,16 @@ internal static class Program
             stats.CardGridContentCount.ToString(CultureInfo.InvariantCulture),
             stats.CardGridItemCount.ToString(CultureInfo.InvariantCulture),
             stats.CardTabsContentCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselPageCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselPaginationCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselPageIndicatorCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselNavButtonCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselLayoutTransformCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselProgressBorderCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselPageTransitionFieldCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselAutoPlayTimerFieldCount.ToString(CultureInfo.InvariantCulture),
+            stats.CarouselIndicatorAnimationFieldCount.ToString(CultureInfo.InvariantCulture),
             stats.SkeletonCount.ToString(CultureInfo.InvariantCulture),
             stats.SkeletonLineCount.ToString(CultureInfo.InvariantCulture),
             stats.SelectCount.ToString(CultureInfo.InvariantCulture),
@@ -1022,6 +1038,16 @@ internal static class Program
             sample.Stats.CardGridContentCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.CardGridItemCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.CardTabsContentCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselPageCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselPaginationCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselPageIndicatorCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselNavButtonCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselLayoutTransformCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselProgressBorderCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselPageTransitionFieldCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselAutoPlayTimerFieldCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CarouselIndicatorAnimationFieldCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SkeletonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SkeletonLineCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SelectCount.ToString(CultureInfo.InvariantCulture),
@@ -1090,7 +1116,7 @@ internal static class Program
             return "none";
         }
 
-        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
     }
 }
 
@@ -1314,6 +1340,16 @@ internal sealed record RouteStats(
     int CardGridContentCount,
     int CardGridItemCount,
     int CardTabsContentCount,
+    int CarouselCount,
+    int CarouselPageCount,
+    int CarouselPaginationCount,
+    int CarouselPageIndicatorCount,
+    int CarouselNavButtonCount,
+    int CarouselLayoutTransformCount,
+    int CarouselProgressBorderCount,
+    int CarouselPageTransitionFieldCount,
+    int CarouselAutoPlayTimerFieldCount,
+    int CarouselIndicatorAnimationFieldCount,
     int SkeletonCount,
     int SkeletonLineCount,
     int SelectCount,
@@ -1380,6 +1416,16 @@ internal sealed record RouteStats(
         var cardGridContentCount     = 0;
         var cardGridItemCount        = 0;
         var cardTabsContentCount     = 0;
+        var carouselCount            = 0;
+        var carouselPageCount        = 0;
+        var carouselPaginationCount  = 0;
+        var carouselPageIndicatorCount = 0;
+        var carouselNavButtonCount   = 0;
+        var carouselLayoutTransformCount = 0;
+        var carouselProgressBorderCount = 0;
+        var carouselPageTransitionFieldCount = 0;
+        var carouselAutoPlayTimerFieldCount = 0;
+        var carouselIndicatorAnimationFieldCount = 0;
         var skeletonCount            = 0;
         var skeletonLineCount        = 0;
         var selectCount             = 0;
@@ -1570,6 +1616,48 @@ internal sealed record RouteStats(
             {
                 cardTabsContentCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Carousel"))
+            {
+                carouselCount++;
+                if (visual is AtomUI.Desktop.Controls.Carousel carousel && carousel.PageTransition is not null)
+                {
+                    carouselPageTransitionFieldCount++;
+                }
+                if (HasFieldValue(visual, "AtomUI.Desktop.Controls.Carousel", "_autoPlayTimer"))
+                {
+                    carouselAutoPlayTimerFieldCount++;
+                }
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselPage"))
+            {
+                carouselPageCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselPagination"))
+            {
+                carouselPaginationCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselPageIndicator"))
+            {
+                carouselPageIndicatorCount++;
+                if (HasFieldValue(visual, "AtomUI.Desktop.Controls.CarouselPageIndicator", "_animation"))
+                {
+                    carouselIndicatorAnimationFieldCount++;
+                }
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselNavButton"))
+            {
+                carouselNavButtonCount++;
+            }
+            if (visual is LayoutTransformControl { Name: "PaginationLayoutTransform" })
+            {
+                carouselLayoutTransformCount++;
+            }
+            if (visual is Border { Name: "Progress" } progressBorder &&
+                progressBorder.GetVisualAncestors().Any(ancestor =>
+                    IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.CarouselPageIndicator")))
+            {
+                carouselProgressBorderCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Skeleton"))
             {
                 skeletonCount++;
@@ -1674,6 +1762,16 @@ internal sealed record RouteStats(
             cardGridContentCount,
             cardGridItemCount,
             cardTabsContentCount,
+            carouselCount,
+            carouselPageCount,
+            carouselPaginationCount,
+            carouselPageIndicatorCount,
+            carouselNavButtonCount,
+            carouselLayoutTransformCount,
+            carouselProgressBorderCount,
+            carouselPageTransitionFieldCount,
+            carouselAutoPlayTimerFieldCount,
+            carouselIndicatorAnimationFieldCount,
             skeletonCount,
             skeletonLineCount,
             selectCount,
@@ -1737,6 +1835,16 @@ internal sealed record RouteStats(
                CardGridContentCount == other.CardGridContentCount &&
                CardGridItemCount == other.CardGridItemCount &&
                CardTabsContentCount == other.CardTabsContentCount &&
+               CarouselCount == other.CarouselCount &&
+               CarouselPageCount == other.CarouselPageCount &&
+               CarouselPaginationCount == other.CarouselPaginationCount &&
+               CarouselPageIndicatorCount == other.CarouselPageIndicatorCount &&
+               CarouselNavButtonCount == other.CarouselNavButtonCount &&
+               CarouselLayoutTransformCount == other.CarouselLayoutTransformCount &&
+               CarouselProgressBorderCount == other.CarouselProgressBorderCount &&
+               CarouselPageTransitionFieldCount == other.CarouselPageTransitionFieldCount &&
+               CarouselAutoPlayTimerFieldCount == other.CarouselAutoPlayTimerFieldCount &&
+               CarouselIndicatorAnimationFieldCount == other.CarouselIndicatorAnimationFieldCount &&
                SkeletonCount == other.SkeletonCount &&
                SkeletonLineCount == other.SkeletonLineCount &&
                SelectCount == other.SelectCount &&
@@ -1808,6 +1916,8 @@ internal sealed record SourceXamlStats(
     int CardGridItemCount,
     int CardMetaContentCount,
     int CardTabsContentCount,
+    int CarouselCount,
+    int CarouselPageCount,
     int LineEditDirectCount,
     int SearchEditCount,
     int TextAreaCount,
@@ -1829,7 +1939,7 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         var text     = File.ReadAllText(sourcePath);
@@ -1855,6 +1965,8 @@ internal sealed record SourceXamlStats(
             CountElements(document, AtomNamespace, "CardGridItem"),
             CountElements(document, AtomNamespace, "CardMetaContent"),
             CountElements(document, AtomNamespace, "CardTabsContent"),
+            CountElements(document, AtomNamespace, "Carousel"),
+            CountElements(document, AtomNamespace, "CarouselPage"),
             CountElements(document, AtomNamespace, "LineEdit"),
             CountElements(document, AtomNamespace, "SearchEdit"),
             CountElements(document, AtomNamespace, "TextArea"),
@@ -1878,8 +1990,8 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | ShowCaseItem |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | Carousel | CarouselPage | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | ShowCaseItem |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
@@ -1918,6 +2030,10 @@ internal sealed record SourceXamlStats(
         builder.Append(CardMetaContentCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(CardTabsContentCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CarouselCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CarouselPageCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(LineEditDirectCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");

@@ -1,13 +1,17 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -92,7 +96,9 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     
     private Animation? _animation;
     private CancellationTokenSource? _cancellationTokenSource;
+    private Panel? _rootLayout;
     private Border? _frame;
+    private Border? _progress;
     
     static CarouselPageIndicator()
     {
@@ -105,6 +111,8 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     {
         base.OnSizeChanged(e);
         SetCurrentValue(CornerRadiusProperty, new CornerRadius(e.NewSize.Height));
+        ConfigureProgressWidth();
+        SyncProgressBorderProperties();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -113,7 +121,7 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
 
         if (change.Property == IsShowTransitionProgressProperty)
         {
-            BuildProgressAnimation(true);
+            UpdateProgressState(forceAnimation: true);
         }
         else if (change.Property == AutoPlaySpeedProperty)
         {
@@ -121,29 +129,60 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         }
         else if (change.Property == IsSelectedProperty)
         {
-            HandleSelectChanged();
+            UpdateProgressState(forceAnimation: false);
         }
         else if (change.Property == ProgressValueProperty)
         {
             ConfigureProgressWidth();
         }
+        else if (change.Property == EffectiveProgressWidthProperty ||
+                 change.Property == CornerRadiusProperty ||
+                 change.Property == HeightProperty ||
+                 change.Property == BackgroundProperty)
+        {
+            SyncProgressBorderProperties();
+        }
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleaseProgressBorder();
         base.OnApplyTemplate(e);
-        _frame = e.NameScope.Find<Border>("PART_Frame");
-        if (IsShowTransitionProgress)
+        _rootLayout = e.NameScope.Find<Panel>("PART_RootLayout");
+        _frame      = e.NameScope.Find<Border>("PART_Frame");
+        UpdateProgressState(forceAnimation: false);
+    }
+
+    private void UpdateProgressState(bool forceAnimation)
+    {
+        if (!IsShowTransitionProgress || !IsSelected)
         {
-            BuildProgressAnimation(false);
+            ClearProgressAnimation();
+            ReleaseProgressBorder();
+            return;
         }
+
+        if (_rootLayout is null)
+        {
+            return;
+        }
+
+        EnsureProgressBorder();
+        BuildProgressAnimation(forceAnimation);
+        HandleSelectChanged();
     }
 
     private void BuildProgressAnimation(bool force = false)
     {
+        if (!IsShowTransitionProgress)
+        {
+            ClearProgressAnimation();
+            return;
+        }
+
         if (force || _animation is null)
         {
-            _cancellationTokenSource?.Cancel();
+            StopProgressAnimation();
             _animation = new Animation
             {
                 Easing         = new LinearEasing(),
@@ -163,7 +202,6 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
                 }
             };
             ConfigureProgressAnimation();
-            _cancellationTokenSource = null;
         }
     }
 
@@ -178,23 +216,41 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        StopProgressAnimation();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        UpdateProgressState(forceAnimation: false);
+    }
+
+    private void StopProgressAnimation()
+    {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;
     }
 
+    private void ClearProgressAnimation()
+    {
+        StopProgressAnimation();
+        _animation = null;
+        SetCurrentValue(ProgressValueProperty, 0.0);
+        SetCurrentValue(EffectiveProgressWidthProperty, 0.0);
+    }
+
     private void HandleSelectChanged()
     {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
+        StopProgressAnimation();
         if (IsSelected && IsShowTransitionProgress)
         {
+            if (_animation is null)
+            {
+                BuildProgressAnimation();
+            }
             _cancellationTokenSource = new CancellationTokenSource();
             _animation?.RunAsync(this, _cancellationTokenSource.Token);
-        }
-        else
-        {
-            _cancellationTokenSource = null;
         }
     }
 
@@ -206,6 +262,58 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
             SetCurrentValue(EffectiveProgressWidthProperty, width * ProgressValue);
         }
 
+    }
+
+    private void EnsureProgressBorder()
+    {
+        if (_progress is not null || _rootLayout is null)
+        {
+            SyncProgressBorderProperties();
+            return;
+        }
+
+        _progress = new Border
+        {
+            Name                = "Progress",
+            HorizontalAlignment = HorizontalAlignment.Left
+        };
+        _progress.SetValue(IsVisibleProperty, false, BindingPriority.Template);
+        _progress.SetTemplatedParent(this);
+        SyncProgressBorderProperties();
+        _rootLayout.Children.Add(_progress);
+    }
+
+    private void ReleaseProgressBorder()
+    {
+        if (_progress is null)
+        {
+            return;
+        }
+
+        if (_progress.GetVisualParent() is Panel panel)
+        {
+            panel.Children.Remove(_progress);
+        }
+        else
+        {
+            _rootLayout?.Children.Remove(_progress);
+        }
+
+        _progress.SetTemplatedParent(null);
+        _progress = null;
+    }
+
+    private void SyncProgressBorderProperties()
+    {
+        if (_progress is null)
+        {
+            return;
+        }
+
+        _progress.SetValue(CornerRadiusProperty, CornerRadius, BindingPriority.Template);
+        _progress.SetValue(HeightProperty, Height, BindingPriority.Template);
+        _progress.SetValue(WidthProperty, EffectiveProgressWidth, BindingPriority.Template);
+        _progress.SetValue(BackgroundProperty, Background, BindingPriority.Template);
     }
 
     protected override void OnInitialized()

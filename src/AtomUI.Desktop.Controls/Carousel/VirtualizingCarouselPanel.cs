@@ -6,6 +6,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -105,15 +106,7 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
                 // Cancel any already running transition, and recycle the element we're transitioning from.
                 if (cancelTransition)
                 {
-                    _transition?.Cancel();
-                    _transition?.Dispose();
-                    _transition = null;
-                    if (_transitionFrom is not null)
-                    {
-                        RecycleElement(_transitionFrom);
-                    }
-                    _transitionFrom      = null;
-                    _transitionFromIndex = -1;
+                    CancelActiveTransition(recycleTransitionFrom: true);
                 }
 
                 if (cancelTransition || GetTransition() is null)
@@ -182,6 +175,12 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
         return result;
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        CancelActiveTransition(recycleTransitionFrom: true);
+    }
+
     protected override IInputElement? GetControl(NavigationDirection direction, IInputElement? from, bool wrap) => null;
 
     protected override Control? ContainerFromIndex(int index)
@@ -197,7 +196,12 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
 
     protected override IEnumerable<Control>? GetRealizedContainers()
     {
-        return _realized is not null ? new[] { _realized } : null;
+        return _realized is not null ? EnumerateRealized(_realized) : null;
+    }
+
+    private static IEnumerable<Control> EnumerateRealized(Control control)
+    {
+        yield return control;
     }
 
     protected override int IndexFromContainer(Control container)
@@ -270,6 +274,7 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
                 Add(insertIndex, e.NewItems!.Count);
                 break;
             case NotifyCollectionChangedAction.Reset:
+                CancelActiveTransition(recycleTransitionFrom: true);
                 if (_realized is not null)
                 {
                     RecycleElement(_realized);
@@ -399,6 +404,24 @@ internal class VirtualizingCarouselPanel: VirtualizingPanel, ILogicalScrollable
     }
 
     private IPageTransition? GetTransition() => (ItemsControl as Carousel)?.PageTransition;
+
+    private void CancelActiveTransition(bool recycleTransitionFrom)
+    {
+        if (_transition is null)
+        {
+            return;
+        }
+
+        _transition.Cancel();
+        _transition.Dispose();
+        _transition = null;
+        if (recycleTransitionFrom && _transitionFrom is not null)
+        {
+            RecycleElement(_transitionFrom);
+        }
+        _transitionFrom      = null;
+        _transitionFromIndex = -1;
+    }
 
     private void TransitionFinished(Task task)
     {

@@ -6,20 +6,13 @@
     <ControlTheme x:Key="{x:Type atom:CarouselPageIndicator}" TargetType="atom:CarouselPageIndicator">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
+                <Panel Name="PART_RootLayout">
                     <Border Name="PART_Frame"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Height="{TemplateBinding Height}"
                             Width="{TemplateBinding Width}"
                             Background="{TemplateBinding Background}"
                             Opacity="{TemplateBinding FrameOpacity}"/>
-                    <Border Name="Progress"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            Height="{TemplateBinding Height}"
-                            Width="{TemplateBinding EffectiveProgressWidth}"
-                            Background="{TemplateBinding Background}"
-                            IsVisible="False"
-                            HorizontalAlignment="Left" />
                 </Panel>
             </ControlTemplate>
         </Setter>

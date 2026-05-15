@@ -76,6 +76,16 @@ internal sealed record TreeStats(
     double CardGridContentPerRoot,
     double CardGridItemPerRoot,
     double CardTabsContentPerRoot,
+    double CarouselPerRoot,
+    double CarouselPagePerRoot,
+    double CarouselPaginationPerRoot,
+    double CarouselPageIndicatorPerRoot,
+    double CarouselNavButtonPerRoot,
+    double CarouselLayoutTransformPerRoot,
+    double CarouselProgressBorderPerRoot,
+    double CarouselPageTransitionFieldPerRoot,
+    double CarouselAutoPlayTimerFieldPerRoot,
+    double CarouselIndicatorAnimationFieldPerRoot,
     double SkeletonPerRoot,
     double SkeletonAvatarPerRoot,
     double SkeletonTitlePerRoot,
@@ -151,6 +161,16 @@ internal sealed record TreeStats(
         var cardGridContentCount             = 0;
         var cardGridItemCount                = 0;
         var cardTabsContentCount             = 0;
+        var carouselCount                    = 0;
+        var carouselPageCount                = 0;
+        var carouselPaginationCount          = 0;
+        var carouselPageIndicatorCount       = 0;
+        var carouselNavButtonCount           = 0;
+        var carouselLayoutTransformCount     = 0;
+        var carouselProgressBorderCount      = 0;
+        var carouselPageTransitionFieldCount = 0;
+        var carouselAutoPlayTimerFieldCount  = 0;
+        var carouselIndicatorAnimationFieldCount = 0;
         var skeletonCount                    = 0;
         var skeletonAvatarCount              = 0;
         var skeletonTitleCount               = 0;
@@ -310,6 +330,48 @@ internal sealed record TreeStats(
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardTabsContent"))
                 {
                     cardTabsContentCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Carousel"))
+                {
+                    carouselCount++;
+                    if (visual is AtomUI.Desktop.Controls.Carousel carousel && carousel.PageTransition is not null)
+                    {
+                        carouselPageTransitionFieldCount++;
+                    }
+                    if (HasFieldValue(visual, "AtomUI.Desktop.Controls.Carousel", "_autoPlayTimer"))
+                    {
+                        carouselAutoPlayTimerFieldCount++;
+                    }
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselPage"))
+                {
+                    carouselPageCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselPagination"))
+                {
+                    carouselPaginationCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselPageIndicator"))
+                {
+                    carouselPageIndicatorCount++;
+                    if (HasFieldValue(visual, "AtomUI.Desktop.Controls.CarouselPageIndicator", "_animation"))
+                    {
+                        carouselIndicatorAnimationFieldCount++;
+                    }
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CarouselNavButton"))
+                {
+                    carouselNavButtonCount++;
+                }
+                if (visual is LayoutTransformControl { Name: "PaginationLayoutTransform" })
+                {
+                    carouselLayoutTransformCount++;
+                }
+                if (visual is Border { Name: "Progress" } progressBorder &&
+                    progressBorder.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.CarouselPageIndicator")))
+                {
+                    carouselProgressBorderCount++;
                 }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Skeleton"))
                 {
@@ -519,6 +581,16 @@ internal sealed record TreeStats(
             cardGridContentCount / (double)rootCount,
             cardGridItemCount / (double)rootCount,
             cardTabsContentCount / (double)rootCount,
+            carouselCount / (double)rootCount,
+            carouselPageCount / (double)rootCount,
+            carouselPaginationCount / (double)rootCount,
+            carouselPageIndicatorCount / (double)rootCount,
+            carouselNavButtonCount / (double)rootCount,
+            carouselLayoutTransformCount / (double)rootCount,
+            carouselProgressBorderCount / (double)rootCount,
+            carouselPageTransitionFieldCount / (double)rootCount,
+            carouselAutoPlayTimerFieldCount / (double)rootCount,
+            carouselIndicatorAnimationFieldCount / (double)rootCount,
             skeletonCount / (double)rootCount,
             skeletonAvatarCount / (double)rootCount,
             skeletonTitleCount / (double)rootCount,

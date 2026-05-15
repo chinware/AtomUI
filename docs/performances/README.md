@@ -50,6 +50,7 @@
 | Avatar | 本轮已完成 | [Avatar](Avatar/README.md) | `AvatarShowCase` repeated mean `42.33ms -> 32.54ms`，visuals `360 -> 258`，alloc `7252.55KB -> 5824.01KB` |
 | Badge | 本轮已完成 | [Badge](Badge/README.md) | hidden zero `CountBadgeAdorner/root 1 -> 0`，`DotBadge` 无文本 `Label/root 1 -> 0`；`BadgeShowCase` visuals `497 -> 485` |
 | Card | 本轮已完成 | [Card](Card/README.md) | `CardShowCase` repeated mean `78.11ms -> 50.66ms`，visuals `784 -> 582`；`CardActionPanel 18 -> 3`，`Skeleton 18 -> 0` |
+| Carousel | 本轮已完成 | [Carousel](Carousel/README.md) | `CarouselShowCase` alloc `6113.86KB -> 5213.10KB`，visuals `369 -> 326`；nav `14 -> 4`，progress `28 -> 1`，transition `7 -> 0`，repeated mean 基本持平 |
 
 ## 总列表
 
@@ -95,7 +96,7 @@
 | Data Display | Badge | Done | [Badge](Badge/README.md)；hidden zero 和无文本 DotBadge 已按需创建，Gallery visual/alloc 下降，导航 timing 收益有限 |
 | Data Display | Calendar | Pending | 待建立基线 |
 | Data Display | Card | Done | [Card](Card/README.md)；Header/Cover/Actions/Skeleton 已按需创建，Gallery repeated mean 提升约 `35.14%` |
-| Data Display | Carousel | Pending | 待建立基线 |
+| Data Display | Carousel | Done | [Carousel](Carousel/README.md)；nav/progress/PageTransition 已按需创建，真实 Gallery alloc `6113.86KB -> 5213.10KB`，cold `164.35ms -> 149.05ms`，repeated timing 基本持平 |
 | Data Display | Collapse | Pending | 待建立基线 |
 | Data Display | Descriptions | Pending | 待建立基线 |
 | Data Display | DataGrid | Pending | 待建立基线 |

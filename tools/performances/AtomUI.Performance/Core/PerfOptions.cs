@@ -17,7 +17,8 @@ internal sealed record PerfOptions(
     bool VerifyAvatarStates,
     bool VerifyBadgeStates,
     bool VerifyButtonSpinnerStates,
-    bool VerifyCardStates)
+    bool VerifyCardStates,
+    bool VerifyCarouselStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -38,6 +39,7 @@ internal sealed record PerfOptions(
         var verifyBadgeStates     = false;
         var verifyButtonSpinnerStates = false;
         var verifyCardStates      = false;
+        var verifyCarouselStates  = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -97,6 +99,9 @@ internal sealed record PerfOptions(
                 case "--verify-card-states":
                     verifyCardStates = true;
                     break;
+                case "--verify-carousel-states":
+                    verifyCarouselStates = true;
+                    break;
             }
         }
 
@@ -117,6 +122,7 @@ internal sealed record PerfOptions(
             verifyAvatarStates,
             verifyBadgeStates,
             verifyButtonSpinnerStates,
-            verifyCardStates);
+            verifyCardStates,
+            verifyCarouselStates);
     }
 }

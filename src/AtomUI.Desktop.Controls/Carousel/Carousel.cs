@@ -1,14 +1,19 @@
 using AtomUI.Controls;
+using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using AtomUI.Theme;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -223,7 +228,7 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     internal Thickness EffectivePreviousButtonMargin
     {
         get => _effectivePreviousButtonMargin;
-        set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectivePreviousButtonMargin, value);
+        set => SetAndRaise(EffectivePreviousButtonMarginProperty, ref _effectivePreviousButtonMargin, value);
     }
     
     private Thickness _effectiveNextButtonMargin;
@@ -231,7 +236,7 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     internal Thickness EffectiveNextButtonMargin
     {
         get => _effectiveNextButtonMargin;
-        set => SetAndRaise(EffectivePaginationMarginProperty, ref _effectiveNextButtonMargin, value);
+        set => SetAndRaise(EffectiveNextButtonMarginProperty, ref _effectiveNextButtonMargin, value);
     }
     
     private bool _isEffectiveShowTransitionProgress;
@@ -258,15 +263,18 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
 
     #endregion
     
+    private Panel? _rootLayout;
     private IScrollable? _scroller;
     private CarouselPagination? _pagination;
+    private LayoutTransformControl? _paginationLayoutTransform;
     private DispatcherTimer? _autoPlayTimer;
-    private IconButton? _previousButton;
-    private IconButton? _nextButton;
+    private CarouselNavButton? _previousButton;
+    private CarouselNavButton? _nextButton;
     private bool _isPointerGestureActive;
     private Point _pointerPressPoint;
     private const double SwipeGestureThreshold = 30;
     private bool _isSwipeCursorActive;
+    private bool _isSyncingPaginationSelection;
     
     static Carousel()
     {
@@ -323,7 +331,7 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     {
         var result = base.ArrangeOverride(finalSize);
 
-        if (_scroller is not null)
+        if (_scroller is not null && !MathUtils.AreClose(_scroller.Offset.X, SelectedIndex))
         {
             _scroller.Offset = new(SelectedIndex, 0);
         }
@@ -333,22 +341,16 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleaseTemplateChildren();
         base.OnApplyTemplate(e);
-        _scroller       = e.NameScope.Find<IScrollable>("PART_ScrollViewer");
-        _pagination     = e.NameScope.Find<CarouselPagination>("PART_Pagination");
-        _previousButton = e.NameScope.Find<IconButton>("PART_PreviousButton");
-        _nextButton     = e.NameScope.Find<IconButton>("PART_NextButton");
-        BuildEffectivePageTransition(false);
+        _rootLayout = e.NameScope.Find<Panel>("PART_RootLayout");
+        _scroller   = e.NameScope.Find<IScrollable>("PART_ScrollViewer");
+        ConfigurePaginationMargin();
+        ConfigureNavButtonsMargin();
+        UpdateEffectiveTransitionProgress();
+        UpdatePagination();
         ConfigureNavButtons();
-        if (_previousButton != null)
-        {
-            _previousButton.Click += HandlePreviousButtonClick;
-        }
-
-        if (_nextButton != null)
-        {
-            _nextButton.Click += HandleNextButtonClick;
-        }
+        ConfigureEffectivePageTransition();
     }
 
     private void HandlePreviousButtonClick(object? sender, RoutedEventArgs args)
@@ -418,11 +420,16 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
 
         if (change.Property == SelectedIndexProperty)
         {
+            EnsurePageTransitionForSelectionChange();
             if (_scroller is not null)
             {
                 var value = change.GetNewValue<int>();
-                _scroller.Offset = new(value, 0);
+                if (!MathUtils.AreClose(_scroller.Offset.X, value))
+                {
+                    _scroller.Offset = new(value, 0);
+                }
             }
+            SyncPaginationSelection();
             ConfigureNavButtons();
         }
         else if (change.Property == IsInfiniteProperty ||
@@ -436,10 +443,27 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
         {
             ConfigurePaginationMargin();
             ConfigureNavButtonsMargin();
+            UpdatePaginationPlacement();
+            SyncNavButtonProperties();
         }
         else if (change.Property == TransitionEffectProperty)
         {
-            BuildEffectivePageTransition(true);
+            RebuildExistingPageTransition();
+        }
+        else if (change.Property == PageTransitionDurationProperty ||
+                 change.Property == PageInEasingProperty ||
+                 change.Property == PageOutEasingProperty)
+        {
+            ConfigureEffectivePageTransition();
+        }
+        else if (change.Property == IsShowPaginationProperty)
+        {
+            UpdatePagination();
+        }
+        else if (change.Property == IndicatorItemsProperty ||
+                 change.Property == IsEffectiveShowTransitionProgressProperty)
+        {
+            SyncPaginationProperties();
         }
 
         if (change.Property == PaginationPositionProperty)
@@ -457,6 +481,15 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
         else if (change.Property == AutoPlaySpeedProperty)
         {
             ConfigureAutoPlayTimer();
+            SyncPaginationProperties();
+        }
+        else if (change.Property == IsMotionEnabledProperty)
+        {
+            if (!IsMotionEnabled)
+            {
+                SetCurrentValue(PageTransitionProperty, null);
+            }
+            SyncPaginationProperties();
         }
         else if (change.Property == IsSwipeEnabledProperty)
         {
@@ -474,14 +507,7 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
         if (change.Property == IsAutoPlayProperty ||
             change.Property == IsShowTransitionProgressProperty)
         {
-            if (IsAutoPlay)
-            {
-                SetCurrentValue(IsEffectiveShowTransitionProgressProperty, IsShowTransitionProgress);
-            }
-            else
-            {
-                SetCurrentValue(IsEffectiveShowTransitionProgressProperty, false);
-            }
+            UpdateEffectiveTransitionProgress();
         }
     }
 
@@ -593,14 +619,368 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (IsAutoPlay)
+        _autoPlayTimer?.Stop();
+    }
+
+    private void ReleaseTemplateChildren()
+    {
+        ReleaseNavButtons();
+        ReleasePagination();
+        _rootLayout = null;
+        _scroller   = null;
+    }
+
+    private void UpdateNavButtons()
+    {
+        if (!IsShowNavButtons)
         {
-            _autoPlayTimer?.Stop();
+            ReleaseNavButtons();
+            return;
+        }
+
+        if (_rootLayout is null)
+        {
+            return;
+        }
+
+        EnsureNavButtons();
+        EnsureOverlayOrder();
+    }
+
+    private void EnsureNavButtons()
+    {
+        if (_previousButton is null)
+        {
+            _previousButton = new CarouselNavButton
+            {
+                Name = "PART_PreviousButton"
+            };
+            _previousButton.SetValue(IconButton.IconProperty, new LeftOutlined(), BindingPriority.Template);
+            _previousButton.SetTemplatedParent(this);
+            _previousButton.Click += HandlePreviousButtonClick;
+        }
+
+        if (_nextButton is null)
+        {
+            _nextButton = new CarouselNavButton
+            {
+                Name = "PART_NextButton"
+            };
+            _nextButton.SetValue(IconButton.IconProperty, new RightOutlined(), BindingPriority.Template);
+            _nextButton.SetTemplatedParent(this);
+            _nextButton.Click += HandleNextButtonClick;
+        }
+
+        if (!_rootLayout!.Children.Contains(_previousButton))
+        {
+            _rootLayout.Children.Add(_previousButton);
+        }
+        if (!_rootLayout.Children.Contains(_nextButton))
+        {
+            _rootLayout.Children.Add(_nextButton);
+        }
+    }
+
+    private void ReleaseNavButtons()
+    {
+        ReleaseNavButton(ref _previousButton, HandlePreviousButtonClick);
+        ReleaseNavButton(ref _nextButton, HandleNextButtonClick);
+    }
+
+    private void ReleaseNavButton(ref CarouselNavButton? button, EventHandler<RoutedEventArgs> clickHandler)
+    {
+        if (button is null)
+        {
+            return;
+        }
+
+        button.Click -= clickHandler;
+        RemoveFromVisualParent(button);
+        button.ClearValue(IconButton.IconProperty);
+        button.SetTemplatedParent(null);
+        button = null;
+    }
+
+    private void SyncNavButtonProperties()
+    {
+        if (_previousButton is null || _nextButton is null)
+        {
+            return;
+        }
+
+        _previousButton.SetValue(MarginProperty, EffectivePreviousButtonMargin, BindingPriority.Template);
+        _previousButton.SetValue(IsVisibleProperty, PreviousNavButtonVisible, BindingPriority.Template);
+        _nextButton.SetValue(MarginProperty, EffectiveNextButtonMargin, BindingPriority.Template);
+        _nextButton.SetValue(IsVisibleProperty, NextNavButtonVisible, BindingPriority.Template);
+
+        if (IsVerticalPaginationPosition())
+        {
+            _previousButton.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
+            _previousButton.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, BindingPriority.Template);
+            _previousButton.SetValue(RenderTransformProperty, new RotateTransform(90), BindingPriority.Template);
+            _nextButton.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
+            _nextButton.SetValue(VerticalAlignmentProperty, VerticalAlignment.Bottom, BindingPriority.Template);
+            _nextButton.SetValue(RenderTransformProperty, new RotateTransform(90), BindingPriority.Template);
+        }
+        else
+        {
+            _previousButton.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Template);
+            _previousButton.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
+            _previousButton.SetValue(RenderTransformProperty, null, BindingPriority.Template);
+            _nextButton.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Right, BindingPriority.Template);
+            _nextButton.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
+            _nextButton.SetValue(RenderTransformProperty, null, BindingPriority.Template);
+        }
+    }
+
+    private void UpdatePagination()
+    {
+        if (!IsShowPagination)
+        {
+            ReleasePagination();
+            return;
+        }
+
+        if (_rootLayout is null)
+        {
+            return;
+        }
+
+        EnsurePagination();
+        UpdatePaginationPlacement();
+        SyncPaginationProperties();
+        EnsureOverlayOrder();
+    }
+
+    private void EnsurePagination()
+    {
+        if (_pagination is not null)
+        {
+            return;
+        }
+
+        _pagination = new CarouselPagination
+        {
+            Name = "PART_Pagination"
+        };
+        _pagination.SetTemplatedParent(this);
+        _pagination.SelectionChanged += HandlePaginationSelectionChanged;
+    }
+
+    private void UpdatePaginationPlacement()
+    {
+        if (_rootLayout is null || _pagination is null)
+        {
+            return;
+        }
+
+        if (IsVerticalPaginationPosition())
+        {
+            EnsurePaginationLayoutTransform();
+            if (_pagination.GetVisualParent() is Panel directParent)
+            {
+                directParent.Children.Remove(_pagination);
+            }
+            if (!ReferenceEquals(_paginationLayoutTransform!.Child, _pagination))
+            {
+                _paginationLayoutTransform.Child = _pagination;
+            }
+            if (!_rootLayout.Children.Contains(_paginationLayoutTransform))
+            {
+                _rootLayout.Children.Add(_paginationLayoutTransform);
+            }
+        }
+        else
+        {
+            if (_paginationLayoutTransform is not null)
+            {
+                if (ReferenceEquals(_paginationLayoutTransform.Child, _pagination))
+                {
+                    _paginationLayoutTransform.Child = null;
+                }
+                RemoveFromVisualParent(_paginationLayoutTransform);
+                _paginationLayoutTransform.SetTemplatedParent(null);
+                _paginationLayoutTransform = null;
+            }
+            if (!_rootLayout.Children.Contains(_pagination))
+            {
+                _rootLayout.Children.Add(_pagination);
+            }
+        }
+
+        SyncPaginationHostPlacement(GetPaginationHost());
+        EnsureOverlayOrder();
+    }
+
+    private Control GetPaginationHost()
+    {
+        return _paginationLayoutTransform ?? (Control)_pagination!;
+    }
+
+    private void EnsurePaginationLayoutTransform()
+    {
+        if (_paginationLayoutTransform is not null)
+        {
+            return;
+        }
+
+        _paginationLayoutTransform = new LayoutTransformControl
+        {
+            Name = "PaginationLayoutTransform"
+        };
+        _paginationLayoutTransform.SetTemplatedParent(this);
+    }
+
+    private void ReleasePagination()
+    {
+        if (_pagination is not null)
+        {
+            _pagination.SelectionChanged -= HandlePaginationSelectionChanged;
+            if (_paginationLayoutTransform is not null &&
+                ReferenceEquals(_paginationLayoutTransform.Child, _pagination))
+            {
+                _paginationLayoutTransform.Child = null;
+            }
+            RemoveFromVisualParent(_pagination);
+            _pagination.ClearValue(ItemsSourceProperty);
+            _pagination.SetTemplatedParent(null);
+            _pagination = null;
+        }
+
+        if (_paginationLayoutTransform is not null)
+        {
+            _paginationLayoutTransform.Child = null;
+            RemoveFromVisualParent(_paginationLayoutTransform);
+            _paginationLayoutTransform.SetTemplatedParent(null);
+            _paginationLayoutTransform = null;
+        }
+    }
+
+    private void SyncPaginationProperties()
+    {
+        if (_pagination is null)
+        {
+            return;
+        }
+
+        _pagination.SetValue(CarouselPagination.IsMotionEnabledProperty, IsMotionEnabled, BindingPriority.Template);
+        _pagination.SetValue(CarouselPagination.IsShowTransitionProgressProperty, IsEffectiveShowTransitionProgress, BindingPriority.Template);
+        _pagination.SetValue(CarouselPagination.AutoPlaySpeedProperty, AutoPlaySpeed, BindingPriority.Template);
+        _pagination.SetValue(ItemsSourceProperty, IndicatorItems, BindingPriority.Template);
+        SyncPaginationSelection();
+    }
+
+    private void SyncPaginationSelection()
+    {
+        if (_pagination is null || _isSyncingPaginationSelection)
+        {
+            return;
+        }
+
+        if (_pagination.SelectedIndex == SelectedIndex)
+        {
+            return;
+        }
+
+        _isSyncingPaginationSelection = true;
+        _pagination.SetCurrentValue(SelectedIndexProperty, SelectedIndex);
+        _isSyncingPaginationSelection = false;
+    }
+
+    private void HandlePaginationSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        if (_pagination is null || _isSyncingPaginationSelection)
+        {
+            return;
+        }
+
+        if (_pagination.SelectedIndex >= 0 && _pagination.SelectedIndex != SelectedIndex)
+        {
+            SetCurrentValue(SelectedIndexProperty, _pagination.SelectedIndex);
+        }
+    }
+
+    private void SyncPaginationHostPlacement(Control host)
+    {
+        host.SetValue(MarginProperty, EffectivePaginationMargin, BindingPriority.Template);
+        host.SetValue(IsVisibleProperty, IsShowPagination, BindingPriority.Template);
+        if (host is LayoutTransformControl layoutTransform)
+        {
+            layoutTransform.SetValue(LayoutTransformControl.LayoutTransformProperty, new RotateTransform(90), BindingPriority.Template);
+        }
+
+        switch (PaginationPosition)
+        {
+            case CarouselPaginationPosition.Top:
+                host.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
+                host.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, BindingPriority.Template);
+                break;
+            case CarouselPaginationPosition.Left:
+                host.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Left, BindingPriority.Template);
+                host.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
+                break;
+            case CarouselPaginationPosition.Right:
+                host.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Right, BindingPriority.Template);
+                host.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center, BindingPriority.Template);
+                break;
+            default:
+                host.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center, BindingPriority.Template);
+                host.SetValue(VerticalAlignmentProperty, VerticalAlignment.Bottom, BindingPriority.Template);
+                break;
+        }
+    }
+
+    private void EnsureOverlayOrder()
+    {
+        if (_rootLayout is null)
+        {
+            return;
+        }
+
+        MoveChildToEnd(_previousButton);
+        MoveChildToEnd(_nextButton);
+        MoveChildToEnd(_paginationLayoutTransform ?? (Control?)_pagination);
+    }
+
+    private void MoveChildToEnd(Control? child)
+    {
+        if (child is null || _rootLayout is null)
+        {
+            return;
+        }
+
+        var index = _rootLayout.Children.IndexOf(child);
+        if (index < 0 || index == _rootLayout.Children.Count - 1)
+        {
+            return;
+        }
+
+        _rootLayout.Children.RemoveAt(index);
+        _rootLayout.Children.Add(child);
+    }
+
+    private bool IsVerticalPaginationPosition()
+    {
+        return PaginationPosition == CarouselPaginationPosition.Left ||
+               PaginationPosition == CarouselPaginationPosition.Right;
+    }
+
+    private static void RemoveFromVisualParent(Control control)
+    {
+        var parent = control.GetVisualParent();
+        if (parent is Panel panel)
+        {
+            panel.Children.Remove(control);
+        }
+        else if (parent is Decorator decorator && ReferenceEquals(decorator.Child, control))
+        {
+            decorator.Child = null;
         }
     }
 
     private void ConfigureNavButtons()
     {
+        UpdateNavButtons();
         if (IsShowNavButtons)
         {
             if (IsInfinite)
@@ -619,6 +999,7 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
             SetCurrentValue(PreviousNavButtonVisibleProperty, false);
             SetCurrentValue(NextNavButtonVisibleProperty, false);
         }
+        SyncNavButtonProperties();
     }
 
     private void ConfigurePaginationMargin()
@@ -657,9 +1038,39 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
         }
     }
 
+    private void EnsurePageTransitionForSelectionChange()
+    {
+        if (_scroller is null || !IsMotionEnabled)
+        {
+            if (!IsMotionEnabled)
+            {
+                SetCurrentValue(PageTransitionProperty, null);
+            }
+            return;
+        }
+
+        BuildEffectivePageTransition(PageTransition is null);
+    }
+
+    private void RebuildExistingPageTransition()
+    {
+        if (PageTransition is null)
+        {
+            return;
+        }
+
+        BuildEffectivePageTransition(true);
+    }
+
     private void BuildEffectivePageTransition(bool force)
     {
-        if (PageTransition == null || force)
+        if (!IsMotionEnabled)
+        {
+            SetCurrentValue(PageTransitionProperty, null);
+            return;
+        }
+
+        if (PageTransition is null || force)
         {
             if (TransitionEffect == CarouselTransitionEffect.Fade)
             {
@@ -711,6 +1122,10 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
             _autoPlayTimer      =  new DispatcherTimer();
             _autoPlayTimer.Tick += HandleAutoPlayTick;
             ConfigureAutoPlayTimer();
+            if (this.IsAttachedToVisualTree())
+            {
+                _autoPlayTimer.Start();
+            }
         }
         else
         {
@@ -734,5 +1149,10 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
         {
             _autoPlayTimer.Interval = AutoPlaySpeed;
         }
+    }
+
+    private void UpdateEffectiveTransitionProgress()
+    {
+        SetCurrentValue(IsEffectiveShowTransitionProgressProperty, IsAutoPlay && IsShowTransitionProgress);
     }
 }

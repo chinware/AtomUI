@@ -9,6 +9,22 @@
             <themes:IconButtonTheme TargetType="{x:Type atom:CarouselNavButton}" />
         </ControlTheme.BasedOn>
 
+        <Style Selector="^:is(atom|CarouselNavButton)">
+            <Setter Property="IconWidth" Value="{atom:CarouselTokenResource ArrowSize}" />
+            <Setter Property="IconHeight" Value="{atom:CarouselTokenResource ArrowSize}" />
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="Opacity" Value="0.2" />
+
+            <Style Selector="^:pointerover">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
+                <Setter Property="Opacity" Value="1.0" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            </Style>
+        </Style>
+
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>
@@ -18,5 +34,6 @@
                 </Transitions>
             </Setter>
         </Style>
+
     </ControlTheme>
 </ResourceDictionary>

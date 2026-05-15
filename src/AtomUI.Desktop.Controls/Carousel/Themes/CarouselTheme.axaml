@@ -2,12 +2,11 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:Carousel}" TargetType="atom:Carousel">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
+                <Panel Name="PART_RootLayout">
                     <atom:ScrollViewer Name="PART_ScrollViewer"
                                        Background="{TemplateBinding Background}"
                                        HorizontalScrollBarVisibility="Hidden"
@@ -17,24 +16,6 @@
                             Margin="{TemplateBinding Padding}"
                             ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </atom:ScrollViewer>
-                    <atom:CarouselNavButton Name="PART_PreviousButton"
-                                            Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
-                                            Margin="{TemplateBinding EffectivePreviousButtonMargin}"
-                                            IsVisible="{TemplateBinding PreviousNavButtonVisible}" />
-                    <atom:CarouselNavButton Name="PART_NextButton"
-                                            Icon="{antdicons:AntDesignIconProvider RightOutlined}"
-                                            Margin="{TemplateBinding EffectiveNextButtonMargin}"
-                                            IsVisible="{TemplateBinding NextNavButtonVisible}" />
-                    <LayoutTransformControl Name="PaginationLayoutTransform"
-                                            Margin="{TemplateBinding EffectivePaginationMargin}"
-                                            IsVisible="{TemplateBinding IsShowPagination}">
-                        <atom:CarouselPagination Name="PART_Pagination"
-                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                 IsShowTransitionProgress="{TemplateBinding IsEffectiveShowTransitionProgress}"
-                                                 AutoPlaySpeed="{TemplateBinding AutoPlaySpeed}" 
-                                                 SelectedIndex="{TemplateBinding SelectedIndex, Mode=TwoWay}"
-                                                 ItemsSource="{TemplateBinding IndicatorItems}"/>
-                    </LayoutTransformControl>
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -56,80 +37,6 @@
         <Style Selector="^ /template/ atom|CarouselNavButton">
             <Style Selector="^:pointerover">
                 <Setter Property="Opacity" Value="1.0" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[PaginationPosition=Top]">
-            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[PaginationPosition=Bottom]">
-            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Bottom" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[PaginationPosition=Left]">
-            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="RenderTransform" Value="rotate(90deg)" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Bottom" />
-                <Setter Property="RenderTransform" Value="rotate(90deg)" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[PaginationPosition=Right]">
-            <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
-                <Setter Property="HorizontalAlignment" Value="Right" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="LayoutTransform" Value="rotate(90deg)" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_PreviousButton">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-                <Setter Property="RenderTransform" Value="rotate(90deg)" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|CarouselNavButton#PART_NextButton">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Bottom" />
-                <Setter Property="RenderTransform" Value="rotate(90deg)" />
             </Style>
         </Style>
 
