@@ -20,7 +20,8 @@ internal sealed record PerfOptions(
     bool VerifyCardStates,
     bool VerifyCarouselStates,
     bool VerifyCascaderStates,
-    bool VerifyCheckBoxStates)
+    bool VerifyCheckBoxStates,
+    bool VerifyCollapseStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -44,6 +45,7 @@ internal sealed record PerfOptions(
         var verifyCarouselStates  = false;
         var verifyCascaderStates  = false;
         var verifyCheckBoxStates  = false;
+        var verifyCollapseStates  = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -112,6 +114,9 @@ internal sealed record PerfOptions(
                 case "--verify-checkbox-states":
                     verifyCheckBoxStates = true;
                     break;
+                case "--verify-collapse-states":
+                    verifyCollapseStates = true;
+                    break;
             }
         }
 
@@ -135,6 +140,7 @@ internal sealed record PerfOptions(
             verifyCardStates,
             verifyCarouselStates,
             verifyCascaderStates,
-            verifyCheckBoxStates);
+            verifyCheckBoxStates,
+            verifyCollapseStates);
     }
 }

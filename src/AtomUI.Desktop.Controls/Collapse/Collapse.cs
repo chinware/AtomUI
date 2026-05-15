@@ -1,4 +1,6 @@
-﻿using AtomUI.Controls;
+﻿using System.Collections.Specialized;
+using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -147,12 +149,38 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     public Collapse()
     {
         SelectionChanged += HandleSelectionChanged;
+        Items.CollectionChanged += HandleItemsCollectionChanged;
         this.RegisterTokenResourceScope(CollapseToken.ScopeProvider);
     }
 
+    private readonly Dictionary<CollapseItem, IDisposable> _itemHeaderPaddingBindings = new();
+    private readonly Dictionary<CollapseItem, IDisposable> _itemContentPaddingBindings = new();
+
     private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        SetupItemsBorderThickness();
+        SetupSelectionChangedBorderThickness(args);
+    }
+
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (args.Action == NotifyCollectionChangedAction.Reset)
+        {
+            ReleaseAllItemPaddingBindings();
+            return;
+        }
+
+        if (args.OldItems is null)
+        {
+            return;
+        }
+
+        foreach (var item in args.OldItems)
+        {
+            if (item is CollapseItem collapseItem)
+            {
+                ReleaseItemPaddingBindings(collapseItem);
+            }
+        }
     }
 
     private void SetupItemsBorderThickness()
@@ -161,10 +189,49 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         {
             for (var i = 0; i < ItemCount; ++i)
             {
-                if (Items[i] is CollapseItem collapseItem)
+                if (GetCollapseItemAt(i) is { } collapseItem)
                 {
                     SetupCollapseBorderThickness(collapseItem, i);
                 }
+            }
+        }
+    }
+
+    private void SetupSelectionChangedBorderThickness(SelectionChangedEventArgs args)
+    {
+        if (!this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        var updatedItems = new HashSet<CollapseItem>();
+        UpdateSelectionChangedBorderThickness(args.AddedItems, updatedItems);
+        UpdateSelectionChangedBorderThickness(args.RemovedItems, updatedItems);
+    }
+
+    private void UpdateSelectionChangedBorderThickness(System.Collections.IEnumerable items, ISet<CollapseItem> updatedItems)
+    {
+        foreach (var item in items)
+        {
+            if (item is null)
+            {
+                continue;
+            }
+
+            var collapseItem = item as CollapseItem ?? ContainerFromItem(item) as CollapseItem;
+            if (collapseItem is null || !updatedItems.Add(collapseItem))
+            {
+                continue;
+            }
+
+            var index = IndexFromContainer(collapseItem);
+            if (index < 0)
+            {
+                index = Items.IndexOf(collapseItem);
+            }
+            if (index >= 0)
+            {
+                SetupCollapseBorderThickness(collapseItem, index);
             }
         }
     }
@@ -227,6 +294,16 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         {
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type CollapseItem.");
         }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is CollapseItem collapseItem)
+        {
+            ReleaseItemPaddingBindings(collapseItem);
+        }
+
+        base.ClearContainerForItemOverride(container);
     }
 
     protected virtual void PrepareCollapseItem(CollapseItem collapseItem, object? item, int index)
@@ -335,18 +412,16 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsBorderlessProperty)
+        if (change.Property == IsBorderlessProperty ||
+            change.Property == IsGhostStyleProperty ||
+            change.Property == BorderThicknessProperty)
         {
             SetupEffectiveBorderThickness();
+            SetupItemsBorderThickness();
         }
         else if (change.Property == IsAccordionProperty)
         {
             SetupSelectionMode();
-        }
-        else if (change.Property == IsBorderlessProperty ||
-                 change.Property == IsGhostStyleProperty)
-        {
-            SetupItemsBorderThickness();
         }
         if (change.Property == ItemHeaderPaddingProperty ||
             change.Property == ItemContentPaddingProperty)
@@ -355,8 +430,7 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
             {
                 for (int i = 0; i < ItemCount; i++)
                 {
-                    var item = Items[i];
-                    if (item is CollapseItem collapseItem)
+                    if (GetCollapseItemAt(i) is { } collapseItem)
                     {
                         ConfigureItemPaddings(collapseItem);
                     }
@@ -397,18 +471,98 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     
     private void ConfigureItemPaddings(CollapseItem collapseItem)
     {
-        if (IsSet(ItemHeaderPaddingProperty) &&
-            !collapseItem.IsSet(CollapseItem.HeaderPaddingProperty))
+        if (IsSet(ItemHeaderPaddingProperty))
         {
-            collapseItem.SetValue(CollapseItem.HeaderPaddingProperty, ItemHeaderPadding,
-                BindingPriority.LocalValue);
+            EnsureItemHeaderPaddingBinding(collapseItem);
+        }
+        else
+        {
+            ReleaseItemHeaderPaddingBinding(collapseItem);
         }
 
-        if (IsSet(ItemContentPaddingProperty) &&
-            !collapseItem.IsSet(CollapseItem.ContentPaddingProperty))
+        if (IsSet(ItemContentPaddingProperty))
         {
-            collapseItem.SetValue(CollapseItem.ContentPaddingProperty, ItemContentPadding,
-                BindingPriority.LocalValue);
+            EnsureItemContentPaddingBinding(collapseItem);
         }
+        else
+        {
+            ReleaseItemContentPaddingBinding(collapseItem);
+        }
+    }
+
+    private CollapseItem? GetCollapseItemAt(int index)
+    {
+        return ContainerFromIndex(index) as CollapseItem ?? Items[index] as CollapseItem;
+    }
+
+    private void EnsureItemHeaderPaddingBinding(CollapseItem collapseItem)
+    {
+        if (_itemHeaderPaddingBindings.ContainsKey(collapseItem))
+        {
+            return;
+        }
+
+        _itemHeaderPaddingBindings[collapseItem] = BindUtils.RelayBind(
+            this,
+            ItemHeaderPaddingProperty,
+            collapseItem,
+            CollapseItem.HeaderPaddingProperty,
+            priority: BindingPriority.StyleTrigger);
+    }
+
+    private void EnsureItemContentPaddingBinding(CollapseItem collapseItem)
+    {
+        if (_itemContentPaddingBindings.ContainsKey(collapseItem))
+        {
+            return;
+        }
+
+        _itemContentPaddingBindings[collapseItem] = BindUtils.RelayBind(
+            this,
+            ItemContentPaddingProperty,
+            collapseItem,
+            CollapseItem.ContentPaddingProperty,
+            priority: BindingPriority.StyleTrigger);
+    }
+
+    private void ReleaseItemPaddingBindings(CollapseItem collapseItem)
+    {
+        ReleaseItemHeaderPaddingBinding(collapseItem);
+        ReleaseItemContentPaddingBinding(collapseItem);
+    }
+
+    private void ReleaseAllItemPaddingBindings()
+    {
+        foreach (var binding in _itemHeaderPaddingBindings.Values)
+        {
+            binding.Dispose();
+        }
+        _itemHeaderPaddingBindings.Clear();
+
+        foreach (var binding in _itemContentPaddingBindings.Values)
+        {
+            binding.Dispose();
+        }
+        _itemContentPaddingBindings.Clear();
+    }
+
+    private void ReleaseItemHeaderPaddingBinding(CollapseItem collapseItem)
+    {
+        if (!_itemHeaderPaddingBindings.Remove(collapseItem, out var binding))
+        {
+            return;
+        }
+
+        binding.Dispose();
+    }
+
+    private void ReleaseItemContentPaddingBinding(CollapseItem collapseItem)
+    {
+        if (!_itemContentPaddingBindings.Remove(collapseItem, out var binding))
+        {
+            return;
+        }
+
+        binding.Dispose();
     }
 }

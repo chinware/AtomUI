@@ -33,7 +33,8 @@ internal static partial class Program
             options.VerifyCardStates ||
             options.VerifyCarouselStates ||
             options.VerifyCascaderStates ||
-            options.VerifyCheckBoxStates)
+            options.VerifyCheckBoxStates ||
+            options.VerifyCollapseStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -104,6 +105,10 @@ internal static partial class Program
             {
                 verified &= RunCheckBoxStateVerification();
             }
+            if (options.VerifyCollapseStates)
+            {
+                verified &= RunCollapseStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -152,6 +157,7 @@ internal static partial class Program
             "carousel" => CreateCarouselScenarios(),
             "cascader" => CreateCascaderScenarios(),
             "checkbox" => CreateCheckBoxScenarios(),
+            "collapse" => CreateCollapseScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

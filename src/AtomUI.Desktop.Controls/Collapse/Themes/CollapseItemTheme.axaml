@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:CollapseItem}" TargetType="atom:CollapseItem">
         <Setter Property="Template">
             
@@ -14,16 +13,8 @@
                             DockPanel.Dock="Top"
                             BorderThickness="{TemplateBinding HeaderBorderThickness}"
                             Padding="{TemplateBinding HeaderPadding}">
-                        <Grid ColumnDefinitions="Auto, *, Auto, Auto">
-                            <atom:IconButton
-                                Name="PART_ExpandButton"
-                                Grid.Column="0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                Icon="{TemplateBinding ExpandIcon}"
-                                IsVisible="{TemplateBinding IsShowExpandIcon}"
-                                IsEnabled="{TemplateBinding IsEnabled}"/>
+                        <Grid Name="PART_HeaderLayout"
+                              ColumnDefinitions="Auto, *, Auto, Auto">
                             <ContentPresenter Name="PART_HeaderPresenter"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Center"
@@ -33,26 +24,8 @@
                                               Content="{TemplateBinding Header}"
                                               ContentTemplate="{TemplateBinding HeaderTemplate}"
                                               Grid.Column="1" />
-                            <ContentPresenter
-                                Name="PART_AddOnContentPresenter"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                HorizontalContentAlignment="Left"
-                                VerticalContentAlignment="Center"
-                                Content="{TemplateBinding AddOnContent}"
-                                ContentTemplate="{TemplateBinding AddOnContentTemplate}"
-                                Grid.Column="2" />
                         </Grid>
                     </Border>
-                    <atom:LayoutAwareMotionActor
-                        Name="PART_ContentMotionActor"
-                        ClipToBounds="True">
-                        <ContentPresenter Name="PART_ContentPresenter"
-                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          BorderThickness="{TemplateBinding ContentBorderThickness}"
-                                          Padding="{TemplateBinding ContentPadding}"/>
-                    </atom:LayoutAwareMotionActor>
                 </DockPanel>
             </ControlTemplate>
         </Setter>

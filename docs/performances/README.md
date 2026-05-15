@@ -53,6 +53,7 @@
 | Carousel | 本轮已完成 | [Carousel](Carousel/README.md) | `CarouselShowCase` alloc `6113.86KB -> 5213.10KB`，visuals `369 -> 326`；nav `14 -> 4`，progress `28 -> 1`，transition `7 -> 0`，repeated mean 基本持平 |
 | Cascader | 本轮已完成 | [Cascader](Cascader/README.md) | filter/multiple closed visual `41/25 -> 20`；`CascaderShowCase` visuals `1250 -> 1169`，repeated mean `141.81ms -> 133.27ms` |
 | CheckBox | 本轮已完成 | [CheckBox](CheckBox/README.md) | 默认 unchecked `visuals 12 -> 8`，contentless unchecked `11 -> 6`，`CheckBoxShowCase` visuals `420 -> 318`，repeated alloc `6385.60KB -> 4629.80KB` |
+| Collapse | 本轮已完成 | [Collapse](Collapse/README.md) | `CollapseShowCase` repeated mean `119.31ms -> 100.18ms`，visuals `616 -> 553`；content motion `33 -> 1`，addon presenter `33 -> 3` |
 
 ## 总列表
 
@@ -99,7 +100,7 @@
 | Data Display | Calendar | Pending | 待建立基线 |
 | Data Display | Card | Done | [Card](Card/README.md)；Header/Cover/Actions/Skeleton 已按需创建，Gallery repeated mean 提升约 `35.14%` |
 | Data Display | Carousel | Done | [Carousel](Carousel/README.md)；nav/progress/PageTransition 已按需创建，真实 Gallery alloc `6113.86KB -> 5213.10KB`，cold `164.35ms -> 149.05ms`，repeated timing 基本持平 |
-| Data Display | Collapse | Pending | 待建立基线 |
+| Data Display | Collapse | Done | [Collapse](Collapse/README.md)；addon、no-arrow、closed content 已按需创建，Gallery repeated mean 提升约 `16.03%` |
 | Data Display | Descriptions | Pending | 待建立基线 |
 | Data Display | DataGrid | Pending | 待建立基线 |
 | Data Display | Expander | Pending | 待建立基线 |

@@ -76,6 +76,11 @@ internal sealed record TreeStats(
     double CardGridContentPerRoot,
     double CardGridItemPerRoot,
     double CardTabsContentPerRoot,
+    double CollapsePerRoot,
+    double CollapseItemPerRoot,
+    double CollapseContentMotionActorPerRoot,
+    double CollapseExpandButtonPerRoot,
+    double CollapseAddOnPresenterPerRoot,
     double CarouselPerRoot,
     double CarouselPagePerRoot,
     double CarouselPaginationPerRoot,
@@ -167,6 +172,11 @@ internal sealed record TreeStats(
         var cardGridContentCount             = 0;
         var cardGridItemCount                = 0;
         var cardTabsContentCount             = 0;
+        var collapseCount                    = 0;
+        var collapseItemCount                = 0;
+        var collapseContentMotionActorCount  = 0;
+        var collapseExpandButtonCount        = 0;
+        var collapseAddOnPresenterCount      = 0;
         var carouselCount                    = 0;
         var carouselPageCount                = 0;
         var carouselPaginationCount          = 0;
@@ -342,6 +352,32 @@ internal sealed record TreeStats(
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardTabsContent"))
                 {
                     cardTabsContentCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Collapse"))
+                {
+                    collapseCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CollapseItem"))
+                {
+                    collapseItemCount++;
+                }
+                if (visual is Control { Name: "PART_ContentMotionActor" } contentMotionActor &&
+                    contentMotionActor.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.CollapseItem")))
+                {
+                    collapseContentMotionActorCount++;
+                }
+                if (visual is Control { Name: "PART_ExpandButton" } expandButton &&
+                    expandButton.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.CollapseItem")))
+                {
+                    collapseExpandButtonCount++;
+                }
+                if (visual is ContentPresenter { Name: "PART_AddOnContentPresenter" } addOnPresenter &&
+                    addOnPresenter.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.CollapseItem")))
+                {
+                    collapseAddOnPresenterCount++;
                 }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Carousel"))
                 {
@@ -617,6 +653,11 @@ internal sealed record TreeStats(
             cardGridContentCount / (double)rootCount,
             cardGridItemCount / (double)rootCount,
             cardTabsContentCount / (double)rootCount,
+            collapseCount / (double)rootCount,
+            collapseItemCount / (double)rootCount,
+            collapseContentMotionActorCount / (double)rootCount,
+            collapseExpandButtonCount / (double)rootCount,
+            collapseAddOnPresenterCount / (double)rootCount,
             carouselCount / (double)rootCount,
             carouselPageCount / (double)rootCount,
             carouselPaginationCount / (double)rootCount,

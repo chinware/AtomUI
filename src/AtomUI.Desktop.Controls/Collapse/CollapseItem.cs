@@ -1,18 +1,25 @@
-﻿using System.Diagnostics;
+﻿using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Controls.Commons;
+using AtomUI.Controls.Converters;
+using AtomUI.Controls.Primitives;
+using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -196,9 +203,20 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         AffectsRender<CollapseItem>(HeaderBorderThicknessProperty, ContentBorderThicknessProperty);
     }
     
+    private static readonly StringToTextBlockConverter ContentTextConverter = new()
+    {
+        VerticalAlignment = VerticalAlignment.Center
+    };
+
+    private DockPanel? _mainLayout;
+    private Grid? _headerLayout;
     private BaseMotionActor? _motionActor;
+    private ContentPresenter? _contentPresenter;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
+    private ContentPresenter? _addOnContentPresenter;
+    private PathIcon? _defaultExpandIcon;
+    private CompositeDisposable? _contentBindings;
 
     internal bool InAnimating { get; private set; }
 
@@ -244,22 +262,18 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachExpandButton();
+        DetachAddOnContentPresenter();
+        DetachContentMotionActor();
         base.OnApplyTemplate(e);
 
-        if (_expandButton is not null)
-        {
-            _expandButton.Click -= HandleExpandButtonClick;
-        }
-
-        _motionActor           = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
+        _mainLayout            = e.NameScope.Find<DockPanel>("PART_MainLayout");
+        _headerLayout          = e.NameScope.Find<Grid>("PART_HeaderLayout");
         _headerDecorator       = e.NameScope.Find<Border>("PART_HeaderDecorator");
-        _expandButton          = e.NameScope.Find<IconButton>("PART_ExpandButton");
 
+        UpdateExpandButton();
+        UpdateAddOnContentPresenter();
         HandleSelectedChanged(true);
-        if (_expandButton is not null)
-        {
-            _expandButton.Click += HandleExpandButtonClick;
-        }
     }
 
     private void HandleExpandButtonClick(object? sender, RoutedEventArgs args)
@@ -267,10 +281,162 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         IsSelected = !IsSelected;
     }
 
+    private void UpdateExpandButton()
+    {
+        if (!IsShowExpandIcon)
+        {
+            DetachExpandButton();
+            return;
+        }
+
+        if (_headerLayout is null)
+        {
+            return;
+        }
+
+        SetupDefaultExpandIcon();
+        if (_expandButton is null)
+        {
+            _expandButton = new IconButton
+            {
+                Name                = "PART_ExpandButton",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center
+            };
+            Grid.SetColumn(_expandButton, 0);
+            _expandButton.SetTemplatedParent(this);
+            _expandButton.Click += HandleExpandButtonClick;
+        }
+
+        SyncExpandButtonProperties();
+        if (!_headerLayout.Children.Contains(_expandButton))
+        {
+            _headerLayout.Children.Insert(0, _expandButton);
+        }
+    }
+
+    private void SyncExpandButtonProperties()
+    {
+        if (_expandButton is null)
+        {
+            return;
+        }
+
+        _expandButton.SetValue(AbstractIconButton.IsMotionEnabledProperty, IsMotionEnabled, BindingPriority.Template);
+        _expandButton.SetValue(AbstractIconButton.IconProperty, ExpandIcon, BindingPriority.Template);
+        _expandButton.SetValue(IsEnabledProperty, IsEnabled, BindingPriority.Template);
+    }
+
+    private void DetachExpandButton()
+    {
+        if (_expandButton is null)
+        {
+            ReleaseDefaultExpandIconIfUnused();
+            return;
+        }
+
+        _expandButton.Click -= HandleExpandButtonClick;
+        if (_expandButton.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_expandButton);
+        }
+        else
+        {
+            _headerLayout?.Children.Remove(_expandButton);
+        }
+        _expandButton.ClearValue(AbstractIconButton.IconProperty);
+        _expandButton.SetTemplatedParent(null);
+        _expandButton = null;
+        ReleaseDefaultExpandIconIfUnused();
+    }
+
+    private void ReleaseDefaultExpandIconIfUnused()
+    {
+        if (_defaultExpandIcon is not null && ReferenceEquals(ExpandIcon, _defaultExpandIcon))
+        {
+            SetValue(ExpandIconProperty, null, BindingPriority.Template);
+        }
+        _defaultExpandIcon = null;
+    }
+
+    private bool HasAddOnContent()
+    {
+        return AddOnContent is not null || AddOnContentTemplate is not null;
+    }
+
+    private void UpdateAddOnContentPresenter()
+    {
+        if (!HasAddOnContent())
+        {
+            DetachAddOnContentPresenter();
+            return;
+        }
+
+        if (_headerLayout is null)
+        {
+            return;
+        }
+
+        if (_addOnContentPresenter is null)
+        {
+            _addOnContentPresenter = new ContentPresenter
+            {
+                Name                       = "PART_AddOnContentPresenter",
+                HorizontalAlignment        = HorizontalAlignment.Left,
+                VerticalAlignment          = VerticalAlignment.Center,
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+                VerticalContentAlignment   = VerticalAlignment.Center
+            };
+            Grid.SetColumn(_addOnContentPresenter, 2);
+            _addOnContentPresenter.SetTemplatedParent(this);
+        }
+
+        SyncAddOnContentPresenter();
+        if (!_headerLayout.Children.Contains(_addOnContentPresenter))
+        {
+            _headerLayout.Children.Add(_addOnContentPresenter);
+        }
+    }
+
+    private void SyncAddOnContentPresenter()
+    {
+        if (_addOnContentPresenter is null)
+        {
+            return;
+        }
+
+        _addOnContentPresenter.SetValue(ContentPresenter.ContentProperty, AddOnContent, BindingPriority.Template);
+        _addOnContentPresenter.SetValue(ContentPresenter.ContentTemplateProperty, AddOnContentTemplate, BindingPriority.Template);
+    }
+
+    private void DetachAddOnContentPresenter()
+    {
+        if (_addOnContentPresenter is null)
+        {
+            return;
+        }
+
+        if (_addOnContentPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_addOnContentPresenter);
+        }
+        else
+        {
+            _headerLayout?.Children.Remove(_addOnContentPresenter);
+        }
+        _addOnContentPresenter.SetCurrentValue(ContentPresenter.ContentProperty, null);
+        _addOnContentPresenter.SetCurrentValue(ContentPresenter.ContentTemplateProperty, null);
+        _addOnContentPresenter.SetTemplatedParent(null);
+        _addOnContentPresenter = null;
+    }
+
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupDefaultExpandIcon();
+        if (IsShowExpandIcon)
+        {
+            SetupDefaultExpandIcon();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -283,15 +449,36 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     {
         if (ExpandIcon is null)
         {
-            ClearValue(ExpandIconProperty);
-            SetValue(ExpandIconProperty, new RightOutlined(), BindingPriority.Template);
+            _defaultExpandIcon = new RightOutlined();
+            SetValue(ExpandIconProperty, _defaultExpandIcon, BindingPriority.Template);
         }
-        Debug.Assert(ExpandIcon != null);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+
+        if (change.Property == IsShowExpandIconProperty)
+        {
+            UpdateExpandButton();
+        }
+        else if (change.Property == ExpandIconProperty && IsShowExpandIcon && ExpandIcon is null)
+        {
+            SetupDefaultExpandIcon();
+        }
+
+        if (change.Property == ExpandIconProperty ||
+            change.Property == IsMotionEnabledProperty ||
+            change.Property == IsEnabledProperty)
+        {
+            SyncExpandButtonProperties();
+        }
+
+        if (change.Property == AddOnContentProperty ||
+            change.Property == AddOnContentTemplateProperty)
+        {
+            UpdateAddOnContentPresenter();
+        }
 
         if (this.IsAttachedToVisualTree())
         {
@@ -304,10 +491,11 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     private void HandleSelectedChanged(bool forceDisabledMotion = false)
     {
-        if (Presenter is not null)
+        if (Presenter is not null || _mainLayout is not null)
         {
             if (IsSelected)
             {
+                EnsureContentMotionActor(forceDisabledMotion || !IsMotionEnabled);
                 ExpandItemContent(forceDisabledMotion);
             }
             else
@@ -319,14 +507,15 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     private void ExpandItemContent(bool forceDisabledMotion = false)
     {
-        if (_motionActor is null || InAnimating)
+        var motionActor = _motionActor;
+        if (motionActor is null || InAnimating)
         {
             return;
         }
 
         if (!IsMotionEnabled || forceDisabledMotion)
         {
-            _motionActor.IsVisible = true;
+            motionActor.IsVisible = true;
             return;
         }
 
@@ -334,21 +523,22 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
         Dispatcher.InvokeAsync(async () =>
         {
-            await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
+            await motion.RunAsync(motionActor, () => { motionActor.SetCurrentValue(IsVisibleProperty, true); });
             InAnimating = false;
         });
     }
 
     private void CollapseItemContent(bool forceDisabledMotion = false)
     {
-        if (_motionActor is null || InAnimating)
+        var motionActor = _motionActor;
+        if (motionActor is null || InAnimating)
         {
             return;
         }
 
         if (!IsMotionEnabled || forceDisabledMotion)
         {
-            _motionActor.IsVisible = false;
+            motionActor.IsVisible = false;
             return;
         }
 
@@ -356,10 +546,78 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         var motion = new SlideUpOutMotion(MotionDuration, new CubicEaseIn());
         Dispatcher.InvokeAsync(async () =>
         {
-            await motion.RunAsync(_motionActor);
-            _motionActor.SetCurrentValue(IsVisibleProperty, false);
+            await motion.RunAsync(motionActor);
+            motionActor.SetCurrentValue(IsVisibleProperty, false);
             InAnimating = false;
         });
+    }
+
+    private void EnsureContentMotionActor(bool initiallyVisible)
+    {
+        if (_motionActor is not null || _mainLayout is null)
+        {
+            return;
+        }
+
+        _contentPresenter = new ContentPresenter
+        {
+            Name = "PART_ContentPresenter"
+        };
+        _contentPresenter.SetTemplatedParent(this);
+        _contentBindings = new CompositeDisposable
+        {
+            _contentPresenter.Bind(ContentPresenter.ContentProperty, new Binding
+            {
+                Source    = this,
+                Path      = nameof(Content),
+                Converter = ContentTextConverter,
+                Priority  = BindingPriority.Template
+            }),
+            BindUtils.RelayBind(this, ContentTemplateProperty, _contentPresenter, ContentPresenter.ContentTemplateProperty, priority: BindingPriority.Template),
+            BindUtils.RelayBind(this, ContentBorderThicknessProperty, _contentPresenter, ContentPresenter.BorderThicknessProperty, priority: BindingPriority.Template),
+            BindUtils.RelayBind(this, ContentPaddingProperty, _contentPresenter, ContentPresenter.PaddingProperty, priority: BindingPriority.Template)
+        };
+
+        _motionActor = new LayoutAwareMotionActor
+        {
+            Name         = "PART_ContentMotionActor",
+            ClipToBounds = true,
+            Content      = _contentPresenter,
+            IsVisible    = initiallyVisible
+        };
+        _motionActor.SetTemplatedParent(this);
+        _mainLayout.Children.Add(_motionActor);
+    }
+
+    private void DetachContentMotionActor()
+    {
+        _contentBindings?.Dispose();
+        _contentBindings = null;
+
+        if (_motionActor is not null)
+        {
+            if (_motionActor.GetVisualParent() is Panel parent)
+            {
+                parent.Children.Remove(_motionActor);
+            }
+            else
+            {
+                _mainLayout?.Children.Remove(_motionActor);
+            }
+            _motionActor.SetCurrentValue(ContentControl.ContentProperty, null);
+            _motionActor.SetTemplatedParent(null);
+            _motionActor = null;
+        }
+
+        if (_contentPresenter is not null)
+        {
+            _contentPresenter.SetCurrentValue(ContentPresenter.ContentProperty, null);
+            _contentPresenter.SetCurrentValue(ContentPresenter.ContentTemplateProperty, null);
+            _contentPresenter.SetTemplatedParent(null);
+            _contentPresenter = null;
+        }
+
+        InAnimating = false;
     }
 
     internal bool IsPointInHeaderBounds(Point position)
