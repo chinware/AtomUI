@@ -2,9 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    xmlns:converters="using:Avalonia.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:CornerRadiusFilterConverter x:Key="CornerRadiusFilterConverter" Filter="TopLeft, TopRight" />
     <ControlTheme x:Key="{x:Type atom:Card}" TargetType="atom:Card">
         <Setter Property="Template">
             <ControlTemplate>
@@ -17,47 +15,8 @@
                             ClipToBounds="False"
                             BoxShadow="{TemplateBinding BoxShadow}">
                     </Border>
-                    <DockPanel LastChildFill="True">
-                        <Border Name="HeaderFrame" DockPanel.Dock="Top"
-                                BorderThickness="{TemplateBinding HeaderBorderThickness}">
-                            <DockPanel LastChildFill="True">
-                                <ContentPresenter Name="HeaderExtra" DockPanel.Dock="Right" VerticalAlignment="Center"
-                                                  Content="{TemplateBinding Extra}"
-                                                  ContentTemplate="{TemplateBinding ExtraTemplate}" />
-                                <ContentPresenter Name="TitlePresenter"
-                                                  Content="{TemplateBinding Header}"
-                                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                                  VerticalAlignment="Center" />
-                            </DockPanel>
-                        </Border>
-                        <atom:CardActionPanel Name="PART_ActionPanel"
-                                              DockPanel.Dock="Bottom"
-                                              CornerRadius="{TemplateBinding CornerRadius}"
-                                              IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                              IsVisible="{TemplateBinding IsActionsPanelVisible}" />
-                        <Border Name="CoverFrame"
-                                CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource CornerRadiusFilterConverter}}"
-                                ClipToBounds="True"
-                                DockPanel.Dock="Top">
-                            <ContentPresenter Name="CoverContentPresenter"
-                                              Content="{TemplateBinding Cover}"
-                                              ContentTemplate="{TemplateBinding CoverTemplate}"
-                                              VerticalContentAlignment="Stretch"
-                                              HorizontalContentAlignment="Stretch" />
-                        </Border>
-                        <Border Name="CardContent">
-                            <atom:Skeleton IsLoading="{TemplateBinding IsLoading}"
-                                           IsActive="True"
-                                           ParagraphRows="4"
-                                           IsShowTitle="False"
-                                           ClipToBounds = "False"
-                                           Content="{TemplateBinding Content}"
-                                           ContentTemplate="{TemplateBinding ContentTemplate}"
-                                           HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch"
-                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
+                    <DockPanel Name="PART_RootLayout" LastChildFill="True">
+                        <Border Name="CardContent" />
                     </DockPanel>
                 </Panel>
             </ControlTemplate>
@@ -70,11 +29,6 @@
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
 
-        <Style Selector="^:headerless">
-            <Style Selector="^ /template/ Border#HeaderFrame">
-                <Setter Property="IsVisible" Value="False" />
-            </Style>
-        </Style>
         <Setter Property="BoxShadow" Value="0 1 2 -1 #00000000, 0 3 6 0 #00000000, 0 5 12 4 #00000000" />
         <Style Selector="^[StyleVariant=Borderless]">
             <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadowsTertiary}" />
@@ -155,13 +109,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^:not(:headerless)">
-            <Style Selector="^ /template/ Border#CoverFrame">
-                <Setter Property="CornerRadius" Value="0" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[IsMotionEnabled=True]">
+        <Style Selector="^[IsMotionEnabled=True][IsHoverable=True]">
             <Setter Property="Transitions">
                 <Transitions>
                     <atom:BoxShadowsTransition Property="BoxShadow" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationFast}" />

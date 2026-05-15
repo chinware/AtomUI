@@ -63,6 +63,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.BadgeShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/BadgeShowCase.axaml",
                 stats => stats.CountBadgeCount > 0 || stats.DotBadgeCount > 0 || stats.RibbonBadgeCount > 0),
+            ["card"] = new(
+                "CardShowCase",
+                CardViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.CardShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/CardShowCase.axaml",
+                stats => stats.CardCount > 0),
             ["button"] = new(
                 "ButtonShowCase",
                 ButtonViewModel.ID,
@@ -870,15 +876,15 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Skeleton | SkeletonLine | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
-        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Skeleton | SkeletonLine | Select | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSample(result.ColdRun));
         foreach (var sample in result.Samples)
         {
@@ -942,6 +948,15 @@ internal static class Program
             stats.ButtonSpinnerDecoratedBoxCount.ToString(CultureInfo.InvariantCulture),
             stats.ButtonSpinnerHandleCount.ToString(CultureInfo.InvariantCulture),
             stats.ButtonSpinnerContentPanelCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardActionPanelCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardActionButtonCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardMetaContentCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardGridContentCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardGridItemCount.ToString(CultureInfo.InvariantCulture),
+            stats.CardTabsContentCount.ToString(CultureInfo.InvariantCulture),
+            stats.SkeletonCount.ToString(CultureInfo.InvariantCulture),
+            stats.SkeletonLineCount.ToString(CultureInfo.InvariantCulture),
             stats.SelectCount.ToString(CultureInfo.InvariantCulture),
             stats.AutoCompleteCount.ToString(CultureInfo.InvariantCulture),
             stats.AutoCompletePopupFieldCount.ToString(CultureInfo.InvariantCulture),
@@ -1000,6 +1015,15 @@ internal static class Program
             sample.Stats.ButtonSpinnerDecoratedBoxCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.ButtonSpinnerHandleCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.ButtonSpinnerContentPanelCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardActionPanelCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardActionButtonCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardMetaContentCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardGridContentCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardGridItemCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.CardTabsContentCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.SkeletonCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.SkeletonLineCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.SelectCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.AutoCompleteCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.AutoCompletePopupFieldCount.ToString(CultureInfo.InvariantCulture),
@@ -1066,7 +1090,7 @@ internal static class Program
             return "none";
         }
 
-        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, select={stats.SelectCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
     }
 }
 
@@ -1283,6 +1307,15 @@ internal sealed record RouteStats(
     int ButtonSpinnerDecoratedBoxCount,
     int ButtonSpinnerHandleCount,
     int ButtonSpinnerContentPanelCount,
+    int CardCount,
+    int CardActionPanelCount,
+    int CardActionButtonCount,
+    int CardMetaContentCount,
+    int CardGridContentCount,
+    int CardGridItemCount,
+    int CardTabsContentCount,
+    int SkeletonCount,
+    int SkeletonLineCount,
     int SelectCount,
     int AutoCompleteCount,
     int AutoCompleteSearchEditCount,
@@ -1340,6 +1373,15 @@ internal sealed record RouteStats(
         var buttonSpinnerDecoratedBoxCount = 0;
         var buttonSpinnerHandleCount       = 0;
         var buttonSpinnerContentPanelCount = 0;
+        var cardCount                = 0;
+        var cardActionPanelCount     = 0;
+        var cardActionButtonCount    = 0;
+        var cardMetaContentCount     = 0;
+        var cardGridContentCount     = 0;
+        var cardGridItemCount        = 0;
+        var cardTabsContentCount     = 0;
+        var skeletonCount            = 0;
+        var skeletonLineCount        = 0;
         var selectCount             = 0;
         var autoCompleteCount       = 0;
         var autoCompleteSearchEditCount = 0;
@@ -1500,6 +1542,42 @@ internal sealed record RouteStats(
             {
                 buttonSpinnerContentPanelCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Card"))
+            {
+                cardCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardActionPanel"))
+            {
+                cardActionPanelCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardActionButton"))
+            {
+                cardActionButtonCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardMetaContent"))
+            {
+                cardMetaContentCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardGridContent"))
+            {
+                cardGridContentCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardGridItem"))
+            {
+                cardGridItemCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardTabsContent"))
+            {
+                cardTabsContentCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Skeleton"))
+            {
+                skeletonCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SkeletonLine"))
+            {
+                skeletonLineCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Select"))
             {
                 selectCount++;
@@ -1589,6 +1667,15 @@ internal sealed record RouteStats(
             buttonSpinnerDecoratedBoxCount,
             buttonSpinnerHandleCount,
             buttonSpinnerContentPanelCount,
+            cardCount,
+            cardActionPanelCount,
+            cardActionButtonCount,
+            cardMetaContentCount,
+            cardGridContentCount,
+            cardGridItemCount,
+            cardTabsContentCount,
+            skeletonCount,
+            skeletonLineCount,
             selectCount,
             autoCompleteCount,
             autoCompleteSearchEditCount,
@@ -1643,6 +1730,15 @@ internal sealed record RouteStats(
                ButtonSpinnerDecoratedBoxCount == other.ButtonSpinnerDecoratedBoxCount &&
                ButtonSpinnerHandleCount == other.ButtonSpinnerHandleCount &&
                ButtonSpinnerContentPanelCount == other.ButtonSpinnerContentPanelCount &&
+               CardCount == other.CardCount &&
+               CardActionPanelCount == other.CardActionPanelCount &&
+               CardActionButtonCount == other.CardActionButtonCount &&
+               CardMetaContentCount == other.CardMetaContentCount &&
+               CardGridContentCount == other.CardGridContentCount &&
+               CardGridItemCount == other.CardGridItemCount &&
+               CardTabsContentCount == other.CardTabsContentCount &&
+               SkeletonCount == other.SkeletonCount &&
+               SkeletonLineCount == other.SkeletonLineCount &&
                SelectCount == other.SelectCount &&
                AutoCompleteCount == other.AutoCompleteCount &&
                AutoCompleteSearchEditCount == other.AutoCompleteSearchEditCount &&
@@ -1706,6 +1802,12 @@ internal sealed record SourceXamlStats(
     int CountBadgeCount,
     int DotBadgeCount,
     int RibbonBadgeCount,
+    int CardCount,
+    int CardActionButtonCount,
+    int CardGridContentCount,
+    int CardGridItemCount,
+    int CardMetaContentCount,
+    int CardTabsContentCount,
     int LineEditDirectCount,
     int SearchEditCount,
     int TextAreaCount,
@@ -1727,7 +1829,7 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         var text     = File.ReadAllText(sourcePath);
@@ -1747,6 +1849,12 @@ internal sealed record SourceXamlStats(
             CountElements(document, AtomNamespace, "CountBadge"),
             CountElements(document, AtomNamespace, "DotBadge"),
             CountElements(document, AtomNamespace, "RibbonBadge"),
+            CountElements(document, AtomNamespace, "Card"),
+            CountElements(document, AtomNamespace, "CardActionButton"),
+            CountElements(document, AtomNamespace, "CardGridContent"),
+            CountElements(document, AtomNamespace, "CardGridItem"),
+            CountElements(document, AtomNamespace, "CardMetaContent"),
+            CountElements(document, AtomNamespace, "CardTabsContent"),
             CountElements(document, AtomNamespace, "LineEdit"),
             CountElements(document, AtomNamespace, "SearchEdit"),
             CountElements(document, AtomNamespace, "TextArea"),
@@ -1770,8 +1878,8 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | ShowCaseItem |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | Select | TreeSelect | Cascader | Menu | MenuItem | ShowCaseItem |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
@@ -1798,6 +1906,18 @@ internal sealed record SourceXamlStats(
         builder.Append(DotBadgeCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(RibbonBadgeCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CardCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CardActionButtonCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CardGridContentCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CardGridItemCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CardMetaContentCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(CardTabsContentCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(LineEditDirectCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");

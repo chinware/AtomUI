@@ -110,12 +110,18 @@ public class CardGridItem : ContentControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        this.DisableTransitions();
+        if (IsMotionEnabled && IsHoverable)
+        {
+            this.DisableTransitions();
+        }
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.Post(() => this.EnableTransitions());
+        if (IsMotionEnabled && IsHoverable)
+        {
+            Dispatcher.Post(this.EnableTransitions);
+        }
     }
 }

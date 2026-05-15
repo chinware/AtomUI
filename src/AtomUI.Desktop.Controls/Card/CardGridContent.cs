@@ -20,9 +20,17 @@ public class CardGridContent : ItemsControl
     public static readonly StyledProperty<bool> IsHoverableProperty = 
         AvaloniaProperty.Register<CardGridContent, bool>(nameof (IsHoverable), true);
 
-    public ColumnDefinitions ColumnDefinitions { get; set; } = new();
+    public ColumnDefinitions ColumnDefinitions
+    {
+        get => GetValue(ColumnDefinitionsProperty);
+        set => SetValue(ColumnDefinitionsProperty, value);
+    }
 
-    public RowDefinitions RowDefinitions { get; set; } = new();
+    public RowDefinitions RowDefinitions
+    {
+        get => GetValue(RowDefinitionsProperty);
+        set => SetValue(RowDefinitionsProperty, value);
+    }
     
     public bool IsHoverable
     {
@@ -55,6 +63,12 @@ public class CardGridContent : ItemsControl
     #endregion
 
     private ItemsPresenter? _itemsPresenter;
+
+    public CardGridContent()
+    {
+        SetCurrentValue(ColumnDefinitionsProperty, new ColumnDefinitions());
+        SetCurrentValue(RowDefinitionsProperty, new RowDefinitions());
+    }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -124,7 +138,7 @@ public class CardGridContent : ItemsControl
     {
         if (_itemsPresenter?.Panel != null)
         {
-            var panel = _itemsPresenter?.Panel;
+            var panel = _itemsPresenter.Panel;
             if (panel is Grid gridPanel)
             {
                 gridPanel.ColumnDefinitions = ColumnDefinitions;

@@ -71,7 +71,6 @@ internal class CardActionPanel : TemplatedControl
                 case NotifyCollectionChangedAction.Replace:
                     for (int index1 = 0; index1 < e.OldItems!.Count; ++index1)
                     {
-                        var oldItem = e.OldItems![index1];
                         int     index2  = index1 + e.OldStartingIndex;
                         Control newItem = (Control) e.NewItems![index1]!;
                         _uniformGrid.Children[index2] = newItem;
@@ -81,7 +80,13 @@ internal class CardActionPanel : TemplatedControl
                     _uniformGrid.Children.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    throw new NotSupportedException();
+                    _uniformGrid.Children.Clear();
+                    _uniformGrid.SetCurrentValue(UniformGrid.ColumnsProperty, Actions.Count);
+                    foreach (var action in Actions)
+                    {
+                        _uniformGrid.Children.Add(action);
+                    }
+                    break;
             }
         }
     }
@@ -110,12 +115,18 @@ internal class CardActionPanel : TemplatedControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        this.DisableTransitions();
+        if (IsMotionEnabled)
+        {
+            this.DisableTransitions();
+        }
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.Post(() => this.EnableTransitions());
+        if (IsMotionEnabled)
+        {
+            Dispatcher.Post(this.EnableTransitions);
+        }
     }
 }

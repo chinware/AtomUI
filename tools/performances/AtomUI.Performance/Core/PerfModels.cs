@@ -69,6 +69,18 @@ internal sealed record TreeStats(
     double ButtonSpinnerDecoratedBoxPerRoot,
     double ButtonSpinnerHandlePerRoot,
     double ButtonSpinnerContentPanelPerRoot,
+    double CardPerRoot,
+    double CardActionPanelPerRoot,
+    double CardActionButtonPerRoot,
+    double CardMetaContentPerRoot,
+    double CardGridContentPerRoot,
+    double CardGridItemPerRoot,
+    double CardTabsContentPerRoot,
+    double SkeletonPerRoot,
+    double SkeletonAvatarPerRoot,
+    double SkeletonTitlePerRoot,
+    double SkeletonParagraphPerRoot,
+    double SkeletonLinePerRoot,
     double AddOnDecoratedBoxPerRoot,
     double SelectPerRoot,
     double TreeSelectPerRoot,
@@ -132,6 +144,18 @@ internal sealed record TreeStats(
         var buttonSpinnerDecoratedBoxCount   = 0;
         var buttonSpinnerHandleCount         = 0;
         var buttonSpinnerContentPanelCount   = 0;
+        var cardCount                        = 0;
+        var cardActionPanelCount             = 0;
+        var cardActionButtonCount            = 0;
+        var cardMetaContentCount             = 0;
+        var cardGridContentCount             = 0;
+        var cardGridItemCount                = 0;
+        var cardTabsContentCount             = 0;
+        var skeletonCount                    = 0;
+        var skeletonAvatarCount              = 0;
+        var skeletonTitleCount               = 0;
+        var skeletonParagraphCount           = 0;
+        var skeletonLineCount                = 0;
         var addOnDecoratedBoxCount   = 0;
         var selectCount              = 0;
         var treeSelectCount          = 0;
@@ -258,6 +282,54 @@ internal sealed record TreeStats(
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ButtonSpinnerContentPanel"))
                 {
                     buttonSpinnerContentPanelCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Card"))
+                {
+                    cardCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardActionPanel"))
+                {
+                    cardActionPanelCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardActionButton"))
+                {
+                    cardActionButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardMetaContent"))
+                {
+                    cardMetaContentCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardGridContent"))
+                {
+                    cardGridContentCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardGridItem"))
+                {
+                    cardGridItemCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CardTabsContent"))
+                {
+                    cardTabsContentCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Skeleton"))
+                {
+                    skeletonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SkeletonAvatar"))
+                {
+                    skeletonAvatarCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SkeletonTitle"))
+                {
+                    skeletonTitleCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SkeletonParagraph"))
+                {
+                    skeletonParagraphCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SkeletonLine"))
+                {
+                    skeletonLineCount++;
                 }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Avatar"))
                 {
@@ -440,6 +512,18 @@ internal sealed record TreeStats(
             buttonSpinnerDecoratedBoxCount / (double)rootCount,
             buttonSpinnerHandleCount / (double)rootCount,
             buttonSpinnerContentPanelCount / (double)rootCount,
+            cardCount / (double)rootCount,
+            cardActionPanelCount / (double)rootCount,
+            cardActionButtonCount / (double)rootCount,
+            cardMetaContentCount / (double)rootCount,
+            cardGridContentCount / (double)rootCount,
+            cardGridItemCount / (double)rootCount,
+            cardTabsContentCount / (double)rootCount,
+            skeletonCount / (double)rootCount,
+            skeletonAvatarCount / (double)rootCount,
+            skeletonTitleCount / (double)rootCount,
+            skeletonParagraphCount / (double)rootCount,
+            skeletonLineCount / (double)rootCount,
             addOnDecoratedBoxCount / (double)rootCount,
             selectCount / (double)rootCount,
             treeSelectCount / (double)rootCount,
