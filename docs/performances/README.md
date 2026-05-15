@@ -54,6 +54,7 @@
 | Cascader | 本轮已完成 | [Cascader](Cascader/README.md) | filter/multiple closed visual `41/25 -> 20`；`CascaderShowCase` visuals `1250 -> 1169`，repeated mean `141.81ms -> 133.27ms` |
 | CheckBox | 本轮已完成 | [CheckBox](CheckBox/README.md) | 默认 unchecked `visuals 12 -> 8`，contentless unchecked `11 -> 6`，`CheckBoxShowCase` visuals `420 -> 318`，repeated alloc `6385.60KB -> 4629.80KB` |
 | Collapse | 本轮已完成 | [Collapse](Collapse/README.md) | `CollapseShowCase` repeated mean `119.31ms -> 100.18ms`，visuals `616 -> 553`；content motion `33 -> 1`，addon presenter `33 -> 3` |
+| ComboBox | 本轮已完成 | [ComboBox](ComboBox/README.md) | `ComboBoxShowCase` repeated mean `109.35ms -> 91.07ms`，alloc `11384.83KB -> 9534.28KB`，visuals `562 -> 497`；默认 `Button/IconButton 23 -> 0` |
 
 ## 总列表
 
@@ -71,7 +72,7 @@
 | Layout | Space | Done | 已完成 Phase 0-7；`CompactSpaceFiller` 不再承担 wrapper，repeated timing 小幅改善，cold 仍需后续针对子控件/Gallery 拆解 |
 | Layout | Splitter | Pending | 待建立基线 |
 | Navigation | Breadcrumb | Pending | 待建立基线 |
-| Navigation | ComboBox | Pending | 待建立基线 |
+| Navigation | ComboBox | Done | [ComboBox](ComboBox/README.md)；默认 host、popup content、handle `IconButton` 成本已按需/轻量化，Gallery repeated mean 提升约 `16.72%` |
 | Navigation | DropdownButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | Navigation | Menu | Pending | 待建立基线 |
 | Navigation | Pagination | Pending | 待建立基线 |

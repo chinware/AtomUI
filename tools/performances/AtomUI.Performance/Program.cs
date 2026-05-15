@@ -34,7 +34,8 @@ internal static partial class Program
             options.VerifyCarouselStates ||
             options.VerifyCascaderStates ||
             options.VerifyCheckBoxStates ||
-            options.VerifyCollapseStates)
+            options.VerifyCollapseStates ||
+            options.VerifyComboBoxStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -109,6 +110,10 @@ internal static partial class Program
             {
                 verified &= RunCollapseStateVerification();
             }
+            if (options.VerifyComboBoxStates)
+            {
+                verified &= RunComboBoxStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -158,6 +163,7 @@ internal static partial class Program
             "cascader" => CreateCascaderScenarios(),
             "checkbox" => CreateCheckBoxScenarios(),
             "collapse" => CreateCollapseScenarios(),
+            "combobox" => CreateComboBoxScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

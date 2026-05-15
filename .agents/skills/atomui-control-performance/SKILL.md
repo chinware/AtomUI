@@ -64,6 +64,17 @@ For any control performance optimization:
 4. If the bug is Gallery-visible, build `controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` and verify the exact Gallery scenario.
 5. Run `git diff --check`.
 
+## Performance Report Format
+
+Performance summaries must be readable to a human reviewer, not just raw benchmark output.
+
+- Report results as a compact comparison table with `Scenario`, `Before`, `After`, and `Improvement`.
+- Include the units in every value, such as `ms/item`, `KB/item`, `ms`, or visual node count.
+- Show both control-level results and real Gallery results when both were measured.
+- For Gallery-visible optimizations, explain the actual user-facing impact in plain language, such as "ComboBoxShowCase repeated open went from 109ms to 91ms, about 18ms faster."
+- Mention structural wins separately when they explain the result, such as "Button/IconButton count changed from 23 to 0" or "visual nodes dropped from 562 to 497."
+- State whether the result matches the optimization goal, and call out fixed costs that remain when the page-level percentage is lower than the control-level percentage.
+
 ## Binding/Subscription Checklist
 
 - Store every disposable subscription or binding that is created outside XAML.

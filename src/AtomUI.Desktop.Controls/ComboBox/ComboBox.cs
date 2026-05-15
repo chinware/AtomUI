@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -232,13 +233,18 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
 
     private Popup? _popup;
-    private Window? _attachedWindow;
+    private Border? _popupFrame;
+    private ScrollViewer? _popupScrollViewer;
+    private ItemsPresenter? _popupItemsPresenter;
+    private Avalonia.Controls.Window? _attachedWindow;
     private AddOnDecoratedBox? _addOnDecoratedBox;
-    private ComboBoxHandle? _comboBoxHandle;
+    private ComboBoxHandle? _templateComboBoxHandle;
+    private ComboBoxHandle? _lightweightComboBoxHandle;
     private ComboBoxAccessoryHost? _accessoryHost;
     private IDisposable? _accessoryHostSpacingBinding;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
+    private bool _isUsingLegacyAccessoryTemplate;
 
     public ComboBox()
     {
@@ -261,30 +267,24 @@ public class ComboBox : AvaloniaComboBox,
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = null;
         ClearOwnerDrivenAccessoryHost();
-        if (_accessoryHost != null)
-        {
-            _accessoryHost.DetachOwner();
-            _accessoryHost = null;
-        }
-        if (_comboBoxHandle != null)
-        {
-            _comboBoxHandle.HandleClick -= HandleOpenPopupClicked;
-            _comboBoxHandle = null;
-        }
+        ClearPopupContent();
+        ClearWindowDeactivatedSubscription();
 
         base.OnApplyTemplate(e);
         this.SetPopup(null); // 清空父类，防止鼠标点击的错误处理
 
-        _popup             = e.NameScope.Find<Popup>("PART_Popup");
-        _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        _comboBoxHandle = e.NameScope.Find<ComboBoxHandle>("PART_ComboBoxHandle");
+        _popup                  = e.NameScope.Find<Popup>("PART_Popup");
+        _addOnDecoratedBox      = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        _templateComboBoxHandle = e.NameScope.Find<ComboBoxHandle>("PART_ComboBoxHandle");
 
         UpdatePseudoClasses();
         ConfigureMaxDropdownHeight();
-        if (!SetupContentRightAddOnBindings(e))
+        _isUsingLegacyAccessoryTemplate = SetupContentRightAddOnBindings(e);
+        if (!_isUsingLegacyAccessoryTemplate)
         {
             ConfigureOwnerDrivenAccessoryHost();
         }
+        ConfigureWindowDeactivatedSubscription();
     }
 
     private bool SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
@@ -314,10 +314,10 @@ public class ComboBox : AvaloniaComboBox,
                 new Binding(nameof(FormFeedback)) { Source = this }));
         }
 
-        if (_comboBoxHandle != null)
+        if (_templateComboBoxHandle != null)
         {
             hasBindings = true;
-            var handle = _comboBoxHandle;
+            var handle = _templateComboBoxHandle;
             handle.HandleClick += HandleOpenPopupClicked;
             bindings.Add(Disposable.Create(() => handle.HandleClick -= HandleOpenPopupClicked));
             bindings.Add(handle.Bind(InputElement.IsEnabledProperty,
@@ -348,28 +348,61 @@ public class ComboBox : AvaloniaComboBox,
 
     private void ConfigureOwnerDrivenAccessoryHost()
     {
-        if (_addOnDecoratedBox == null)
+        if (_addOnDecoratedBox == null ||
+            _isUsingLegacyAccessoryTemplate)
         {
             return;
         }
 
-        if (_accessoryHost == null)
+        if (NeedsCompositeAccessoryHost())
         {
-            _accessoryHost = new ComboBoxAccessoryHost();
-            _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
-                _accessoryHost,
-                StackPanel.SpacingProperty,
-                SharedTokenKind.SpacingXS);
-            _accessoryHost.AttachOwner(this);
+            ClearLightweightComboBoxHandle();
+
+            if (_accessoryHost == null)
+            {
+                _accessoryHost = new ComboBoxAccessoryHost();
+                _accessoryHostSpacingBinding = TokenResourceBinder.CreateTokenBinding(
+                    _accessoryHost,
+                    StackPanel.SpacingProperty,
+                    SharedTokenKind.SpacingXS);
+                _accessoryHost.AttachOwner(this);
+            }
+
+            if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+            {
+                _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+            }
+            return;
         }
 
-        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
+        ClearCompositeAccessoryHost();
+        if (_lightweightComboBoxHandle == null)
         {
-            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _accessoryHost);
+            _lightweightComboBoxHandle = new ComboBoxHandle();
+            _lightweightComboBoxHandle.SetTemplatedParent(this);
+            _lightweightComboBoxHandle.HandleClick += HandleOpenPopupClicked;
+        }
+        UpdateLightweightComboBoxHandleState();
+
+        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _lightweightComboBoxHandle))
+        {
+            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _lightweightComboBoxHandle);
         }
     }
 
+    private bool NeedsCompositeAccessoryHost()
+    {
+        return ContentRightAddOn != null ||
+               IsFormFeedbackVisible && FormFeedback != null;
+    }
+
     private void ClearOwnerDrivenAccessoryHost()
+    {
+        ClearLightweightComboBoxHandle();
+        ClearCompositeAccessoryHost();
+    }
+
+    private void ClearCompositeAccessoryHost()
     {
         if (_addOnDecoratedBox != null &&
             _accessoryHost != null &&
@@ -381,33 +414,103 @@ public class ComboBox : AvaloniaComboBox,
         _accessoryHostSpacingBinding?.Dispose();
         _accessoryHostSpacingBinding = null;
 
-        if (_accessoryHost != null)
+        if (_accessoryHost == null)
         {
-            _accessoryHost.DetachOwner();
-            _accessoryHost = null;
+            return;
         }
+
+        _accessoryHost.DetachOwner();
+        _accessoryHost = null;
+    }
+
+    private void ClearLightweightComboBoxHandle()
+    {
+        if (_addOnDecoratedBox != null &&
+            _lightweightComboBoxHandle != null &&
+            ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _lightweightComboBoxHandle))
+        {
+            _addOnDecoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        if (_lightweightComboBoxHandle == null)
+        {
+            return;
+        }
+
+        _lightweightComboBoxHandle.HandleClick -= HandleOpenPopupClicked;
+        _lightweightComboBoxHandle.SetTemplatedParent(null);
+        _lightweightComboBoxHandle = null;
+    }
+
+    private void UpdateOwnerDrivenAccessoryState()
+    {
+        if (_isUsingLegacyAccessoryTemplate)
+        {
+            return;
+        }
+
+        if (_accessoryHost != null && NeedsCompositeAccessoryHost())
+        {
+            _accessoryHost.AttachOwner(this);
+        }
+
+        ConfigureOwnerDrivenAccessoryHost();
+        UpdateLightweightComboBoxHandleState();
+    }
+
+    private void UpdateLightweightComboBoxHandleState()
+    {
+        if (_lightweightComboBoxHandle == null)
+        {
+            return;
+        }
+
+        _lightweightComboBoxHandle.SetCurrentValue(InputElement.IsEnabledProperty, IsEnabled);
+        _lightweightComboBoxHandle.SetCurrentValue(ComboBoxHandle.IsMotionEnabledProperty, IsMotionEnabled);
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
+        ConfigureWindowDeactivatedSubscription();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        ClearWindowDeactivatedSubscription();
+        ClearPopupContent();
+    }
+
+    private void ConfigureWindowDeactivatedSubscription()
+    {
+        if (!IsDropDownOpen)
+        {
+            ClearWindowDeactivatedSubscription();
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (ReferenceEquals(_attachedWindow, topLevel))
+        {
+            return;
+        }
+
+        ClearWindowDeactivatedSubscription();
+        if (topLevel is Avalonia.Controls.Window window)
+        {
+            _attachedWindow    = window;
+            window.Deactivated += HandleWindowDeactivated;
+        }
+    }
+
+    private void ClearWindowDeactivatedSubscription()
+    {
         if (_attachedWindow != null)
         {
             _attachedWindow.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow = null;
         }
-
-        _attachedWindow = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -459,6 +562,13 @@ public class ComboBox : AvaloniaComboBox,
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        if (change.Property == IsDropDownOpenProperty &&
+            change.GetNewValue<bool>())
+        {
+            EnsurePopupContent();
+            ConfigureWindowDeactivatedSubscription();
+        }
+
         base.OnPropertyChanged(change);
 
         if (change.Property == StatusProperty)
@@ -471,6 +581,25 @@ public class ComboBox : AvaloniaComboBox,
         {
             ConfigureMaxDropdownHeight();
         }
+        else if (change.Property == ItemsPanelProperty ||
+                 change.Property == EffectivePopupWidthProperty ||
+                 change.Property == IsMotionEnabledProperty ||
+                 change.Property == ScrollViewer.IsLiteModeProperty ||
+                 change.Property == Avalonia.Controls.ScrollViewer.AllowAutoHideProperty)
+        {
+            ConfigurePopupContent();
+        }
+        else if (change.Property == IsDropDownOpenProperty)
+        {
+            if (change.GetNewValue<bool>())
+            {
+                ConfigureWindowDeactivatedSubscription();
+            }
+            else
+            {
+                ClearWindowDeactivatedSubscription();
+            }
+        }
         else if (change.Property == SelectedItemProperty && change.NewValue != null)
         {
             // Close dropdown when an item is selected
@@ -482,6 +611,19 @@ public class ComboBox : AvaloniaComboBox,
         else if (change.Property == FormFeedbackProperty)
         {
             ConfigureFormFeedbackSubscription();
+            UpdateOwnerDrivenAccessoryState();
+        }
+        else if (change.Property == ContentRightAddOnProperty ||
+                 change.Property == ContentRightAddOnTemplateProperty ||
+                 change.Property == IsFormFeedbackVisibleProperty ||
+                 change.Property == InputElement.IsEnabledProperty)
+        {
+            UpdateOwnerDrivenAccessoryState();
+        }
+
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            UpdateOwnerDrivenAccessoryState();
         }
     }
 
@@ -551,6 +693,89 @@ public class ComboBox : AvaloniaComboBox,
     private void ConfigureMaxDropdownHeight()
     {
         SetCurrentValue(MaxDropDownHeightProperty, DropDownDisplayPageSize * ItemHeight + PopupContentPadding.Top + PopupContentPadding.Bottom);
+        ConfigurePopupContent();
+    }
+
+    private void EnsurePopupContent()
+    {
+        if (_popupFrame != null)
+        {
+            ConfigurePopupContent();
+            return;
+        }
+
+        _popupItemsPresenter = new ItemsPresenter
+        {
+            Name       = "PART_ItemsPresenter",
+            ItemsPanel = ItemsPanel
+        };
+        Grid.SetIsSharedSizeScope(_popupItemsPresenter, true);
+        _popupItemsPresenter.SetTemplatedParent(this);
+
+        _popupScrollViewer = new ScrollViewer
+        {
+            IsScrollChainingEnabled = false,
+            Content                 = _popupItemsPresenter
+        };
+        _popupScrollViewer.SetTemplatedParent(this);
+
+        _popupFrame = new Border
+        {
+            Name  = "PopupFrame",
+            Child = _popupScrollViewer
+        };
+        _popupFrame.SetTemplatedParent(this);
+        _popup?.SetCurrentValue(Popup.ChildProperty, _popupFrame);
+
+        ConfigurePopupContent();
+    }
+
+    private void ConfigurePopupContent()
+    {
+        if (_popupFrame != null)
+        {
+            _popupFrame.SetCurrentValue(Border.MaxHeightProperty, MaxDropDownHeight);
+            _popupFrame.SetCurrentValue(Border.MinWidthProperty, EffectivePopupWidth);
+            _popupFrame.SetCurrentValue(Border.PaddingProperty, PopupContentPadding);
+        }
+
+        if (_popupScrollViewer != null)
+        {
+            _popupScrollViewer.SetCurrentValue(ScrollViewer.IsMotionEnabledProperty, IsMotionEnabled);
+            ScrollViewer.SetIsLiteMode(_popupScrollViewer, ScrollViewer.GetIsLiteMode(this));
+            _popupScrollViewer.SetCurrentValue(Avalonia.Controls.ScrollViewer.AllowAutoHideProperty,
+                Avalonia.Controls.ScrollViewer.GetAllowAutoHide(this));
+        }
+
+        _popupItemsPresenter?.SetCurrentValue(ItemsPresenter.ItemsPanelProperty, ItemsPanel);
+    }
+
+    private void ClearPopupContent()
+    {
+        if (_popup != null)
+        {
+            _popup.SetCurrentValue(Popup.ChildProperty, null);
+        }
+
+        if (_popupFrame != null)
+        {
+            _popupFrame.Child = null;
+            _popupFrame.SetTemplatedParent(null);
+            _popupFrame = null;
+        }
+
+        if (_popupScrollViewer != null)
+        {
+            _popupScrollViewer.Content = null;
+            _popupScrollViewer.SetTemplatedParent(null);
+            _popupScrollViewer = null;
+        }
+
+        if (_popupItemsPresenter != null)
+        {
+            _popupItemsPresenter.SetTemplatedParent(null);
+            _popupItemsPresenter = null;
+        }
     }
 
     internal static ComboBoxItem? GetComboBoxItemCore(StyledElement? item)

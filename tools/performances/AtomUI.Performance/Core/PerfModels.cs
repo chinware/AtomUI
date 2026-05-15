@@ -101,6 +101,12 @@ internal sealed record TreeStats(
     double TreeSelectPerRoot,
     double CascaderPerRoot,
     double ComboBoxPerRoot,
+    double ComboBoxItemPerRoot,
+    double ComboBoxHandlePerRoot,
+    double ComboBoxAccessoryHostPerRoot,
+    double ComboBoxPopupFramePerRoot,
+    double ComboBoxScrollViewerPerRoot,
+    double ComboBoxItemsPresenterPerRoot,
     double SelectHandlePerRoot,
     double SelectAccessoryHostPerRoot,
     double SelectCandidateListPerRoot,
@@ -197,6 +203,12 @@ internal sealed record TreeStats(
         var treeSelectCount          = 0;
         var cascaderCount            = 0;
         var comboBoxCount            = 0;
+        var comboBoxItemCount        = 0;
+        var comboBoxHandleCount      = 0;
+        var comboBoxAccessoryHostCount = 0;
+        var comboBoxPopupFrameCount  = 0;
+        var comboBoxScrollViewerCount = 0;
+        var comboBoxItemsPresenterCount = 0;
         var selectHandleCount        = 0;
         var selectAccessoryHostCount = 0;
         var selectCandidateListCount = 0;
@@ -553,6 +565,36 @@ internal sealed record TreeStats(
                 {
                     comboBoxCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ComboBoxItem"))
+                {
+                    comboBoxItemCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ComboBoxHandle"))
+                {
+                    comboBoxHandleCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ComboBoxAccessoryHost"))
+                {
+                    comboBoxAccessoryHostCount++;
+                }
+                if (visual is Border { Name: "PopupFrame" } &&
+                    visual.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.ComboBox")))
+                {
+                    comboBoxPopupFrameCount++;
+                }
+                if (visual is AtomUI.Desktop.Controls.ScrollViewer &&
+                    visual.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.ComboBox")))
+                {
+                    comboBoxScrollViewerCount++;
+                }
+                if (visual is ItemsPresenter { Name: "PART_ItemsPresenter" } &&
+                    visual.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.ComboBox")))
+                {
+                    comboBoxItemsPresenterCount++;
+                }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SelectHandle"))
                 {
                     selectHandleCount++;
@@ -678,6 +720,12 @@ internal sealed record TreeStats(
             treeSelectCount / (double)rootCount,
             cascaderCount / (double)rootCount,
             comboBoxCount / (double)rootCount,
+            comboBoxItemCount / (double)rootCount,
+            comboBoxHandleCount / (double)rootCount,
+            comboBoxAccessoryHostCount / (double)rootCount,
+            comboBoxPopupFrameCount / (double)rootCount,
+            comboBoxScrollViewerCount / (double)rootCount,
+            comboBoxItemsPresenterCount / (double)rootCount,
             selectHandleCount / (double)rootCount,
             selectAccessoryHostCount / (double)rootCount,
             selectCandidateListCount / (double)rootCount,

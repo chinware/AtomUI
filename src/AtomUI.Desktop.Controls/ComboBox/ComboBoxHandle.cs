@@ -2,6 +2,7 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
@@ -18,25 +19,39 @@ internal class ComboBoxHandle : TemplatedControl
     }
 
     public event EventHandler<RoutedEventArgs>? HandleClick;
-    private IconButton? _iconButton;
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
-        base.OnApplyTemplate(e);
-        if (_iconButton != null)
+        base.OnPointerPressed(e);
+        if (!e.Handled &&
+            IsEnabled &&
+            e.GetCurrentPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
         {
-            _iconButton.Click -= HandleIconButtonClick;
-        }
-
-        _iconButton = e.NameScope.Find<IconButton>("PART_OpenIndicatorButton");
-        if (_iconButton != null)
-        {
-            _iconButton.Click += HandleIconButtonClick;
+            PseudoClasses.Set(StdPseudoClass.Pressed, true);
+            e.Handled = true;
         }
     }
 
-    private void HandleIconButtonClick(object? sender, RoutedEventArgs args)
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
-        HandleClick?.Invoke(this, args);
+        base.OnPointerReleased(e);
+        if (!e.Handled &&
+            IsEnabled &&
+            PseudoClasses.Contains(StdPseudoClass.Pressed) &&
+            e.InitialPressMouseButton == MouseButton.Left)
+        {
+            PseudoClasses.Set(StdPseudoClass.Pressed, false);
+            HandleClick?.Invoke(this, e);
+            e.Handled = true;
+            return;
+        }
+
+        PseudoClasses.Set(StdPseudoClass.Pressed, false);
+    }
+
+    protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
+    {
+        base.OnPointerCaptureLost(e);
+        PseudoClasses.Set(StdPseudoClass.Pressed, false);
     }
 }
