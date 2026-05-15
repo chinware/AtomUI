@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -7,8 +8,10 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
+using Avalonia.VisualTree;
+using System.Reactive.Disposables;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -256,6 +259,12 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     internal bool AsyncLoaded;
     private static readonly Point s_invalidPoint = new (double.NaN, double.NaN);
     private Point _pointerDownPoint = s_invalidPoint;
+    private Panel? _indicatorHost;
+    private Panel? _loadingIconHost;
+    private CheckBox? _toggleCheckbox;
+    private IconTemplatePresenter? _loadingIconPresenter;
+    private CompositeDisposable? _toggleCheckboxDisposables;
+    private CompositeDisposable? _loadingIconDisposables;
 
     static CascaderViewItem()
     {
@@ -299,6 +308,19 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         {
             HandleToggleTypeChanged(change);
         }
+        else if (change.Property == InputElement.IsEnabledProperty ||
+                 change.Property == IsCheckBoxEnabledProperty)
+        {
+            SyncToggleCheckboxEnabled();
+        }
+        else if (change.Property == IsLoadingProperty)
+        {
+            ConfigureLoadingIconPresenter();
+        }
+        else if (change.Property == LoadingIconProperty)
+        {
+            ConfigureLoadingIconPresenter();
+        }
 
         if (change.Property == IsCheckedProperty ||
             change.Property == ToggleTypeProperty ||
@@ -311,6 +333,7 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     
     private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        ConfigureToggleCheckbox();
     }
     
     private void HandleIsCheckedChanged(AvaloniaPropertyChangedEventArgs<bool?> change)
@@ -363,6 +386,34 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         this.DisableTransitions();
     }
 
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        ClearToggleCheckbox();
+        ClearLoadingIconPresenter();
+        _indicatorHost  = null;
+        _loadingIconHost = null;
+
+        base.OnApplyTemplate(e);
+        _indicatorHost   = e.NameScope.Find<Panel>("Indicator");
+        _loadingIconHost = e.NameScope.Find<Panel>("LoadingIconHost");
+        ConfigureToggleCheckbox();
+        ConfigureLoadingIconPresenter();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureToggleCheckbox();
+        ConfigureLoadingIconPresenter();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ClearToggleCheckbox();
+        ClearLoadingIconPresenter();
+        base.OnDetachedFromVisualTree(e);
+    }
+
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
@@ -391,6 +442,120 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         PseudoClasses.Set(CascaderViewPseudoClass.NodeToggleTypeCheckBox, ToggleType == ItemToggleType.CheckBox);
         PseudoClasses.Set(StdPseudoClass.Expanded, IsExpanded);
         PseudoClasses.Set(StdPseudoClass.Checked, IsChecked == true);
+    }
+
+    private void ConfigureToggleCheckbox()
+    {
+        if (ToggleType == ItemToggleType.CheckBox)
+        {
+            EnsureToggleCheckbox();
+        }
+        else
+        {
+            ClearToggleCheckbox();
+        }
+    }
+
+    private void EnsureToggleCheckbox()
+    {
+        if (_toggleCheckbox != null || _indicatorHost == null)
+        {
+            SyncToggleCheckboxEnabled();
+            return;
+        }
+
+        _toggleCheckbox = new CheckBox
+        {
+            Name = "ToggleCheckbox"
+        };
+        _toggleCheckbox.SetTemplatedParent(this);
+        _toggleCheckboxDisposables = new CompositeDisposable
+        {
+            _toggleCheckbox.Bind(ToggleButton.IsCheckedProperty,
+                new Binding(nameof(IsChecked)) { Source = this, Mode = BindingMode.TwoWay }),
+            _toggleCheckbox.Bind(CheckBox.IsMotionEnabledProperty,
+                new Binding(nameof(IsMotionEnabled)) { Source = this })
+        };
+        _indicatorHost.Children.Add(_toggleCheckbox);
+        SyncToggleCheckboxEnabled();
+    }
+
+    private void ClearToggleCheckbox()
+    {
+        _toggleCheckboxDisposables?.Dispose();
+        _toggleCheckboxDisposables = null;
+
+        if (_toggleCheckbox == null)
+        {
+            return;
+        }
+
+        if (_toggleCheckbox.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_toggleCheckbox);
+        }
+        _toggleCheckbox.SetTemplatedParent(null);
+        _toggleCheckbox = null;
+    }
+
+    private void SyncToggleCheckboxEnabled()
+    {
+        if (_toggleCheckbox == null)
+        {
+            return;
+        }
+
+        _toggleCheckbox.SetCurrentValue(InputElement.IsEnabledProperty, IsEnabled && IsCheckBoxEnabled);
+    }
+
+    private void ConfigureLoadingIconPresenter()
+    {
+        if (IsLoading)
+        {
+            EnsureLoadingIconPresenter();
+        }
+        else
+        {
+            ClearLoadingIconPresenter();
+        }
+    }
+
+    private void EnsureLoadingIconPresenter()
+    {
+        if (_loadingIconPresenter != null || _loadingIconHost == null)
+        {
+            return;
+        }
+
+        _loadingIconPresenter = new IconTemplatePresenter
+        {
+            Name = "LoadingIconPresenter"
+        };
+        _loadingIconPresenter.SetTemplatedParent(this);
+        _loadingIconDisposables = new CompositeDisposable
+        {
+            _loadingIconPresenter.Bind(IconTemplatePresenter.IconTemplateProperty,
+                new Binding(nameof(LoadingIcon)) { Source = this })
+        };
+        _loadingIconHost.Children.Add(_loadingIconPresenter);
+    }
+
+    private void ClearLoadingIconPresenter()
+    {
+        _loadingIconDisposables?.Dispose();
+        _loadingIconDisposables = null;
+
+        if (_loadingIconPresenter == null)
+        {
+            return;
+        }
+
+        if (_loadingIconPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_loadingIconPresenter);
+        }
+        _loadingIconPresenter.SetTemplatedParent(null);
+        _loadingIconPresenter = null;
     }
 
     internal void NotifyClearDescendantExpanded()

@@ -1,6 +1,6 @@
 # AtomUI 控件性能优化总览
 
-本目录用于沉淀 AtomUI 控件性能优化的基线、方案、阶段记录和最终结果。
+本目录用于沉淀 AtomUI 控件性能优化的基线、方案、关键取舍和最终结果。
 
 测试工具位于 [tools/performances](/Users/chinboy/Projects/dotnet/AtomUIV6/tools/performances/README.md)。
 
@@ -9,7 +9,7 @@
 ## 目录规范
 
 - 每个控件或共享性能体系使用一个独立目录，目录名使用控件名的大小写写法，例如 `AddOnDecoratedBox`、`LineEdit`。
-- 控件目录内保留该控件自己的基线、方案、阶段记录、实测结果和复现命令。
+- 控件目录内保留该控件自己的 README、长期复用的方案、基线、最终结果和复现命令；阶段中间记录应合并到 README 或最终结果文档。
 - 跨控件共享的基础设施可以单独成目录，例如 `AddOnDecoratedBox`。
 - Gallery 级页面实测放到最直接受影响的控件目录下，并在文档内说明是否包含 Gallery 上层成本。
 
@@ -51,6 +51,7 @@
 | Badge | 本轮已完成 | [Badge](Badge/README.md) | hidden zero `CountBadgeAdorner/root 1 -> 0`，`DotBadge` 无文本 `Label/root 1 -> 0`；`BadgeShowCase` visuals `497 -> 485` |
 | Card | 本轮已完成 | [Card](Card/README.md) | `CardShowCase` repeated mean `78.11ms -> 50.66ms`，visuals `784 -> 582`；`CardActionPanel 18 -> 3`，`Skeleton 18 -> 0` |
 | Carousel | 本轮已完成 | [Carousel](Carousel/README.md) | `CarouselShowCase` alloc `6113.86KB -> 5213.10KB`，visuals `369 -> 326`；nav `14 -> 4`，progress `28 -> 1`，transition `7 -> 0`，repeated mean 基本持平 |
+| Cascader | 本轮已完成 | [Cascader](Cascader/README.md) | filter/multiple closed visual `41/25 -> 20`；`CascaderShowCase` visuals `1250 -> 1169`，repeated mean `141.81ms -> 133.27ms` |
 
 ## 总列表
 
@@ -75,7 +76,7 @@
 | Navigation | Steps | Pending | 待建立基线 |
 | Navigation | TabControl | Pending | 待建立基线 |
 | Data Entry | AutoComplete | Done | 关闭态 CandidateList/PopupFrame 已按需创建；Gallery repeated mean 提升约 `25.79%` |
-| Data Entry | Cascader | Partial | Select 本轮同步完成 closed `CascaderView` lazy materialization；后续仍需独立 Cascader 深度优化 |
+| Data Entry | Cascader | Done | [Cascader](Cascader/README.md)；closed popup、filter input、multiple tags、filter list、checkbox/loading slot 已按需创建，Gallery repeated mean 小幅下降 |
 | Data Entry | CheckBox | Pending | 待建立基线 |
 | Data Entry | ColorPicker | Pending | 待建立基线 |
 | Data Entry | DatePicker | Pending | 受 AddOnDecoratedBox 优化影响 |

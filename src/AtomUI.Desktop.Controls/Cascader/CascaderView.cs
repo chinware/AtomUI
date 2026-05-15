@@ -4,9 +4,11 @@ using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls.DataLoad;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
@@ -312,6 +314,9 @@ public partial class CascaderView : TemplatedControl,
     private bool _defaultExpandPathApplied;
     private bool _ignoreSelectedPropertyChanged;
     private CascaderViewLevelList? _rootLevelList;
+    private Panel? _filterListHost;
+    private Panel? _emptyIndicatorHost;
+    private ContentPresenter? _emptyIndicatorPresenter;
     private readonly Dictionary<CascaderViewLevelList, CompositeDisposable> _levelListDisposables = new();
     
     static CascaderView()
@@ -356,6 +361,11 @@ public partial class CascaderView : TemplatedControl,
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearFilterList();
+        ClearEmptyIndicatorPresenter();
+        _filterListHost = null;
+        _emptyIndicatorHost = null;
+
         base.OnApplyTemplate(e);
         _itemsPanel    = e.NameScope.Find<StackPanel>("PART_ItemsPanel");
         _rootLevelList = e.NameScope.Find<CascaderViewLevelList>("PART_RootLevelList");
@@ -365,16 +375,10 @@ public partial class CascaderView : TemplatedControl,
             _rootLevelList.OwnerView = this;
         }
         
-        if (_filterList != null)
-        {
-            _filterList.SelectionChanged -= HandleFilterListSelectionChanged;
-        }
-        _filterList = e.NameScope.Find<CascaderViewFilterList>("PART_FilterList");
-        
-        if (_filterList != null)
-        {
-            _filterList.SelectionChanged += HandleFilterListSelectionChanged;
-        }
+        _filterListHost = e.NameScope.Find<Panel>("PART_FilterListHost");
+        _emptyIndicatorHost = e.NameScope.Find<Panel>("PART_EmptyIndicatorHost");
+        ConfigureFilterList();
+        ConfigureEmptyIndicatorPresenter();
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -461,12 +465,31 @@ public partial class CascaderView : TemplatedControl,
         {
             FilterItems();
         }
+
+        if (change.Property == IsFilteringProperty)
+        {
+            ConfigureFilterList();
+        }
+        else if (change.Property == FilteredPathInfosProperty)
+        {
+            SyncFilterListProperties();
+        }
     
         if (change.Property == IsShowEmptyIndicatorProperty ||
             change.Property == OptionsSourceProperty ||
             change.Property == FilterResultCountProperty)
         {
             ConfigureEmptyIndicator();
+        }
+        else if (change.Property == IsEffectiveEmptyVisibleProperty)
+        {
+            ConfigureEmptyIndicatorPresenter();
+        }
+        else if (change.Property == EmptyIndicatorProperty ||
+                 change.Property == EmptyIndicatorTemplateProperty ||
+                 change.Property == EmptyIndicatorPaddingProperty)
+        {
+            SyncEmptyIndicatorPresenterProperties();
         }
         else if (change.Property == IsCheckableProperty)
         {
@@ -580,6 +603,64 @@ public partial class CascaderView : TemplatedControl,
         }
         IsEffectiveEmptyVisible = IsShowEmptyIndicator && isEmpty;
     }
+
+    private void ConfigureEmptyIndicatorPresenter()
+    {
+        if (IsEffectiveEmptyVisible)
+        {
+            EnsureEmptyIndicatorPresenter();
+            SyncEmptyIndicatorPresenterProperties();
+        }
+        else
+        {
+            ClearEmptyIndicatorPresenter();
+        }
+    }
+
+    private void EnsureEmptyIndicatorPresenter()
+    {
+        if (_emptyIndicatorPresenter != null || _emptyIndicatorHost == null)
+        {
+            return;
+        }
+
+        _emptyIndicatorPresenter = new ContentPresenter
+        {
+            Name = "EmptyIndicator",
+            HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            VerticalContentAlignment = Avalonia.Layout.VerticalAlignment.Center
+        };
+        _emptyIndicatorPresenter.SetTemplatedParent(this);
+        _emptyIndicatorHost.Children.Add(_emptyIndicatorPresenter);
+    }
+
+    private void ClearEmptyIndicatorPresenter()
+    {
+        if (_emptyIndicatorPresenter == null)
+        {
+            return;
+        }
+
+        _emptyIndicatorPresenter.SetCurrentValue(ContentPresenter.ContentProperty, null);
+        if (_emptyIndicatorPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_emptyIndicatorPresenter);
+        }
+        _emptyIndicatorPresenter.SetTemplatedParent(null);
+        _emptyIndicatorPresenter = null;
+    }
+
+    private void SyncEmptyIndicatorPresenterProperties()
+    {
+        if (_emptyIndicatorPresenter == null)
+        {
+            return;
+        }
+
+        _emptyIndicatorPresenter.SetCurrentValue(ContentPresenter.PaddingProperty, EmptyIndicatorPadding);
+        _emptyIndicatorPresenter.SetCurrentValue(ContentPresenter.ContentProperty, EmptyIndicator);
+        _emptyIndicatorPresenter.SetCurrentValue(ContentPresenter.ContentTemplateProperty, EmptyIndicatorTemplate);
+    }
     
     private void HandleCascaderItemDoubleClicked(RoutedEventArgs args)
     {
@@ -683,5 +764,7 @@ public partial class CascaderView : TemplatedControl,
         
         // 清理所有待处理的异步加载操作
         _asyncLoadCoordinator.CancelAll();
+        ClearFilterList();
+        ClearEmptyIndicatorPresenter();
     }
 }

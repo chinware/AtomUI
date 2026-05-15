@@ -1,7 +1,10 @@
 using System.Diagnostics;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -35,6 +38,66 @@ public partial class CascaderView
     
     private List<CascaderViewFilterListItemData>? _allPathInfos;
     private CascaderViewFilterList? _filterList;
+
+    private void ConfigureFilterList()
+    {
+        if (IsFiltering)
+        {
+            EnsureFilterList();
+            SyncFilterListProperties();
+        }
+        else
+        {
+            ClearFilterList();
+        }
+    }
+
+    private void EnsureFilterList()
+    {
+        if (_filterList != null || _filterListHost == null)
+        {
+            return;
+        }
+
+        _filterList = new CascaderViewFilterList
+        {
+            Name          = "PART_FilterList",
+            IsBorderless  = true,
+            SelectionMode = SelectionMode.Single
+        };
+        _filterList.SetTemplatedParent(this);
+        _filterList.SelectionChanged += HandleFilterListSelectionChanged;
+        _filterListHost.Children.Add(_filterList);
+    }
+
+    private void ClearFilterList()
+    {
+        if (_filterList == null)
+        {
+            return;
+        }
+
+        _filterList.SelectionChanged -= HandleFilterListSelectionChanged;
+        _filterList.SetCurrentValue(ItemsControl.ItemsSourceProperty, null);
+
+        if (_filterList.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_filterList);
+        }
+
+        _filterList.SetTemplatedParent(null);
+        _filterList = null;
+    }
+
+    private void SyncFilterListProperties()
+    {
+        if (_filterList == null)
+        {
+            return;
+        }
+
+        _filterList.SetCurrentValue(ItemsControl.ItemsSourceProperty, FilteredPathInfos);
+    }
     
     public void FilterItems()
     {

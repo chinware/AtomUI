@@ -16,7 +16,8 @@
                     VerticalAlignment="{TemplateBinding VerticalAlignment}"
                     ClipToBounds="{TemplateBinding ClipToBounds}">
                 <Panel>
-                    <Panel IsVisible="{TemplateBinding IsFiltering, Converter={x:Static BoolConverters.Not}}">
+                    <Panel Name="PART_ContentPanel"
+                           IsVisible="{TemplateBinding IsFiltering, Converter={x:Static BoolConverters.Not}}">
                         <atom:ScrollViewer
                             IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
                             AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}"
@@ -36,28 +37,11 @@
                                 </StackPanel>
                             </atom:CascaderViewFrame>
                         </atom:ScrollViewer>
-                        <ContentPresenter
-                            Name="EmptyIndicator"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Padding="{TemplateBinding EmptyIndicatorPadding}"
-                            IsVisible="{TemplateBinding IsEffectiveEmptyVisible}"
-                            Content="{TemplateBinding EmptyIndicator}"
-                            ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
+                        <Panel Name="PART_EmptyIndicatorHost"
+                               IsVisible="{TemplateBinding IsEffectiveEmptyVisible}" />
                     </Panel>
-                    <atom:CascaderViewFilterList Name="PART_FilterList"
-                                                 ItemsSource="{TemplateBinding FilteredPathInfos}"
-                                                 IsVisible="{TemplateBinding IsFiltering}"
-                                                 IsBorderless="True"
-                                                 SelectionMode="Single">
-                        <atom:CascaderViewFilterList.ItemTemplate>
-                            <DataTemplate x:DataType="atom:CascaderViewFilterListItemData">
-                                <atom:HighlightableTextBlock Text="{Binding Path}"
-                                                             HighlightForeground="{Binding FilterHighlightForeground, RelativeSource={RelativeSource AncestorType=atom:CascaderView}}"
-                                                             HighlightWords="{Binding FilterValue, RelativeSource={RelativeSource AncestorType=atom:CascaderView}}" />
-                            </DataTemplate>
-                        </atom:CascaderViewFilterList.ItemTemplate>
-                    </atom:CascaderViewFilterList>
+                    <Panel Name="PART_FilterListHost"
+                           IsVisible="{TemplateBinding IsFiltering}" />
                 </Panel>
             </Border>
         </ControlTemplate>

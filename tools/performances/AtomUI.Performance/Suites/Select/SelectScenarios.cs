@@ -94,15 +94,6 @@ internal static partial class Program
                 IsFilterEnabled   = true,
                 IsDefaultExpandAll = true,
                 ItemsSource        = CreateTreeNodes()
-            }),
-            new PerfScenario("Cascader.Default.Closed", _ => new Cascader
-            {
-                OptionsSource = CreateCascaderOptions()
-            }),
-            new PerfScenario("Cascader.Multiple.Closed", _ => new Cascader
-            {
-                IsMultiple    = true,
-                OptionsSource = CreateCascaderOptions()
             })
         ];
     }
@@ -169,45 +160,4 @@ internal static partial class Program
         ];
     }
 
-    private static List<ICascaderOption> CreateCascaderOptions()
-    {
-        return
-        [
-            new CascaderOption
-            {
-                Header  = "Zhejiang",
-                ItemKey = "zhejiang",
-                Children =
-                [
-                    new CascaderOption
-                    {
-                        Header  = "Hangzhou",
-                        ItemKey = "hangzhou",
-                        Children =
-                        [
-                            new CascaderOption { Header = "West Lake", ItemKey = "xihu" },
-                            new CascaderOption { Header = "Lingyin", ItemKey = "lingyin" }
-                        ]
-                    }
-                ]
-            },
-            new CascaderOption
-            {
-                Header  = "Jiangsu",
-                ItemKey = "jiangsu",
-                Children =
-                [
-                    new CascaderOption
-                    {
-                        Header  = "Nanjing",
-                        ItemKey = "nanjing",
-                        Children =
-                        [
-                            new CascaderOption { Header = "Zhong Hua Men", ItemKey = "zhonghuamen" }
-                        ]
-                    }
-                ]
-            }
-        ];
-    }
 }

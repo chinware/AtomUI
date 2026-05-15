@@ -117,6 +117,13 @@
                 </Style>
             </Style>
             <Style Selector="^[IsFilterEnabled=True]">
+                <Style Selector="^[IsDropDownOpen=False]">
+                    <Style Selector="^ /template/ TextBlock#SingleSelectResultPresenter">
+                        <Setter Property="IsVisible" Value="True" />
+                        <Setter Property="Foreground"
+                                Value="{atom:SharedTokenResource ColorText}" />
+                    </Style>
+                </Style>
                 <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
                     <Setter Property="IsVisible" Value="True" />
                     <Setter Property="PlaceholderForeground"

@@ -22,21 +22,7 @@
                     <Panel Grid.Column="0"
                            Name="Indicator"
                            HorizontalAlignment="Left"
-                           VerticalAlignment="Center">
-                        <atom:CheckBox Name="ToggleCheckbox"
-                                       IsChecked="{TemplateBinding IsChecked, Mode=TwoWay}"
-                                       IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                       IsVisible="False">
-                            <atom:CheckBox.IsEnabled>
-                                <MultiBinding
-                                    Converter="{x:Static atom:CascaderViewItemTheme.CascaderViewItemIndicatorEnabledConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsEnabled" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsCheckBoxEnabled" />
-                                </MultiBinding>
-                            </atom:CheckBox.IsEnabled>
-                        </atom:CheckBox>
-                    </Panel>
+                           VerticalAlignment="Center" />
 
                     <atom:IconPresenter Name="IconPresenter"
                                         Grid.Column="1"
@@ -48,8 +34,8 @@
                                       Content="{TemplateBinding Header}"
                                       ContentTemplate="{TemplateBinding HeaderTemplate}" />
                     <atom:IconTemplatePresenter Name="ExpandIconPresenter" Grid.Column="3"
-                                        IconTemplate="{TemplateBinding ExpandIcon}"
-                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                                IconTemplate="{TemplateBinding ExpandIcon}"
+                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
                         <atom:IconPresenter.IsVisible>
                             <MultiBinding
                                 Converter="{x:Static atom:CascaderViewItemTheme.CascaderViewItemExpanderIsVisibleConverter}">
@@ -59,9 +45,8 @@
                             </MultiBinding>
                         </atom:IconPresenter.IsVisible>
                     </atom:IconTemplatePresenter>
-                    <atom:IconTemplatePresenter Name="LoadingIconPresenter" Grid.Column="3"
-                                                IsVisible="{TemplateBinding IsLoading}"
-                                                IconTemplate="{TemplateBinding LoadingIcon}" />
+                    <Panel Name="LoadingIconHost"
+                           Grid.Column="3" />
                 </Grid>
             </Border>
         </ControlTemplate>
@@ -100,12 +85,6 @@
                     Value="{atom:CascaderTokenResource OptionSelectedColor}" />
             <Setter Property="FontWeight"
                     Value="{atom:CascaderTokenResource OptionSelectedFontWeight}" />
-        </Style>
-
-        <Style Selector="^[ToggleType=CheckBox]">
-            <Style Selector="^ /template/ atom|CheckBox#ToggleCheckbox">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
         </Style>
 
         <Style Selector="^ /template/ Grid#ItemsLayout">

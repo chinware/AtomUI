@@ -7,5 +7,14 @@
         <ControlTheme.BasedOn>
             <atom:ListBoxTheme TargetType="atom:CascaderViewFilterList" />
         </ControlTheme.BasedOn>
+        <Setter Property="IsBorderless" Value="True" />
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="ItemTemplate">
+            <DataTemplate x:DataType="atom:CascaderViewFilterListItemData">
+                <atom:HighlightableTextBlock Text="{Binding Path}"
+                                             HighlightForeground="{Binding FilterHighlightForeground, RelativeSource={RelativeSource AncestorType=atom:CascaderView}}"
+                                             HighlightWords="{Binding FilterValue, RelativeSource={RelativeSource AncestorType=atom:CascaderView}}" />
+            </DataTemplate>
+        </Setter>
     </ControlTheme>
 </ResourceDictionary>

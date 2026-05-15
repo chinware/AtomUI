@@ -67,6 +67,7 @@ internal static partial class Program
                 "buttonspinner" => "# ButtonSpinner Baseline",
                 "card" => "# Card Baseline",
                 "carousel" => "# Carousel Baseline",
+                "cascader" => "# Cascader Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

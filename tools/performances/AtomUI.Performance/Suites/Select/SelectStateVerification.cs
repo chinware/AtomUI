@@ -18,7 +18,6 @@ internal static partial class Program
         VerifySelectAccessoryPaths(failures);
         VerifySelectLoadingLifecycle(failures);
         VerifyTreeSelectPopupLifecycle(failures);
-        VerifyCascaderPopupLifecycle(failures);
 
         if (failures.Count == 0)
         {
@@ -215,38 +214,6 @@ internal static partial class Program
 
         Expect(firstTreeView?.GetVisualParent() == null,
             "Detached TreeSelect should clear lazy TreeSelectTreeView visual parent.",
-            failures);
-    }
-
-    private static void VerifyCascaderPopupLifecycle(ICollection<string> failures)
-    {
-        var cascader = new Cascader
-        {
-            OptionsSource = CreateCascaderOptions()
-        };
-        CascaderView? firstCascaderView;
-        using (var realized = RealizeControl(cascader))
-        {
-            Expect(GetPopupContent<CascaderView>(cascader) == null,
-                "Closed Cascader should not create CascaderView.",
-                failures);
-
-            MaterializeLazyPopupContentForTest(cascader);
-            RefreshLayout(realized.Window);
-            firstCascaderView = GetPopupContent<CascaderView>(cascader);
-            Expect(firstCascaderView != null,
-                "Materializing Cascader popup should lazily create CascaderView.",
-                failures);
-
-            MaterializeLazyPopupContentForTest(cascader);
-            RefreshLayout(realized.Window);
-            Expect(ReferenceEquals(firstCascaderView, GetPopupContent<CascaderView>(cascader)),
-                "Cascader should reuse lazy CascaderView on repeated materialization.",
-                failures);
-        }
-
-        Expect(firstCascaderView?.GetVisualParent() == null,
-            "Detached Cascader should clear lazy CascaderView visual parent.",
             failures);
     }
 

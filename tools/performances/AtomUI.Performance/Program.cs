@@ -31,7 +31,8 @@ internal static partial class Program
             options.VerifyBadgeStates ||
             options.VerifyButtonSpinnerStates ||
             options.VerifyCardStates ||
-            options.VerifyCarouselStates)
+            options.VerifyCarouselStates ||
+            options.VerifyCascaderStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -94,6 +95,10 @@ internal static partial class Program
             {
                 verified &= RunCarouselStateVerification();
             }
+            if (options.VerifyCascaderStates)
+            {
+                verified &= RunCascaderStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -140,6 +145,7 @@ internal static partial class Program
             "buttonspinner" => CreateButtonSpinnerScenarios(),
             "card" => CreateCardScenarios(),
             "carousel" => CreateCarouselScenarios(),
+            "cascader" => CreateCascaderScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

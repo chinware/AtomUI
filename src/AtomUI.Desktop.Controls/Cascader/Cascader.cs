@@ -13,7 +13,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -243,6 +242,7 @@ public class Cascader : AbstractSelect
     private SelectTagAwareTextBox? _selectedOptionsBox;
     private CascaderView? _cascaderView;
     private IDisposable? _cascaderEffectiveEmptySubscription;
+    private List<ICascaderOption>? _optionsSnapshot;
     private bool _needSkipSyncSelectedOptions;
 
     static Cascader()
@@ -267,17 +267,30 @@ public class Cascader : AbstractSelect
     
     private void HandleCascaderSourceChanged(AvaloniaPropertyChangedEventArgs args)
     {
+        InvalidateOptionsSnapshot();
         _options.SetItemsSource(args.GetNewValue<IEnumerable<ICascaderOption>?>());
         ConfigureDefaultSelectedOptionPath();
     }
 
     private void HandleCascaderOptionsChanged(object? sender, NotifyCollectionChangedEventArgs args)
     {
+        InvalidateOptionsSnapshot();
         if (_cascaderView != null)
         {
-            _cascaderView.OptionsSource = Options.Cast<ICascaderOption>().ToList();
+            _cascaderView.OptionsSource = GetOptionsSnapshot();
         }
         ConfigureDefaultSelectedOptionPath();
+    }
+
+    private void InvalidateOptionsSnapshot()
+    {
+        _optionsSnapshot = null;
+    }
+
+    private IReadOnlyList<ICascaderOption> GetOptionsSnapshot()
+    {
+        _optionsSnapshot ??= Options.Cast<ICascaderOption>().ToList();
+        return _optionsSnapshot;
     }
 
     protected override void OnInitialized()
@@ -374,6 +387,7 @@ public class Cascader : AbstractSelect
         base.OnPropertyChanged(change);
         if (change.Property == IsDropDownOpenProperty)
         {
+            ConfigureModeSpecificContent();
             ConfigureSingleFilterTextBox();
             SyncSelectedOptionsBoxProperties();
             SyncCascaderViewProperties();
@@ -415,8 +429,7 @@ public class Cascader : AbstractSelect
 
         if (change.Property == IsMultipleProperty ||
             change.Property == MaxCountProperty ||
-            change.Property == EffectiveSelectedOptionsProperty ||
-            change.Property == IsMultipleProperty)
+            change.Property == EffectiveSelectedOptionsProperty)
         {
             ConfigureMaxSelectReached();
             SyncSelectedOptionsBoxProperties();
@@ -494,6 +507,7 @@ public class Cascader : AbstractSelect
             _singleFilterInput.Width = double.NaN;
             FilterValue              = null;
         }
+        ConfigureModeSpecificContent();
         base.PopupClosed(sender, e);
     }
 
@@ -502,6 +516,10 @@ public class Cascader : AbstractSelect
         base.PopupOpened(sender, e);
         if (!IsMultiple)
         {
+            if (IsFilterEnabled)
+            {
+                EnsureSingleFilterInput();
+            }
             _singleFilterInput?.Focus();
         }
     }
@@ -581,12 +599,19 @@ public class Cascader : AbstractSelect
         if (IsMultiple)
         {
             ClearSingleFilterInput();
-            EnsureSelectedOptionsBox();
+            if (ShouldMaterializeSelectedOptionsBox())
+            {
+                EnsureSelectedOptionsBox();
+            }
+            else
+            {
+                ClearSelectedOptionsBox();
+            }
         }
         else
         {
             ClearSelectedOptionsBox();
-            if (IsFilterEnabled)
+            if (ShouldMaterializeSingleFilterInput())
             {
                 EnsureSingleFilterInput();
             }
@@ -595,6 +620,21 @@ public class Cascader : AbstractSelect
                 ClearSingleFilterInput();
             }
         }
+    }
+
+    private bool ShouldMaterializeSingleFilterInput()
+    {
+        return IsFilterEnabled && IsDropDownOpen;
+    }
+
+    private bool ShouldMaterializeSelectedOptionsBox()
+    {
+        return IsMultiple && (IsDropDownOpen || HasSelectedOptions());
+    }
+
+    private bool HasSelectedOptions()
+    {
+        return SelectedOptions?.Count > 0 || EffectiveSelectedOptions?.Count > 0;
     }
 
     private void EnsureSingleFilterInput()
@@ -917,7 +957,11 @@ public class Cascader : AbstractSelect
         _cascaderView.SetCurrentValue(CascaderView.IsAllowSelectParentProperty, IsAllowSelectParent);
         _cascaderView.SetCurrentValue(CascaderView.IsMotionEnabledProperty, IsMotionEnabled);
         _cascaderView.IsMaxSelectReached = IsMaxSelectReached;
-        _cascaderView.OptionsSource      = Options.Cast<ICascaderOption>().ToList();
+        var optionsSource = GetOptionsSnapshot();
+        if (!ReferenceEquals(_cascaderView.OptionsSource, optionsSource))
+        {
+            _cascaderView.OptionsSource = optionsSource;
+        }
     }
 
     private void HandleIsCheckableChanged()
@@ -1133,7 +1177,7 @@ public class Cascader : AbstractSelect
     {
         var segments    = path.Segments;
         var options     = new List<ICascaderOption>();
-        var currentItems = Options.Cast<ICascaderOption>().ToList();
+        IEnumerable<ICascaderOption> currentItems = GetOptionsSnapshot();
 
         foreach (var segment in segments)
         {
@@ -1154,7 +1198,7 @@ public class Cascader : AbstractSelect
             }
 
             options.Add(matched);
-            currentItems = matched.Children.ToList();
+            currentItems = matched.Children;
         }
 
         pathNodes = options;

@@ -9,7 +9,6 @@
 | [addon-decorated-box-performance-plan.md](addon-decorated-box-performance-plan.md) | 完整方案、风险评估和实施任务 |
 | [addon-decorated-box-baseline.md](addon-decorated-box-baseline.md) | 优化前控件级基线 |
 | [addon-decorated-box-final.md](addon-decorated-box-final.md) | 最终性能结果 |
-| [addon-decorated-box-followup-gaps.md](addon-decorated-box-followup-gaps.md) | 本轮优化后遗留 gap 与复评结论 |
 
 阶段中间结果不单独入库；关键过程、决策和最终数据已汇总到方案与最终结果文档。
 
@@ -23,4 +22,4 @@
 
 ## Follow-up 实施摘要
 
-2026-05-14 已按 [addon-decorated-box-followup-gaps.md](addon-decorated-box-followup-gaps.md) 扩展到 `TextArea`、`Select` / `TreeSelect` / `Cascader`、`ComboBox`、Picker 系列和 `AddOnDecoratedBox` slot presenter。默认 `LineEdit.Default` 当前为 Visual/root `16.0`、ContentPresenter/root `1.0`、StackPanel/root `0.0`；`SearchEdit.Default` 保留搜索按钮等专用 part 后为 Visual/root `30.0`、ContentPresenter/root `5.0`、StackPanel/root `0.0`。accessory 生命周期、effective brush、addon state 三组验证均通过。
+2026-05-14 已按 follow-up 复评扩展到 `TextArea`、`Select` / `TreeSelect` / `Cascader`、`ComboBox`、Picker 系列和 `AddOnDecoratedBox` slot presenter。默认 `LineEdit.Default` 当前为 Visual/root `16.0`、ContentPresenter/root `1.0`、StackPanel/root `0.0`；`SearchEdit.Default` 保留搜索按钮等专用 part 后为 Visual/root `30.0`、ContentPresenter/root `5.0`、StackPanel/root `0.0`。accessory 生命周期、effective brush、addon state 三组验证均通过。

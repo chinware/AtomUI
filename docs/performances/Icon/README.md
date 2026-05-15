@@ -2,7 +2,7 @@
 
 `Icon` 是 AtomUI 最基础、最高频的视觉控件之一。它出现在 Button、Input、Select、Menu、NavMenu、Tabs、Feedback、Data Display 等大量控件中，单个实例成本不高时也会被批量模板放大。
 
-本目录记录 `Icon` 体系的性能分析、优化计划、基线与阶段结果。当前阶段已完成 Phase 6 最终验证；generated geometry metadata 与 transform literal 策略已同步到 AntDesign、Material、IconPark 三个图标包。
+本目录记录 `Icon` 体系的性能分析、优化计划、基线与最终结果。当前阶段已完成 Phase 6 最终验证；generated geometry metadata 与 transform literal 策略已同步到 AntDesign、Material、IconPark 三个图标包。
 
 ## 文档
 
@@ -10,14 +10,9 @@
 | --- | --- |
 | [icon-performance-plan.md](icon-performance-plan.md) | Icon 架构分析、性能问题清单、验证口径和实施任务 |
 | [icon-baseline.md](icon-baseline.md) | Icon 控件级与 Gallery `IconShowCase` 优化前基线 |
-| [icon-phase1.md](icon-phase1.md) | Phase 1 低风险修复内容、实测结果和回归验证 |
-| [icon-phase2.md](icon-phase2.md) | Phase 2 render 热路径修复内容、实测结果和回归验证 |
-| [icon-phase3.md](icon-phase3.md) | Phase 3 AntDesign/Material/IconPark 静态元数据缓存结果和回归验证 |
-| [icon-phase4.md](icon-phase4.md) | Phase 4 高频模板隐藏 icon slot 按需创建结果和回归验证 |
-| [icon-phase5.md](icon-phase5.md) | Phase 5 Provider cache 清理语义与 generator transform literal 结果 |
 | [icon-final.md](icon-final.md) | Phase 6 最终验证、micro/Gallery 汇总、外部包状态和后续风险 |
 
-逐次 sample 原始输出不入库；需要时使用文档中的复现命令重新生成。
+阶段中间结果和逐次 sample 原始输出不入库；需要时使用文档中的复现命令重新生成。
 
 ## 当前结论
 

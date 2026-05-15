@@ -531,8 +531,7 @@ Phase 6 当前结论：
 
 Phase 7 当前结果：
 
-- 已固化 [button-phase3-7.md](button-phase3-7.md)。
-- 已固化 [button-showcase-phase7.md](button-showcase-phase7.md)。
+- 最终控件级和 Gallery 结果已汇总到 [README.md](README.md)，不再保留阶段中间结果文档。
 - 已新增 GalleryPerformance `dropdownbutton` / `splitbutton` 入口；smoke 结果只保留汇总，不单独入库原始阶段文档。
 - `ButtonShowCase` repeated mean `134.60ms -> 101.53ms`，提升约 `24.57%`。
 - `ButtonShowCase` alloc mean `32177.02KB -> 26653.55KB`，下降约 `17.17%`。

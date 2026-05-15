@@ -13,8 +13,6 @@
 | [button-performance-plan.md](button-performance-plan.md) | 完整优化方案、风险边界、阶段任务、实施结论 |
 | [button-baseline.md](button-baseline.md) | Button 控件级微基准优化前 baseline |
 | [button-showcase-baseline.md](button-showcase-baseline.md) | 真实 `ButtonShowCase` Gallery navigation 优化前 baseline |
-| [button-phase3-7.md](button-phase3-7.md) | 最终控件级结果与验证 |
-| [button-showcase-phase7.md](button-showcase-phase7.md) | 最终真实 `ButtonShowCase` Gallery navigation 结果 |
 
 ## 当前结论
 
