@@ -39,7 +39,8 @@ internal static partial class Program
             options.VerifyDatePickerStates ||
             options.VerifyDescriptionsStates ||
             options.VerifyDialogStates ||
-            options.VerifyDrawerStates)
+            options.VerifyDrawerStates ||
+            options.VerifyExpanderStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -134,6 +135,10 @@ internal static partial class Program
             {
                 verified &= RunDrawerStateVerification();
             }
+            if (options.VerifyExpanderStates)
+            {
+                verified &= RunExpanderStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -188,6 +193,7 @@ internal static partial class Program
             "descriptions" => CreateDescriptionsScenarios(),
             "dialog" => CreateDialogScenarios(),
             "drawer" => CreateDrawerScenarios(),
+            "expander" => CreateExpanderScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

@@ -60,6 +60,7 @@
 | DatePicker | 本轮已完成 | [DatePicker](DatePicker/README.md) | closed route `PickerHost 30 -> 0`，visuals `1570 -> 1540`，alloc `30959.16KB -> 29762.89KB`，长样本 repeated mean `174.77ms -> 154.21ms` |
 | Descriptions | 本轮已完成 | [Descriptions](Descriptions/README.md) | `DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；`GalleryShape.Batch8` `25.139ms/root -> 24.486ms/root`；修复 binding/collection/window 订阅生命周期风险 |
 | Dialog / MessageBox | 本轮已完成结构与生命周期优化 | [Dialog](Dialog/README.md) | `MessageBox` closed `Dialog/root 1 -> 0`，`ModalShowCase` cold mean `218.07ms -> 211.09ms`，repeated mean `34.19ms -> 34.53ms` 未提升，visuals `324 -> 317`，Dialog runtime `14 -> 7`；修复 RelayBind、mask binding、resizer 和 ButtonBox 父级生命周期风险 |
+| Expander | 本轮已完成 | [Expander](Expander/README.md) | closed content motion actor 按需创建；`ExpanderShowCase` cold mean `191.70ms -> 170.47ms`，repeated mean `82.18ms -> 67.30ms`，visuals `391 -> 360`，MotionActor `16 -> 1` |
 
 ## 总列表
 
@@ -109,7 +110,7 @@
 | Data Display | Collapse | Done | [Collapse](Collapse/README.md)；addon、no-arrow、closed content 已按需创建，Gallery repeated mean 提升约 `16.03%` |
 | Data Display | Descriptions | Done | [Descriptions](Descriptions/README.md)；`DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；binding/collection/window 订阅生命周期已补齐验证 |
 | Data Display | DataGrid | Pending | 待建立基线 |
-| Data Display | Expander | Pending | 待建立基线 |
+| Data Display | Expander | Done | [Expander](Expander/README.md)；closed content/addon/no-arrow slot 已按需创建，Gallery repeated mean 提升约 `18.11%` |
 | Data Display | Empty | Pending | 待建立基线 |
 | Data Display | GroupBox | Pending | 待建立基线 |
 | Data Display | ImagePreviewer | Pending | 待建立基线 |

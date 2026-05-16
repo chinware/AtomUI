@@ -78,6 +78,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.CollapseShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/CollapseShowCase.axaml",
                 stats => stats.CollapseCount > 0),
+            ["expander"] = new(
+                "ExpanderShowCase",
+                ExpanderViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.ExpanderShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/ExpanderShowCase.axaml",
+                stats => stats.VisualCount > 0),
             ["descriptions"] = new(
                 "DescriptionsShowCase",
                 DescriptionsViewModel.ID,
