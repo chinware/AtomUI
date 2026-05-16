@@ -124,7 +124,7 @@
 | Data Display | Tooltip | Pending | 待建立基线 |
 | Data Display | Tour | Pending | 待建立基线 |
 | Feedback | Alert | Pending | 待建立基线 |
-| Feedback | Drawer | Pending | 待建立基线 |
+| Feedback | Drawer | Done | [Drawer](Drawer/README.md)；关闭态 `OpenOn`/`SizeChanged` 已按需化，detach/open/close 生命周期已补齐验证；Gallery repeated mean `24.24ms -> 22.87ms` |
 | Feedback | Message | Pending | 待建立基线 |
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
 | Feedback | Notification | Pending | 待建立基线 |

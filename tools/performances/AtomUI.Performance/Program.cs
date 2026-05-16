@@ -38,7 +38,8 @@ internal static partial class Program
             options.VerifyComboBoxStates ||
             options.VerifyDatePickerStates ||
             options.VerifyDescriptionsStates ||
-            options.VerifyDialogStates)
+            options.VerifyDialogStates ||
+            options.VerifyDrawerStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -129,6 +130,10 @@ internal static partial class Program
             {
                 verified &= RunDialogStateVerification();
             }
+            if (options.VerifyDrawerStates)
+            {
+                verified &= RunDrawerStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -182,6 +187,7 @@ internal static partial class Program
             "datepicker" => CreateDatePickerScenarios(),
             "descriptions" => CreateDescriptionsScenarios(),
             "dialog" => CreateDialogScenarios(),
+            "drawer" => CreateDrawerScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
@@ -11,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -206,7 +206,10 @@ public class Drawer : Control,
 
     private DrawerContainer? _container;
     private CompositeDisposable? _relayBindingDisposables;
+    private IDisposable? _pushOffsetPercentBinding;
     private IDisposable? _dialogSizeBinding;
+    private Control? _openOnSizeChangedTarget;
+    private int _visualTreeVersion;
     
     static Drawer()
     {
@@ -217,7 +220,7 @@ public class Drawer : Control,
     {
         this.RegisterTokenResourceScope(DrawerToken.ScopeProvider);
         this.ConfigureMotionBindingStyle();
-        TokenResourceBinder.CreateTokenBinding(this, PushOffsetPercentProperty, DrawerTokenKind.PushOffsetPercent);
+        ApplyPushOffsetPercentTokenBinding();
         ApplyDialogSizeTokenBinding();
     }
     
@@ -234,6 +237,7 @@ public class Drawer : Control,
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _visualTreeVersion++;
         base.OnAttachedToVisualTree(e);
         var parentDrawer = FindParentDrawer();
         _relayBindingDisposables?.Dispose();
@@ -245,24 +249,38 @@ public class Drawer : Control,
             _relayBindingDisposables.Add(BindUtils.RelayBind(parentDrawer, IsMotionEnabledProperty, this, IsMotionEnabledProperty,
                 BindingMode.Default, BindingPriority.Template));
         }
-        else
+
+        if (_pushOffsetPercentBinding == null)
         {
-            _relayBindingDisposables.Add(Bind(OpenOnProperty, new Binding()
-            {
-                Priority = BindingPriority.Template,
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor)
-                {
-                    AncestorType = typeof(TopLevel),
-                }
-            }));
+            ApplyPushOffsetPercentTokenBinding();
+        }
+        if (_dialogSizeBinding == null)
+        {
+            ApplyDialogSizeTokenBinding();
+        }
+        ConfigureEffectiveDialogSize();
+        if (IsOpen)
+        {
+            Open();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        if (IsOpen)
+        {
+            var parentDrawers = FindParentDrawers();
+            var detachVersion = ++_visualTreeVersion;
+            Dispatcher.UIThread.Post(
+                () => CompleteDeferredDetach(detachVersion, parentDrawers),
+                DispatcherPriority.Background);
+            base.OnDetachedFromVisualTree(e);
+            return;
+        }
+
+        _visualTreeVersion++;
+        CompleteDetachedFromVisualTree();
         base.OnDetachedFromVisualTree(e);
-        _relayBindingDisposables?.Dispose();
-        _relayBindingDisposables = null;
     }
 
     private Drawer? FindParentDrawer()
@@ -290,6 +308,26 @@ public class Drawer : Control,
         return target;
     }
 
+    private IReadOnlyList<Drawer>? FindParentDrawers()
+    {
+        List<Drawer>? drawers = null;
+        var current = Parent;
+        while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
+        {
+            if (current is DrawerContainer container &&
+                container.Drawer != null &&
+                container.Drawer.TryGetTarget(out var drawer))
+            {
+                drawers ??= new List<Drawer>();
+                drawers.Add(drawer);
+            }
+
+            current = current.Parent;
+        }
+
+        return drawers;
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -301,34 +339,43 @@ public class Drawer : Control,
             }
         }
 
-        if (change.Property == OpenOnProperty ||
-            change.Property == DialogSizeProperty)
+        if (change.Property == OpenOnProperty)
         {
-            ConfigureEffectiveDialogSize();
+            var target = ResolveOpenTarget();
+            if (IsOpen && target != null)
+            {
+                ScopeAwareAdornerLayer.SetAdornedElement(this, target);
+                ConfigureEffectiveDialogSize(target);
+                ConfigureOpenOnSizeChangedSubscription(target);
+            }
+            else
+            {
+                DetachOpenOnSizeChanged();
+                ConfigureEffectiveDialogSize(target);
+            }
+        }
+        else if (change.Property == DialogSizeProperty ||
+                 change.Property == PlacementProperty)
+        {
+            ConfigureEffectiveDialogSize(ResolveOpenTarget());
+            ConfigureOpenOnSizeChangedSubscription(ResolveOpenTarget());
         }
 
         if (change.Property == SizeTypeProperty)
         {
             ApplyDialogSizeTokenBinding();
         }
-        
-        if (change.Property == OpenOnProperty)
+
+        SyncDrawerContainerProperty(change.Property);
+        if (change.Property == PlacementProperty && IsOpen && this.IsAttachedToVisualTree())
         {
-            if (change.OldValue is Control oldOpenOn)
-            {
-                oldOpenOn.SizeChanged -= HandleOpenOnSizeChanged;
-            }
-            if (change.NewValue is Control newOpenOn)
-            {
-                newOpenOn.SizeChanged += HandleOpenOnSizeChanged;
-                ScopeAwareAdornerLayer.SetAdornedElement(this, newOpenOn);
-            }
+            NotifyParentDrawersChildDrawerPlacementChanged();
         }
     }
 
     private void HandleOpenOnSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        ConfigureEffectiveDialogSize();
+        ConfigureEffectiveDialogSize(sender as Control ?? ResolveOpenTarget());
     }
 
     private void HandleIsOpenChanged()
@@ -345,20 +392,33 @@ public class Drawer : Control,
 
     private void Open()
     {
+        var target = ResolveOpenTarget();
+        if (target == null)
+        {
+            return;
+        }
+        ScopeAwareAdornerLayer.SetAdornedElement(this, target);
         var layer = ScopeAwareAdornerLayer.GetLayer(this);
-        Debug.Assert(layer != null);
+        if (layer == null)
+        {
+            return;
+        }
+        ConfigureEffectiveDialogSize(target);
+        ConfigureOpenOnSizeChangedSubscription(target);
         NotifyBeforeOpen(layer);
         CreateDrawerContainer();
-        Debug.Assert(_container != null);
-        _container.Open(layer);
+        _container?.Open(layer, target);
     }
 
     private void Close()
     {
         var layer = ScopeAwareAdornerLayer.GetLayer(this);
-        Debug.Assert(layer != null);
+        DetachOpenOnSizeChanged();
+        if (layer == null || _container == null)
+        {
+            return;
+        }
         NotifyBeforeClose(layer);
-        Debug.Assert(_container != null);
         _container.Close(layer);
     }
 
@@ -383,8 +443,102 @@ public class Drawer : Control,
             _container[!DrawerContainer.IsShowMaskProperty]           = this[!IsShowMaskProperty];
             _container[!DrawerContainer.IsShowCloseButtonProperty]    = this[!IsShowCloseButtonProperty];
             _container[!DrawerContainer.IsMotionEnabledProperty]      = this[!IsMotionEnabledProperty];
-            _container[!DrawerContainer.IsCloseOnMaskClickProperty] = this[!IsCloseOnMaskClickProperty];
+            _container[!DrawerContainer.IsCloseOnMaskClickProperty]   = this[!IsCloseOnMaskClickProperty];
             _container[!DrawerContainer.PushOffsetPercentProperty]    = this[!PushOffsetPercentProperty];
+            SyncDrawerContainerProperties();
+        }
+    }
+
+    private void SyncDrawerContainerProperties()
+    {
+        if (_container == null)
+        {
+            return;
+        }
+
+        _container.DataContext          = DataContext;
+        _container.Content              = Content;
+        _container.ContentTemplate      = ContentTemplate;
+        _container.Footer               = Footer;
+        _container.FooterTemplate       = FooterTemplate;
+        _container.Extra                = Extra;
+        _container.ExtraTemplate        = ExtraTemplate;
+        _container.DialogSize           = EffectiveDialogSize;
+        _container.Placement            = Placement;
+        _container.Title                = Title;
+        _container.IsShowMask           = IsShowMask;
+        _container.IsShowCloseButton    = IsShowCloseButton;
+        _container.IsMotionEnabled      = IsMotionEnabled;
+        _container.IsCloseOnMaskClick   = IsCloseOnMaskClick;
+        _container.PushOffsetPercent    = PushOffsetPercent;
+    }
+
+    private void SyncDrawerContainerProperty(AvaloniaProperty property)
+    {
+        if (_container == null)
+        {
+            return;
+        }
+
+        if (property == DataContextProperty)
+        {
+            _container.DataContext = DataContext;
+        }
+        else if (property == ContentProperty)
+        {
+            _container.Content = Content;
+        }
+        else if (property == ContentTemplateProperty)
+        {
+            _container.ContentTemplate = ContentTemplate;
+        }
+        else if (property == FooterProperty)
+        {
+            _container.Footer = Footer;
+        }
+        else if (property == FooterTemplateProperty)
+        {
+            _container.FooterTemplate = FooterTemplate;
+        }
+        else if (property == ExtraProperty)
+        {
+            _container.Extra = Extra;
+        }
+        else if (property == ExtraTemplateProperty)
+        {
+            _container.ExtraTemplate = ExtraTemplate;
+        }
+        else if (property == EffectiveDialogSizeProperty)
+        {
+            _container.DialogSize = EffectiveDialogSize;
+        }
+        else if (property == PlacementProperty)
+        {
+            _container.Placement = Placement;
+        }
+        else if (property == TitleProperty)
+        {
+            _container.Title = Title;
+        }
+        else if (property == IsShowMaskProperty)
+        {
+            _container.IsShowMask = IsShowMask;
+        }
+        else if (property == IsShowCloseButtonProperty)
+        {
+            _container.IsShowCloseButton = IsShowCloseButton;
+        }
+        else if (property == IsMotionEnabledProperty)
+        {
+            _container.IsMotionEnabled = IsMotionEnabled;
+        }
+        else if (property == IsCloseOnMaskClickProperty)
+        {
+            _container.IsCloseOnMaskClick = IsCloseOnMaskClick;
+        }
+        else if (property == PushOffsetPercentProperty)
+        {
+            _container.PushOffsetPercent = PushOffsetPercent;
         }
     }
 
@@ -421,6 +575,11 @@ public class Drawer : Control,
         _container?.NotifyChildDrawerAboutToClose(childDrawer);
     }
 
+    internal void NotifyChildDrawerPlacementChanged(Drawer childDrawer)
+    {
+        _container?.NotifyChildDrawerPlacementChanged(childDrawer);
+    }
+
     protected virtual void NotifyBeforeClose(ScopeAwareAdornerLayer layer)
     {
         var current = Parent;
@@ -435,6 +594,36 @@ public class Drawer : Control,
             }
 
             current = current.Parent;
+        }
+    }
+
+    private void NotifyParentDrawersChildDrawerPlacementChanged()
+    {
+        var current = Parent;
+        while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
+        {
+            if (current is DrawerContainer container)
+            {
+                if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+                {
+                    drawer.NotifyChildDrawerPlacementChanged(this);
+                }
+            }
+
+            current = current.Parent;
+        }
+    }
+
+    private void NotifyParentDrawersChildDrawerDetached(IReadOnlyList<Drawer>? parentDrawers)
+    {
+        if (parentDrawers == null)
+        {
+            return;
+        }
+
+        foreach (var drawer in parentDrawers)
+        {
+            drawer.NotifyChildDrawerAboutToClose(this);
         }
     }
 
@@ -461,7 +650,85 @@ public class Drawer : Control,
         _dialogSizeBinding = TokenResourceBinder.CreateTokenBinding(this, DialogSizeProperty, tokenKind);
     }
 
-    private void ConfigureEffectiveDialogSize()
+    private void ApplyPushOffsetPercentTokenBinding()
+    {
+        _pushOffsetPercentBinding?.Dispose();
+        _pushOffsetPercentBinding = TokenResourceBinder.CreateTokenBinding(
+            this,
+            PushOffsetPercentProperty,
+            DrawerTokenKind.PushOffsetPercent);
+    }
+
+    private Control? ResolveOpenTarget()
+    {
+        return OpenOn ?? TopLevel.GetTopLevel(this) as Control;
+    }
+
+    private void ConfigureOpenOnSizeChangedSubscription(Control? target)
+    {
+        if (!IsOpen || !DialogSize.IsPercentage || target == null)
+        {
+            DetachOpenOnSizeChanged();
+            return;
+        }
+
+        if (ReferenceEquals(_openOnSizeChangedTarget, target))
+        {
+            return;
+        }
+
+        DetachOpenOnSizeChanged();
+        _openOnSizeChangedTarget = target;
+        target.SizeChanged += HandleOpenOnSizeChanged;
+    }
+
+    private void DetachOpenOnSizeChanged()
+    {
+        if (_openOnSizeChangedTarget == null)
+        {
+            return;
+        }
+
+        _openOnSizeChangedTarget.SizeChanged -= HandleOpenOnSizeChanged;
+        _openOnSizeChangedTarget = null;
+    }
+
+    private void ReleaseDrawerContainer()
+    {
+        if (_container == null)
+        {
+            return;
+        }
+
+        _container.Release();
+        _container = null;
+    }
+
+    private void CompleteDeferredDetach(int detachVersion, IReadOnlyList<Drawer>? parentDrawers)
+    {
+        if (detachVersion != _visualTreeVersion || this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+
+        NotifyParentDrawersChildDrawerDetached(parentDrawers);
+        CompleteDetachedFromVisualTree();
+    }
+
+    private void CompleteDetachedFromVisualTree()
+    {
+        DetachOpenOnSizeChanged();
+        ReleaseDrawerContainer();
+        _relayBindingDisposables?.Dispose();
+        _relayBindingDisposables = null;
+        _pushOffsetPercentBinding?.Dispose();
+        _pushOffsetPercentBinding = null;
+        _dialogSizeBinding?.Dispose();
+        _dialogSizeBinding = null;
+        ScopeAwareAdornerLayer.SetAdornedElement(this, null);
+    }
+
+    private void ConfigureEffectiveDialogSize(Control? target = null)
     {
         if (DialogSize.IsAbsolute)
         {
@@ -469,9 +736,9 @@ public class Drawer : Control,
         }
         else if (DialogSize.IsPercentage)
         {
-            if (OpenOn != null)
+            if (target != null)
             {
-                var containerSize = OpenOn.Bounds.Size;
+                var containerSize = target.Bounds.Size;
                 if (Placement == DrawerPlacement.Top || Placement == DrawerPlacement.Bottom)
                 {
                     SetCurrentValue(EffectiveDialogSizeProperty, DialogSize.Resolve(containerSize.Height));

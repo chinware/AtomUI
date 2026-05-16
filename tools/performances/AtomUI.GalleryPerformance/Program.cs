@@ -90,6 +90,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ModalShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/ModalShowCase.axaml",
                 stats => stats.DialogCount > 0 || stats.MessageBoxCount > 0),
+            ["drawer"] = new(
+                "DrawerShowCase",
+                DrawerViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.DrawerShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/DrawerShowCase.axaml",
+                stats => stats.DrawerCount > 0),
             ["carousel"] = new(
                 "CarouselShowCase",
                 CarouselViewModel.ID,
@@ -1067,15 +1073,15 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine(SourceXamlStats.Read(showCase.XamlPath).RenderMarkdown());
         builder.AppendLine();
-        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent |");
-        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent | Drawer |");
+        builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.AppendLine(RenderSampleRow("Cold first navigation", result.ColdRuns));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
-        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent |");
-        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent | Drawer |");
+        builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         foreach (var sample in result.ColdRuns)
         {
             builder.AppendLine(RenderSample(sample));
@@ -1215,7 +1221,8 @@ internal static class Program
             stats.DialogCaptionButtonCount.ToString(CultureInfo.InvariantCulture),
             stats.OverlayDialogMaskCount.ToString(CultureInfo.InvariantCulture),
             stats.OverlayDialogResizerCount.ToString(CultureInfo.InvariantCulture),
-            stats.MessageBoxContentCount.ToString(CultureInfo.InvariantCulture) + " |");
+            stats.MessageBoxContentCount.ToString(CultureInfo.InvariantCulture),
+            stats.DrawerCount.ToString(CultureInfo.InvariantCulture) + " |");
     }
 
     private static string RenderSample(NavigationSample sample)
@@ -1333,7 +1340,8 @@ internal static class Program
             sample.Stats.DialogCaptionButtonCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.OverlayDialogMaskCount.ToString(CultureInfo.InvariantCulture),
             sample.Stats.OverlayDialogResizerCount.ToString(CultureInfo.InvariantCulture),
-            sample.Stats.MessageBoxContentCount.ToString(CultureInfo.InvariantCulture) + " |");
+            sample.Stats.MessageBoxContentCount.ToString(CultureInfo.InvariantCulture),
+            sample.Stats.DrawerCount.ToString(CultureInfo.InvariantCulture) + " |");
     }
 
     private static double Percentile(IReadOnlyList<double> ordered, double percentile)
@@ -1386,7 +1394,7 @@ internal static class Program
             return "none";
         }
 
-        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
     }
 }
 
@@ -1754,6 +1762,7 @@ internal sealed record RouteStats(
     int DescriptionDefaultItemCount,
     int DescriptionBorderedItemLabelCount,
     int DescriptionBorderedItemContentCount,
+    int DrawerCount,
     int DialogCount,
     int MessageBoxCount,
     int OverlayDialogHostCount,
@@ -1871,6 +1880,7 @@ internal sealed record RouteStats(
         var descriptionDefaultItemCount = 0;
         var descriptionBorderedItemLabelCount = 0;
         var descriptionBorderedItemContentCount = 0;
+        var drawerCount = 0;
         var dialogCount = 0;
         var messageBoxCount = 0;
         var overlayDialogHostCount = 0;
@@ -2282,6 +2292,10 @@ internal sealed record RouteStats(
             {
                 descriptionBorderedItemContentCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Drawer"))
+            {
+                drawerCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Dialog"))
             {
                 dialogCount++;
@@ -2428,6 +2442,7 @@ internal sealed record RouteStats(
             descriptionDefaultItemCount,
             descriptionBorderedItemLabelCount,
             descriptionBorderedItemContentCount,
+            drawerCount,
             dialogCount,
             messageBoxCount,
             overlayDialogHostCount,
@@ -2542,6 +2557,7 @@ internal sealed record RouteStats(
                DescriptionDefaultItemCount == other.DescriptionDefaultItemCount &&
                DescriptionBorderedItemLabelCount == other.DescriptionBorderedItemLabelCount &&
                DescriptionBorderedItemContentCount == other.DescriptionBorderedItemContentCount &&
+               DrawerCount == other.DrawerCount &&
                DialogCount == other.DialogCount &&
                MessageBoxCount == other.MessageBoxCount &&
                OverlayDialogHostCount == other.OverlayDialogHostCount &&
@@ -2633,6 +2649,7 @@ internal sealed record SourceXamlStats(
     int CheckBoxGroupCount,
     int DescriptionsCount,
     int DescriptionItemCount,
+    int DrawerCount,
     int ShowCaseItemCount)
 {
     private const string AtomNamespace = "https://atomui.net";
@@ -2643,7 +2660,7 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         var text     = File.ReadAllText(sourcePath);
@@ -2692,6 +2709,7 @@ internal sealed record SourceXamlStats(
             CountElements(document, AtomNamespace, "CheckBoxGroup"),
             CountElements(document, AtomNamespace, "Descriptions"),
             CountElements(document, AtomNamespace, "DescriptionItem"),
+            CountElements(document, AtomNamespace, "Drawer"),
             CountElements(document, GalleryNamespace, "ShowCaseItem"));
     }
 
@@ -2704,8 +2722,8 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | Collapse | CollapseItem | Carousel | CarouselPage | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | DatePicker | RangeDatePicker | Select | ComboBox | ComboBoxItem | TreeSelect | Cascader | Menu | MenuItem | CheckBox | CheckBoxGroup | Descriptions | DescriptionItem | ShowCaseItem |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | Collapse | CollapseItem | Carousel | CarouselPage | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | DatePicker | RangeDatePicker | Select | ComboBox | ComboBoxItem | TreeSelect | Cascader | Menu | MenuItem | CheckBox | CheckBoxGroup | Descriptions | DescriptionItem | Drawer | ShowCaseItem |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
@@ -2792,6 +2810,8 @@ internal sealed record SourceXamlStats(
         builder.Append(DescriptionsCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(DescriptionItemCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(DrawerCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(ShowCaseItemCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" |");

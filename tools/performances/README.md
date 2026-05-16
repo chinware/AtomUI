@@ -18,6 +18,7 @@
 - `Suites/AddOnDecoratedBox/`: AddOnDecoratedBox、LineEdit、TextArea、SearchEdit、CompactSpace 相关场景和专项验证。
 - `Suites/Button/`: Button、DropdownButton、SplitButton 相关场景和状态/模板验证。
 - `Suites/ButtonSpinner/`: ButtonSpinner、Gallery shape batch、NumericUpDown 联动基线。
+- `Suites/Drawer/`: Drawer 关闭态、extra/footer、嵌套场景基线。
 - `Suites/Icon/`: Icon micro benchmark、隐藏 icon slot、AntDesign metadata、provider cache 验证。
 - `TestSupport/`: 断言、测试 brush、marker template、probe icon 等测试辅助类型。
 
@@ -95,6 +96,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown docs/performances/ButtonSpinner/buttonspinner-baseline.md
 ```
 
+控件级 Drawer 基准：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite drawer --count 60 \
+  --markdown /tmp/drawer-control-baseline.md
+```
+
 Gallery 真实 `LineEditShowCase` 导航基准：
 
 ```bash
@@ -114,7 +124,7 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
   --markdown /tmp/icon-showcase-navigation-baseline.md
 ```
 
-Gallery 工具当前支持 `lineedit`、`icon`、`button`、`dropdownbutton`、`splitbutton`、`buttonspinner`、`space`、`select`、`autocomplete`、`treeselect`、`cascader`、`menu`。例如验证 Icon Phase 4 影响到的控件真实场景：
+Gallery 工具当前支持 `lineedit`、`icon`、`button`、`dropdownbutton`、`splitbutton`、`buttonspinner`、`space`、`select`、`autocomplete`、`treeselect`、`cascader`、`menu`、`drawer`。例如验证 Icon Phase 4 影响到的控件真实场景：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \

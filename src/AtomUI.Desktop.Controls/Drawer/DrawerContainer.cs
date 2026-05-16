@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
@@ -12,7 +11,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
-using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -188,19 +187,44 @@ internal class DrawerContainer : ContentControl
     private BaseMotionActor? _motionActor;
     private DrawerInfoContainer? _infoContainer;
     private ITransform? _originInfoContainerTransform;
-    private bool _openAnimating;
-    private bool _closeAnimating;
+    private WeakReference<Drawer>? _pushedChildDrawer;
+    private bool _isChildDrawerPushUpdateQueued;
+    private int _operationVersion;
 
-    internal void Open(ScopeAwareAdornerLayer layer)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == PlacementProperty ||
+            change.Property == DialogSizeProperty ||
+            change.Property == PushOffsetPercentProperty)
+        {
+            QueueChildDrawerPushUpdate();
+        }
+    }
+
+    internal void Open(ScopeAwareAdornerLayer layer, Control adornedTarget)
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {
-            ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
-            layer.Children.Add(this);
+            var alreadyAttachedToLayer = ReferenceEquals(this.GetVisualParent(), layer) || layer.Children.Contains(this);
+            var operationVersion = BeginOperation();
+            ScopeAwareAdornerLayer.SetAdornedElement(this, adornedTarget);
+            ClearValue(BackgroundProperty);
+            EnsureLayerParent(layer, adornedTarget);
+            ApplyTemplate();
+            if (alreadyAttachedToLayer)
+            {
+                if (_motionActor != null)
+                {
+                    _motionActor.Opacity = 1.0;
+                }
+                UpdateChildDrawerPush();
+                return;
+            }
             Dispatcher.InvokeAsync(async () =>
             {
                 // 让 layer 更新
-                if (_motionActor is null || _openAnimating)
+                if (!IsCurrentOperation(operationVersion) || _motionActor is null)
                 {
                     return;
                 }
@@ -208,11 +232,10 @@ internal class DrawerContainer : ContentControl
                 if (!IsMotionEnabled)
                 {
                     _motionActor.Opacity = 1.0;
-                    drawer.NotifyOpened();
+                    NotifyOpened(operationVersion, drawer);
                     return;
                 }
 
-                _openAnimating       = true;
                 _motionActor.Opacity = 0.0;
 
                 LayoutHelper.MeasureChild(_motionActor, DesiredSize, new Thickness());
@@ -220,8 +243,11 @@ internal class DrawerContainer : ContentControl
                 var motion = BuildMotionByPlacement(Placement, MotionDuration, true);
 
                 await motion.RunAsync(_motionActor);
-                _openAnimating = false;
-                drawer.NotifyOpened();
+                if (!IsCurrentOperation(operationVersion))
+                {
+                    return;
+                }
+                NotifyOpened(operationVersion, drawer);
             });
 
         }
@@ -231,19 +257,22 @@ internal class DrawerContainer : ContentControl
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {
-            if (_motionActor is null || _closeAnimating)
+            var operationVersion = BeginOperation();
+            if (_motionActor is null)
             {
+                RemoveFromLayer(layer);
+                drawer.NotifyClosed();
                 return;
             }
 
             if (!IsMotionEnabled)
             {
-                layer.Children.Remove(this);
-                drawer.NotifyClosed();
+                RemoveFromLayer(layer);
+                ClearValue(BackgroundProperty);
+                NotifyClosed(operationVersion, drawer);
                 return;
             }
             
-            _closeAnimating = true;
             SetCurrentValue(BackgroundProperty, Brushes.Transparent);
             var duration = TimeSpan.Zero;
             if (Transitions is not null)
@@ -264,66 +293,62 @@ internal class DrawerContainer : ContentControl
             Dispatcher.InvokeAsync(async () =>
             {
                 await Task.WhenAll(motion.RunAsync(_motionActor), Task.Delay(duration));
-                _closeAnimating      = false;
+                if (!IsCurrentOperation(operationVersion))
+                {
+                    return;
+                }
                 _motionActor.Opacity = 0.0;
-                layer.Children.Remove(this);
+                RemoveFromLayer(layer);
                 _motionActor.Opacity = 1.0;
-                drawer.NotifyClosed();
+                ClearValue(BackgroundProperty);
+                NotifyClosed(operationVersion, drawer);
             });
         }
     }
 
     private AbstractMotion BuildMotionByPlacement(DrawerPlacement placement, TimeSpan duration, bool isOpen)
     {
-        AbstractMotion? motion = null;
-        Debug.Assert(_motionActor != null);
+        if (_motionActor == null)
+        {
+            throw new InvalidOperationException("Drawer motion actor is not available.");
+        }
+
         if (isOpen)
         {
             if (placement == DrawerPlacement.Left)
             {
-                motion = new MoveLeftInMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+                return new MoveLeftInMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
             }
-            else if (placement == DrawerPlacement.Right)
+            if (placement == DrawerPlacement.Right)
             {
-                motion = new MoveRightInMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+                return new MoveRightInMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
             }
-            else if (placement == DrawerPlacement.Top)
+            if (placement == DrawerPlacement.Top)
             {
-                motion = new MoveUpInMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
+                return new MoveUpInMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
             }
-            else
-            {
-                motion = new MoveDownInMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
-            }
-        }
-        else
-        {
-            if (placement == DrawerPlacement.Left)
-            {
-                motion = new MoveLeftOutMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
-            }
-            else if (placement == DrawerPlacement.Right)
-            {
-                motion = new MoveRightOutMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
-            }
-            else if (placement == DrawerPlacement.Top)
-            {
-                motion = new MoveUpOutMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
-            }
-            else
-            {
-                motion = new MoveDownOutMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
-            }
+            return new MoveDownInMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
         }
 
-        Debug.Assert(motion != null);
-        return motion;
+        if (placement == DrawerPlacement.Left)
+        {
+            return new MoveLeftOutMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+        }
+        if (placement == DrawerPlacement.Right)
+        {
+            return new MoveRightOutMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+        }
+        if (placement == DrawerPlacement.Top)
+        {
+            return new MoveUpOutMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
+        }
+        return new MoveDownOutMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        if (IsCloseOnMaskClick)
+        if (IsShowMask && IsCloseOnMaskClick)
         {
             if (Drawer != null && Drawer.TryGetTarget(out var drawer))
             {
@@ -345,7 +370,93 @@ internal class DrawerContainer : ContentControl
         _infoContainer = e.NameScope.Find<DrawerInfoContainer>("PART_InfoContainer");
         if (_infoContainer != null)
         {
+            _infoContainer.ApplyTemplate();
             _infoContainer.CloseRequested += HandleCloseRequested;
+            UpdateChildDrawerPush();
+        }
+    }
+
+    internal void Release()
+    {
+        BeginOperation();
+        RemoveFromLayer(null);
+        if (_infoContainer != null)
+        {
+            _infoContainer.CloseRequested -= HandleCloseRequested;
+            _infoContainer = null;
+        }
+        _motionActor = null;
+        _originInfoContainerTransform = null;
+        _pushedChildDrawer = null;
+        _isChildDrawerPushUpdateQueued = false;
+        ScopeAwareAdornerLayer.SetAdornedElement(this, null);
+        ClearValue(DataContextProperty);
+        ClearValue(ContentProperty);
+        ClearValue(ContentTemplateProperty);
+        ClearValue(FooterProperty);
+        ClearValue(FooterTemplateProperty);
+        ClearValue(ExtraProperty);
+        ClearValue(ExtraTemplateProperty);
+    }
+
+    private int BeginOperation()
+    {
+        unchecked
+        {
+            _operationVersion++;
+        }
+        return _operationVersion;
+    }
+
+    private bool IsCurrentOperation(int operationVersion)
+    {
+        return operationVersion == _operationVersion;
+    }
+
+    private void NotifyOpened(int operationVersion, Drawer drawer)
+    {
+        if (!IsCurrentOperation(operationVersion))
+        {
+            return;
+        }
+        drawer.NotifyOpened();
+    }
+
+    private void NotifyClosed(int operationVersion, Drawer drawer)
+    {
+        if (!IsCurrentOperation(operationVersion))
+        {
+            return;
+        }
+        drawer.NotifyClosed();
+    }
+
+    private void EnsureLayerParent(ScopeAwareAdornerLayer layer, Control logicalParent)
+    {
+        if (this.GetVisualParent() is Panel parent && !ReferenceEquals(parent, layer))
+        {
+            parent.Children.Remove(this);
+            this.SetLogicalParent(null);
+        }
+        if (!layer.Children.Contains(this))
+        {
+            this.SetLogicalParent(logicalParent);
+            layer.Children.Add(this);
+        }
+    }
+
+    private void RemoveFromLayer(ScopeAwareAdornerLayer? layer)
+    {
+        if (layer != null && layer.Children.Contains(this))
+        {
+            layer.Children.Remove(this);
+            this.SetLogicalParent(null);
+            return;
+        }
+        if (this.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(this);
+            this.SetLogicalParent(null);
         }
     }
 
@@ -359,48 +470,125 @@ internal class DrawerContainer : ContentControl
 
     internal void NotifyChildDrawerAboutToOpen(Drawer childDrawer)
     {
-        if (_infoContainer != null)
+        var pushedChildDrawer = GetPushedChildDrawer();
+        if (pushedChildDrawer != null && !ReferenceEquals(pushedChildDrawer, childDrawer))
         {
-            var builder = new TransformOperations.Builder(1);
-            if (Placement != childDrawer.Placement)
-            {
-                return;
-            }
-        
-            double offsetX = 0d;
-            double offsetY = 0d;
-        
-            if (Placement == DrawerPlacement.Left)
-            {
-                offsetX = DesiredSize.Width * PushOffsetPercent;
-            }
-            else if (Placement == DrawerPlacement.Right)
-            {
-                offsetX = -DesiredSize.Width * PushOffsetPercent;
-            }
-            else if (Placement == DrawerPlacement.Top)
-            {
-                offsetY = DesiredSize.Height * PushOffsetPercent;
-            }
-            else
-            {
-                offsetY = -DesiredSize.Height * PushOffsetPercent;
-            }
-            builder.AppendTranslate(offsetX, offsetY);
-            _originInfoContainerTransform  = _infoContainer.RenderTransform;
-            _infoContainer.RenderTransform = builder.Build();
+            RestoreChildDrawerPush(true);
         }
+
+        if (!ReferenceEquals(pushedChildDrawer, childDrawer))
+        {
+            _originInfoContainerTransform = _infoContainer?.RenderTransform;
+            _pushedChildDrawer            = new WeakReference<Drawer>(childDrawer);
+        }
+
+        UpdateChildDrawerPush();
     }
 
     internal void NotifyChildDrawerAboutToClose(Drawer childDrawer)
     {
+        if (IsPushedChildDrawer(childDrawer))
+        {
+            RestoreChildDrawerPush(true);
+            _pushedChildDrawer = null;
+        }
+    }
+
+    internal void NotifyChildDrawerPlacementChanged(Drawer childDrawer)
+    {
+        if (IsPushedChildDrawer(childDrawer))
+        {
+            QueueChildDrawerPushUpdate();
+        }
+    }
+
+    private void QueueChildDrawerPushUpdate()
+    {
+        if (_pushedChildDrawer == null || _isChildDrawerPushUpdateQueued)
+        {
+            return;
+        }
+
+        _isChildDrawerPushUpdateQueued = true;
+        Dispatcher.Post(UpdateQueuedChildDrawerPush);
+    }
+
+    private void UpdateQueuedChildDrawerPush()
+    {
+        _isChildDrawerPushUpdateQueued = false;
+        UpdateChildDrawerPush();
+    }
+
+    private void UpdateChildDrawerPush()
+    {
+        if (_infoContainer == null)
+        {
+            return;
+        }
+
+        var childDrawer = GetPushedChildDrawer();
+        if (childDrawer == null || !childDrawer.IsOpen)
+        {
+            RestoreChildDrawerPush(true);
+            _pushedChildDrawer = null;
+            return;
+        }
+
+        if (Placement != childDrawer.Placement)
+        {
+            RestoreChildDrawerPush(false);
+            return;
+        }
+
+        var builder = new TransformOperations.Builder(1);
+        var offsetX = 0d;
+        var offsetY = 0d;
+
+        var offset = DialogSize * PushOffsetPercent;
+        if (Placement == DrawerPlacement.Left)
+        {
+            offsetX = offset;
+        }
+        else if (Placement == DrawerPlacement.Right)
+        {
+            offsetX = -offset;
+        }
+        else if (Placement == DrawerPlacement.Top)
+        {
+            offsetY = offset;
+        }
+        else
+        {
+            offsetY = -offset;
+        }
+        builder.AppendTranslate(offsetX, offsetY);
+        _infoContainer.RenderTransform = builder.Build();
+    }
+
+    private void RestoreChildDrawerPush(bool clearOrigin)
+    {
         if (_infoContainer != null)
         {
-            if (Placement != childDrawer.Placement)
-            {
-                return;
-            }
             _infoContainer.RenderTransform = _originInfoContainerTransform;
         }
+        if (clearOrigin)
+        {
+            _originInfoContainerTransform = null;
+        }
+    }
+
+    private Drawer? GetPushedChildDrawer()
+    {
+        if (_pushedChildDrawer != null && _pushedChildDrawer.TryGetTarget(out var childDrawer))
+        {
+            return childDrawer;
+        }
+
+        return null;
+    }
+
+    private bool IsPushedChildDrawer(Drawer childDrawer)
+    {
+        return ReferenceEquals(GetPushedChildDrawer(), childDrawer);
     }
 }

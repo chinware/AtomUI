@@ -8,11 +8,11 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel
-                    Name="RootLayout">
+                    Name="PART_RootLayout">
                     <Border Name="Frame" />
-                    <Grid Name="InfoLayout"
+                    <Grid Name="PART_InfoLayout"
                           RowDefinitions="Auto, Auto, *, Auto, Auto">
-                        <Grid Name="InfoHeader"
+                        <Grid Name="PART_InfoHeader"
                               Grid.Row="0"
                               ColumnDefinitions="Auto, *, Auto">
                             <atom:IconButton Name="PART_CloseButton"
@@ -108,7 +108,7 @@
             <Setter Property="Width" Value="{Binding DialogSize, RelativeSource={RelativeSource Self}}" />
         </Style>
 
-        <Style Selector="^ /template/ Grid#InfoHeader">
+        <Style Selector="^ /template/ Grid#PART_InfoHeader">
             <Setter Property="Margin" Value="{atom:DrawerTokenResource HeaderMargin}" />
         </Style>
 
