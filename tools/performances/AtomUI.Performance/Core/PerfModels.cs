@@ -141,7 +141,11 @@ internal sealed record TreeStats(
     double CheckBoxItemsControlPerRoot,
     double CheckBoxIndicatorPerRoot,
     double CheckBoxCheckedMarkPerRoot,
-    double CheckBoxTristateMarkPerRoot)
+    double CheckBoxTristateMarkPerRoot,
+    double DescriptionsPerRoot,
+    double DescriptionDefaultItemPerRoot,
+    double DescriptionBorderedItemLabelPerRoot,
+    double DescriptionBorderedItemContentPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -244,6 +248,10 @@ internal sealed record TreeStats(
         var checkBoxIndicatorCount      = 0;
         var checkBoxCheckedMarkCount    = 0;
         var checkBoxTristateMarkCount   = 0;
+        var descriptionsCount           = 0;
+        var descriptionDefaultItemCount = 0;
+        var descriptionBorderedItemLabelCount = 0;
+        var descriptionBorderedItemContentCount = 0;
 
         foreach (var root in roots)
         {
@@ -533,6 +541,22 @@ internal sealed record TreeStats(
                 {
                     checkBoxTristateMarkCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Descriptions"))
+                {
+                    descriptionsCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DescriptionDefaultItem"))
+                {
+                    descriptionDefaultItemCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DescriptionBorderedItemLabel"))
+                {
+                    descriptionBorderedItemLabelCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DescriptionBorderedItemContent"))
+                {
+                    descriptionBorderedItemContentCount++;
+                }
                 if (visual is StackPanel)
                 {
                     stackPanelCount++;
@@ -760,7 +784,11 @@ internal sealed record TreeStats(
             checkBoxItemsControlCount / (double)rootCount,
             checkBoxIndicatorCount / (double)rootCount,
             checkBoxCheckedMarkCount / (double)rootCount,
-            checkBoxTristateMarkCount / (double)rootCount);
+            checkBoxTristateMarkCount / (double)rootCount,
+            descriptionsCount / (double)rootCount,
+            descriptionDefaultItemCount / (double)rootCount,
+            descriptionBorderedItemLabelCount / (double)rootCount,
+            descriptionBorderedItemContentCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)

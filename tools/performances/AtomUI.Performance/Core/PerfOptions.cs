@@ -23,7 +23,8 @@ internal sealed record PerfOptions(
     bool VerifyCheckBoxStates,
     bool VerifyCollapseStates,
     bool VerifyComboBoxStates,
-    bool VerifyDatePickerStates)
+    bool VerifyDatePickerStates,
+    bool VerifyDescriptionsStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -50,6 +51,7 @@ internal sealed record PerfOptions(
         var verifyCollapseStates  = false;
         var verifyComboBoxStates  = false;
         var verifyDatePickerStates = false;
+        var verifyDescriptionsStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -127,6 +129,9 @@ internal sealed record PerfOptions(
                 case "--verify-datepicker-states":
                     verifyDatePickerStates = true;
                     break;
+                case "--verify-descriptions-states":
+                    verifyDescriptionsStates = true;
+                    break;
             }
         }
 
@@ -153,6 +158,7 @@ internal sealed record PerfOptions(
             verifyCheckBoxStates,
             verifyCollapseStates,
             verifyComboBoxStates,
-            verifyDatePickerStates);
+            verifyDatePickerStates,
+            verifyDescriptionsStates);
     }
 }

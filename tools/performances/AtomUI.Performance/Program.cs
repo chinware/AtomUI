@@ -36,7 +36,8 @@ internal static partial class Program
             options.VerifyCheckBoxStates ||
             options.VerifyCollapseStates ||
             options.VerifyComboBoxStates ||
-            options.VerifyDatePickerStates)
+            options.VerifyDatePickerStates ||
+            options.VerifyDescriptionsStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -119,6 +120,10 @@ internal static partial class Program
             {
                 verified &= RunDatePickerStateVerification();
             }
+            if (options.VerifyDescriptionsStates)
+            {
+                verified &= RunDescriptionsStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -170,6 +175,7 @@ internal static partial class Program
             "collapse" => CreateCollapseScenarios(),
             "combobox" => CreateComboBoxScenarios(),
             "datepicker" => CreateDatePickerScenarios(),
+            "descriptions" => CreateDescriptionsScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

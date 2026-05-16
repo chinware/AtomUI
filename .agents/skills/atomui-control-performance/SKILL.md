@@ -11,6 +11,7 @@ description: Use when optimizing AtomUI controls, investigating control performa
 - Performance optimizations must preserve control functionality, UI appearance, animation behavior, interaction semantics, theme behavior, and public API by default. Any visible or behavioral change caused by an optimization is a correctness regression, not an acceptable tradeoff, unless the user explicitly approves that change.
 - Follow the principle: unused features must not pay runtime cost.
 - Hard boundary: no performance optimization may introduce resource leaks. If an optimization creates, subscribes, binds, caches, lazily materializes, or reparents anything, it must also define and verify the matching release path before the work is considered complete.
+- When scanning for performance bottlenecks, also scan for resource leaks in the same code path. Any discovered leak outranks performance-only work and must be fixed first or explicitly documented as a blocker if it cannot be fixed in the current scope. Do not proceed with an optimization that leaves a known leak in the touched lifecycle path.
 - Prefer no API change. AtomUI has no formal release yet, so API changes are allowed only when required and explicitly justified.
 - Every optimization that creates, removes, subscribes, binds, or lazily materializes objects must have a cleanup path and a regression verification.
 - Gallery scenarios must be tested with the real Gallery example shape when the user is discussing Gallery-visible behavior. Synthetic control-only tests are not enough.
@@ -79,8 +80,10 @@ Performance summaries must be readable to a human reviewer, not just raw benchma
 
 ## Binding/Subscription Checklist
 
+- Treat leak scanning as mandatory during performance analysis, not optional cleanup after optimization.
 - Store every disposable subscription or binding that is created outside XAML.
 - Dispose old bindings before replacing them.
 - Avoid creating duplicate bindings on repeated property changes.
 - If a mode disables a feature, detach visuals and dispose subscriptions in that mode.
+- For created visuals, presenters, popups, timers, event handlers, property observables, bindings, caches, and global/window subscriptions, identify the owner and the release trigger before editing.
 - Add a regression test that toggles the feature on, off, and on again.

@@ -58,6 +58,7 @@
 | Collapse | 本轮已完成 | [Collapse](Collapse/README.md) | `CollapseShowCase` repeated mean `119.31ms -> 100.18ms`，visuals `616 -> 553`；content motion `33 -> 1`，addon presenter `33 -> 3` |
 | ComboBox | 本轮已完成 | [ComboBox](ComboBox/README.md) | `ComboBoxShowCase` repeated mean `109.35ms -> 91.07ms`，alloc `11384.83KB -> 9534.28KB`，visuals `562 -> 497`；默认 `Button/IconButton 23 -> 0` |
 | DatePicker | 本轮已完成 | [DatePicker](DatePicker/README.md) | closed route `PickerHost 30 -> 0`，visuals `1570 -> 1540`，alloc `30959.16KB -> 29762.89KB`，长样本 repeated mean `174.77ms -> 154.21ms` |
+| Descriptions | 本轮已完成 | [Descriptions](Descriptions/README.md) | `DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；`GalleryShape.Batch8` `25.139ms/root -> 24.486ms/root`；修复 binding/collection/window 订阅生命周期风险 |
 
 ## 总列表
 
@@ -105,7 +106,7 @@
 | Data Display | Card | Done | [Card](Card/README.md)；Header/Cover/Actions/Skeleton 已按需创建，Gallery repeated mean 提升约 `35.14%` |
 | Data Display | Carousel | Done | [Carousel](Carousel/README.md)；nav/progress/PageTransition 已按需创建，真实 Gallery alloc `6113.86KB -> 5213.10KB`，cold `164.35ms -> 149.05ms`，repeated timing 基本持平 |
 | Data Display | Collapse | Done | [Collapse](Collapse/README.md)；addon、no-arrow、closed content 已按需创建，Gallery repeated mean 提升约 `16.03%` |
-| Data Display | Descriptions | Pending | 待建立基线 |
+| Data Display | Descriptions | Done | [Descriptions](Descriptions/README.md)；`DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；binding/collection/window 订阅生命周期已补齐验证 |
 | Data Display | DataGrid | Pending | 待建立基线 |
 | Data Display | Expander | Pending | 待建立基线 |
 | Data Display | Empty | Pending | 待建立基线 |

@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -111,7 +108,26 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    [Content] public DescriptionItems Items { get; set; } = new();
+    private DescriptionItems _items = new();
+
+    [Content]
+    public DescriptionItems Items
+    {
+        get => _items;
+        set
+        {
+            if (ReferenceEquals(_items, value))
+            {
+                return;
+            }
+
+            _items.CollectionChanged -= HandleCollectionChanged;
+            _items = value ?? new DescriptionItems();
+            _items.CollectionChanged += HandleCollectionChanged;
+            RebuildDescriptionItems();
+            InvalidateMeasure();
+        }
+    }
 
     #endregion
 
@@ -136,6 +152,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     private MediaBreakPoint? _breakPoint;
     private int _effectiveColumns;
     private Window? _attachedWindow;
+    private bool _isSyncingItemsSource;
 
     static Descriptions()
     {
@@ -150,6 +167,11 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     
     protected virtual void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (_isSyncingItemsSource)
+        {
+            return;
+        }
+
         if (_gridLayout != null && this.IsAttachedToVisualTree())
         {
             switch (e.Action)
@@ -157,21 +179,24 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
                 case NotifyCollectionChangedAction.Add:
                     if (e.NewItems != null)
                     {
-                        AddDescriptionItems(e.NewItems.OfType<DescriptionItem>().ToList());
+                        InsertDescriptionItems(
+                            e.NewItems.OfType<DescriptionItem>().ToList(),
+                            e.NewStartingIndex);
                     }
 
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (e.OldItems != null)
                     {
-                        RemoveDescriptionItems(e.OldItems.OfType<DescriptionItem>().ToList());
+                        RemoveDescriptionItems(e.OldItems.Count, e.OldStartingIndex);
                     }
 
                     break;
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Reset:
-                    throw new NotSupportedException();
+                    RebuildDescriptionItems();
+                    break;
             }
 
             DoLayoutChildren();
@@ -182,16 +207,40 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (TopLevel.GetTopLevel(this) is Window window)
+        if (e.RootVisual is Window rootWindow)
         {
-            _attachedWindow               =  window;
-            window.MediaBreakPointChanged += HandleMediaBreakChanged;
+            UpdateWindowSubscription(rootWindow);
+            _breakPoint = rootWindow.MediaBreakPoint;
+            UpdateGridColumns(GetColumnsForMediaBreak(_breakPoint.Value));
+        }
+        else if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            UpdateWindowSubscription(window);
+            _breakPoint = window.MediaBreakPoint;
+            UpdateGridColumns(GetColumnsForMediaBreak(_breakPoint.Value));
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        ClearWindowSubscription();
+    }
+
+    private void UpdateWindowSubscription(Window window)
+    {
+        if (ReferenceEquals(_attachedWindow, window))
+        {
+            return;
+        }
+
+        ClearWindowSubscription();
+        _attachedWindow = window;
+        window.MediaBreakPointChanged += HandleMediaBreakChanged;
+    }
+
+    private void ClearWindowSubscription()
+    {
         if (_attachedWindow != null)
         {
             _attachedWindow.MediaBreakPointChanged -= HandleMediaBreakChanged;
@@ -245,13 +294,8 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         base.OnApplyTemplate(e);
         _gridLayout = e.NameScope.Find<Grid>("PART_GridLayout");
-        AddDescriptionItems(Items.ToList());
-        if (TopLevel.GetTopLevel(this) is Window window)
-        {
-            _breakPoint = window.MediaBreakPoint;
-            var columns = GetColumnsForMediaBreak(_breakPoint.Value);
-            UpdateGridColumns(columns);
-        }
+        ConfigureEffectiveColumns(GetCurrentColumnCount());
+        RebuildDescriptionItems();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -261,8 +305,19 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         {
             if (ItemsSource != null)
             {
-                Items.Clear();
-                Items.AddRange(ItemsSource.OfType<DescriptionItem>().ToList());
+                try
+                {
+                    _isSyncingItemsSource = true;
+                    Items.Clear();
+                    Items.AddRange(ItemsSource.OfType<DescriptionItem>().ToList());
+                }
+                finally
+                {
+                    _isSyncingItemsSource = false;
+                }
+
+                RebuildDescriptionItems();
+                InvalidateMeasure();
             }
         }
         else if (change.Property == IsBorderedProperty)
@@ -284,298 +339,235 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         }
     }
 
-    private void AddDescriptionItems(List<DescriptionItem> items)
+    private void InsertDescriptionItems(IReadOnlyList<DescriptionItem> items, int itemIndex)
     {
-        if (_gridLayout != null)
+        if (_gridLayout == null || items.Count == 0)
         {
-            foreach (DescriptionItem item in items)
+            return;
+        }
+
+        var visualIndex = itemIndex < 0
+            ? _gridLayout.Children.Count
+            : Math.Min(_gridLayout.Children.Count, itemIndex * GetVisualsPerItem());
+
+        foreach (var item in items)
+        {
+            foreach (var control in CreateDescriptionItemControls(item))
             {
-                if (Layout == Orientation.Horizontal)
-                {
-                    if (IsBordered)
-                    {
-                        var itemLabel   = new DescriptionBorderedItemLabel();
-                        var itemContent = new DescriptionBorderedItemContent();
-                        itemLabel[!SizeTypeProperty] = this[!SizeTypeProperty];
-                        itemContent[!SizeTypeProperty] = this[!SizeTypeProperty];
-                        itemLabel.Content   = item.Label;
-                        itemContent.Content = item.Content;
-                        _gridLayout.Children.Add(itemLabel);
-                        _gridLayout.Children.Add(itemContent);
-                    }
-                    else
-                    {
-                        var disposables           = new CompositeDisposable(2);
-                        var descriptionDefaultItem = new DescriptionDefaultItem();
-                        descriptionDefaultItem.Layout = Orientation.Horizontal;
-                        disposables.Add(BindUtils.RelayBind(this, IsShowColonProperty, descriptionDefaultItem,
-                            DescriptionDefaultItem.IsColonVisibleProperty));
-                        descriptionDefaultItem.Header  = item.Label;
-                        descriptionDefaultItem.Content = item.Content;
-                        _gridLayout.Children.Add(descriptionDefaultItem);
-                    }
-                }
-                else
-                {
-                    var descriptionDefaultItem = new DescriptionDefaultItem();
-                    descriptionDefaultItem.Layout                                          = Orientation.Vertical;
-                    descriptionDefaultItem[!DescriptionDefaultItem.IsColonVisibleProperty] = this[!IsShowColonProperty];
-                    descriptionDefaultItem[!DescriptionDefaultItem.IsBorderedProperty]     = this[!IsBorderedProperty];
-                    descriptionDefaultItem.Header                                          = item.Label;
-                    descriptionDefaultItem.Content                                         = item.Content;
-                    _gridLayout.Children.Add(descriptionDefaultItem);
-                }
+                _gridLayout.Children.Insert(visualIndex++, control);
             }
         }
     }
 
-    private void RemoveDescriptionItems(List<DescriptionItem> items)
+    private IEnumerable<Control> CreateDescriptionItemControls(DescriptionItem item)
     {
-        if (_gridLayout != null)
+        if (Layout == Orientation.Horizontal && IsBordered)
         {
-            foreach (DescriptionItem item in items)
+            var itemLabel = new DescriptionBorderedItemLabel
             {
-                var index = Items.IndexOf(item);
-                if (index != -1)
-                {
-                    if (Layout == Orientation.Horizontal)
-                    {
-                        if (IsBordered)
-                        {
-                            if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
-                            {
-                                _gridLayout.Children.Remove(itemLabel);
-                            }
-
-                            if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
-                            {
-                                _gridLayout.Children.Remove(itemContent);
-                            }
-                        }
-                        else
-                        {
-                            if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
-                            {
-                                _gridLayout.Children.Remove(defaultItem);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
-                        {
-                            _gridLayout.Children.Remove(defaultItem);
-                        }
-                    }
-                }
-            }
+                Content = item.Label
+            };
+            var itemContent = new DescriptionBorderedItemContent
+            {
+                Content = item.Content
+            };
+            itemLabel[!SizeTypeProperty]   = this[!SizeTypeProperty];
+            itemContent[!SizeTypeProperty] = this[!SizeTypeProperty];
+            yield return itemLabel;
+            yield return itemContent;
+            yield break;
         }
+
+        var descriptionDefaultItem = new DescriptionDefaultItem
+        {
+            Layout  = Layout,
+            Header  = item.Label,
+            Content = item.Content
+        };
+        descriptionDefaultItem[!DescriptionDefaultItem.IsColonVisibleProperty] = this[!IsShowColonProperty];
+        descriptionDefaultItem[!DescriptionDefaultItem.IsBorderedProperty]     = this[!IsBorderedProperty];
+        yield return descriptionDefaultItem;
+    }
+
+    private void RemoveDescriptionItems(int itemCount, int itemIndex)
+    {
+        if (_gridLayout == null || itemCount <= 0 || itemIndex < 0)
+        {
+            return;
+        }
+
+        var visualIndex  = itemIndex * GetVisualsPerItem();
+        var visualsCount = itemCount * GetVisualsPerItem();
+        for (var i = 0; i < visualsCount && visualIndex < _gridLayout.Children.Count; i++)
+        {
+            _gridLayout.Children.RemoveAt(visualIndex);
+        }
+    }
+
+    private void RebuildDescriptionItems()
+    {
+        if (_gridLayout == null)
+        {
+            return;
+        }
+
+        ConfigureEffectiveColumns(GetCurrentColumnCount());
+        _gridLayout.Children.Clear();
+        InsertDescriptionItems(Items.ToList(), 0);
+        DoLayoutChildren();
     }
 
     private void UpdateGridColumns(int columnCount)
     {
-    
-        if (columnCount != _effectiveColumns)
+        var oldColumns = _effectiveColumns;
+        ConfigureEffectiveColumns(columnCount);
+        if (_effectiveColumns != oldColumns)
         {
-            if (Layout == Orientation.Horizontal)
-            {
-                if (IsBordered)
-                {
-                    _effectiveColumns = columnCount * 2;
-                }
-                else
-                {
-                    _effectiveColumns = columnCount;
-                }
-            }
-            else
-            {
-                _effectiveColumns = columnCount;
-            }
             DoLayoutChildren();
         }
     }
 
+    private void ConfigureEffectiveColumns(int columnCount)
+    {
+        var safeColumnCount = Math.Max(1, columnCount);
+        _effectiveColumns = Layout == Orientation.Horizontal && IsBordered
+            ? safeColumnCount * 2
+            : safeColumnCount;
+    }
+
     private void HandleBorderedChanged()
     {
-        if (Layout == Orientation.Horizontal)
-        {
-            if (_breakPoint == null)
-            {
-                if (TopLevel.GetTopLevel(this) is Window window)
-                {
-                    _breakPoint = window.MediaBreakPoint;
-                }
-            }
-
-            if (_breakPoint == null)
-            {
-                return;
-            }
-
-            var columns = GetColumnsForMediaBreak(_breakPoint.Value);
-            UpdateGridColumns(columns);
-        }
+        RebuildDescriptionItems();
+        InvalidateMeasure();
     }
 
     private void DoLayoutChildren()
     {
-        if (_gridLayout != null)
+        if (_gridLayout != null && _effectiveColumns > 0)
         {
             var row    = 0;
             var column = 0;
             for (var i = 0; i < Items.Count; i++)
             {
-                var item  = Items[i];
-                var index = Items.IndexOf(item);
-                if (index != -1)
+                var item = Items[i];
+                if (Layout == Orientation.Horizontal)
                 {
-                    if (Layout == Orientation.Horizontal)
+                    if (IsBordered)
                     {
-                        if (IsBordered)
+                        var index = i * 2;
+                        if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
                         {
-                            index *= 2;
-                            if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
-                            {
-                                Grid.SetRow(itemLabel, row);
-                                Grid.SetColumn(itemLabel, column);
-                                column += 1;
-                            }
-
-                            if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
-                            {
-                                var itemSpan = Math.Max(1,
-                                    Math.Min(_effectiveColumns - column, GetItemSpan(item.Span) * 2 - 1));
-                                if (i == Items.Count - 1 || item.IsFilled)
-                                {
-                                    itemSpan = _effectiveColumns - column;
-                                }
-                                
-                                Grid.SetRow(itemContent, row);
-                                Grid.SetColumn(itemContent, column);
-                                Grid.SetColumnSpan(itemContent, itemSpan);
-                                column += itemSpan;
-                                if (column >= _effectiveColumns)
-                                {
-                                    column                   = 0;
-                                    itemContent.IsLastColumn = true;
-                                    ++row;
-                                }
-                                else
-                                {
-                                    itemContent.IsLastColumn = false;
-                                }
-                            }
+                            Grid.SetRow(itemLabel, row);
+                            Grid.SetColumn(itemLabel, column);
+                            itemLabel.IsLastColumn = false;
+                            column += 1;
                         }
-                        else
-                        {
-                            if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
-                            {
-                                var itemSpan = Math.Max(1,
-                                    Math.Min(_effectiveColumns - column, GetItemSpan(item.Span)));
-                                if (i == Items.Count - 1 || item.IsFilled)
-                                {
-                                    itemSpan = _effectiveColumns - column;
-                                }
 
-                                Grid.SetRow(defaultItem, row);
-                                Grid.SetColumn(defaultItem, column);
-                                Grid.SetColumnSpan(defaultItem, itemSpan);
-                                column += itemSpan;
-                                if (column >= _effectiveColumns)
-                                {
-                                    column = 0;
-                                    ++row;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
+                        if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
                         {
                             var itemSpan = Math.Max(1,
-                                Math.Min(_effectiveColumns - column, GetItemSpan(item.Span)));
+                                Math.Min(_effectiveColumns - column, GetItemSpan(item.Span) * 2 - 1));
                             if (i == Items.Count - 1 || item.IsFilled)
                             {
                                 itemSpan = _effectiveColumns - column;
                             }
 
-                            Grid.SetRow(defaultItem, row);
-                            Grid.SetColumn(defaultItem, column);
-                            Grid.SetColumnSpan(defaultItem, itemSpan);
+                            Grid.SetRow(itemContent, row);
+                            Grid.SetColumn(itemContent, column);
+                            Grid.SetColumnSpan(itemContent, itemSpan);
                             column += itemSpan;
                             if (column >= _effectiveColumns)
                             {
                                 column                   = 0;
-                                defaultItem.IsLastColumn = true;
+                                itemContent.IsLastColumn = true;
                                 ++row;
                             }
                             else
                             {
-                                defaultItem.IsLastColumn = false;
+                                itemContent.IsLastColumn = false;
                             }
                         }
                     }
-                }
-            }
-            
-            // 寻找最后一行
-            for (var i = 0; i < Items.Count; i++)
-            {
-                var item  = Items[i];
-                var index = Items.IndexOf(item);
-                if (index != -1)
-                {
-                    if (Layout == Orientation.Horizontal)
+                    else if (_gridLayout.Children[i] is DescriptionDefaultItem defaultItem)
                     {
-                        if (IsBordered)
+                        var itemSpan = Math.Max(1,
+                            Math.Min(_effectiveColumns - column, GetItemSpan(item.Span)));
+                        if (i == Items.Count - 1 || item.IsFilled)
                         {
-                            index *= 2;
-                            if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
-                            {
-                                itemLabel.IsLastRow = Grid.GetRow(itemLabel) == row - 1;
-                            }
-
-                            if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
-                            {
-                                itemContent.IsLastRow = Grid.GetRow(itemContent) == row - 1;
-                            }
+                            itemSpan = _effectiveColumns - column;
                         }
+
+                        Grid.SetRow(defaultItem, row);
+                        Grid.SetColumn(defaultItem, column);
+                        Grid.SetColumnSpan(defaultItem, itemSpan);
+                        column += itemSpan;
+                        if (column >= _effectiveColumns)
+                        {
+                            column = 0;
+                            ++row;
+                        }
+                    }
+                }
+                else if (_gridLayout.Children[i] is DescriptionDefaultItem defaultItem)
+                {
+                    var itemSpan = Math.Max(1,
+                        Math.Min(_effectiveColumns - column, GetItemSpan(item.Span)));
+                    if (i == Items.Count - 1 || item.IsFilled)
+                    {
+                        itemSpan = _effectiveColumns - column;
+                    }
+
+                    Grid.SetRow(defaultItem, row);
+                    Grid.SetColumn(defaultItem, column);
+                    Grid.SetColumnSpan(defaultItem, itemSpan);
+                    column += itemSpan;
+                    if (column >= _effectiveColumns)
+                    {
+                        column                   = 0;
+                        defaultItem.IsLastColumn = true;
+                        ++row;
                     }
                     else
                     {
-                        if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
-                        {
-                            defaultItem.IsLastRow = Grid.GetRow(defaultItem) == row - 1;
-                        }
+                        defaultItem.IsLastColumn = false;
                     }
                 }
             }
 
-            _gridLayout.ColumnDefinitions.Clear();
-            var columnDefinitions = new ColumnDefinitions();
-            for (var i = 0; i < _effectiveColumns; i++)
+            var lastRow = row - 1;
+            for (var i = 0; i < Items.Count; i++)
             {
-                columnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+                if (Layout == Orientation.Horizontal)
+                {
+                    if (IsBordered)
+                    {
+                        var index = i * 2;
+                        if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
+                        {
+                            itemLabel.IsLastRow = Grid.GetRow(itemLabel) == lastRow;
+                        }
+
+                        if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
+                        {
+                            itemContent.IsLastRow = Grid.GetRow(itemContent) == lastRow;
+                        }
+                    }
+                }
+                else if (_gridLayout.Children[i] is DescriptionDefaultItem defaultItem)
+                {
+                    defaultItem.IsLastRow = Grid.GetRow(defaultItem) == lastRow;
+                }
             }
 
-            _gridLayout.ColumnDefinitions = columnDefinitions;
-            _gridLayout.RowDefinitions.Clear();
-            var rowDefinitions = new RowDefinitions();
-            for (var i = 0; i < row; i++)
-            {
-                rowDefinitions.Add(new RowDefinition(GridLength.Auto));
-            }
-
-            _gridLayout.RowDefinitions = rowDefinitions;
+            EnsureColumnDefinitions(_effectiveColumns);
+            EnsureRowDefinitions(row);
         }
     }
 
     private int GetItemSpan(DescriptionsMediaBreakInfo breakInfo)
     {
-        Debug.Assert(_breakPoint != null);
-        return _breakPoint switch
+        var breakPoint = _breakPoint ?? MediaBreakPoint.ExtraExtraLarge;
+        return breakPoint switch
         {
             MediaBreakPoint.ExtraSmall => breakInfo.ExtraSmall,
             MediaBreakPoint.Small => breakInfo.Small,
@@ -588,8 +580,59 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
 
     private void HandleLayoutChanged()
     {
-        var items = Items.ToList();
-        RemoveDescriptionItems(items);
-        AddDescriptionItems(items);
+        RebuildDescriptionItems();
+        InvalidateMeasure();
+    }
+
+    private int GetVisualsPerItem()
+    {
+        return Layout == Orientation.Horizontal && IsBordered ? 2 : 1;
+    }
+
+    private int GetCurrentColumnCount()
+    {
+        if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            UpdateWindowSubscription(window);
+            _breakPoint = window.MediaBreakPoint;
+        }
+
+        return GetColumnsForMediaBreak(_breakPoint ?? MediaBreakPoint.ExtraExtraLarge);
+    }
+
+    private void EnsureColumnDefinitions(int count)
+    {
+        if (_gridLayout == null)
+        {
+            return;
+        }
+
+        while (_gridLayout.ColumnDefinitions.Count < count)
+        {
+            _gridLayout.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        }
+
+        while (_gridLayout.ColumnDefinitions.Count > count)
+        {
+            _gridLayout.ColumnDefinitions.RemoveAt(_gridLayout.ColumnDefinitions.Count - 1);
+        }
+    }
+
+    private void EnsureRowDefinitions(int count)
+    {
+        if (_gridLayout == null)
+        {
+            return;
+        }
+
+        while (_gridLayout.RowDefinitions.Count < count)
+        {
+            _gridLayout.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+        }
+
+        while (_gridLayout.RowDefinitions.Count > count)
+        {
+            _gridLayout.RowDefinitions.RemoveAt(_gridLayout.RowDefinitions.Count - 1);
+        }
     }
 }

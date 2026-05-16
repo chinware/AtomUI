@@ -6,24 +6,31 @@
     <ControlTheme x:Key="{x:Type atom:Descriptions}" TargetType="atom:Descriptions">
         <Setter Property="Template">
             <ControlTemplate>
-
-                <StackPanel Orientation="Vertical">
-                    <DockPanel Name="HeaderLayout" LastChildFill="True"
-                               IsVisible="{TemplateBinding IsHeaderLayoutVisible}">
-                        <ContentPresenter Name="ExtraPresenter" DockPanel.Dock="Right"
-                                          Content="{TemplateBinding Extra}"
-                                          ContentTemplate="{TemplateBinding ExtraTemplate}" />
-                        <ContentPresenter Name="HeaderPresenter"
-                                          Content="{TemplateBinding Header}"
-                                          ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                    </DockPanel>
-                    <Border Name="ContentFrame">
-                        <Grid Name="PART_GridLayout" />
-                    </Border>
-                </StackPanel>
-
+                <Border Name="ContentFrame">
+                    <Grid Name="PART_GridLayout" />
+                </Border>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^[IsHeaderLayoutVisible=True]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel Name="HeaderLayout" LastChildFill="True">
+                            <ContentPresenter Name="ExtraPresenter" DockPanel.Dock="Right"
+                                              Content="{TemplateBinding Extra}"
+                                              ContentTemplate="{TemplateBinding ExtraTemplate}" />
+                            <ContentPresenter Name="HeaderPresenter"
+                                              Content="{TemplateBinding Header}"
+                                              ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        </DockPanel>
+                        <Border Name="ContentFrame">
+                            <Grid Name="PART_GridLayout" />
+                        </Border>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
 
         <Style Selector="^[IsBordered=True]">
             <Style Selector="^ /template/ Border#ContentFrame">
