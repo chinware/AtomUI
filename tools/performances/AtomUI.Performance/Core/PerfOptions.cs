@@ -24,7 +24,8 @@ internal sealed record PerfOptions(
     bool VerifyCollapseStates,
     bool VerifyComboBoxStates,
     bool VerifyDatePickerStates,
-    bool VerifyDescriptionsStates)
+    bool VerifyDescriptionsStates,
+    bool VerifyDialogStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -52,6 +53,7 @@ internal sealed record PerfOptions(
         var verifyComboBoxStates  = false;
         var verifyDatePickerStates = false;
         var verifyDescriptionsStates = false;
+        var verifyDialogStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -132,6 +134,9 @@ internal sealed record PerfOptions(
                 case "--verify-descriptions-states":
                     verifyDescriptionsStates = true;
                     break;
+                case "--verify-dialog-states":
+                    verifyDialogStates = true;
+                    break;
             }
         }
 
@@ -159,6 +164,7 @@ internal sealed record PerfOptions(
             verifyCollapseStates,
             verifyComboBoxStates,
             verifyDatePickerStates,
-            verifyDescriptionsStates);
+            verifyDescriptionsStates,
+            verifyDialogStates);
     }
 }

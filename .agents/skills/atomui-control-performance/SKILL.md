@@ -10,6 +10,7 @@ description: Use when optimizing AtomUI controls, investigating control performa
 - Correctness bugs outrank performance work. If a performance optimization changes behavior, fix or revert that behavior before continuing.
 - Performance optimizations must preserve control functionality, UI appearance, animation behavior, interaction semantics, theme behavior, and public API by default. Any visible or behavioral change caused by an optimization is a correctness regression, not an acceptable tradeoff, unless the user explicitly approves that change.
 - Follow the principle: unused features must not pay runtime cost.
+- Hard boundary: an optimization that causes a repeatable performance regression is not acceptable. If any primary metric for the targeted control or its real Gallery ShowCase gets worse under the same measurement policy, the change must be fixed, split, reverted, or explicitly reported as a blocker before the optimization can be considered complete.
 - Hard boundary: no performance optimization may introduce resource leaks. If an optimization creates, subscribes, binds, caches, lazily materializes, or reparents anything, it must also define and verify the matching release path before the work is considered complete.
 - When scanning for performance bottlenecks, also scan for resource leaks in the same code path. Any discovered leak outranks performance-only work and must be fixed first or explicitly documented as a blocker if it cannot be fixed in the current scope. Do not proceed with an optimization that leaves a known leak in the touched lifecycle path.
 - Prefer no API change. AtomUI has no formal release yet, so API changes are allowed only when required and explicitly justified.
@@ -74,6 +75,7 @@ Performance summaries must be readable to a human reviewer, not just raw benchma
 - Include the units in every value, such as `ms/item`, `KB/item`, `ms`, or visual node count.
 - Show both control-level results and real Gallery results when both were measured.
 - Always include the corresponding ShowCase loading-time optimization comparison for controls that have a Gallery ShowCase. At minimum list cold first navigation, repeated mean, repeated median, repeated P95, and the sample policy such as warmup/iterations.
+- Use the same sample policy for before and after comparisons. Do not compare a short/noisy run against a longer or differently warmed run. If the first pass shows a regression, rerun with enough warmup/iterations to distinguish real regression from measurement noise before reporting it as the final result.
 - For Gallery-visible optimizations, explain the actual user-facing impact in plain language, such as "ComboBoxShowCase repeated open went from 109ms to 91ms, about 18ms faster."
 - Mention structural wins separately when they explain the result, such as "Button/IconButton count changed from 23 to 0" or "visual nodes dropped from 562 to 497."
 - State whether the result matches the optimization goal, and call out fixed costs that remain when the page-level percentage is lower than the control-level percentage.

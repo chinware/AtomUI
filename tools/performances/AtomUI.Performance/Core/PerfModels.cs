@@ -145,7 +145,18 @@ internal sealed record TreeStats(
     double DescriptionsPerRoot,
     double DescriptionDefaultItemPerRoot,
     double DescriptionBorderedItemLabelPerRoot,
-    double DescriptionBorderedItemContentPerRoot)
+    double DescriptionBorderedItemContentPerRoot,
+    double DialogPerRoot,
+    double MessageBoxPerRoot,
+    double OverlayDialogHostPerRoot,
+    double DialogHostPerRoot,
+    double DialogWindowContentPerRoot,
+    double DialogButtonBoxPerRoot,
+    double DialogButtonPerRoot,
+    double DialogCaptionButtonPerRoot,
+    double OverlayDialogMaskPerRoot,
+    double OverlayDialogResizerPerRoot,
+    double MessageBoxContentPerRoot)
 {
     public static TreeStats Collect(IReadOnlyList<Control> roots)
     {
@@ -252,6 +263,17 @@ internal sealed record TreeStats(
         var descriptionDefaultItemCount = 0;
         var descriptionBorderedItemLabelCount = 0;
         var descriptionBorderedItemContentCount = 0;
+        var dialogCount                 = 0;
+        var messageBoxCount             = 0;
+        var overlayDialogHostCount      = 0;
+        var dialogHostCount             = 0;
+        var dialogWindowContentCount    = 0;
+        var dialogButtonBoxCount        = 0;
+        var dialogButtonCount           = 0;
+        var dialogCaptionButtonCount    = 0;
+        var overlayDialogMaskCount      = 0;
+        var overlayDialogResizerCount   = 0;
+        var messageBoxContentCount      = 0;
 
         foreach (var root in roots)
         {
@@ -557,6 +579,50 @@ internal sealed record TreeStats(
                 {
                     descriptionBorderedItemContentCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Dialog"))
+                {
+                    dialogCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.MessageBox"))
+                {
+                    messageBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogHost"))
+                {
+                    overlayDialogHostCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogHost"))
+                {
+                    dialogHostCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogWindowContent"))
+                {
+                    dialogWindowContentCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogButtonBox"))
+                {
+                    dialogButtonBoxCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogButton"))
+                {
+                    dialogButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DialogCaptionButton"))
+                {
+                    dialogCaptionButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogMask"))
+                {
+                    overlayDialogMaskCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.OverlayDialogResizer"))
+                {
+                    overlayDialogResizerCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.MessageBoxContent"))
+                {
+                    messageBoxContentCount++;
+                }
                 if (visual is StackPanel)
                 {
                     stackPanelCount++;
@@ -788,7 +854,18 @@ internal sealed record TreeStats(
             descriptionsCount / (double)rootCount,
             descriptionDefaultItemCount / (double)rootCount,
             descriptionBorderedItemLabelCount / (double)rootCount,
-            descriptionBorderedItemContentCount / (double)rootCount);
+            descriptionBorderedItemContentCount / (double)rootCount,
+            dialogCount / (double)rootCount,
+            messageBoxCount / (double)rootCount,
+            overlayDialogHostCount / (double)rootCount,
+            dialogHostCount / (double)rootCount,
+            dialogWindowContentCount / (double)rootCount,
+            dialogButtonBoxCount / (double)rootCount,
+            dialogButtonCount / (double)rootCount,
+            dialogCaptionButtonCount / (double)rootCount,
+            overlayDialogMaskCount / (double)rootCount,
+            overlayDialogResizerCount / (double)rootCount,
+            messageBoxContentCount / (double)rootCount);
     }
 
     private static bool IsAtomIcon(Type type)

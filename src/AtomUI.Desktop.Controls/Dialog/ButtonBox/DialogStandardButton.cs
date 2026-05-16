@@ -89,6 +89,27 @@ public enum DialogStandardButton
 
 public readonly struct DialogStandardButtons : IEquatable<DialogStandardButtons>
 {
+    private const int ValidButtonMask =
+        (int)(DialogStandardButton.Ok |
+              DialogStandardButton.Open |
+              DialogStandardButton.Save |
+              DialogStandardButton.Cancel |
+              DialogStandardButton.Close |
+              DialogStandardButton.Discard |
+              DialogStandardButton.Apply |
+              DialogStandardButton.Reset |
+              DialogStandardButton.Reload |
+              DialogStandardButton.RestoreDefaults |
+              DialogStandardButton.Help |
+              DialogStandardButton.SaveAll |
+              DialogStandardButton.Yes |
+              DialogStandardButton.YesToAll |
+              DialogStandardButton.No |
+              DialogStandardButton.NoToAll |
+              DialogStandardButton.Abort |
+              DialogStandardButton.Retry |
+              DialogStandardButton.Ignore);
+
     public DialogStandardButton ButtonFlags { get; }
 
     public DialogStandardButtons(DialogStandardButton buttonFlags)
@@ -129,13 +150,12 @@ public readonly struct DialogStandardButtons : IEquatable<DialogStandardButtons>
     {
         get
         {
-            int count = 0;
-            foreach (DialogStandardButton value in Enum.GetValues(typeof(DialogStandardButton)))
+            var flags = (int)ButtonFlags & ValidButtonMask;
+            var count = 0;
+            while (flags != 0)
             {
-                if (value != DialogStandardButton.NoButton && HasFlag(value))
-                {
-                    count++;
-                }
+                flags &= flags - 1;
+                count++;
             }
             return count;
         }

@@ -1,5 +1,4 @@
 using System.Collections.Specialized;
-using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -354,9 +353,11 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             {
                 RemoveButtonFromGroup(button.Role, button, true);
             }
+            _standardButtons.Clear();
         }
         if (StandardButtons == DialogStandardButton.NoButton)
         {
+            _standardButtons = null;
             return;
         }
         
@@ -676,18 +677,17 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             return;
         }
         var buttons            = new List<DialogButton>();
-        var rightButtons       = SyncRightGroupButtons();
-        var centerGroupButtons = SyncCenterGroupButtons();
-        var leftGroupButtons   = SyncLeftGroupButtons();
+        var rightButtons       = SyncRightGroupButtons(_rightGroup);
+        var centerGroupButtons = SyncCenterGroupButtons(_centerGroup);
+        var leftGroupButtons   = SyncLeftGroupButtons(_leftGroup);
         buttons.AddRange(rightButtons);
         buttons.AddRange(centerGroupButtons);
         buttons.AddRange(leftGroupButtons);
         ButtonsSynchronized?.Invoke(this, new DialogBoxButtonSyncEventArgs(buttons));
     }
     
-    private List<DialogButton> SyncRightGroupButtons()
+    private List<DialogButton> SyncRightGroupButtons(DockPanel rightGroup)
     {
-        Debug.Assert(_rightGroup != null);
         var rightGroupButtons = new List<DialogButton>();
         
         // 后面可以定义各种操作系统的风格，现在先写死
@@ -764,58 +764,43 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         // 标准
         for (var i = standardAcceptIndex; i < standardAcceptList.Count; i++)
         {
-            foreach (var acceptButton in standardAcceptList)
-            {
-                rightGroupButtons.Add(acceptButton);
-            }
+            rightGroupButtons.Add(standardAcceptList[i]);
         }
         
         // 自定义
 
         for (var i = acceptIndex; i < acceptList.Count; i++)
         {
-            foreach (var acceptButton in acceptList)
-            {
-                rightGroupButtons.Add(acceptButton);
-            }
+            rightGroupButtons.Add(acceptList[i]);
         }
         
         // 输出剩下的 Yes
         // 标准
         for (var i = standardYesIndex; i < standardYesList.Count; i++)
         {
-            foreach (var button in standardYesList)
-            {
-                rightGroupButtons.Add(button);
-            }
+            rightGroupButtons.Add(standardYesList[i]);
         }
         
         // 自定义
 
         for (var i = yesIndex; i < yesList.Count; i++)
         {
-            foreach (var button in yesList)
-            {
-                rightGroupButtons.Add(button);
-            }
+            rightGroupButtons.Add(yesList[i]);
         }
 
+        ClearButtonPanel(rightGroup);
         foreach (var button in rightGroupButtons)
         {
             DockPanel.SetDock(button, Dock.Right);
-            button.SetLogicalParent(null);
-            button.SetVisualParent(null);
         }
         
-        ClearButtonPanel(_rightGroup);
-        _rightGroup.Children.AddRange(rightGroupButtons);
-        _rightGroup.Children.Add(new Control());
+        rightGroup.Children.AddRange(rightGroupButtons);
+        rightGroup.Children.Add(new Control());
         return rightGroupButtons;
     }
 
-    private List<DialogButton> SyncCenterGroupButtons()
+    private List<DialogButton> SyncCenterGroupButtons(DockPanel centerGroup)
     {
-        Debug.Assert(_centerGroup != null);
         var centerGroupButtons = new List<DialogButton>();
         // 标准
         var standardDestructiveList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.DestructiveRole) ?? new List<DialogButton>();
@@ -831,21 +816,18 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         {
             centerGroupButtons.Add(button);
         }
+        ClearButtonPanel(centerGroup);
         foreach (var button in centerGroupButtons)
         {
             DockPanel.SetDock(button, Dock.Left);
-            button.SetLogicalParent(null);
-            button.SetVisualParent(null);
         }
-        ClearButtonPanel(_centerGroup);
-        _centerGroup.Children.AddRange(centerGroupButtons);
-        _centerGroup.Children.Add(new Control());
+        centerGroup.Children.AddRange(centerGroupButtons);
+        centerGroup.Children.Add(new Control());
         return centerGroupButtons;
     }
 
-    private List<DialogButton> SyncLeftGroupButtons()
+    private List<DialogButton> SyncLeftGroupButtons(DockPanel leftGroup)
     {
-        Debug.Assert(_leftGroup != null);
         var leftGroupButtons = new List<DialogButton>();
         // 标准
         var standardHelpList = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.HelpRole) ?? new List<DialogButton>();
@@ -903,27 +885,20 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             leftGroupButtons.Add(button);
         }
         
+        ClearButtonPanel(leftGroup);
         foreach (var button in leftGroupButtons)
         {
             DockPanel.SetDock(button, Dock.Left);
-            button.SetLogicalParent(null);
-            button.SetVisualParent(null);
         }
 
-        ClearButtonPanel(_leftGroup);
-        _leftGroup.Children.AddRange(leftGroupButtons);
-        _leftGroup.Children.Add(new Control());
+        leftGroup.Children.AddRange(leftGroupButtons);
+        leftGroup.Children.Add(new Control());
         return leftGroupButtons;
     }
 
     private void ClearButtonPanel(Panel panel)
     {
-        var tobeRemoved = new List<Control>();
-        tobeRemoved.AddRange(panel.Children);
-        foreach (var item in tobeRemoved)
-        {
-            panel.Children.Remove(item);
-        }
+        panel.Children.Clear();
     }
 
     private void HandleButtonClicked(object? sender, EventArgs args)

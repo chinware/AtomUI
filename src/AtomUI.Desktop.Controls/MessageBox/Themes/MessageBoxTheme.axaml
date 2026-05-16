@@ -6,24 +6,7 @@
     <ControlTheme x:Key="{x:Type atom:MessageBox}" TargetType="atom:MessageBox">
         <Setter Property="Template">
             <ControlTemplate>
-                <atom:Dialog Name="PART_Dialog"
-                             Title="{TemplateBinding Title}"
-                             IsModal="{TemplateBinding IsModal}"
-                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                             DialogHostType="{TemplateBinding DialogHostType}"
-                             IsDragMovable="{TemplateBinding IsDragMovable}"
-                             PlacementTarget="{TemplateBinding PlacementTarget}"
-                             HorizontalOffset="{TemplateBinding HorizontalOffset, Mode=TwoWay}"
-                             VerticalOffset="{TemplateBinding VerticalOffset, Mode=TwoWay}"
-                             HostWidth="{TemplateBinding HostWidth}"
-                             HostMinWidth="{TemplateBinding HostMinWidth}"
-                             HostMaxWidth="{TemplateBinding HostMaxWidth}"
-                             HostHeight="{TemplateBinding HostHeight}"
-                             HostMinHeight="{TemplateBinding HostMinHeight}"
-                             HostMaxHeight="{TemplateBinding HostMaxHeight}"
-                             IsLoading="{TemplateBinding IsLoading}"
-                             IsConfirmLoading="{TemplateBinding IsConfirmLoading}"
-                             Result="{TemplateBinding Result, Mode=TwoWay}" />
+                <Panel />
             </ControlTemplate>
         </Setter>
 

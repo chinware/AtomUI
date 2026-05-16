@@ -59,6 +59,7 @@
 | ComboBox | 本轮已完成 | [ComboBox](ComboBox/README.md) | `ComboBoxShowCase` repeated mean `109.35ms -> 91.07ms`，alloc `11384.83KB -> 9534.28KB`，visuals `562 -> 497`；默认 `Button/IconButton 23 -> 0` |
 | DatePicker | 本轮已完成 | [DatePicker](DatePicker/README.md) | closed route `PickerHost 30 -> 0`，visuals `1570 -> 1540`，alloc `30959.16KB -> 29762.89KB`，长样本 repeated mean `174.77ms -> 154.21ms` |
 | Descriptions | 本轮已完成 | [Descriptions](Descriptions/README.md) | `DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；`GalleryShape.Batch8` `25.139ms/root -> 24.486ms/root`；修复 binding/collection/window 订阅生命周期风险 |
+| Dialog / MessageBox | 本轮已完成 | [Dialog](Dialog/README.md) | `MessageBox` closed `Dialog/root 1 -> 0`，`ModalShowCase` repeated mean `37.03ms -> 34.67ms`，visuals `324 -> 317`，Dialog runtime `14 -> 7`；修复 RelayBind、mask binding、resizer 和 ButtonBox 父级生命周期风险 |
 
 ## 总列表
 
@@ -125,7 +126,7 @@
 | Feedback | Alert | Pending | 待建立基线 |
 | Feedback | Drawer | Pending | 待建立基线 |
 | Feedback | Message | Pending | 待建立基线 |
-| Feedback | Modal | Pending | 待建立基线 |
+| Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证，稳态 Gallery repeated、结构和分配下降 |
 | Feedback | Notification | Pending | 待建立基线 |
 | Feedback | PopupConfirm | Pending | 待建立基线 |
 | Feedback | ProgressBar | Pending | 待建立基线 |

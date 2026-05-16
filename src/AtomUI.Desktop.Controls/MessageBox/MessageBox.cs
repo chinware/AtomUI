@@ -1,5 +1,5 @@
 using System.Collections.Specialized;
-using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
@@ -285,6 +285,8 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     private Dialog? _dialog;
     private MessageBoxContent? _dialogContent;
+    private CompositeDisposable? _dialogBindings;
+    private CompositeDisposable? _dialogContentBindings;
     private bool _ignoreIsOpenChanged;
 
     static MessageBox()
@@ -318,34 +320,32 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     public object? Open()
     {
-        Debug.Assert(_dialog != null);
+        var dialog = EnsureDialog();
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsOpenProperty, true);
         }
-        return _dialog.Open();
+        return dialog.Open();
     }
 
     public async Task OpenAsync(CancellationToken cancellationToken = default)
     {
-        Debug.Assert(_dialog != null);
+        var dialog = EnsureDialog();
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsOpenProperty, true);
         }
-        await _dialog.OpenAsync(cancellationToken);
+        await dialog.OpenAsync(cancellationToken);
     }
 
     public void Cancel()
     {
-        Debug.Assert(_dialog != null);
-        _dialog.Reject();
+        _dialog?.Reject();
     }
 
     public void Confirm()
     {
-        Debug.Assert(_dialog != null);
-        _dialog.Accept();
+        _dialog?.Accept();
     }
 
     #region 静态 API
@@ -496,12 +496,98 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             {
                 ConfigurePositionOnStartup();
             }
+            else if (change.Property == PlacementTargetProperty)
+            {
+                SyncDialogPlacementTarget();
+            }
         }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ReleaseTemplateDialog();
+        var templateDialog = e.NameScope.Find<Dialog>("PART_Dialog");
+        if (templateDialog != null)
+        {
+            AttachDialog(templateDialog);
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (_dialog is { IsOpen: true } dialog)
+        {
+            dialog.Done();
+        }
+        ReleaseTemplateDialog();
+    }
+
+    private Dialog EnsureDialog()
+    {
+        ApplyStyling();
+        if (_dialog != null)
+        {
+            return _dialog;
+        }
+
+        var dialog = new Dialog();
+        AttachDialog(dialog);
+        return dialog;
+    }
+
+    private void AttachDialog(Dialog dialog)
+    {
+        ReleaseTemplateDialog();
+
+        _dialog = dialog;
+        _dialogBindings = new CompositeDisposable
+        {
+            BindUtils.RelayBind(this, TitleProperty, dialog, Dialog.TitleProperty),
+            BindUtils.RelayBind(this, IsModalProperty, dialog, Dialog.IsModalProperty),
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, dialog, Dialog.IsMotionEnabledProperty),
+            BindUtils.RelayBind(this, DialogHostTypeProperty, dialog, Dialog.DialogHostTypeProperty),
+            BindUtils.RelayBind(this, IsDragMovableProperty, dialog, Dialog.IsDragMovableProperty),
+            BindUtils.RelayBind(this, HorizontalOffsetProperty, dialog, Dialog.HorizontalOffsetProperty, BindingMode.TwoWay),
+            BindUtils.RelayBind(this, VerticalOffsetProperty, dialog, Dialog.VerticalOffsetProperty, BindingMode.TwoWay),
+            BindUtils.RelayBind(this, HostWidthProperty, dialog, Dialog.HostWidthProperty),
+            BindUtils.RelayBind(this, HostMinWidthProperty, dialog, Dialog.HostMinWidthProperty),
+            BindUtils.RelayBind(this, HostMaxWidthProperty, dialog, Dialog.HostMaxWidthProperty),
+            BindUtils.RelayBind(this, HostHeightProperty, dialog, Dialog.HostHeightProperty),
+            BindUtils.RelayBind(this, HostMinHeightProperty, dialog, Dialog.HostMinHeightProperty),
+            BindUtils.RelayBind(this, HostMaxHeightProperty, dialog, Dialog.HostMaxHeightProperty),
+            BindUtils.RelayBind(this, IsLoadingProperty, dialog, Dialog.IsLoadingProperty),
+            BindUtils.RelayBind(this, IsConfirmLoadingProperty, dialog, Dialog.IsConfirmLoadingProperty),
+            BindUtils.RelayBind(this, ResultProperty, dialog, Dialog.ResultProperty, BindingMode.TwoWay)
+        };
+
+        _dialogContent = new MessageBoxContent();
+        _dialogContentBindings = new CompositeDisposable
+        {
+            BindUtils.RelayBind(this, IconProperty, _dialogContent, MessageBoxContent.StyleIconProperty),
+            BindUtils.RelayBind(this, StyleProperty, _dialogContent, MessageBoxContent.StyleProperty),
+            BindUtils.RelayBind(this, ContentProperty, _dialogContent, ContentControl.ContentProperty),
+            BindUtils.RelayBind(this, ContentTemplateProperty, _dialogContent, ContentControl.ContentTemplateProperty)
+        };
+
+        SyncDialogPlacementTarget();
+        dialog.Content          =  _dialogContent;
+        dialog.Opened           += HandleDialogOpened;
+        dialog.Closed           += HandleDialogClosed;
+        dialog.Rejected         += HandleDialogCancelled;
+        dialog.Accepted         += HandleDialogConfirmed;
+        dialog.Finished         += HandleDialogFinished;
+        dialog.ButtonsConfigure =  ButtonsConfigure;
+        dialog.CustomButtons.AddRange(CustomButtons);
+
+        ConfigureOkButton();
+        ConfigureIcon();
+        ConfigurePositionOnStartup();
+    }
+
+    private void ReleaseTemplateDialog()
+    {
         if (_dialog != null)
         {
             _dialog.Opened   -= HandleDialogOpened;
@@ -509,28 +595,25 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             _dialog.Rejected -= HandleDialogCancelled;
             _dialog.Accepted -= HandleDialogConfirmed;
             _dialog.Finished -= HandleDialogFinished;
-        }
-        _dialog = e.NameScope.Find<Dialog>("PART_Dialog");
-        if (_dialog != null)
-        {
-            _dialogContent = new MessageBoxContent();
-            BindUtils.RelayBind(this, IconProperty, _dialogContent, MessageBoxContent.StyleIconProperty);
-            BindUtils.RelayBind(this, StyleProperty, _dialogContent, MessageBoxContent.StyleProperty);
-            BindUtils.RelayBind(this, ContentProperty, _dialogContent, ContentControl.ContentProperty);
-            BindUtils.RelayBind(this, ContentTemplateProperty, _dialogContent, ContentControl.ContentTemplateProperty);
-            _dialog.Content          =  _dialogContent;
-            _dialog.Opened           += HandleDialogOpened;
-            _dialog.Closed           += HandleDialogClosed;
-            _dialog.Rejected         += HandleDialogCancelled;
-            _dialog.Accepted         += HandleDialogConfirmed;
-            _dialog.Finished         += HandleDialogFinished;
-            _dialog.ButtonsConfigure =  ButtonsConfigure;
-            _dialog.CustomButtons.AddRange(CustomButtons);
+            _dialog.ButtonsConfigure = null;
+            _dialog.CustomButtons.Clear();
+            _dialog.Content = null;
         }
 
-        ConfigureOkButton();
-        ConfigureIcon();
-        ConfigurePositionOnStartup();
+        _dialogBindings?.Dispose();
+        _dialogBindings = null;
+        _dialogContentBindings?.Dispose();
+        _dialogContentBindings = null;
+        _dialogContent = null;
+        _dialog = null;
+    }
+
+    private void SyncDialogPlacementTarget()
+    {
+        if (_dialog != null)
+        {
+            _dialog.PlacementTarget = PlacementTarget ?? this;
+        }
     }
 
     private void HandleDialogOpened(object? sender, EventArgs e)
@@ -564,48 +647,56 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     private void ConfigureIcon()
     {
-        Debug.Assert(_dialog != null);
+        if (_dialog is not { } dialog)
+        {
+            return;
+        }
+
         if (Style == MessageBoxStyle.Information)
         {
             SetValue(IconProperty, new InfoCircleFilled(), BindingPriority.Template);
-            _dialog.StandardButtons = DialogStandardButton.Ok;
+            dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Success)
         {
             SetValue(IconProperty, new CheckCircleFilled(), BindingPriority.Template);
-            _dialog.StandardButtons = DialogStandardButton.Ok;
+            dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Error)
         {
             SetValue(IconProperty, new CloseCircleFilled(), BindingPriority.Template);
-            _dialog.StandardButtons = DialogStandardButton.Ok;
+            dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Warning)
         {
             SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
-            _dialog.StandardButtons = DialogStandardButton.Ok;
+            dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Normal)
         {
-            _dialog.StandardButtons = DialogStandardButton.Ok;
+            dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Confirm)
         {
             SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
-            _dialog.StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel;
+            dialog.StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel;
         }
     }
 
     private void ConfigureOkButton()
     {
-        Debug.Assert(_dialog != null);
+        if (_dialog is not { } dialog)
+        {
+            return;
+        }
+
         if (OkButtonStyle == MessageBoxOkButtonStyle.Primary)
         {
-            _dialog.DefaultStandardButton = DialogStandardButton.Ok;
+            dialog.DefaultStandardButton = DialogStandardButton.Ok;
         }
         else
         {
-            _dialog.DefaultStandardButton = DialogStandardButton.NoButton;
+            dialog.DefaultStandardButton = DialogStandardButton.NoButton;
         }
     }
 
@@ -631,7 +722,6 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         if (IsVisible)
         {
             ApplyStyling();
-            ApplyTemplate();
         }
 
         return new Size();
