@@ -75,6 +75,7 @@ internal static partial class Program
                 "checkbox" => "# CheckBox Baseline",
                 "collapse" => "# Collapse Baseline",
                 "combobox" => "# ComboBox Baseline",
+                "datepicker" => "# DatePicker Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

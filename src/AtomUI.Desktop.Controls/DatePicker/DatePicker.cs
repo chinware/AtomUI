@@ -215,6 +215,15 @@ public class DatePicker : InfoPickerInput
         _pickerPresenter = pickerPresenter as DatePickerPresenter;
     }
 
+    protected override void NotifyPickerPresenterCleared(Control pickerPresenter)
+    {
+        base.NotifyPickerPresenterCleared(pickerPresenter);
+        if (ReferenceEquals(_pickerPresenter, pickerPresenter))
+        {
+            _pickerPresenter = null;
+        }
+    }
+
     protected override void NotifyPickerOpened()
     {
         base.NotifyPickerOpened();

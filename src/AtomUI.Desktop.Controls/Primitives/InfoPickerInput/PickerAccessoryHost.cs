@@ -17,10 +17,7 @@ internal class PickerAccessoryHost : StackPanel
     private IconPresenter? _infoIconPresenter;
     private ContentPresenter? _formFeedbackPresenter;
     private ContentPresenter? _contentRightAddOnPresenter;
-    private CompositeDisposable? _ownerSubscriptions;
-    private IDisposable? _feedbackStatusSubscription;
     private CompositeDisposable? _infoIconBindings;
-    private bool _isAttachingOwner;
 
     public PickerAccessoryHost()
     {
@@ -31,73 +28,24 @@ internal class PickerAccessoryHost : StackPanel
     {
         if (ReferenceEquals(_owner, owner))
         {
+            UpdateAccessoryState();
             return;
         }
 
         DetachOwner();
 
         _owner = owner;
-        _isAttachingOwner = true;
-        _ownerSubscriptions = new CompositeDisposable
-        {
-            owner.GetObservable(InfoPickerInput.IsClearButtonVisibleProperty).Subscribe(_ => HandleAccessoryStateChanged()),
-            owner.GetObservable(InfoPickerInput.InfoIconProperty).Subscribe(_ => HandleAccessoryStateChanged()),
-            owner.GetObservable(InfoPickerInput.FormFeedbackProperty).Subscribe(_ =>
-            {
-                ConfigureFeedbackStatusSubscription();
-                HandleAccessoryStateChanged();
-            }),
-            owner.GetObservable(InfoPickerInput.ContentRightAddOnProperty).Subscribe(_ => HandleAccessoryStateChanged()),
-            owner.GetObservable(InfoPickerInput.ContentRightAddOnTemplateProperty).Subscribe(_ => HandleAccessoryStateChanged()),
-            owner.GetObservable(InfoPickerInput.IsMotionEnabledProperty).Subscribe(_ => HandleClearButtonStateChanged())
-        };
-        ConfigureFeedbackStatusSubscription();
-        _isAttachingOwner = false;
         UpdateAccessoryState();
     }
 
     public void DetachOwner()
     {
-        _ownerSubscriptions?.Dispose();
-        _ownerSubscriptions = null;
-
-        _feedbackStatusSubscription?.Dispose();
-        _feedbackStatusSubscription = null;
-
         ClearClearButton();
         ClearInfoIconPresenter();
         ClearFormFeedbackPresenter();
         ClearContentRightAddOnPresenter();
         Children.Clear();
         _owner = null;
-        _isAttachingOwner = false;
-    }
-
-    private void ConfigureFeedbackStatusSubscription()
-    {
-        _feedbackStatusSubscription?.Dispose();
-        _feedbackStatusSubscription = null;
-        if (_owner?.FormFeedback is FormValidateFeedback feedback)
-        {
-            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
-                                                  .Subscribe(_ => HandleAccessoryStateChanged());
-        }
-    }
-
-    private void HandleAccessoryStateChanged()
-    {
-        if (!_isAttachingOwner)
-        {
-            UpdateAccessoryState();
-        }
-    }
-
-    private void HandleClearButtonStateChanged()
-    {
-        if (!_isAttachingOwner)
-        {
-            UpdateClearButtonState();
-        }
     }
 
     private void UpdateAccessoryState()

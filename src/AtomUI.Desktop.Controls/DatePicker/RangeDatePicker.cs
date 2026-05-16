@@ -223,6 +223,38 @@ public class RangeDatePicker : RangeInfoPickerInput
         _pickerPresenter?.NotifyRepairReverseRange(true);
     }
 
+    protected override void NotifyPickerPresenterCleared(Control pickerPresenter)
+    {
+        base.NotifyPickerPresenterCleared(pickerPresenter);
+        if (ReferenceEquals(_pickerPresenter, pickerPresenter))
+        {
+            _pickerPresenter = null;
+        }
+    }
+
+    protected override Control CreatePickerPopupContent()
+    {
+        return new DualMonthArrowDecoratedBox();
+    }
+
+    protected override void ConfigurePickerPopupContent(Control popupContent)
+    {
+        base.ConfigurePickerPopupContent(popupContent);
+        if (popupContent is DualMonthArrowDecoratedBox dualMonthArrowDecoratedBox)
+        {
+            dualMonthArrowDecoratedBox.SetCurrentValue(DualMonthArrowDecoratedBox.IsFloatingArrowPositionProperty,
+                !IsShowTime);
+            dualMonthArrowDecoratedBox.SetCurrentValue(DualMonthArrowDecoratedBox.IsHorizontalFlippedProperty,
+                IsPopupHorizontalFlipped);
+            dualMonthArrowDecoratedBox.SetCurrentValue(
+                DualMonthArrowDecoratedBox.RangePickerIndicatorOffsetStartProperty,
+                RangePickerIndicatorOffsetStart);
+            dualMonthArrowDecoratedBox.SetCurrentValue(
+                DualMonthArrowDecoratedBox.RangePickerIndicatorOffsetEndProperty,
+                RangePickerIndicatorOffsetEnd);
+        }
+    }
+
     protected override void NotifyPickerOpened()
     {
         base.NotifyPickerOpened();
@@ -431,6 +463,13 @@ public class RangeDatePicker : RangeInfoPickerInput
             Text          = FormatDateTime(RangeStartSelectedDate);
             SecondaryText = FormatDateTime(RangeEndSelectedDate);
             CalculatePreferredWidth();
+        }
+
+        if (change.Property == IsShowTimeProperty ||
+            change.Property == RangePickerIndicatorOffsetStartProperty ||
+            change.Property == RangePickerIndicatorOffsetEndProperty)
+        {
+            ConfigurePickerPopupContent();
         }
 
         if (this.IsAttachedToVisualTree())

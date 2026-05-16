@@ -20,7 +20,7 @@
 - 总览、guide、控件目录 README。
 - 控件级优化方案和关键设计取舍。
 - 优化前基线和最终结果。
-- Gallery 真实场景的汇总结论和复现命令。
+- 对应 ShowCase 加载时间优化对比、Gallery 真实场景的汇总结论和复现命令。
 
 不进入版本控制：
 
@@ -35,6 +35,8 @@
 | --- | --- | --- | --- |
 | 控件级基准 | `tools/performances/AtomUI.Performance` | 单控件、小组合、批量实例化、专项行为验证 | 不代表 Gallery 页面打开体验 |
 | Gallery 场景复现 | `tools/performances/AtomUI.GalleryPerformance` | 真实 Workspace route、真实 showcase XAML、真实视觉树稳定耗时 | 必须证明源 XAML 和运行时控件形态一致 |
+
+控件存在对应 Gallery ShowCase 时，控件 README 必须单独列出 ShowCase 加载时间优化对比，至少包含 cold first navigation、repeated mean、repeated median、repeated P95，并标明 warmup/iterations。
 
 ## 当前文档
 
@@ -55,6 +57,7 @@
 | CheckBox | 本轮已完成 | [CheckBox](CheckBox/README.md) | 默认 unchecked `visuals 12 -> 8`，contentless unchecked `11 -> 6`，`CheckBoxShowCase` visuals `420 -> 318`，repeated alloc `6385.60KB -> 4629.80KB` |
 | Collapse | 本轮已完成 | [Collapse](Collapse/README.md) | `CollapseShowCase` repeated mean `119.31ms -> 100.18ms`，visuals `616 -> 553`；content motion `33 -> 1`，addon presenter `33 -> 3` |
 | ComboBox | 本轮已完成 | [ComboBox](ComboBox/README.md) | `ComboBoxShowCase` repeated mean `109.35ms -> 91.07ms`，alloc `11384.83KB -> 9534.28KB`，visuals `562 -> 497`；默认 `Button/IconButton 23 -> 0` |
+| DatePicker | 本轮已完成 | [DatePicker](DatePicker/README.md) | closed route `PickerHost 30 -> 0`，visuals `1570 -> 1540`，alloc `30959.16KB -> 29762.89KB`，长样本 repeated mean `174.77ms -> 154.21ms` |
 
 ## 总列表
 
@@ -82,7 +85,7 @@
 | Data Entry | Cascader | Done | [Cascader](Cascader/README.md)；closed popup、filter input、multiple tags、filter list、checkbox/loading slot 已按需创建，Gallery repeated mean 小幅下降 |
 | Data Entry | CheckBox | Done | [CheckBox](CheckBox/README.md)；unchecked/contentless 默认路径不再创建 wave、Icon mark、tristate mark；`CheckBoxShowCase` visuals `420 -> 318`，alloc `6385.60KB -> 4629.80KB` |
 | Data Entry | ColorPicker | Pending | 待建立基线 |
-| Data Entry | DatePicker | Pending | 受 AddOnDecoratedBox 优化影响 |
+| Data Entry | DatePicker | Done | [DatePicker](DatePicker/README.md)；关闭态 popup content、默认 accessory host、Window.Deactivated 订阅已按需化 |
 | Data Entry | TimePicker | Pending | 待建立基线 |
 | Data Entry | Form | Pending | 待建立基线 |
 | Data Entry | LineEdit | Done | 已完成控件级优化与 Gallery 实测 |

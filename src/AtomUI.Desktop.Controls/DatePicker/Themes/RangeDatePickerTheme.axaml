@@ -88,16 +88,7 @@
                                 IsOpen="{TemplateBinding IsPickerOpen, Mode=TwoWay}"
                                 IsHorizontalFlipped="{TemplateBinding IsPopupHorizontalFlipped, Mode=TwoWay}"
                                 IsVerticalFlipped="{TemplateBinding IsPopupVerticalFlipped, Mode=TwoWay}"
-                                MarginToAnchor="{TemplateBinding MarginToAnchor}">
-                        <atom:DualMonthArrowDecoratedBox Content="{TemplateBinding PickerPresenter}"
-                                                         IsArrowVisible="{TemplateBinding IsArrowVisibleEffective}"
-                                                         ArrowPosition="{TemplateBinding ArrowPosition}"
-                                                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                         IsFloatingArrowPosition="{TemplateBinding IsShowTime, Converter={x:Static BoolConverters.Not}}"
-                                                         IsHorizontalFlipped="{Binding $parent[atom:Popup].IsHorizontalFlipped}"
-                                                         RangePickerIndicatorOffsetStart="{TemplateBinding RangePickerIndicatorOffsetStart}"
-                                                         RangePickerIndicatorOffsetEnd="{TemplateBinding RangePickerIndicatorOffsetEnd}"/>
-                    </atom:Popup>
+                                MarginToAnchor="{TemplateBinding MarginToAnchor}" />
                 </Panel>
             </ControlTemplate>
         </Setter>

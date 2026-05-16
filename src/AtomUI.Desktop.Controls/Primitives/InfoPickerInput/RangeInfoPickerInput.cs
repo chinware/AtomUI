@@ -332,7 +332,7 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.Post(this.EnableTransitions);
     }
 }
 

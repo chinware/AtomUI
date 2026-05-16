@@ -62,7 +62,8 @@ For any control performance optimization:
 2. Add or update a state/lifecycle verification under `tools/performances/AtomUI.Performance/Suites/<Control>/` for behavior that could regress.
 3. Include cleanup assertions when visuals, presenters, hosts, subscriptions, or bindings are lazily created.
 4. If the bug is Gallery-visible, build `controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` and verify the exact Gallery scenario.
-5. Run `git diff --check`.
+5. For every control optimization with a corresponding Gallery ShowCase, run or update the real ShowCase loading-time measurement and report the before/after comparison.
+6. Run `git diff --check`.
 
 ## Performance Report Format
 
@@ -71,6 +72,7 @@ Performance summaries must be readable to a human reviewer, not just raw benchma
 - Report results as a compact comparison table with `Scenario`, `Before`, `After`, and `Improvement`.
 - Include the units in every value, such as `ms/item`, `KB/item`, `ms`, or visual node count.
 - Show both control-level results and real Gallery results when both were measured.
+- Always include the corresponding ShowCase loading-time optimization comparison for controls that have a Gallery ShowCase. At minimum list cold first navigation, repeated mean, repeated median, repeated P95, and the sample policy such as warmup/iterations.
 - For Gallery-visible optimizations, explain the actual user-facing impact in plain language, such as "ComboBoxShowCase repeated open went from 109ms to 91ms, about 18ms faster."
 - Mention structural wins separately when they explain the result, such as "Button/IconButton count changed from 23 to 0" or "visual nodes dropped from 562 to 497."
 - State whether the result matches the optimization goal, and call out fixed costs that remain when the page-level percentage is lower than the control-level percentage.

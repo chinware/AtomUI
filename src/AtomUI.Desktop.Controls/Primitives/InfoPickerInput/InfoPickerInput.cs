@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -356,15 +357,20 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected PickerClearUpButton? PickerClearUpButton;
     private PickerAccessoryHost? _accessoryHost;
     private IDisposable? _accessoryHostSpacingBinding;
+    private IconPresenter? _lightweightInfoIconPresenter;
+    private CompositeDisposable? _lightweightInfoIconBindings;
     private CompositeDisposable? _contentRightAddOnBindings;
+    private IDisposable? _feedbackStatusSubscription;
     private protected Popup? PickerPopup;
+    private Control? _pickerPopupContent;
     protected bool CurrentValidSelected;
     protected TextBox? InfoInputBox;
     protected Border? PickerInnerBox;
 
     private protected bool IsChoosing;
     private AddOnDecoratedBox? _addOnDecoratedBox;
-    private Window? _attachedWindow;
+    private Avalonia.Controls.Window? _attachedWindow;
+    private bool _isUsingLegacyAccessoryTemplate;
     
 
     static InfoPickerInput()
@@ -392,6 +398,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (args.NewValue is true)
         {
+            EnsurePickerPopupContent();
+            ConfigureWindowDeactivatedSubscription();
             CurrentValidSelected = false;
             NotifyFlyoutAboutToShow();
             NotifyPickerOpened();
@@ -400,6 +408,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         {
             NotifyFlyoutAboutToClose(CurrentValidSelected);
             NotifyPickerClosed();
+            ClearWindowDeactivatedSubscription();
         }
         UpdatePseudoClasses();
     }
@@ -450,12 +459,9 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = null;
+        ClearPickerPopupContent();
         ClearOwnerDrivenAccessoryHost();
-        if (_accessoryHost != null)
-        {
-            _accessoryHost.DetachOwner();
-            _accessoryHost = null;
-        }
+        ClearWindowDeactivatedSubscription();
 
         if (DecoratedBox != null)
         {
@@ -471,12 +477,6 @@ public abstract class InfoPickerInput : TemplatedControl,
         base.OnApplyTemplate(e);
 
         PickerPopup = e.NameScope.Find<Popup>("PART_Popup");
-
-        if (PickerPresenter is null)
-        {
-            PickerPresenter = CreatePickerPresenter();
-            NotifyPickerPresenterCreated(PickerPresenter);
-        }
 
         DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         InfoInputBox = e.NameScope.Get<TextBox>("PART_InfoInputBox");
@@ -500,12 +500,19 @@ public abstract class InfoPickerInput : TemplatedControl,
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
 
         SetupPopupProperties();
-        if (!SetupContentRightAddOnBindings(e))
+        ConfigureFormFeedbackSubscription();
+        _isUsingLegacyAccessoryTemplate = SetupContentRightAddOnBindings(e);
+        if (!_isUsingLegacyAccessoryTemplate)
         {
             ConfigureOwnerDrivenAccessoryHost();
         }
         ConfigureArrowPosition();
         ConfigureShowArrowEffective();
+        ConfigureWindowDeactivatedSubscription();
+        if (IsPickerOpen)
+        {
+            EnsurePickerPopupContent();
+        }
     }
     
     private void HandleDecoratedBoxTemplateApplied(object? sender, TemplateAppliedEventArgs args)
@@ -639,14 +646,33 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private void ConfigureOwnerDrivenAccessoryHost()
     {
-        if (_addOnDecoratedBox == null)
+        if (_addOnDecoratedBox == null ||
+            _isUsingLegacyAccessoryTemplate)
         {
             return;
         }
 
-        if (!NeedsRightAccessoryHost())
+        if (NeedsCompositeRightAccessoryHost())
         {
-            ClearOwnerDrivenAccessoryHost();
+            ClearLightweightInfoIconPresenter();
+            EnsureCompositeAccessoryHost();
+            return;
+        }
+
+        ClearCompositeAccessoryHost();
+        if (InfoIcon is null)
+        {
+            ClearLightweightInfoIconPresenter();
+            return;
+        }
+
+        EnsureLightweightInfoIconPresenter();
+    }
+
+    private void EnsureCompositeAccessoryHost()
+    {
+        if (_addOnDecoratedBox == null)
+        {
             return;
         }
 
@@ -657,8 +683,8 @@ public abstract class InfoPickerInput : TemplatedControl,
                 _accessoryHost,
                 StackPanel.SpacingProperty,
                 SharedTokenKind.SpacingXS);
-            _accessoryHost.AttachOwner(this);
         }
+        _accessoryHost.AttachOwner(this);
 
         if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _accessoryHost))
         {
@@ -667,6 +693,12 @@ public abstract class InfoPickerInput : TemplatedControl,
     }
 
     private void ClearOwnerDrivenAccessoryHost()
+    {
+        ClearLightweightInfoIconPresenter();
+        ClearCompositeAccessoryHost();
+    }
+
+    private void ClearCompositeAccessoryHost()
     {
         if (_addOnDecoratedBox != null &&
             _accessoryHost != null &&
@@ -685,12 +717,75 @@ public abstract class InfoPickerInput : TemplatedControl,
         }
     }
 
-    private bool NeedsRightAccessoryHost()
+    private void EnsureLightweightInfoIconPresenter()
     {
-        return InfoIcon != null ||
-               IsClearButtonVisible ||
-               FormFeedback != null ||
+        if (_addOnDecoratedBox == null)
+        {
+            return;
+        }
+
+        if (_lightweightInfoIconPresenter == null)
+        {
+            _lightweightInfoIconPresenter = new IconPresenter();
+            _lightweightInfoIconBindings = new CompositeDisposable
+            {
+                TokenResourceBinder.CreateTokenBinding(
+                    _lightweightInfoIconPresenter,
+                    WidthProperty,
+                    SharedTokenKind.IconSize),
+                TokenResourceBinder.CreateTokenBinding(
+                    _lightweightInfoIconPresenter,
+                    HeightProperty,
+                    SharedTokenKind.IconSize),
+                TokenResourceBinder.CreateTokenBinding(
+                    _lightweightInfoIconPresenter,
+                    IconPresenter.IconBrushProperty,
+                    SharedTokenKind.ColorTextQuaternary)
+            };
+        }
+
+        _lightweightInfoIconPresenter.SetCurrentValue(IconPresenter.IconProperty, InfoIcon);
+        if (!ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _lightweightInfoIconPresenter))
+        {
+            _addOnDecoratedBox.SetCurrentValue(AddOnDecoratedBox.ContentRightAddOnProperty, _lightweightInfoIconPresenter);
+        }
+    }
+
+    private void ClearLightweightInfoIconPresenter()
+    {
+        if (_addOnDecoratedBox != null &&
+            _lightweightInfoIconPresenter != null &&
+            ReferenceEquals(_addOnDecoratedBox.ContentRightAddOn, _lightweightInfoIconPresenter))
+        {
+            _addOnDecoratedBox.ClearValue(AddOnDecoratedBox.ContentRightAddOnProperty);
+        }
+
+        _lightweightInfoIconBindings?.Dispose();
+        _lightweightInfoIconBindings = null;
+
+        if (_lightweightInfoIconPresenter != null)
+        {
+            _lightweightInfoIconPresenter.ClearValue(IconPresenter.IconProperty);
+            _lightweightInfoIconPresenter = null;
+        }
+    }
+
+    private bool NeedsCompositeRightAccessoryHost()
+    {
+        return IsClearButtonVisible ||
+               FormFeedback is { ValidateStatus: not FormValidateStatus.Default } ||
                ContentRightAddOn != null;
+    }
+
+    private void ConfigureFormFeedbackSubscription()
+    {
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
+        if (FormFeedback is FormValidateFeedback feedback)
+        {
+            _feedbackStatusSubscription = feedback.GetObservable(FormValidateFeedback.ValidateStatusProperty)
+                                                  .Subscribe(_ => ConfigureOwnerDrivenAccessoryHost());
+        }
     }
 
     protected virtual void NotifyPickerPresenterCreated(Control pickerPresenter)
@@ -700,6 +795,90 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     protected virtual void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
+    }
+
+    protected virtual void NotifyPickerPresenterCleared(Control pickerPresenter)
+    {
+    }
+
+    private void EnsurePickerPresenter()
+    {
+        if (PickerPresenter != null)
+        {
+            return;
+        }
+
+        var pickerPresenter = CreatePickerPresenter();
+        SetCurrentValue(PickerPresenterProperty, pickerPresenter);
+        NotifyPickerPresenterCreated(pickerPresenter);
+    }
+
+    private void ClearPickerPresenter()
+    {
+        if (PickerPresenter is not { } pickerPresenter)
+        {
+            return;
+        }
+
+        SetCurrentValue(PickerPresenterProperty, null);
+        NotifyPickerPresenterCleared(pickerPresenter);
+    }
+
+    private void EnsurePickerPopupContent()
+    {
+        EnsurePickerPresenter();
+
+        if (_pickerPopupContent == null)
+        {
+            _pickerPopupContent = CreatePickerPopupContent();
+            _pickerPopupContent.SetTemplatedParent(this);
+        }
+
+        ConfigurePickerPopupContent(_pickerPopupContent);
+        if (PickerPopup != null && !ReferenceEquals(PickerPopup.Child, _pickerPopupContent))
+        {
+            PickerPopup.SetCurrentValue(Popup.ChildProperty, _pickerPopupContent);
+        }
+    }
+
+    protected virtual Control CreatePickerPopupContent()
+    {
+        return new ArrowDecoratedBox();
+    }
+
+    protected virtual void ConfigurePickerPopupContent(Control popupContent)
+    {
+        if (popupContent is ArrowDecoratedBox arrowDecoratedBox)
+        {
+            arrowDecoratedBox.SetCurrentValue(ContentControl.ContentProperty, PickerPresenter);
+            arrowDecoratedBox.SetCurrentValue(ArrowDecoratedBox.IsArrowVisibleProperty, IsArrowVisibleEffective);
+            arrowDecoratedBox.SetCurrentValue(ArrowDecoratedBox.ArrowPositionProperty, ArrowPosition);
+            arrowDecoratedBox.SetCurrentValue(ArrowDecoratedBox.IsMotionEnabledProperty, IsMotionEnabled);
+        }
+    }
+
+    protected void ConfigurePickerPopupContent()
+    {
+        if (_pickerPopupContent != null)
+        {
+            ConfigurePickerPopupContent(_pickerPopupContent);
+        }
+    }
+
+    private void ClearPickerPopupContent()
+    {
+        if (PickerPopup != null && ReferenceEquals(PickerPopup.Child, _pickerPopupContent))
+        {
+            PickerPopup.SetCurrentValue(Popup.ChildProperty, null);
+        }
+
+        if (_pickerPopupContent is ContentControl contentControl)
+        {
+            contentControl.SetCurrentValue(ContentControl.ContentProperty, null);
+        }
+
+        _pickerPopupContent?.SetTemplatedParent(null);
+        _pickerPopupContent = null;
     }
 
     protected virtual void SetupPopupProperties()
@@ -727,11 +906,37 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
+        ConfigureWindowDeactivatedSubscription();
+    }
+
+    private void ConfigureWindowDeactivatedSubscription()
+    {
+        if (!IsPickerOpen)
         {
-            _attachedWindow = window;
+            ClearWindowDeactivatedSubscription();
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (ReferenceEquals(_attachedWindow, topLevel))
+        {
+            return;
+        }
+
+        ClearWindowDeactivatedSubscription();
+        if (topLevel is Avalonia.Controls.Window window)
+        {
+            _attachedWindow    = window;
             window.Deactivated += HandleWindowDeactivated;
+        }
+    }
+
+    private void ClearWindowDeactivatedSubscription()
+    {
+        if (_attachedWindow != null)
+        {
+            _attachedWindow.Deactivated -= HandleWindowDeactivated;
+            _attachedWindow = null;
         }
     }
 
@@ -757,11 +962,10 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
 
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-            _attachedWindow = null;
-        }
+        SetCurrentValue(IsPickerOpenProperty, false);
+        ClearWindowDeactivatedSubscription();
+        ClearPickerPopupContent();
+        ClearPickerPresenter();
 
         if (DecoratedBox != null)
         {
@@ -773,6 +977,13 @@ public abstract class InfoPickerInput : TemplatedControl,
         {
             PickerClearUpButton.ClearRequest -= HandleClearRequest;
         }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _feedbackStatusSubscription?.Dispose();
+        _feedbackStatusSubscription = null;
     }
 
     protected virtual bool ShowClearButtonPredicate()
@@ -839,6 +1050,19 @@ public abstract class InfoPickerInput : TemplatedControl,
             change.Property == IsPopupVerticalFlippedProperty)
         {
             ConfigureArrowPosition();
+        }
+
+        if (change.Property == PickerPresenterProperty ||
+            change.Property == IsArrowVisibleEffectiveProperty ||
+            change.Property == ArrowPositionProperty ||
+            change.Property == IsMotionEnabledProperty)
+        {
+            ConfigurePickerPopupContent();
+        }
+
+        if (change.Property == FormFeedbackProperty)
+        {
+            ConfigureFormFeedbackSubscription();
         }
 
         if (IsAccessoryStateProperty(change.Property))
