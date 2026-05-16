@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Reactive.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Xml.Linq;
 using AtomUI;
 using AtomUI.Controls;
@@ -31,6 +32,7 @@ internal static class Program
 {
     private static readonly Size WindowSize = new(1300, 900);
     private static readonly Rect WindowBounds = new(0, 0, WindowSize.Width, WindowSize.Height);
+    private const string ColdChildSamplePrefix = "__ATOMUI_COLD_SAMPLE__";
     private static readonly ShowCaseSpec AboutUs = new(
         "AboutUsPage",
         AboutUsViewModel.ID,
@@ -204,14 +206,25 @@ internal static class Program
 
         try
         {
-            SetupAvalonia(out var lifetime);
             if (options.SpaceItems)
             {
+                SetupAvalonia(out _);
                 var itemOutput = RunSpaceShowCaseItemBreakdown(options);
                 Console.WriteLine(itemOutput);
                 WriteMarkdownOutput(itemOutput, options);
                 return 0;
             }
+
+            if (options.ColdChild)
+            {
+                return RunColdChild(options, showCase);
+            }
+
+            var coldRuns = !options.TraceNavigation && options.ColdIterations > 1
+                ? RunColdIterations(options)
+                : null;
+
+            SetupAvalonia(out var lifetime);
 
             if (lifetime.MainWindow is not WorkspaceWindow window)
             {
@@ -236,8 +249,19 @@ internal static class Program
                 return 0;
             }
 
-            var coldRun = MeasureNavigation(window, 0, "Cold", options, showCase);
-            NavigateToAboutUs(window, options);
+            if (coldRuns is null)
+            {
+                coldRuns =
+                [
+                    MeasureNavigation(window, 0, "Cold", options, showCase)
+                ];
+                NavigateToAboutUs(window, options);
+            }
+            else
+            {
+                _ = MeasureNavigation(window, 0, "Priming", options, showCase);
+                NavigateToAboutUs(window, options);
+            }
 
             for (var i = 0; i < options.Warmup; i++)
             {
@@ -252,7 +276,7 @@ internal static class Program
                 NavigateToAboutUs(window, options);
             }
 
-            var result = NavigationResult.Create(options.Label, coldRun, samples);
+            var result = NavigationResult.Create(options.Label, coldRuns, samples);
             var output = RenderResult(result, options, showCase);
             Console.WriteLine(output);
 
@@ -285,6 +309,111 @@ internal static class Program
                   .UseHeadless(new AvaloniaHeadlessPlatformOptions())
                   .WithAtomUIDefaultOptions()
                   .SetupWithLifetime(lifetime);
+    }
+
+    private static int RunColdChild(PerfOptions options, ShowCaseSpec showCase)
+    {
+        SetupAvalonia(out var lifetime);
+        if (lifetime.MainWindow is not WorkspaceWindow window)
+        {
+            Console.Error.WriteLine("Gallery workspace window was not created.");
+            return 1;
+        }
+
+        window.ShowInTaskbar = false;
+        window.Width         = WindowSize.Width;
+        window.Height        = WindowSize.Height;
+        window.Show();
+
+        WaitForRoute(window, AboutUs, options.Timeout);
+        var sample = MeasureNavigation(window, options.ColdChildIteration, "Cold", options, showCase);
+        var dto    = ColdChildSampleDto.FromSample(sample);
+        Console.WriteLine(ColdChildSamplePrefix + JsonSerializer.Serialize(dto));
+
+        window.Close();
+        Dispatcher.UIThread.RunJobs();
+        return 0;
+    }
+
+    private static IReadOnlyList<NavigationSample> RunColdIterations(PerfOptions options)
+    {
+        var samples = new List<NavigationSample>(options.ColdIterations);
+        for (var i = 0; i < options.ColdIterations; i++)
+        {
+            samples.Add(RunColdIterationProcess(options, i + 1));
+        }
+        return samples;
+    }
+
+    private static NavigationSample RunColdIterationProcess(PerfOptions options, int iteration)
+    {
+        var assemblyPath = Assembly.GetEntryAssembly()?.Location;
+        if (string.IsNullOrWhiteSpace(assemblyPath))
+        {
+            throw new InvalidOperationException("Unable to resolve GalleryPerformance assembly path.");
+        }
+
+        var startInfo = new ProcessStartInfo
+        {
+            FileName               = ResolveDotnetHostPath(),
+            UseShellExecute        = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError  = true,
+            WorkingDirectory       = Environment.CurrentDirectory
+        };
+        startInfo.ArgumentList.Add(assemblyPath);
+        startInfo.ArgumentList.Add("--cold-child");
+        startInfo.ArgumentList.Add("--cold-child-iteration");
+        startInfo.ArgumentList.Add(iteration.ToString(CultureInfo.InvariantCulture));
+        startInfo.ArgumentList.Add("--showcase");
+        startInfo.ArgumentList.Add(options.ShowCase);
+        startInfo.ArgumentList.Add("--timeout-ms");
+        startInfo.ArgumentList.Add(((int)options.Timeout.TotalMilliseconds).ToString(CultureInfo.InvariantCulture));
+        startInfo.ArgumentList.Add("--label");
+        startInfo.ArgumentList.Add(options.Label);
+        if (options.SpaceRemoveItem is { } spaceRemoveItem)
+        {
+            startInfo.ArgumentList.Add("--space-remove-item");
+            startInfo.ArgumentList.Add(spaceRemoveItem.ToString(CultureInfo.InvariantCulture));
+        }
+
+        using var process = Process.Start(startInfo)
+                            ?? throw new InvalidOperationException("Unable to start cold navigation child process.");
+        var stdout = process.StandardOutput.ReadToEnd();
+        var stderr = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        if (process.ExitCode != 0)
+        {
+            throw new InvalidOperationException(
+                $"Cold navigation child process failed with exit code {process.ExitCode}.{Environment.NewLine}{stderr}{Environment.NewLine}{stdout}");
+        }
+
+        var sampleLine = stdout.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                               .FirstOrDefault(line => line.StartsWith(ColdChildSamplePrefix, StringComparison.Ordinal));
+        if (sampleLine is null)
+        {
+            throw new InvalidOperationException(
+                $"Cold navigation child process did not emit a sample line.{Environment.NewLine}{stderr}{Environment.NewLine}{stdout}");
+        }
+
+        var json = sampleLine[ColdChildSamplePrefix.Length..];
+        var dto  = JsonSerializer.Deserialize<ColdChildSampleDto>(json)
+                   ?? throw new InvalidOperationException("Unable to parse cold navigation child sample.");
+        return dto.ToSample();
+    }
+
+    private static string ResolveDotnetHostPath()
+    {
+        if (Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") is { Length: > 0 } dotnetHostPath)
+        {
+            return dotnetHostPath;
+        }
+        if (Environment.GetEnvironmentVariable("DOTNET_ROOT") is { Length: > 0 } dotnetRoot)
+        {
+            return Path.Combine(dotnetRoot, "dotnet");
+        }
+        return "dotnet";
     }
 
     private static string RunNavigationTrace(WorkspaceWindow window, PerfOptions options, ShowCaseSpec showCase)
@@ -931,6 +1060,7 @@ internal static class Program
         builder.AppendLine($"- Measurement: AboutUs route settled -> trigger {showCase.Label} navigation -> visual tree and layout stable");
         builder.AppendLine($"- Route type: `{showCase.RouteTypeName}`");
         builder.AppendLine($"- XAML source: `{Path.GetFullPath(showCase.XamlPath)}`");
+        builder.AppendLine($"- Cold first navigation samples: {result.ColdRuns.Count}");
         builder.AppendLine($"- Warmup: {options.Warmup}, measured iterations: {options.Iterations}, timeout: {options.Timeout.TotalSeconds.ToString("0.#", CultureInfo.InvariantCulture)}s");
         builder.AppendLine();
         builder.AppendLine("## Gallery source shape");
@@ -939,14 +1069,17 @@ internal static class Program
         builder.AppendLine();
         builder.AppendLine("| Set | Trigger | Mean ms | Median ms | P95 ms | Min ms | Max ms | Alloc KB mean | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent |");
         builder.AppendLine("| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
-        builder.AppendLine(RenderSampleRow("Cold first navigation", [result.ColdRun]));
+        builder.AppendLine(RenderSampleRow("Cold first navigation", result.ColdRuns));
         builder.AppendLine(RenderSampleRow("Repeated navigation", result.Samples));
         builder.AppendLine();
         builder.AppendLine("## Samples");
         builder.AppendLine();
         builder.AppendLine("| Iteration | Phase | Trigger | Elapsed ms | Alloc KB | Visuals | Logical | Space | CompactSpace | CompactSpaceItem | Icon | IconPresenter | PathIcon | Avatar | AvatarGroup | Image | Svg | TextBlock | FlyoutHost | CountBadge | DotBadge | RibbonBadge | CountBadgeAdorner | DotBadgeAdorner | RibbonBadgeAdorner | DotBadgeIndicator | MotionActor | Label | LineEdit total | LineEdit direct | SearchEdit | TextArea | Button | IconButton | ToggleIconButton | ButtonSpinner | ButtonSpinnerBox | ButtonSpinnerHandle | ButtonSpinnerContentPanel | Card | CardActionPanel | CardActionButton | CardMetaContent | CardGridContent | CardGridItem | CardTabsContent | Collapse | CollapseItem | Collapse content motion | Collapse expand button | Collapse addon presenter | Carousel | CarouselPage | CarouselPagination | CarouselIndicator | CarouselNavButton | CarouselLayoutTransform | CarouselProgressBorder | CarouselPageTransition | CarouselTimer | CarouselIndicatorAnimation | Skeleton | SkeletonLine | Select | ComboBox | ComboBoxItem | ComboBoxHandle | ComboBoxHost | DatePicker | RangeDatePicker | InfoPicker | PickerHost | DatePickerPresenter | RangePickerPresenter | DateCalendar | DateCalendarItem | DateDayButton | DateCalendarButton | TimeView | DateTimePanel | AutoComplete | AC popup fields | AC candidate fields | CandidateList visuals | TreeSelect | Cascader | Menu | MenuItem | NavMenuHeader | ShowCaseItem | IconGallery | IconInfoItem | AddOnDecoratedBox | CheckBox | CheckBoxGroup | CheckBoxIndicator | CheckBox checked mark | CheckBox tristate mark | Descriptions | DescriptionDefaultItem | DescriptionBorderedItemLabel | DescriptionBorderedItemContent | Dialog | MessageBox | OverlayDialogHost | DialogHost | DialogWindowContent | DialogButtonBox | DialogButton | DialogCaptionButton | OverlayDialogMask | OverlayDialogResizer | MessageBoxContent |");
         builder.AppendLine("| ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
-        builder.AppendLine(RenderSample(result.ColdRun));
+        foreach (var sample in result.ColdRuns)
+        {
+            builder.AppendLine(RenderSample(sample));
+        }
         foreach (var sample in result.Samples)
         {
             builder.AppendLine(RenderSample(sample));
@@ -1260,6 +1393,9 @@ internal static class Program
 internal sealed record PerfOptions(
     int Iterations,
     int Warmup,
+    int ColdIterations,
+    bool ColdChild,
+    int ColdChildIteration,
     string Label,
     string ShowCase,
     string? MarkdownOutputPath,
@@ -1274,6 +1410,9 @@ internal sealed record PerfOptions(
     {
         var iterations = 20;
         var warmup     = 3;
+        var coldIterations = 1;
+        var coldChild = false;
+        var coldChildIteration = 0;
         var label      = "current";
         var showCase   = "lineedit";
         var markdown   = default(string);
@@ -1296,6 +1435,19 @@ internal sealed record PerfOptions(
                 case "--warmup" when i + 1 < args.Length &&
                                      int.TryParse(args[i + 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedWarmup):
                     warmup = parsedWarmup;
+                    i++;
+                    break;
+                case "--cold-iterations" when i + 1 < args.Length &&
+                                              int.TryParse(args[i + 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedColdIterations):
+                    coldIterations = parsedColdIterations;
+                    i++;
+                    break;
+                case "--cold-child":
+                    coldChild = true;
+                    break;
+                case "--cold-child-iteration" when i + 1 < args.Length &&
+                                                   int.TryParse(args[i + 1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedColdChildIteration):
+                    coldChildIteration = parsedColdChildIteration;
                     i++;
                     break;
                 case "--label" when i + 1 < args.Length:
@@ -1344,6 +1496,9 @@ internal sealed record PerfOptions(
         return new PerfOptions(
             Math.Max(1, iterations),
             Math.Max(0, warmup),
+            Math.Max(1, coldIterations),
+            coldChild,
+            Math.Max(0, coldChildIteration),
             label,
             showCase,
             markdown,
@@ -1380,14 +1535,14 @@ internal sealed record ShowCaseSpec(
 
 internal sealed record NavigationResult(
     string Label,
-    NavigationSample ColdRun,
+    IReadOnlyList<NavigationSample> ColdRuns,
     IReadOnlyList<NavigationSample> Samples)
 {
     public static NavigationResult Create(string label,
-                                          NavigationSample coldRun,
+                                          IReadOnlyList<NavigationSample> coldRuns,
                                           IReadOnlyList<NavigationSample> samples)
     {
-        return new NavigationResult(label, coldRun, samples);
+        return new NavigationResult(label, coldRuns, samples);
     }
 }
 
@@ -1398,6 +1553,74 @@ internal sealed record NavigationSample(
     TimeSpan Elapsed,
     long AllocatedBytes,
     RouteStats Stats);
+
+internal sealed class ColdChildSampleDto
+{
+    public int Iteration { get; set; }
+    public string Phase { get; set; } = string.Empty;
+    public string Trigger { get; set; } = string.Empty;
+    public double ElapsedMs { get; set; }
+    public long AllocatedBytes { get; set; }
+    public int[] Stats { get; set; } = [];
+
+    public static ColdChildSampleDto FromSample(NavigationSample sample)
+    {
+        return new ColdChildSampleDto
+        {
+            Iteration      = sample.Iteration,
+            Phase          = sample.Phase,
+            Trigger        = sample.Trigger,
+            ElapsedMs      = sample.Elapsed.TotalMilliseconds,
+            AllocatedBytes = sample.AllocatedBytes,
+            Stats          = RouteStatsSerializer.ToArray(sample.Stats)
+        };
+    }
+
+    public NavigationSample ToSample()
+    {
+        return new NavigationSample(
+            Iteration,
+            Phase,
+            Trigger,
+            TimeSpan.FromMilliseconds(ElapsedMs),
+            AllocatedBytes,
+            RouteStatsSerializer.FromArray(Stats));
+    }
+}
+
+internal static class RouteStatsSerializer
+{
+    private static readonly ConstructorInfo Constructor =
+        typeof(RouteStats).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                          .OrderByDescending(constructor => constructor.GetParameters().Length)
+                          .First();
+
+    private static readonly PropertyInfo[] Properties =
+        Constructor.GetParameters()
+                   .Select(parameter => typeof(RouteStats).GetProperty(ToPropertyName(parameter.Name!))
+                                        ?? throw new InvalidOperationException($"RouteStats property was not found for parameter '{parameter.Name}'."))
+                   .ToArray();
+
+    public static int[] ToArray(RouteStats stats)
+    {
+        return Properties.Select(property => (int)property.GetValue(stats)!).ToArray();
+    }
+
+    public static RouteStats FromArray(IReadOnlyList<int> values)
+    {
+        if (values.Count != Properties.Length)
+        {
+            throw new InvalidOperationException($"RouteStats value count mismatch. Expected {Properties.Length}, actual {values.Count}.");
+        }
+        var args = values.Select(value => (object)value).ToArray();
+        return (RouteStats)Constructor.Invoke(args);
+    }
+
+    private static string ToPropertyName(string parameterName)
+    {
+        return char.ToUpperInvariant(parameterName[0]) + parameterName[1..];
+    }
+}
 
 internal sealed record NavigationTraceData(
     TimeSpan? FirstFoundElapsed,

@@ -75,6 +75,7 @@ Performance summaries must be readable to a human reviewer, not just raw benchma
 - Include the units in every value, such as `ms/item`, `KB/item`, `ms`, or visual node count.
 - Show both control-level results and real Gallery results when both were measured.
 - Always include the corresponding ShowCase loading-time optimization comparison for controls that have a Gallery ShowCase. At minimum list cold first navigation, repeated mean, repeated median, repeated P95, and the sample policy such as warmup/iterations.
+- Cold first navigation comparisons must use multiple independent process samples, for example `--cold-iterations 10`. A single in-process cold sample is only a smoke check and must not be used to claim improvement or regression.
 - Use the same sample policy for before and after comparisons. Do not compare a short/noisy run against a longer or differently warmed run. If the first pass shows a regression, rerun with enough warmup/iterations to distinguish real regression from measurement noise before reporting it as the final result.
 - For Gallery-visible optimizations, explain the actual user-facing impact in plain language, such as "ComboBoxShowCase repeated open went from 109ms to 91ms, about 18ms faster."
 - Mention structural wins separately when they explain the result, such as "Button/IconButton count changed from 23 to 0" or "visual nodes dropped from 562 to 497."

@@ -29,6 +29,7 @@
 - Gallery 体验结论必须用 `AtomUI.GalleryPerformance` 或同类 Gallery 场景工具确认。
 - Gallery 场景工具必须加载真实 Gallery XAML，不能用合成控件替代真实 showcase。
 - Gallery 场景工具需要在结果里输出源 XAML 形态和运行时视觉树形态，用来证明测量对象一致。
+- `Cold first navigation` 必须用 `--cold-iterations <N>` 做独立进程多样本统计；单样本只用于 smoke，不能作为优化提升或回退结论。
 - 文档中必须说明触发点、是否包含鼠标事件、是否包含 GPU 上屏、是否是 headless。
 
 ## 当前命令
@@ -99,7 +100,7 @@ Gallery 真实 `LineEditShowCase` 导航基准：
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
   -c Debug --framework net10.0 --no-build -- \
-  --showcase lineedit --label optimized --iterations 30 --warmup 5 --timeout-ms 30000 \
+  --showcase lineedit --label optimized --cold-iterations 10 --iterations 30 --warmup 5 --timeout-ms 30000 \
   --markdown /tmp/lineedit-showcase-navigation-optimized.md
 ```
 
@@ -108,7 +109,7 @@ Gallery 真实 `IconShowCase` 导航基准：
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
   -c Debug --framework net10.0 --no-build -- \
-  --showcase icon --label icon-baseline \
+  --showcase icon --label icon-baseline --cold-iterations 10 \
   --iterations 10 --warmup 5 --timeout-ms 30000 \
   --markdown /tmp/icon-showcase-navigation-baseline.md
 ```

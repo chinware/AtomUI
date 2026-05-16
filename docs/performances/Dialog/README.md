@@ -13,13 +13,17 @@
 
 `ModalShowCase.axaml` 的源形态包含 9 个 `ShowCaseItem`、22 个 `Button`、7 个运行时 `MessageBox`，闭合状态稳定后有 14 个 `Dialog` visual，其中 7 个来自 `MessageBox` 模板提前创建的内部 `Dialog`。
 
+基线使用当前 GalleryPerformance 多进程 cold 工具复跑，口径为 `--cold-iterations 10 --warmup 30 --iterations 60`。
+
 | 指标 | Before |
 | --- | ---: |
-| Cold first navigation | 209.34ms |
-| Repeated mean | 55.02ms |
-| Repeated median | 52.75ms |
-| Repeated P95 | 64.25ms |
-| Repeated alloc mean | 7648.64KB |
+| Cold first navigation mean | 218.07ms |
+| Cold first navigation median | 213.08ms |
+| Cold first navigation P95 | 237.38ms |
+| Repeated mean | 34.19ms |
+| Repeated median | 34.01ms |
+| Repeated P95 | 35.36ms |
+| Repeated alloc mean | 7635.49KB |
 | Visuals | 324 |
 | Dialog runtime count | 14 |
 | MessageBox runtime count | 7 |
@@ -67,18 +71,24 @@
 
 ### Gallery ShowCase 加载对比
 
-短样本 `warmup 3 / iterations 10` 曾出现 after repeated mean 变慢，这个结论不合格，不能作为优化验收口径。后续统一改用相同稳态口径：warmup 20，iterations 30，`1300x900` headless。
+短样本 `warmup 3 / iterations 10` 曾出现 after repeated mean 变慢，这个结论不合格，不能作为优化验收口径。当前复跑统一改用相同口径：`--cold-iterations 10 --warmup 30 --iterations 60`，`1300x900` headless。优化前基线为 `34d6a0172`，并只移植最新 GalleryPerformance 测试工具用于同口径测量。
 
-| 指标 | Before | After | 变化 |
+| 指标 | Before | After | 变化（低更好） |
 | --- | ---: | ---: | ---: |
-| Repeated mean | 37.03ms | 34.67ms | +6.37% |
-| Repeated median | 34.95ms | 33.96ms | +2.83% |
-| Repeated P95 | 47.42ms | 39.80ms | +16.07% |
-| Repeated alloc mean | 7639.10KB | 7307.00KB | +4.35% |
+| Cold first navigation mean | 218.07ms | 211.09ms | +3.20% |
+| Cold first navigation median | 213.08ms | 206.47ms | +3.10% |
+| Cold first navigation P95 | 237.38ms | 236.84ms | +0.23% |
+| Cold alloc mean | 9013.44KB | 8691.30KB | +3.57% |
+| Repeated mean | 34.19ms | 34.53ms | -0.99% |
+| Repeated median | 34.01ms | 34.11ms | -0.29% |
+| Repeated P95 | 35.36ms | 37.18ms | -5.15% |
+| Repeated alloc mean | 7635.49KB | 7303.77KB | +4.34% |
 | Visuals | 324 | 317 | +2.16% |
 | Dialog runtime count | 14 | 7 | +50.00% |
 
-`Cold first navigation` 仍是单样本，当前工具不适合用一次进程内 cold 值做严格结论；后续需要增加多进程 cold-run 统计后再作为硬指标。当前可确认的 Gallery 收益是稳态 repeated、结构和分配：闭合 `MessageBox` 不再付内部 `Dialog` 成本，页面少 7 个 visual，分配下降约 332KB。
+`Cold first navigation` 现在已经是独立进程多样本，不再用单样本下结论。当前可确认的收益是 cold mean/median 小幅下降、结构减重和分配下降：闭合 `MessageBox` 不再付内部 `Dialog` 成本，页面少 7 个 visual，分配下降约 332KB。
+
+但 repeated timing 在这轮同口径长样本里没有改善，mean/median/P95 都略慢。因此不能把本轮表述为 `ModalShowCase` 稳态打开耗时优化；这部分按性能边界属于后续需要继续定位或拆分验证的风险点。
 
 ## 正确性与泄露验证
 
@@ -99,7 +109,7 @@ dotnet run --no-build --framework net10.0 --project tools/performances/AtomUI.Pe
 
 ## 结论
 
-本轮符合“未使用功能不承担成本”和“不能引入资源泄露”的目标，但 Gallery 页面 timing 收益没有稳定体现。`ModalShowCase` 的可见收益主要是结构减重和分配下降；如果后续要继续压 repeated timing，应该优先分析 `ShowCaseItem`、Gallery route 稳定流程、Button/TextBlock 固定成本，而不是继续在闭合 `MessageBox` 上做小改。
+本轮符合“未使用功能不承担成本”和“不能引入资源泄露”的结构目标，但不能作为 `ModalShowCase` repeated timing 提升结论。`ModalShowCase` 的已确认收益主要是结构减重、cold mean/median 小幅下降和分配下降；如果后续继续压 repeated timing，应该优先分析 `ShowCaseItem`、Gallery route 稳定流程、Button/TextBlock 固定成本，而不是继续在闭合 `MessageBox` 上做小改。
 
 ## 复现命令
 
@@ -111,5 +121,5 @@ dotnet run --no-build --framework net10.0 --project tools/performances/AtomUI.Pe
 
 ```bash
 dotnet build tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj --framework net10.0 --no-restore
-dotnet run --no-build --framework net10.0 --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj -- --showcase modal --warmup 3 --iterations 10 --timeout-ms 30000
+dotnet run --no-build --framework net10.0 --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj -- --showcase modal --cold-iterations 10 --warmup 30 --iterations 60 --timeout-ms 30000
 ```
