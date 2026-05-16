@@ -84,6 +84,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ExpanderShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/ExpanderShowCase.axaml",
                 stats => stats.VisualCount > 0),
+            ["empty"] = new(
+                "EmptyShowCase",
+                EmptyViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.EmptyShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/EmptyShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 4 && stats.SvgCount >= 6),
             ["descriptions"] = new(
                 "DescriptionsShowCase",
                 DescriptionsViewModel.ID,

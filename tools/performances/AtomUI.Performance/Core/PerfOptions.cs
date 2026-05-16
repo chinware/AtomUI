@@ -27,7 +27,8 @@ internal sealed record PerfOptions(
     bool VerifyDescriptionsStates,
     bool VerifyDialogStates,
     bool VerifyDrawerStates,
-    bool VerifyExpanderStates)
+    bool VerifyExpanderStates,
+    bool VerifyEmptyStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -58,6 +59,7 @@ internal sealed record PerfOptions(
         var verifyDialogStates = false;
         var verifyDrawerStates = false;
         var verifyExpanderStates = false;
+        var verifyEmptyStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -147,6 +149,9 @@ internal sealed record PerfOptions(
                 case "--verify-expander-states":
                     verifyExpanderStates = true;
                     break;
+                case "--verify-empty-states":
+                    verifyEmptyStates = true;
+                    break;
             }
         }
 
@@ -177,6 +182,7 @@ internal sealed record PerfOptions(
             verifyDescriptionsStates,
             verifyDialogStates,
             verifyDrawerStates,
-            verifyExpanderStates);
+            verifyExpanderStates,
+            verifyEmptyStates);
     }
 }

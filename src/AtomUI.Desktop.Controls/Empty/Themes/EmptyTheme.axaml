@@ -9,11 +9,11 @@
                 <StackPanel Orientation="Vertical">
                     <Svg Name="PART_SvgImage"
                          HorizontalAlignment="Center"
-                         VerticalAlignment="Center"/>
+                         VerticalAlignment="Center" />
                     <atom:TextBlock Name="Description"
                                     HorizontalAlignment="Center"
                                     TextWrapping="Wrap"
-                                    Text="{TemplateBinding Description}"/>
+                                    Text="{TemplateBinding Description}" />
                 </StackPanel>
             </ControlTemplate>
         </Setter>
@@ -67,6 +67,6 @@
         <Style Selector="^ /template/ atom|TextBlock#Description">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}"/>
         </Style>
-        
+
     </ControlTheme>
 </ResourceDictionary>

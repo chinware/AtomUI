@@ -84,6 +84,7 @@ internal static partial class Program
                 "dialog" => "# Dialog / MessageBox Baseline",
                 "drawer" => "# Drawer Baseline",
                 "expander" => "# Expander Baseline",
+                "empty" => "# Empty Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

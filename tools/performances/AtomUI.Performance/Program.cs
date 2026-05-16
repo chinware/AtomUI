@@ -40,7 +40,8 @@ internal static partial class Program
             options.VerifyDescriptionsStates ||
             options.VerifyDialogStates ||
             options.VerifyDrawerStates ||
-            options.VerifyExpanderStates)
+            options.VerifyExpanderStates ||
+            options.VerifyEmptyStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -139,6 +140,10 @@ internal static partial class Program
             {
                 verified &= RunExpanderStateVerification();
             }
+            if (options.VerifyEmptyStates)
+            {
+                verified &= RunEmptyStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -194,6 +199,7 @@ internal static partial class Program
             "dialog" => CreateDialogScenarios(),
             "drawer" => CreateDrawerScenarios(),
             "expander" => CreateExpanderScenarios(),
+            "empty" => CreateEmptyScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),
