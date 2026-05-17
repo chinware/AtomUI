@@ -62,6 +62,7 @@
 | Dialog / MessageBox | 本轮已完成结构与生命周期优化 | [Dialog](Dialog/README.md) | `MessageBox` closed `Dialog/root 1 -> 0`，`ModalShowCase` cold mean `218.07ms -> 211.09ms`，repeated mean `34.19ms -> 34.53ms` 未提升，visuals `324 -> 317`，Dialog runtime `14 -> 7`；修复 RelayBind、mask binding、resizer 和 ButtonBox 父级生命周期风险 |
 | Expander | 本轮已完成 | [Expander](Expander/README.md) | closed content motion actor 按需创建；`ExpanderShowCase` cold mean `191.70ms -> 170.47ms`，repeated mean `82.18ms -> 67.30ms`，visuals `391 -> 360`，MotionActor `16 -> 1` |
 | Empty | 本轮已完成低风险修复 | [Empty](Empty/README.md) | 修复 `IsDescriptionVisible=False`、图片来源运行时互斥和 `Svg.Source/Path` 残留；`EmptyShowCase` repeated mean `21.90ms -> 21.32ms`，alloc `2269.73KB -> 2253.90KB`，visuals 不变 |
+| FloatButton | 本轮已完成 | [FloatButton](FloatButton/README.md) | closed trigger group visual/root `41 -> 14`；`FloatButtonShowCase` repeated mean `126.71ms -> 110.81ms`，visuals `949 -> 752`，alloc `14447.92KB -> 12182.94KB` |
 
 ## 总列表
 
@@ -70,7 +71,7 @@
 | Shared Primitive | AddOnDecoratedBox | Done | 输入类控件共享视觉与 addon 体系 |
 | Shared Primitive | Icon | Done | Phase 6 已完成；Material/IconPark 外部包已同步 generated metadata 与 transform literal；Provider cache 清理语义已补齐 |
 | General | Button | Done | loading/icon/wave 默认 slot 已按需创建；selector brush 状态保留在 XAML |
-| General | FloatButton | Pending | 待建立基线 |
+| General | FloatButton | Done | [FloatButton](FloatButton/README.md)；closed trigger menu、badge canvas、separator layer 已按需创建，Gallery repeated mean 提升约 `12.55%` |
 | General | SplitButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | General | Separator | Pending | 待建立基线 |
 | General | ButtonSpinner | Done | [ButtonSpinner](ButtonSpinner/README.md)；handle/presenter/outer addon 已按需创建，floatable 全局 input 订阅生命周期已验证 |

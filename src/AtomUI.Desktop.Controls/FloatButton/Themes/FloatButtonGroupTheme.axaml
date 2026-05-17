@@ -19,18 +19,11 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Background="{TemplateBinding Background}">
-                        <Canvas>
+                        <Canvas Name="PART_TriggerLayout">
                             <atom:FloatButton Name="Trigger"
                                               Icon="{TemplateBinding Icon}"
                                               Shape="{TemplateBinding Shape}"
                                               ButtonType="{TemplateBinding ButtonType}" />
-                            <atom:MotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
-                                              ClipToBounds="False">
-                                <atom:FloatButtonItemsControl Name="ItemsControl"
-                                                              BoxShadow="{TemplateBinding BoxShadow}"
-                                                              Shape="{TemplateBinding Shape}"
-                                                              MenuPlacement="{TemplateBinding MenuPlacement}" />
-                            </atom:MotionActor>
                         </Canvas>
                     </Border>
                 </ControlTemplate>

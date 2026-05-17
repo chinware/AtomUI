@@ -1,18 +1,21 @@
 using AtomUI.Animations;
 using AtomUI.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
 
 using AvaloniaButton = Avalonia.Controls.Button;
 
 [TemplatePart("PART_BadgeLayout", typeof(Canvas))]
+[TemplatePart("PART_BadgeRoot", typeof(Panel))]
 [PseudoClasses(ButtonPseudoClass.IconOnly)]
 public abstract class AbstractFloatButton : AvaloniaButton, IMotionAwareControl
 {
@@ -201,8 +204,10 @@ public abstract class AbstractFloatButton : AvaloniaButton, IMotionAwareControl
     #endregion
     
     private protected ScopeAwareOverlayLayer? _overlayLayer;
+    private protected Panel? _badgeRoot;
     private protected Canvas? _badgeLayout;
     private protected Control? _badge;
+    private bool _ownsBadgeLayout;
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
@@ -222,8 +227,26 @@ public abstract class AbstractFloatButton : AvaloniaButton, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ClearBadge();
+        _badgeRoot       = e.NameScope.Find<Panel>("PART_BadgeRoot");
         _badgeLayout = e.NameScope.Find<Canvas>("PART_BadgeLayout");
+        _ownsBadgeLayout = false;
         ConfigureBadge();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureBadge();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ClearBadge();
+        _badgeRoot   = null;
+        _badgeLayout = null;
+        SetupParentLayer(null);
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -287,7 +310,12 @@ public abstract class AbstractFloatButton : AvaloniaButton, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        Dispatcher.Post(() => AnimatableReflectionExtensions.EnableTransitions(this));
+        Dispatcher.Post(EnableTransitions);
+    }
+
+    private void EnableTransitions()
+    {
+        AnimatableReflectionExtensions.EnableTransitions(this);
     }
 
     protected virtual void UpdatePseudoClasses()
@@ -337,6 +365,72 @@ public abstract class AbstractFloatButton : AvaloniaButton, IMotionAwareControl
     }
 
     private protected abstract void ConfigureBadge();
+
+    private protected Canvas? EnsureBadgeLayout()
+    {
+        if (_badgeLayout != null)
+        {
+            return _badgeLayout;
+        }
+
+        if (_badgeRoot == null)
+        {
+            return null;
+        }
+
+        _badgeLayout = new Canvas
+        {
+            Name = "PART_BadgeLayout"
+        };
+        _badgeLayout.SetTemplatedParent(this);
+        _badgeRoot.Children.Add(_badgeLayout);
+        _ownsBadgeLayout = true;
+        return _badgeLayout;
+    }
+
+    private protected void AttachBadge(Control badge, Canvas badgeLayout)
+    {
+        ClearBadgeAdorner();
+        _badge = badge;
+        badgeLayout.Children.Add(badge);
+        CalculateBadgePosition();
+    }
+
+    private protected void ClearBadge()
+    {
+        ClearBadgeAdorner();
+        DetachOwnedBadgeLayout();
+    }
+
+    private void ClearBadgeAdorner()
+    {
+        if (_badge != null)
+        {
+            _badgeLayout?.Children.Remove(_badge);
+            _badge = null;
+        }
+    }
+
+    private void DetachOwnedBadgeLayout()
+    {
+        if (!_ownsBadgeLayout || _badgeLayout == null)
+        {
+            return;
+        }
+
+        if (_badgeLayout.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_badgeLayout);
+        }
+        else
+        {
+            _badgeRoot?.Children.Remove(_badgeLayout);
+        }
+        _badgeLayout.SetTemplatedParent(null);
+        _badgeLayout     = null;
+        _ownsBadgeLayout = false;
+    }
+
     private protected virtual void CalculateBadgePosition()
     {
         if (IsBadgeEnabled && _badge != null)

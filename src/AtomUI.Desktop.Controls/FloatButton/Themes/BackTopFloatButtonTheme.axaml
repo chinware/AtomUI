@@ -13,7 +13,7 @@
                 <ControlTemplate TargetType="atom:BackTopFloatButton">
                     <atom:MotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
                                       ClipToBounds="False">
-                        <Panel>
+                        <Panel Name="PART_BadgeRoot">
                             <Border Name="BackgroundFrame"
                                     BoxShadow="{TemplateBinding BoxShadow}"
                                     CornerRadius="{TemplateBinding CornerRadius}" />
@@ -32,7 +32,6 @@
                                                       IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                 </StackPanel>
                             </Border>
-                            <Canvas Name="BadgeLayout" />
                         </Panel>
                     </atom:MotionActor>
                 </ControlTemplate>
@@ -44,7 +43,7 @@
                 <ControlTemplate TargetType="atom:BackTopFloatButton">
                     <atom:MotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
                                       ClipToBounds="False">
-                        <Panel>
+                        <Panel Name="PART_BadgeRoot">
                             <Border Name="BackgroundFrame"
                                     BoxShadow="{TemplateBinding BoxShadow}"
                                     CornerRadius="{TemplateBinding CornerRadius}" />
@@ -58,7 +57,6 @@
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center" />
                             </Border>
-                            <Canvas Name="BadgeLayout" />
                         </Panel>
                     </atom:MotionActor>
                 </ControlTemplate>

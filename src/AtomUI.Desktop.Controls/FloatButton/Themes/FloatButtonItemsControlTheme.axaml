@@ -5,7 +5,7 @@
     xmlns:atomc="https://atomui.net/common-controls"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:FloatButtonItemsControl}" TargetType="atom:FloatButtonItemsControl">
-        <Style Selector="^[IsTriggerMode=True]">
+        <Style Selector="^[IsTriggerMode=True][Shape=Square]">
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Name="Frame" Background="Transparent">
@@ -27,7 +27,25 @@
             </Setter>
         </Style>
 
-        <Style Selector="^[IsTriggerMode=False]">
+        <Style Selector="^[IsTriggerMode=True][Shape=Circle]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="Frame" Background="Transparent">
+                        <DockPanel Name="RootLayout" LastChildFill="True">
+                            <Control Name="EmptyControl" />
+                            <Border Name="ContentFrame"
+                                    CornerRadius="{TemplateBinding CornerRadius}"
+                                    BoxShadow="{TemplateBinding BoxShadow}"
+                                    Background="{TemplateBinding Background}">
+                                <StackPanel Name="PART_ItemsLayout" Orientation="{TemplateBinding Orientation}" />
+                            </Border>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[IsTriggerMode=False][Shape=Square]">
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Name="ContentFrame"
@@ -39,6 +57,19 @@
                                                              Lines="{TemplateBinding Lines}" />
                             <StackPanel Name="PART_ItemsLayout" Orientation="{TemplateBinding Orientation}" />
                         </Panel>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[IsTriggerMode=False][Shape=Circle]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="ContentFrame"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            BoxShadow="{TemplateBinding BoxShadow}"
+                            Background="{TemplateBinding Background}">
+                        <StackPanel Name="PART_ItemsLayout" Orientation="{TemplateBinding Orientation}" />
                     </Border>
                 </ControlTemplate>
             </Setter>
@@ -58,9 +89,6 @@
         <Style Selector="^[Shape=Circle]">
             <Style Selector="^ /template/ StackPanel#PART_ItemsLayout">
                 <Setter Property="Spacing" Value="{atom:SharedTokenResource Spacing}" />
-            </Style>
-            <Style Selector="^ /template/ atomc|FloatButtonSeparatorLayer">
-                <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
 

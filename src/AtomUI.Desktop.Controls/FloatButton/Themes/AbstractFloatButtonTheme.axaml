@@ -8,7 +8,7 @@
         <Style Selector="^[Shape=Square]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atomc:AbstractFloatButton">
-                    <Panel>
+                    <Panel Name="PART_BadgeRoot">
                         <Border Name="BackgroundFrame"
                                 BoxShadow="{TemplateBinding BoxShadow}"
                                 CornerRadius="{TemplateBinding CornerRadius}" />
@@ -27,7 +27,6 @@
                                                   IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             </StackPanel>
                         </Border>
-                        <Canvas Name="PART_BadgeLayout" />
                     </Panel>
                 </ControlTemplate>
             </Setter>
@@ -36,7 +35,7 @@
         <Style Selector="^[Shape=Circle]">
             <Setter Property="Template">
                 <ControlTemplate TargetType="atomc:AbstractFloatButton">
-                    <Panel>
+                    <Panel Name="PART_BadgeRoot">
                         <Border Name="BackgroundFrame"
                                 BoxShadow="{TemplateBinding BoxShadow}"
                                 CornerRadius="{TemplateBinding CornerRadius}" />
@@ -50,7 +49,6 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center" />
                         </Border>
-                        <Canvas Name="PART_BadgeLayout" />
                     </Panel>
                 </ControlTemplate>
             </Setter>

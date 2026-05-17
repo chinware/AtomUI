@@ -120,6 +120,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ButtonShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/General/ButtonShowCase.axaml",
                 stats => stats.ButtonCount > 0),
+            ["floatbutton"] = new(
+                "FloatButtonShowCase",
+                FloatButtonViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.FloatButtonShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/General/FloatButtonShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 10 && stats.IconPresenterCount > 0),
             ["dropdownbutton"] = new(
                 "DropdownButtonShowCase",
                 DropdownButtonViewModel.ID,

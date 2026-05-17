@@ -79,6 +79,8 @@ internal class FloatButtonItemsControl : TemplatedControl
     #endregion
     
     private StackPanel? _itemsLayout;
+    private readonly List<Control> _visibleChildren = new();
+    private readonly List<(Point, Point)> _separatorLines = new();
 
     static FloatButtonItemsControl()
     {
@@ -93,6 +95,7 @@ internal class FloatButtonItemsControl : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        DetachItemsLayoutChildren();
         _itemsLayout = e.NameScope.Find<StackPanel>("PART_ItemsLayout");
         _itemsLayout?.Children.AddRange(Children);
     }
@@ -125,26 +128,35 @@ internal class FloatButtonItemsControl : TemplatedControl
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    throw new NotSupportedException();
+                    _itemsLayout.Children.Clear();
+                    break;
             }
         }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var size     = base.ArrangeOverride(finalSize);
+        var size = base.ArrangeOverride(finalSize);
         if (Shape == FloatButtonShape.Square)
         {
-            var lines = new List<(Point, Point)>();
-            var children = Children.Where(c => c.IsVisible).ToList();
-            var count    = children.Count;
+            _visibleChildren.Clear();
+            foreach (var child in Children)
+            {
+                if (child.IsVisible)
+                {
+                    _visibleChildren.Add(child);
+                }
+            }
+
+            _separatorLines.Clear();
+            var count = _visibleChildren.Count;
             Point startPoint = default;
             Point endPoint   = default;
             for (var i = 0; i < count; ++i)
             {
                 if (i != count - 1)
                 {
-                    var child    = children[i];
+                    var child    = _visibleChildren[i];
                     var childPos = child.TranslatePoint(new Point(0, 0), this);
                     if (childPos != null)
                     {
@@ -159,13 +171,31 @@ internal class FloatButtonItemsControl : TemplatedControl
                             startPoint = new Point(0, childPos.Value.Y + childBounds.Height);
                             endPoint   = new Point(DesiredSize.Width, childPos.Value.Y + childBounds.Height);
                         }
-                        lines.Add((startPoint, endPoint));
+                        _separatorLines.Add((startPoint, endPoint));
                     }
                 }
             }
 
-            Lines = lines;
+            Lines = _separatorLines.Count == 0 ? null : _separatorLines.ToArray();
+        }
+        else if (Lines != null)
+        {
+            Lines = null;
         }
         return size;
+    }
+
+    private void DetachItemsLayoutChildren()
+    {
+        if (_itemsLayout == null)
+        {
+            return;
+        }
+
+        var oldItems = Children.OfType<Control>().ToList();
+        if (oldItems.Count > 0)
+        {
+            _itemsLayout.Children.RemoveAll(oldItems);
+        }
     }
 }

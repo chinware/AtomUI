@@ -171,29 +171,30 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
     {
         if (FloatButtonGroup != null)
         {
-            _overlayLayer = ScopeAwareOverlayLayer.FindLayer(this);
-            _overlayLayer?.Children.Remove(FloatButtonGroup);
+            var overlayLayer = _overlayLayer ?? ScopeAwareOverlayLayer.FindLayer(this);
+            overlayLayer?.Children.Remove(FloatButtonGroup);
             Disposables?.Dispose();
             Disposables      = null;
             FloatButtonGroup = null;
+            _overlayLayer    = null;
         }
     }
     
     protected virtual FloatButtonGroup NotifyCreateFloatButtonGroup(CompositeDisposable disposables)
     {
         var floatButtonGroup = new FloatButtonGroup();
-        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, floatButtonGroup, IsMotionEnabledProperty));
-        disposables.Add(BindUtils.RelayBind(this, PlacementProperty, floatButtonGroup, PlacementProperty));
-        disposables.Add(BindUtils.RelayBind(this, FloatOffsetXProperty, floatButtonGroup, FloatOffsetXProperty));
-        disposables.Add(BindUtils.RelayBind(this, FloatOffsetYProperty, floatButtonGroup, FloatOffsetYProperty));
-        disposables.Add(BindUtils.RelayBind(this, IconProperty, floatButtonGroup, IconProperty));
-        disposables.Add(BindUtils.RelayBind(this, CloseIconProperty, floatButtonGroup, CloseIconProperty));
-        disposables.Add(BindUtils.RelayBind(this, ButtonTypeProperty, floatButtonGroup, ButtonTypeProperty));
-        disposables.Add(BindUtils.RelayBind(this, ShapeProperty, floatButtonGroup, ShapeProperty));
-        disposables.Add(BindUtils.RelayBind(this, BoxShadowProperty, floatButtonGroup, BoxShadowProperty));
-        disposables.Add(BindUtils.RelayBind(this, MenuPlacementProperty, floatButtonGroup, MenuPlacementProperty));
-        disposables.Add(BindUtils.RelayBind(this, TriggerProperty, floatButtonGroup, TriggerProperty));
-        disposables.Add(BindUtils.RelayBind(this, IsOpenProperty, floatButtonGroup, IsOpenProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, floatButtonGroup, FloatButtonGroup.IsMotionEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, PlacementProperty, floatButtonGroup, FloatButtonGroup.PlacementProperty));
+        disposables.Add(BindUtils.RelayBind(this, FloatOffsetXProperty, floatButtonGroup, FloatButtonGroup.FloatOffsetXProperty));
+        disposables.Add(BindUtils.RelayBind(this, FloatOffsetYProperty, floatButtonGroup, FloatButtonGroup.FloatOffsetYProperty));
+        disposables.Add(BindUtils.RelayBind(this, IconProperty, floatButtonGroup, FloatButtonGroup.IconProperty));
+        disposables.Add(BindUtils.RelayBind(this, CloseIconProperty, floatButtonGroup, FloatButtonGroup.CloseIconProperty));
+        disposables.Add(BindUtils.RelayBind(this, ButtonTypeProperty, floatButtonGroup, FloatButtonGroup.ButtonTypeProperty));
+        disposables.Add(BindUtils.RelayBind(this, ShapeProperty, floatButtonGroup, FloatButtonGroup.ShapeProperty));
+        disposables.Add(BindUtils.RelayBind(this, BoxShadowProperty, floatButtonGroup, FloatButtonGroup.BoxShadowProperty));
+        disposables.Add(BindUtils.RelayBind(this, MenuPlacementProperty, floatButtonGroup, FloatButtonGroup.MenuPlacementProperty));
+        disposables.Add(BindUtils.RelayBind(this, TriggerProperty, floatButtonGroup, FloatButtonGroup.TriggerProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsOpenProperty, floatButtonGroup, FloatButtonGroup.IsOpenProperty));
         
         floatButtonGroup.Children.AddRange(Children);
         floatButtonGroup.OpenRequest  += OnFloatButtonGroupOpenRequest;

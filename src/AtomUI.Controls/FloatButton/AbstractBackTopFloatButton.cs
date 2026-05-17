@@ -71,10 +71,12 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
     private bool _showAnimating;
     private bool _hideAnimating;
     private CancellationTokenSource? _cancellationTokenSource;
+    private bool _isAttachedToVisualTree;
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _isAttachedToVisualTree = true;
         if (Target != null)
         {
             Target.ScrollChanged -= HandleScrollChanged;
@@ -84,6 +86,7 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _isAttachedToVisualTree = false;
         base.OnDetachedFromVisualTree(e);
         if (Target != null)
         {
@@ -139,7 +142,7 @@ public abstract class AbstractBackTopFloatButton : AbstractFloatButton
             oldScrollViewer.ScrollChanged -= HandleScrollChanged;
         }
 
-        if (newScrollViewer != null)
+        if (_isAttachedToVisualTree && newScrollViewer != null)
         {
             newScrollViewer.ScrollChanged += HandleScrollChanged;
         }

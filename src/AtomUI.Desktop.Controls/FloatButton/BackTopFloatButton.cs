@@ -22,38 +22,45 @@ public class BackTopFloatButton : AbstractBackTopFloatButton
     
     private protected override void ConfigureBadge()
     {
-        if (_badgeLayout != null)
+        if (!IsBadgeEnabled)
         {
-            if (IsBadgeEnabled)
+            ClearBadge();
+            return;
+        }
+
+        var badgeLayout = EnsureBadgeLayout();
+        if (badgeLayout == null)
+        {
+            return;
+        }
+
+        if (IsDotBadge)
+        {
+            if (_badge is DotBadgeAdorner)
             {
-                if (IsDotBadge)
-                {
-                    var dotBadge = new DotBadgeAdorner();
-                    dotBadge[!DotBadgeAdorner.BadgeDotColorProperty]   = this[!BadgeEffectiveColorProperty];
-                    dotBadge[!DotBadgeAdorner.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-                    _badge                                             = dotBadge;
-                }
-                else
-                {
-                    var countBadge = new CountBadgeAdorner();
-                    countBadge[!CountBadgeAdorner.BadgeColorProperty]      = this[!BadgeEffectiveColorProperty];
-                    countBadge[!CountBadgeAdorner.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-                    countBadge[!CountBadgeAdorner.CountProperty]           = this[!BadgeCountProperty];
-                    countBadge[!CountBadgeAdorner.OverflowCountProperty]   = this[!BadgeOverflowCountProperty];
-                    _badge                                                 = countBadge;
-                }
-                
-                _badgeLayout.Children.Add(_badge);
                 CalculateBadgePosition();
+                return;
             }
-            else
+
+            var dotBadge = new DotBadgeAdorner();
+            dotBadge[!DotBadgeAdorner.BadgeDotColorProperty]   = this[!BadgeEffectiveColorProperty];
+            dotBadge[!DotBadgeAdorner.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+            AttachBadge(dotBadge, badgeLayout);
+        }
+        else
+        {
+            if (_badge is CountBadgeAdorner)
             {
-                if (_badge != null)
-                {
-                    _badgeLayout.Children.Remove(_badge);
-                }
-                _badge = null;
+                CalculateBadgePosition();
+                return;
             }
+
+            var countBadge = new CountBadgeAdorner();
+            countBadge[!CountBadgeAdorner.BadgeColorProperty]      = this[!BadgeEffectiveColorProperty];
+            countBadge[!CountBadgeAdorner.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+            countBadge[!CountBadgeAdorner.CountProperty]           = this[!BadgeCountProperty];
+            countBadge[!CountBadgeAdorner.OverflowCountProperty]   = this[!BadgeOverflowCountProperty];
+            AttachBadge(countBadge, badgeLayout);
         }
     }
 }

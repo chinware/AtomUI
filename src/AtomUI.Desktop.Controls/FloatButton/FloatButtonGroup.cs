@@ -1,10 +1,13 @@
 using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -17,6 +20,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -200,14 +204,19 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     #endregion
     
     private FloatButtonItemsControl? _itemsControl;
+    private Canvas? _triggerLayout;
     private bool _initPressed;
     private IDisposable? _clickTriggerDisposable;
     private FloatButton? _triggerButton;
     ScopeAwareOverlayLayer? _overlayLayer;
     private BaseMotionActor? _motionActor;
+    private CompositeDisposable? _menuDisposables;
+    private readonly HashSet<AbstractFloatButton> _embeddedItems = new();
     private bool _showAnimating;
     private bool _hideAnimating;
     private bool _closeRequest;
+    private bool _isAttachedToVisualTree;
+    private bool _isMenuContentCodeCreated;
     
     static FloatButtonGroup()
     {
@@ -240,6 +249,14 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         if (change.Property == TriggerProperty)
         {
             ConfigureTriggerType();
+            if (Trigger == FloatButtonGroupTrigger.Default && _isMenuContentCodeCreated)
+            {
+                ReleaseMenuContent();
+            }
+            else if (IsOpen && Trigger != FloatButtonGroupTrigger.Default)
+            {
+                EnsureMenuContent();
+            }
         }
         else if (change.Property == ParentProperty)
         {
@@ -258,24 +275,24 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 AbstractFloatButton.CalculatePosition(this, _overlayLayer.Bounds.Size, Placement, FloatOffsetX, FloatOffsetY);
             }
         }
+        else if (change.Property == ShapeProperty ||
+                 change.Property == IsMotionEnabledProperty)
+        {
+            SyncEmbeddedItems();
+        }
         else if (change.Property == IsOpenProperty)
         {
-            CalculateItemsControlPosition();
-            Dispatcher.Post(() =>
+            if (IsOpen && Trigger != FloatButtonGroupTrigger.Default)
             {
-                if (IsOpen)
-                {
-                    Dispatcher.InvokeAsync(ApplyShowMotionAsync);
-                }
-                else
-                {
-                    Dispatcher.InvokeAsync(ApplyHideMotionAsync);
-                }
-            });
+                EnsureMenuContent();
+            }
+            CalculateItemsControlPosition();
+            Dispatcher.Post(this.ApplyOpenStateMotion);
         }
         if (change.Property == TriggerProperty ||
             change.Property == MenuPlacementProperty)
         {
+            SyncItemsControlOrientation();
             CalculateItemsControlPosition();
         }
     }
@@ -283,14 +300,13 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_triggerButton != null)
-        {
-            _triggerButton.PointerEntered -= HandlePointerEntered;
-            _triggerButton.PointerExited  -= HandlePointerExited;
-        }
+        DetachTriggerButtonHandlers();
+        ReleaseMenuContent();
+        _triggerLayout = e.NameScope.Find<Canvas>("PART_TriggerLayout");
         _itemsControl  = e.NameScope.Find<FloatButtonItemsControl>("ItemsControl");
         _triggerButton = e.NameScope.Find<FloatButton>("Trigger");
         _motionActor   = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
+        _isMenuContentCodeCreated = false;
 
         if (_motionActor != null)
         {
@@ -302,77 +318,240 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
             _triggerButton.PointerEntered += HandlePointerEntered;
             _triggerButton.PointerExited  += HandlePointerExited;
         }
-        
+
+        MaterializeItemsControlChildren();
+        if (IsOpen && Trigger != FloatButtonGroupTrigger.Default)
+        {
+            EnsureMenuContent();
+        }
+        ConfigureTriggerType();
+    }
+
+    private void DetachTriggerButtonHandlers()
+    {
+        if (_triggerButton == null)
+        {
+            return;
+        }
+
+        _triggerButton.PointerEntered -= HandlePointerEntered;
+        _triggerButton.PointerExited  -= HandlePointerExited;
+        _triggerButton = null;
+    }
+
+    private void EnsureMenuContent()
+    {
+        if (Trigger == FloatButtonGroupTrigger.Default ||
+            (_itemsControl != null && _motionActor != null) ||
+            _triggerLayout == null)
+        {
+            return;
+        }
+
+        _menuDisposables?.Dispose();
+        _menuDisposables = new CompositeDisposable();
+        _itemsControl = new FloatButtonItemsControl
+        {
+            Name          = "ItemsControl",
+            IsTriggerMode = true
+        };
+        _itemsControl.SetTemplatedParent(this);
+        _menuDisposables.Add(BindUtils.RelayBind(this, BoxShadowProperty, _itemsControl,
+            FloatButtonItemsControl.BoxShadowProperty, priority: BindingPriority.Template));
+        _menuDisposables.Add(BindUtils.RelayBind(this, ShapeProperty, _itemsControl,
+            FloatButtonItemsControl.ShapeProperty, priority: BindingPriority.Template));
+        _menuDisposables.Add(BindUtils.RelayBind(this, MenuPlacementProperty, _itemsControl,
+            FloatButtonItemsControl.MenuPlacementProperty, priority: BindingPriority.Template));
+        SyncItemsControlOrientation();
+
+        var shouldDelayShow = IsOpen && IsMotionEnabled;
+        _motionActor = new MotionActor
+        {
+            Name         = BaseMotionActor.MotionActorPart,
+            ClipToBounds = false,
+            Content      = _itemsControl,
+            IsVisible    = IsOpen && !shouldDelayShow,
+            Opacity      = shouldDelayShow ? 0.0d : 1.0d
+        };
+        _motionActor.SetTemplatedParent(this);
+        _triggerLayout.Children.Add(_motionActor);
+        _isMenuContentCodeCreated = true;
+        MaterializeItemsControlChildren();
+        CalculateItemsControlPosition();
+    }
+
+    private void MaterializeItemsControlChildren()
+    {
+        if (_itemsControl == null)
+        {
+            return;
+        }
+
+        _itemsControl.IsTriggerMode = Trigger != FloatButtonGroupTrigger.Default;
+        SyncItemsControlOrientation();
+        if (_itemsControl.Children.Count > 0)
+        {
+            return;
+        }
+
+        foreach (var item in Children.OfType<AbstractFloatButton>())
+        {
+            NotifyAddItem(item);
+        }
+        _itemsControl.Children.AddRange(Children);
+    }
+
+    private void ReleaseMenuContent()
+    {
+        _menuDisposables?.Dispose();
+        _menuDisposables = null;
+
+        ReleaseItemsControlChildren();
+
+        if (_isMenuContentCodeCreated)
+        {
+            if (_motionActor != null)
+            {
+                if (_motionActor.GetVisualParent() is Panel parent)
+                {
+                    parent.Children.Remove(_motionActor);
+                }
+                else
+                {
+                    _triggerLayout?.Children.Remove(_motionActor);
+                }
+                _motionActor.SetCurrentValue(ContentControl.ContentProperty, null);
+                _motionActor.SetTemplatedParent(null);
+            }
+            _itemsControl?.SetTemplatedParent(null);
+        }
+
+        _itemsControl              = null;
+        _motionActor               = null;
+        _isMenuContentCodeCreated  = false;
+        _showAnimating             = false;
+        _hideAnimating             = false;
+        _closeRequest              = false;
+    }
+
+    private void ReleaseItemsControlChildren()
+    {
         if (_itemsControl != null)
         {
-            _itemsControl.IsTriggerMode = Trigger != FloatButtonGroupTrigger.Default;
-        }
-        
-        _itemsControl?.Children.AddRange(Children);
-        ConfigureTriggerType();
-        foreach (var item in Children)
-        {
-            if (item is AbstractFloatButton floatButton)
+            var oldItems = _itemsControl.Children.OfType<Control>().ToList();
+            if (oldItems.Count > 0)
             {
-                NotifyAddItem(floatButton);
+                _itemsControl.Children.RemoveAll(oldItems);
             }
         }
+
+        foreach (var item in _embeddedItems.ToList())
+        {
+            NotifyRemoveItem(item);
+        }
+    }
+
+    private void SyncItemsControlOrientation()
+    {
+        if (_itemsControl == null)
+        {
+            return;
+        }
+
+        var orientation = MenuPlacement == FloatButtonGroupMenuPlacement.Top ||
+                          MenuPlacement == FloatButtonGroupMenuPlacement.Bottom
+            ? Orientation.Vertical
+            : Orientation.Horizontal;
+        _itemsControl.SetValue(FloatButtonItemsControl.OrientationProperty, orientation, BindingPriority.Template);
     }
 
     protected virtual void NotifyChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (_itemsControl != null)
+        switch (e.Action)
         {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<Control>().ToList();
-                    foreach (var item in newItems)
+            case NotifyCollectionChangedAction.Add:
+                var newItems = e.NewItems!.OfType<Control>().ToList();
+                if (_itemsControl != null)
+                {
+                    foreach (var item in newItems.OfType<AbstractFloatButton>())
                     {
-                        if (item is FloatButton floatButton)
-                        {
-                            NotifyAddItem(floatButton);
-                        }
+                        NotifyAddItem(item);
                     }
                     _itemsControl.Children.InsertRange(e.NewStartingIndex, newItems);
-                    break;
+                }
+                break;
 
-                case NotifyCollectionChangedAction.Move:
+            case NotifyCollectionChangedAction.Move:
+                if (_itemsControl != null)
+                {
                     _itemsControl.Children.MoveRange(e.OldStartingIndex, e.OldItems!.Count, e.NewStartingIndex);
-                    break;
+                }
+                break;
 
-                case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<Control>().ToList();
-                    foreach (var item in oldItems)
+            case NotifyCollectionChangedAction.Remove:
+                var oldItems = e.OldItems!.OfType<Control>().ToList();
+                foreach (var item in oldItems.OfType<AbstractFloatButton>())
+                {
+                    NotifyRemoveItem(item);
+                }
+                _itemsControl?.Children.RemoveAll(oldItems);
+                break;
+
+            case NotifyCollectionChangedAction.Replace:
+                for (var i = 0; i < e.OldItems!.Count; ++i)
+                {
+                    if (e.OldItems[i] is AbstractFloatButton oldFloatButton)
                     {
-                        if (item is FloatButton floatButton)
-                        {
-                            floatButton.SetCurrentValue(FloatButton.IsEmbedModeProperty, false);
-                        }
+                        NotifyRemoveItem(oldFloatButton);
                     }
-                    _itemsControl.Children.RemoveAll(oldItems);
-                    break;
-
-                case NotifyCollectionChangedAction.Replace:
-                    for (var i = 0; i < e.OldItems!.Count; ++i)
+                    var child = (Control)e.NewItems![i]!;
+                    if (child is AbstractFloatButton newFloatButton && _itemsControl != null)
+                    {
+                        NotifyAddItem(newFloatButton);
+                    }
+                    if (_itemsControl != null)
                     {
                         var index = i + e.OldStartingIndex;
-                        var child = (Control)e.NewItems![i]!;
                         _itemsControl.Children[index] = child;
                     }
-                    break;
+                }
+                break;
 
-                case NotifyCollectionChangedAction.Reset:
-                    throw new NotSupportedException();
-            }
+            case NotifyCollectionChangedAction.Reset:
+                ReleaseItemsControlChildren();
+                break;
         }
     }
 
     protected void NotifyAddItem(AbstractFloatButton floatButton)
     {
-        floatButton[!AbstractFloatButton.ShapeProperty]           = this[!ShapeProperty];
-        floatButton[!AbstractFloatButton.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        _embeddedItems.Add(floatButton);
+        SyncEmbeddedItem(floatButton);
         floatButton.SetCurrentValue(AbstractFloatButton.IsEmbedModeProperty, true);
+    }
+
+    private void NotifyRemoveItem(AbstractFloatButton floatButton)
+    {
+        if (_embeddedItems.Remove(floatButton))
+        {
+            floatButton.ClearValue(AbstractFloatButton.ShapeProperty);
+            floatButton.ClearValue(AbstractFloatButton.IsMotionEnabledProperty);
+        }
+        floatButton.SetCurrentValue(AbstractFloatButton.IsEmbedModeProperty, false);
+    }
+
+    private void SyncEmbeddedItems()
+    {
+        foreach (var item in _embeddedItems)
+        {
+            SyncEmbeddedItem(item);
+        }
+    }
+
+    private void SyncEmbeddedItem(AbstractFloatButton floatButton)
+    {
+        floatButton.SetValue(AbstractFloatButton.ShapeProperty, Shape, BindingPriority.LocalValue);
+        floatButton.SetValue(AbstractFloatButton.IsMotionEnabledProperty, IsMotionEnabled, BindingPriority.LocalValue);
     }
 
     private void HandlePointerEntered(object? sender, PointerEventArgs? e)
@@ -403,20 +582,24 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _clickTriggerDisposable?.Dispose();
-        _clickTriggerDisposable = null;
+        _isAttachedToVisualTree = true;
+        ConfigureTriggerType();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        _isAttachedToVisualTree = false;
+        DisposeClickTrigger();
+        ReleaseMenuContent();
+        DetachTriggerButtonHandlers();
+        SetupParentLayer(null);
         base.OnDetachedFromVisualTree(e);
-        ConfigureTriggerType();
     }
 
     private void ConfigureTriggerType()
     {
-        _clickTriggerDisposable?.Dispose();
-        if (Trigger == FloatButtonGroupTrigger.Click)
+        DisposeClickTrigger();
+        if (_isAttachedToVisualTree && Trigger == FloatButtonGroupTrigger.Click)
         {
             var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
             _clickTriggerDisposable = inputManager?.Process.Subscribe(HandleMouseClick);
@@ -426,6 +609,12 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         {
             _itemsControl.IsTriggerMode = Trigger != FloatButtonGroupTrigger.Default;
         }
+    }
+
+    private void DisposeClickTrigger()
+    {
+        _clickTriggerDisposable?.Dispose();
+        _clickTriggerDisposable = null;
     }
 
     private void HandleMouseClick(RawInputEventArgs args)
@@ -569,9 +758,26 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         Canvas.SetLeft(_motionActor, offsetX);
         Canvas.SetTop(_motionActor, offsetY);
     }
+
+    private void ApplyOpenStateMotion()
+    {
+        if (IsOpen)
+        {
+            Dispatcher.InvokeAsync(ApplyShowMotionAsync);
+        }
+        else
+        {
+            Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+        }
+    }
     
     private async Task ApplyShowMotionAsync()
     {
+        if (Trigger != FloatButtonGroupTrigger.Default)
+        {
+            EnsureMenuContent();
+        }
+
         if (_motionActor is not null)
         {
             if (IsMotionEnabled)
@@ -673,12 +879,16 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
+        if (IsOpen && Trigger != FloatButtonGroupTrigger.Default)
+        {
+            EnsureMenuContent();
+        }
         CalculateItemsControlPosition();
         if (IsOpen)
         {
             Dispatcher.InvokeAsync(ApplyShowMotionAsync);
         }
-        else
+        else if (_motionActor != null)
         {
             Dispatcher.InvokeAsync(ApplyHideMotionAsync);
         }

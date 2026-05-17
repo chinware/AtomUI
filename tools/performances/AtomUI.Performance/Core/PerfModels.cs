@@ -136,6 +136,13 @@ internal sealed record TreeStats(
     double DotBadgeIndicatorPerRoot,
     double MotionActorPerRoot,
     double LabelPerRoot,
+    double FloatButtonHostPerRoot,
+    double FloatButtonGroupHostPerRoot,
+    double FloatButtonPerRoot,
+    double BackTopFloatButtonPerRoot,
+    double FloatButtonGroupPerRoot,
+    double FloatButtonItemsControlPerRoot,
+    double FloatButtonSeparatorLayerPerRoot,
     double CheckBoxPerRoot,
     double CheckBoxGroupPerRoot,
     double CheckBoxItemsControlPerRoot,
@@ -253,6 +260,13 @@ internal sealed record TreeStats(
         var dotBadgeIndicatorCount      = 0;
         var motionActorCount            = 0;
         var labelCount                  = 0;
+        var floatButtonHostCount        = 0;
+        var floatButtonGroupHostCount   = 0;
+        var floatButtonCount            = 0;
+        var backTopFloatButtonCount     = 0;
+        var floatButtonGroupCount       = 0;
+        var floatButtonItemsControlCount = 0;
+        var floatButtonSeparatorLayerCount = 0;
         var checkBoxCount               = 0;
         var checkBoxGroupCount          = 0;
         var checkBoxItemsControlCount   = 0;
@@ -538,6 +552,34 @@ internal sealed record TreeStats(
                 if (visual is Label)
                 {
                     labelCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FloatButtonHost"))
+                {
+                    floatButtonHostCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FloatButtonGroupHost"))
+                {
+                    floatButtonGroupHostCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FloatButton"))
+                {
+                    floatButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.BackTopFloatButton"))
+                {
+                    backTopFloatButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FloatButtonGroup"))
+                {
+                    floatButtonGroupCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FloatButtonItemsControl"))
+                {
+                    floatButtonItemsControlCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Controls.Commons.FloatButtonSeparatorLayer"))
+                {
+                    floatButtonSeparatorLayerCount++;
                 }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.CheckBox"))
                 {
@@ -845,6 +887,13 @@ internal sealed record TreeStats(
             dotBadgeIndicatorCount / (double)rootCount,
             motionActorCount / (double)rootCount,
             labelCount / (double)rootCount,
+            floatButtonHostCount / (double)rootCount,
+            floatButtonGroupHostCount / (double)rootCount,
+            floatButtonCount / (double)rootCount,
+            backTopFloatButtonCount / (double)rootCount,
+            floatButtonGroupCount / (double)rootCount,
+            floatButtonItemsControlCount / (double)rootCount,
+            floatButtonSeparatorLayerCount / (double)rootCount,
             checkBoxCount / (double)rootCount,
             checkBoxGroupCount / (double)rootCount,
             checkBoxItemsControlCount / (double)rootCount,
