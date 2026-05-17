@@ -30,7 +30,8 @@ internal sealed record PerfOptions(
     bool VerifyExpanderStates,
     bool VerifyEmptyStates,
     bool VerifyFloatButtonStates,
-    bool VerifyFlyoutStates)
+    bool VerifyFlyoutStates,
+    bool VerifyFormStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -64,6 +65,7 @@ internal sealed record PerfOptions(
         var verifyEmptyStates = false;
         var verifyFloatButtonStates = false;
         var verifyFlyoutStates = false;
+        var verifyFormStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -162,6 +164,9 @@ internal sealed record PerfOptions(
                 case "--verify-flyout-states":
                     verifyFlyoutStates = true;
                     break;
+                case "--verify-form-states":
+                    verifyFormStates = true;
+                    break;
             }
         }
 
@@ -195,6 +200,7 @@ internal sealed record PerfOptions(
             verifyExpanderStates,
             verifyEmptyStates,
             verifyFloatButtonStates,
-            verifyFlyoutStates);
+            verifyFlyoutStates,
+            verifyFormStates);
     }
 }

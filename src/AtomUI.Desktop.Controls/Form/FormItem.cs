@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -626,8 +625,11 @@ public class FormItem : TemplatedControl, IFormItem
     private FormValidateFeedback? _feedback;
     private IDisposable? _feedbackDisposable;
     private CancellationTokenSource? _validationTokenSource;
+    private IDisposable? _validationDebounceDisposable;
     internal Form? OwnerForm;
     private Window? _attachedWindow;
+    private bool _isDefaultTooltipIconApplied;
+    private bool _isUpdatingDefaultTooltipIcon;
     
     static FormItem()
     {
@@ -644,10 +646,7 @@ public class FormItem : TemplatedControl, IFormItem
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (TooltipIcon == null)
-        {
-            SetCurrentValue(TooltipIconProperty, new QuestionCircleOutlined());
-        }
+        ConfigureTooltipIcon();
     }
 
     private void HandleDeleteButtonClicked(RoutedEventArgs args)
@@ -664,6 +663,10 @@ public class FormItem : TemplatedControl, IFormItem
         if (change.OldValue is IFormItemAware oldFormItemAware)
         {
             oldFormItemAware.ValueChanged -= HandleContentValueChanged;
+        }
+        if (change.OldValue is IFormItemFeedbackAware oldFormItemFeedbackAware)
+        {
+            oldFormItemFeedbackAware.SetFeedbackControl(null);
         }
         
         if (change.NewValue is IFormItemAware newFormItemAware)
@@ -692,16 +695,26 @@ public class FormItem : TemplatedControl, IFormItem
         
         if (change.NewValue is IFormItemFeedbackAware newFormItemFeedbackAware)
         {
-            BuildFeedback(false);
+            if (IsValidateFeedbackEnabled)
+            {
+                BuildFeedback(false);
+            }
             newFormItemFeedbackAware.SetFeedbackControl(_feedback);
+        }
+        else
+        {
+            ReleaseFeedback();
         }
     }
 
     protected override void OnLostFocus(FocusChangedEventArgs e)
     {
         base.OnLostFocus(e);
-        Debug.Assert(OwnerForm != null);
-        if (!OwnerForm.IsResetting && ValidateTrigger == FormValidateTrigger.OnBlur)
+        if (OwnerForm is { IsResetting: true })
+        {
+            return;
+        }
+        if (ValidateTrigger == FormValidateTrigger.OnBlur)
         {
             ValidateValueDefer();
         }
@@ -721,14 +734,18 @@ public class FormItem : TemplatedControl, IFormItem
 
     private void ValidateValueDefer()
     {
-        _validationTokenSource?.Cancel();
-        _validationTokenSource?.Dispose();
+        ClearPendingValidation();
         _validationTokenSource = new CancellationTokenSource();
         var cancellationToken = _validationTokenSource.Token;
         if (ValidateDebounce != TimeSpan.Zero)
         {
-            DispatcherTimer.RunOnce(() =>
+            _validationDebounceDisposable = DispatcherTimer.RunOnce(() =>
             {
+                _validationDebounceDisposable = null;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
                 Dispatcher.InvokeAsync(() => ValidateValueAsync(cancellationToken));
             }, ValidateDebounce);
         }
@@ -740,13 +757,20 @@ public class FormItem : TemplatedControl, IFormItem
 
     public async Task ValidateValueAsync(CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
         if (Content == null || Validators == null || Validators.Count == 0)
         {
             return;
         }
+        if (Content is not IFormItemAware formItemAware)
+        {
+            return;
+        }
+
         ValidateStatus = FormValidateStatus.Validating;
-        var formItemAware     = Content as IFormItemAware;
-        Debug.Assert(formItemAware != null);
         var value           = formItemAware.GetFormValue();
         var warningMessages = new List<string>();
         var hasWarning      = false;
@@ -761,6 +785,10 @@ public class FormItem : TemplatedControl, IFormItem
             {
                 foreach (var validator in Validators)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
                     var task = validator.ValidateAsync(FieldName ?? string.Empty, value, cancellationToken);
                     tasks.Add(task, validator);
                 }
@@ -791,6 +819,10 @@ public class FormItem : TemplatedControl, IFormItem
             {
                 foreach (var validator in Validators)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
                     var result = await validator.ValidateAsync(FieldName ?? string.Empty, value, cancellationToken);
                     if (result == FormValidateResult.Error)
                     {
@@ -832,6 +864,10 @@ public class FormItem : TemplatedControl, IFormItem
         {
             foreach (var validator in Validators)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
                 var result = await validator.ValidateAsync(FieldName ?? string.Empty, value, cancellationToken);
                 if (result == FormValidateResult.Error)
                 {
@@ -1041,6 +1077,18 @@ public class FormItem : TemplatedControl, IFormItem
         {
             HasErrorOrWarningMsg = ValidateErrorMessages?.Count > 0 || ValidateWarningMessages?.Count > 0 || !string.IsNullOrWhiteSpace(Help);
         }
+        else if (change.Property == TooltipProperty)
+        {
+            ConfigureTooltipIcon();
+        }
+        else if (change.Property == TooltipIconProperty && !_isUpdatingDefaultTooltipIcon)
+        {
+            _isDefaultTooltipIconApplied = false;
+            if (TooltipIcon == null)
+            {
+                ConfigureTooltipIcon();
+            }
+        }
     }
 
     private Control? BuildFeedback(bool force = false)
@@ -1051,6 +1099,7 @@ public class FormItem : TemplatedControl, IFormItem
         }
         if (_feedback == null || force)
         {
+            ReleaseFeedback();
             _feedback = FeedbackTemplate?.Build(OwnerForm) as FormValidateFeedback;
             if (_feedback != null)
             {
@@ -1068,7 +1117,6 @@ public class FormItem : TemplatedControl, IFormItem
         _labelLayout   = e.NameScope.Find<Panel>("PART_LabelLayout");
         _contentLayout = e.NameScope.Find<Panel>("PART_ContentLayout");
         ConfigureLayout();
-        Debug.Assert(OwnerForm != null);
         if (IsValidateFeedbackEnabled)
         {
             if (Content is IFormItemFeedbackAware feedbackAware)
@@ -1091,7 +1139,6 @@ public class FormItem : TemplatedControl, IFormItem
             {
                 ContentPresenterMaxWidth = double.PositiveInfinity;
             }
-
         }
         
         if (_labelLayout != null)
@@ -1126,18 +1173,46 @@ public class FormItem : TemplatedControl, IFormItem
         }
 
         _attachedWindow = null;
+        ClearPendingValidation();
     }
-    
-    private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)
+
+    private void ClearPendingValidation()
     {
-        _breakPoint = args.MediaBreakPoint;
-        if (_breakPoint != null)
+        _validationDebounceDisposable?.Dispose();
+        _validationDebounceDisposable = null;
+        _validationTokenSource?.Cancel();
+        _validationTokenSource?.Dispose();
+        _validationTokenSource = null;
+    }
+
+    private void ConfigureTooltipIcon()
+    {
+        if (!string.IsNullOrWhiteSpace(Tooltip))
         {
-            if (Layout == FormItemLayout.Horizontal)
+            if (TooltipIcon == null)
             {
-                ConfigureLayout();
+                _isUpdatingDefaultTooltipIcon = true;
+                _isDefaultTooltipIconApplied  = true;
+                SetCurrentValue(TooltipIconProperty, new QuestionCircleOutlined());
+                _isUpdatingDefaultTooltipIcon = false;
             }
+            return;
         }
+
+        if (_isDefaultTooltipIconApplied)
+        {
+            _isUpdatingDefaultTooltipIcon = true;
+            _isDefaultTooltipIconApplied  = false;
+            SetCurrentValue(TooltipIconProperty, null);
+            _isUpdatingDefaultTooltipIcon = false;
+        }
+    }
+
+    private void ReleaseFeedback()
+    {
+        _feedbackDisposable?.Dispose();
+        _feedbackDisposable = null;
+        _feedback           = null;
     }
 
     private void ConfigureLabelColonVisible()
@@ -1158,10 +1233,11 @@ public class FormItem : TemplatedControl, IFormItem
         {
             if (Layout == FormItemLayout.Horizontal)
             {
-                _bodyLayout.ColumnDefinitions.Add(new ColumnDefinition(GetGridLengthForMediaBreak(_breakPoint ?? MediaBreakPoint.Large, 
-                    LabelColInfo ?? new MediaBreakGridLength(new GridLength(1, GridUnitType.Star)))));
-                _bodyLayout.ColumnDefinitions.Add(new ColumnDefinition(GetGridLengthForMediaBreak(_breakPoint ?? MediaBreakPoint.Large,
-                    WrapperColInfo ?? new MediaBreakGridLength(new GridLength(3, GridUnitType.Star)))));
+                var breakPoint = _breakPoint ?? MediaBreakPoint.Large;
+                var labelColInfo = LabelColInfo ?? new MediaBreakGridLength(new GridLength(1, GridUnitType.Star));
+                var wrapperColInfo = WrapperColInfo ?? new MediaBreakGridLength(new GridLength(3, GridUnitType.Star));
+                _bodyLayout.ColumnDefinitions.Add(new ColumnDefinition(GetGridLengthForMediaBreak(breakPoint, labelColInfo)));
+                _bodyLayout.ColumnDefinitions.Add(new ColumnDefinition(GetGridLengthForMediaBreak(breakPoint, wrapperColInfo)));
                 _bodyLayout.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
                 Grid.SetRow(_labelLayout, 0);
                 Grid.SetRow(_contentLayout, 0);
@@ -1186,9 +1262,20 @@ public class FormItem : TemplatedControl, IFormItem
             Grid.SetRow(_contentLayout, 0);
             Grid.SetColumn(_contentLayout, 0);
         }
-        
     }
     
+    private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)
+    {
+        _breakPoint = args.MediaBreakPoint;
+        if (_breakPoint != null)
+        {
+            if (Layout == FormItemLayout.Horizontal)
+            {
+                ConfigureLayout();
+            }
+        }
+    }
+
     private GridLength GetGridLengthForMediaBreak(MediaBreakPoint breakPoint, MediaBreakGridLength info)
     {
         var gridLength = GridLength.Auto;
@@ -1231,9 +1318,7 @@ public class FormItem : TemplatedControl, IFormItem
 
     private void HandleFeedbackTemplateChanged()
     {
-        _feedback = null;
-        _feedbackDisposable?.Dispose();
-        _feedbackDisposable = null;
+        ReleaseFeedback();
         if (IsValidateFeedbackEnabled)
         {
             if (Content is IFormItemFeedbackAware itemFeedbackAware)
@@ -1241,6 +1326,10 @@ public class FormItem : TemplatedControl, IFormItem
                 BuildFeedback(true);
                 itemFeedbackAware.SetFeedbackControl(_feedback);
             }
+        }
+        else if (Content is IFormItemFeedbackAware itemFeedbackAware)
+        {
+            itemFeedbackAware.SetFeedbackControl(null);
         }
     }
 }

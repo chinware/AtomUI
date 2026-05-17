@@ -63,6 +63,7 @@
 | Expander | 本轮已完成 | [Expander](Expander/README.md) | closed content motion actor 按需创建；`ExpanderShowCase` cold mean `191.70ms -> 170.47ms`，repeated mean `82.18ms -> 67.30ms`，visuals `391 -> 360`，MotionActor `16 -> 1` |
 | Empty | 本轮已完成低风险修复 | [Empty](Empty/README.md) | 修复 `IsDescriptionVisible=False`、图片来源运行时互斥和 `Svg.Source/Path` 残留；`EmptyShowCase` repeated mean `21.90ms -> 21.32ms`，alloc `2269.73KB -> 2253.90KB`，visuals 不变 |
 | FloatButton | 本轮已完成 | [FloatButton](FloatButton/README.md) | closed trigger group visual/root `41 -> 14`；`FloatButtonShowCase` repeated mean `126.71ms -> 110.81ms`，visuals `949 -> 752`，alloc `14447.92KB -> 12182.94KB` |
+| Form | 本轮已完成低风险结构与生命周期优化 | [Form](Form/README.md) | `Form.GalleryShape` `92.094ms/item -> 89.364ms/item`，visual/root `1544 -> 1508`；`FormShowCase` visuals `6435 -> 6300`，alloc 少 `3.54%`，页面 repeated 耗时基本持平 |
 
 ## 总列表
 
@@ -92,7 +93,7 @@
 | Data Entry | ColorPicker | Pending | 待建立基线 |
 | Data Entry | DatePicker | Done | [DatePicker](DatePicker/README.md)；关闭态 popup content、默认 accessory host、Window.Deactivated 订阅已按需化 |
 | Data Entry | TimePicker | Pending | 待建立基线 |
-| Data Entry | Form | Pending | 待建立基线 |
+| Data Entry | Form | Done | [Form](Form/README.md)；已完成低风险结构与生命周期优化，控件级小幅提升，Gallery 结构/分配下降，页面 repeated timing 基本持平 |
 | Data Entry | LineEdit | Done | 已完成控件级优化与 Gallery 实测 |
 | Data Entry | Mentions | Pending | 待建立基线 |
 | Data Entry | NumberUpDown | Pending | 待建立基线 |

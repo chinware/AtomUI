@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -453,12 +452,17 @@ public class Form : ItemsControl,
     {
         this.RegisterTokenResourceScope(FormToken.ScopeProvider);
         LogicalChildren.CollectionChanged += HandleCollectionChanged;
-        Items.CollectionChanged           += (_, _) => InvalidateMeasure();
+        Items.CollectionChanged           += HandleItemsCollectionChanged;
     }
 
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         ConfigureShowItemDeleteButton();
+    }
+
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        InvalidateMeasure();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -641,11 +645,13 @@ public class Form : ItemsControl,
         }
         finally
         {
-            Dispatcher.Post(() =>
-            {
-                IsResetting = false;
-            });
+            Dispatcher.Post(ClearResetting);
         }
+    }
+
+    private void ClearResetting()
+    {
+        IsResetting = false;
     }
 
     protected virtual void NotifyReset()
@@ -664,7 +670,8 @@ public class Form : ItemsControl,
         base.OnPropertyChanged(change);
         if (change.Property == LabelAlignProperty ||
             change.Property == FormLayoutProperty ||
-            change.Property == ValidateTriggerProperty)
+            change.Property == ValidateTriggerProperty ||
+            change.Property == IsValidateFeedbackEnabledProperty)
         {
             SyncConfigToItems();
         }
@@ -725,8 +732,11 @@ public class Form : ItemsControl,
 
     private void HandleFormItemValueChanged(RoutedEventArgs args)
     {
-        var formItem = args.Source as IFormItem;
-        Debug.Assert(formItem != null);
+        if (args.Source is not IFormItem formItem)
+        {
+            return;
+        }
+
         ItemValueChanged?.Invoke(this, new FormItemValueChangedEventArgs(formItem, formItem.GetItemValue()));
         args.Handled = true;
         foreach (var item in Items)
@@ -740,8 +750,11 @@ public class Form : ItemsControl,
     
     private void HandleFormItemValidateChanged(FormItemValidateChangedEventArgs args)
     {
-        var formItem = args.Source as IFormItem;
-        Debug.Assert(formItem != null);
+        if (args.Source is not IFormItem)
+        {
+            return;
+        }
+
         if (args.Status == FormValidateStatus.Error)
         {
             IsFormValid = false;

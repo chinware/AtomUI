@@ -186,6 +186,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.DatePickerShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/DatePickerShowCase.axaml",
                 stats => stats.DatePickerCount > 0 || stats.RangeDatePickerCount > 0),
+            ["form"] = new(
+                "FormShowCase",
+                FormViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.FormShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/FormShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 15 && stats.LineEditCount >= 40),
             ["treeselect"] = new(
                 "TreeSelectShowCase",
                 TreeSelectViewModel.ID,

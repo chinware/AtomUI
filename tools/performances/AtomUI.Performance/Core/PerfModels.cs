@@ -149,6 +149,14 @@ internal sealed record TreeStats(
     double CheckBoxIndicatorPerRoot,
     double CheckBoxCheckedMarkPerRoot,
     double CheckBoxTristateMarkPerRoot,
+    double FormPerRoot,
+    double FormItemPerRoot,
+    double FormActionsItemPerRoot,
+    double FormValidateFeedbackPerRoot,
+    double SubmitButtonPerRoot,
+    double ResetButtonPerRoot,
+    double ItemDeleteButtonPerRoot,
+    double FormTooltipIconPresenterPerRoot,
     double DescriptionsPerRoot,
     double DescriptionDefaultItemPerRoot,
     double DescriptionBorderedItemLabelPerRoot,
@@ -273,6 +281,14 @@ internal sealed record TreeStats(
         var checkBoxIndicatorCount      = 0;
         var checkBoxCheckedMarkCount    = 0;
         var checkBoxTristateMarkCount   = 0;
+        var formCount                   = 0;
+        var formItemCount               = 0;
+        var formActionsItemCount        = 0;
+        var formValidateFeedbackCount   = 0;
+        var submitButtonCount           = 0;
+        var resetButtonCount            = 0;
+        var itemDeleteButtonCount       = 0;
+        var formTooltipIconPresenterCount = 0;
         var descriptionsCount           = 0;
         var descriptionDefaultItemCount = 0;
         var descriptionBorderedItemLabelCount = 0;
@@ -605,6 +621,40 @@ internal sealed record TreeStats(
                 {
                     checkBoxTristateMarkCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Form"))
+                {
+                    formCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FormActionsItem"))
+                {
+                    formActionsItemCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.FormItem"))
+                {
+                    formItemCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Controls.FormValidateFeedback"))
+                {
+                    formValidateFeedbackCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.SubmitButton"))
+                {
+                    submitButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ResetButton"))
+                {
+                    resetButtonCount++;
+                }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ItemDeleteButton"))
+                {
+                    itemDeleteButtonCount++;
+                }
+                if (visual is IconPresenter { Name: "TooltipIconPresenter" } tooltipIconPresenter &&
+                    tooltipIconPresenter.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.FormItem")))
+                {
+                    formTooltipIconPresenterCount++;
+                }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Descriptions"))
                 {
                     descriptionsCount++;
@@ -900,6 +950,14 @@ internal sealed record TreeStats(
             checkBoxIndicatorCount / (double)rootCount,
             checkBoxCheckedMarkCount / (double)rootCount,
             checkBoxTristateMarkCount / (double)rootCount,
+            formCount / (double)rootCount,
+            formItemCount / (double)rootCount,
+            formActionsItemCount / (double)rootCount,
+            formValidateFeedbackCount / (double)rootCount,
+            submitButtonCount / (double)rootCount,
+            resetButtonCount / (double)rootCount,
+            itemDeleteButtonCount / (double)rootCount,
+            formTooltipIconPresenterCount / (double)rootCount,
             descriptionsCount / (double)rootCount,
             descriptionDefaultItemCount / (double)rootCount,
             descriptionBorderedItemLabelCount / (double)rootCount,
