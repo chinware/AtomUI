@@ -8,10 +8,6 @@
 
 当前结论：`Select` 问题严重，主要不是单个算法慢，而是默认关闭状态就创建了大量只在打开下拉、loading、clear、multiple/tags、responsive max tag、自定义 accessory 等场景才需要的对象、模板和订阅。
 
-## 文档
-
-- [select-performance-plan.md](select-performance-plan.md)：分析、优化方案、实施任务列表
-
 ## 当前状态
 
 | 项 | 状态 |

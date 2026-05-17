@@ -4,14 +4,6 @@
 
 本目录记录 `Icon` 体系的性能分析、优化计划、基线与最终结果。当前阶段已完成 Phase 6 最终验证；generated geometry metadata 与 transform literal 策略已同步到 AntDesign、Material、IconPark 三个图标包。
 
-## 文档
-
-| 文档 | 内容 |
-| --- | --- |
-| [icon-performance-plan.md](icon-performance-plan.md) | Icon 架构分析、性能问题清单、验证口径和实施任务 |
-| [icon-baseline.md](icon-baseline.md) | Icon 控件级与 Gallery `IconShowCase` 优化前基线 |
-| [icon-final.md](icon-final.md) | Phase 6 最终验证、micro/Gallery 汇总、外部包状态和后续风险 |
-
 阶段中间结果和逐次 sample 原始输出不入库；需要时使用文档中的复现命令重新生成。
 
 ## 当前结论

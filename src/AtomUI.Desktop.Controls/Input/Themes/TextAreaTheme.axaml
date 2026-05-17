@@ -7,15 +7,10 @@
 
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:TextArea">
-                <DockPanel LastChildFill="True"
+                <DockPanel Name="PART_RootLayout"
+                           LastChildFill="True"
                            Height="{TemplateBinding Height}">
-                    <atom:TextBlock Name="TextCountIndicator"
-                                    DockPanel.Dock="Bottom"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Right"
-                                    Text="{TemplateBinding CountText}"
-                                    IsVisible="{TemplateBinding IsShowCount}" />
-                    <Panel>
+                    <Panel Name="PART_FrameLayout">
                         <atom:TextAreaDecoratedBox
                             Name="{x:Static atom:AddOnDecoratedBox.AddOnDecoratedBoxPart}"
                             ContentLeftAddOn="{TemplateBinding InnerLeftContent}"
@@ -62,10 +57,6 @@
                                     Focusable="False" />
                             </Panel>
                         </atom:TextAreaDecoratedBox>
-                        <atom:ResizeHandle Name="PART_ResizeHandle"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Bottom"
-                                           Cursor="SizeNorthSouth" />
                     </Panel>
                 </DockPanel>
             </ControlTemplate>

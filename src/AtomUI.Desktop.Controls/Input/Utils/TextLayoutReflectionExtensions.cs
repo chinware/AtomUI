@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
@@ -27,7 +26,7 @@ internal static class TextLayoutReflectionExtensions
                                                                         double letterSpacing,
                                                                         FontFeatureCollection? features)
     {
-        var result = CreateTextParagraphPropertiesMethodInfo.Value.Invoke(null, [
+        return CreateTextParagraphPropertiesMethodInfo.Value.Invoke(null, [
             typeface,
             fontSize,
             foreground,
@@ -38,8 +37,7 @@ internal static class TextLayoutReflectionExtensions
             lineHeight,
             letterSpacing,
             features
-        ]) as TextParagraphProperties;
-        Debug.Assert(result != null);
-        return result;
+        ]) as TextParagraphProperties
+           ?? throw new InvalidOperationException("Avalonia TextLayout paragraph properties method did not return a value.");
     }
 }

@@ -46,7 +46,8 @@ internal static partial class Program
             options.VerifyFlyoutStates ||
             options.VerifyFormStates ||
             options.VerifyGroupBoxStates ||
-            options.VerifyImagePreviewerStates)
+            options.VerifyImagePreviewerStates ||
+            options.VerifyInputStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -169,6 +170,10 @@ internal static partial class Program
             {
                 verified &= RunImagePreviewerStateVerification();
             }
+            if (options.VerifyInputStates)
+            {
+                verified &= RunInputStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -230,6 +235,7 @@ internal static partial class Program
             "form" => CreateFormScenarios(),
             "groupbox" => CreateGroupBoxScenarios(),
             "imagepreviewer" => CreateImagePreviewerScenarios(),
+            "input" => CreateInputScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

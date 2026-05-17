@@ -3,6 +3,7 @@ using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -11,6 +12,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
@@ -196,12 +198,17 @@ public class TextArea : AvaloniaTextBox,
     #endregion
 
     private TextAreaDecoratedBox? _decoratedBox;
+    private DockPanel? _rootLayout;
+    private Panel? _frameLayout;
     private ScrollViewer? _scrollViewer;
     private TextAreaAccessoryHost? _accessoryHost;
     private IDisposable? _accessoryHostSpacingBinding;
     private ResizeHandle? _resizeHandle;
+    private TextBlock? _countTextIndicator;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
+    private ScrollViewerHeightCacheKey? _scrollViewerHeightCacheKey;
+    private double _scrollViewerHeightCacheValue;
     private double? _originHeight; // 拖动改变高度的初始值
     private double _minResizeHeight; // 拖动改变高度时允许的最小 TextArea.Height
     private double _maxResizeHeight; // 拖动改变高度时允许的最大 TextArea.Height
@@ -241,13 +248,21 @@ public class TextArea : AvaloniaTextBox,
         {
             ConfigureEffectiveShowClearButton();
         }
-        else if (change.Property == IsShowCountProperty)
+        else if (change.Property == IsShowCountProperty ||
+                 change.Property == MaxLengthProperty)
         {
             HandleInputChanged(Text);
+            ConfigureOptionalTemplateVisuals();
         }
         else if (change.Property == FormFeedbackProperty)
         {
             ConfigureFormFeedbackSubscription();
+        }
+
+        if (change.Property == IsResizableProperty ||
+            change.Property == CountTextProperty)
+        {
+            ConfigureOptionalTemplateVisuals();
         }
 
         if (IsAccessoryStateProperty(change.Property))
@@ -280,7 +295,6 @@ public class TextArea : AvaloniaTextBox,
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnApplyTemplate(e);
         _contentRightAddOnBindings?.Dispose();
         _contentRightAddOnBindings = null;
         ClearOwnerDrivenAccessoryHost();
@@ -289,7 +303,20 @@ public class TextArea : AvaloniaTextBox,
             _accessoryHost.DetachOwner();
             _accessoryHost = null;
         }
+        ClearOptionalTemplateVisuals();
+        if (_decoratedBox != null)
+        {
+            _decoratedBox.Owner = null;
+        }
+        _decoratedBox = null;
+        _rootLayout   = null;
+        _frameLayout  = null;
+        _scrollViewer = null;
 
+        base.OnApplyTemplate(e);
+
+        _rootLayout   = e.NameScope.Find<DockPanel>("PART_RootLayout");
+        _frameLayout  = e.NameScope.Find<Panel>("PART_FrameLayout");
         _decoratedBox = e.NameScope.Find<TextAreaDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         if (_decoratedBox != null)
         {
@@ -309,6 +336,113 @@ public class TextArea : AvaloniaTextBox,
         {
             ConfigureOwnerDrivenAccessoryHost();
         }
+        ConfigureOptionalTemplateVisuals();
+    }
+
+    private void ConfigureOptionalTemplateVisuals()
+    {
+        ConfigureCountTextIndicator();
+        ConfigureResizeHandle();
+    }
+
+    private void ConfigureCountTextIndicator()
+    {
+        if (!IsShowCount)
+        {
+            DestroyCountTextIndicator();
+            return;
+        }
+
+        if (_rootLayout == null)
+        {
+            return;
+        }
+
+        if (_countTextIndicator == null)
+        {
+            _countTextIndicator = new TextBlock
+            {
+                Name                = "TextCountIndicator",
+                VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right
+            };
+            DockPanel.SetDock(_countTextIndicator, Dock.Bottom);
+            _countTextIndicator.SetTemplatedParent(this);
+        }
+
+        _countTextIndicator.SetCurrentValue(Avalonia.Controls.TextBlock.TextProperty, CountText);
+        if (!_rootLayout.Children.Contains(_countTextIndicator))
+        {
+            _rootLayout.Children.Insert(0, _countTextIndicator);
+        }
+    }
+
+    private void DestroyCountTextIndicator()
+    {
+        if (_countTextIndicator == null)
+        {
+            return;
+        }
+
+        _countTextIndicator.ClearValue(Avalonia.Controls.TextBlock.TextProperty);
+        _rootLayout?.Children.Remove(_countTextIndicator);
+        _countTextIndicator.SetTemplatedParent(null);
+        _countTextIndicator = null;
+    }
+
+    private void ConfigureResizeHandle()
+    {
+        if (!IsResizable)
+        {
+            DestroyResizeHandle();
+            return;
+        }
+
+        if (_frameLayout == null)
+        {
+            return;
+        }
+
+        if (_resizeHandle == null)
+        {
+            _resizeHandle = new ResizeHandle
+            {
+                Name                = "PART_ResizeHandle",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                VerticalAlignment   = Avalonia.Layout.VerticalAlignment.Bottom,
+                Cursor              = new Cursor(StandardCursorType.SizeNorthSouth),
+                Owner               = this
+            };
+            _resizeHandle.SetTemplatedParent(this);
+        }
+        else
+        {
+            _resizeHandle.Owner = this;
+        }
+
+        if (!_frameLayout.Children.Contains(_resizeHandle))
+        {
+            _frameLayout.Children.Add(_resizeHandle);
+        }
+    }
+
+    private void DestroyResizeHandle()
+    {
+        if (_resizeHandle == null)
+        {
+            return;
+        }
+
+        _resizeHandle.Owner = null;
+        _frameLayout?.Children.Remove(_resizeHandle);
+        _resizeHandle.SetTemplatedParent(null);
+        _resizeHandle = null;
+    }
+
+    private void ClearOptionalTemplateVisuals()
+    {
+        DestroyResizeHandle();
+        DestroyCountTextIndicator();
     }
 
     private bool SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
@@ -477,12 +611,40 @@ public class TextArea : AvaloniaTextBox,
     private double CalculateScrollViewerHeight(int lines)
     {
         var fontSize = FontSize;
+        var verticalSpace = this.GetVerticalSpaceBetweenScrollViewerAndPresenter();
+        var cacheKey = new ScrollViewerHeightCacheKey(
+            lines,
+            fontSize,
+            FontFamily,
+            FontStyle,
+            FontWeight,
+            FontStretch,
+            LineHeight,
+            FontFeatures,
+            verticalSpace);
+        if (_scrollViewerHeightCacheKey == cacheKey)
+        {
+            return _scrollViewerHeightCacheValue;
+        }
+
         var typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
         var paragraphProperties = TextLayoutReflectionExtensions.CreateTextParagraphProperties(typeface, fontSize, null, default, default, null, default, LineHeight, default, FontFeatures);
         var textLayout = new TextLayout(new LineTextSource(lines), paragraphProperties);
-        var verticalSpace = this.GetVerticalSpaceBetweenScrollViewerAndPresenter();
-        return Math.Ceiling(textLayout.Height + verticalSpace);
+        _scrollViewerHeightCacheValue = Math.Ceiling(textLayout.Height + verticalSpace);
+        _scrollViewerHeightCacheKey   = cacheKey;
+        return _scrollViewerHeightCacheValue;
     }
+
+    private readonly record struct ScrollViewerHeightCacheKey(
+        int Lines,
+        double FontSize,
+        FontFamily FontFamily,
+        FontStyle FontStyle,
+        FontWeight FontWeight,
+        FontStretch FontStretch,
+        double LineHeight,
+        FontFeatureCollection? FontFeatures,
+        double VerticalSpace);
     
     private void ConfigureEffectiveShowClearButton()
     {

@@ -43,7 +43,7 @@
 dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
   -c Debug --framework net10.0 --no-build -- \
   --count 60 \
-  --markdown docs/performances/AddOnDecoratedBox/addon-decorated-box-final.md
+  --markdown /tmp/atomui-addon-control.md
 ```
 
 控件级 Icon 基准：
@@ -61,7 +61,7 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
   -c Debug --framework net10.0 --no-build -- \
   --suite button --count 60 \
-  --markdown docs/performances/Button/button-baseline.md
+  --markdown /tmp/atomui-button-control.md
 ```
 
 Icon / AddOn 专项行为验证：
@@ -95,7 +95,7 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
   -c Debug --framework net10.0 --no-build -- \
   --suite buttonspinner --count 60 \
-  --markdown docs/performances/ButtonSpinner/buttonspinner-baseline.md
+  --markdown /tmp/atomui-buttonspinner-control.md
 ```
 
 控件级 Drawer 基准：

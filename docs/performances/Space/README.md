@@ -4,14 +4,7 @@
 
 本目录记录 `SpaceShowCase` 的真实 Gallery baseline、Space / CompactSpace 体系的性能分析、优化方案和最终实测结果。
 
-## 文档
-
-| 文档 | 内容 |
-| --- | --- |
-| [README.md](README.md) | Space 本轮优化结论、核心数据和最终判断 |
-| [space-performance-plan.md](space-performance-plan.md) | 分阶段优化方案、目标、风险矩阵和实施任务列表 |
-
-工具生成的 micro / Gallery 原始跑分输出不入库；需要时按 `space-performance-plan.md` 中的命令重新生成。
+工具生成的 micro / Gallery 原始跑分输出、阶段计划和中间结论不入库；关键数据和最终判断已汇总到本 README。
 
 ## 当前结论
 

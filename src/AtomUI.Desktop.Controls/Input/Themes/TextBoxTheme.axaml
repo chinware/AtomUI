@@ -14,56 +14,6 @@
                 BorderBrush="{TemplateBinding BorderBrush}"
                 Background="{TemplateBinding Background}">
                 <DockPanel Name="ContentLayout" LastChildFill="True">
-                    <StackPanel
-                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnLayoutPart}"
-                        Orientation="Horizontal"
-                        DockPanel.Dock="Left">
-                        <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
-                            VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Left"
-                            Focusable="False"
-                            Content="{TemplateBinding InnerLeftContent}"/>
-                    </StackPanel>
-            
-                    <StackPanel
-                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnLayoutPart}"
-                        Orientation="Horizontal"
-                        DockPanel.Dock="Right">
-                        <atom:InputClearIconButton
-                            Name="PART_ClearButton"
-                            IsVisible="{TemplateBinding IsEffectiveShowClearButton}" 
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            Icon="{TemplateBinding ClearIcon}"
-                            VerticalAlignment="Center"/>
-                        <!-- 新增显示密码按钮 -->
-                        <atom:RevealButton
-                            Name="PART_RevealButton"
-                            IsChecked="{TemplateBinding RevealPassword, Mode=TwoWay}"
-                            IsVisible="{TemplateBinding IsEnableRevealButton}" 
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            VerticalAlignment="Center"/>
-                        <ContentPresenter
-                            Name="FormFeedBack"
-                            VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Right"
-                            IsVisible="{TemplateBinding IsFormFeedbackVisible}"
-                            Content="{TemplateBinding FormFeedback}"/>
-                        <ContentPresenter
-                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
-                            VerticalAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Right"
-                            IsVisible="{TemplateBinding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}}"
-                            Content="{TemplateBinding InnerRightContent}"/>
-                        <atom:TextBlock Name="TextCountIndicator" 
-                                        VerticalAlignment="Center"
-                                        Text="{TemplateBinding CountText}"
-                                        IsVisible="{TemplateBinding IsShowCount}"/>
-                    </StackPanel>
-            
                     <atom:ScrollViewer
                         Name="ScrollViewer"
                         Cursor="Ibeam"

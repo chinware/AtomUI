@@ -4,15 +4,7 @@
 
 当前已完成 Phase 3-7：loading、icon presenter、wave decorator 均已按需创建，并完成真实 `ButtonShowCase` Gallery 复测。
 
-## 文档
-
-本目录只保留能长期复用的设计、基线和最终结果。阶段中间跑分、一次性 smoke 原始输出不单独入库；关键结论已汇总在 README 和方案文档中。
-
-| 文档 | 内容 |
-| --- | --- |
-| [button-performance-plan.md](button-performance-plan.md) | 完整优化方案、风险边界、阶段任务、实施结论 |
-| [button-baseline.md](button-baseline.md) | Button 控件级微基准优化前 baseline |
-| [button-showcase-baseline.md](button-showcase-baseline.md) | 真实 `ButtonShowCase` Gallery navigation 优化前 baseline |
+阶段中间跑分、一次性计划和 smoke 原始输出不单独入库；长期结论、风险边界和最终数据已汇总到本 README。
 
 ## 当前结论
 

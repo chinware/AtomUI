@@ -109,11 +109,12 @@ internal class TextAreaAccessoryHost : StackPanel
             visualsChanged = true;
         }
 
-        if (!Equals(_clearButton.Icon, _owner.ClearIcon))
+        var previousIcon = _clearButton.Icon;
+        _clearButton.SyncIcon(_owner.ClearIcon);
+        if (!ReferenceEquals(_clearButton.Icon, previousIcon))
         {
             visualsChanged = true;
         }
-        _clearButton.SetCurrentValue(AbstractIconButton.IconProperty, _owner.ClearIcon);
         _clearButton.SetCurrentValue(AbstractIconButton.IsMotionEnabledProperty, _owner.IsMotionEnabled);
         return visualsChanged;
     }

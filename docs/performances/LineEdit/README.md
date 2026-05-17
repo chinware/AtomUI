@@ -2,13 +2,7 @@
 
 本目录记录 `LineEdit` 及其 Gallery 页面 `LineEditShowCase` 的性能数据。`LineEdit` 的控件级优化主要来自 `AddOnDecoratedBox` 体系和右侧 accessory 按需创建。
 
-## 文档
-
-| 文档 | 内容 |
-| --- | --- |
-| [lineedit-showcase-navigation-perf.md](lineedit-showcase-navigation-perf.md) | Gallery 真实 `LineEditShowCase` 导航性能对比 |
-
-逐次 sample 原始输出不入库；需要时使用文档中的复现命令重新生成。
+逐次 sample 原始输出和阶段中间文档不入库；关键 Gallery 对比数据已汇总到本 README。
 
 ## 当前结论
 

@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Reflection;
@@ -51,17 +50,15 @@ internal static class TextBoxReflectionExtensions
     
     public static TextPresenter GetTextPresenter(this AvaloniaTextBox textBox)
     {
-        var textPresenter = TextPresenterFieldInfo.Value.GetValue(textBox) as TextPresenter;
-        Debug.Assert(textPresenter != null);
-        return textPresenter;
+        return TextPresenterFieldInfo.Value.GetValue(textBox) as TextPresenter
+               ?? throw new InvalidOperationException("Avalonia TextBox text presenter field is not available.");
     }
     
 
     public static double GetVerticalSpaceBetweenScrollViewerAndPresenter(this AvaloniaTextBox textBox)
     {
-        var result = GetVerticalSpaceBetweenScrollViewerAndPresenterMethodInfo.Value.Invoke(textBox, []) as double?;
-        Debug.Assert(result != null);
-        return result.Value;
+        return GetVerticalSpaceBetweenScrollViewerAndPresenterMethodInfo.Value.Invoke(textBox, []) as double?
+               ?? throw new InvalidOperationException("Avalonia TextBox vertical spacing method did not return a value.");
     }
 
     public static void SnapshotUndoRedo(this AvaloniaTextBox textBox, bool ignoreChangeCount = true)

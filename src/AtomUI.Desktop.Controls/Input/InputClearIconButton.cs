@@ -9,7 +9,18 @@ internal class InputClearIconButton : IconButton
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (Icon == null)
+        SyncIcon(null);
+    }
+
+    internal void SyncIcon(PathIcon? icon)
+    {
+        if (icon != null)
+        {
+            SetCurrentValue(IconProperty, icon);
+            return;
+        }
+
+        if (Icon is not CloseCircleFilled)
         {
             SetCurrentValue(IconProperty, new CloseCircleFilled());
         }

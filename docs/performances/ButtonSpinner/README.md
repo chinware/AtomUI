@@ -99,7 +99,7 @@ dotnet run --no-build --framework net10.0 \
 dotnet run --no-build --framework net10.0 \
   --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- \
   --suite buttonspinner --count 60 \
-  --markdown docs/performances/ButtonSpinner/buttonspinner-optimized.md
+  --markdown /tmp/atomui-buttonspinner-control.md
 ```
 
 ```bash
@@ -111,5 +111,5 @@ dotnet run --no-build --framework net10.0 \
   --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj -- \
   --showcase buttonspinner --iterations 30 --warmup 10 --timeout-ms 30000 \
   --label buttonspinner-optimized \
-  --markdown docs/performances/ButtonSpinner/buttonspinner-showcase-optimized.md
+  --markdown /tmp/atomui-buttonspinner-gallery.md
 ```

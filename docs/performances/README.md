@@ -18,12 +18,12 @@
 应进入版本控制：
 
 - 总览、guide、控件目录 README。
-- 控件级优化方案和关键设计取舍。
-- 优化前基线和最终结果。
-- 对应 ShowCase 加载时间优化对比、Gallery 真实场景的汇总结论和复现命令。
+- 控件级优化方案、关键设计取舍、优化前基线和最终结果的摘要。
+- 对应 ShowCase 加载时间优化对比、Gallery 真实场景的汇总结论和复现命令，统一汇总到控件 README。
 
 不进入版本控制：
 
+- 单独的阶段计划、baseline、final、optimized 等中间 markdown 文件。
 - 阶段中间跑分输出。
 - 一次性评估草稿。
 - 可由工具重新生成的逐次 sample 原始输出。
@@ -66,6 +66,7 @@
 | Form | 本轮已完成低风险结构与生命周期优化 | [Form](Form/README.md) | `Form.GalleryShape` `92.094ms/item -> 89.364ms/item`，visual/root `1544 -> 1508`；`FormShowCase` visuals `6435 -> 6300`，alloc 少 `3.54%`，页面 repeated 耗时基本持平 |
 | GroupBox | 本轮已完成 | [GroupBox](GroupBox/README.md) | 默认无 `HeaderIcon` 不再创建 header icon presenter；`GroupBox.GalleryShape` visual/root `104 -> 96`，`GroupBoxShowCase` visuals `151 -> 143`，repeated mean `27.79ms -> 26.16ms` |
 | ImagePreviewer | 本轮已完成 | [ImagePreviewer](ImagePreviewer/README.md) | 单图关闭态不再提前创建完整预览 source list；`ImagePreviewerShowCase` cold mean `180.28ms -> 147.48ms`，repeated mean `33.56ms -> 30.61ms` |
+| Input | 本轮已完成结构优化 | [Input](Input/README.md) | `TextBox.Default` visual/root `21 -> 13`、KB/item `332.6 -> 236.7`；`TextArea.Default` visual/root `24 -> 21`；`LineEditShowCase` visuals `2307 -> 2284`，repeated mean 基本持平 |
 
 ## 总列表
 
@@ -96,6 +97,7 @@
 | Data Entry | DatePicker | Done | [DatePicker](DatePicker/README.md)；关闭态 popup content、默认 accessory host、Window.Deactivated 订阅已按需化 |
 | Data Entry | TimePicker | Pending | 待建立基线 |
 | Data Entry | Form | Done | [Form](Form/README.md)；已完成低风险结构与生命周期优化，控件级小幅提升，Gallery 结构/分配下降，页面 repeated timing 基本持平 |
+| Data Entry | Input | Done | [Input](Input/README.md)；TextBox/TextArea 默认 accessory、count、resize 成本按需化；真实 LineEditShowCase 结构/分配下降，repeated timing 基本持平 |
 | Data Entry | LineEdit | Done | 已完成控件级优化与 Gallery 实测 |
 | Data Entry | Mentions | Pending | 待建立基线 |
 | Data Entry | NumberUpDown | Pending | 待建立基线 |
