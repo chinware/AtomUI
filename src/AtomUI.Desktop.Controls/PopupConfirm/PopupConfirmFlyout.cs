@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reactive.Disposables;
-using AtomUI.Data;
+﻿using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
@@ -8,43 +6,32 @@ namespace AtomUI.Desktop.Controls;
 internal class PopupConfirmFlyout : Flyout
 {
     internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
-    
-    private CompositeDisposable? _presenterBindingDisposables;
 
     public PopupConfirmFlyout(PopupConfirm popupConfirm)
     {
         PopupConfirmRef = new WeakReference<PopupConfirm>(popupConfirm);
-        Popup.IsLightDismissEnabled = true;
-        BindUtils.RelayBind(popupConfirm, FlyoutHost.ShouldUseOverlayPopupProperty, this, ShouldUseOverlayPopupProperty);
+        this[!ShouldUseOverlayPopupProperty] = popupConfirm[!FlyoutHost.ShouldUseOverlayPopupProperty];
     }
 
     protected override Control CreatePresenter()
     {
-        var presenter = base.CreatePresenter() as FlyoutPresenter;
-        Debug.Assert(presenter != null);
-        _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(10);
+        var presenter = (FlyoutPresenter)base.CreatePresenter();
         if (PopupConfirmRef.TryGetTarget(out var popupConfirm))
         {
             var popupConfirmContainer = new PopupConfirmContainer(popupConfirm);
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.OkTextProperty, popupConfirmContainer,
-                PopupConfirmContainer.OkTextProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.CancelTextProperty, popupConfirmContainer,
-                PopupConfirmContainer.CancelTextProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.OkButtonTypeProperty, popupConfirmContainer,
-                PopupConfirmContainer.OkButtonTypeProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.IsShowCancelButtonProperty, popupConfirmContainer,
-                PopupConfirmContainer.IsShowCancelButtonProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.TitleProperty, popupConfirmContainer,
-                PopupConfirmContainer.TitleProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.ConfirmStatusProperty, popupConfirmContainer,
-                PopupConfirmContainer.ConfirmStatusProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.IconProperty, popupConfirmContainer,
-                PopupConfirmContainer.IconProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.ConfirmContentProperty, popupConfirmContainer,
-                PopupConfirmContainer.ConfirmContentProperty));
-            _presenterBindingDisposables.Add(BindUtils.RelayBind(popupConfirm, PopupConfirm.ConfirmContentTemplateProperty, popupConfirmContainer,
-                PopupConfirmContainer.ConfirmContentTemplateProperty));
+            popupConfirmContainer[!PopupConfirmContainer.OkTextProperty] = popupConfirm[!PopupConfirm.OkTextProperty];
+            popupConfirmContainer[!PopupConfirmContainer.CancelTextProperty] = popupConfirm[!PopupConfirm.CancelTextProperty];
+            popupConfirmContainer[!PopupConfirmContainer.OkButtonTypeProperty] = popupConfirm[!PopupConfirm.OkButtonTypeProperty];
+            popupConfirmContainer[!PopupConfirmContainer.IsShowCancelButtonProperty] =
+                popupConfirm[!PopupConfirm.IsShowCancelButtonProperty];
+            popupConfirmContainer[!PopupConfirmContainer.TitleProperty] = popupConfirm[!PopupConfirm.TitleProperty];
+            popupConfirmContainer[!PopupConfirmContainer.ConfirmStatusProperty] =
+                popupConfirm[!PopupConfirm.ConfirmStatusProperty];
+            popupConfirmContainer[!PopupConfirmContainer.IconProperty] = popupConfirm[!PopupConfirm.IconProperty];
+            popupConfirmContainer[!PopupConfirmContainer.ConfirmContentProperty] =
+                popupConfirm[!PopupConfirm.ConfirmContentProperty];
+            popupConfirmContainer[!PopupConfirmContainer.ConfirmContentTemplateProperty] =
+                popupConfirm[!PopupConfirm.ConfirmContentTemplateProperty];
             
             presenter.Content = popupConfirmContainer;
         }

@@ -1,8 +1,6 @@
 using System.Collections;
 using System.ComponentModel;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
@@ -59,7 +57,6 @@ public class MenuFlyout : Flyout
     #endregion
 
     private protected MenuFlyoutPresenter? Presenter;
-    private CompositeDisposable? _presenterBindingDisposables;
 
     static MenuFlyout()
     {
@@ -75,9 +72,6 @@ public class MenuFlyout : Flyout
 
     protected override Control CreatePresenter()
     {
-        _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(4);
-
         if (Presenter != null)
         {
             Presenter.MenuItemClicked -= HandleMenuItemClicked;
@@ -90,23 +84,12 @@ public class MenuFlyout : Flyout
         };
 
         Presenter.MenuItemClicked += HandleMenuItemClicked;
-        _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, MenuFlyoutPresenter.ItemTemplateProperty));
-        _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter,
-                MenuFlyoutPresenter.ItemContainerThemeProperty));
-        _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, IsArrowVisibleEffectiveProperty, Presenter,
-                MenuFlyoutPresenter.IsArrowVisibleProperty));
-        _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter,
-                MenuFlyoutPresenter.IsMotionEnabledProperty));
-        _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, Presenter,
-                MenuFlyoutPresenter.ShouldUseOverlayPopupProperty));
-        _presenterBindingDisposables.Add(
-            BindUtils.RelayBind(this, ArrowPositionProperty, Presenter,
-                MenuFlyoutPresenter.ArrowPositionProperty));
+        Presenter[!MenuFlyoutPresenter.ItemTemplateProperty] = this[!ItemTemplateProperty];
+        Presenter[!MenuFlyoutPresenter.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty];
+        Presenter[!MenuFlyoutPresenter.IsArrowVisibleProperty] = this[!IsArrowVisibleEffectiveProperty];
+        Presenter[!MenuFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        Presenter[!MenuFlyoutPresenter.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
+        Presenter[!MenuFlyoutPresenter.ArrowPositionProperty] = this[!ArrowPositionProperty];
         ConfigureArrowPosition();
         ConfigureShowArrowEffective();
         return Presenter;

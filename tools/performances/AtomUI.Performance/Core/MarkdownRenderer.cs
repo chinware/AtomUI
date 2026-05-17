@@ -87,6 +87,7 @@ internal static partial class Program
                 "drawer" => "# Drawer Baseline",
                 "expander" => "# Expander Baseline",
                 "empty" => "# Empty Baseline",
+                "flyouts" => "# Flyouts Baseline",
                 "floatbutton" => "# FloatButton Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",

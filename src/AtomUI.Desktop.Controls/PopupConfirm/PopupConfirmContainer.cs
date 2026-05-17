@@ -113,6 +113,7 @@ internal class PopupConfirmContainer : TemplatedControl
     {
         base.OnApplyTemplate(e);
         SetupDefaultIcon();
+        DetachButtonHandlers();
         _okButton     = e.NameScope.Find<Button>("PART_OkButton");
         _cancelButton = e.NameScope.Find<Button>("PART_CancelButton");
         if (_okButton is not null)
@@ -129,6 +130,19 @@ internal class PopupConfirmContainer : TemplatedControl
             _cancelButton.Height =  double.NaN;
         }
         UpdatePseudoClasses();
+    }
+
+    private void DetachButtonHandlers()
+    {
+        if (_okButton is not null)
+        {
+            _okButton.Click -= HandleButtonClicked;
+        }
+
+        if (_cancelButton is not null)
+        {
+            _cancelButton.Click -= HandleButtonClicked;
+        }
     }
 
     private void HandleButtonClicked(object? sender, RoutedEventArgs args)

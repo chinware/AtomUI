@@ -66,6 +66,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.BadgeShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/BadgeShowCase.axaml",
                 stats => stats.CountBadgeCount > 0 || stats.DotBadgeCount > 0 || stats.RibbonBadgeCount > 0),
+            ["infoflyout"] = new(
+                "InfoFlyoutShowCase",
+                InfoFlyoutViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.InfoFlyoutShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/InfoFlyoutShowCase.axaml",
+                stats => stats.FlyoutHostCount > 0),
             ["card"] = new(
                 "CardShowCase",
                 CardViewModel.ID,
@@ -102,6 +108,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ModalShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/ModalShowCase.axaml",
                 stats => stats.DialogCount > 0 || stats.MessageBoxCount > 0),
+            ["popupconfirm"] = new(
+                "PopupConfirmShowCase",
+                PopupConfirmViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.PopupConfirmShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/PopupConfirmShowCase.axaml",
+                stats => stats.FlyoutHostCount > 0),
             ["drawer"] = new(
                 "DrawerShowCase",
                 DrawerViewModel.ID,

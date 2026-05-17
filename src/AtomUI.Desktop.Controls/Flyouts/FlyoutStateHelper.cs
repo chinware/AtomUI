@@ -294,11 +294,6 @@ internal class FlyoutStateHelper : AvaloniaObject
         }
         _subscriptions = new CompositeDisposable();
 
-        if (Flyout != null)
-        {
-            Flyout.Popup.IsLightDismissEnabled = TriggerType == FlyoutTriggerType.Click;
-        }
-
         switch (TriggerType)
         {
             case FlyoutTriggerType.Hover:
@@ -310,6 +305,19 @@ internal class FlyoutStateHelper : AvaloniaObject
             case FlyoutTriggerType.Focus:
                 SetupFocusTrigger();
                 break;
+        }
+    }
+
+    private void ConfigureFlyoutLightDismiss()
+    {
+        if (Flyout is Flyout atomFlyout)
+        {
+            var isLightDismissEnabled = TriggerType == FlyoutTriggerType.Click;
+            if (atomFlyout.IsLightDismissEnabled != isLightDismissEnabled)
+            {
+                atomFlyout.SetCurrentValue(AtomUI.Desktop.Controls.Flyout.IsLightDismissEnabledProperty,
+                    isLightDismissEnabled);
+            }
         }
     }
 
@@ -495,6 +503,7 @@ internal class FlyoutStateHelper : AvaloniaObject
         _isFlyoutShowing = true;
         StopMouseEnterTimer();
         StopMouseLeaveTimer();
+        ConfigureFlyoutLightDismiss();
         if (Flyout.IsOpen)
         {
             if (Flyout.Popup is Popup popup && popup.IsPlayingCloseMotion)

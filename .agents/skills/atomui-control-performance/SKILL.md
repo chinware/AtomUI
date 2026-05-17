@@ -12,6 +12,7 @@ description: Use when optimizing AtomUI controls, investigating control performa
 - Follow the principle: unused features must not pay runtime cost.
 - Hard boundary: an optimization that causes a repeatable performance regression is not acceptable. If any primary metric for the targeted control or its real Gallery ShowCase gets worse under the same measurement policy, the change must be fixed, split, reverted, or explicitly reported as a blocker before the optimization can be considered complete.
 - Hard boundary: no performance optimization may introduce resource leaks. If an optimization creates, subscribes, binds, caches, lazily materializes, or reparents anything, it must also define and verify the matching release path before the work is considered complete.
+- Hard boundary: when a binding source and target have the same owner and lifetime, prefer Avalonia `[!]` binding syntax over `BindUtils.RelayBind(...)` plus `CompositeDisposable` or manual disposal plumbing. Do not introduce disposable binding infrastructure for lifetime-consistent child visuals, presenters, adorners, or template-owned objects unless there is a real lifecycle mismatch, replacement path, or detach/re-template requirement.
 - Hard boundary: no performance optimization may make the implementation logic materially more complex. If the measured win requires fragile state machines, duplicated template/style logic in code, broad lifecycle orchestration, unclear synchronization, or code that is harder to reason about than the original behavior warrants, stop and propose a simpler option instead of implementing it.
 - When scanning for performance bottlenecks, also scan for resource leaks in the same code path. Any discovered leak outranks performance-only work and must be fixed first or explicitly documented as a blocker if it cannot be fixed in the current scope. Do not proceed with an optimization that leaves a known leak in the touched lifecycle path.
 - Prefer no API change. AtomUI has no formal release yet, so API changes are allowed only when required and explicitly justified.
@@ -85,6 +86,8 @@ Performance summaries must be readable to a human reviewer, not just raw benchma
 ## Binding/Subscription Checklist
 
 - Treat leak scanning as mandatory during performance analysis, not optional cleanup after optimization.
+- Before using `BindUtils.RelayBind(...)`, storing an `IDisposable` binding, or adding a `CompositeDisposable`, first check whether Avalonia `[!]` binding is sufficient because the source and target lifetimes are identical.
+- Use explicit disposable binding plumbing only for mismatched lifetimes, replacement paths, detach/re-template cleanup, global/window subscriptions, timers, event handlers, or lazily materialized objects that can outlive their creator.
 - Store every disposable subscription or binding that is created outside XAML.
 - Dispose old bindings before replacing them.
 - Avoid creating duplicate bindings on repeated property changes.

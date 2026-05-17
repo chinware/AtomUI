@@ -42,7 +42,8 @@ internal static partial class Program
             options.VerifyDrawerStates ||
             options.VerifyExpanderStates ||
             options.VerifyEmptyStates ||
-            options.VerifyFloatButtonStates)
+            options.VerifyFloatButtonStates ||
+            options.VerifyFlyoutStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -149,6 +150,10 @@ internal static partial class Program
             {
                 verified &= RunFloatButtonStateVerification();
             }
+            if (options.VerifyFlyoutStates)
+            {
+                verified &= RunFlyoutStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -205,6 +210,7 @@ internal static partial class Program
             "drawer" => CreateDrawerScenarios(),
             "expander" => CreateExpanderScenarios(),
             "empty" => CreateEmptyScenarios(),
+            "flyouts" => CreateFlyoutScenarios(),
             "floatbutton" => CreateFloatButtonScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),

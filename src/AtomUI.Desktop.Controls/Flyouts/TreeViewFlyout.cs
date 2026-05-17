@@ -1,8 +1,6 @@
 using System.Collections;
 using System.ComponentModel;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
@@ -60,7 +58,6 @@ public class TreeViewFlyout : Flyout
     #endregion
 
     private protected TreeViewFlyoutPresenter? Presenter;
-    private CompositeDisposable? _presenterBindingDisposables;
 
     static TreeViewFlyout()
     {
@@ -76,20 +73,17 @@ public class TreeViewFlyout : Flyout
 
     protected override Control CreatePresenter()
     {
-        _presenterBindingDisposables?.Dispose();
-        _presenterBindingDisposables = new CompositeDisposable(5);
-
         Presenter = new TreeViewFlyoutPresenter
         {
             TreeViewFlyout = this,
             ItemsSource = Items
         };
 
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, Presenter, TreeViewFlyoutPresenter.ItemTemplateProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ItemContainerThemeProperty, Presenter, TreeViewFlyoutPresenter.ItemContainerThemeProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleEffectiveProperty, Presenter, TreeViewFlyoutPresenter.IsArrowVisibleProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Presenter, TreeViewFlyoutPresenter.IsMotionEnabledProperty));
-        _presenterBindingDisposables.Add(BindUtils.RelayBind(this, ArrowPositionProperty, Presenter, TreeViewFlyoutPresenter.ArrowPositionProperty));
+        Presenter[!TreeViewFlyoutPresenter.ItemTemplateProperty] = this[!ItemTemplateProperty];
+        Presenter[!TreeViewFlyoutPresenter.ItemContainerThemeProperty] = this[!ItemContainerThemeProperty];
+        Presenter[!TreeViewFlyoutPresenter.IsArrowVisibleProperty] = this[!IsArrowVisibleEffectiveProperty];
+        Presenter[!TreeViewFlyoutPresenter.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        Presenter[!TreeViewFlyoutPresenter.ArrowPositionProperty] = this[!ArrowPositionProperty];
         ConfigureShowArrowEffective();
         ConfigureArrowPosition();
 
