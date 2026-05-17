@@ -19,7 +19,9 @@
 - `Suites/Button/`: Button、DropdownButton、SplitButton 相关场景和状态/模板验证。
 - `Suites/ButtonSpinner/`: ButtonSpinner、Gallery shape batch、NumericUpDown 联动基线。
 - `Suites/Drawer/`: Drawer 关闭态、extra/footer、嵌套场景基线。
+- `Suites/GroupBox/`: GroupBox header icon lazy、Gallery shape 和状态/生命周期验证。
 - `Suites/Icon/`: Icon micro benchmark、隐藏 icon slot、AntDesign metadata、provider cache 验证。
+- `Suites/ImagePreviewer/`: ImagePreviewer 关闭态 source list lazy、Gallery shape 和状态/生命周期验证。
 - `TestSupport/`: 断言、测试 brush、marker template、probe icon 等测试辅助类型。
 
 新增控件级基准时优先在 `Suites/<ControlName>/` 下建文件；跨控件复用能力放到 `Core/` 或 `TestSupport/`。
@@ -105,6 +107,23 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown /tmp/drawer-control-baseline.md
 ```
 
+控件级 ImagePreviewer 基准：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite imagepreviewer --count 60 \
+  --markdown /tmp/atomui-imagepreviewer-control.md
+```
+
+ImagePreviewer 状态和生命周期验证：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --verify-imagepreviewer-states
+```
+
 Gallery 真实 `LineEditShowCase` 导航基准：
 
 ```bash
@@ -124,7 +143,17 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
   --markdown /tmp/icon-showcase-navigation-baseline.md
 ```
 
-Gallery 工具当前支持 `lineedit`、`icon`、`button`、`dropdownbutton`、`splitbutton`、`buttonspinner`、`space`、`select`、`autocomplete`、`treeselect`、`cascader`、`menu`、`drawer`。例如验证 Icon Phase 4 影响到的控件真实场景：
+Gallery 真实 `ImagePreviewerShowCase` 导航基准：
+
+```bash
+dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --showcase imagepreviewer --label imagepreviewer \
+  --cold-iterations 10 --iterations 40 --warmup 6 --timeout-ms 45000 \
+  --markdown /tmp/atomui-imagepreviewer-gallery.md
+```
+
+Gallery 工具支持多个真实 ShowCase，常用例子包括 `lineedit`、`icon`、`button`、`space`、`select`、`cascader`、`drawer`、`groupbox`、`imagepreviewer`。例如验证 Icon Phase 4 影响到的控件真实场景：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \

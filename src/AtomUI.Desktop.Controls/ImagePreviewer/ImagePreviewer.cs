@@ -55,6 +55,9 @@ public class ImagePreviewer : AbstractImagePreviewer
             (o, v) => o.EffectiveCoverImage = v);
     
     private PreviewImageSource? _effectiveCoverImage;
+    private bool _ownsEffectiveCoverImage;
+    private string? _effectiveCoverImageSrc;
+    private bool _isDetaching;
 
     internal PreviewImageSource? EffectiveCoverImage
     {
@@ -62,6 +65,8 @@ public class ImagePreviewer : AbstractImagePreviewer
         set => SetAndRaise(EffectiveCoverImageProperty, ref _effectiveCoverImage, value);
     }
     #endregion
+
+    protected override bool ShouldEagerLoadSourcesOnItemsSourceChanged => false;
     
     static ImagePreviewer()
     {
@@ -71,36 +76,96 @@ public class ImagePreviewer : AbstractImagePreviewer
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == CoverImageSrcProperty)
+        if (change.Property == CoverImageSrcProperty ||
+            change.Property == ItemsSourceProperty ||
+            change.Property == EffectiveSourcesProperty)
         {
-            if (!string.IsNullOrEmpty(CoverImageSrc))
-            {
-                SetCurrentValue(EffectiveCoverImageProperty, LoadImageSource(CoverImageSrc));
-            }
-            else
-            {
-                SetCurrentValue(EffectiveCoverImageProperty, null);
-            }
-        }
-        
-        else if (change.Property == EffectiveSourcesProperty)
-        {
-            if (EffectiveSources?.Count > 0)
-            {
-                if (EffectiveCoverImage == null)
-                {
-                    SetCurrentValue(EffectiveCoverImageProperty, EffectiveSources.First());
-                }
-            }
+            RefreshEffectiveCoverImage();
         }
     }
     
     protected override void OnLoaded(RoutedEventArgs args)
     {
         base.OnLoaded(args);
-        if (EffectiveCoverImage == null && EffectiveSources?.Count > 0)
+        RefreshEffectiveCoverImage();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _isDetaching = true;
+        try
         {
-            SetCurrentValue(EffectiveCoverImageProperty, EffectiveSources.First());
+            SetEffectiveCoverImage(null, ownsSource: false, sourcePath: null);
+            base.OnDetachedFromVisualTree(e);
+        }
+        finally
+        {
+            _isDetaching = false;
+        }
+    }
+
+    private void RefreshEffectiveCoverImage()
+    {
+        if (_isDetaching)
+        {
+            SetEffectiveCoverImage(null, ownsSource: false, sourcePath: null);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(CoverImageSrc))
+        {
+            LoadOwnedEffectiveCoverImage(CoverImageSrc);
+            return;
+        }
+
+        if (EffectiveSources?.Count > 0)
+        {
+            SetEffectiveCoverImage(EffectiveSources[0], ownsSource: false, sourcePath: null);
+            return;
+        }
+
+        if (ItemsSource is { Count: > 0 } itemsSource)
+        {
+            LoadOwnedEffectiveCoverImage(itemsSource[0]);
+            return;
+        }
+
+        SetEffectiveCoverImage(null, ownsSource: false, sourcePath: null);
+    }
+
+    private void LoadOwnedEffectiveCoverImage(string sourcePath)
+    {
+        if (_ownsEffectiveCoverImage &&
+            _effectiveCoverImageSrc == sourcePath &&
+            EffectiveCoverImage is not null)
+        {
+            return;
+        }
+
+        try
+        {
+            SetEffectiveCoverImage(LoadImageSource(sourcePath), ownsSource: true, sourcePath);
+        }
+        catch (Exception)
+        {
+            SetEffectiveCoverImage(null, ownsSource: false, sourcePath: null);
+        }
+    }
+
+    private void SetEffectiveCoverImage(PreviewImageSource? source, bool ownsSource, string? sourcePath)
+    {
+        var oldSource       = EffectiveCoverImage;
+        var shouldDisposeOld = _ownsEffectiveCoverImage &&
+                               oldSource is not null &&
+                               !ReferenceEquals(oldSource, source);
+
+        _ownsEffectiveCoverImage = ownsSource;
+        _effectiveCoverImageSrc  = sourcePath;
+        SetCurrentValue(EffectiveCoverImageProperty, source);
+
+        if (shouldDisposeOld)
+        {
+            oldSource!.Dispose();
         }
     }
 }

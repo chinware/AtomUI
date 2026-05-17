@@ -1,10 +1,13 @@
 ﻿using AtomUI.Controls.Utils;
+using AtomUI.Controls;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -83,16 +86,24 @@ public class GroupBox : ContentControl
     }
 
     #endregion
-    
+
+    private static readonly IBrush TransparentBackground = Brushes.Transparent;
     private readonly BorderRenderHelper _borderRenderHelper;
     private Control? _headerContentContainer;
+    private Panel? _headerLayout;
+    private IconPresenter? _headerIconPresenter;
     private Border? _frame;
     private Rect _borderBounds;
-    
+    private Rect _headerOcclusionBounds;
+
     static GroupBox()
     {
         AffectsMeasure<GroupBox>(HeaderIconProperty);
-        AffectsRender<GroupBox>(BackgroundProperty);
+        AffectsRender<GroupBox>(
+            BackgroundProperty,
+            BorderBrushProperty,
+            BorderThicknessProperty,
+            CornerRadiusProperty);
     }
 
     public GroupBox()
@@ -103,24 +114,34 @@ public class GroupBox : ContentControl
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachHeaderIconPresenter();
         base.OnApplyTemplate(e);
         _headerContentContainer = e.NameScope.Find<Decorator>("PART_HeaderContent");
+        _headerLayout           = e.NameScope.Find<Panel>("PART_HeaderLayout");
         _frame                  = e.NameScope.Find<Border>("PART_Frame");
+        UpdateHeaderIconPresenter();
     }
 
-    // protected override Size MeasureOverride(Size availableSize)
-    // {
-    //     return LayoutHelper.MeasureChild(_frame, availableSize, default, BorderThickness);
-    // }
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == HeaderIconProperty)
+        {
+            UpdateHeaderIconPresenter();
+        }
+    }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = LayoutHelper.ArrangeChild(_frame, finalSize, default, BorderThickness);
+        _borderBounds          = new Rect(finalSize);
+        _headerOcclusionBounds = default;
         if (_headerContentContainer is not null)
         {
             var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
             var offsetY      = headerOffset.Y + _headerContentContainer.DesiredSize.Height / 2;
-            _borderBounds = new Rect(new Point(0, offsetY), new Size(finalSize.Width, finalSize.Height - offsetY));
+            _borderBounds          = new Rect(new Point(0, offsetY), new Size(finalSize.Width, finalSize.Height - offsetY));
+            _headerOcclusionBounds = new Rect(headerOffset, _headerContentContainer.DesiredSize);
         }
 
         return size;
@@ -140,12 +161,57 @@ public class GroupBox : ContentControl
         }
         {
             // 绘制遮挡
-            if (_headerContentContainer is not null)
+            if (_headerOcclusionBounds != default)
             {
-                var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
-                var bounds       = new Rect(headerOffset, _headerContentContainer.DesiredSize);
-                context.FillRectangle(Background ?? new SolidColorBrush(Colors.Transparent), bounds);
+                context.FillRectangle(Background ?? TransparentBackground, _headerOcclusionBounds);
             }
         }
+    }
+
+    private void UpdateHeaderIconPresenter()
+    {
+        if (HeaderIcon is null)
+        {
+            DetachHeaderIconPresenter();
+            return;
+        }
+
+        if (_headerLayout is null)
+        {
+            return;
+        }
+
+        if (_headerIconPresenter is null)
+        {
+            _headerIconPresenter = new IconPresenter
+            {
+                Name = "PART_HeaderIconPresenter"
+            };
+            _headerIconPresenter.SetTemplatedParent(this);
+            _headerLayout.Children.Insert(0, _headerIconPresenter);
+        }
+
+        _headerIconPresenter.SetCurrentValue(IconPresenter.IconProperty, HeaderIcon);
+    }
+
+    private void DetachHeaderIconPresenter()
+    {
+        if (_headerIconPresenter is null)
+        {
+            return;
+        }
+
+        if (_headerIconPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_headerIconPresenter);
+        }
+        else
+        {
+            _headerLayout?.Children.Remove(_headerIconPresenter);
+        }
+
+        _headerIconPresenter.SetCurrentValue(IconPresenter.IconProperty, null);
+        _headerIconPresenter.SetTemplatedParent(null);
+        _headerIconPresenter = null;
     }
 }

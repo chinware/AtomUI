@@ -157,6 +157,8 @@ internal sealed record TreeStats(
     double ResetButtonPerRoot,
     double ItemDeleteButtonPerRoot,
     double FormTooltipIconPresenterPerRoot,
+    double GroupBoxPerRoot,
+    double GroupBoxHeaderIconPresenterPerRoot,
     double DescriptionsPerRoot,
     double DescriptionDefaultItemPerRoot,
     double DescriptionBorderedItemLabelPerRoot,
@@ -289,6 +291,8 @@ internal sealed record TreeStats(
         var resetButtonCount            = 0;
         var itemDeleteButtonCount       = 0;
         var formTooltipIconPresenterCount = 0;
+        var groupBoxCount               = 0;
+        var groupBoxHeaderIconPresenterCount = 0;
         var descriptionsCount           = 0;
         var descriptionDefaultItemCount = 0;
         var descriptionBorderedItemLabelCount = 0;
@@ -655,6 +659,16 @@ internal sealed record TreeStats(
                 {
                     formTooltipIconPresenterCount++;
                 }
+                if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.GroupBox"))
+                {
+                    groupBoxCount++;
+                }
+                if (visual is IconPresenter { Name: "PART_HeaderIconPresenter" } groupBoxIconPresenter &&
+                    groupBoxIconPresenter.GetVisualAncestors().Any(ancestor =>
+                        IsTypeOrDerived(ancestor.GetType(), "AtomUI.Desktop.Controls.GroupBox")))
+                {
+                    groupBoxHeaderIconPresenterCount++;
+                }
                 if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Descriptions"))
                 {
                     descriptionsCount++;
@@ -958,6 +972,8 @@ internal sealed record TreeStats(
             resetButtonCount / (double)rootCount,
             itemDeleteButtonCount / (double)rootCount,
             formTooltipIconPresenterCount / (double)rootCount,
+            groupBoxCount / (double)rootCount,
+            groupBoxHeaderIconPresenterCount / (double)rootCount,
             descriptionsCount / (double)rootCount,
             descriptionDefaultItemCount / (double)rootCount,
             descriptionBorderedItemLabelCount / (double)rootCount,

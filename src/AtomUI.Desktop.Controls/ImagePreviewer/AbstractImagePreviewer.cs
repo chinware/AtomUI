@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
@@ -174,6 +173,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     private bool _dialogOpening;
     private bool _dialogClosing;
 
+    protected virtual bool ShouldEagerLoadSourcesOnItemsSourceChanged => true;
+
     static AbstractImagePreviewer()
     {
         FocusableProperty.OverrideDefaultValue<AbstractImagePreviewer>(true);
@@ -192,6 +193,12 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         {
             HandleSourceChanged();
         }
+        else if (change.Property == FallbackImageSrcProperty &&
+                 ItemsSource is not { Count: > 0 })
+        {
+            ReplaceEffectiveSources(null);
+            EnsureFallbackSource();
+        }
     }
 
     internal PreviewImageSource LoadImageSource(string filePath)
@@ -206,29 +213,104 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
     private void HandleSourceChanged()
     {
-        if (ItemsSource != null && ItemsSource.Count > 0)
+        if (ItemsSource is { Count: > 0 } itemsSource &&
+            (ShouldEagerLoadSourcesOnItemsSourceChanged || IsOpen))
         {
-            var effectiveSources = new List<PreviewImageSource>();
-            foreach (var source in ItemsSource)
+            ReplaceEffectiveSources(LoadImageSources(itemsSource));
+        }
+        else
+        {
+            ReplaceEffectiveSources(null);
+        }
+    }
+
+    private List<PreviewImageSource> LoadImageSources(IList<string> itemsSource)
+    {
+        var effectiveSources = new List<PreviewImageSource>(itemsSource.Count);
+        foreach (var source in itemsSource)
+        {
+            try
             {
-                try
-                {
-                    effectiveSources.Add(LoadImageSource(source));
-                }
-                catch (Exception)
-                {
-                    // TODO 这个错误直接抛出还是忽略
-                }
+                effectiveSources.Add(LoadImageSource(source));
             }
-            var oldSources = EffectiveSources;
-            SetCurrentValue(EffectiveSourcesProperty, effectiveSources);
-            if (oldSources != null)
+            catch (Exception)
             {
-                foreach (var source in oldSources)
-                {
-                    source.Dispose();
-                }
+                // Keep the existing tolerant behavior: skip broken preview sources.
             }
+        }
+        return effectiveSources;
+    }
+
+    private protected void ReplaceEffectiveSources(IList<PreviewImageSource>? sources)
+    {
+        var oldSources = EffectiveSources;
+        if (ReferenceEquals(oldSources, sources))
+        {
+            return;
+        }
+
+        SetCurrentValue(EffectiveSourcesProperty, sources);
+        DisposeSources(oldSources);
+    }
+
+    private static void DisposeSources(IList<PreviewImageSource>? sources)
+    {
+        if (sources is null)
+        {
+            return;
+        }
+
+        foreach (var source in sources)
+        {
+            source.Dispose();
+        }
+    }
+
+    private void EnsureClosedStateSources()
+    {
+        if (ItemsSource is { Count: > 0 })
+        {
+            if (ShouldEagerLoadSourcesOnItemsSourceChanged &&
+                (EffectiveSources is null || EffectiveSources.Count == 0))
+            {
+                HandleSourceChanged();
+            }
+            return;
+        }
+
+        EnsureFallbackSource();
+    }
+
+    private void EnsureDialogSources()
+    {
+        if (ItemsSource is { Count: > 0 } itemsSource &&
+            EffectiveSources?.Count != itemsSource.Count)
+        {
+            ReplaceEffectiveSources(LoadImageSources(itemsSource));
+            return;
+        }
+
+        if (EffectiveSources is null || EffectiveSources.Count == 0)
+        {
+            EnsureFallbackSource();
+        }
+    }
+
+    private void EnsureFallbackSource()
+    {
+        if ((EffectiveSources is { Count: > 0 }) ||
+            FallbackImageSrc is null)
+        {
+            return;
+        }
+
+        try
+        {
+            ReplaceEffectiveSources([LoadImageSource(FallbackImageSrc)]);
+        }
+        catch (Exception)
+        {
+            // Keep the existing tolerant behavior: ignore a broken fallback image.
         }
     }
 
@@ -246,22 +328,14 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     protected override void OnLoaded(RoutedEventArgs args)
     {
         base.OnLoaded(args);
-        if (EffectiveSources == null || EffectiveSources?.Count == 0)
-        {
-            if (FallbackImageSrc != null)
-            {
-                try
-                {
-                    var sources = new List<PreviewImageSource>();
-                    sources.Add(LoadImageSource(FallbackImageSrc));
-                    SetCurrentValue(EffectiveSourcesProperty, sources);
-                }
-                catch (Exception)
-                {
-                    // TODO 这个错误直接抛出还是忽略
-                }
-            }
-        }
+        EnsureClosedStateSources();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        CloseDialog();
+        ReplaceEffectiveSources(null);
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -294,17 +368,20 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             return;
         }
 
-        _dialogOpening = true;
         var placementTarget = this;
-        Debug.Assert(placementTarget != null);
         var topLevel = TopLevel.GetTopLevel(placementTarget);
-        Debug.Assert(topLevel != null);
+        if (topLevel is null)
+        {
+            return;
+        }
+
+        EnsureDialogSources();
+        _dialogOpening = true;
         CompositeDisposable relayBindingDisposables = new CompositeDisposable();
 
         var previewDialog = new ImagePreviewerDialog(topLevel, this);
         RelayDialogHostBindings(relayBindingDisposables, previewDialog);
 
-        Debug.Assert(previewDialog != null);
         var handlerCleanup = new CompositeDisposable(8);
         previewDialog.Topmost = IsDialogTopmost;
         ((ISetLogicalParent)previewDialog).SetParent(this);

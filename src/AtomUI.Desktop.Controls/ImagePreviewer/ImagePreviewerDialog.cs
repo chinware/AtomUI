@@ -328,16 +328,6 @@ internal class ImagePreviewerDialog : Window,
             dialog.HandleFitToWindowRequest(args.IsFitToWindow);
             args.Handled = true;
         });
-        ImagePreviewBaseToolbar.PreviousRequestEvent.AddClassHandler<ImagePreviewerDialog>((dialog, args) =>
-        {
-            dialog.HandlePreviousRequest(useTransformPolicy: true);
-            args.Handled = true;
-        });
-        ImagePreviewBaseToolbar.NextRequestEvent.AddClassHandler<ImagePreviewerDialog>((dialog, args) =>
-        {
-            dialog.HandleNextImageRequest(useTransformPolicy: true);
-            args.Handled = true;
-        });
         ImageViewer.PreviousRequestEvent.AddClassHandler<ImagePreviewerDialog>((dialog, args) =>
         {
             dialog.HandlePreviousRequest(useTransformPolicy: true);
@@ -763,13 +753,9 @@ internal class ImagePreviewerDialog : Window,
         // 跳过 base 对 TitleProperty 的绑定,预览弹窗不展示 Window.Title。
         if (titleBar is ImagePreviewerTitleBar previewerTitleBar)
         {
-            previewerTitleBar[!ImagePreviewerTitleBar.CurrentIndexProperty]       = this[!CurrentIndexProperty];
-            previewerTitleBar[!ImagePreviewerTitleBar.CountProperty]              = this[!CountProperty];
             previewerTitleBar[!ImagePreviewerTitleBar.IsScaleDownEnabledProperty] = this[!IsScaleDownEnabledProperty];
             previewerTitleBar[!ImagePreviewerTitleBar.IsScaleUpEnabledProperty]   = this[!IsScaleUpEnabledProperty];
             previewerTitleBar[!ImagePreviewerTitleBar.IsImageFitToWindowProperty] = this[!IsImageFitToWindowProperty];
-            previewerTitleBar[!ImagePreviewerTitleBar.IsFirstImageProperty]       = this[!IsFirstImageProperty];
-            previewerTitleBar[!ImagePreviewerTitleBar.IsLastImageProperty]        = this[!IsLastImageProperty];
         }
     }
 

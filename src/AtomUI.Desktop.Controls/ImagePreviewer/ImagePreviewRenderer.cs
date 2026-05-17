@@ -1,4 +1,3 @@
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -25,15 +24,14 @@ internal class ImagePreviewRenderer : Control
     
     public Stretch Stretch
     {
-        get => GetValue(Image.StretchProperty);
-        set => SetValue(Image.StretchProperty, value);
+        get => GetValue(StretchProperty);
+        set => SetValue(StretchProperty, value);
     }
 
     public Size SourceSize => GetSourceOriginSize();
     
     #endregion
     
-    private IDisposable? _stretchBindingDisposable;
     private Control? _sourceControl;
 
     static ImagePreviewRenderer()
@@ -44,27 +42,19 @@ internal class ImagePreviewRenderer : Control
     
     private void HandleSourceChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var oldSource = (PreviewImageSource?)e.OldValue;
         var newSource = (PreviewImageSource?)e.NewValue;
 
-        if (oldSource != null)
-        {
-            _stretchBindingDisposable?.Dispose();
-            LogicalChildren.Clear();
-            VisualChildren.Clear();
-            _sourceControl = null;
-        }
+        ClearSourceControl();
 
         if (newSource != null)
         {
-            _stretchBindingDisposable?.Dispose();
             if (newSource.IsSvg)
             {
                 _sourceControl = new SvgControl(new Uri("https://atomui.net"))
                 {
                     Source = newSource.SvgContent
                 };
-                _stretchBindingDisposable = BindUtils.RelayBind(this, StretchProperty, _sourceControl, Avalonia.Svg.Svg.StretchProperty);
+                _sourceControl[!SvgControl.StretchProperty] = this[!StretchProperty];
             }
             else
             {
@@ -72,12 +62,24 @@ internal class ImagePreviewRenderer : Control
                 {
                     Source = newSource.Bitmap
                 };
-                ((ISetLogicalParent)_sourceControl).SetParent(this);
-                _stretchBindingDisposable = BindUtils.RelayBind(this, StretchProperty, _sourceControl, Image.StretchProperty);
+                _sourceControl[!Image.StretchProperty] = this[!StretchProperty];
             }
             VisualChildren.Add(_sourceControl);
             LogicalChildren.Add(_sourceControl);
         }
+    }
+
+    private void ClearSourceControl()
+    {
+        if (_sourceControl is null)
+        {
+            return;
+        }
+
+        VisualChildren.Remove(_sourceControl);
+        LogicalChildren.Remove(_sourceControl);
+        ((ISetLogicalParent)_sourceControl).SetParent(null);
+        _sourceControl = null;
     }
 
     private Size GetSourceOriginSize()

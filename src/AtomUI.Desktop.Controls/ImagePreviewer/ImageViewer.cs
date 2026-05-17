@@ -332,6 +332,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachTemplateEvents();
         base.OnApplyTemplate(e);
         _image          = e.NameScope.Find<ImagePreviewRenderer>("PART_ImageRenderer");
         _previousButton = e.NameScope.Find<ImagePreviewNavButton>("PART_PreviousButton");
@@ -344,6 +345,18 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
         if (_nextButton != null)
         {
             _nextButton.Click += HandleButtonClick;
+        }
+    }
+
+    private void DetachTemplateEvents()
+    {
+        if (_previousButton != null)
+        {
+            _previousButton.Click -= HandleButtonClick;
+        }
+        if (_nextButton != null)
+        {
+            _nextButton.Click -= HandleButtonClick;
         }
     }
     

@@ -14,11 +14,8 @@
                                DockPanel.Dock="Top">
                             <Decorator Name="PART_HeaderContent"
                                        VerticalAlignment="Center">
-                                <StackPanel Orientation="Horizontal">
-                                    <atom:IconPresenter
-                                        Name="PART_HeaderIconPresenter"
-                                        IsVisible="{TemplateBinding HeaderIcon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                        Icon="{TemplateBinding HeaderIcon}" />
+                                <StackPanel Name="PART_HeaderLayout"
+                                            Orientation="Horizontal">
                                     <atom:TextBlock Name="PART_HeaderPresenter"
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"

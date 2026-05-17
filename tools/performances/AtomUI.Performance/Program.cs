@@ -44,7 +44,9 @@ internal static partial class Program
             options.VerifyEmptyStates ||
             options.VerifyFloatButtonStates ||
             options.VerifyFlyoutStates ||
-            options.VerifyFormStates)
+            options.VerifyFormStates ||
+            options.VerifyGroupBoxStates ||
+            options.VerifyImagePreviewerStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -159,6 +161,14 @@ internal static partial class Program
             {
                 verified &= RunFormStateVerification();
             }
+            if (options.VerifyGroupBoxStates)
+            {
+                verified &= RunGroupBoxStateVerification();
+            }
+            if (options.VerifyImagePreviewerStates)
+            {
+                verified &= RunImagePreviewerStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -218,6 +228,8 @@ internal static partial class Program
             "flyouts" => CreateFlyoutScenarios(),
             "floatbutton" => CreateFloatButtonScenarios(),
             "form" => CreateFormScenarios(),
+            "groupbox" => CreateGroupBoxScenarios(),
+            "imagepreviewer" => CreateImagePreviewerScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

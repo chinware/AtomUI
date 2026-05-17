@@ -121,12 +121,6 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
     public static readonly RoutedEvent<ImagePreviewToolbarRequestEventArgs> ScaleDownRequestEvent =
         RoutedEvent.Register<ImagePreviewBaseToolbar, ImagePreviewToolbarRequestEventArgs>(nameof(ScaleDownRequest), RoutingStrategies.Bubble);
     
-    public static readonly RoutedEvent<ImagePreviewToolbarRequestEventArgs> PreviousRequestEvent =
-        RoutedEvent.Register<ImagePreviewBaseToolbar, ImagePreviewToolbarRequestEventArgs>(nameof(PreviousRequest), RoutingStrategies.Bubble);
-    
-    public static readonly RoutedEvent<ImagePreviewToolbarRequestEventArgs> NextRequestEvent =
-        RoutedEvent.Register<ImagePreviewBaseToolbar, ImagePreviewToolbarRequestEventArgs>(nameof(NextRequest), RoutingStrategies.Bubble);
-    
     public static readonly RoutedEvent<ImagePreviewToolbarRequestEventArgs> RotateLeftRequestEvent =
         RoutedEvent.Register<ImagePreviewBaseToolbar, ImagePreviewToolbarRequestEventArgs>(nameof(RotateLeftRequest), RoutingStrategies.Bubble);
     
@@ -160,18 +154,6 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
         remove => RemoveHandler(ScaleDownRequestEvent, value);
     }
     
-    public event EventHandler<ImagePreviewToolbarRequestEventArgs>? PreviousRequest
-    {
-        add => AddHandler(PreviousRequestEvent, value);
-        remove => RemoveHandler(PreviousRequestEvent, value);
-    }
-
-    public event EventHandler<ImagePreviewToolbarRequestEventArgs>? NextRequest
-    {
-        add => AddHandler(NextRequestEvent, value);
-        remove => RemoveHandler(NextRequestEvent, value);
-    }
-
     public event EventHandler<ImagePreviewToolbarRequestEventArgs>? RotateLeftRequest
     {
         add => AddHandler(RotateLeftRequestEvent, value);
@@ -195,8 +177,6 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
     private IconButton? _verticalFlipButton;
     private IconButton? _scaleUpButton;
     private IconButton? _scaleDownButton;
-    private IconButton? _previousButton;
-    private IconButton? _nextButton;
     private IconButton? _rotateLeftButton;
     private IconButton? _rotateRightButton;
     private ToggleIconButton? _fitToWindowButton;
@@ -214,13 +194,12 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachTemplateEvents();
         base.OnApplyTemplate(e);
         _horizontalFlipButton = e.NameScope.Find<IconButton>("PART_HorizontalFlipButton");
         _verticalFlipButton   = e.NameScope.Find<IconButton>("PART_VerticalFlipButton");
         _scaleUpButton        = e.NameScope.Find<IconButton>("PART_ScaleUpButton");
         _scaleDownButton      = e.NameScope.Find<IconButton>("PART_ScaleDownButton");
-        _previousButton       = e.NameScope.Find<IconButton>("PART_PreviousButton");
-        _nextButton           = e.NameScope.Find<IconButton>("PART_NextButton");
         _rotateLeftButton     = e.NameScope.Find<IconButton>("PART_RotateLeftButton");
         _rotateRightButton    = e.NameScope.Find<IconButton>("PART_RotateRightButton");
         _fitToWindowButton    = e.NameScope.Find<ToggleIconButton>("PART_FitToWindowButton");
@@ -241,14 +220,6 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
         {
             _scaleDownButton.Click += HandleButtonClick;
         }
-        if (_previousButton != null)
-        {
-            _previousButton.Click += HandleButtonClick;
-        }
-        if (_nextButton != null)
-        {
-            _nextButton.Click += HandleButtonClick;
-        }
         if (_rotateLeftButton != null)
         {
             _rotateLeftButton.Click += HandleButtonClick;
@@ -261,6 +232,38 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
         if (_fitToWindowButton != null)
         {
             _fitToWindowButton.IsCheckedChanged += HandleButtonClick;
+        }
+    }
+
+    private void DetachTemplateEvents()
+    {
+        if (_horizontalFlipButton != null)
+        {
+            _horizontalFlipButton.Click -= HandleButtonClick;
+        }
+        if (_verticalFlipButton != null)
+        {
+            _verticalFlipButton.Click -= HandleButtonClick;
+        }
+        if (_scaleUpButton != null)
+        {
+            _scaleUpButton.Click -= HandleButtonClick;
+        }
+        if (_scaleDownButton != null)
+        {
+            _scaleDownButton.Click -= HandleButtonClick;
+        }
+        if (_rotateLeftButton != null)
+        {
+            _rotateLeftButton.Click -= HandleButtonClick;
+        }
+        if (_rotateRightButton != null)
+        {
+            _rotateRightButton.Click -= HandleButtonClick;
+        }
+        if (_fitToWindowButton != null)
+        {
+            _fitToWindowButton.IsCheckedChanged -= HandleButtonClick;
         }
     }
 
@@ -281,14 +284,6 @@ internal class ImagePreviewBaseToolbar : TemplatedControl
         else if (sender == _scaleDownButton)
         {
             RaiseRequestEvent(ScaleDownRequestEvent);
-        }
-        else if (sender == _previousButton)
-        {
-            RaiseRequestEvent(PreviousRequestEvent);
-        }
-        else if (sender == _nextButton)
-        {
-            RaiseRequestEvent(NextRequestEvent);
         }
         else if (sender == _rotateLeftButton)
         {

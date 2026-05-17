@@ -135,6 +135,8 @@ public class WindowTitleBar : TemplatedControl,
     #endregion
 
     private CaptionButtonGroup? _captionButtonGroup;
+    private Control? _leftAddOnPresenter;
+    private Control? _rightAddOnPresenter;
     private CompositeDisposable? _disposables;
     private Window? _window;
 
@@ -154,7 +156,9 @@ public class WindowTitleBar : TemplatedControl,
     {
         base.OnApplyTemplate(e);
         _captionButtonGroup?.Detach();
-        _captionButtonGroup = e.NameScope.Find<CaptionButtonGroup>("PART_CaptionButtonGroup");
+        _captionButtonGroup  = e.NameScope.Find<CaptionButtonGroup>("PART_CaptionButtonGroup");
+        _leftAddOnPresenter  = e.NameScope.Find<Control>("PART_LeftAddOn");
+        _rightAddOnPresenter = e.NameScope.Find<Control>("PART_RightAddOn");
         if (_window != null)
         {
             _captionButtonGroup?.Attach(_window);
@@ -198,6 +202,8 @@ public class WindowTitleBar : TemplatedControl,
         _disposables = null;
         _captionButtonGroup?.Detach();
         _captionButtonGroup = null;
+        _leftAddOnPresenter = null;
+        _rightAddOnPresenter = null;
         _window             = null;
     }
     
@@ -206,6 +212,13 @@ public class WindowTitleBar : TemplatedControl,
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
+        if (IsPointerInNonDraggableRegion(e))
+        {
+            _doubleClickPending = false;
+            e.Handled           = true;
+            return;
+        }
+
         if (e.ClickCount == 2 && e.Properties.IsLeftButtonPressed)
         {
             // 不在 PointerPressed 里直接修改 WindowState：在 Windows 上，maximized → normal
@@ -216,6 +229,30 @@ public class WindowTitleBar : TemplatedControl,
             _doubleClickPending = true;
             e.Handled           = true;
         }
+    }
+
+    private bool IsPointerInNonDraggableRegion(PointerEventArgs e)
+    {
+        return ContainsPointer(_leftAddOnPresenter, e) ||
+               ContainsPointer(_rightAddOnPresenter, e) ||
+               ContainsPointer(_captionButtonGroup, e);
+    }
+
+    private static bool ContainsPointer(Control? control, PointerEventArgs e)
+    {
+        if (control is null ||
+            !control.IsVisible ||
+            control.Bounds.Width <= 0 ||
+            control.Bounds.Height <= 0)
+        {
+            return false;
+        }
+
+        var position = e.GetPosition(control);
+        return position.X >= 0 &&
+               position.Y >= 0 &&
+               position.X <= control.Bounds.Width &&
+               position.Y <= control.Bounds.Height;
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)

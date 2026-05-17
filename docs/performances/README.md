@@ -64,6 +64,8 @@
 | Empty | 本轮已完成低风险修复 | [Empty](Empty/README.md) | 修复 `IsDescriptionVisible=False`、图片来源运行时互斥和 `Svg.Source/Path` 残留；`EmptyShowCase` repeated mean `21.90ms -> 21.32ms`，alloc `2269.73KB -> 2253.90KB`，visuals 不变 |
 | FloatButton | 本轮已完成 | [FloatButton](FloatButton/README.md) | closed trigger group visual/root `41 -> 14`；`FloatButtonShowCase` repeated mean `126.71ms -> 110.81ms`，visuals `949 -> 752`，alloc `14447.92KB -> 12182.94KB` |
 | Form | 本轮已完成低风险结构与生命周期优化 | [Form](Form/README.md) | `Form.GalleryShape` `92.094ms/item -> 89.364ms/item`，visual/root `1544 -> 1508`；`FormShowCase` visuals `6435 -> 6300`，alloc 少 `3.54%`，页面 repeated 耗时基本持平 |
+| GroupBox | 本轮已完成 | [GroupBox](GroupBox/README.md) | 默认无 `HeaderIcon` 不再创建 header icon presenter；`GroupBox.GalleryShape` visual/root `104 -> 96`，`GroupBoxShowCase` visuals `151 -> 143`，repeated mean `27.79ms -> 26.16ms` |
+| ImagePreviewer | 本轮已完成 | [ImagePreviewer](ImagePreviewer/README.md) | 单图关闭态不再提前创建完整预览 source list；`ImagePreviewerShowCase` cold mean `180.28ms -> 147.48ms`，repeated mean `33.56ms -> 30.61ms` |
 
 ## 总列表
 
@@ -115,8 +117,8 @@
 | Data Display | DataGrid | Pending | 待建立基线 |
 | Data Display | Expander | Done | [Expander](Expander/README.md)；closed content/addon/no-arrow slot 已按需创建，Gallery repeated mean 提升约 `18.11%` |
 | Data Display | Empty | Done | [Empty](Empty/README.md)；低风险正确性修复与热路径收敛，Gallery repeated mean 小幅改善，visual tree 不变 |
-| Data Display | GroupBox | Pending | 待建立基线 |
-| Data Display | ImagePreviewer | Pending | 待建立基线 |
+| Data Display | GroupBox | Done | [GroupBox](GroupBox/README.md)；header icon presenter 已按需创建，`GroupBoxShowCase` visuals `151 -> 143`，repeated mean `27.79ms -> 26.16ms` |
+| Data Display | ImagePreviewer | Done | [ImagePreviewer](ImagePreviewer/README.md)；单图关闭态只加载可见封面，完整弹窗 source list 延迟到首次打开；Gallery repeated mean 提升约 `8.79%` |
 | Data Display | InfoFlyout | Pending | 待建立基线 |
 | Data Display | List | Pending | 待建立基线 |
 | Data Display | QRCode | Pending | 待建立基线 |

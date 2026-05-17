@@ -31,7 +31,9 @@ internal sealed record PerfOptions(
     bool VerifyEmptyStates,
     bool VerifyFloatButtonStates,
     bool VerifyFlyoutStates,
-    bool VerifyFormStates)
+    bool VerifyFormStates,
+    bool VerifyGroupBoxStates,
+    bool VerifyImagePreviewerStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -66,6 +68,8 @@ internal sealed record PerfOptions(
         var verifyFloatButtonStates = false;
         var verifyFlyoutStates = false;
         var verifyFormStates = false;
+        var verifyGroupBoxStates = false;
+        var verifyImagePreviewerStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -167,6 +171,12 @@ internal sealed record PerfOptions(
                 case "--verify-form-states":
                     verifyFormStates = true;
                     break;
+                case "--verify-groupbox-states":
+                    verifyGroupBoxStates = true;
+                    break;
+                case "--verify-imagepreviewer-states":
+                    verifyImagePreviewerStates = true;
+                    break;
             }
         }
 
@@ -201,6 +211,8 @@ internal sealed record PerfOptions(
             verifyEmptyStates,
             verifyFloatButtonStates,
             verifyFlyoutStates,
-            verifyFormStates);
+            verifyFormStates,
+            verifyGroupBoxStates,
+            verifyImagePreviewerStates);
     }
 }
