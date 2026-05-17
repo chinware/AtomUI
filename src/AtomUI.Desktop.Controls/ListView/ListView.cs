@@ -382,6 +382,9 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     private IListCollectionView? _collectionView;
     /// <summary>Indicates whether _collectionView was created by ListView (and should be disposed by it).</summary>
     private bool _ownsCollectionView;
+    private ListDefaultFilter? _defaultCollectionFilter;
+    private Func<object, bool>? _defaultCollectionFilterDelegate;
+    private bool _hasActiveFilterDescription;
     
     static ListView()
     {
@@ -407,7 +410,7 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     {
         if (!_areHandlersSuspended)
         {
-            var                  oldCollectionView = change.OldValue as ListCollectionView;
+            var                  oldCollectionView = change.OldValue as IListCollectionView;
             var                  newItemsSource    = (IEnumerable?)change.NewValue;
             IListCollectionView? newCollectionView = null;
             bool                 ownsNew           = false;
@@ -425,14 +428,15 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
             }
             if (oldCollectionView != null)
             {
+                ClearOwnedFilterState(oldCollectionView);
                 oldCollectionView.PropertyChanged   -= HandleCollectionPropertyChanged;
                 oldCollectionView.CollectionChanged -= HandleCollectionViewChanged;
                 oldCollectionView.PageChanging      -= HandlePageChanging;
                 oldCollectionView.PageChanged       -= HandlePageChanged;
                 // Dispose only if we created this view (not user-provided)
-                if (_ownsCollectionView)
+                if (_ownsCollectionView && oldCollectionView is IDisposable disposable)
                 {
-                    oldCollectionView.Dispose();
+                    disposable.Dispose();
                 }
             }
             if (newCollectionView != null)
@@ -443,16 +447,17 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
                 newCollectionView.PageChanged       += HandlePageChanged;
                 IsEmptyDataSource                   =  newCollectionView.IsEmpty;
                 TotalItemCount                      =  newCollectionView.TotalItemCount;
-       
-                newCollectionView.Filter ??= new ListDefaultFilter(newCollectionView);
             }
             else
             {
                 IsEmptyDataSource = true;
             }
 
-            _collectionView     = newCollectionView;
-            _ownsCollectionView = ownsNew;
+            _collectionView                  = newCollectionView;
+            _ownsCollectionView              = ownsNew;
+            _defaultCollectionFilter         = null;
+            _defaultCollectionFilterDelegate = null;
+            _hasActiveFilterDescription      = false;
             SetValueNoCallback(ItemsSourceProperty, newCollectionView);
             ConfigureFilterDescription();
             ConfigureSortDescriptions();
@@ -705,7 +710,12 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     
     protected virtual void ConfigureEmptyIndicator()
     {
-        SetCurrentValue(IsEffectiveEmptyVisibleProperty, IsShowEmptyIndicator && TotalItemCount == 0);
+        var isEmptyVisible = IsShowEmptyIndicator && TotalItemCount == 0;
+        SetCurrentValue(IsEffectiveEmptyVisibleProperty, isEmptyVisible);
+        if (isEmptyVisible)
+        {
+            EnsureDefaultEmptyIndicator();
+        }
     }
     
     private void ConfigureEffectiveBorderThickness()
@@ -811,40 +821,100 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     {
         base.OnApplyTemplate(e);
         NotifyApplyTemplateForSelecting();
-        
-        if (EmptyIndicator == null)
-        {
-            SetValue(EmptyIndicatorProperty, new Empty()
-            {
-                SizeType    = SizeType.Small,
-                PresetImage = PresetEmptyImage.Simple
-            }, BindingPriority.Template);
-        }
-        
         UpdatePseudoClasses();
         ConfigureEmptyIndicator();
         HandlePaginationVisibility();
+    }
+
+    private void EnsureDefaultEmptyIndicator()
+    {
+        if (EmptyIndicator != null)
+        {
+            return;
+        }
+
+        SetValue(EmptyIndicatorProperty, new Empty
+        {
+            SizeType    = SizeType.Small,
+            PresetImage = PresetEmptyImage.Simple
+        }, BindingPriority.Template);
     }
 
     private void ConfigureFilterDescription()
     {
         if (_collectionView != null)
         {
-            _collectionView.FilterDescriptions.Clear();
-            if (FilterValue != null && Filter != null)
+            var filterValue  = FilterValue;
+            var filter       = Filter;
+            var shouldFilter = filterValue is not null && filter is not null;
+            if (filterValue is not null && filter is not null)
             {
-                _collectionView.FilterDescriptions.Add(new ListFilterDescription()
+                using (_collectionView.DeferRefresh())
                 {
-                    FilterPropertySelector = FilterValueSelector ?? (record => (record as IListItemData)?.Content) ,
-                    FilterConditions       = [FilterValue],
-                    Filter                 = Filter.Filter
-                });
+                    _collectionView.Filter ??= EnsureDefaultCollectionFilter();
+                    _collectionView.FilterDescriptions.Clear();
+                    _collectionView.FilterDescriptions.Add(new ListFilterDescription()
+                    {
+                        FilterPropertySelector = FilterValueSelector ?? (record => (record as IListItemData)?.Content),
+                        FilterConditions       = [filterValue],
+                        Filter                 = filter.Filter
+                    });
+                }
+                _hasActiveFilterDescription = true;
             }
-            IsFiltering = _collectionView.FilterDescriptions.Count > 0;
+            else if (_hasActiveFilterDescription || ReferenceEquals(_collectionView.Filter, _defaultCollectionFilterDelegate))
+            {
+                using (_collectionView.DeferRefresh())
+                {
+                    if (_hasActiveFilterDescription)
+                    {
+                        _collectionView.FilterDescriptions.Clear();
+                    }
+                    if (ReferenceEquals(_collectionView.Filter, _defaultCollectionFilterDelegate))
+                    {
+                        _collectionView.Filter = null;
+                    }
+                }
+                _hasActiveFilterDescription = false;
+            }
+            IsFiltering = shouldFilter;
+        }
+        else
+        {
+            IsFiltering = false;
         }
 
         NotifyFilterContextChanged();
         FilterContextChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private Func<object, bool> EnsureDefaultCollectionFilter()
+    {
+        if (_collectionView == null)
+        {
+            throw new InvalidOperationException("ListView collection view is not available.");
+        }
+
+        if (_defaultCollectionFilterDelegate == null)
+        {
+            _defaultCollectionFilter         = new ListDefaultFilter(_collectionView);
+            _defaultCollectionFilterDelegate = _defaultCollectionFilter.Filter;
+        }
+
+        return _defaultCollectionFilterDelegate;
+    }
+
+    private void ClearOwnedFilterState(IListCollectionView collectionView)
+    {
+        if (_hasActiveFilterDescription)
+        {
+            collectionView.FilterDescriptions.Clear();
+        }
+
+        if (ReferenceEquals(collectionView.Filter, _defaultCollectionFilterDelegate))
+        {
+            collectionView.Filter = null;
+        }
     }
 
     protected virtual void NotifyFilterContextChanged()

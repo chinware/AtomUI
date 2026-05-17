@@ -1,13 +1,17 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Platform;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -142,6 +146,9 @@ public class ListViewItem : ContentControl,
     
     private static readonly Point s_invalidPoint = new(double.NaN, double.NaN);
     private Point _pointerDownPoint = s_invalidPoint;
+    private DockPanel? _contentLayout;
+    private ContentPresenter? _contentPresenter;
+    private IconTemplatePresenter? _selectedIndicatorPresenter;
     int IListItemVirtualizingContextAware.VirtualIndex { get; set; } = -1;
     bool IListItemVirtualizingContextAware.VirtualContextOperating { get; set; }
     
@@ -162,6 +169,11 @@ public class ListViewItem : ContentControl,
         {
             ConfigureSelectedIndicator();
         }
+        else if (change.Property == IsSelectedIndicatorVisibleProperty ||
+                 change.Property == SelectedIndicatorProperty)
+        {
+            UpdateSelectedIndicatorPresenter();
+        }
     }
 
     protected override void OnInitialized()
@@ -177,9 +189,67 @@ public class ListViewItem : ContentControl,
         Dispatcher.Post(this.EnableTransitions);
     }
 
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        DetachSelectedIndicatorPresenter();
+        base.OnApplyTemplate(e);
+        _contentPresenter = e.NameScope.Find<ContentPresenter>("PART_ContentPresenter");
+        _contentLayout    = _contentPresenter?.GetVisualParent() as DockPanel;
+        UpdateSelectedIndicatorPresenter();
+    }
+
     private void ConfigureSelectedIndicator()
     {
         SetCurrentValue(IsSelectedIndicatorVisibleProperty, IsShowSelectedIndicator && IsSelected);
+        UpdateSelectedIndicatorPresenter();
+    }
+
+    private void UpdateSelectedIndicatorPresenter()
+    {
+        if (!IsSelectedIndicatorVisible || SelectedIndicator == null)
+        {
+            DetachSelectedIndicatorPresenter();
+            return;
+        }
+
+        if (_contentLayout == null)
+        {
+            return;
+        }
+
+        if (_selectedIndicatorPresenter == null)
+        {
+            _selectedIndicatorPresenter = new IconTemplatePresenter
+            {
+                Name = "SelectedIndicator"
+            };
+            _selectedIndicatorPresenter.SetTemplatedParent(this);
+            _selectedIndicatorPresenter[!IconTemplatePresenter.IconTemplateProperty] =
+                this[!SelectedIndicatorProperty];
+            DockPanel.SetDock(_selectedIndicatorPresenter, Dock.Right);
+            _contentLayout.Children.Insert(0, _selectedIndicatorPresenter);
+        }
+    }
+
+    private void DetachSelectedIndicatorPresenter()
+    {
+        if (_selectedIndicatorPresenter == null)
+        {
+            return;
+        }
+
+        if (_selectedIndicatorPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_selectedIndicatorPresenter);
+        }
+        else
+        {
+            _contentLayout?.Children.Remove(_selectedIndicatorPresenter);
+        }
+
+        _selectedIndicatorPresenter.ClearValue(IconTemplatePresenter.IconTemplateProperty);
+        _selectedIndicatorPresenter.SetTemplatedParent(null);
+        _selectedIndicatorPresenter = null;
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)

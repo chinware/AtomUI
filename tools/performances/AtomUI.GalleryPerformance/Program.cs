@@ -114,6 +114,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.DescriptionsShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DescriptionsShowCase.axaml",
                 stats => stats.DescriptionsCount > 0),
+            ["list"] = new(
+                "ListShowCase",
+                ListViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.ListShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/ListShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 11 && stats.VisualCount > 0),
             ["modal"] = new(
                 "ModalShowCase",
                 ModalViewModel.ID,

@@ -11,23 +11,12 @@
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Padding="{TemplateBinding Padding}">
                 <DockPanel LastChildFill="True">
-                    <atom:IconTemplatePresenter
-                        Name="SelectedIndicator"
-                        IconTemplate="{TemplateBinding SelectedIndicator}"
-                        IsVisible="{TemplateBinding IsSelectedIndicatorVisible}"
-                        DockPanel.Dock="Right"/>
                     <Panel>
-                        <ContentPresenter Name="ContentPresenter"
+                        <ContentPresenter Name="PART_ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          IsVisible="{TemplateBinding IsFiltering, Converter={x:Static BoolConverters.Not}}"/>
-                        <atom:HighlightableTextBlock HighlightForeground="{TemplateBinding FilterHighlightForeground}"
-                                                     HighlightStrategy="{TemplateBinding FilterHighlightStrategy}"
-                                                     IsVisible="{TemplateBinding IsFiltering}"
-                                                     HighlightWords="{TemplateBinding FilterHighlightWords}"
-                                                     Text="{TemplateBinding ContentText}"/>
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Panel>
                 </DockPanel>
             </Border>
@@ -77,7 +66,7 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>

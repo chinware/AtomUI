@@ -239,6 +239,7 @@ public class ListBox : AvaloniaListBox,
 
     #endregion
     
+    private static readonly IValueFilter s_defaultContainsFilter = ValueFilterFactory.BuildFilter(ValueFilterMode.Contains)!;
     private protected readonly Dictionary<object, bool> _filterContext = new();
     private protected readonly Dictionary<object, IDictionary<object, object?>> _virtualRestoreContext = new();
 
@@ -260,11 +261,20 @@ public class ListBox : AvaloniaListBox,
         base.OnInitialized();
         if (Filter == null)
         {
-            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
+            SetCurrentValue(FilterProperty, s_defaultContainsFilter);
         }
 
         ConfigureEmptyIndicator();
         ConfigureIsFiltering();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        if (Filter != null && FilterValue != null)
+        {
+            FilterItems();
+        }
     }
     
     private void HandleItemCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

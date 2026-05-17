@@ -1,11 +1,15 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -182,6 +186,11 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
     
     private static readonly Point s_invalidPoint = new(double.NaN, double.NaN);
     private Point _pointerDownPoint = s_invalidPoint;
+    private DockPanel? _contentLayout;
+    private Panel? _contentPanel;
+    private ContentPresenter? _contentPresenter;
+    private IconTemplatePresenter? _selectedIndicatorPresenter;
+    private HighlightableTextBlock? _filteringTextBlock;
     int IListItemVirtualizingContextAware.VirtualIndex { get; set; } = -1;
     bool IListItemVirtualizingContextAware.VirtualContextOperating { get; set; }
 
@@ -192,6 +201,15 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
             change.Property == IsShowSelectedIndicatorProperty)
         {
             ConfigureSelectedIndicator();
+        }
+        else if (change.Property == IsSelectedIndicatorVisibleProperty ||
+                 change.Property == SelectedIndicatorProperty)
+        {
+            UpdateSelectedIndicatorPresenter();
+        }
+        else if (change.Property == IsFilteringProperty)
+        {
+            UpdateFilteringTextBlock();
         }
         else if (change.Property == ContentProperty)
         {
@@ -220,12 +238,129 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        this.EnableTransitions();
+        Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        DetachSelectedIndicatorPresenter();
+        DetachFilteringTextBlock();
+        base.OnApplyTemplate(e);
+        _contentPresenter = e.NameScope.Find<ContentPresenter>("PART_ContentPresenter");
+        _contentPanel     = _contentPresenter?.GetVisualParent() as Panel;
+        _contentLayout    = _contentPanel?.GetVisualParent() as DockPanel;
+        UpdateSelectedIndicatorPresenter();
+        UpdateFilteringTextBlock();
     }
 
     private void ConfigureSelectedIndicator()
     {
         SetCurrentValue(IsSelectedIndicatorVisibleProperty, IsShowSelectedIndicator && IsSelected);
+        UpdateSelectedIndicatorPresenter();
+    }
+
+    private void UpdateSelectedIndicatorPresenter()
+    {
+        if (!IsSelectedIndicatorVisible || SelectedIndicator == null)
+        {
+            DetachSelectedIndicatorPresenter();
+            return;
+        }
+
+        if (_contentLayout == null)
+        {
+            return;
+        }
+
+        if (_selectedIndicatorPresenter == null)
+        {
+            _selectedIndicatorPresenter = new IconTemplatePresenter
+            {
+                Name = "SelectedIndicator"
+            };
+            _selectedIndicatorPresenter.SetTemplatedParent(this);
+            _selectedIndicatorPresenter[!IconTemplatePresenter.IconTemplateProperty] =
+                this[!SelectedIndicatorProperty];
+            DockPanel.SetDock(_selectedIndicatorPresenter, Dock.Right);
+            _contentLayout.Children.Insert(0, _selectedIndicatorPresenter);
+        }
+    }
+
+    private void DetachSelectedIndicatorPresenter()
+    {
+        if (_selectedIndicatorPresenter == null)
+        {
+            return;
+        }
+
+        if (_selectedIndicatorPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_selectedIndicatorPresenter);
+        }
+        else
+        {
+            _contentLayout?.Children.Remove(_selectedIndicatorPresenter);
+        }
+
+        _selectedIndicatorPresenter.ClearValue(IconTemplatePresenter.IconTemplateProperty);
+        _selectedIndicatorPresenter.SetTemplatedParent(null);
+        _selectedIndicatorPresenter = null;
+    }
+
+    private void UpdateFilteringTextBlock()
+    {
+        if (!IsFiltering)
+        {
+            _contentPresenter?.SetCurrentValue(IsVisibleProperty, true);
+            DetachFilteringTextBlock();
+            return;
+        }
+
+        if (_contentPanel == null)
+        {
+            return;
+        }
+
+        _contentPresenter?.SetCurrentValue(IsVisibleProperty, false);
+        if (_filteringTextBlock != null)
+        {
+            return;
+        }
+
+        _filteringTextBlock = new HighlightableTextBlock();
+        _filteringTextBlock.SetTemplatedParent(this);
+        _filteringTextBlock[!HighlightableTextBlock.HighlightForegroundProperty] =
+            this[!FilterHighlightForegroundProperty];
+        _filteringTextBlock[!HighlightableTextBlock.HighlightStrategyProperty] =
+            this[!FilterHighlightStrategyProperty];
+        _filteringTextBlock[!HighlightableTextBlock.HighlightWordsProperty] =
+            this[!FilterHighlightWordsProperty];
+        _filteringTextBlock[!TextBlock.TextProperty] = this[!ContentTextProperty];
+        _contentPanel.Children.Add(_filteringTextBlock);
+    }
+
+    private void DetachFilteringTextBlock()
+    {
+        if (_filteringTextBlock == null)
+        {
+            return;
+        }
+
+        if (_filteringTextBlock.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_filteringTextBlock);
+        }
+        else
+        {
+            _contentPanel?.Children.Remove(_filteringTextBlock);
+        }
+
+        _filteringTextBlock.ClearValue(HighlightableTextBlock.HighlightForegroundProperty);
+        _filteringTextBlock.ClearValue(HighlightableTextBlock.HighlightStrategyProperty);
+        _filteringTextBlock.ClearValue(HighlightableTextBlock.HighlightWordsProperty);
+        _filteringTextBlock.ClearValue(TextBlock.TextProperty);
+        _filteringTextBlock.SetTemplatedParent(null);
+        _filteringTextBlock = null;
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
