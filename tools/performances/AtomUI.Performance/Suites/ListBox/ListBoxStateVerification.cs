@@ -15,8 +15,6 @@ internal static partial class Program
         VerifyListBoxDefaultShape(failures);
         VerifyListBoxSelectedIndicatorLifecycle(failures);
         VerifyListBoxFilteringLifecycle(failures);
-        VerifyListViewCollectionFilterLifecycle(failures);
-        VerifyListViewEmptyIndicatorLazyMaterialization(failures);
 
         if (failures.Count == 0)
         {
@@ -99,54 +97,6 @@ internal static partial class Program
         RefreshLayout(realized.Window);
         Expect(FindVisualByType<HighlightableTextBlock>(listBox) == null,
             "ListBox should detach filtering text block after filtering clears.",
-            failures);
-    }
-
-    private static void VerifyListViewCollectionFilterLifecycle(ICollection<string> failures)
-    {
-        var listView = CreateListView(CreateListItems(20));
-        using var realized = RealizeControl(listView);
-        var collectionView = listView.ItemsSource as IListCollectionView;
-
-        Expect(collectionView != null,
-            "ListView should wrap ItemsSource in IListCollectionView.",
-            failures);
-        if (collectionView == null)
-        {
-            return;
-        }
-
-        Expect(collectionView.Filter == null,
-            "Default ListView collection view should not install a filter callback.",
-            failures);
-
-        listView.Filter = AtomUI.Controls.Utils.ValueFilterFactory.BuildFilter(AtomUI.Controls.Utils.ValueFilterMode.Contains);
-        listView.FilterValue = "1";
-        RefreshLayout(realized.Window);
-        Expect(collectionView.Filter != null,
-            "Filtered ListView should install a filter callback.",
-            failures);
-
-        listView.FilterValue = null;
-        RefreshLayout(realized.Window);
-        Expect(collectionView.Filter == null,
-            "Clearing ListView filter should remove the internal filter callback.",
-            failures);
-    }
-
-    private static void VerifyListViewEmptyIndicatorLazyMaterialization(ICollection<string> failures)
-    {
-        var listView = CreateListView(CreateListItems(5));
-        using var realized = RealizeControl(listView);
-
-        Expect(FindVisualByType<Empty>(listView) == null,
-            "Non-empty ListView should not materialize the default Empty indicator.",
-            failures);
-
-        listView.ItemsSource = Array.Empty<IListItemData>();
-        RefreshLayout(realized.Window);
-        Expect(FindVisualByType<Empty>(listView) != null,
-            "Empty ListView should lazily materialize the default Empty indicator.",
             failures);
     }
 

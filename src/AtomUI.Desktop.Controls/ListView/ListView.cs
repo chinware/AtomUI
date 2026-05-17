@@ -385,6 +385,7 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     private ListDefaultFilter? _defaultCollectionFilter;
     private Func<object, bool>? _defaultCollectionFilterDelegate;
     private bool _hasActiveFilterDescription;
+    private bool _hasConfiguredSortDescriptions;
     
     static ListView()
     {
@@ -458,10 +459,23 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
             _defaultCollectionFilter         = null;
             _defaultCollectionFilterDelegate = null;
             _hasActiveFilterDescription      = false;
+            _hasConfiguredSortDescriptions   = false;
             SetValueNoCallback(ItemsSourceProperty, newCollectionView);
-            ConfigureFilterDescription();
-            ConfigureSortDescriptions();
-            ConfigureGroupInfo();
+            if (_collectionView != null)
+            {
+                using (_collectionView.DeferRefresh())
+                {
+                    ConfigureFilterDescription();
+                    ConfigureSortDescriptions();
+                    ConfigureGroupInfo();
+                }
+            }
+            else
+            {
+                ConfigureFilterDescription();
+                ConfigureSortDescriptions();
+                ConfigureGroupInfo();
+            }
             ReConfigurePagination();
             InvalidateMeasure();
             UpdatePseudoClasses();
@@ -504,7 +518,10 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
             }
             else
             {
-                collectionView.GroupDescriptions.Clear();
+                if (collectionView.GroupingDepth > 0)
+                {
+                    collectionView.GroupDescriptions.Clear();
+                }
             }
         }
     }
@@ -806,7 +823,10 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     {
         if (_collectionView != null)
         {
-            _collectionView.GroupDescriptions.Clear();
+            if (_collectionView.GroupingDepth > 0)
+            {
+                _collectionView.GroupDescriptions.Clear();
+            }
             if (IsGroupEnabled)
             {
                 if (GroupPropertySelector != null)
@@ -925,11 +945,20 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
     {
         if (_collectionView != null)
         {
-            _collectionView.SortDescriptions.Clear();
-            if (SortDescriptions != null)
+            var sortDescriptions = SortDescriptions;
+            if (sortDescriptions == null || sortDescriptions.Count == 0)
             {
-                _collectionView.SortDescriptions.AddRange(SortDescriptions);
+                if (_hasConfiguredSortDescriptions)
+                {
+                    _collectionView.SortDescriptions.Clear();
+                    _hasConfiguredSortDescriptions = false;
+                }
+                return;
             }
+
+            _collectionView.SortDescriptions.Clear();
+            _collectionView.SortDescriptions.AddRange(sortDescriptions);
+            _hasConfiguredSortDescriptions = true;
         }
     }
 }

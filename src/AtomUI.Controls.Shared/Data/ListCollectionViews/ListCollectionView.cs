@@ -537,7 +537,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// to use the default source collection, or the internal list.
     /// </summary>
     //TODO Paging
-    private bool UsesLocalArray => SortDescriptions.Count > 0 || 
+    private bool UsesLocalArray => (_sortDescriptions?.Count ?? 0) > 0 ||
                                    Filter != null || 
                                    _pageSize > 0 || 
                                    GroupDescriptions.Count > 0;
@@ -670,7 +670,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// <summary>
     /// Private accessor for the TrackingEnumerator
     /// </summary>
-    private IEnumerator _trackingEnumerator;
+    private IEnumerator _trackingEnumerator = Array.Empty<object>().GetEnumerator();
     
     /// <summary>
     /// Helper constructor that sets default values for isDataSorted and isDataInGroupOrder.
@@ -700,7 +700,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         _group.GroupDescriptions.CollectionChanged += HandleGroupByChanged;
 
         CopySourceToInternalList();
-        _trackingEnumerator = source.GetEnumerator();
+        ResetTrackingEnumerator();
 
         Debug.Assert(_internalList != null);
         
@@ -736,6 +736,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     {
         _collectionChangedForwarder?.Dispose();
         _collectionChangedForwarder = null;
+        DisposeTrackingEnumerator();
     }
 
     /// <summary>
@@ -869,7 +870,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         int addIndex;
         int removeIndex = -1;
@@ -976,7 +977,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         // fire the correct events
         if (CurrentAddItem != null)
@@ -1093,7 +1094,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         if (UsesLocalArray)
         {
@@ -1269,22 +1270,15 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         // if we are paging
         if (PageSize > 0)
         {
-            var list = new List<object?>();
-
             // if we are in the middle of asynchronous load
             if (PageIndex < 0)
             {
-                return list.GetEnumerator();
+                return Array.Empty<object?>().GetEnumerator();
             }
 
-            for (int index = _pageSize * PageIndex;
-                 index < Math.Min(_pageSize * (PageIndex + 1), InternalList.Count);
-                 index++)
-            {
-                list.Add(InternalList[index]);
-            }
-
-            return new NewItemAwareEnumerator(this, list.GetEnumerator(), CurrentAddItem);
+            var startIndex = _pageSize * PageIndex;
+            var endIndex   = Math.Min(_pageSize * (PageIndex + 1), InternalList.Count);
+            return new NewItemAwareEnumerator(this, new PageRangeEnumerator(InternalList, startIndex, endIndex), CurrentAddItem);
         }
         return new NewItemAwareEnumerator(this, InternalList.GetEnumerator(), CurrentAddItem);
     }
@@ -1590,7 +1584,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         Debug.Assert(index == IndexOf(item), "IndexOf returned unexpected value");
 
@@ -1737,7 +1731,20 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// </summary>
     private void CopySourceToInternalList()
     {
-        _internalList = new List<object>();
+        if (SourceCollection is IList sourceList)
+        {
+            var list = sourceList.Count > 0 ? new List<object?>(sourceList.Count) : new List<object?>();
+            for (var i = 0; i < sourceList.Count; i++)
+            {
+                list.Add(sourceList[i]);
+            }
+
+            _internalList = list;
+            return;
+        }
+
+        var capacity = SourceCollection is ICollection collection ? collection.Count : 0;
+        _internalList = capacity > 0 ? new List<object?>(capacity) : new List<object?>();
         var enumerator = SourceCollection.GetEnumerator();
         try
         {
@@ -1753,6 +1760,21 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
                 disposable.Dispose();
             }
         }
+    }
+
+    private void ResetTrackingEnumerator()
+    {
+        DisposeTrackingEnumerator();
+        _trackingEnumerator = _sourceCollection.GetEnumerator();
+    }
+
+    private void DisposeTrackingEnumerator()
+    {
+        if (_trackingEnumerator is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+        _trackingEnumerator = Array.Empty<object>().GetEnumerator();
     }
     
     /// <summary>
@@ -1820,7 +1842,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
                 // on the enumerator throws an InvalidOperationException, stating
                 // that the collection has been modified. Therefore, we know when
                 // to update our internal collection.
-                _trackingEnumerator = SourceCollection.GetEnumerator();
+                ResetTrackingEnumerator();
                 RefreshOrDefer();
             }
         }
@@ -3080,6 +3102,55 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         /// Timestamp to let us know whether there have been updates to the collection
         /// </summary>
         private int _timestamp;
+    }
+
+    private sealed class PageRangeEnumerator : IEnumerator
+    {
+        private readonly IList _items;
+        private readonly int _startIndex;
+        private readonly int _endIndex;
+        private int _index;
+        private bool _hasCurrent;
+
+        public PageRangeEnumerator(IList items, int startIndex, int endIndex)
+        {
+            _items      = items;
+            _startIndex = startIndex;
+            _endIndex   = endIndex;
+            _index      = startIndex - 1;
+        }
+
+        public object? Current
+        {
+            get
+            {
+                if (!_hasCurrent)
+                {
+                    throw new InvalidOperationException("Enumeration has either not started or has already finished.");
+                }
+
+                return _items[_index];
+            }
+        }
+
+        public bool MoveNext()
+        {
+            if (_index + 1 >= _endIndex)
+            {
+                _hasCurrent = false;
+                return false;
+            }
+
+            _index++;
+            _hasCurrent = true;
+            return true;
+        }
+
+        public void Reset()
+        {
+            _index      = _startIndex - 1;
+            _hasCurrent = false;
+        }
     }
         
     internal class MergedComparer

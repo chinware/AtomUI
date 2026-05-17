@@ -38,15 +38,18 @@ public partial class ListView
     
     private CompositeDisposable? _topPaginationDisposables;
     private CompositeDisposable? _bottomPaginationDisposables;
+    private bool _isSyncingPagination;
 
     private void HandlePropertyChangedForPagination(AvaloniaPropertyChangedEventArgs change)
     {
         if (change.Property == PageSizeProperty)
         {
-            if (_collectionView != null)
+            if (_collectionView != null && _collectionView.PageSize != PageSize)
             {
                 _collectionView.PageSize = PageSize;
             }
+            SyncPagination(_topPagination);
+            SyncPagination(_bottomPagination);
         }
         else if (change.Property == TopPaginationProperty)
         {
@@ -68,6 +71,11 @@ public partial class ListView
         {
             oldPagination.CurrentPageChanged -= HandlePageChangeRequest;
             _topPaginationDisposables?.Dispose();
+            _topPaginationDisposables = null;
+            if (ReferenceEquals(_topPagination, oldPagination))
+            {
+                _topPagination = null;
+            }
         }
 
         if (args.NewValue is AbstractPagination newPagination)
@@ -78,10 +86,10 @@ public partial class ListView
             _topPaginationDisposables.Add(BindUtils.RelayBind(this, IsHideOnSinglePageProperty, newPagination, AbstractPagination.IsHideOnSinglePageProperty));
             _topPaginationDisposables.Add(BindUtils.RelayBind(this, IsEnabledProperty, newPagination, AbstractPagination.IsEnabledProperty));
             _topPaginationDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, newPagination, AbstractPagination.IsMotionEnabledProperty));
-            _topPaginationDisposables.Add(BindUtils.RelayBind(this, PaginationVisibilityProperty, newPagination, AbstractPagination.IsMotionEnabledProperty));
             _topPagination = newPagination;
-            HandlePaginationVisibility();
+            SyncPagination(newPagination);
         }
+        HandlePaginationVisibility();
     }
     
     private void HandleBottomPaginationChanged(AvaloniaPropertyChangedEventArgs args)
@@ -90,6 +98,11 @@ public partial class ListView
         {
             oldPagination.CurrentPageChanged -= HandlePageChangeRequest;
             _bottomPaginationDisposables?.Dispose();
+            _bottomPaginationDisposables = null;
+            if (ReferenceEquals(_bottomPagination, oldPagination))
+            {
+                _bottomPagination = null;
+            }
         }
 
         if (args.NewValue is AbstractPagination newPagination)
@@ -100,10 +113,10 @@ public partial class ListView
             _bottomPaginationDisposables.Add(BindUtils.RelayBind(this, IsHideOnSinglePageProperty, newPagination, AbstractPagination.IsHideOnSinglePageProperty));
             _bottomPaginationDisposables.Add(BindUtils.RelayBind(this, IsEnabledProperty, newPagination, AbstractPagination.IsEnabledProperty));
             _bottomPaginationDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, newPagination, AbstractPagination.IsMotionEnabledProperty));
-            _bottomPaginationDisposables.Add(BindUtils.RelayBind(this, PaginationVisibilityProperty, newPagination, AbstractPagination.IsMotionEnabledProperty));
             _bottomPagination = newPagination;
-            HandlePaginationVisibility();
+            SyncPagination(newPagination);
         }
+        HandlePaginationVisibility();
     }
 
     private void HandlePaginationVisibility()
@@ -132,6 +145,11 @@ public partial class ListView
     
     private void HandlePageChangeRequest(object? sender, PageChangedEventArgs args)
     {
+        if (_isSyncingPagination)
+        {
+            return;
+        }
+
         if (_collectionView != null)
         {
             _collectionView.MoveToPage(args.PageIndex - 1);
@@ -158,6 +176,8 @@ public partial class ListView
         if (_collectionView != null)
         {
             SetCurrentValue(PageIndexProperty, _collectionView.PageIndex);
+            SyncPagination(_topPagination);
+            SyncPagination(_bottomPagination);
         }
     }
     
@@ -165,21 +185,33 @@ public partial class ListView
     {
         if (_collectionView != null)
         {
-            _collectionView.PageSize = PageSize;
-
-            if (_topPagination != null)
+            if (_collectionView.PageSize != PageSize)
             {
-                _topPagination.Total       = _collectionView.TotalItemCount;
-                _topPagination.PageSize    = PageSize;
-                _topPagination.CurrentPage = PageIndex + 1;
+                _collectionView.PageSize = PageSize;
             }
 
-            if (_bottomPagination != null)
-            {
-                _bottomPagination.Total       = _collectionView.TotalItemCount;
-                _bottomPagination.PageSize    = PageSize;
-                _bottomPagination.CurrentPage = PageIndex + 1;
-            }
+            SyncPagination(_topPagination);
+            SyncPagination(_bottomPagination);
+        }
+    }
+
+    private void SyncPagination(AbstractPagination? pagination)
+    {
+        if (pagination == null || _collectionView == null)
+        {
+            return;
+        }
+
+        _isSyncingPagination = true;
+        try
+        {
+            pagination.Total       = _collectionView.TotalItemCount;
+            pagination.PageSize    = PageSize;
+            pagination.CurrentPage = PageIndex + 1;
+        }
+        finally
+        {
+            _isSyncingPagination = false;
         }
     }
 }

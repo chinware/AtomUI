@@ -67,6 +67,7 @@
 | GroupBox | 本轮已完成 | [GroupBox](GroupBox/README.md) | 默认无 `HeaderIcon` 不再创建 header icon presenter；`GroupBox.GalleryShape` visual/root `104 -> 96`，`GroupBoxShowCase` visuals `151 -> 143`，repeated mean `27.79ms -> 26.16ms` |
 | ImagePreviewer | 本轮已完成 | [ImagePreviewer](ImagePreviewer/README.md) | 单图关闭态不再提前创建完整预览 source list；`ImagePreviewerShowCase` cold mean `180.28ms -> 147.48ms`，repeated mean `33.56ms -> 30.61ms` |
 | Input | 本轮已完成结构优化 | [Input](Input/README.md) | `TextBox.Default` visual/root `21 -> 13`、KB/item `332.6 -> 236.7`；`TextArea.Default` visual/root `24 -> 21`；`LineEditShowCase` visuals `2307 -> 2284`，repeated mean 基本持平 |
+| ListView | 本轮已完成 | [ListView](ListView/README.md) | `ListView.Grouped` `3.619ms/item -> 1.759ms/item`，`FilterActive` `3.421ms/item -> 1.841ms/item`；`ListShowCase` repeated mean `80.72ms -> 77.34ms` |
 
 ## 总列表
 
@@ -122,7 +123,7 @@
 | Data Display | GroupBox | Done | [GroupBox](GroupBox/README.md)；header icon presenter 已按需创建，`GroupBoxShowCase` visuals `151 -> 143`，repeated mean `27.79ms -> 26.16ms` |
 | Data Display | ImagePreviewer | Done | [ImagePreviewer](ImagePreviewer/README.md)；单图关闭态只加载可见封面，完整弹窗 source list 延迟到首次打开；Gallery repeated mean 提升约 `8.79%` |
 | Data Display | InfoFlyout | Pending | 待建立基线 |
-| Data Display | List | Pending | 待建立基线 |
+| Data Display | List | Done | [ListView](ListView/README.md)；group/filter refresh 与分页枚举成本已收敛，真实 `ListShowCase` repeated mean 提升约 `4.19%` |
 | Data Display | QRCode | Pending | 待建立基线 |
 | Data Display | Segmented | Pending | 待建立基线 |
 | Data Display | Statistic | Pending | 待建立基线 |

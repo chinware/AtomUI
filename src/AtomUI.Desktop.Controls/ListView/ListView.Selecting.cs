@@ -342,6 +342,12 @@ public partial class ListView
         AutoScrollToSelectedItemIfNecessary(GetAnchorIndex());
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        StopTextSearchTimer();
+        base.OnDetachedFromVisualTree(e);
+    }
+
     private void NotifyApplyTemplateForSelecting()
     {
         void ExecuteScrollWhenLayoutUpdated(object? sender, EventArgs e)
@@ -1075,6 +1081,7 @@ public partial class ListView
         {
             model.PropertyChanged  -= OnSelectionModelPropertyChanged;
             model.SelectionChanged -= OnSelectionModelSelectionChanged;
+            model.LostSelection    -= OnSelectionModelLostSelection;
         }
     }
 
