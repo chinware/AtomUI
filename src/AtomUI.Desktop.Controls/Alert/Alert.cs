@@ -1,4 +1,6 @@
-﻿using AtomUI.Icons.AntDesign;
+﻿using AtomUI.Data;
+using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -112,6 +115,10 @@ public class Alert : TemplatedControl
     #endregion
     
     private IconButton? _closeButton;
+    private StackPanel? _messageLayout;
+    private Label? _messageLabel;
+    private MarqueeLabel? _marqueeLabel;
+    private IDisposable? _marqueeLabelTextBinding;
 
     static Alert()
     {
@@ -121,8 +128,7 @@ public class Alert : TemplatedControl
             DescriptionProperty,
             IsMessageMarqueeEnabledProperty,
             PaddingProperty,
-            ExtraActionProperty,
-            IsMessageMarqueeEnabledProperty);
+            ExtraActionProperty);
         AffectsRender<Alert>(TypeProperty);
     }
 
@@ -146,22 +152,49 @@ public class Alert : TemplatedControl
         {
             UpdatePseudoClasses();
         }
+        else if (change.Property == IsMessageMarqueeEnabledProperty)
+        {
+            ConfigureMarqueeLabel();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        RemoveMarqueeLabel();
         if (_closeButton != null)
         {
             _closeButton.Click -= HandleCloseBtnClick;
         }
         _closeButton = e.NameScope.Find<IconButton>("PART_CloseBtn");
+        _messageLayout = e.NameScope.Find<StackPanel>("PART_MessageLayout");
+        _messageLabel  = e.NameScope.Find<Label>("MessageLabel");
+        _messageLayout ??= _messageLabel?.GetVisualParent() as StackPanel;
         if (_closeButton != null)
         {
             _closeButton.Click += HandleCloseBtnClick;
         }
         UpdatePseudoClasses();
         SetupCloseButton();
+        if (IsMessageMarqueeEnabled)
+        {
+            ConfigureMarqueeLabel();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (IsMessageMarqueeEnabled)
+        {
+            ConfigureMarqueeLabel();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        RemoveMarqueeLabel();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleCloseBtnClick(object? sender, RoutedEventArgs e)
@@ -176,6 +209,71 @@ public class Alert : TemplatedControl
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
+    }
+
+    private void ConfigureMarqueeLabel()
+    {
+        if (!IsMessageMarqueeEnabled)
+        {
+            RemoveMarqueeLabel();
+            return;
+        }
+
+        if (_messageLayout is null || _marqueeLabel is not null)
+        {
+            return;
+        }
+
+        _marqueeLabel = new MarqueeLabel
+        {
+            Name                = "MarqueeLabel",
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            Padding             = new Thickness(0)
+        };
+        _marqueeLabel.SetTemplatedParent(this);
+        _marqueeLabelTextBinding = BindUtils.RelayBind(this,
+            MessageProperty,
+            _marqueeLabel,
+            TextBlock.TextProperty,
+            BindingMode.Default,
+            BindingPriority.Template);
+
+        var insertIndex = 0;
+        if (_messageLabel is not null)
+        {
+            var messageLabelIndex = _messageLayout.Children.IndexOf(_messageLabel);
+            if (messageLabelIndex >= 0)
+            {
+                insertIndex = messageLabelIndex + 1;
+            }
+        }
+        if (insertIndex > _messageLayout.Children.Count)
+        {
+            insertIndex = _messageLayout.Children.Count;
+        }
+        _messageLayout.Children.Insert(insertIndex, _marqueeLabel);
+    }
+
+    private void RemoveMarqueeLabel()
+    {
+        if (_marqueeLabel is null)
+        {
+            return;
+        }
+
+        _marqueeLabelTextBinding?.Dispose();
+        _marqueeLabelTextBinding = null;
+        _marqueeLabel.ClearValue(TextBlock.TextProperty);
+        if (_messageLayout?.Children.Contains(_marqueeLabel) == true)
+        {
+            _messageLayout.Children.Remove(_marqueeLabel);
+        }
+        else if (_marqueeLabel.GetVisualParent() is Panel parentPanel)
+        {
+            parentPanel.Children.Remove(_marqueeLabel);
+        }
+        _marqueeLabel.SetTemplatedParent(null);
+        _marqueeLabel = null;
     }
     
     private void UpdatePseudoClasses()

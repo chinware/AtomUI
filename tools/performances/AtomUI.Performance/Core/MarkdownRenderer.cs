@@ -96,6 +96,7 @@ internal static partial class Program
                 "form" => "# Form Baseline",
                 "groupbox" => "# GroupBox Baseline",
                 "imagepreviewer" => "# ImagePreviewer Baseline",
+                "marqueelabel" => "# MarqueeLabel / Alert Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

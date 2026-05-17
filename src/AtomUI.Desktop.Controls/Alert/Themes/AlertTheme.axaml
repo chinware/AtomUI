@@ -38,7 +38,8 @@
                                           DockPanel.Dock="Right" 
                                           IsVisible="{TemplateBinding ExtraAction, Converter={x:Static ObjectConverters.IsNotNull}}"
                                           Content="{TemplateBinding ExtraAction}" />
-                        <StackPanel Orientation="Vertical"
+                        <StackPanel Name="PART_MessageLayout"
+                                    Orientation="Vertical"
                                     VerticalAlignment="Center"
                                     ClipToBounds="True">
                             <Label Name="MessageLabel"
@@ -48,12 +49,6 @@
                                    Padding="0"
                                    TextBlock.TextWrapping="Wrap"
                                    Content="{TemplateBinding Message}" />
-                            <atom:MarqueeLabel
-                                Name="MarqueeLabel"
-                                HorizontalAlignment="Stretch"
-                                Padding="0"
-                                IsVisible="{TemplateBinding IsMessageMarqueeEnabled}"
-                                Text="{TemplateBinding Message}" />
                             <Label Name="DescriptionLabel"
                                    HorizontalAlignment="Stretch"
                                    HorizontalContentAlignment="Left"

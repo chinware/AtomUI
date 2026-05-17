@@ -49,7 +49,8 @@ internal static partial class Program
             options.VerifyImagePreviewerStates ||
             options.VerifyInputStates ||
             options.VerifyListBoxStates ||
-            options.VerifyListViewStates)
+            options.VerifyListViewStates ||
+            options.VerifyMarqueeLabelStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -184,6 +185,10 @@ internal static partial class Program
             {
                 verified &= RunListViewStateVerification();
             }
+            if (options.VerifyMarqueeLabelStates)
+            {
+                verified &= RunMarqueeLabelStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -248,6 +253,7 @@ internal static partial class Program
             "input" => CreateInputScenarios(),
             "listbox" => CreateListBoxScenarios(),
             "listview" => CreateListViewScenarios(),
+            "marqueelabel" => CreateMarqueeLabelScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

@@ -68,6 +68,7 @@
 | ImagePreviewer | 本轮已完成 | [ImagePreviewer](ImagePreviewer/README.md) | 单图关闭态不再提前创建完整预览 source list；`ImagePreviewerShowCase` cold mean `180.28ms -> 147.48ms`，repeated mean `33.56ms -> 30.61ms` |
 | Input | 本轮已完成结构优化 | [Input](Input/README.md) | `TextBox.Default` visual/root `21 -> 13`、KB/item `332.6 -> 236.7`；`TextArea.Default` visual/root `24 -> 21`；`LineEditShowCase` visuals `2307 -> 2284`，repeated mean 基本持平 |
 | ListView | 本轮已完成 | [ListView](ListView/README.md) | `ListView.Grouped` `3.619ms/item -> 1.759ms/item`，`FilterActive` `3.421ms/item -> 1.841ms/item`；`ListShowCase` repeated mean `80.72ms -> 77.34ms` |
+| MarqueeLabel / Alert | 本轮已完成 | [MarqueeLabel](MarqueeLabel/README.md) | Alert 默认路径不再创建隐藏 `MarqueeLabel`；`AlertShowCase` runtime `MarqueeLabel 25 -> 1`，visuals `585 -> 561`，repeated mean `65.42ms -> 54.67ms` |
 
 ## 总列表
 
@@ -132,7 +133,7 @@
 | Data Display | TreeView | Pending | 待建立基线 |
 | Data Display | Tooltip | Pending | 待建立基线 |
 | Data Display | Tour | Pending | 待建立基线 |
-| Feedback | Alert | Pending | 待建立基线 |
+| Feedback | Alert | Done | [MarqueeLabel](MarqueeLabel/README.md)；默认非 marquee Alert 不再承担隐藏 MarqueeLabel 成本，`AlertShowCase` repeated mean 提升约 `16.43%` |
 | Feedback | Drawer | Done | [Drawer](Drawer/README.md)；关闭态 `OpenOn`/`SizeChanged` 已按需化，detach/open/close 生命周期已补齐验证；Gallery repeated mean `24.24ms -> 22.87ms` |
 | Feedback | Message | Pending | 待建立基线 |
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
