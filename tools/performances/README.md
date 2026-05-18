@@ -22,6 +22,7 @@
 - `Suites/GroupBox/`: GroupBox header icon lazy、Gallery shape 和状态/生命周期验证。
 - `Suites/Icon/`: Icon micro benchmark、隐藏 icon slot、AntDesign metadata、provider cache 验证。
 - `Suites/ImagePreviewer/`: ImagePreviewer 关闭态 source list lazy、Gallery shape 和状态/生命周期验证。
+- `Suites/NavMenu/`: NavMenu/NavMenuItem 默认路径、全局关闭订阅、container binding 生命周期验证。
 - `TestSupport/`: 断言、测试 brush、marker template、probe icon 等测试辅助类型。
 
 新增控件级基准时优先在 `Suites/<ControlName>/` 下建文件；跨控件复用能力放到 `Core/` 或 `TestSupport/`。
@@ -98,6 +99,19 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown /tmp/atomui-buttonspinner-control.md
 ```
 
+控件级 NavMenu 基准与状态验证：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite navmenu --count 80 \
+  --markdown /tmp/atomui-navmenu-control.md
+
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --verify-navmenu-states
+```
+
 控件级 Drawer 基准：
 
 ```bash
@@ -153,7 +167,7 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
   --markdown /tmp/atomui-imagepreviewer-gallery.md
 ```
 
-Gallery 工具支持多个真实 ShowCase，常用例子包括 `lineedit`、`icon`、`button`、`space`、`select`、`cascader`、`drawer`、`groupbox`、`imagepreviewer`。例如验证 Icon Phase 4 影响到的控件真实场景：
+Gallery 工具支持多个真实 ShowCase，常用例子包括 `lineedit`、`icon`、`button`、`space`、`select`、`cascader`、`drawer`、`groupbox`、`imagepreviewer`、`menu`。`menu` 的 ready 条件包含 `NavMenu` 默认路径完整展开，避免把未完全显示的 `791 visuals` 形态误判为完成。例如验证 Icon Phase 4 影响到的控件真实场景：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \

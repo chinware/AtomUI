@@ -40,6 +40,7 @@ internal sealed record PerfOptions(
     bool VerifyMarqueeLabelStates,
     bool VerifyMentionsStates,
     bool VerifyMenuStates,
+    bool VerifyNavMenuStates,
     bool VerifyMessageStates,
     bool VerifyMessageBoxStates)
 {
@@ -84,6 +85,7 @@ internal sealed record PerfOptions(
         var verifyMarqueeLabelStates = false;
         var verifyMentionsStates = false;
         var verifyMenuStates = false;
+        var verifyNavMenuStates = false;
         var verifyMessageStates = false;
         var verifyMessageBoxStates = false;
 
@@ -211,6 +213,9 @@ internal sealed record PerfOptions(
                 case "--verify-menu-states":
                     verifyMenuStates = true;
                     break;
+                case "--verify-navmenu-states":
+                    verifyNavMenuStates = true;
+                    break;
                 case "--verify-message-states":
                     verifyMessageStates = true;
                     break;
@@ -260,6 +265,7 @@ internal sealed record PerfOptions(
             verifyMarqueeLabelStates,
             verifyMentionsStates,
             verifyMenuStates,
+            verifyNavMenuStates,
             verifyMessageStates,
             verifyMessageBoxStates);
     }

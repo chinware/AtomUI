@@ -275,7 +275,9 @@ internal static class Program
                 MenuViewModel.ID,
                 "AtomUIGallery.ShowCases.Views.MenuShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Navigation/MenuShowCase.axaml",
-                stats => stats.MenuItemCount > 0)
+                stats => stats.MenuItemCount > 0 &&
+                         stats.NavMenuItemHeaderCount >= 42 &&
+                         stats.MotionActorCount >= 30)
         };
 
     [STAThread]

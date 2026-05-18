@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
-using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Automation;
@@ -273,45 +272,60 @@ public class NavMenu : ItemsControl,
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(container, item, index);
         if (container is NavMenuItem menuItem)
         {
+            menuItem.ClearPreparedContainerState();
+            base.PrepareContainerForItemOverride(container, item, index);
             menuItem.OwnerMenu = this;
+            var hasPreparedNodeState           = false;
+            var hasPreparedHeaderTemplateState = false;
 
             {
                 if (item is INavMenuNode menuNode)
                 {
+                    hasPreparedNodeState = true;
+                    menuItem.ClearValue(NavMenuItem.HeaderProperty);
+                    menuItem.ClearValue(NavMenuItem.HeaderTemplateProperty);
                     menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon), menuItem, NavMenuItem.IconProperty);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled), menuItem,
-                        NavMenuItem.IsEnabledProperty);
-                    menuItem.ItemKey = menuNode.ItemKey;
+                    menuItem.BindPreparedNavNodeProperties(menuNode);
                 }
             }
 
             {
                 if (item is INavMenuNode menuNode && menuNode.HeaderTemplate != null)
                 {
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate), menuItem,
-                        NavMenuItem.HeaderTemplateProperty);
+                    hasPreparedHeaderTemplateState = true;
+                    menuItem.BindPreparedNavNodeHeaderTemplate(menuNode);
                 }
                 else if (ItemTemplate != null)
                 {
-                    BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, NavMenuItem.HeaderTemplateProperty);
+                    hasPreparedHeaderTemplateState = true;
+                    menuItem[!NavMenuItem.HeaderTemplateProperty] = this[!ItemTemplateProperty];
                 }
             }
-            
+
             menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
             menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
             menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
             menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
-           
+
             PrepareNavMenuItem(menuItem, item, index);
+            menuItem.MarkPreparedContainerState(hasPreparedNodeState, hasPreparedHeaderTemplateState);
         }
         else
         {
+            base.PrepareContainerForItemOverride(container, item, index);
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
         }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is NavMenuItem menuItem)
+        {
+            menuItem.ClearPreparedContainerState();
+        }
+        base.ClearContainerForItemOverride(container);
     }
     
     internal virtual void PrepareNavMenuItem(NavMenuItem menuItem, object? item, int index)
@@ -489,27 +503,26 @@ public class NavMenu : ItemsControl,
                 bool childFound = false;
                 for (var j = 0; j < items.Count; j++)
                 {
-                    if (items[j] is INavMenuNode item)
+                    if (items[j] is not INavMenuNode item || !IsNodeSegmentMatch(item, segment))
                     {
-                        var navMenuItem = await (previousItem != null 
-                            ? GetNavMenuItemContainerAsync(item, previousItem) 
-                            : GetNavMenuItemContainerAsync(item, this));
-                        if (navMenuItem == null)
-                        {
-                            return null;
-                        }
-
-                        if (navMenuItem.ItemKey != null && navMenuItem.ItemKey.Value == segment)
-                        {
-                            navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
-                            items      = navMenuItem.Items;
-                            childFound = true;
-                            pathNodes.Add(navMenuItem);
-                            action?.Invoke(navMenuItem, i);
-                            previousItem = navMenuItem;
-                            break;
-                        }
+                        continue;
                     }
+
+                    var navMenuItem = await (previousItem != null
+                        ? GetNavMenuItemContainerAsync(item, previousItem)
+                        : GetNavMenuItemContainerAsync(item, this));
+                    if (navMenuItem == null)
+                    {
+                        return null;
+                    }
+
+                    navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
+                    items      = navMenuItem.Items;
+                    childFound = true;
+                    pathNodes.Add(navMenuItem);
+                    action?.Invoke(navMenuItem, i);
+                    previousItem = navMenuItem;
+                    break;
                 }
 
                 if (!childFound)
@@ -544,27 +557,26 @@ public class NavMenu : ItemsControl,
                 bool childFound  = false;
                 for (var j = 0; j < items.Count; j++)
                 {
-                    if (items[j] is INavMenuNode node)
+                    if (items[j] is not INavMenuNode node || node != currentNode)
                     {
-                        var navMenuItem = await (previousItem != null 
-                            ? GetNavMenuItemContainerAsync(node, previousItem) 
-                            : GetNavMenuItemContainerAsync(node, this));
-                        if (navMenuItem == null)
-                        {
-                            return null;
-                        }
-
-                        if (node == currentNode)
-                        {
-                            navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
-                            items      = navMenuItem.Items;
-                            childFound = true;
-                            pathItems.Add(navMenuItem);
-                            action?.Invoke(navMenuItem, i);
-                            previousItem = navMenuItem;
-                            break;
-                        }
+                        continue;
                     }
+
+                    var navMenuItem = await (previousItem != null
+                        ? GetNavMenuItemContainerAsync(node, previousItem)
+                        : GetNavMenuItemContainerAsync(node, this));
+                    if (navMenuItem == null)
+                    {
+                        return null;
+                    }
+
+                    navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
+                    items      = navMenuItem.Items;
+                    childFound = true;
+                    pathItems.Add(navMenuItem);
+                    action?.Invoke(navMenuItem, i);
+                    previousItem = navMenuItem;
+                    break;
                 }
 
                 if (!childFound)
@@ -635,7 +647,12 @@ public class NavMenu : ItemsControl,
         
         return pathNodes;
     }
-    
+
+    private static bool IsNodeSegmentMatch(INavMenuNode node, string segment)
+    {
+        return node.ItemKey is { } itemKey && itemKey.Value == segment;
+    }
+
     private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(INavMenuNode childNode, ItemsControl current)
     {
         var          cycleCount = 10;
@@ -659,7 +676,7 @@ public class NavMenu : ItemsControl,
             target = current.ContainerFromItem(childNode) as NavMenuItem;
             if (target == null)
             {
-                await Task.Delay(TimeSpan.FromMilliseconds(50));
+                await Dispatcher.InvokeAsync(current.UpdateLayout);
             }
             else
             {

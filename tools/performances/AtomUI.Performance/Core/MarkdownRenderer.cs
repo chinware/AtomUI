@@ -98,6 +98,7 @@ internal static partial class Program
                 "imagepreviewer" => "# ImagePreviewer Baseline",
                 "marqueelabel" => "# MarqueeLabel / Alert Baseline",
                 "menu" => "# Menu Baseline",
+                "navmenu" => "# NavMenu Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

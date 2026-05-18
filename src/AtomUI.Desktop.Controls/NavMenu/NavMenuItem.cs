@@ -1,5 +1,6 @@
 using System.Windows.Input;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Exceptions;
 using AtomUI.Input;
@@ -337,6 +338,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private KeyGesture? _hotkey;
     private bool _isEmbeddedInMenu;
     private BaseMotionActor? _childItemsLayoutTransform;
+    private IDisposable? _preparedIconBinding;
+    private IDisposable? _preparedIsEnabledBinding;
+    private IDisposable? _preparedHeaderTemplateBinding;
+    private bool _hasPreparedContainerState;
+    private bool _hasPreparedNodeState;
+    private bool _hasPreparedHeaderTemplateState;
 
     private Control? _itemHeader;
     private bool _animating;
@@ -640,6 +647,10 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (value)
             {
+                if (OwnerMenu?.InteractionHandler is DefaultNavMenuInteractionHandler interactionHandler)
+                {
+                    interactionHandler.NotifySubmenuOpenStateChanged(true);
+                }
                 foreach (var item in ItemsView.OfType<NavMenuItem>())
                 {
                     item.TryUpdateCanExecute();
@@ -649,6 +660,10 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             else
             {
                 CloseSubmenus();
+                if (OwnerMenu?.InteractionHandler is DefaultNavMenuInteractionHandler interactionHandler)
+                {
+                    interactionHandler.NotifySubmenuOpenStateChanged(false);
+                }
             }
         }
     }
@@ -778,28 +793,32 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
     {
-        base.PrepareContainerForItemOverride(container, item, index);
         if (container is NavMenuItem menuItem)
         {
+            menuItem.ClearPreparedContainerState();
+            base.PrepareContainerForItemOverride(container, item, index);
             menuItem.OwnerMenu = OwnerMenu;
+            var hasPreparedNodeState           = false;
+            var hasPreparedHeaderTemplateState = false;
             {
                 if (item is INavMenuNode menuNode)
                 {
+                    hasPreparedNodeState = true;
+                    menuItem.ClearValue(HeaderProperty);
+                    menuItem.ClearValue(HeaderTemplateProperty);
                     menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon), menuItem, NavMenuItem.IconProperty);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled), menuItem,
-                        NavMenuItem.IsEnabledProperty);
-                    menuItem.ItemKey = menuNode.ItemKey;
+                    menuItem.BindPreparedNavNodeProperties(menuNode);
                 }
             }
             {
                 if (item is INavMenuNode menuNode && menuNode.HeaderTemplate != null)
                 {
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate), menuItem,
-                        NavMenuItem.HeaderTemplateProperty);
+                    hasPreparedHeaderTemplateState = true;
+                    menuItem.BindPreparedNavNodeHeaderTemplate(menuNode);
                 }
                 else if (ItemTemplate != null)
                 {
+                    hasPreparedHeaderTemplateState = true;
                     menuItem[!NavMenuItem.HeaderTemplateProperty] = this[!ItemTemplateProperty];
                 }
             }
@@ -811,15 +830,109 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
             
             PrepareNavMenuItem(menuItem, item, index);
+            menuItem.MarkPreparedContainerState(hasPreparedNodeState, hasPreparedHeaderTemplateState);
         }
         else
         {
+            base.PrepareContainerForItemOverride(container, item, index);
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
         }
     }
 
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is NavMenuItem menuItem)
+        {
+            menuItem.ClearPreparedContainerState();
+        }
+        base.ClearContainerForItemOverride(container);
+    }
+
     protected virtual void PrepareNavMenuItem(NavMenuItem menuItem, object? item, int index)
     {
+    }
+
+    internal void BindPreparedNavNodeProperties(INavMenuNode menuNode)
+    {
+        if (menuNode is NavMenuNode navMenuNode)
+        {
+            _preparedIconBinding = this.Bind(IconProperty,
+                navMenuNode.GetObservable(NavMenuNode.IconProperty),
+                BindingPriority.LocalValue);
+            _preparedIsEnabledBinding = this.Bind(IsEnabledProperty,
+                navMenuNode.GetObservable(NavMenuNode.IsEnabledProperty),
+                BindingPriority.LocalValue);
+        }
+        else
+        {
+            _preparedIconBinding = BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon), this, IconProperty);
+            _preparedIsEnabledBinding =
+                BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled), this, IsEnabledProperty);
+        }
+
+        ItemKey = menuNode.ItemKey;
+    }
+
+    internal void BindPreparedNavNodeHeaderTemplate(INavMenuNode menuNode)
+    {
+        if (menuNode is NavMenuNode navMenuNode)
+        {
+            _preparedHeaderTemplateBinding = this.Bind(HeaderTemplateProperty,
+                navMenuNode.GetObservable(NavMenuNode.HeaderTemplateProperty),
+                BindingPriority.LocalValue);
+        }
+        else
+        {
+            _preparedHeaderTemplateBinding = BindUtils.RelayBind(menuNode,
+                nameof(INavMenuNode.HeaderTemplate),
+                this,
+                HeaderTemplateProperty);
+        }
+    }
+
+    internal void MarkPreparedContainerState(bool hasNodeState, bool hasHeaderTemplateState)
+    {
+        _hasPreparedContainerState       = true;
+        _hasPreparedNodeState            = hasNodeState;
+        _hasPreparedHeaderTemplateState  = hasHeaderTemplateState;
+    }
+
+    internal void ClearPreparedContainerState()
+    {
+        if (!_hasPreparedContainerState)
+        {
+            return;
+        }
+
+        _preparedIconBinding?.Dispose();
+        _preparedIconBinding = null;
+        _preparedIsEnabledBinding?.Dispose();
+        _preparedIsEnabledBinding = null;
+        _preparedHeaderTemplateBinding?.Dispose();
+        _preparedHeaderTemplateBinding = null;
+
+        OwnerMenu = null;
+        if (_hasPreparedNodeState)
+        {
+            ClearValue(HeaderProperty);
+            ClearValue(IconProperty);
+            ClearValue(IsEnabledProperty);
+            ClearValue(ItemKeyProperty);
+        }
+
+        if (_hasPreparedHeaderTemplateState)
+        {
+            ClearValue(HeaderTemplateProperty);
+        }
+
+        ClearValue(ModeProperty);
+        ClearValue(IsDarkStyleProperty);
+        ClearValue(IsMotionEnabledProperty);
+        ClearValue(ItemContainerThemeProperty);
+        ClearValue(ShouldUseOverlayPopupProperty);
+        _hasPreparedContainerState      = false;
+        _hasPreparedNodeState           = false;
+        _hasPreparedHeaderTemplateState = false;
     }
 
     protected virtual void NotifyClicked(RoutedEventArgs e)

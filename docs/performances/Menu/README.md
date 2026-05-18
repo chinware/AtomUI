@@ -57,7 +57,7 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 | `MenuShowCase` repeated P95 | `101.65 ms` | `97.78 ms` | `3.81%` faster |
 | `MenuShowCase` repeated alloc | `16565.64 KB` | `16303.66 KB` | `1.58%` less KB |
 
-Cold first navigation 本轮不声明提升：同一工具在 cold 多进程样本里仍会出现 `visuals 791/868` 两种 shape，差异来自 `MenuShowCase` 内部 `NavMenu` 默认展开状态，而不是本轮 `MenuItem` 闭合树本身。后续如果要把 cold first navigation 作为硬验收指标，需要先让 `GalleryPerformance` 固定进入 `MenuShowCase` 后的 `NavMenu` 展开状态或按 visual shape 分组统计。
+Cold first navigation 在 Menu-only 阶段不声明提升：当时工具会把 `visuals 791` 的未完整展开形态提前判定为 ready。NavMenu 本轮已把 `MenuShowCase` ready 条件固定到完整展开形态 `visuals 868 / NavMenuHeader 42 / MotionActor 30`，严格 Gallery 结果见 [NavMenu](../NavMenu/README.md)。
 
 ## 验证
 

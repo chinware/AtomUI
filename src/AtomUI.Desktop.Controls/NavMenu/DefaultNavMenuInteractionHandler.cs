@@ -20,6 +20,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private NavMenuItem? _latestSelectedItem;
     private NavMenuItem? _latestClickedItem;
     private WindowBase? _attachedWindow;
+    private bool _globalCloseSubscriptionsActive;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -271,23 +272,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             _root = TopLevel.GetTopLevel(visual);
         }
 
-        if (_root is InputElement inputRoot)
-        {
-            inputRoot.AddHandler(InputElement.PointerPressedEvent, RootPointerPressed, RoutingStrategies.Tunnel);
-        }
-
-        if (_root is WindowBase window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += WindowDeactivated;
-        }
-
-        if (_root is TopLevel tl && tl.PlatformImpl != null)
-        {
-            tl.PlatformImpl.LostFocus += TopLevelLostPlatformFocus;
-        }
-
-        _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
     }
 
     internal void DetachCore(INavMenu navMenu)
@@ -305,29 +289,18 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         Menu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
         Menu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
 
-        if (_root is InputElement inputRoot)
-        {
-            inputRoot.RemoveHandler(InputElement.PointerPressedEvent, RootPointerPressed);
-        }
-
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= WindowDeactivated;
-        }
-
-        if (_root is TopLevel tl && tl.PlatformImpl != null)
-        {
-            tl.PlatformImpl.LostFocus -= TopLevelLostPlatformFocus;
-        }
-
-        _inputManagerSubscription?.Dispose();
-        _inputManagerSubscription = null;
+        _currentOpenDelayRunDisposable?.Dispose();
+        _currentOpenDelayRunDisposable = null;
+        _currentCloseDelayRunDisposable?.Dispose();
+        _currentCloseDelayRunDisposable = null;
+        ClearGlobalCloseSubscriptions();
 
         Menu                = null;
         _root               = null;
         _attachedWindow     = null;
         _latestClickedItem  = null;
         _latestSelectedItem = null;
+        _currentPressedIsValid = false;
     }
     
     internal void Click(INavMenuItem item)
@@ -371,6 +344,83 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
         _currentOpenDelayRunDisposable?.Dispose();
         _currentOpenDelayRunDisposable = DelayRun(Execute, MenuShowDelay);
+    }
+
+    internal void NotifySubmenuOpenStateChanged(bool isOpen)
+    {
+        if (Menu is null)
+        {
+            return;
+        }
+
+        if (isOpen)
+        {
+            EnsureGlobalCloseSubscriptions();
+        }
+        else if (!HasOpenTopLevelMenuItem())
+        {
+            ClearGlobalCloseSubscriptions();
+        }
+    }
+
+    private bool HasOpenTopLevelMenuItem()
+    {
+        return Menu?.SubItems.Any(item => item.IsSubMenuOpen) == true;
+    }
+
+    private void EnsureGlobalCloseSubscriptions()
+    {
+        if (_globalCloseSubscriptionsActive)
+        {
+            return;
+        }
+
+        if (_root is null && Menu is Visual visual)
+        {
+            _root = TopLevel.GetTopLevel(visual);
+        }
+
+        if (_root is InputElement inputRoot)
+        {
+            inputRoot.AddHandler(InputElement.PointerPressedEvent, RootPointerPressed, RoutingStrategies.Tunnel);
+        }
+
+        if (_root is WindowBase window)
+        {
+            _attachedWindow    =  window;
+            window.Deactivated += WindowDeactivated;
+        }
+
+        if (_root is TopLevel tl && tl.PlatformImpl != null)
+        {
+            tl.PlatformImpl.LostFocus += TopLevelLostPlatformFocus;
+        }
+
+        _inputManagerSubscription      = InputManager?.Process.Subscribe(RawInput);
+        _globalCloseSubscriptionsActive = true;
+    }
+
+    private void ClearGlobalCloseSubscriptions()
+    {
+        if (_root is InputElement inputRoot)
+        {
+            inputRoot.RemoveHandler(InputElement.PointerPressedEvent, RootPointerPressed);
+        }
+
+        if (_attachedWindow != null)
+        {
+            _attachedWindow.Deactivated -= WindowDeactivated;
+        }
+
+        if (_root is TopLevel tl && tl.PlatformImpl != null)
+        {
+            tl.PlatformImpl.LostFocus -= TopLevelLostPlatformFocus;
+        }
+
+        _inputManagerSubscription?.Dispose();
+        _inputManagerSubscription       = null;
+        _attachedWindow                 = null;
+        _globalCloseSubscriptionsActive = false;
     }
 
     internal static NavMenuItem? GetMenuItemCore(StyledElement? item)

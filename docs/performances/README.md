@@ -70,7 +70,8 @@
 | ListView | 本轮已完成 | [ListView](ListView/README.md) | `ListView.Grouped` `3.619ms/item -> 1.759ms/item`，`FilterActive` `3.421ms/item -> 1.841ms/item`；`ListShowCase` repeated mean `80.72ms -> 77.34ms` |
 | MarqueeLabel / Alert | 本轮已完成 | [MarqueeLabel](MarqueeLabel/README.md) | Alert 默认路径不再创建隐藏 `MarqueeLabel`；`AlertShowCase` runtime `MarqueeLabel 25 -> 1`，visuals `585 -> 561`，repeated mean `65.42ms -> 54.67ms` |
 | Mentions | 本轮已完成 | [Mentions](Mentions/README.md) | closed popup content 已按需创建；`MentionsShowCase` `_candidateList 15 -> 0`，repeated mean `110.05ms -> 106.95ms`，alloc `10115.79KB -> 9326.47KB` |
-| Menu | 本轮已完成 | [Menu](Menu/README.md) | closed leaf `MenuItem` visual/root `13 -> 9`，KB/item `209.8 -> 122.1`；`MenuShowCase` repeated mean `91.16ms -> 89.10ms`，cold 仍需固定 NavMenu shape 后再验收 |
+| Menu | 本轮已完成 | [Menu](Menu/README.md) | closed leaf `MenuItem` visual/root `13 -> 9`，KB/item `209.8 -> 122.1`；`MenuShowCase` Menu-only phase repeated mean `91.16ms -> 89.10ms`，严格 NavMenu shape 见 NavMenu 文档 |
+| NavMenu | 本轮已完成 | [NavMenu](NavMenu/README.md) | 修复 prepared node binding 生命周期和默认路径遍历；`MenuShowCase` 严格完整形态 repeated mean `162.76ms -> 99.13ms`，cold mean `416.22ms -> 351.72ms` |
 | Message | 本轮已完成 | [Message](Message/README.md) | `WindowMessageManager` 只在首次实际 show 时创建；timer/event/OnClose 生命周期已释放；`MessageShowCase` repeated mean `30.97ms -> 28.52ms`，cold mean `109.07ms -> 98.86ms` |
 | MessageBox | 本轮已完成 | [MessageBox](MessageBox/README.md) | 同生命周期 binding 改为 `[!]`，loading skeleton 按需创建并验证释放；`ModalShowCase` repeated mean `34.53ms -> 32.11ms`，P95 `37.18ms -> 34.42ms` |
 | Notification | Phase 0 已完成 | [Notification](Notification/README.md) | 基线：`NotificationShowCase` cold mean `162.56ms`，repeated mean `58.21ms`，visuals `200`；发现 7 个 manager 提前创建和 `MaxItems` 批量 show 未稳定收敛风险 |
@@ -94,6 +95,7 @@
 | Navigation | ComboBox | Done | [ComboBox](ComboBox/README.md)；默认 host、popup content、handle `IconButton` 成本已按需/轻量化，Gallery repeated mean 提升约 `16.72%` |
 | Navigation | DropdownButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | Navigation | Menu | Done | [Menu](Menu/README.md)；闭合 leaf/toggle/submenu Popup 重内容已按需创建，ContextMenu window 订阅释放已补齐，Gallery repeated mean 小幅提升 |
+| Navigation | NavMenu | Done | [NavMenu](NavMenu/README.md)；container binding 生命周期、全局关闭订阅按需化、默认路径完整显示和 Gallery 严格 ready 口径已完成 |
 | Navigation | Pagination | Pending | 待建立基线 |
 | Navigation | Steps | Pending | 待建立基线 |
 | Navigation | TabControl | Pending | 待建立基线 |

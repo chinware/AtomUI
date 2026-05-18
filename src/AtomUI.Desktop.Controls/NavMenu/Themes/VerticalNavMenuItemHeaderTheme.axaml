@@ -29,8 +29,8 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             IsEnabled="{TemplateBinding IsEnabled}"
-                            Icon="{TemplateBinding Icon}" 
-                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            Icon="{TemplateBinding Icon}"
+                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ContentPresenter
                             Name="ItemTextPresenter"
                             Grid.Column="1"
