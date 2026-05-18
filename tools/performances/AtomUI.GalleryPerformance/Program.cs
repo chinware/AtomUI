@@ -132,6 +132,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.MessageShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/MessageShowCase.axaml",
                 stats => stats.ShowCaseItemCount >= 4 && stats.ButtonCount >= 7),
+            ["notification"] = new(
+                "NotificationShowCase",
+                NotificationViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.NotificationShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/NotificationShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 6 && stats.ButtonCount >= 14),
             ["alert"] = new(
                 "AlertShowCase",
                 AlertViewModel.ID,

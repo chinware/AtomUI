@@ -286,7 +286,6 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
     private Dialog? _dialog;
     private MessageBoxContent? _dialogContent;
     private CompositeDisposable? _dialogBindings;
-    private CompositeDisposable? _dialogContentBindings;
     private bool _ignoreIsOpenChanged;
 
     static MessageBox()
@@ -542,34 +541,31 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         ReleaseTemplateDialog();
 
         _dialog = dialog;
+        dialog[!Dialog.TitleProperty] = this[!TitleProperty];
+        dialog[!Dialog.IsModalProperty] = this[!IsModalProperty];
+        dialog[!Dialog.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
+        dialog[!Dialog.DialogHostTypeProperty] = this[!DialogHostTypeProperty];
+        dialog[!Dialog.IsDragMovableProperty] = this[!IsDragMovableProperty];
+        dialog[!Dialog.HostWidthProperty] = this[!HostWidthProperty];
+        dialog[!Dialog.HostMinWidthProperty] = this[!HostMinWidthProperty];
+        dialog[!Dialog.HostMaxWidthProperty] = this[!HostMaxWidthProperty];
+        dialog[!Dialog.HostHeightProperty] = this[!HostHeightProperty];
+        dialog[!Dialog.HostMinHeightProperty] = this[!HostMinHeightProperty];
+        dialog[!Dialog.HostMaxHeightProperty] = this[!HostMaxHeightProperty];
+        dialog[!Dialog.IsLoadingProperty] = this[!IsLoadingProperty];
+        dialog[!Dialog.IsConfirmLoadingProperty] = this[!IsConfirmLoadingProperty];
         _dialogBindings = new CompositeDisposable
         {
-            BindUtils.RelayBind(this, TitleProperty, dialog, Dialog.TitleProperty),
-            BindUtils.RelayBind(this, IsModalProperty, dialog, Dialog.IsModalProperty),
-            BindUtils.RelayBind(this, IsMotionEnabledProperty, dialog, Dialog.IsMotionEnabledProperty),
-            BindUtils.RelayBind(this, DialogHostTypeProperty, dialog, Dialog.DialogHostTypeProperty),
-            BindUtils.RelayBind(this, IsDragMovableProperty, dialog, Dialog.IsDragMovableProperty),
             BindUtils.RelayBind(this, HorizontalOffsetProperty, dialog, Dialog.HorizontalOffsetProperty, BindingMode.TwoWay),
             BindUtils.RelayBind(this, VerticalOffsetProperty, dialog, Dialog.VerticalOffsetProperty, BindingMode.TwoWay),
-            BindUtils.RelayBind(this, HostWidthProperty, dialog, Dialog.HostWidthProperty),
-            BindUtils.RelayBind(this, HostMinWidthProperty, dialog, Dialog.HostMinWidthProperty),
-            BindUtils.RelayBind(this, HostMaxWidthProperty, dialog, Dialog.HostMaxWidthProperty),
-            BindUtils.RelayBind(this, HostHeightProperty, dialog, Dialog.HostHeightProperty),
-            BindUtils.RelayBind(this, HostMinHeightProperty, dialog, Dialog.HostMinHeightProperty),
-            BindUtils.RelayBind(this, HostMaxHeightProperty, dialog, Dialog.HostMaxHeightProperty),
-            BindUtils.RelayBind(this, IsLoadingProperty, dialog, Dialog.IsLoadingProperty),
-            BindUtils.RelayBind(this, IsConfirmLoadingProperty, dialog, Dialog.IsConfirmLoadingProperty),
             BindUtils.RelayBind(this, ResultProperty, dialog, Dialog.ResultProperty, BindingMode.TwoWay)
         };
 
         _dialogContent = new MessageBoxContent();
-        _dialogContentBindings = new CompositeDisposable
-        {
-            BindUtils.RelayBind(this, IconProperty, _dialogContent, MessageBoxContent.StyleIconProperty),
-            BindUtils.RelayBind(this, StyleProperty, _dialogContent, MessageBoxContent.StyleProperty),
-            BindUtils.RelayBind(this, ContentProperty, _dialogContent, ContentControl.ContentProperty),
-            BindUtils.RelayBind(this, ContentTemplateProperty, _dialogContent, ContentControl.ContentTemplateProperty)
-        };
+        _dialogContent[!MessageBoxContent.StyleIconProperty] = this[!IconProperty];
+        _dialogContent[!MessageBoxContent.StyleProperty] = this[!StyleProperty];
+        _dialogContent[!ContentControl.ContentProperty] = this[!ContentProperty];
+        _dialogContent[!ContentControl.ContentTemplateProperty] = this[!ContentTemplateProperty];
 
         SyncDialogPlacementTarget();
         dialog.Content          =  _dialogContent;
@@ -602,8 +598,6 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
         _dialogBindings?.Dispose();
         _dialogBindings = null;
-        _dialogContentBindings?.Dispose();
-        _dialogContentBindings = null;
         _dialogContent = null;
         _dialog = null;
     }
@@ -674,6 +668,7 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         }
         else if (Style == MessageBoxStyle.Normal)
         {
+            SetValue(IconProperty, null, BindingPriority.Template);
             dialog.StandardButtons = DialogStandardButton.Ok;
         }
         else if (Style == MessageBoxStyle.Confirm)

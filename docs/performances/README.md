@@ -59,7 +59,7 @@
 | ComboBox | 本轮已完成 | [ComboBox](ComboBox/README.md) | `ComboBoxShowCase` repeated mean `109.35ms -> 91.07ms`，alloc `11384.83KB -> 9534.28KB`，visuals `562 -> 497`；默认 `Button/IconButton 23 -> 0` |
 | DatePicker | 本轮已完成 | [DatePicker](DatePicker/README.md) | closed route `PickerHost 30 -> 0`，visuals `1570 -> 1540`，alloc `30959.16KB -> 29762.89KB`，长样本 repeated mean `174.77ms -> 154.21ms` |
 | Descriptions | 本轮已完成 | [Descriptions](Descriptions/README.md) | `DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；`GalleryShape.Batch8` `25.139ms/root -> 24.486ms/root`；修复 binding/collection/window 订阅生命周期风险 |
-| Dialog / MessageBox | 本轮已完成结构与生命周期优化 | [Dialog](Dialog/README.md) | `MessageBox` closed `Dialog/root 1 -> 0`，`ModalShowCase` cold mean `218.07ms -> 211.09ms`，repeated mean `34.19ms -> 34.53ms` 未提升，visuals `324 -> 317`，Dialog runtime `14 -> 7`；修复 RelayBind、mask binding、resizer 和 ButtonBox 父级生命周期风险 |
+| Dialog / MessageBox | 本轮已完成结构与生命周期优化 | [Dialog](Dialog/README.md) | `MessageBox` closed `Dialog/root 1 -> 0`，`ModalShowCase` visuals `324 -> 317`，Dialog runtime `14 -> 7`；修复 RelayBind、mask binding、resizer 和 ButtonBox 父级生命周期风险，后续 MessageBox 细化见独立文档 |
 | Expander | 本轮已完成 | [Expander](Expander/README.md) | closed content motion actor 按需创建；`ExpanderShowCase` cold mean `191.70ms -> 170.47ms`，repeated mean `82.18ms -> 67.30ms`，visuals `391 -> 360`，MotionActor `16 -> 1` |
 | Empty | 本轮已完成低风险修复 | [Empty](Empty/README.md) | 修复 `IsDescriptionVisible=False`、图片来源运行时互斥和 `Svg.Source/Path` 残留；`EmptyShowCase` repeated mean `21.90ms -> 21.32ms`，alloc `2269.73KB -> 2253.90KB`，visuals 不变 |
 | FloatButton | 本轮已完成 | [FloatButton](FloatButton/README.md) | closed trigger group visual/root `41 -> 14`；`FloatButtonShowCase` repeated mean `126.71ms -> 110.81ms`，visuals `949 -> 752`，alloc `14447.92KB -> 12182.94KB` |
@@ -72,6 +72,8 @@
 | Mentions | 本轮已完成 | [Mentions](Mentions/README.md) | closed popup content 已按需创建；`MentionsShowCase` `_candidateList 15 -> 0`，repeated mean `110.05ms -> 106.95ms`，alloc `10115.79KB -> 9326.47KB` |
 | Menu | 本轮已完成 | [Menu](Menu/README.md) | closed leaf `MenuItem` visual/root `13 -> 9`，KB/item `209.8 -> 122.1`；`MenuShowCase` repeated mean `91.16ms -> 89.10ms`，cold 仍需固定 NavMenu shape 后再验收 |
 | Message | 本轮已完成 | [Message](Message/README.md) | `WindowMessageManager` 只在首次实际 show 时创建；timer/event/OnClose 生命周期已释放；`MessageShowCase` repeated mean `30.97ms -> 28.52ms`，cold mean `109.07ms -> 98.86ms` |
+| MessageBox | 本轮已完成 | [MessageBox](MessageBox/README.md) | 同生命周期 binding 改为 `[!]`，loading skeleton 按需创建并验证释放；`ModalShowCase` repeated mean `34.53ms -> 32.11ms`，P95 `37.18ms -> 34.42ms` |
+| Notification | Phase 0 已完成 | [Notification](Notification/README.md) | 基线：`NotificationShowCase` cold mean `162.56ms`，repeated mean `58.21ms`，visuals `200`；发现 7 个 manager 提前创建和 `MaxItems` 批量 show 未稳定收敛风险 |
 
 ## 总列表
 
@@ -139,8 +141,9 @@
 | Feedback | Alert | Done | [MarqueeLabel](MarqueeLabel/README.md)；默认非 marquee Alert 不再承担隐藏 MarqueeLabel 成本，`AlertShowCase` repeated mean 提升约 `16.43%` |
 | Feedback | Drawer | Done | [Drawer](Drawer/README.md)；关闭态 `OpenOn`/`SizeChanged` 已按需化，detach/open/close 生命周期已补齐验证；Gallery repeated mean `24.24ms -> 22.87ms` |
 | Feedback | Message | Done | [Message](Message/README.md)；manager 按需创建，auto-close timer、MessageClosed、OnClose 生命周期已补齐，Gallery repeated mean 提升约 `7.91%` |
+| Feedback | MessageBox | Done | [MessageBox](MessageBox/README.md)；同生命周期 binding 改为 `[!]`，loading skeleton 按需创建，状态/释放验证已补齐 |
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
-| Feedback | Notification | Pending | 待建立基线 |
+| Feedback | Notification | Baseline | [Notification](Notification/README.md)；已建立控件级和 Gallery 基线，下一步优先修 manager/card 生命周期与 Gallery manager 按需创建 |
 | Feedback | PopupConfirm | Pending | 待建立基线 |
 | Feedback | ProgressBar | Pending | 待建立基线 |
 | Feedback | Result | Pending | 待建立基线 |

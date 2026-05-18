@@ -17,13 +17,9 @@
                     </Border>
                     <Border Name="ContentFrame"
                             ClipToBounds="True">
-                        <atom:Skeleton IsLoading="{TemplateBinding IsLoading}"
-                                       IsActive="True"
-                                       ParagraphRows="4"
-                                       IsShowTitle="False"
-                                       ClipToBounds="False"
-                                       Content="{TemplateBinding DialogContent}"
-                                       ContentTemplate="{TemplateBinding DialogContentTemplate}" />
+                        <atom:DialogLoadingContentPresenter IsLoading="{TemplateBinding IsLoading}"
+                                                            Content="{TemplateBinding DialogContent}"
+                                                            ContentTemplate="{TemplateBinding DialogContentTemplate}" />
                     </Border>
                 </DockPanel>
             </ControlTemplate>
@@ -39,7 +35,7 @@
             <Setter Property="Padding" Value="{atom:DialogTokenResource FooterPadding}" />
         </Style>
         
-        <Style Selector="^ /template/ atom|Skeleton">
+        <Style Selector="^ /template/ atom|DialogLoadingContentPresenter">
             <Setter Property="Margin" Value="{atom:DialogTokenResource LoadingIndicatorMargin}" />
         </Style>
     </ControlTheme>

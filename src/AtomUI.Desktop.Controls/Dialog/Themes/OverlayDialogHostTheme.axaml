@@ -26,13 +26,9 @@
                                                   EscapeStandardButton="{TemplateBinding EscapeStandardButton}"/>
                         </Border>
                         <Border Name="ContentFrame" ClipToBounds="True">
-                            <atom:Skeleton IsLoading="{TemplateBinding IsLoading}"
-                                           IsActive="True"
-                                           ParagraphRows="4"
-                                           IsShowTitle="False"
-                                           ClipToBounds = "False"
-                                           Content="{TemplateBinding Content}"
-                                           ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            <atom:DialogLoadingContentPresenter IsLoading="{TemplateBinding IsLoading}"
+                                                                Content="{TemplateBinding Content}"
+                                                                ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Border>
                     </DockPanel>
                 </Border>
@@ -64,7 +60,7 @@
             <Setter Property="Padding" Value="{atom:DialogTokenResource ContentPadding}" />
         </Style>
         
-        <Style Selector="^ /template/ atom|Skeleton">
+        <Style Selector="^ /template/ atom|DialogLoadingContentPresenter">
             <Setter Property="Margin" Value="{atom:DialogTokenResource LoadingIndicatorMargin}" />
         </Style>
 
