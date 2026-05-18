@@ -1,8 +1,12 @@
 using System.Reflection;
+using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -17,6 +21,9 @@ internal static partial class Program
         VerifySelectModeSpecificContent(failures);
         VerifySelectAccessoryPaths(failures);
         VerifySelectLoadingLifecycle(failures);
+        VerifyFilteredSelectClickUsesVisibleOption(failures);
+        VerifyFilteredMultiSelectClickUsesVisibleOption(failures);
+        VerifySelectMultiCandidateClicksAccumulate(failures);
         VerifyTreeSelectPopupLifecycle(failures);
 
         if (failures.Count == 0)
@@ -185,6 +192,139 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyFilteredSelectClickUsesVisibleOption(ICollection<string> failures)
+    {
+        var options = CreatePersonSelectOptions();
+        var candidateList = new SelectCandidateList
+        {
+            Filter              = ValueFilterFactory.BuildFilter(ValueFilterMode.Contains),
+            FilterValue         = "Tom",
+            FilterValueSelector = Select.HeaderFilterPropertySelector,
+            ItemsSource         = options,
+            SelectionMode       = SelectionMode.Single
+        };
+
+        using var realized = RealizeControl(candidateList);
+        RefreshLayout(realized.Window);
+
+        var visibleItem = candidateList.ContainerFromIndex(0) as SelectCandidateListItem;
+        if (visibleItem == null)
+        {
+            failures.Add("Filtered Select should realize the first visible candidate item.");
+            return;
+        }
+
+        RaisePrimaryPointerPressed(visibleItem, realized.Window);
+        visibleItem.RaiseEvent(new RoutedEventArgs(ListViewItem.ClickedEvent, visibleItem));
+
+        Expect(ReferenceEquals(candidateList.SelectedItem, options[2]),
+            $"Filtered Select candidate click should select visible option Tom. Actual: {(candidateList.SelectedItem as ISelectOption)?.Header}.",
+            failures);
+    }
+
+    private static void VerifyFilteredMultiSelectClickUsesVisibleOption(ICollection<string> failures)
+    {
+        var options = CreatePersonSelectOptions();
+        var candidateList = new SelectCandidateList
+        {
+            Filter              = ValueFilterFactory.BuildFilter(ValueFilterMode.Contains),
+            FilterValue         = "Tom",
+            FilterValueSelector = Select.HeaderFilterPropertySelector,
+            ItemsSource         = options,
+            SelectionMode       = SelectionMode.Multiple
+        };
+
+        using var realized = RealizeControl(candidateList);
+        RefreshLayout(realized.Window);
+
+        var visibleItem = candidateList.ContainerFromIndex(0) as SelectCandidateListItem;
+        if (visibleItem == null)
+        {
+            failures.Add("Filtered multi Select should realize the first visible candidate item.");
+            return;
+        }
+
+        RaisePrimaryPointerPressed(visibleItem, realized.Window);
+
+        Expect(candidateList.SelectedItems?.Contains(options[2]) == true &&
+               candidateList.SelectedItems?.Contains(options[0]) != true,
+            "Filtered multi Select click should toggle visible option Tom, not source option Jack.",
+            failures);
+
+        candidateList.FilterValue = null;
+        RefreshLayout(realized.Window);
+
+        var secondVisibleItem = candidateList.ContainerFromIndex(1) as SelectCandidateListItem;
+        if (secondVisibleItem == null)
+        {
+            failures.Add("Multi Select should realize the second visible candidate item.");
+            return;
+        }
+
+        RaisePrimaryPointerPressed(secondVisibleItem, realized.Window);
+
+        Expect(candidateList.SelectedItems?.Contains(options[1]) == true &&
+               candidateList.SelectedItems?.Contains(options[2]) == true,
+            "Multi Select should preserve existing selected option when clicking another visible option.",
+            failures);
+    }
+
+    private static void VerifySelectMultiCandidateClicksAccumulate(ICollection<string> failures)
+    {
+        var options = CreatePersonSelectOptions();
+        var select = new Select
+        {
+            Mode            = SelectMode.Multiple,
+            IsFilterEnabled = true,
+            OptionsSource   = options
+        };
+
+        using var selectRealized = RealizeControl(select);
+        MaterializeLazyPopupContentForTest(select);
+        var candidateList = GetPopupContent<SelectCandidateList>(select);
+        if (candidateList == null)
+        {
+            failures.Add("Multiple Select should materialize SelectCandidateList for accumulation verification.");
+            return;
+        }
+
+        var popupFrame = GetPopupFrame(select);
+        if (popupFrame != null)
+        {
+            popupFrame.Child = null;
+        }
+
+        SetCandidateListActivatedForTest(select, true);
+        using var candidateRealized = RealizeControl(candidateList);
+        RefreshLayout(candidateRealized.Window);
+
+        var firstItem = candidateList.ContainerFromIndex(0) as SelectCandidateListItem;
+        var secondItem = candidateList.ContainerFromIndex(1) as SelectCandidateListItem;
+        if (firstItem == null || secondItem == null)
+        {
+            failures.Add("Multiple Select should realize first two candidate items.");
+            return;
+        }
+
+        RaisePrimaryPointerPressed(firstItem, candidateRealized.Window);
+        RaisePrimaryPointerPressed(secondItem, candidateRealized.Window);
+
+        Expect(select.SelectedOptions?.Contains(options[0]) == true &&
+               select.SelectedOptions?.Contains(options[1]) == true,
+            $"Multiple Select should accumulate clicked options. Mode: {candidateList.SelectionMode}, activated: {GetCandidateListActivatedForTest(select)}, select count: {select.SelectedOptions?.Count ?? 0}, candidate count: {candidateList.SelectedItems?.Count ?? 0}.",
+            failures);
+    }
+
+    private static List<SelectOption> CreatePersonSelectOptions()
+    {
+        return
+        [
+            new SelectOption { Header = "Jack", Content = "jack" },
+            new SelectOption { Header = "Lucy", Content = "lucy" },
+            new SelectOption { Header = "Tom", Content = "tom" }
+        ];
+    }
+
     private static void VerifyTreeSelectPopupLifecycle(ICollection<string> failures)
     {
         var treeSelect = new TreeSelect
@@ -242,5 +382,39 @@ internal static partial class Program
         typeof(AbstractSelect)
             .GetProperty(nameof(AbstractSelect.IsLoading), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
             ?.SetValue(select, value);
+    }
+
+    private static void SetCandidateListActivatedForTest(Select select, bool value)
+    {
+        typeof(Select)
+            .GetField("_candidateListActivated", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.SetValue(select, value);
+    }
+
+    private static bool GetCandidateListActivatedForTest(Select select)
+    {
+        return (bool)(typeof(Select)
+                   .GetField("_candidateListActivated", BindingFlags.Instance | BindingFlags.NonPublic)
+                   ?.GetValue(select) ?? false);
+    }
+
+    private static void RaisePrimaryPointerPressed(Control target, Visual root)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        var properties = new PointerPointProperties(
+            RawInputModifiers.LeftMouseButton,
+            PointerUpdateKind.LeftButtonPressed);
+
+        target.RaiseEvent(new PointerPressedEventArgs(
+            target,
+            pointer,
+            root,
+            default,
+            1,
+            properties,
+            KeyModifiers.None));
     }
 }

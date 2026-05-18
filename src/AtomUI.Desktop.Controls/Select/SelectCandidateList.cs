@@ -249,12 +249,7 @@ internal class SelectCandidateList : ListView, ICandidateList
     {
         if (CandidateSelectedItem != null)
         {
-            var container = ContainerFromItem(CandidateSelectedItem);
-            if (container is ListViewItem listItem)
-            {
-                UpdateSelection(listItem, !listItem.IsSelected, false,
-                    true);
-            }
+            ToggleVisibleItemSelection(CandidateSelectedItem);
         }
     }
 
@@ -502,29 +497,66 @@ internal class SelectCandidateList : ListView, ICandidateList
 
     protected internal override bool UpdateSelectionFromPointerEvent(Control source, PointerEventArgs e)
     {
+        if (!IsSelectable)
+        {
+            return false;
+        }
+
         if (source is ListViewItem listItem && !listItem.IsGroupItem)
         {
-            if (!IsSingleMode())
+            if (TryGetVisibleItem(listItem, out var item))
             {
-                var index = GlobalIndexFromContainer(listItem);
-                if (index != -1)
+                if (IsSingleMode())
                 {
-                    if (Selection.IsSelected(index))
-                    {
-                        Selection.Deselect(index);
-                    }
-                    else
-                    {
-                        Selection.Select(index);
-                    }
+                    SetCurrentValue(SelectedItemProperty, item);
                 }
-            }
-            else
-            {
-                base.UpdateSelectionFromPointerEvent(source, e);
+                else
+                {
+                    ToggleVisibleItemSelection(item);
+                }
             }
         }
         return true;
+    }
+
+    private bool TryGetVisibleItem(ListViewItem listItem, out object? item)
+    {
+        var index = IndexFromContainer(listItem);
+        if (index >= 0 && index < ItemCount)
+        {
+            item = Items[index];
+            return true;
+        }
+
+        item = null;
+        return false;
+    }
+
+    private void ToggleVisibleItemSelection(object? item)
+    {
+        var selectedItems = SelectedItems;
+        if (selectedItems == null)
+        {
+            return;
+        }
+
+        var addedItems   = Array.Empty<object?>();
+        var removedItems = Array.Empty<object?>();
+        if (selectedItems.Contains(item))
+        {
+            selectedItems.Remove(item);
+            removedItems = [item];
+        }
+        else
+        {
+            selectedItems.Add(item);
+            addedItems = [item];
+        }
+
+        RaiseEvent(new SelectionChangedEventArgs(
+            SelectionChangedEvent,
+            removedItems,
+            addedItems));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
