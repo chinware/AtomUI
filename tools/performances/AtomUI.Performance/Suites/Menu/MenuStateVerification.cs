@@ -1,4 +1,5 @@
 using System.Reflection;
+using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia.Controls;
@@ -8,6 +9,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Performance;
 
 using AtomContextMenu = AtomUI.Desktop.Controls.ContextMenu;
+using AtomMenuItem = AtomUI.Desktop.Controls.MenuItem;
 using AtomPopup = AtomUI.Desktop.Controls.Popup;
 using AtomTextBlock = AtomUI.Desktop.Controls.TextBlock;
 
@@ -20,6 +22,7 @@ internal static partial class Program
         VerifyMenuItemToggleLifecycle(failures);
         VerifyMenuItemIconAndGestureLifecycle(failures);
         VerifyMenuItemSubmenuPopupLifecycle(failures);
+        VerifyTopLevelMenuItemHoverTransitions(failures);
         VerifyContextMenuWindowSubscriptionLifecycle(failures);
 
         if (failures.Count == 0)
@@ -57,6 +60,24 @@ internal static partial class Program
         var popup = FindVisualByName<AtomPopup>(item, "PART_Popup");
         Expect(popup?.Child == null,
             "Closed leaf MenuItem should keep PART_Popup child empty.",
+            failures);
+    }
+
+    private static void VerifyTopLevelMenuItemHoverTransitions(ICollection<string> failures)
+    {
+        var menu = CreateBasicMenu();
+        menu.IsMotionEnabled = true;
+        using var _ = RealizeControl(menu);
+
+        var topLevelItem = menu.GetSelfAndVisualDescendants()
+                               .OfType<AtomMenuItem>()
+                               .FirstOrDefault(item => item.IsTopLevel);
+        var colorTransitions = topLevelItem?.Transitions?.OfType<SolidColorBrushTransition>().ToList();
+        Expect(colorTransitions?.Any(transition => transition.Property?.Name == "Background") == true,
+            "Top-level MenuItem should animate Background for hover/open state.",
+            failures);
+        Expect(colorTransitions?.Any(transition => transition.Property?.Name == "Foreground") == true,
+            "Top-level MenuItem should animate Foreground for hover/open state.",
             failures);
     }
 
