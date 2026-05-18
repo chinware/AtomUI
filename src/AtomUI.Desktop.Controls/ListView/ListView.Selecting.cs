@@ -362,6 +362,119 @@ public partial class ListView
         var selection = _updateState is not null ? TryGetExistingSelection() : Selection;
         return selection?.AnchorIndex ?? -1;
     }
+
+    private bool ShouldMapSelectionIndexByItem(out IEnumerable? selectionSource)
+    {
+        var selection = _updateState is not null ? TryGetExistingSelection() : _selection;
+        selectionSource = selection?.Source;
+        if (selectionSource == null ||
+            ItemsSource is not IListCollectionView collectionView ||
+            ReferenceEquals(selectionSource, collectionView))
+        {
+            return false;
+        }
+
+        return ReferenceEquals(selectionSource, collectionView.SourceCollection);
+    }
+
+    private int GetSelectionIndexFromViewIndex(int viewIndex)
+    {
+        if (viewIndex < 0)
+        {
+            return -1;
+        }
+
+        if (ShouldMapSelectionIndexByItem(out var selectionSource))
+        {
+            if (viewIndex >= ItemCount)
+            {
+                return -1;
+            }
+
+            return IndexOfSource(selectionSource, Items[viewIndex]);
+        }
+
+        return GlobalIndex(viewIndex);
+    }
+
+    private int GetViewIndexFromSelectionIndex(int selectionIndex)
+    {
+        if (selectionIndex < 0)
+        {
+            return -1;
+        }
+
+        if (ShouldMapSelectionIndexByItem(out var selectionSource))
+        {
+            return TryGetItemFromSource(selectionSource, selectionIndex, out var item)
+                ? Items.IndexOf(item)
+                : -1;
+        }
+
+        return GlobalIndexLocalIndex(selectionIndex);
+    }
+
+    private static int IndexOfSource(IEnumerable? source, object? item)
+    {
+        if (source is IList list)
+        {
+            return list.IndexOf(item);
+        }
+        if (source is ItemsSourceView view)
+        {
+            return view.IndexOf(item);
+        }
+        if (source != null)
+        {
+            var index = 0;
+            foreach (var sourceItem in source)
+            {
+                if (Equals(sourceItem, item))
+                {
+                    return index;
+                }
+                index++;
+            }
+        }
+
+        return -1;
+    }
+
+    private static bool TryGetItemFromSource(IEnumerable? source, int index, out object? item)
+    {
+        if (source is IList list)
+        {
+            if (index >= 0 && index < list.Count)
+            {
+                item = list[index];
+                return true;
+            }
+        }
+        else if (source is ItemsSourceView view)
+        {
+            if (index >= 0 && index < view.Count)
+            {
+                item = view[index];
+                return true;
+            }
+        }
+        else if (source != null)
+        {
+            var currentIndex = 0;
+            foreach (var sourceItem in source)
+            {
+                if (currentIndex == index)
+                {
+                    item = sourceItem;
+                    return true;
+                }
+                currentIndex++;
+            }
+        }
+
+        item = null;
+        return false;
+    }
     
     private ISelectionModel? TryGetExistingSelection()
         => _updateState?.Selection.HasValue == true ? _updateState.Selection.Value : _selection;
@@ -376,7 +489,7 @@ public partial class ListView
         {
             // The IsSelected property is not set on the container: update the container
             // selection based on the current selection as understood by this control.
-            MarkContainerSelected(container, Selection.IsSelected(GlobalIndex(index)));
+            MarkContainerSelected(container, Selection.IsSelected(GetSelectionIndexFromViewIndex(index)));
         }
         else
         {
@@ -384,10 +497,10 @@ public partial class ListView
             // container theme which has bound the IsSelected property. Update our selection
             // based on the selection state of the container.
             var containerIsSelected = GetIsSelected(container);
-            UpdateSelection(GlobalIndex(index), containerIsSelected, toggleModifier: true);
+            UpdateSelection(GetSelectionIndexFromViewIndex(index), containerIsSelected, toggleModifier: true);
         }
 
-        if (Selection.AnchorIndex == index)
+        if (Selection.AnchorIndex == GetSelectionIndexFromViewIndex(index))
         {
             KeyboardNavigation.SetTabOnceActiveElement(this, container);
         }
@@ -397,7 +510,7 @@ public partial class ListView
     {
         base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
         
-        MarkContainerSelected(container, Selection.IsSelected(GlobalIndex(newIndex)));
+        MarkContainerSelected(container, Selection.IsSelected(GetSelectionIndexFromViewIndex(newIndex)));
     }
     
     protected override void OnDataContextBeginUpdate()
@@ -647,7 +760,7 @@ public partial class ListView
     protected int GlobalIndexFromContainer(Control container)
     {
         var index = IndexFromContainer(container);
-        return GlobalIndex(index);
+        return GetSelectionIndexFromViewIndex(index);
     }
 
     protected int GlobalIndex(int index)
@@ -714,7 +827,7 @@ public partial class ListView
             _hasScrolledToSelectedItem = false;
 
             var anchorIndex = GetAnchorIndex();
-            KeyboardNavigation.SetTabOnceActiveElement(this, ContainerFromIndex(anchorIndex));
+            KeyboardNavigation.SetTabOnceActiveElement(this, ContainerFromIndex(GetViewIndexFromSelectionIndex(anchorIndex)));
             AutoScrollToSelectedItemIfNecessary(anchorIndex);
         }
         else if (e.PropertyName == nameof(ISelectionModel.SelectedIndex))
@@ -757,7 +870,7 @@ public partial class ListView
     {
         void Mark(int index, bool selected)
         {
-            var container = ContainerFromIndex(GlobalIndexLocalIndex(index));
+            var container = ContainerFromIndex(GetViewIndexFromSelectionIndex(index));
 
             if (container != null)
             {
@@ -786,8 +899,11 @@ public partial class ListView
         {
             for (var i = 0; i < ItemCount; i++)
             {
-                var globalIndex = GlobalIndex(i);
-                Mark(i, Selection.IsSelected(globalIndex));
+                var container = ContainerFromIndex(i);
+                if (container != null)
+                {
+                    MarkContainerSelected(container, Selection.IsSelected(GetSelectionIndexFromViewIndex(i)));
+                }
             }
         }
 
@@ -931,8 +1047,12 @@ public partial class ListView
         {
             Dispatcher.Post(state =>
             {
-                ScrollIntoView((int)state!);
-                _hasScrolledToSelectedItem = true;
+                var viewIndex = GetViewIndexFromSelectionIndex((int)state!);
+                if (viewIndex >= 0)
+                {
+                    ScrollIntoView(viewIndex);
+                    _hasScrolledToSelectedItem = true;
+                }
             }, anchorIndex);
         }
     }

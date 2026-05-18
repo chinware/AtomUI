@@ -15,6 +15,7 @@ internal static partial class Program
         VerifyClosedSelectCost(failures);
         VerifySelectPopupLifecycle(failures);
         VerifySelectModeSpecificContent(failures);
+        VerifySelectFilteringSelection(failures);
         VerifySelectAccessoryPaths(failures);
         VerifySelectLoadingLifecycle(failures);
         VerifyTreeSelectPopupLifecycle(failures);
@@ -123,6 +124,52 @@ internal static partial class Program
         RefreshLayout(multiRealized.Window);
         Expect(FindVisualByName<SelectResultOptionsBox>(multiSelect, "SelectedOptionsBox") == null,
             "Switching Multiple Select to Single should detach SelectResultOptionsBox.",
+            failures);
+    }
+
+    private static void VerifySelectFilteringSelection(ICollection<string> failures)
+    {
+        var options = CreateSelectOptions();
+        var select = new Select
+        {
+            IsFilterEnabled = true,
+            OptionsSource   = options
+        };
+
+        using var realized = RealizeControl(select);
+        MaterializeLazyPopupContentForTest(select);
+        RefreshLayout(realized.Window);
+
+        var candidateList = GetPopupContent<SelectCandidateList>(select);
+        Expect(select.Filter != null,
+            "Filter-enabled Select should create a default filter.",
+            failures);
+        Expect(candidateList != null,
+            "Materializing filter-enabled Select popup should create SelectCandidateList.",
+            failures);
+
+        if (candidateList == null)
+        {
+            return;
+        }
+
+        _ = candidateList.Selection;
+        select.SetCurrentValue(AbstractSelect.FilterValueProperty, "Grape");
+        RefreshLayout(realized.Window);
+
+        Expect(candidateList.TotalItemCount == 1,
+            "Filter-enabled Select should reduce candidates with the default Contains filter.",
+            failures);
+        var firstCandidate = candidateList.Items.Count > 0 ? candidateList.Items[0] : null;
+        Expect(ReferenceEquals(firstCandidate, options[4]),
+            "Filtered Select candidate should be the matching option from the original source.",
+            failures);
+
+        var mappedIndex = typeof(ListView)
+            .GetMethod("GetSelectionIndexFromViewIndex", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.Invoke(candidateList, [0]) as int?;
+        Expect(mappedIndex == 4,
+            "Filtered Select visible candidate index should map back to the original source item index.",
             failures);
     }
 

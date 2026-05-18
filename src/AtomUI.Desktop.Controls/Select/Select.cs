@@ -271,11 +271,16 @@ public partial class Select : AbstractSelect
     public Select()
     {
         this.RegisterTokenResourceScope(SelectToken.ScopeProvider);
+        SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
     }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        if (Filter == null)
+        {
+            SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
+        }
         if (FilterValueSelector == null)
         {
             SetCurrentValue(FilterValueSelectorProperty, HeaderFilterPropertySelector);

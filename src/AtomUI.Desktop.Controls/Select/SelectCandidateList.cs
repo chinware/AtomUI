@@ -504,6 +504,12 @@ internal class SelectCandidateList : ListView, ICandidateList
     {
         if (source is ListViewItem listItem && !listItem.IsGroupItem)
         {
+            var itemIndex = IndexFromContainer(listItem);
+            if (itemIndex >= 0 && itemIndex < ItemCount)
+            {
+                TrySetCandidateItemSelected(Items[itemIndex]!);
+            }
+
             if (!IsSingleMode())
             {
                 var index = GlobalIndexFromContainer(listItem);
