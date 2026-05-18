@@ -110,7 +110,7 @@ internal class MentionTextArea : TextArea
                 {
                     break;
                 }
-                if (TriggerPrefix != null && TriggerPrefix.Contains(ch.ToString()))
+                if (IsTriggerCharacter(ch))
                 {
                     _currentTriggerText = ch.ToString();
                     triggerFound        = true;
@@ -178,7 +178,7 @@ internal class MentionTextArea : TextArea
             {
                 break;
             }
-            if (TriggerPrefix != null && TriggerPrefix.Contains(ch.ToString()))
+            if (IsTriggerCharacter(ch))
             {
                 triggerFound = true;
                 triggerIndex = index - 1;
@@ -242,7 +242,7 @@ internal class MentionTextArea : TextArea
                 {
                     break;
                 }
-                if (TriggerPrefix != null && TriggerPrefix.Contains(ch.ToString()))
+                if (IsTriggerCharacter(ch))
                 {
                     triggerCh    = ch;
                     triggerIndex = currentIndex - 1;
@@ -299,6 +299,23 @@ internal class MentionTextArea : TextArea
             }
         }
         this.HandleTextInput(value);
+    }
+
+    private bool IsTriggerCharacter(char ch)
+    {
+        if (TriggerPrefix == null)
+        {
+            return false;
+        }
+
+        foreach (var trigger in TriggerPrefix)
+        {
+            if (trigger?.Length == 1 && trigger[0] == ch)
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     protected override void OnKeyDown(KeyEventArgs e)

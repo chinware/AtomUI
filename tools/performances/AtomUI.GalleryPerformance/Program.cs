@@ -204,6 +204,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.AutoCompleteShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/AutoCompleteShowCase.axaml",
                 stats => stats.AutoCompleteCount > 0),
+            ["mentions"] = new(
+                "MentionsShowCase",
+                MentionsViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.MentionsShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/MentionsShowCase.axaml",
+                stats => stats.MentionsCount > 0),
             ["datepicker"] = new(
                 "DatePickerShowCase",
                 DatePickerViewModel.ID,
@@ -1462,7 +1468,7 @@ internal static class Program
             return "none";
         }
 
-        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, alert={stats.AlertCount}, marqueeLabel={stats.MarqueeLabelCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, groupBox={stats.GroupBoxCount}, groupBoxHeaderIcon={stats.GroupBoxHeaderIconPresenterCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, alert={stats.AlertCount}, marqueeLabel={stats.MarqueeLabelCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, groupBox={stats.GroupBoxCount}, groupBoxHeaderIcon={stats.GroupBoxHeaderIconPresenterCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, mentions={stats.MentionsCount}, mentionTextArea={stats.MentionTextAreaCount}, mentionsPopupFields={stats.MentionsPopupFieldCount}, mentionsCandidateFields={stats.MentionsCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
     }
 }
 
@@ -1817,6 +1823,10 @@ internal sealed record RouteStats(
     int AutoCompleteTextAreaCount,
     int AutoCompletePopupFieldCount,
     int AutoCompleteCandidateListFieldCount,
+    int MentionsCount,
+    int MentionTextAreaCount,
+    int MentionsPopupFieldCount,
+    int MentionsCandidateListFieldCount,
     int CandidateListCount,
     int TreeSelectCount,
     int CascaderCount,
@@ -1939,6 +1949,10 @@ internal sealed record RouteStats(
         var autoCompleteTextAreaCount   = 0;
         var autoCompletePopupFieldCount = 0;
         var autoCompleteCandidateListFieldCount = 0;
+        var mentionsCount          = 0;
+        var mentionTextAreaCount   = 0;
+        var mentionsPopupFieldCount = 0;
+        var mentionsCandidateListFieldCount = 0;
         var candidateListCount      = 0;
         var treeSelectCount         = 0;
         var cascaderCount           = 0;
@@ -2326,6 +2340,22 @@ internal sealed record RouteStats(
             {
                 autoCompleteTextAreaCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Mentions"))
+            {
+                mentionsCount++;
+                if (HasFieldValue(visual, "AtomUI.Desktop.Controls.Mentions", "_popup"))
+                {
+                    mentionsPopupFieldCount++;
+                }
+                if (HasFieldValue(visual, "AtomUI.Desktop.Controls.Mentions", "_candidateList"))
+                {
+                    mentionsCandidateListFieldCount++;
+                }
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.MentionTextArea"))
+            {
+                mentionTextAreaCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.Primitives.CandidateList"))
             {
                 candidateListCount++;
@@ -2523,6 +2553,10 @@ internal sealed record RouteStats(
             autoCompleteTextAreaCount,
             autoCompletePopupFieldCount,
             autoCompleteCandidateListFieldCount,
+            mentionsCount,
+            mentionTextAreaCount,
+            mentionsPopupFieldCount,
+            mentionsCandidateListFieldCount,
             candidateListCount,
             treeSelectCount,
             cascaderCount,
@@ -2642,6 +2676,10 @@ internal sealed record RouteStats(
                AutoCompleteTextAreaCount == other.AutoCompleteTextAreaCount &&
                AutoCompletePopupFieldCount == other.AutoCompletePopupFieldCount &&
                AutoCompleteCandidateListFieldCount == other.AutoCompleteCandidateListFieldCount &&
+               MentionsCount == other.MentionsCount &&
+               MentionTextAreaCount == other.MentionTextAreaCount &&
+               MentionsPopupFieldCount == other.MentionsPopupFieldCount &&
+               MentionsCandidateListFieldCount == other.MentionsCandidateListFieldCount &&
                CandidateListCount == other.CandidateListCount &&
                TreeSelectCount == other.TreeSelectCount &&
                CascaderCount == other.CascaderCount &&
@@ -2735,6 +2773,7 @@ internal sealed record SourceXamlStats(
     int LineEditDirectCount,
     int SearchEditCount,
     int TextAreaCount,
+    int MentionsCount,
     int ButtonCount,
     int ButtonSpinnerCount,
     int ToggleIconButtonCount,
@@ -2766,7 +2805,7 @@ internal sealed record SourceXamlStats(
         var sourcePath = Path.GetFullPath(relativePath);
         if (!File.Exists(sourcePath))
         {
-            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new SourceXamlStats(sourcePath, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
         var text     = File.ReadAllText(sourcePath);
@@ -2799,6 +2838,7 @@ internal sealed record SourceXamlStats(
             CountElements(document, AtomNamespace, "LineEdit"),
             CountElements(document, AtomNamespace, "SearchEdit"),
             CountElements(document, AtomNamespace, "TextArea"),
+            CountElements(document, AtomNamespace, "Mentions"),
             CountElements(document, AtomNamespace, "Button"),
             CountElements(document, AtomNamespace, "ButtonSpinner"),
             CountElements(document, AtomNamespace, "ToggleIconButton"),
@@ -2832,8 +2872,8 @@ internal sealed record SourceXamlStats(
 
         var lineEditTotal = LineEditDirectCount + SearchEditCount;
         var builder       = new StringBuilder();
-        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | Collapse | CollapseItem | Carousel | CarouselPage | LineEdit direct | SearchEdit | LineEdit total | TextArea | Button | ButtonSpinner | ToggleIconButton | DatePicker | RangeDatePicker | Select | ComboBox | ComboBoxItem | TreeSelect | Cascader | Menu | MenuItem | CheckBox | CheckBoxGroup | Descriptions | DescriptionItem | Drawer | Alert | IsMessageMarqueeEnabled | ShowCaseItem | GroupBox | GroupBoxHeaderIcon |");
-        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+        builder.AppendLine("| Source | AntDesignIconProvider | Space | CompactSpace | CompactSpaceFiller | CompactSpaceAddOn | IconPresenter | IconGallery | Avatar | AvatarGroup | CountBadge | DotBadge | RibbonBadge | Card | CardActionButton | CardGridContent | CardGridItem | CardMetaContent | CardTabsContent | Collapse | CollapseItem | Carousel | CarouselPage | LineEdit direct | SearchEdit | LineEdit total | TextArea | Mentions | Button | ButtonSpinner | ToggleIconButton | DatePicker | RangeDatePicker | Select | ComboBox | ComboBoxItem | TreeSelect | Cascader | Menu | MenuItem | CheckBox | CheckBoxGroup | Descriptions | DescriptionItem | Drawer | Alert | IsMessageMarqueeEnabled | ShowCaseItem | GroupBox | GroupBoxHeaderIcon |");
+        builder.AppendLine("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
         builder.Append("| `");
         builder.Append(SourcePath);
         builder.Append("` | ");
@@ -2888,6 +2928,8 @@ internal sealed record SourceXamlStats(
         builder.Append(lineEditTotal.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(TextAreaCount.ToString(CultureInfo.InvariantCulture));
+        builder.Append(" | ");
+        builder.Append(MentionsCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");
         builder.Append(ButtonCount.ToString(CultureInfo.InvariantCulture));
         builder.Append(" | ");

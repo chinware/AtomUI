@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Controls.AsyncLoad;
+using AtomUI.Controls.Commons;
+using AtomUI.Controls.Localization;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Input;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Collections;
@@ -21,6 +24,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Metadata;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -514,14 +518,20 @@ public class Mentions : TemplatedControl,
     #endregion
     
     private static bool IsValidAsyncLoadDebounce(TimeSpan value) => value.TotalMilliseconds >= 0.0;
+    private static readonly IValueFilter DefaultFilter = ValueFilterFactory.BuildFilter(ValueFilterMode.Contains)!;
 
     private MentionTextArea? _textArea;
     private Popup? _popup;
+    private Border? _popupFrame;
+    private Panel? _popupContentPanel;
+    private Spin? _loadingIndicator;
+    private IDisposable? _loadingTipBinding;
     private CompositeDisposable? _subscriptionsOnOpen;
     private ICandidateList? _candidateList;
     private DispatcherTimer? _delayTimer;
     private List<IMentionOption>? _items;
     private IList<IMentionOption>? _view;
+    private bool _itemsSourceDirty = true;
     private bool _cancelRequested;
     private bool _filterInAction;
     private bool _popupHasOpened;
@@ -560,7 +570,11 @@ public class Mentions : TemplatedControl,
         bool oldValue = (bool)e.OldValue!;
         bool newValue = (bool)e.NewValue!;
         
-        if (!newValue)
+        if (newValue)
+        {
+            OpeningDropDown(oldValue);
+        }
+        else
         {
             ClosingDropDown(oldValue);
         }
@@ -572,21 +586,30 @@ public class Mentions : TemplatedControl,
     {
         var newValue = (TimeSpan)e.NewValue!;
 
-        // Always clean up the old timer first
-        if (_delayTimer != null)
-        {
-            _delayTimer.Stop();
-            _delayTimer.Tick -= PopulateDropDown;
-            _delayTimer      =  null;
-        }
+        ConfigureDelayTimer(newValue);
+    }
 
-        // Create a new timer with the new delay value if needed
-        if (newValue > TimeSpan.Zero)
+    private void ConfigureDelayTimer(TimeSpan delay)
+    {
+        ClearDelayTimer();
+        if (delay > TimeSpan.Zero)
         {
             _delayTimer           =  new DispatcherTimer();
-            _delayTimer.Interval  =  newValue;
+            _delayTimer.Interval  =  delay;
             _delayTimer.Tick      += PopulateDropDown;
         }
+    }
+
+    private void ClearDelayTimer()
+    {
+        if (_delayTimer == null)
+        {
+            return;
+        }
+
+        _delayTimer.Stop();
+        _delayTimer.Tick -= PopulateDropDown;
+        _delayTimer = null;
     }
     
     private void HandleItemsSourceChanged(IEnumerable? newValue)
@@ -601,11 +624,13 @@ public class Mentions : TemplatedControl,
             _collectionChangeSubscription = newValueINotifyCollectionChanged.WeakSubscribe(ItemsCollectionChanged);
         }
         
-        // Store a local cached copy of the data
-        _items = newValue == null ? null : new List<IMentionOption>(newValue.Cast<IMentionOption>());
-        
-        // Clear and set the view on the selection adapter
+        _itemsSourceDirty = true;
+        _items            = null;
         ClearView();
+        if (IsDropDownOpen)
+        {
+            RefreshView();
+        }
     }
 
     private void HandleFilterValueChanged()
@@ -618,53 +643,12 @@ public class Mentions : TemplatedControl,
     
     private void ItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        // Update the cache
-        if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+        _itemsSourceDirty = true;
+        ClearView();
+        if (IsDropDownOpen)
         {
-            for (int index = 0; index < e.OldItems.Count; index++)
-            {
-                _items!.RemoveAt(e.OldStartingIndex);
-            }
+            RefreshView();
         }
-        if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null && _items!.Count >= e.NewStartingIndex)
-        {
-            for (int index = 0; index < e.NewItems.Count; index++)
-            {
-                var newItem = e.NewItems[index] as IMentionOption;
-                _items.Insert(e.NewStartingIndex + index, newItem!);
-            }
-        }
-        if (e.Action == NotifyCollectionChangedAction.Replace && e.NewItems != null && e.OldItems != null)
-        {
-            for (int index = 0; index < e.NewItems.Count; index++)
-            {
-                var newItem = e.NewItems[index] as IMentionOption;
-                _items![e.NewStartingIndex] = newItem!;
-            }
-        }
-
-        // Update the view
-        if ((e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace) && e.OldItems != null)
-        {
-            for (int index = 0; index < e.OldItems.Count; index++)
-            {
-                var oldItem = e.OldItems[index] as IMentionOption;
-                _view!.Remove(oldItem!);
-            }
-        }
-
-        if (e.Action == NotifyCollectionChangedAction.Reset)
-        {
-            // Significant changes to the underlying data.
-            ClearView();
-            if (OptionsSource != null)
-            {
-                _items = new List<IMentionOption>(OptionsSource);
-            }
-        }
-
-        // Refresh the observable collection used in the selection adapter.
-        RefreshView();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -675,15 +659,37 @@ public class Mentions : TemplatedControl,
         {
             ConfigureMaxPopupHeight();
         }
+        else if (change.Property == MaxPopupHeightProperty ||
+                 change.Property == MinPopupWidthProperty ||
+                 change.Property == PopupContentPaddingProperty)
+        {
+            ConfigurePopupFrame();
+        }
+        else if (change.Property == IsLoadingProperty)
+        {
+            ConfigureLoadingIndicator();
+        }
+        else if (change.Property == IsMotionEnabledProperty ||
+                 change.Property == OptionTemplateProperty)
+        {
+            SyncCandidateListProperties();
+        }
+        else if (change.Property == FilterProperty)
+        {
+            if (IsDropDownOpen)
+            {
+                RefreshView();
+            }
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        base.OnApplyTemplate(e);
         if (_textArea != null)
         {
             _textArea.CandidateOpenRequest  -= HandleCandidateOpenRequest;
             _textArea.CandidateCloseRequest -= HandleCandidateCloseRequest;
+            _textArea.Owner                 =  null;
         }
 
         if (_popup != null)
@@ -691,10 +697,13 @@ public class Mentions : TemplatedControl,
             _popup.Opened -= HandlePopupOpened;
             _popup.Closed -= HandlePopupClosed;
         }
+
+        ClearPopupContent();
+        ClearPopupFrame();
+        base.OnApplyTemplate(e);
         
         _textArea     = e.NameScope.Find<MentionTextArea>("PART_TextArea");
         _popup        = e.NameScope.Find<Popup>("PART_Popup");
-        CandidateList = e.NameScope.Find<ICandidateList>("PART_CandidateList");
 
         if (_textArea != null)
         {
@@ -711,6 +720,10 @@ public class Mentions : TemplatedControl,
         }
         
         ConfigurePopupPlacement();
+        if (IsDropDownOpen && _popup != null && !_popup.IsOpen)
+        {
+            OpeningDropDown(false);
+        }
     }
 
     private void HandleCandidateListComplete(object? sender, RoutedEventArgs e)
@@ -732,9 +745,13 @@ public class Mentions : TemplatedControl,
     
     private void InsertCandidateOption(IMentionOption option)
     {
-        Debug.Assert(_textArea != null);
+        if (_textArea == null)
+        {
+            return;
+        }
+
         var value = option.Value?.ToString() ?? option.Header?.ToString() ?? string.Empty;
-        _textArea?.InsertMentionOption(value, Split);
+        _textArea.InsertMentionOption(value, Split);
     }
     
     private void HandleCandidateOpenRequest(object? sender, ShowMentionCandidateRequestEventArgs eventArgs)
@@ -755,10 +772,7 @@ public class Mentions : TemplatedControl,
             }
         }
 
-        _ignorePropertyChange = true;
-        var oldIsDropDownOpen = IsDropDownOpen;
         SetCurrentValue(IsDropDownOpenProperty, true);
-        OpeningDropDown(oldIsDropDownOpen);
         
         if (_delayTimer != null)
         {
@@ -929,12 +943,57 @@ public class Mentions : TemplatedControl,
     protected virtual void ConfigureMaxPopupHeight()
     {
         MaxPopupHeight = ItemHeight * DisplayCandidateCount + PopupContentPadding.Top + PopupContentPadding.Bottom;
+        ConfigurePopupFrame();
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        if (_delayTimer == null && AsyncLoadDebounce > TimeSpan.Zero)
+        {
+            ConfigureDelayTimer(AsyncLoadDebounce);
+        }
+        ConfigureWindowDeactivatedSubscription();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (IsDropDownOpen)
+        {
+            _ignorePropertyChange = true;
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+        CloseDropDown();
+        _subscriptionsOnOpen?.Dispose();
+        _subscriptionsOnOpen = null;
+        ClearWindowDeactivatedSubscription();
+        ClearDelayTimer();
+        _asyncLoadCoordinator.Cancel();
+        ClearPopupContent();
+        ClearPopupFrame();
+    }
+    
+    private void HandleWindowDeactivated(object? sender, EventArgs e)
+    {
+        SetCurrentValue(IsDropDownOpenProperty, false);
+    }
+
+    private void ConfigureWindowDeactivatedSubscription()
+    {
+        if (!IsDropDownOpen)
+        {
+            ClearWindowDeactivatedSubscription();
+            return;
+        }
+
         var topLevel = TopLevel.GetTopLevel(this);
+        if (ReferenceEquals(_attachedWindow, topLevel))
+        {
+            return;
+        }
+
+        ClearWindowDeactivatedSubscription();
         if (topLevel is Window window)
         {
             _attachedWindow    =  window;
@@ -942,20 +1001,15 @@ public class Mentions : TemplatedControl,
         }
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    private void ClearWindowDeactivatedSubscription()
     {
-        base.OnDetachedFromVisualTree(e);
-        if (_attachedWindow != null)
+        if (_attachedWindow == null)
         {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
+            return;
         }
 
+        _attachedWindow.Deactivated -= HandleWindowDeactivated;
         _attachedWindow = null;
-    }
-    
-    private void HandleWindowDeactivated(object? sender, EventArgs e)
-    {
-        SetCurrentValue(IsDropDownOpenProperty, false);
     }
     
     protected override void OnKeyDown(KeyEventArgs e)
@@ -996,6 +1050,10 @@ public class Mentions : TemplatedControl,
                 && !this.IsAllowedXYNavigationMode(e.KeyDeviceType))
             {
                 SetCurrentValue(IsDropDownOpenProperty, true);
+                if (IsDropDownOpen)
+                {
+                    PopulateDropDown(this, EventArgs.Empty);
+                }
                 e.Handled = true;
             }
         }
@@ -1005,6 +1063,10 @@ public class Mentions : TemplatedControl,
         {
             case Key.F4:
                 SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+                if (IsDropDownOpen)
+                {
+                    PopulateDropDown(this, EventArgs.Empty);
+                }
                 e.Handled = true;
                 break;
 
@@ -1030,6 +1092,7 @@ public class Mentions : TemplatedControl,
     {
         _subscriptionsOnOpen?.Dispose();
         _subscriptionsOnOpen = null;
+        ClearWindowDeactivatedSubscription();
         // Force the drop down dependency property to be false.
         if (IsDropDownOpen)
         {
@@ -1040,18 +1103,20 @@ public class Mentions : TemplatedControl,
         // Fire the DropDownClosed event
         if (_popupHasOpened)
         {
+            _popupHasOpened = false;
             NotifyDropDownClosed(EventArgs.Empty);
         }
-        NotifyDropDownClosed(EventArgs.Empty);
+        UpdatePseudoClasses();
     }
 
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
         _subscriptionsOnOpen?.Dispose();
-        _subscriptionsOnOpen = new CompositeDisposable(2);
+        _subscriptionsOnOpen = new CompositeDisposable(3);
         this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
         this.GetObservable(IsEnabledProperty).Subscribe(HandleIsEnabledChanged).DisposeWith(_subscriptionsOnOpen);
         this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, _subscriptionsOnOpen);
+        ConfigureWindowDeactivatedSubscription();
         NotifyDropDownOpened(EventArgs.Empty);
         _textArea?.Focus();
     }
@@ -1123,6 +1188,21 @@ public class Mentions : TemplatedControl,
     private void ClearView()
     {
         _view = null;
+        if (_candidateList != null)
+        {
+            _candidateList.ItemsSource = null;
+        }
+    }
+
+    private void EnsureItemsCache()
+    {
+        if (!_itemsSourceDirty)
+        {
+            return;
+        }
+
+        _items            = OptionsSource == null ? null : new List<IMentionOption>(OptionsSource);
+        _itemsSourceDirty = false;
     }
     
     private void RefreshView()
@@ -1138,6 +1218,7 @@ public class Mentions : TemplatedControl,
         
         try
         {
+            EnsureItemsCache();
             if (_items == null)
             {
                 ClearView();
@@ -1145,8 +1226,7 @@ public class Mentions : TemplatedControl,
             }
         
             // Determine if any filtering mode is on
-            var filter = Filter ?? ValueFilterFactory.BuildFilter(ValueFilterMode.Contains);
-            Debug.Assert(filter != null);
+            var filter = Filter ?? DefaultFilter;
             var items = _items;
         
             // cache properties
@@ -1203,6 +1283,194 @@ public class Mentions : TemplatedControl,
         }
         return value;
     }
+
+    private void EnsurePopupContent()
+    {
+        if (_candidateList == null)
+        {
+            var candidateList = new CandidateList
+            {
+                Name                     = "PART_CandidateList",
+                SelectionMode            = SelectionMode.Single,
+                AutoScrollToSelectedItem = true
+            };
+            candidateList.SetTemplatedParent(this);
+            CandidateList = candidateList;
+        }
+
+        if (_candidateList is Control control)
+        {
+            EnsurePopupFrame(control);
+        }
+
+        SyncCandidateListProperties();
+        ConfigureLoadingIndicator();
+    }
+
+    private Border EnsurePopupFrame(Control candidateList)
+    {
+        if (_popupContentPanel == null)
+        {
+            _popupContentPanel = new Panel();
+            _popupContentPanel.SetTemplatedParent(this);
+        }
+
+        if (!_popupContentPanel.Children.Contains(candidateList))
+        {
+            _popupContentPanel.Children.Add(candidateList);
+        }
+
+        if (_popupFrame == null)
+        {
+            _popupFrame = new Border
+            {
+                Name  = "PopupFrame",
+                Child = _popupContentPanel
+            };
+            _popupFrame.SetTemplatedParent(this);
+            _popup?.SetCurrentValue(Popup.ChildProperty, _popupFrame);
+        }
+        else if (!ReferenceEquals(_popupFrame.Child, _popupContentPanel))
+        {
+            _popupFrame.Child = _popupContentPanel;
+        }
+
+        ConfigurePopupFrame();
+        return _popupFrame;
+    }
+
+    private void ConfigurePopupFrame()
+    {
+        if (_popupFrame == null)
+        {
+            return;
+        }
+
+        _popupFrame.SetCurrentValue(Layoutable.MaxHeightProperty, MaxPopupHeight);
+        _popupFrame.SetCurrentValue(Layoutable.MinWidthProperty, MinPopupWidth);
+        _popupFrame.SetCurrentValue(Border.PaddingProperty, PopupContentPadding);
+    }
+
+    private void SyncCandidateListProperties()
+    {
+        if (_candidateList is not ItemsControl itemsControl)
+        {
+            return;
+        }
+
+        if (_candidateList is ListBox listBox)
+        {
+            listBox.SetCurrentValue(ListBox.IsMotionEnabledProperty, IsMotionEnabled);
+        }
+
+        itemsControl.SetCurrentValue(ItemsControl.ItemTemplateProperty, OptionTemplate);
+        if (!ReferenceEquals(_candidateList.ItemsSource, _view))
+        {
+            _candidateList.ItemsSource = _view;
+        }
+
+        if (_candidateList is Control control)
+        {
+            control.SetCurrentValue(IsVisibleProperty, !IsLoading);
+        }
+    }
+
+    private void ConfigureLoadingIndicator()
+    {
+        if (_popupContentPanel == null)
+        {
+            return;
+        }
+
+        if (!IsLoading)
+        {
+            ClearLoadingIndicator();
+            if (_candidateList is Control candidateList)
+            {
+                candidateList.SetCurrentValue(IsVisibleProperty, true);
+            }
+            return;
+        }
+
+        if (_loadingIndicator == null)
+        {
+            _loadingIndicator = new Spin
+            {
+                Name                = "LoadingIndicator",
+                SizeType            = SizeType.Middle,
+                IsTipVisible        = true,
+                IsSpinning          = true,
+                HorizontalAlignment = global::Avalonia.Layout.HorizontalAlignment.Center
+            };
+            _loadingIndicator.SetTemplatedParent(this);
+            _loadingTipBinding = LanguageResourceBinder.CreateBinding(
+                _loadingIndicator,
+                Spin.TipProperty,
+                CommonLangResourceKind.Loading);
+            _popupContentPanel.Children.Insert(0, _loadingIndicator);
+        }
+
+        _loadingIndicator.SetCurrentValue(IsVisibleProperty, true);
+        if (_candidateList is Control control)
+        {
+            control.SetCurrentValue(IsVisibleProperty, false);
+        }
+    }
+
+    private void ClearLoadingIndicator()
+    {
+        if (_loadingIndicator == null)
+        {
+            return;
+        }
+
+        _loadingTipBinding?.Dispose();
+        _loadingTipBinding = null;
+        _popupContentPanel?.Children.Remove(_loadingIndicator);
+        _loadingIndicator.ClearValue(Spin.TipProperty);
+        _loadingIndicator.SetTemplatedParent(null);
+        _loadingIndicator = null;
+    }
+
+    private void ClearPopupContent()
+    {
+        ClearLoadingIndicator();
+        if (_candidateList == null)
+        {
+            return;
+        }
+
+        var candidateList = _candidateList;
+        CandidateList = null;
+        candidateList.SelectedItem          = null;
+        candidateList.SelectedItems         = null;
+        candidateList.CandidateSelectedItem = null;
+
+        if (candidateList is Control control)
+        {
+            _popupContentPanel?.Children.Remove(control);
+            control.SetTemplatedParent(null);
+        }
+    }
+
+    private void ClearPopupFrame()
+    {
+        if (_popupFrame != null)
+        {
+            _popupFrame.Child = null;
+            _popupFrame.SetTemplatedParent(null);
+            _popupFrame = null;
+        }
+
+        if (_popupContentPanel != null)
+        {
+            _popupContentPanel.Children.Clear();
+            _popupContentPanel.SetTemplatedParent(null);
+            _popupContentPanel = null;
+        }
+
+        _popup?.SetCurrentValue(Popup.ChildProperty, null);
+    }
     
     private void ClosingDropDown(bool oldValue)
     {
@@ -1230,7 +1498,6 @@ public class Mentions : TemplatedControl,
             {
                 _popup.IsOpen = false;
             }
-            NotifyDropDownClosed(EventArgs.Empty);
         }
     }
     
@@ -1256,12 +1523,14 @@ public class Mentions : TemplatedControl,
     
     private void OpenDropDown()
     {
-        if (_popup != null)
+        if (_popup == null)
         {
-            _popup.IsOpen = true;
+            return;
         }
+
+        EnsurePopupContent();
+        _popup.IsOpen = true;
         _popupHasOpened = true;
-        NotifyDropDownOpened(EventArgs.Empty);
     }
     
     protected virtual void NotifyDropDownOpening(CancelEventArgs eventArgs)

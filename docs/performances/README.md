@@ -69,6 +69,7 @@
 | Input | 本轮已完成结构优化 | [Input](Input/README.md) | `TextBox.Default` visual/root `21 -> 13`、KB/item `332.6 -> 236.7`；`TextArea.Default` visual/root `24 -> 21`；`LineEditShowCase` visuals `2307 -> 2284`，repeated mean 基本持平 |
 | ListView | 本轮已完成 | [ListView](ListView/README.md) | `ListView.Grouped` `3.619ms/item -> 1.759ms/item`，`FilterActive` `3.421ms/item -> 1.841ms/item`；`ListShowCase` repeated mean `80.72ms -> 77.34ms` |
 | MarqueeLabel / Alert | 本轮已完成 | [MarqueeLabel](MarqueeLabel/README.md) | Alert 默认路径不再创建隐藏 `MarqueeLabel`；`AlertShowCase` runtime `MarqueeLabel 25 -> 1`，visuals `585 -> 561`，repeated mean `65.42ms -> 54.67ms` |
+| Mentions | 本轮已完成 | [Mentions](Mentions/README.md) | closed popup content 已按需创建；`MentionsShowCase` `_candidateList 15 -> 0`，repeated mean `110.05ms -> 106.95ms`，alloc `10115.79KB -> 9326.47KB` |
 
 ## 总列表
 
@@ -101,7 +102,7 @@
 | Data Entry | Form | Done | [Form](Form/README.md)；已完成低风险结构与生命周期优化，控件级小幅提升，Gallery 结构/分配下降，页面 repeated timing 基本持平 |
 | Data Entry | Input | Done | [Input](Input/README.md)；TextBox/TextArea 默认 accessory、count、resize 成本按需化；真实 LineEditShowCase 结构/分配下降，repeated timing 基本持平 |
 | Data Entry | LineEdit | Done | 已完成控件级优化与 Gallery 实测 |
-| Data Entry | Mentions | Pending | 待建立基线 |
+| Data Entry | Mentions | Done | [Mentions](Mentions/README.md)；closed popup content 与 OptionsSource cache 已按需化，Gallery repeated mean 小幅改善，alloc 下降约 `7.80%` |
 | Data Entry | NumberUpDown | Pending | 待建立基线 |
 | Data Entry | RadioButton | Pending | 待建立基线 |
 | Data Entry | Rate | Pending | 待建立基线 |

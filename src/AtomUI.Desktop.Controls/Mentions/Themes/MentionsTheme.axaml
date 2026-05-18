@@ -36,28 +36,7 @@
                                 OverlayDismissEventPassThrough="True"
                                 IsMotionEnabled="False"
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                                RequestedPlacement="{TemplateBinding PopupPlacement}">
-                        <Border Name="PopupFrame"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding MinPopupWidth}"
-                                Padding="{TemplateBinding PopupContentPadding}">
-                            <Panel>
-                                <atom:Spin Name="LoadingIndicator" SizeType="Middle" 
-                                           IsTipVisible="True" 
-                                           IsSpinning="True"
-                                           Tip="{atom:CommonLangResource Loading}"
-                                           HorizontalAlignment="Center"
-                                           IsVisible="{TemplateBinding IsLoading}"/>
-                                <atom:CandidateList
-                                    Name="PART_CandidateList"
-                                    SelectionMode="Single"
-                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                    AutoScrollToSelectedItem="True"
-                                    ItemTemplate="{TemplateBinding OptionTemplate}"
-                                    IsVisible="{TemplateBinding IsLoading, Converter={x:Static BoolConverters.Not}}"/>
-                            </Panel>
-                        </Border>
-                    </atom:Popup>
+                                RequestedPlacement="{TemplateBinding PopupPlacement}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
