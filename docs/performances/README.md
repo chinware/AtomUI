@@ -75,6 +75,7 @@
 | Message | 本轮已完成 | [Message](Message/README.md) | `WindowMessageManager` 只在首次实际 show 时创建；timer/event/OnClose 生命周期已释放；`MessageShowCase` repeated mean `30.97ms -> 28.52ms`，cold mean `109.07ms -> 98.86ms` |
 | MessageBox | 本轮已完成 | [MessageBox](MessageBox/README.md) | 同生命周期 binding 改为 `[!]`，loading skeleton 按需创建并验证释放；`ModalShowCase` repeated mean `34.53ms -> 32.11ms`，P95 `37.18ms -> 34.42ms` |
 | Notification | 本轮已完成 | [Notification](Notification/README.md) | manager/card 生命周期补齐，manager/progress bar 按需创建；`NotificationShowCase` cold mean `176.82ms -> 155.20ms`，repeated mean `37.46ms -> 29.13ms` |
+| NumericUpDown | 本轮已完成 | [NumericUpDown](NumericUpDown/README.md) | 默认 right accessory 按需创建；`NumberUpDownShowCase` visuals `1351 -> 1269`，Button/IconButton `90 -> 60`，cold mean `480.45ms -> 427.73ms` |
 
 ## 总列表
 
@@ -109,7 +110,7 @@
 | Data Entry | Input | Done | [Input](Input/README.md)；TextBox/TextArea 默认 accessory、count、resize 成本按需化；真实 LineEditShowCase 结构/分配下降，repeated timing 基本持平 |
 | Data Entry | LineEdit | Done | 已完成控件级优化与 Gallery 实测 |
 | Data Entry | Mentions | Done | [Mentions](Mentions/README.md)；closed popup content 与 OptionsSource cache 已按需化，Gallery repeated mean 小幅改善，alloc 下降约 `7.80%` |
-| Data Entry | NumberUpDown | Pending | 待建立基线 |
+| Data Entry | NumberUpDown / NumericUpDown | Done | [NumericUpDown](NumericUpDown/README.md)；默认 clear/accessory 按需创建，`NumberUpDownShowCase` cold mean 提升约 `10.97%`，repeated mean 提升约 `3.97%` |
 | Data Entry | RadioButton | Pending | 待建立基线 |
 | Data Entry | Rate | Pending | 待建立基线 |
 | Data Entry | Select | Done | [Select](Select/README.md)；`SelectShowCase` repeated mean `220.31ms -> 143.76ms`，alloc `28027.36KB -> 23904.61KB`；closed popup/list/accessory hidden cost 已按需化 |

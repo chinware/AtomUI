@@ -170,10 +170,10 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     
     #endregion
     
-    private IDisposable? _mouseMoveDisposable;
     private Panel? _overlayLayout;
     private ContentPresenter? _spinnerHandlePresenter;
     private TranslateTransform? _spinnerHandleOffsetTransform;
+    private IDisposable? _pointerTrackingSubscription;
     
     protected void ConfigureEffectiveContentPadding()
     {
@@ -201,30 +201,14 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        ConfigureMoveProcessor();
+        UpdateHandleVisualState();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        StopPointerTracking();
+        SetSpinnerContentHover(false);
         base.OnDetachedFromVisualTree(e);
-        DisposeMoveProcessor();
-    }
-
-    private void ConfigureMoveProcessor()
-    {
-        if (!ShouldTrackPointer())
-        {
-            DisposeMoveProcessor();
-            return;
-        }
-
-        if (_mouseMoveDisposable != null)
-        {
-            return;
-        }
-
-        var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
-        _mouseMoveDisposable = inputManager?.Process.Subscribe(HandleMouseMove);
     }
 
     private bool ShouldTrackPointer()
@@ -235,46 +219,104 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
                IsHandleFloatable;
     }
 
-    private void DisposeMoveProcessor()
+    protected override void OnPointerEntered(PointerEventArgs e)
     {
-        _mouseMoveDisposable?.Dispose();
-        _mouseMoveDisposable = null;
+        base.OnPointerEntered(e);
+        StartPointerTracking();
+        UpdatePointerHover(e);
     }
 
-    private void HandleMouseMove(RawInputEventArgs args)
+    protected override void OnPointerMoved(PointerEventArgs e)
     {
-        if (!ShouldTrackPointer())
+        base.OnPointerMoved(e);
+        StartPointerTracking();
+        UpdatePointerHover(e);
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        StopPointerTracking();
+        SetSpinnerContentHover(false);
+    }
+
+    private void UpdatePointerHover(PointerEventArgs e)
+    {
+        SetSpinnerContentHover(ShouldTrackPointer() && new Rect(Bounds.Size).Contains(e.GetPosition(this)));
+    }
+
+    private void StartPointerTracking()
+    {
+        if (_pointerTrackingSubscription != null || !ShouldTrackPointer())
         {
             return;
         }
 
-        if (args is RawPointerEventArgs pointerEventArgs)
+        var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
+        _pointerTrackingSubscription = inputManager?.Process.Subscribe(HandlePointerTrackingEvent);
+    }
+
+    private void StopPointerTracking()
+    {
+        _pointerTrackingSubscription?.Dispose();
+        _pointerTrackingSubscription = null;
+    }
+
+    private void HandlePointerTrackingEvent(RawInputEventArgs args)
+    {
+        if (!ShouldTrackPointer())
         {
-            if (pointerEventArgs.Type == RawPointerEventType.Move ||
-                pointerEventArgs.Type == RawPointerEventType.LeftButtonUp || 
-                pointerEventArgs.Type == RawPointerEventType.RightButtonDown)
-            {
-                var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel == null)
-                {
-                    return;
-                }
-
-                var pos = this.TranslatePoint(new Point(0, 0), topLevel);
-                if (!pos.HasValue)
-                {
-                    return;
-                }
-
-                var bounds = new Rect(pos.Value, Bounds.Size);
-                var isHover = bounds.Contains(pointerEventArgs.Position);
-                if (IsSpinnerContentHover != isHover)
-                {
-                    IsSpinnerContentHover = isHover;
-                    UpdateHandleVisualState();
-                }
-            }
+            StopPointerTracking();
+            SetSpinnerContentHover(false);
+            return;
         }
+
+        if (args is not RawPointerEventArgs pointerEventArgs)
+        {
+            return;
+        }
+
+        if (pointerEventArgs.Type != RawPointerEventType.Move &&
+            pointerEventArgs.Type != RawPointerEventType.LeftButtonUp &&
+            pointerEventArgs.Type != RawPointerEventType.RightButtonDown)
+        {
+            return;
+        }
+
+        var isHover = IsPointerInsideControl(pointerEventArgs.Position);
+        SetSpinnerContentHover(isHover);
+        if (!isHover)
+        {
+            StopPointerTracking();
+        }
+    }
+
+    private bool IsPointerInsideControl(Point topLevelPosition)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel == null)
+        {
+            return false;
+        }
+
+        var origin = this.TranslatePoint(new Point(0, 0), topLevel);
+        if (!origin.HasValue)
+        {
+            return false;
+        }
+
+        return new Rect(origin.Value, Bounds.Size).Contains(topLevelPosition);
+    }
+
+    private void SetSpinnerContentHover(bool isHover)
+    {
+        if (IsSpinnerContentHover == isHover)
+        {
+            return;
+        }
+
+        IsSpinnerContentHover = isHover;
+        UpdateHandleVisualState();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -283,13 +325,21 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
         if (change.Property == IsShowHandleProperty ||
             change.Property == IsHandleFloatableProperty)
         {
-            ConfigureMoveProcessor();
+            if (!ShouldTrackPointer())
+            {
+                StopPointerTracking();
+                SetSpinnerContentHover(false);
+            }
             UpdateHandleVisualState();
         }
 
         if (change.Property == IsEffectivelyEnabledProperty)
         {
-            ConfigureMoveProcessor();
+            if (!ShouldTrackPointer())
+            {
+                StopPointerTracking();
+                SetSpinnerContentHover(false);
+            }
             UpdateHandleVisualState();
         }
 

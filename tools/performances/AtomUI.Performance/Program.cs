@@ -56,7 +56,8 @@ internal static partial class Program
             options.VerifyNavMenuStates ||
             options.VerifyMessageStates ||
             options.VerifyMessageBoxStates ||
-            options.VerifyNotificationStates)
+            options.VerifyNotificationStates ||
+            options.VerifyNumericUpDownStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -219,6 +220,10 @@ internal static partial class Program
             {
                 verified &= RunNotificationStateVerification();
             }
+            if (options.VerifyNumericUpDownStates)
+            {
+                verified &= RunNumericUpDownStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -290,6 +295,7 @@ internal static partial class Program
             "message" => CreateMessageScenarios(),
             "messagebox" => CreateMessageBoxScenarios(),
             "notification" => CreateNotificationScenarios(),
+            "numericupdown" => CreateNumericUpDownScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

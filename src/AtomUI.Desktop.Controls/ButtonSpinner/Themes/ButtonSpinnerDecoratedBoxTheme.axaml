@@ -12,7 +12,8 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ButtonSpinnerDecoratedBox">
                 <DockPanel Name="RootLayout" LastChildFill="True"> 
-                    <Panel Name="PART_OverlayLayout">
+                    <Panel Name="PART_OverlayLayout"
+                           ClipToBounds="True">
                         <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                                 BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
                                 CornerRadius="{TemplateBinding InnerBoxCornerRadius}"

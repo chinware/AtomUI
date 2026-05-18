@@ -99,6 +99,7 @@ internal static partial class Program
                 "marqueelabel" => "# MarqueeLabel / Alert Baseline",
                 "menu" => "# Menu Baseline",
                 "navmenu" => "# NavMenu Baseline",
+                "numericupdown" => "# NumericUpDown Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

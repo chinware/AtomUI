@@ -1,15 +1,15 @@
 ﻿using System.Globalization;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
-using AtomUI.Icons.AntDesign;
+using AtomUI.Data;
+using AtomUI.Reflection;
 using AtomUI.Theme;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
@@ -229,10 +229,9 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     
     #endregion
     
-    private IconButton? _clearButton;
+    private InputClearIconButton? _clearButton;
     private TextBox? _textBoxPart;
-    private CompositeDisposable? _contentRightAddOnBindings;
-    private readonly NumericUpDownTextConverter _textConverter;
+    private NumericUpDownTextConverter? _textConverter;
     private IValueConverter? _userTextConverter;
     private bool _suppressTextConverterTracking;
     private bool _isUpdatingFromText;
@@ -240,6 +239,9 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     private bool _isUpdatingText;
     private bool _isParsingText;
     private ButtonSpinner? _buttonSpinner;
+    private StackPanel? _rightAccessoryLayout;
+    private IDisposable? _rightAccessorySpacingBinding;
+    private ContentPresenter? _innerRightContentPresenter;
 
     static NumericUpDown()
     {
@@ -249,62 +251,20 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public NumericUpDown()
     {
         this.RegisterTokenResourceScope(NumericUpDownToken.ScopeProvider);
-        _textConverter = new NumericUpDownTextConverter(this);
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        if (ClearIcon == null)
-        {
-            SetCurrentValue(ClearIconProperty, new CloseCircleFilled());
-        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearRightAccessoryHost();
         base.OnApplyTemplate(e);
-        _clearButton      = e.NameScope.Find<IconButton>("PART_ClearButton");
-        if (_clearButton is not null)
-        {
-            _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
-        }
         SetTextBoxPart(e.NameScope.Find<TextBox>("PART_TextBox"));
         ConfigureEffectiveShowClearButton();
         _buttonSpinner =  e.NameScope.Find<ButtonSpinner>("PART_Spinner");
-        SetupContentRightAddOnBindings(e);
-    }
-
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
-    {
-        _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
-
-        if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
+        if (_textBoxPart is not null)
         {
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
-                new Binding(nameof(ClearIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
-                new Binding(nameof(IsMotionEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
+            _textBoxPart[!TextBox.IsCustomFontSizeProperty] = this[!IsCustomFontSizeProperty];
         }
-
-        if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
-        {
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this }));
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(InnerRightContentTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this, Converter = ObjectConverters.IsNotNull }));
-        }
-
-        if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)
-        {
-            _contentRightAddOnBindings.Add(textBox.Bind(TextBox.IsCustomFontSizeProperty,
-                new Binding(nameof(IsCustomFontSize)) { Source = this }));
-        }
+        ConfigureRightAccessoryHost();
     }
     
     protected virtual void NotifyClearButtonClicked()
@@ -324,7 +284,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
         if (change.Property == TextConverterProperty && !_suppressTextConverterTracking)
         {
-            if (change.NewValue is IValueConverter converter && converter != _textConverter)
+            if (change.NewValue is IValueConverter converter && !ReferenceEquals(converter, _textConverter))
             {
                 _userTextConverter = converter;
             }
@@ -336,7 +296,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
         if (change.Property == IsStringModeProperty)
         {
-            if (change.Property == IsStringModeProperty && IsStringMode)
+            if (IsStringMode)
             {
                 UpdateStringValueFromValue(Value, CultureInfo.CurrentCulture);
             }
@@ -347,6 +307,209 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         if (change.Property == StringValueProperty && IsStringMode && !_isUpdatingFromText && !_isUpdatingFromValue)
         {
             ApplyStringValue(change.NewValue as string);
+        }
+
+        if (IsRightAccessoryStateProperty(change.Property))
+        {
+            ConfigureRightAccessoryHost();
+        }
+    }
+
+    private static bool IsRightAccessoryStateProperty(AvaloniaProperty property)
+    {
+        return property == IsEffectiveShowClearButtonProperty ||
+               property == ClearIconProperty ||
+               property == IsMotionEnabledProperty ||
+               property == InnerRightContentProperty ||
+               property == InnerRightContentTemplateProperty;
+    }
+
+    private bool NeedsRightAccessoryHost()
+    {
+        return IsEffectiveShowClearButton || InnerRightContent != null;
+    }
+
+    private void ConfigureRightAccessoryHost()
+    {
+        if (_buttonSpinner == null)
+        {
+            return;
+        }
+
+        if (!NeedsRightAccessoryHost())
+        {
+            ClearRightAccessoryHost();
+            return;
+        }
+
+        EnsureRightAccessoryLayout();
+        UpdateClearButton();
+        UpdateInnerRightContentPresenter();
+        EnsureRightAccessoryChildOrder();
+
+        if (!ReferenceEquals(_buttonSpinner.InnerRightContent, _rightAccessoryLayout))
+        {
+            _buttonSpinner.SetCurrentValue(ButtonSpinner.InnerRightContentProperty, _rightAccessoryLayout);
+        }
+    }
+
+    private void EnsureRightAccessoryLayout()
+    {
+        if (_rightAccessoryLayout != null)
+        {
+            return;
+        }
+
+        _rightAccessoryLayout = new StackPanel
+        {
+            Name        = "PART_RightAccessoryHost",
+            Orientation = Orientation.Horizontal
+        };
+        _rightAccessoryLayout.SetTemplatedParent(this);
+        _rightAccessorySpacingBinding = TokenResourceBinder.CreateTokenBinding(
+            _rightAccessoryLayout,
+            StackPanel.SpacingProperty,
+            SharedTokenKind.UniformlyPaddingXXS);
+    }
+
+    private void UpdateClearButton()
+    {
+        if (!IsEffectiveShowClearButton)
+        {
+            DestroyClearButton();
+            return;
+        }
+
+        if (_clearButton == null)
+        {
+            _clearButton = new InputClearIconButton
+            {
+                Name                    = "PART_ClearButton",
+                VerticalAlignment       = VerticalAlignment.Center,
+                IsPassthroughMouseEvent = false
+            };
+            _clearButton.SetTemplatedParent(this);
+            _clearButton.Click += HandleClearButtonClicked;
+        }
+
+        _clearButton.SyncIcon(ClearIcon);
+        _clearButton.SetCurrentValue(AbstractIconButton.IsMotionEnabledProperty, IsMotionEnabled);
+    }
+
+    private void DestroyClearButton()
+    {
+        if (_clearButton == null)
+        {
+            return;
+        }
+
+        _clearButton.Click -= HandleClearButtonClicked;
+        _clearButton.ClearValue(AbstractIconButton.IconProperty);
+        _clearButton.ClearValue(AbstractIconButton.IsMotionEnabledProperty);
+        _rightAccessoryLayout?.Children.Remove(_clearButton);
+        _clearButton.SetTemplatedParent(null);
+        _clearButton = null;
+    }
+
+    private void HandleClearButtonClicked(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        NotifyClearButtonClicked();
+    }
+
+    private void UpdateInnerRightContentPresenter()
+    {
+        if (InnerRightContent == null)
+        {
+            DestroyInnerRightContentPresenter();
+            return;
+        }
+
+        if (_innerRightContentPresenter == null)
+        {
+            _innerRightContentPresenter = new ContentPresenter
+            {
+                Name                     = "PART_InnerRightContentPresenter",
+                VerticalAlignment        = VerticalAlignment.Stretch,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                HorizontalAlignment      = HorizontalAlignment.Right,
+                Focusable                = false
+            };
+            _innerRightContentPresenter.SetTemplatedParent(this);
+        }
+
+        _innerRightContentPresenter.SetCurrentValue(ContentPresenter.ContentProperty, InnerRightContent);
+        _innerRightContentPresenter.SetCurrentValue(ContentPresenter.ContentTemplateProperty, InnerRightContentTemplate);
+    }
+
+    private void DestroyInnerRightContentPresenter()
+    {
+        if (_innerRightContentPresenter == null)
+        {
+            return;
+        }
+
+        _innerRightContentPresenter.ClearValue(ContentPresenter.ContentProperty);
+        _innerRightContentPresenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+        _rightAccessoryLayout?.Children.Remove(_innerRightContentPresenter);
+        _innerRightContentPresenter.SetTemplatedParent(null);
+        _innerRightContentPresenter = null;
+    }
+
+    private void EnsureRightAccessoryChildOrder()
+    {
+        if (_rightAccessoryLayout == null)
+        {
+            return;
+        }
+
+        var index = 0;
+        EnsureRightAccessoryChildAt(_clearButton, ref index);
+        EnsureRightAccessoryChildAt(_innerRightContentPresenter, ref index);
+    }
+
+    private void EnsureRightAccessoryChildAt(Control? child, ref int index)
+    {
+        if (child == null || _rightAccessoryLayout == null)
+        {
+            return;
+        }
+
+        var currentIndex = _rightAccessoryLayout.Children.IndexOf(child);
+        if (currentIndex == index)
+        {
+            index++;
+            return;
+        }
+
+        if (currentIndex >= 0)
+        {
+            _rightAccessoryLayout.Children.RemoveAt(currentIndex);
+        }
+
+        _rightAccessoryLayout.Children.Insert(Math.Min(index, _rightAccessoryLayout.Children.Count), child);
+        index++;
+    }
+
+    private void ClearRightAccessoryHost()
+    {
+        if (_buttonSpinner != null &&
+            _rightAccessoryLayout != null &&
+            ReferenceEquals(_buttonSpinner.InnerRightContent, _rightAccessoryLayout))
+        {
+            _buttonSpinner.ClearValue(ButtonSpinner.InnerRightContentProperty);
+        }
+
+        DestroyClearButton();
+        DestroyInnerRightContentPresenter();
+
+        _rightAccessorySpacingBinding?.Dispose();
+        _rightAccessorySpacingBinding = null;
+
+        if (_rightAccessoryLayout != null)
+        {
+            _rightAccessoryLayout.Children.Clear();
+            _rightAccessoryLayout.SetTemplatedParent(null);
+            _rightAccessoryLayout = null;
         }
     }
 
@@ -394,6 +557,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         if (_textBoxPart != null)
         {
             _textBoxPart.KeyDown -= HandleTextBoxKeyDown;
+            _textBoxPart.ClearValue(TextBox.IsCustomFontSizeProperty);
         }
         _textBoxPart = textBox;
         if (_textBoxPart != null)
@@ -434,14 +598,15 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         var needsConverter = IsStringMode;
         if (needsConverter)
         {
-            if (TextConverter != _textConverter)
+            var textConverter = GetStringModeTextConverter();
+            if (!ReferenceEquals(TextConverter, textConverter))
             {
                 _suppressTextConverterTracking = true;
-                SetCurrentValue(TextConverterProperty, _textConverter);
+                SetCurrentValue(TextConverterProperty, textConverter);
                 _suppressTextConverterTracking = false;
             }
         }
-        else if (TextConverter == _textConverter)
+        else if (_textConverter != null && ReferenceEquals(TextConverter, _textConverter))
         {
             _suppressTextConverterTracking = true;
             SetCurrentValue(TextConverterProperty, _userTextConverter);
@@ -451,7 +616,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
     private void RefreshDisplayedText()
     {
-        if (TextConverter != _textConverter)
+        if (_textConverter == null || !ReferenceEquals(TextConverter, _textConverter))
         {
             return;
         }
@@ -574,6 +739,11 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         _isUpdatingFromValue = false;
     }
 
+    private NumericUpDownTextConverter GetStringModeTextConverter()
+    {
+        return _textConverter ??= new NumericUpDownTextConverter(this);
+    }
+
     private bool IsTextInputFocused()
     {
         return _textBoxPart?.IsFocused == true;
@@ -646,16 +816,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         }
 
         var addOnDecoratedBox = _buttonSpinner?.DecoratedBox;
-        if (addOnDecoratedBox == null)
-        {
-            var topLevel = TopLevel.GetTopLevel(this);
-            if (topLevel != null)
-            {
-                var layoutManager = topLevel.GetLayoutManager();
-                layoutManager?.ExecuteLayoutPass();
-                addOnDecoratedBox = _buttonSpinner?.DecoratedBox;
-            }
-        }
 
         if (addOnDecoratedBox == null || StyleVariant != InputControlStyleVariant.Outlined)
         {

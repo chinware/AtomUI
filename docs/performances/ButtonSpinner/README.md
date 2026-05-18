@@ -28,8 +28,9 @@
 - `ButtonSpinner` 不再在 `ControlTheme` 中固定声明 `ButtonSpinnerHandle`；改为 `IsButtonSpinnerVisible=true` 时按需创建并设置到 `ButtonSpinnerDecoratedBox.SpinnerContent`。
 - `IsButtonSpinnerVisible=false` 时释放 handle，解除 `ButtonsCreated`、上下按钮 `Click` 订阅，并清理 handle 上的代码绑定。
 - `ButtonSpinnerDecoratedBox` 的 `PART_SpinnerHandle` presenter 改为按需创建；没有 `SpinnerContent` 时不保留空 presenter。
+- `PART_OverlayLayout` 开启 `ClipToBounds`，保证 floatable handle 的隐藏/显示动画不会绘制到外部 addon 区域。
 - 外部 `LeftAddOn` / `RightAddOn` presenter 从 ButtonSpinner 专用模板中移除，复用 `AddOnDecoratedBox` 的动态 presenter 创建/释放路径。
-- `IsShowHandle=false`、`IsHandleFloatable=false`、`IsEnabled=false`、detach 时统一释放 `_mouseMoveDisposable`，避免全局 `IInputManager.Process` 订阅泄露。
+- floatable handle 不再在 attached 后常驻全局 `IInputManager.Process` 订阅；pointer 进入当前控件时临时订阅全局坐标，离开、`IsShowHandle=false`、`IsHandleFloatable=false`、`IsEnabled=false` 或 detach 时统一释放，避免泄露并保持 TextBox/overlay/addon 组合下的打开和隐藏语义。
 - floatable pointer move 热路径只在 hover 状态变化时更新 handle visual state，避免每个 move 都重复写属性。
 - 补充 `--verify-buttonspinner-states`，覆盖 handle 显隐切换、旧 visual parent 清理、floatable 订阅开关、detach 清理、outer addon presenter 运行时创建/释放。
 
@@ -80,7 +81,7 @@
 - `PART_SpinnerHandle` presenter 随 handle 按需创建/释放，释放后清理 visual parent 与 templated parent，重新显示时创建新 presenter。
 - `PART_SpinnerHandle` presenter 的 `HorizontalAlignment` 跟随 `ButtonSpinnerLocation` 切换。
 - floatable handle 只有在 attached、enabled、show handle、floatable 四个条件同时成立时才订阅全局 input manager。
-- `IsButtonSpinnerVisible`、`IsButtonSpinnerFloatable`、`IsEnabled` 和 detach 都会释放 `_mouseMoveDisposable`。
+- `IsButtonSpinnerVisible`、`IsButtonSpinnerFloatable`、`IsEnabled` 和 detach 都会释放活动期 pointer tracking subscription。
 - 默认无外部 addon 时不创建 `PART_LeftAddOn` / `PART_RightAddOn`；运行时设置 addon 会创建，清空 addon 会释放且旧 presenter 无 visual parent。
 
 ## 复现命令

@@ -27,20 +27,6 @@
                     CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                     CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
-                    <atom:ButtonSpinner.InnerRightContent>
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
-                            <atom:InputClearIconButton
-                                Name="PART_ClearButton"
-                                IsPassthroughMouseEvent="False" />
-                            <ContentPresenter
-                                Name="PART_InnerRightContentPresenter"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                HorizontalAlignment="Right"
-                                Focusable="False" />
-                        </StackPanel>
-                    </atom:ButtonSpinner.InnerRightContent>
                     <atom:TextBox
                         Name="PART_TextBox"
                         VerticalContentAlignment="Center"

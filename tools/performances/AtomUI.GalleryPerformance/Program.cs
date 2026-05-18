@@ -210,6 +210,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.SelectShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/SelectShowCase.axaml",
                 stats => stats.SelectCount > 0),
+            ["numberupdown"] = new(
+                "NumberUpDownShowCase",
+                NumberUpDownViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.NumberUpDownShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/NumberUpDownShowCase.axaml",
+                stats => stats.ButtonSpinnerCount >= 30 && stats.AddOnDecoratedBoxCount >= 30),
             ["autocomplete"] = new(
                 "AutoCompleteShowCase",
                 AutoCompleteViewModel.ID,

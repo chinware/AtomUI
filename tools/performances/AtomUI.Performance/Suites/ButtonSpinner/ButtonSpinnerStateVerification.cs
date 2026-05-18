@@ -14,7 +14,7 @@ internal static partial class Program
     {
         var failures = new List<string>();
         VerifyButtonSpinnerHandleLifecycle(failures);
-        VerifyButtonSpinnerFloatableSubscriptionLifecycle(failures);
+        VerifyButtonSpinnerFloatableTrackingDoesNotKeepIdleGlobalSubscription(failures);
         VerifyButtonSpinnerOuterAddOnLifecycle(failures);
         VerifyButtonSpinnerBorderTransitions(failures);
 
@@ -130,7 +130,7 @@ internal static partial class Program
             failures);
     }
 
-    private static void VerifyButtonSpinnerFloatableSubscriptionLifecycle(ICollection<string> failures)
+    private static void VerifyButtonSpinnerFloatableTrackingDoesNotKeepIdleGlobalSubscription(ICollection<string> failures)
     {
         var spinner = new AtomButtonSpinner
         {
@@ -143,55 +143,55 @@ internal static partial class Program
         Expect(decoratedBox != null,
             "ButtonSpinner should create ButtonSpinnerDecoratedBox.",
             failures);
-        Expect(GetMouseMoveDisposable(decoratedBox) == null,
-            "Hidden floatable ButtonSpinner should not subscribe to global input processing.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "Hidden floatable ButtonSpinner should not keep an idle pointer tracking subscription.",
             failures);
 
         spinner.SetCurrentValue(AtomButtonSpinner.IsButtonSpinnerVisibleProperty, true);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) != null,
-            "Visible floatable ButtonSpinner should subscribe to global input processing.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "Visible floatable ButtonSpinner should not keep an idle pointer tracking subscription.",
             failures);
 
         spinner.SetCurrentValue(AtomButtonSpinner.IsButtonSpinnerVisibleProperty, false);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) == null,
-            "ButtonSpinner should dispose global input subscription when handle is hidden.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should dispose pointer tracking subscription when handle is hidden.",
             failures);
 
         spinner.SetCurrentValue(AtomButtonSpinner.IsButtonSpinnerVisibleProperty, true);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) != null,
-            "ButtonSpinner should restore global input subscription when handle is shown again.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should not keep an idle pointer tracking subscription when handle is shown again.",
             failures);
 
         spinner.SetCurrentValue(AtomButtonSpinner.IsButtonSpinnerFloatableProperty, false);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) == null,
-            "ButtonSpinner should dispose global input subscription when floatable is disabled.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should dispose pointer tracking subscription when floatable is disabled.",
             failures);
 
         spinner.SetCurrentValue(AtomButtonSpinner.IsButtonSpinnerFloatableProperty, true);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) != null,
-            "ButtonSpinner should restore global input subscription when floatable is enabled.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should not keep an idle pointer tracking subscription when floatable is enabled.",
             failures);
 
         spinner.SetCurrentValue(InputElement.IsEnabledProperty, false);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) == null,
-            "ButtonSpinner should dispose global input subscription when disabled.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should dispose pointer tracking subscription when disabled.",
             failures);
 
         spinner.SetCurrentValue(InputElement.IsEnabledProperty, true);
         RefreshLayout(realized.Window);
-        Expect(GetMouseMoveDisposable(decoratedBox) != null,
-            "ButtonSpinner should restore global input subscription when re-enabled.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should not keep an idle pointer tracking subscription when re-enabled.",
             failures);
 
         realized.Dispose();
-        Expect(GetMouseMoveDisposable(decoratedBox) == null,
-            "ButtonSpinner should dispose global input subscription when detached.",
+        Expect(GetPointerTrackingSubscription(decoratedBox) == null,
+            "ButtonSpinner should dispose pointer tracking subscription when detached.",
             failures);
     }
 
@@ -214,11 +214,15 @@ internal static partial class Program
         RefreshLayout(realized.Window);
         var leftAddOn = FindVisualByName<ContentPresenter>(spinner, "PART_LeftAddOn");
         var rightAddOn = FindVisualByName<ContentPresenter>(spinner, "PART_RightAddOn");
+        var overlayLayout = FindVisualByName<Panel>(spinner, "PART_OverlayLayout");
         Expect(leftAddOn != null,
             "ButtonSpinner should create PART_LeftAddOn when LeftAddOn is assigned.",
             failures);
         Expect(rightAddOn != null,
             "ButtonSpinner should create PART_RightAddOn when RightAddOn is assigned.",
+            failures);
+        Expect(overlayLayout?.ClipToBounds == true,
+            "ButtonSpinner overlay layout should clip the floating handle inside the content frame when outer add-ons exist.",
             failures);
 
         spinner.SetCurrentValue(AtomButtonSpinner.LeftAddOnProperty, null);
@@ -258,11 +262,11 @@ internal static partial class Program
             failures);
     }
 
-    private static object? GetMouseMoveDisposable(Control? decoratedBox)
+    private static object? GetPointerTrackingSubscription(Control? decoratedBox)
     {
         return decoratedBox == null
             ? null
-            : GetPrivateField(decoratedBox, "AtomUI.Desktop.Controls.ButtonSpinnerDecoratedBox", "_mouseMoveDisposable");
+            : GetPrivateField(decoratedBox, "AtomUI.Desktop.Controls.ButtonSpinnerDecoratedBox", "_pointerTrackingSubscription");
     }
 
     private static int CountVisualsByTypeName(Control root, string typeName)
