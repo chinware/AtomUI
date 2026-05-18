@@ -1,11 +1,9 @@
 using AtomUI.Icons.AntDesign;
-using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -101,7 +99,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
                 return new Size(LineInfoIconSize, LineInfoIconSize);
             }
 
-            return TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
+            return CalculateProgressTextSize(CalculatePercentageValue(Value), fontSize);
         }
         return default;
     }
@@ -161,18 +159,16 @@ public abstract class AbstractLineProgress : AbstractProgressBar
         _extraInfoSize = CalculateExtraInfoSize(FontSize);
         NotifyOrientationChanged();
         
-        ExceptionCompletedIconPresenter = e.NameScope.Find<IconPresenter>("PART_ExceptionCompletedIconPresenter");
-        SuccessCompletedIconPresenter   = e.NameScope.Find<IconPresenter>("PART_SuccessCompletedIconPresenter");
-        if (ExceptionCompletedIcon == null)
-        {
-            SetValue(ExceptionCompletedIconProperty, new CloseCircleFilled(), BindingPriority.Template);
-        }
-        
-        if (SuccessCompletedIcon == null)
-        {
-            SetValue(SuccessCompletedIconProperty, new CheckCircleFilled(), BindingPriority.Template);
-        }
     }
+
+    protected override void ConfigureStatusIconPresenter(IconPresenter presenter, ProgressStatusIconKind kind)
+    {
+        presenter.HorizontalAlignment = HorizontalAlignment.Left;
+    }
+
+    protected override PathIcon BuildDefaultExceptionCompletedIcon() => new CloseCircleFilled();
+
+    protected override PathIcon BuildDefaultSuccessCompletedIcon() => new CheckCircleFilled();
 
     protected virtual void NotifyOrientationChanged()
     {

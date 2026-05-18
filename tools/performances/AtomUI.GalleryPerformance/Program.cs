@@ -150,6 +150,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.PopupConfirmShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Feedback/PopupConfirmShowCase.axaml",
                 stats => stats.FlyoutHostCount > 0),
+            ["progressbar"] = new(
+                "ProgressBarShowCase",
+                ProgressBarViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.ProgressBarShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/ProgressBarShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 18 && stats.VisualCount > 0),
             ["drawer"] = new(
                 "DrawerShowCase",
                 DrawerViewModel.ID,

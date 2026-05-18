@@ -47,7 +47,8 @@ internal sealed record PerfOptions(
     bool VerifyNumericUpDownStates,
     bool VerifyOptionButtonGroupStates,
     bool VerifyPaginationStates,
-    bool VerifyPopupConfirmStates)
+    bool VerifyPopupConfirmStates,
+    bool VerifyProgressBarStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -98,6 +99,7 @@ internal sealed record PerfOptions(
         var verifyOptionButtonGroupStates = false;
         var verifyPaginationStates = false;
         var verifyPopupConfirmStates = false;
+        var verifyProgressBarStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -247,6 +249,9 @@ internal sealed record PerfOptions(
                 case "--verify-popupconfirm-states":
                     verifyPopupConfirmStates = true;
                     break;
+                case "--verify-progressbar-states":
+                    verifyProgressBarStates = true;
+                    break;
             }
         }
 
@@ -297,6 +302,7 @@ internal sealed record PerfOptions(
             verifyNumericUpDownStates,
             verifyOptionButtonGroupStates,
             verifyPaginationStates,
-            verifyPopupConfirmStates);
+            verifyPopupConfirmStates,
+            verifyProgressBarStates);
     }
 }

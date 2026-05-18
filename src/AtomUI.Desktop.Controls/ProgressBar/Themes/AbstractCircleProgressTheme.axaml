@@ -12,7 +12,8 @@
 
     <Setter Property="Template">
         <ControlTemplate TargetType="atomc:AbstractCircleProgress">
-            <Canvas>
+            <Canvas Name="PART_ExtraInfoLayout"
+                    IsVisible="{TemplateBinding IsProgressInfoVisible}">
                 <LayoutTransformControl Name="PART_LayoutTransformControl">
                     <Label Name="PART_PercentageLabel"
                            Padding="0"
@@ -24,17 +25,6 @@
                            IsEnabled="{TemplateBinding IsEnabled}" 
                            IsVisible="{TemplateBinding IsPercentLabelVisible}"/>
                 </LayoutTransformControl>
-                
-                <atom:IconPresenter
-                    Name="PART_ExceptionCompletedIconPresenter"
-                    Icon="{TemplateBinding ExceptionCompletedIcon}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"/>
-                <atom:IconPresenter
-                    Name="PART_SuccessCompletedIconPresenter"
-                    Icon="{TemplateBinding SuccessCompletedIcon}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"/>
             </Canvas>
         </ControlTemplate>
     </Setter>

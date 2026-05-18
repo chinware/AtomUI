@@ -151,7 +151,7 @@
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
 | Feedback | Notification | Done | [Notification](Notification/README.md)；manager/card 生命周期补齐，7 个 Gallery manager 与 progress bar 按需创建，Gallery repeated mean 提升约 `22.24%` |
 | Feedback | PopupConfirm | Done | [PopupConfirm](PopupConfirm/README.md)；cancel/content slot 已按需创建，detach/reattach 与事件释放已验证，Gallery repeated mean 提升约 `10.60%` |
-| Feedback | ProgressBar | Pending | 待建立基线 |
+| Feedback | ProgressBar | Done | [ProgressBar](ProgressBar/README.md)；status icon 按需创建，真实 `ProgressBarShowCase` repeated mean `154.17ms -> 111.26ms`，runtime visuals `1389 -> 977` |
 | Feedback | Result | Pending | 待建立基线 |
 | Feedback | Skeleton | Pending | 待建立基线 |
 | Feedback | Spin | Pending | 待建立基线 |

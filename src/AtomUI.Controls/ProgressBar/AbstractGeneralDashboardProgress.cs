@@ -38,6 +38,9 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
     
     private Rect _currentGrooveRect;
     private (double, double) _anglePair;
+    private readonly Pen _groovePen = new();
+    private readonly Pen _indicatorPen = new();
+    private readonly Pen _successPen = new();
 
     static AbstractGeneralDashboardProgress()
     {
@@ -63,19 +66,13 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
     private void DrawGrooveNormal(DrawingContext context)
     {
-        var pen = new Pen(GrooveBrush, StrokeThickness)
-        {
-            LineCap = StrokeLineCap
-        };
+        var pen = ConfigurePen(_groovePen, GrooveBrush, StrokeLineCap);
         context.DrawArc(pen, _currentGrooveRect, _anglePair.Item1, _anglePair.Item2);
     }
 
     private void DrawGrooveStep(DrawingContext context)
     {
-        var pen = new Pen(GrooveBrush, StrokeThickness)
-        {
-            LineCap = PenLineCap.Flat
-        };
+        var pen        = ConfigurePen(_groovePen, GrooveBrush, PenLineCap.Flat);
         var spanAngle  = (360 - GapDegree - StepGap * StepCount) / StepCount;
         var startAngle = _anglePair.Item1;
         for (var i = 0; i < StepCount; ++i)
@@ -99,28 +96,19 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
     private void DrawIndicatorBarNormal(DrawingContext context)
     {
-        var pen = new Pen(StrokeBrush, StrokeThickness)
-        {
-            LineCap = StrokeLineCap
-        };
+        var pen = ConfigurePen(_indicatorPen, StrokeBrush, StrokeLineCap);
         context.DrawArc(pen, _currentGrooveRect, _anglePair.Item1, IndicatorAngle);
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            var successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
-            {
-                LineCap = StrokeLineCap
-            };
+            var successPen = ConfigurePen(_successPen, SuccessStrokeBrush, StrokeLineCap);
             context.DrawArc(successPen, _currentGrooveRect, _anglePair.Item1, CalculateAngle(SuccessThreshold));
         }
     }
 
     private void DrawIndicatorBarStep(DrawingContext context)
     {
-        var pen = new Pen(StrokeBrush, StrokeThickness)
-        {
-            LineCap = PenLineCap.Flat
-        };
+        var pen        = ConfigurePen(_indicatorPen, StrokeBrush, PenLineCap.Flat);
         var spanAngle  = (360 - GapDegree - StepGap * StepCount) / StepCount;
         var startAngle = _anglePair.Item1;
 
@@ -130,11 +118,8 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
-            {
-                LineCap = PenLineCap.Flat
-            };
-            successSteps = (int)Math.Round(StepCount * SuccessThreshold / (Maximum - Minimum));
+            successPen   = ConfigurePen(_successPen, SuccessStrokeBrush, PenLineCap.Flat);
+            successSteps = (int)Math.Round(StepCount * CalculatePercentageValue(SuccessThreshold) / 100);
         }
 
         IPen? currentPen;
@@ -203,6 +188,14 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
     private double CalculateAngle(double value)
     {
-        return (360 - GapDegree) * value / (Maximum - Minimum);
+        return (360 - GapDegree) * CalculatePercentageValue(value) / 100;
+    }
+
+    private Pen ConfigurePen(Pen pen, IBrush? brush, PenLineCap lineCap)
+    {
+        pen.Brush     = brush;
+        pen.Thickness = StrokeThickness;
+        pen.LineCap   = lineCap;
+        return pen;
     }
 }

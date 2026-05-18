@@ -190,6 +190,7 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
 
     protected void CalculateSizeTypeThresholdValue()
     {
+        _sizeTypeThresholdValue.Clear();
         double fontSize   = default;
         double fontSizeSM = default;
         {

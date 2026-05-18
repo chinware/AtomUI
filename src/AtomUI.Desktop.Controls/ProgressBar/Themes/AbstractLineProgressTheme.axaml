@@ -10,7 +10,8 @@
     </ControlTheme.BasedOn>
     <Setter Property="Template">
         <ControlTemplate TargetType="atomc:AbstractLineProgress">
-            <Canvas IsVisible="{TemplateBinding IsProgressInfoVisible}">
+            <Canvas Name="PART_ExtraInfoLayout"
+                    IsVisible="{TemplateBinding IsProgressInfoVisible}">
                 <LayoutTransformControl Name="PART_LayoutTransformControl">
                     <Label Name="PART_PercentageLabel"
                            Padding="0"
@@ -19,17 +20,6 @@
                            Foreground="{TemplateBinding PercentageLabelColor}"
                            IsEnabled="{TemplateBinding IsEnabled}" />
                 </LayoutTransformControl>
-                
-                <atom:IconPresenter
-                    Name="PART_ExceptionCompletedIconPresenter"
-                    Icon="{TemplateBinding ExceptionCompletedIcon}"
-                    HorizontalAlignment="Left"/>
-                
-                <atom:IconPresenter
-                    Name="PART_SuccessCompletedIconPresenter"
-                    Icon="{TemplateBinding SuccessCompletedIcon}"
-                    HorizontalAlignment="Left"/>
-                
             </Canvas>
         </ControlTemplate>
     </Setter>

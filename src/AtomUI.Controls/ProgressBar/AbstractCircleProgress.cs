@@ -1,10 +1,8 @@
 using AtomUI.Icons.AntDesign;
-using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
 
@@ -109,6 +107,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     private void CalculateSizeTypeThresholdValue()
     {
+        _sizeTypeThresholdValue.Clear();
         _sizeTypeThresholdValue.Add(SizeType.Large, LARGE_CIRCLE_SIZE);
         _sizeTypeThresholdValue.Add(SizeType.Middle, MIDDLE_CIRCLE_SIZE);
         _sizeTypeThresholdValue.Add(SizeType.Small, SMALL_CIRCLE_SIZE);
@@ -180,7 +179,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         var circleSize = CalculateCircleSize();
         CalculateStrokeThickness();
         var extraInfoSize = circleSize - StrokeThickness - 1; // 写死一个像素的 padding 吧
-        var extraInfo     = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontSize, FontFamily);
+        var extraInfo     = CalculateProgressTextSize(100, FontSize);
 
         // 这三个是不可能同时满足的
         if (LayoutTransformLabel is not null)
@@ -255,11 +254,17 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     {
         var circleSize     = CalculateCircleSize();
         var calculatedSize = Math.Max(circleSize / 4.5, CircleMinimumIconSize);
-        ExceptionCompletedIconPresenter!.Width  = calculatedSize;
-        ExceptionCompletedIconPresenter!.Height = calculatedSize;
+        if (ExceptionCompletedIconPresenter is not null)
+        {
+            ExceptionCompletedIconPresenter.Width  = calculatedSize;
+            ExceptionCompletedIconPresenter.Height = calculatedSize;
+        }
 
-        SuccessCompletedIconPresenter!.Width  = calculatedSize;
-        SuccessCompletedIconPresenter!.Height = calculatedSize;
+        if (SuccessCompletedIconPresenter is not null)
+        {
+            SuccessCompletedIconPresenter.Width  = calculatedSize;
+            SuccessCompletedIconPresenter.Height = calculatedSize;
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -297,7 +302,6 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         }
 
         return base.ArrangeOverride(finalSize);
-        ;
     }
 
     protected override Rect GetProgressBarRect(Rect controlRect)
@@ -334,14 +338,20 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     {
         CalculateSizeTypeThresholdValue();
         base.OnApplyTemplate(e);
-        if (ExceptionCompletedIcon == null)
-        {
-            SetValue(ExceptionCompletedIconProperty, new CloseOutlined(), BindingPriority.Template);
-        }
-        
-        if (SuccessCompletedIcon == null)
-        {
-            SetValue(SuccessCompletedIconProperty, new CheckOutlined(), BindingPriority.Template);
-        }
     }
+
+    protected override void ConfigureStatusIconPresenter(IconPresenter presenter, ProgressStatusIconKind kind)
+    {
+        presenter.HorizontalAlignment = HorizontalAlignment.Center;
+        presenter.VerticalAlignment   = VerticalAlignment.Center;
+    }
+
+    protected override void NotifyStatusIconPresenterCreated(IconPresenter presenter)
+    {
+        SetupExtraInfoIconSize();
+    }
+
+    protected override PathIcon BuildDefaultExceptionCompletedIcon() => new CloseOutlined();
+
+    protected override PathIcon BuildDefaultSuccessCompletedIcon() => new CheckOutlined();
 }

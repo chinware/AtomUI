@@ -60,7 +60,8 @@ internal static partial class Program
             options.VerifyNumericUpDownStates ||
             options.VerifyOptionButtonGroupStates ||
             options.VerifyPaginationStates ||
-            options.VerifyPopupConfirmStates)
+            options.VerifyPopupConfirmStates ||
+            options.VerifyProgressBarStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -239,6 +240,10 @@ internal static partial class Program
             {
                 verified &= RunPopupConfirmStateVerification();
             }
+            if (options.VerifyProgressBarStates)
+            {
+                verified &= RunProgressBarStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -314,6 +319,7 @@ internal static partial class Program
             "optionbuttongroup" => CreateOptionButtonGroupScenarios(),
             "pagination" => CreatePaginationScenarios(),
             "popupconfirm" => CreatePopupConfirmScenarios(),
+            "progressbar" => CreateProgressBarScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

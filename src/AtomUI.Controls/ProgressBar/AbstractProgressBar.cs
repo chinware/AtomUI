@@ -1,4 +1,6 @@
 using AtomUI.Animations;
+using AtomUI.Media;
+using AtomUI.Reflection;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -247,16 +249,28 @@ public abstract class AbstractProgressBar : RangeBase,
 
     protected LayoutTransformControl? LayoutTransformLabel;
     protected Label? PercentageLabel;
+    protected Panel? ExtraInfoLayout;
     protected IconPresenter? SuccessCompletedIconPresenter;
     protected IconPresenter? ExceptionCompletedIconPresenter;
+    private ProgressStatusIconKind _activeStatusIconKind;
+    private bool _isUpdatingStatusIconPresenter;
+    private string? _lastTextMeasureKey;
+    private Size _lastTextMeasureSize;
+
+    protected enum ProgressStatusIconKind
+    {
+        None,
+        Success,
+        Exception
+    }
 
     static AbstractProgressBar()
     {
         AffectsMeasure<AbstractProgressBar>(EffectiveSizeTypeProperty,
             IsProgressInfoVisibleProperty,
-            ProgressTextFormatProperty,
-            ValueProperty);
+            ProgressTextFormatProperty);
         AffectsRender<AbstractProgressBar>(StrokeBrushProperty,
+            PercentageProperty,
             StrokeLineCapProperty,
             TrailColorProperty,
             StrokeThicknessProperty,
@@ -284,24 +298,21 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             UpdateProgress();
         }
-        else if (change.Property == IsIndeterminateProperty)
-        {
-            UpdatePseudoClasses();
-        }
 
         HandlePropertyChangedForStyle(change);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleaseStatusIconPresenters();
         base.OnApplyTemplate(e);
+        ExtraInfoLayout      = e.NameScope.Find<Panel>("PART_ExtraInfoLayout");
         LayoutTransformLabel = e.NameScope.Find<LayoutTransformControl>("PART_LayoutTransformControl");
-        PercentageLabel = e.NameScope.Find<Label>("PART_PercentageLabel");
-        ExceptionCompletedIconPresenter = e.NameScope.Find<IconPresenter>("PART_ExceptionCompletedIconPresenter");
-        SuccessCompletedIconPresenter = e.NameScope.Find<IconPresenter>("PART_SuccessCompletedIconPresenter");
+        PercentageLabel     = e.NameScope.Find<Label>("PART_PercentageLabel");
         // 创建完更新调用一次
         NotifyEffectSizeTypeChanged();
         UpdateProgress();
+        UpdateStatusIconPresenter();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -326,8 +337,9 @@ public abstract class AbstractProgressBar : RangeBase,
 
     private void UpdateProgress()
     {
-        var percent = Math.Abs(Maximum - Minimum) < double.Epsilon ? 1.0 : (Value - Minimum) / (Maximum - Minimum);
-        Percentage = percent * 100;
+        Percentage = CalculatePercentageValue(Value);
+        IsCompleted = MathUtils.AreClose(Value, Maximum);
+        UpdatePseudoClasses();
         NotifyUpdateProgress();
     }
 
@@ -337,7 +349,7 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             if (Status != ProgressStatus.Exception)
             {
-                PercentageLabel.Content = string.Format(ProgressTextFormat, _percentage);
+                PercentageLabel.Content = FormatProgressText(Percentage);
             }
 
             NotifyHandleExtraInfoVisibility();
@@ -353,11 +365,6 @@ public abstract class AbstractProgressBar : RangeBase,
         if (change.Property == SizeTypeProperty)
         {
             EffectiveSizeType = change.GetNewValue<SizeType>();
-        }
-        else if (change.Property == ValueProperty)
-        {
-            IsCompleted = MathUtils.AreClose(Value, Maximum);
-            UpdatePseudoClasses();
         }
         else if (change.Property == IsCompletedProperty)
         {
@@ -397,6 +404,173 @@ public abstract class AbstractProgressBar : RangeBase,
                 ClearValue(GrooveBrushProperty);
             }
         }
+
+        if (change.Property == StatusProperty ||
+            change.Property == IsCompletedProperty ||
+            change.Property == IsProgressInfoVisibleProperty ||
+            change.Property == ExceptionCompletedIconProperty ||
+            change.Property == SuccessCompletedIconProperty)
+        {
+            UpdateStatusIconPresenter();
+        }
+    }
+
+    protected string FormatProgressText(double value)
+    {
+        return string.Format(ProgressTextFormat, value);
+    }
+
+    protected double CalculatePercentageValue(double value)
+    {
+        var range   = Maximum - Minimum;
+        var percent = Math.Abs(range) < double.Epsilon ? 1.0 : (value - Minimum) / range;
+        return percent * 100;
+    }
+
+    protected Size CalculateProgressTextSize(double value, double fontSize)
+    {
+        var text = FormatProgressText(value);
+        var key  = $"{text}\u001F{fontSize}\u001F{FontFamily}\u001F{FontStyle}\u001F{FontWeight}";
+        if (key == _lastTextMeasureKey)
+        {
+            return _lastTextMeasureSize;
+        }
+
+        _lastTextMeasureKey  = key;
+        _lastTextMeasureSize = TextUtils.CalculateTextSize(text, fontSize, FontFamily, FontStyle, FontWeight);
+        return _lastTextMeasureSize;
+    }
+
+    protected void UpdateStatusIconPresenter()
+    {
+        if (_isUpdatingStatusIconPresenter)
+        {
+            return;
+        }
+        if (ExtraInfoLayout is null)
+        {
+            return;
+        }
+
+        _isUpdatingStatusIconPresenter = true;
+        try
+        {
+            var previousKind = _activeStatusIconKind;
+            var targetKind   = GetTargetStatusIconKind();
+            if (targetKind == ProgressStatusIconKind.None)
+            {
+                ReleaseStatusIconPresenters();
+                if (previousKind != ProgressStatusIconKind.None)
+                {
+                    InvalidateMeasure();
+                }
+                return;
+            }
+
+            if (_activeStatusIconKind == targetKind)
+            {
+                EnsureStatusIconValue(targetKind);
+                return;
+            }
+
+            ReleaseStatusIconPresenters();
+            var presenter = new IconPresenter
+            {
+                Name = targetKind == ProgressStatusIconKind.Exception
+                    ? "PART_ExceptionCompletedIconPresenter"
+                    : "PART_SuccessCompletedIconPresenter"
+            };
+            presenter.SetTemplatedParent(this);
+            ConfigureStatusIconPresenter(presenter, targetKind);
+            if (targetKind == ProgressStatusIconKind.Exception)
+            {
+                ExceptionCompletedIconPresenter = presenter;
+                presenter[!IconPresenter.IconProperty] = this[!ExceptionCompletedIconProperty];
+            }
+            else
+            {
+                SuccessCompletedIconPresenter = presenter;
+                presenter[!IconPresenter.IconProperty] = this[!SuccessCompletedIconProperty];
+            }
+
+            _activeStatusIconKind = targetKind;
+            EnsureStatusIconValue(targetKind);
+            ExtraInfoLayout.Children.Add(presenter);
+            NotifyStatusIconPresenterCreated(presenter);
+            InvalidateMeasure();
+        }
+        finally
+        {
+            _isUpdatingStatusIconPresenter = false;
+        }
+    }
+
+    protected virtual ProgressStatusIconKind GetTargetStatusIconKind()
+    {
+        if (!IsProgressInfoVisible)
+        {
+            return ProgressStatusIconKind.None;
+        }
+
+        if (Status == ProgressStatus.Exception)
+        {
+            return ProgressStatusIconKind.Exception;
+        }
+
+        if (Status == ProgressStatus.Success)
+        {
+            return IsCompleted ? ProgressStatusIconKind.None : ProgressStatusIconKind.Success;
+        }
+
+        return IsCompleted ? ProgressStatusIconKind.Success : ProgressStatusIconKind.None;
+    }
+
+    protected virtual void ConfigureStatusIconPresenter(IconPresenter presenter, ProgressStatusIconKind kind)
+    {
+    }
+
+    protected virtual void NotifyStatusIconPresenterCreated(IconPresenter presenter)
+    {
+    }
+
+    protected virtual PathIcon? BuildDefaultExceptionCompletedIcon() => null;
+
+    protected virtual PathIcon? BuildDefaultSuccessCompletedIcon() => null;
+
+    private void EnsureStatusIconValue(ProgressStatusIconKind kind)
+    {
+        if (kind == ProgressStatusIconKind.Exception && ExceptionCompletedIcon is null)
+        {
+            SetValue(ExceptionCompletedIconProperty, BuildDefaultExceptionCompletedIcon(), BindingPriority.Template);
+        }
+        else if (kind == ProgressStatusIconKind.Success && SuccessCompletedIcon is null)
+        {
+            SetValue(SuccessCompletedIconProperty, BuildDefaultSuccessCompletedIcon(), BindingPriority.Template);
+        }
+    }
+
+    private void ReleaseStatusIconPresenters()
+    {
+        ReleaseStatusIconPresenter(ref ExceptionCompletedIconPresenter);
+        ReleaseStatusIconPresenter(ref SuccessCompletedIconPresenter);
+        _activeStatusIconKind = ProgressStatusIconKind.None;
+    }
+
+    private void ReleaseStatusIconPresenter(ref IconPresenter? presenter)
+    {
+        if (presenter is null)
+        {
+            return;
+        }
+
+        presenter.ClearValue(IconPresenter.IconProperty);
+        presenter.ClearValue(IconPresenter.IconBrushProperty);
+        if (presenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(presenter);
+        }
+        presenter.SetTemplatedParent(null);
+        presenter = null;
     }
 
     public override void Render(DrawingContext context)

@@ -164,7 +164,8 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         if (!double.IsNaN(SuccessThreshold))
         {
             var successThreshold             = Math.Clamp(SuccessThreshold, Minimum, Maximum);
-            var successThresholdDeflateValue = range * (1 - successThreshold / (Maximum - Minimum));
+            var successThresholdPercent      = CalculatePercentageValue(successThreshold) / 100;
+            var successThresholdDeflateValue = range * (1 - successThresholdPercent);
             DrawIndicatorBar(context, successThresholdDeflateValue, SuccessStrokeBrush!);
         }
     }
@@ -313,6 +314,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
 
     protected void CalculateSizeTypeThresholdValue()
     {
+        _sizeTypeThresholdValue.Clear();
         double fontSize   = default;
         double fontSizeSM = default;
         {
@@ -463,7 +465,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
                     var grooveRect = GetProgressBarRect(controlRect);
                     offsetY = grooveRect.Y + (grooveRect.Height - targetHeight) / 2;
                     var range         = grooveRect.Width;
-                    var deflateValue  = range * (1 - Value / (Maximum - Minimum));
+                    var deflateValue  = range * (1 - Percentage / 100);
                     var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
                     if (PercentPosition.Alignment == LinePercentAlignment.Start)
                     {
@@ -505,7 +507,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
                 var grooveRect = GetProgressBarRect(controlRect);
                 offsetX = grooveRect.X + (grooveRect.Width - targetWidth) / 2;
                 var range         = grooveRect.Height;
-                var deflateValue  = range * (1 - Value / (Maximum - Minimum));
+                var deflateValue  = range * (1 - Percentage / 100);
                 var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
                 if (PercentPosition.Alignment == LinePercentAlignment.Start)
                 {
@@ -554,7 +556,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
                 return new Size(LineInfoIconSize, LineInfoIconSize);
             }
 
-            var textSize = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, Value), fontSize, FontFamily);
+            var textSize = CalculateProgressTextSize(CalculatePercentageValue(Value), fontSize);
             if (PercentPosition.IsInner)
             {
                 if (Orientation == Orientation.Vertical)
@@ -667,7 +669,12 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInner, PercentPosition.IsInner);
         PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerStart, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.Start);
         PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerCenter, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.Center);
-        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerCenter, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.End);
+        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerEnd, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.End);
+    }
+
+    protected override ProgressStatusIconKind GetTargetStatusIconKind()
+    {
+        return PercentPosition.IsInner ? ProgressStatusIconKind.None : base.GetTargetStatusIconKind();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

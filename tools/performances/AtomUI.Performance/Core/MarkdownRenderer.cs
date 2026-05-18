@@ -102,6 +102,7 @@ internal static partial class Program
                 "numericupdown" => "# NumericUpDown Baseline",
                 "pagination" => "# Pagination Baseline",
                 "popupconfirm" => "# PopupConfirm Baseline",
+                "progressbar" => "# ProgressBar Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",
