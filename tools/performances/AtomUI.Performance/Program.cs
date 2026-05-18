@@ -61,7 +61,8 @@ internal static partial class Program
             options.VerifyOptionButtonGroupStates ||
             options.VerifyPaginationStates ||
             options.VerifyPopupConfirmStates ||
-            options.VerifyProgressBarStates)
+            options.VerifyProgressBarStates ||
+            options.VerifyQRCodeStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -244,6 +245,10 @@ internal static partial class Program
             {
                 verified &= RunProgressBarStateVerification();
             }
+            if (options.VerifyQRCodeStates)
+            {
+                verified &= RunQRCodeStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -320,6 +325,7 @@ internal static partial class Program
             "pagination" => CreatePaginationScenarios(),
             "popupconfirm" => CreatePopupConfirmScenarios(),
             "progressbar" => CreateProgressBarScenarios(),
+            "qrcode" => CreateQRCodeScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

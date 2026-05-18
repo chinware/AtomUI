@@ -103,6 +103,7 @@ internal static partial class Program
                 "pagination" => "# Pagination Baseline",
                 "popupconfirm" => "# PopupConfirm Baseline",
                 "progressbar" => "# ProgressBar Baseline",
+                "qrcode" => "# QRCode Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

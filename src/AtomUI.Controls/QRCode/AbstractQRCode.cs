@@ -6,6 +6,8 @@ using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Avalonia.VisualTree;
 using Avalonia.Metadata;
 using SkiaSharp;
 using SkiaSharp.QrCode;
@@ -178,11 +180,8 @@ public abstract class AbstractQRCode : TemplatedControl
     #endregion
 
     private Button? _refreshButton;
-
-    static AbstractQRCode()
-    {
-        AffectsMeasure<AbstractQRCode>(BitmapProperty);
-    }
+    private QRCodeRenderKey? _lastRenderKey;
+    private bool _isTemplateApplied;
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -198,10 +197,16 @@ public abstract class AbstractQRCode : TemplatedControl
         {
             _refreshButton.Click += HandleRefreshButtonClicked;
         }
-        SetupQRCode();
+        _isTemplateApplied = true;
+        UpdateQRCodeIfReady();
     }
 
     private void HandleRefreshButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        RaiseRefreshRequested();
+    }
+
+    protected void RaiseRefreshRequested()
     {
         RefreshRequested?.Invoke(this, EventArgs.Empty);
     }
@@ -209,10 +214,40 @@ public abstract class AbstractQRCode : TemplatedControl
     private void SetupQRCode()
     {
         if (string.IsNullOrEmpty(Value))
-        { 
+        {
+            ReleaseBitmap();
+            _lastRenderKey = null;
             return;
         }
-        var eccLevel = EccLevel switch
+
+        var renderKey = CreateRenderKey();
+        if (_lastRenderKey is QRCodeRenderKey lastRenderKey &&
+            renderKey.Equals(lastRenderKey))
+        {
+            return;
+        }
+
+        var oldBitmap = Bitmap;
+        Bitmap = RenderQRCodeBitmap(renderKey);
+        oldBitmap?.Dispose();
+        _lastRenderKey = renderKey;
+    }
+
+    private QRCodeRenderKey CreateRenderKey()
+    {
+        var color   = ((ISolidColorBrush?)Color)?.Color ?? Colors.Black;
+        var bgColor = ((ISolidColorBrush?)Background)?.Color ?? Colors.Transparent;
+        return new QRCodeRenderKey(
+            Value,
+            EccLevel,
+            Math.Max(1, Size),
+            color,
+            bgColor);
+    }
+
+    private static Bitmap RenderQRCodeBitmap(QRCodeRenderKey renderKey)
+    {
+        var eccLevel = renderKey.EccLevel switch
         {
             QRCodeEccLevel.L => ECCLevel.L,
             QRCodeEccLevel.M => ECCLevel.M,
@@ -220,26 +255,62 @@ public abstract class AbstractQRCode : TemplatedControl
             QRCodeEccLevel.H => ECCLevel.H,
             _                => ECCLevel.M
         };
-        var       qrcode  = QRCodeGenerator.CreateQrCode(Value, eccLevel, quietZoneSize: 0);
-        var       info    = new SKImageInfo(Size, Size);
-        using var surface = SKSurface.Create(info);
-        var       canvas  = surface.Canvas;
-        var       color   = ((ISolidColorBrush?)Color)?.Color ?? Colors.Black;
-        var       bgColor = ((ISolidColorBrush?)Background)?.Color ?? Colors.Transparent;
+        var       qrcode = QRCodeGenerator.CreateQrCode(renderKey.Value, eccLevel, quietZoneSize: 0);
+        var       info   = new SKImageInfo(renderKey.Size, renderKey.Size, SKColorType.Bgra8888, SKAlphaType.Premul);
+        using var bitmap = new SKBitmap(info);
+        using var canvas = new SKCanvas(bitmap);
 
         canvas.Render(
             qrcode,
             info.Width,
             info.Height,
             SKColor.Empty,
-            new SKColor(color.R, color.G, color.B, color.A),
-            new SKColor(bgColor.R, bgColor.G, bgColor.B, bgColor.A)
+            new SKColor(renderKey.Color.R, renderKey.Color.G, renderKey.Color.B, renderKey.Color.A),
+            new SKColor(renderKey.Background.R, renderKey.Background.G, renderKey.Background.B, renderKey.Background.A)
         );
 
-        using var image     = surface.Snapshot();
-        using var data      = image.Encode(SKEncodedImageFormat.Png, 100);
-        var       oldBitmap = Bitmap;
-        Bitmap = new Bitmap(data.AsStream());
+        var pixmap = bitmap.PeekPixels();
+        if (pixmap is null)
+        {
+            throw new InvalidOperationException("Unable to read QRCode pixel buffer.");
+        }
+        return new Bitmap(
+            PixelFormats.Bgra8888,
+            AlphaFormat.Premul,
+            pixmap.GetPixels(),
+            new PixelSize(renderKey.Size, renderKey.Size),
+            new Vector(96, 96),
+            pixmap.RowBytes);
+    }
+
+    private void RequestQRCodeUpdate()
+    {
+        if (string.IsNullOrEmpty(Value))
+        {
+            ReleaseBitmap();
+            _lastRenderKey = null;
+            return;
+        }
+        UpdateQRCodeIfReady();
+    }
+
+    private void UpdateQRCodeIfReady()
+    {
+        if (!_isTemplateApplied || !this.IsAttachedToVisualTree())
+        {
+            return;
+        }
+        SetupQRCode();
+    }
+
+    private void ReleaseBitmap()
+    {
+        var oldBitmap = Bitmap;
+        if (oldBitmap is null)
+        {
+            return;
+        }
+        Bitmap = null;
         oldBitmap?.Dispose();
     }
 
@@ -252,7 +323,27 @@ public abstract class AbstractQRCode : TemplatedControl
             change.Property == EccLevelProperty || 
             change.Property == SizeProperty)
         {
-            SetupQRCode();
+            RequestQRCodeUpdate();
         }
     }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        UpdateQRCodeIfReady();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseBitmap();
+        _lastRenderKey = null;
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private readonly record struct QRCodeRenderKey(
+        string Value,
+        QRCodeEccLevel EccLevel,
+        int Size,
+        Color Color,
+        Color Background);
 }

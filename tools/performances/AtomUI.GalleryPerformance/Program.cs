@@ -156,6 +156,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ProgressBarShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/ProgressBarShowCase.axaml",
                 stats => stats.ShowCaseItemCount >= 18 && stats.VisualCount > 0),
+            ["qrcode"] = new(
+                "QRCodeShowCase",
+                QRCodeViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.QRCodeShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/QRCodeShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 8 && stats.VisualCount > 0),
             ["drawer"] = new(
                 "DrawerShowCase",
                 DrawerViewModel.ID,

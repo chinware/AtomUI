@@ -79,6 +79,7 @@
 | OptionButtonGroup / RadioButton | 本轮已完成 | [OptionButtonGroup](OptionButtonGroup/README.md) | 文本按钮默认不创建 `IconPresenter/Wave`；`RadioButtonShowCase` visuals `794 -> 689`，repeated mean `100.85ms -> 84.72ms` |
 | Pagination | 本轮已完成 | [Pagination](Pagination/README.md) | 页码项 icon/content slot 按需创建；`PaginationShowCase` visuals `1262 -> 1065`，IconPresenter `120 -> 51`，repeated mean `168.92ms -> 131.76ms` |
 | PopupConfirm | 本轮已完成 | [PopupConfirm](PopupConfirm/README.md) | popup 打开态 `NoCancel` container `2.865ms/item -> 1.634ms/item`，Button `2 -> 1`；`PopupConfirmShowCase` repeated mean `45.21ms -> 40.42ms` |
+| QRCode | 本轮已完成 | [QRCode](QRCode/README.md) | 默认 Active visual/root `19 -> 7`，`QRCodeShowCase` repeated mean `125.12ms -> 91.58ms`，visuals `436 -> 307` |
 
 ## 总列表
 
@@ -136,7 +137,7 @@
 | Data Display | ImagePreviewer | Done | [ImagePreviewer](ImagePreviewer/README.md)；单图关闭态只加载可见封面，完整弹窗 source list 延迟到首次打开；Gallery repeated mean 提升约 `8.79%` |
 | Data Display | InfoFlyout | Pending | 待建立基线 |
 | Data Display | List | Done | [ListView](ListView/README.md)；group/filter refresh 与分页枚举成本已收敛，真实 `ListShowCase` repeated mean 提升约 `4.19%` |
-| Data Display | QRCode | Pending | 待建立基线 |
+| Data Display | QRCode | Done | [QRCode](QRCode/README.md)；PNG encode/decode 已移除，icon/status hidden tree 按需创建，`QRCodeShowCase` repeated mean 提升约 `26.81%` |
 | Data Display | Segmented | Pending | 待建立基线 |
 | Data Display | Statistic | Pending | 待建立基线 |
 | Data Display | Tag | Pending | 待建立基线 |
