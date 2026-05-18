@@ -15,11 +15,6 @@
                                 VerticalAlignment="Bottom"
                                 DockPanel.Dock="Bottom"
                                 ClipToBounds="False">
-                        <atom:Button Name="PART_CancelButton"
-                                     SizeType="Small"
-                                     Margin="0"
-                                     Content="{TemplateBinding CancelText}"
-                                     IsVisible="{TemplateBinding IsShowCancelButton}"/>
                         <atom:Button Name="PART_OkButton"
                                      SizeType="Small"
                                      Margin="0"
@@ -32,15 +27,11 @@
                             Icon="{TemplateBinding Icon}"
                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                             DockPanel.Dock="Left" />
-                        <StackPanel>
+                        <StackPanel Name="PART_ContentLayout">
                             <atom:TextBlock Name="PART_Title"
                                             VerticalAlignment="Center"
                                             Text="{TemplateBinding Title}"
                                             DockPanel.Dock="Top" />
-                            <ContentPresenter Name="PART_Content"
-                                              Content="{TemplateBinding ConfirmContent}"
-                                              ContentTemplate="{TemplateBinding ConfirmContentTemplate}"
-                                              IsVisible="{TemplateBinding ConfirmContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         </StackPanel>
                     </DockPanel>
                 </DockPanel>

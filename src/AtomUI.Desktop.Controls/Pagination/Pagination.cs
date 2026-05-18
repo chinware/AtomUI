@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
@@ -132,25 +131,35 @@ public class Pagination : AbstractPagination
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleasePaginationNav();
         base.OnApplyTemplate(e);
         _paginationNav = e.NameScope.Find<PaginationNav>("PART_Nav");
-        Debug.Assert(_paginationNav is not null);
-        _paginationNav.ContainerPrepared   += HandleContainerPrepared;
-        _paginationNav.PageNavigateRequest += HandlePageNavRequest;
-        if (IsShowQuickJumper)
+        TemplateConfigured = false;
+        if (_paginationNav is not null)
         {
-            SetupQuickJumper();
+            _paginationNav.ContainerPrepared   += HandleContainerPrepared;
+            _paginationNav.PageNavigateRequest += HandlePageNavRequest;
         }
 
-        if (IsShowSizeChanger)
-        {
-            SetupSizeChanger();
-        }
+        SetupQuickJumper();
+        SetupSizeChanger();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleasePaginationNav();
+        ReleaseSizeChanger();
+        ReleaseQuickJumper();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleContainerPrepared(object? sender, ContainerPreparedEventArgs args)
     {
-        Debug.Assert(_paginationNav is not null);
+        if (_paginationNav is null)
+        {
+            return;
+        }
+
         var count = _paginationNav.ItemCount;
         if (args.Container is PaginationNavItem navItem)
         {
@@ -180,36 +189,37 @@ public class Pagination : AbstractPagination
 
     protected override void NotifyPageConditionChanged(int currentPage, int pageCount, int pageSize, long total)
     {
-        if (TemplateConfigured)
+        if (TemplateConfigured &&
+            _paginationNav is { } paginationNav &&
+            _previousPageItem is { } previousPageItem &&
+            _nextPageItem is { } nextPageItem)
         {
-            Debug.Assert(_paginationNav != null);
-            Debug.Assert(_previousPageItem != null);
-            Debug.Assert(_nextPageItem != null);
-            var count = _paginationNav.ItemCount;
+            var count = paginationNav.ItemCount;
             // 清空状态 clear state
-            _paginationNav.SelectedIndex = -1;
+            paginationNav.SelectedIndex = -1;
             _selectedNavItemIndex        = -1;
             for (int i = 1; i < count - 1; i++)
             {
-                var container = _paginationNav.ContainerFromIndex(i);
+                var container = paginationNav.ContainerFromIndex(i);
                 if (container is PaginationNavItem navItem)
                 {
                     navItem.PaginationItemType = PaginationItemType.PageIndicator;
                     navItem.IsVisible          = false;
                     navItem.Content            = null;
+                    navItem.Icon               = null;
                 }
             }
 
-            _previousPageItem.IsEnabled  = currentPage > 1;
-            _previousPageItem.PageNumber = Math.Max(1, CurrentPage - 1);
-            _nextPageItem.IsEnabled      = currentPage < pageCount;
-            _nextPageItem.PageNumber     = Math.Min(pageCount, CurrentPage + 1);
+            previousPageItem.IsEnabled  = currentPage > 1;
+            previousPageItem.PageNumber = Math.Max(1, CurrentPage - 1);
+            nextPageItem.IsEnabled      = currentPage < pageCount;
+            nextPageItem.PageNumber     = Math.Min(pageCount, CurrentPage + 1);
             _nextPushItemIndex           = 1;
 
             SetupLeftButtonRange(currentPage, pageCount);
             SetupNextIndicatorNavItem(currentPage, true);
             SetupRightButtonRange(currentPage, pageCount);
-            _paginationNav.SelectedIndex = _selectedNavItemIndex;
+            paginationNav.SelectedIndex = _selectedNavItemIndex;
             SetupTotalInfoText();
         }
         base.NotifyPageConditionChanged(currentPage, pageCount, pageSize, total);
@@ -282,17 +292,19 @@ public class Pagination : AbstractPagination
             throw new ArgumentException("Invalid next push item index");
         }
 
-        Debug.Assert(_paginationNav != null);
-        var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
+        if (_paginationNav?.ContainerFromIndex(_nextPushItemIndex++) is not PaginationNavItem navItem)
+        {
+            return;
+        }
 
         if (isActive)
         {
             _selectedNavItemIndex = _nextPushItemIndex - 1;
         }
 
-        Debug.Assert(navItem != null);
         navItem.PageNumber = pageIndex;
         navItem.Content    = $"{pageIndex}";
+        navItem.Icon       = null;
         navItem.IsVisible  = true;
     }
 
@@ -303,10 +315,13 @@ public class Pagination : AbstractPagination
             throw new ArgumentException("Invalid next push item index");
         }
 
-        Debug.Assert(_paginationNav != null);
-        var navItem = _paginationNav.ContainerFromIndex(_nextPushItemIndex++) as PaginationNavItem;
-        Debug.Assert(navItem != null);
+        if (_paginationNav?.ContainerFromIndex(_nextPushItemIndex++) is not PaginationNavItem navItem)
+        {
+            return;
+        }
+
         navItem.Icon               = new EllipsisOutlined();
+        navItem.Content            = null;
         navItem.PaginationItemType = PaginationItemType.Ellipses;
         navItem.IsVisible          = true;
     }
@@ -362,6 +377,12 @@ public class Pagination : AbstractPagination
 
     private void SetupSizeChanger()
     {
+        if (!IsShowSizeChanger)
+        {
+            ReleaseSizeChanger();
+            return;
+        }
+
         if (SizeChanger == null)
         {
             var sizeChanger = new ComboBox();
@@ -381,19 +402,66 @@ public class Pagination : AbstractPagination
 
     private void SetupQuickJumper()
     {
+        if (!IsShowQuickJumper)
+        {
+            ReleaseQuickJumper();
+            return;
+        }
+
         if (QuickJumperBar == null)
         {
             QuickJumperBar = new QuickJumperBar();
-            QuickJumperBar.JumpRequest += (sender, args) =>
-            {
-                var total     = Math.Max(0, Total);
-                var pageSize  = PageSize <= 0 ? DefaultPageSize : PageSize;
-                var pageCount = (int)Math.Ceiling(total / (double)pageSize);
-                CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
-            };
+            QuickJumperBar.JumpRequest += HandleQuickJumpRequest;
             _quickJumperDisposable?.Dispose();
             _quickJumperDisposable = BindUtils.RelayBind(this, SizeTypeProperty, QuickJumperBar, QuickJumperBar.SizeTypeProperty);
         }
+    }
+
+    private void ReleasePaginationNav()
+    {
+        if (_paginationNav is null)
+        {
+            return;
+        }
+
+        _paginationNav.ContainerPrepared   -= HandleContainerPrepared;
+        _paginationNav.PageNavigateRequest -= HandlePageNavRequest;
+        _paginationNav   = null;
+        _previousPageItem = null;
+        _nextPageItem     = null;
+        TemplateConfigured = false;
+    }
+
+    private void ReleaseSizeChanger()
+    {
+        if (SizeChanger is not null)
+        {
+            SizeChanger.SelectionChanged -= HandlePageSizeChanged;
+        }
+
+        _sizeChangerDisposable?.Dispose();
+        _sizeChangerDisposable = null;
+        SizeChanger            = null;
+    }
+
+    private void ReleaseQuickJumper()
+    {
+        if (QuickJumperBar is not null)
+        {
+            QuickJumperBar.JumpRequest -= HandleQuickJumpRequest;
+        }
+
+        _quickJumperDisposable?.Dispose();
+        _quickJumperDisposable = null;
+        QuickJumperBar         = null;
+    }
+
+    private void HandleQuickJumpRequest(object? sender, QuickJumpArgs args)
+    {
+        var total     = Math.Max(0, Total);
+        var pageSize  = PageSize <= 0 ? DefaultPageSize : PageSize;
+        var pageCount = (int)Math.Ceiling(total / (double)pageSize);
+        CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
     }
 
     private void HandlePageSizeChanged(object? sender, SelectionChangedEventArgs? args)

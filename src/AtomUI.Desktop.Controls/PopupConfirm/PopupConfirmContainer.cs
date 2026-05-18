@@ -1,7 +1,9 @@
 ﻿using AtomUI.Icons.AntDesign;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -100,8 +102,11 @@ internal class PopupConfirmContainer : TemplatedControl
     #endregion
     
     internal WeakReference<PopupConfirm> PopupConfirmRef { get; set; }
+    private StackPanel? _buttonLayout;
+    private StackPanel? _contentLayout;
     private Button? _okButton;
     private Button? _cancelButton;
+    private ContentPresenter? _contentPresenter;
 
     public PopupConfirmContainer(PopupConfirm popupConfirm)
     {
@@ -111,11 +116,12 @@ internal class PopupConfirmContainer : TemplatedControl
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleaseTemplateParts();
         base.OnApplyTemplate(e);
         SetupDefaultIcon();
-        DetachButtonHandlers();
+        _buttonLayout = e.NameScope.Find<StackPanel>("PART_ButtonLayout");
+        _contentLayout = e.NameScope.Find<StackPanel>("PART_ContentLayout");
         _okButton     = e.NameScope.Find<Button>("PART_OkButton");
-        _cancelButton = e.NameScope.Find<Button>("PART_CancelButton");
         if (_okButton is not null)
         {
             _okButton.Click  += HandleButtonClicked;
@@ -123,26 +129,127 @@ internal class PopupConfirmContainer : TemplatedControl
             _okButton.Height =  double.NaN;
         }
 
-        if (_cancelButton is not null)
-        {
-            _cancelButton.Click  += HandleButtonClicked;
-            _cancelButton.Width  =  double.NaN;
-            _cancelButton.Height =  double.NaN;
-        }
+        ConfigureCancelButton();
+        ConfigureContentPresenter();
         UpdatePseudoClasses();
     }
 
-    private void DetachButtonHandlers()
+    private void ReleaseTemplateParts()
     {
         if (_okButton is not null)
         {
             _okButton.Click -= HandleButtonClicked;
+            _okButton = null;
         }
 
+        ReleaseCancelButton();
+        ReleaseContentPresenter();
+        _buttonLayout  = null;
+        _contentLayout = null;
+    }
+
+    private void ReleaseCancelButton()
+    {
         if (_cancelButton is not null)
         {
             _cancelButton.Click -= HandleButtonClicked;
+            if (_cancelButton.GetVisualParent() is Panel parent)
+            {
+                parent.Children.Remove(_cancelButton);
+            }
+            else
+            {
+                _buttonLayout?.Children.Remove(_cancelButton);
+            }
+            _cancelButton.ClearValue(ContentControl.ContentProperty);
+            _cancelButton.SetTemplatedParent(null);
+            _cancelButton = null;
         }
+    }
+
+    private void ReleaseContentPresenter()
+    {
+        if (_contentPresenter is not null)
+        {
+            if (_contentPresenter.GetVisualParent() is Panel parent)
+            {
+                parent.Children.Remove(_contentPresenter);
+            }
+            else
+            {
+                _contentLayout?.Children.Remove(_contentPresenter);
+            }
+            _contentPresenter.ClearValue(ContentPresenter.ContentProperty);
+            _contentPresenter.ClearValue(ContentPresenter.ContentTemplateProperty);
+            _contentPresenter.SetTemplatedParent(null);
+            _contentPresenter = null;
+        }
+    }
+
+    private void ConfigureCancelButton()
+    {
+        if (!IsShowCancelButton)
+        {
+            ReleaseCancelButton();
+            return;
+        }
+
+        EnsureCancelButton();
+    }
+
+    private void EnsureCancelButton()
+    {
+        if (_buttonLayout is null || _cancelButton is not null)
+        {
+            return;
+        }
+
+        _cancelButton = new Button
+        {
+            Name     = "PART_CancelButton",
+            SizeType = SizeType.Small,
+            Margin   = new Thickness(0),
+            Width    = double.NaN,
+            Height   = double.NaN
+        };
+        _cancelButton.SetTemplatedParent(this);
+        _cancelButton[!ContentControl.ContentProperty] = this[!CancelTextProperty];
+        _cancelButton.Click += HandleButtonClicked;
+
+        var insertIndex = _okButton is null ? _buttonLayout.Children.Count : _buttonLayout.Children.IndexOf(_okButton);
+        if (insertIndex < 0)
+        {
+            insertIndex = 0;
+        }
+        _buttonLayout.Children.Insert(insertIndex, _cancelButton);
+    }
+
+    private void ConfigureContentPresenter()
+    {
+        if (ConfirmContent is null)
+        {
+            ReleaseContentPresenter();
+            return;
+        }
+
+        EnsureContentPresenter();
+    }
+
+    private void EnsureContentPresenter()
+    {
+        if (_contentLayout is null || _contentPresenter is not null)
+        {
+            return;
+        }
+
+        _contentPresenter = new ContentPresenter
+        {
+            Name = "PART_Content"
+        };
+        _contentPresenter.SetTemplatedParent(this);
+        _contentPresenter[!ContentPresenter.ContentProperty] = this[!ConfirmContentProperty];
+        _contentPresenter[!ContentPresenter.ContentTemplateProperty] = this[!ConfirmContentTemplateProperty];
+        _contentLayout.Children.Add(_contentPresenter);
     }
 
     private void HandleButtonClicked(object? sender, RoutedEventArgs args)
@@ -182,7 +289,12 @@ internal class PopupConfirmContainer : TemplatedControl
         if (change.Property == ConfirmContentProperty ||
             change.Property == ConfirmContentTemplateProperty)
         {
+            ConfigureContentPresenter();
             UpdatePseudoClasses();
+        }
+        else if (change.Property == IsShowCancelButtonProperty)
+        {
+            ConfigureCancelButton();
         }
     }
 

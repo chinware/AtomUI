@@ -3,29 +3,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center" />
     <ControlTheme x:Key="{x:Type atom:PaginationNavItem}" TargetType="atom:PaginationNavItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
+                <Panel Name="PART_RootLayout">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}"
                             BorderThickness="{TemplateBinding BorderThickness}" />
-                    <atom:IconPresenter Name="IconPresenter"
-                                         IsVisible="False"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Icon="{TemplateBinding Icon}"
-                                         IsEnabled="{TemplateBinding IsEnabled}" />
-                    <ContentPresenter Name="ContentPresenter"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      HorizontalContentAlignment="Center"
-                                      VerticalContentAlignment="Center"
-                                      Content="{TemplateBinding Content, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}"
-                                      IsVisible="False" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -38,17 +24,6 @@
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
             <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
-        </Style>
-
-        <Style Selector="^[PaginationItemType=PageIndicator]">
-            <Style Selector="^ /template/ ContentPresenter#ContentPresenter">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
-        </Style>
-        <Style Selector="^:not(^[PaginationItemType=PageIndicator])">
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
         </Style>
 
         <Style Selector="^[IsEnabled=True]">

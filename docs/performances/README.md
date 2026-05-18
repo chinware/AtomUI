@@ -77,6 +77,8 @@
 | Notification | 本轮已完成 | [Notification](Notification/README.md) | manager/card 生命周期补齐，manager/progress bar 按需创建；`NotificationShowCase` cold mean `176.82ms -> 155.20ms`，repeated mean `37.46ms -> 29.13ms` |
 | NumericUpDown | 本轮已完成 | [NumericUpDown](NumericUpDown/README.md) | 默认 right accessory 按需创建；`NumberUpDownShowCase` visuals `1351 -> 1269`，Button/IconButton `90 -> 60`，cold mean `480.45ms -> 427.73ms` |
 | OptionButtonGroup / RadioButton | 本轮已完成 | [OptionButtonGroup](OptionButtonGroup/README.md) | 文本按钮默认不创建 `IconPresenter/Wave`；`RadioButtonShowCase` visuals `794 -> 689`，repeated mean `100.85ms -> 84.72ms` |
+| Pagination | 本轮已完成 | [Pagination](Pagination/README.md) | 页码项 icon/content slot 按需创建；`PaginationShowCase` visuals `1262 -> 1065`，IconPresenter `120 -> 51`，repeated mean `168.92ms -> 131.76ms` |
+| PopupConfirm | 本轮已完成 | [PopupConfirm](PopupConfirm/README.md) | popup 打开态 `NoCancel` container `2.865ms/item -> 1.634ms/item`，Button `2 -> 1`；`PopupConfirmShowCase` repeated mean `45.21ms -> 40.42ms` |
 
 ## 总列表
 
@@ -98,7 +100,7 @@
 | Navigation | DropdownButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
 | Navigation | Menu | Done | [Menu](Menu/README.md)；闭合 leaf/toggle/submenu Popup 重内容已按需创建，ContextMenu window 订阅释放已补齐，Gallery repeated mean 小幅提升 |
 | Navigation | NavMenu | Done | [NavMenu](NavMenu/README.md)；container binding 生命周期、全局关闭订阅按需化、默认路径完整显示和 Gallery 严格 ready 口径已完成 |
-| Navigation | Pagination | Pending | 待建立基线 |
+| Navigation | Pagination | Done | [Pagination](Pagination/README.md)；页码项和只读 `SimplePagination` 隐藏成本已按需化，`PaginationShowCase` repeated mean 提升约 `21.10%` |
 | Navigation | Steps | Pending | 待建立基线 |
 | Navigation | TabControl | Pending | 待建立基线 |
 | Data Entry | AutoComplete | Done | 关闭态 CandidateList/PopupFrame 已按需创建；Gallery repeated mean 提升约 `25.79%` |
@@ -148,7 +150,7 @@
 | Feedback | MessageBox | Done | [MessageBox](MessageBox/README.md)；同生命周期 binding 改为 `[!]`，loading skeleton 按需创建，状态/释放验证已补齐 |
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
 | Feedback | Notification | Done | [Notification](Notification/README.md)；manager/card 生命周期补齐，7 个 Gallery manager 与 progress bar 按需创建，Gallery repeated mean 提升约 `22.24%` |
-| Feedback | PopupConfirm | Pending | 待建立基线 |
+| Feedback | PopupConfirm | Done | [PopupConfirm](PopupConfirm/README.md)；cancel/content slot 已按需创建，detach/reattach 与事件释放已验证，Gallery repeated mean 提升约 `10.60%` |
 | Feedback | ProgressBar | Pending | 待建立基线 |
 | Feedback | Result | Pending | 待建立基线 |
 | Feedback | Skeleton | Pending | 待建立基线 |

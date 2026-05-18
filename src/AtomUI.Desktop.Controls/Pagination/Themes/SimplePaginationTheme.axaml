@@ -7,7 +7,7 @@
     <ControlTheme x:Key="{x:Type atom:SimplePagination}" TargetType="atom:SimplePagination">
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel Name="PART_RootLayoutPart"
+                <StackPanel Name="PART_RootLayout"
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
                             IsVisible="{TemplateBinding IsEffectiveVisible}">
@@ -17,18 +17,12 @@
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
-                    <atom:QuickJumpEdit Name="PART_QuickJumper"
-                                        IsVisible="{TemplateBinding IsReadOnly, Mode=Default, Converter={x:Static BoolConverters.Not}}"
-                                        SizeType="{TemplateBinding SizeType}"
-                                        IsEnabled="{TemplateBinding IsEnabled}"
-                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                        Minimum="1"/>
                     <atom:TextBlock Name="PART_InfoIndicator"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
                                     IsEnabled="{TemplateBinding IsEnabled}" />
                     <atom:PaginationNavItem Name="PART_NextNavItem"
-                                            PaginationItemType="Previous"
+                                            PaginationItemType="Next"
                                             Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}"
@@ -50,19 +44,19 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
+            <Style Selector="^ /template/ StackPanel#PART_RootLayout">
                 <Setter Property="Spacing"
                         Value="{atom:PaginationTokenResource PaginationLayoutSpacing}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
+            <Style Selector="^ /template/ StackPanel#PART_RootLayout">
                 <Setter Property="Spacing"
                         Value="{atom:PaginationTokenResource PaginationLayoutSpacing}" />
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
+            <Style Selector="^ /template/ StackPanel#PART_RootLayout">
                 <Setter Property="Spacing"
                         Value="{atom:PaginationTokenResource PaginationLayoutMiniSpacing}" />
             </Style>

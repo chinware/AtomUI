@@ -3,16 +3,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
     <ControlTheme x:Key="{x:Type atom:Pagination}" TargetType="atom:Pagination">
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Name="PART_RootLayout"
                             Orientation="Horizontal"
                             IsVisible="{TemplateBinding IsEffectiveVisible}">
-                    <ContentPresenter Name="PART_TotalInfoPresenter"
-                                      IsVisible="{TemplateBinding IsShowTotalInfo}"
-                                      Content="{TemplateBinding TotalInfoText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}" />
+                    <TextBlock Name="PART_TotalInfoPresenter"
+                               VerticalAlignment="Center"
+                               IsVisible="{TemplateBinding IsShowTotalInfo}"
+                               Text="{TemplateBinding TotalInfoText}" />
                     <atom:PaginationNav
                         Name="PART_Nav"
                         IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

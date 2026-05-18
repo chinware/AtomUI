@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -56,6 +57,7 @@ internal class QuickJumperBar : TemplatedControl
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleaseLineEdit();
         base.OnApplyTemplate(e);
         _lineEdit = e.NameScope.Find<LineEdit>("PART_PageLineEdit");
 
@@ -63,6 +65,12 @@ internal class QuickJumperBar : TemplatedControl
         {
             _lineEdit.KeyUp += HandleLineEditKeyUp;
         }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseLineEdit();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleLineEditKeyUp(object? sender, KeyEventArgs e)
@@ -78,5 +86,16 @@ internal class QuickJumperBar : TemplatedControl
                 lineEdit.Clear();
             }
         }
+    }
+
+    private void ReleaseLineEdit()
+    {
+        if (_lineEdit is null)
+        {
+            return;
+        }
+
+        _lineEdit.KeyUp -= HandleLineEditKeyUp;
+        _lineEdit = null;
     }
 }

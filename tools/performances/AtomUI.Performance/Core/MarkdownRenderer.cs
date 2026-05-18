@@ -100,6 +100,8 @@ internal static partial class Program
                 "menu" => "# Menu Baseline",
                 "navmenu" => "# NavMenu Baseline",
                 "numericupdown" => "# NumericUpDown Baseline",
+                "pagination" => "# Pagination Baseline",
+                "popupconfirm" => "# PopupConfirm Baseline",
                 "space" => "# Space Baseline",
                 "select" => "# Select Baseline",
                 "autocomplete" => "# AutoComplete Baseline",

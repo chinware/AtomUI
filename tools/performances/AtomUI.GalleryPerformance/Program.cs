@@ -198,6 +198,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ComboBoxShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Navigation/ComboBoxShowCase.axaml",
                 stats => stats.ComboBoxCount > 0),
+            ["pagination"] = new(
+                "PaginationShowCase",
+                PaginationViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.PaginationShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/PaginationShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 7 && stats.VisualCount > 0),
             ["space"] = new(
                 "SpaceShowCase",
                 SpaceViewModel.ID,

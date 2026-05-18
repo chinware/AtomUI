@@ -3,18 +3,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
-    <atom:StringToTextBlockConverter x:Key="StringToTextBlockConverter" VerticalAlignment="Center"/>
     <ControlTheme x:Key="{x:Type atom:QuickJumperBar}" TargetType="atom:QuickJumperBar">
         <Setter Property="Template">
             <ControlTemplate>
                 <StackPanel Name="PART_RootLayout"
                             Orientation="Horizontal">
-                    <ContentPresenter Name="PART_JumpToContentPresenter"
-                                      Content="{TemplateBinding JumpToText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}"/>
+                    <TextBlock Name="PART_JumpToTextBlock"
+                               VerticalAlignment="Center"
+                               Text="{TemplateBinding JumpToText}"/>
                     <atom:LineEdit Name="PART_PageLineEdit"
                                    SizeType="{TemplateBinding SizeType}"/>
-                    <ContentPresenter Name="PART_PageContentPresenter"
-                                      Content="{TemplateBinding PageText, Mode=Default, Converter={StaticResource StringToTextBlockConverter}}"/>
+                    <TextBlock Name="PART_PageTextBlock"
+                               VerticalAlignment="Center"
+                               Text="{TemplateBinding PageText}"/>
                 </StackPanel>
             </ControlTemplate>
         </Setter>

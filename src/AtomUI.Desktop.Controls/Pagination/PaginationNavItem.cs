@@ -1,12 +1,14 @@
 using AtomUI.Animations;
 using Avalonia.Threading;
 using AtomUI.Controls;
+using AtomUI.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -86,6 +88,10 @@ internal class PaginationNavItem : ContentControl, ISelectable
     }
 
     internal int PageNumber { get; set; } = -1;
+
+    private Panel? _contentLayout;
+    private IconPresenter? _iconPresenter;
+    private Avalonia.Controls.TextBlock? _contentTextBlock;
     
     static PaginationNavItem()
     {
@@ -104,6 +110,36 @@ internal class PaginationNavItem : ContentControl, ISelectable
         {
             UpdatePseudoClasses();
         }
+        else if (change.Property == PaginationItemTypeProperty)
+        {
+            ConfigureDisplaySlot();
+        }
+        else if (change.Property == IconProperty)
+        {
+            SyncIconPresenter();
+        }
+        else if (change.Property == ContentProperty)
+        {
+            SyncContentTextBlock();
+        }
+        else if (change.Property == IsEnabledProperty)
+        {
+            SyncDisplaySlotEnabled();
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        ReleaseDisplaySlot();
+        base.OnApplyTemplate(e);
+        _contentLayout = e.NameScope.Find<Panel>("PART_RootLayout");
+        ConfigureDisplaySlot();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseDisplaySlot();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected virtual void OnClick()
@@ -157,6 +193,148 @@ internal class PaginationNavItem : ContentControl, ISelectable
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
+    }
+
+    private void ConfigureDisplaySlot()
+    {
+        if (_contentLayout is null)
+        {
+            return;
+        }
+
+        if (PaginationItemType == PaginationItemType.PageIndicator)
+        {
+            DetachIconPresenter();
+            EnsureContentTextBlock();
+        }
+        else
+        {
+            DetachContentTextBlock();
+            EnsureIconPresenter();
+        }
+    }
+
+    private void EnsureIconPresenter()
+    {
+        if (_contentLayout is null)
+        {
+            return;
+        }
+
+        if (_iconPresenter is null)
+        {
+            _iconPresenter = new IconPresenter
+            {
+                Name                = "IconPresenter",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center
+            };
+            _iconPresenter.SetTemplatedParent(this);
+            _contentLayout.Children.Add(_iconPresenter);
+        }
+
+        SyncIconPresenter();
+    }
+
+    private void EnsureContentTextBlock()
+    {
+        if (_contentLayout is null)
+        {
+            return;
+        }
+
+        if (_contentTextBlock is null)
+        {
+            _contentTextBlock = new Avalonia.Controls.TextBlock
+            {
+                Name                = "PART_ContentTextBlock",
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center
+            };
+            _contentTextBlock.SetTemplatedParent(this);
+            _contentLayout.Children.Add(_contentTextBlock);
+        }
+
+        SyncContentTextBlock();
+    }
+
+    private void SyncIconPresenter()
+    {
+        if (_iconPresenter is null)
+        {
+            return;
+        }
+
+        _iconPresenter.SetCurrentValue(IconPresenter.IconProperty, Icon);
+        _iconPresenter.SetCurrentValue(IsEnabledProperty, IsEnabled);
+    }
+
+    private void SyncContentTextBlock()
+    {
+        if (_contentTextBlock is null)
+        {
+            return;
+        }
+
+        _contentTextBlock.SetCurrentValue(Avalonia.Controls.TextBlock.TextProperty, Content?.ToString());
+        _contentTextBlock.SetCurrentValue(IsEnabledProperty, IsEnabled);
+    }
+
+    private void SyncDisplaySlotEnabled()
+    {
+        if (_iconPresenter is not null)
+        {
+            _iconPresenter.SetCurrentValue(IsEnabledProperty, IsEnabled);
+        }
+
+        if (_contentTextBlock is not null)
+        {
+            _contentTextBlock.SetCurrentValue(IsEnabledProperty, IsEnabled);
+        }
+    }
+
+    private void ReleaseDisplaySlot()
+    {
+        DetachIconPresenter();
+        DetachContentTextBlock();
+        _contentLayout = null;
+    }
+
+    private void DetachIconPresenter()
+    {
+        if (_iconPresenter is null)
+        {
+            return;
+        }
+
+        RemoveDisplayChild(_iconPresenter);
+        _iconPresenter.SetCurrentValue(IconPresenter.IconProperty, null);
+        _iconPresenter.SetTemplatedParent(null);
+        _iconPresenter = null;
+    }
+
+    private void DetachContentTextBlock()
+    {
+        if (_contentTextBlock is null)
+        {
+            return;
+        }
+
+        RemoveDisplayChild(_contentTextBlock);
+        _contentTextBlock.SetCurrentValue(Avalonia.Controls.TextBlock.TextProperty, null);
+        _contentTextBlock.SetTemplatedParent(null);
+        _contentTextBlock = null;
+    }
+
+    private void RemoveDisplayChild(Control child)
+    {
+        if (child.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(child);
+            return;
+        }
+
+        _contentLayout?.Children.Remove(child);
     }
 
     protected override void OnInitialized()

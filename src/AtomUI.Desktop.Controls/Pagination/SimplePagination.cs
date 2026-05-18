@@ -1,10 +1,13 @@
-using System.Diagnostics;
+using System.Reactive.Disposables;
+using AtomUI.Data;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -27,6 +30,8 @@ public class SimplePagination : AbstractPagination
     private PaginationNavItem? _nextPageItem;
     private TextBlock? _infoIndicator;
     private QuickJumpEdit? _quickJumper;
+    private Panel? _rootLayout;
+    private CompositeDisposable? _quickJumperBindings;
 
     static SimplePagination()
     {
@@ -40,20 +45,34 @@ public class SimplePagination : AbstractPagination
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ReleaseTemplateParts();
         base.OnApplyTemplate(e);
+        _rootLayout       = e.NameScope.Find<Panel>("PART_RootLayout");
         _previousPageItem = e.NameScope.Find<PaginationNavItem>("PART_PreviousNavItem");
         _nextPageItem     = e.NameScope.Find<PaginationNavItem>("PART_NextNavItem");
         _infoIndicator    = e.NameScope.Find<TextBlock>("PART_InfoIndicator");
-        _quickJumper      = e.NameScope.Find<QuickJumpEdit>("PART_QuickJumper");
 
-        Debug.Assert(_nextPageItem != null);
-        Debug.Assert(_previousPageItem != null);
-        Debug.Assert(_quickJumper != null);
-        _previousPageItem.Click += HandleNavItemClicked;
-        _nextPageItem.Click     += HandleNavItemClicked;
-        _quickJumper.KeyUp      += HandleLineEditKeyUp;
-        TemplateConfigured      =  true;
+        if (_previousPageItem is not null)
+        {
+            _previousPageItem.Click += HandleNavItemClicked;
+        }
+        if (_nextPageItem is not null)
+        {
+            _nextPageItem.Click += HandleNavItemClicked;
+        }
+
+        TemplateConfigured = _rootLayout is not null &&
+                             _previousPageItem is not null &&
+                             _nextPageItem is not null &&
+                             _infoIndicator is not null;
         HandlePageConditionChanged();
+        ConfigureQuickJumper();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseTemplateParts();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void NotifyPageConditionChanged(int currentPage, int pageCount, int pageSize, long total)
@@ -79,13 +98,13 @@ public class SimplePagination : AbstractPagination
                     _quickJumper.Text = $"{currentPage}";
                 }
             }
-            Debug.Assert(_previousPageItem != null);
-            Debug.Assert(_nextPageItem != null);
-        
-            _previousPageItem.IsEnabled  = currentPage > 1;
-            _previousPageItem.PageNumber = Math.Max(1, CurrentPage - 1);
-            _nextPageItem.IsEnabled      = currentPage < pageCount;
-            _nextPageItem.PageNumber     = Math.Min(pageCount, CurrentPage + 1);
+            if (_previousPageItem is not null && _nextPageItem is not null)
+            {
+                _previousPageItem.IsEnabled  = currentPage > 1;
+                _previousPageItem.PageNumber = Math.Max(1, CurrentPage - 1);
+                _nextPageItem.IsEnabled      = currentPage < pageCount;
+                _nextPageItem.PageNumber     = Math.Min(pageCount, CurrentPage + 1);
+            }
         }
         if (_quickJumper != null)
         {
@@ -104,6 +123,11 @@ public class SimplePagination : AbstractPagination
                 _quickJumper.Maximum = PageCount;
             }
         }
+        else if (change.Property == IsReadOnlyProperty)
+        {
+            ConfigureQuickJumper();
+            HandlePageConditionChanged();
+        }
     }
 
     private void HandleNavItemClicked(object? sender, RoutedEventArgs args)
@@ -111,7 +135,6 @@ public class SimplePagination : AbstractPagination
         if (sender is PaginationNavItem navItemSender)
         {
             CurrentPage = navItemSender.PageNumber;
-            HandlePageConditionChanged();
         }
     }
     
@@ -128,5 +151,88 @@ public class SimplePagination : AbstractPagination
                 }
             }
         }
+    }
+
+    private void ConfigureQuickJumper()
+    {
+        if (IsReadOnly)
+        {
+            ReleaseQuickJumper();
+            return;
+        }
+
+        EnsureQuickJumper();
+    }
+
+    private void EnsureQuickJumper()
+    {
+        if (_quickJumper is not null || _rootLayout is null)
+        {
+            return;
+        }
+
+        _quickJumper = new QuickJumpEdit
+        {
+            Name    = "PART_QuickJumper",
+            Minimum = 1,
+            Maximum = PageCount,
+            Text    = CurrentPage.ToString()
+        };
+        _quickJumper.SetTemplatedParent(this);
+        _quickJumper.KeyUp += HandleLineEditKeyUp;
+        _quickJumperBindings = new CompositeDisposable
+        {
+            BindUtils.RelayBind(this, SizeTypeProperty, _quickJumper, TextBox.SizeTypeProperty),
+            BindUtils.RelayBind(this, IsEnabledProperty, _quickJumper, InputElement.IsEnabledProperty),
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, _quickJumper, TextBox.IsMotionEnabledProperty)
+        };
+
+        var insertIndex = _infoIndicator is null ? _rootLayout.Children.Count : _rootLayout.Children.IndexOf(_infoIndicator);
+        if (insertIndex < 0)
+        {
+            insertIndex = Math.Min(1, _rootLayout.Children.Count);
+        }
+        _rootLayout.Children.Insert(insertIndex, _quickJumper);
+    }
+
+    private void ReleaseTemplateParts()
+    {
+        if (_previousPageItem is not null)
+        {
+            _previousPageItem.Click -= HandleNavItemClicked;
+        }
+        if (_nextPageItem is not null)
+        {
+            _nextPageItem.Click -= HandleNavItemClicked;
+        }
+
+        ReleaseQuickJumper();
+        _rootLayout        = null;
+        _previousPageItem  = null;
+        _nextPageItem      = null;
+        _infoIndicator     = null;
+        TemplateConfigured = false;
+    }
+
+    private void ReleaseQuickJumper()
+    {
+        if (_quickJumper is null)
+        {
+            return;
+        }
+
+        _quickJumperBindings?.Dispose();
+        _quickJumperBindings = null;
+        _quickJumper.KeyUp  -= HandleLineEditKeyUp;
+        if (_quickJumper.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_quickJumper);
+        }
+        else
+        {
+            _rootLayout?.Children.Remove(_quickJumper);
+        }
+        _quickJumper.SetTemplatedParent(null);
+        _quickJumper = null;
     }
 }
