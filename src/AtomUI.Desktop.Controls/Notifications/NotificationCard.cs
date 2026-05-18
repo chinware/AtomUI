@@ -1,6 +1,7 @@
 ﻿using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.MotionScene;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Animation.Easings;
@@ -11,7 +12,6 @@ using Avalonia.Data;
 using Avalonia.Threading;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -151,6 +151,15 @@ public class NotificationCard : ContentControl, IMotionAwareControl
     private readonly WindowNotificationManager _notificationManager;
     private IconButton? _closeButton;
     private BaseMotionActor? _motionActor;
+    private Grid? _contentLayout;
+    private NotificationProgressBar? _progressBar;
+    private PathIcon? _generatedDefaultIcon;
+    private NotificationType? _generatedDefaultIconType;
+    private TimeSpan? _initialExpiration;
+    private bool _isTemplateApplied;
+    private bool _isUpdatingDefaultIcon;
+    private NotificationType? _appliedNotificationType;
+    private NotificationPosition? _appliedPosition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotificationCard" /> class.
@@ -177,19 +186,22 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         SetupPositionPseudoClasses(Position);
         SetupNotificationTypePseudoClasses();
         SetupDefaultNotificationIcon();
-        if (_closeButton != null)
+        if (_closeButton is not null)
         {
+            _closeButton.Click -= HandleCloseButtonClose;
             _closeButton.Click += HandleCloseButtonClose;
         }
+        EnsureProgressBarState();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_closeButton != null)
+        if (_closeButton is not null)
         {
             _closeButton.Click -= HandleCloseButtonClose;
         }
+        ReleaseProgressBar();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -200,8 +212,12 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         {
             _closeButton.Click -= HandleCloseButtonClose;
         }
-        _closeButton = e.NameScope.Find<IconButton>("PART_CloseButton");
-        _motionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
+        ReleaseProgressBar();
+        _isTemplateApplied = true;
+        _initialExpiration ??= Expiration;
+        _closeButton       = e.NameScope.Find<IconButton>("PART_CloseButton");
+        _motionActor       = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
+        _contentLayout     = e.NameScope.Find<Grid>("PART_ContentLayout");
 
         if (_closeButton is not null)
         {
@@ -211,83 +227,78 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         if (_motionActor is not null && IsMotionEnabled)
         {
             _motionActor.Opacity = 0;
+            Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
         }
 
-        Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
+        SetupPositionPseudoClasses(Position);
+        SetupNotificationTypePseudoClasses();
+        SetupDefaultNotificationIcon();
+        EnsureProgressBarState();
     }
 
     private async Task ApplyShowMotionAsync()
     {
-        if (_motionActor is null)
+        if (_motionActor is null || !IsMotionEnabled)
         {
             return;
         }
 
-        if (IsMotionEnabled)
+        AbstractMotion? motion;
+        if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
-            AbstractMotion? motion;
-            if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
-            {
-                motion = new NotificationMoveLeftInMotion(AnimationMaxOffsetX,
-                    _openCloseMotionDuration, new CubicEaseOut());
-            }
-            else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
-            {
-                motion = new NotificationMoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
-            }
-            else if (Position == NotificationPosition.TopCenter)
-            {
-                motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
-                    new CubicEaseOut());
-            }
-            else
-            {
-                motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
-                    new CubicEaseOut());
-            }
-            await motion.RunAsync(_motionActor);
-            _motionActor.Opacity = 1;
+            motion = new NotificationMoveLeftInMotion(AnimationMaxOffsetX,
+                _openCloseMotionDuration, new CubicEaseOut());
         }
+        else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
+        {
+            motion = new NotificationMoveRightInMotion(AnimationMaxOffsetX, _openCloseMotionDuration, new CubicEaseOut());
+        }
+        else if (Position == NotificationPosition.TopCenter)
+        {
+            motion = new NotificationMoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                new CubicEaseOut());
+        }
+        else
+        {
+            motion = new NotificationMoveDownInMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                new CubicEaseOut());
+        }
+        await motion.RunAsync(_motionActor);
+        _motionActor.Opacity = 1;
     }
 
     private async Task ApplyHideMotionAsync()
     {
-        if (_motionActor is null)
+        if (_motionActor is null || !IsMotionEnabled)
         {
+            IsClosed = true;
             return;
         }
 
-        if (IsMotionEnabled)
+        AbstractMotion? motion;
+        if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
         {
-            AbstractMotion? motion;
-            if (Position == NotificationPosition.TopLeft || Position == NotificationPosition.BottomLeft)
-            {
-                motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
-                    new CubicEaseIn());
-            }
-            else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
-            {
-                motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
-                    new CubicEaseIn());
-            }
-            else if (Position == NotificationPosition.TopCenter)
-            {
-                motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
-                    new CubicEaseIn());
-            }
-            else
-            {
-                motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
-                    new CubicEaseIn());
-            }
-
-            await motion.RunAsync(_motionActor);
-            IsClosed = true;
+            motion = new NotificationMoveLeftOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
+                new CubicEaseIn());
+        }
+        else if (Position == NotificationPosition.TopRight || Position == NotificationPosition.BottomRight)
+        {
+            motion = new NotificationMoveRightOutMotion(AnimationMaxOffsetX, _openCloseMotionDuration,
+                new CubicEaseIn());
+        }
+        else if (Position == NotificationPosition.TopCenter)
+        {
+            motion = new NotificationMoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                new CubicEaseIn());
         }
         else
         {
-            IsClosed = true;
+            motion = new NotificationMoveDownOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration,
+                new CubicEaseIn());
         }
+
+        await motion.RunAsync(_motionActor);
+        IsClosed = true;
     }
 
     private void HandleCloseButtonClose(object? sender, EventArgs args)
@@ -299,14 +310,40 @@ public class NotificationCard : ContentControl, IMotionAwareControl
     {
         base.OnPropertyChanged(change);
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == NotificationTypeProperty)
         {
-            if (change.Property == NotificationTypeProperty)
+            if (_isTemplateApplied)
             {
                 SetupNotificationTypePseudoClasses();
+                SetupDefaultNotificationIcon();
             }
         }
-        
+        else if (change.Property == IconProperty)
+        {
+            if (_isUpdatingDefaultIcon)
+            {
+                return;
+            }
+
+            if (Icon is null && _isTemplateApplied)
+            {
+                SetupDefaultNotificationIcon();
+            }
+            else if (!ReferenceEquals(Icon, _generatedDefaultIcon))
+            {
+                _generatedDefaultIcon     = null;
+                _generatedDefaultIconType = null;
+            }
+        }
+        else if (change.Property == IsShowProgressProperty || change.Property == ExpirationProperty)
+        {
+            EnsureProgressBarState();
+            if (change.Property == ExpirationProperty && _progressBar is not null)
+            {
+                _progressBar.CurrentExpiration = Expiration;
+            }
+        }
+
         if (change.Property == IsClosedProperty)
         {
             if (!IsClosing && !IsClosed)
@@ -324,70 +361,87 @@ public class NotificationCard : ContentControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                Dispatcher.InvokeAsync(ApplyHideMotionAsync);
-            }
-        } 
-        else if (change.Property == IconProperty)
-        {
-            if (Icon is null)
-            {
-                SetupDefaultNotificationIcon();
+                if (_motionActor is null || !IsMotionEnabled)
+                {
+                    IsClosed = true;
+                }
+                else
+                {
+                    Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+                }
             }
         }
     }
 
     private void SetupNotificationTypePseudoClasses()
     {
-        switch (NotificationType)
+        if (_appliedNotificationType == NotificationType)
         {
-            case NotificationType.Error:
-                PseudoClasses.Add(StdPseudoClass.Error);
-                break;
-
-            case NotificationType.Information:
-                PseudoClasses.Add(StdPseudoClass.Information);
-                break;
-
-            case NotificationType.Success:
-                PseudoClasses.Add(StdPseudoClass.Success);
-                break;
-
-            case NotificationType.Warning:
-                PseudoClasses.Add(StdPseudoClass.Warning);
-                break;
+            return;
         }
+
+        if (_appliedNotificationType is { } previousNotificationType)
+        {
+            PseudoClasses.Set(GetNotificationTypePseudoClass(previousNotificationType), false);
+        }
+        PseudoClasses.Set(GetNotificationTypePseudoClass(NotificationType), true);
+        _appliedNotificationType = NotificationType;
     }
 
     private void SetupDefaultNotificationIcon()
     {
-        if (Icon is null)
+        if (Icon is not null)
         {
-            Icon? icon = null;
-            if (NotificationType == NotificationType.Information)
+            if (!ReferenceEquals(Icon, _generatedDefaultIcon))
             {
-                icon = new InfoCircleFilled();
+                return;
             }
-            else if (NotificationType == NotificationType.Success)
+
+            if (_generatedDefaultIconType == NotificationType)
             {
-                icon = new CheckCircleFilled();
+                return;
             }
-            else if (NotificationType == NotificationType.Error)
-            {
-                icon = new CloseCircleFilled();
-            }
-            else if (NotificationType == NotificationType.Warning)
-            {
-                icon = new ExclamationCircleFilled();
-            }
-        
+        }
+
+        var icon = CreateDefaultNotificationIcon();
+        _generatedDefaultIcon     = icon;
+        _generatedDefaultIconType = NotificationType;
+        _isUpdatingDefaultIcon    = true;
+        try
+        {
             ClearValue(IconProperty);
             SetValue(IconProperty, icon, BindingPriority.Template);
         }
+        finally
+        {
+            _isUpdatingDefaultIcon = false;
+        }
+    }
+
+    private PathIcon? CreateDefaultNotificationIcon()
+    {
+        if (NotificationType == NotificationType.Information)
+        {
+            return new InfoCircleFilled();
+        }
+        if (NotificationType == NotificationType.Success)
+        {
+            return new CheckCircleFilled();
+        }
+        if (NotificationType == NotificationType.Error)
+        {
+            return new CloseCircleFilled();
+        }
+        if (NotificationType == NotificationType.Warning)
+        {
+            return new ExclamationCircleFilled();
+        }
+
+        return null;
     }
 
     internal bool NotifyCloseTick(TimeSpan cycleDuration)
     {
-        InvalidateVisual();
         if (Expiration is null)
         {
             return false;
@@ -432,11 +486,90 @@ public class NotificationCard : ContentControl, IMotionAwareControl
 
     private void SetupPositionPseudoClasses(NotificationPosition position)
     {
-        PseudoClasses.Set(NotificationPseudoClass.TopLeft, position == NotificationPosition.TopLeft);
-        PseudoClasses.Set(NotificationPseudoClass.TopRight, position == NotificationPosition.TopRight);
-        PseudoClasses.Set(NotificationPseudoClass.BottomLeft, position == NotificationPosition.BottomLeft);
-        PseudoClasses.Set(NotificationPseudoClass.BottomRight, position == NotificationPosition.BottomRight);
-        PseudoClasses.Set(NotificationPseudoClass.TopCenter, position == NotificationPosition.TopCenter);
-        PseudoClasses.Set(NotificationPseudoClass.BottomCenter, position == NotificationPosition.BottomCenter);
+        if (_appliedPosition == position)
+        {
+            return;
+        }
+
+        if (_appliedPosition is { } previousPosition)
+        {
+            PseudoClasses.Set(GetPositionPseudoClass(previousPosition), false);
+        }
+        PseudoClasses.Set(GetPositionPseudoClass(position), true);
+        _appliedPosition = position;
+    }
+
+    private void EnsureProgressBarState()
+    {
+        if (!_isTemplateApplied || _contentLayout is null)
+        {
+            return;
+        }
+
+        if (!ShouldShowProgressBar())
+        {
+            ReleaseProgressBar();
+            return;
+        }
+
+        if (_progressBar is not null)
+        {
+            return;
+        }
+
+        _progressBar = new NotificationProgressBar
+        {
+            Name              = "ProgressBar",
+            Expiration        = _initialExpiration ?? Expiration.GetValueOrDefault(),
+            CurrentExpiration = Expiration
+        };
+        _progressBar.SetTemplatedParent(this);
+        Grid.SetRow(_progressBar, 1);
+        Grid.SetColumn(_progressBar, 0);
+        Grid.SetColumnSpan(_progressBar, 2);
+        _contentLayout.Children.Add(_progressBar);
+    }
+
+    private bool ShouldShowProgressBar()
+    {
+        return IsShowProgress && Expiration is { } expiration && expiration > TimeSpan.Zero;
+    }
+
+    private void ReleaseProgressBar()
+    {
+        if (_progressBar is null)
+        {
+            return;
+        }
+
+        _contentLayout?.Children.Remove(_progressBar);
+        _progressBar.SetTemplatedParent(null);
+        _progressBar = null;
+    }
+
+    private static string GetNotificationTypePseudoClass(NotificationType notificationType)
+    {
+        return notificationType switch
+        {
+            NotificationType.Error => StdPseudoClass.Error,
+            NotificationType.Information => StdPseudoClass.Information,
+            NotificationType.Success => StdPseudoClass.Success,
+            NotificationType.Warning => StdPseudoClass.Warning,
+            _ => StdPseudoClass.Information
+        };
+    }
+
+    private static string GetPositionPseudoClass(NotificationPosition position)
+    {
+        return position switch
+        {
+            NotificationPosition.TopLeft => NotificationPseudoClass.TopLeft,
+            NotificationPosition.TopRight => NotificationPseudoClass.TopRight,
+            NotificationPosition.BottomLeft => NotificationPseudoClass.BottomLeft,
+            NotificationPosition.BottomRight => NotificationPseudoClass.BottomRight,
+            NotificationPosition.TopCenter => NotificationPseudoClass.TopCenter,
+            NotificationPosition.BottomCenter => NotificationPseudoClass.BottomCenter,
+            _ => NotificationPseudoClass.TopRight
+        };
     }
 }

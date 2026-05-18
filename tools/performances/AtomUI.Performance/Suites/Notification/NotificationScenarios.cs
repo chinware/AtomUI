@@ -18,6 +18,8 @@ internal static partial class Program
             new PerfScenario("NotificationCard.Progress.NoMotion", _ => CreateNotificationCard(NotificationType.Information, isShowProgress: true)),
             new PerfScenario("WindowNotificationManager.Empty.Closed", _ => CreateWindowNotificationManager()),
             new PerfScenario("WindowNotificationManager.Show.Single.NoMotion", _ => new NotificationManagerShowHost(1)),
+            new PerfScenario("WindowNotificationManager.Show.Single.Expiring.NoProgress.NoMotion", _ => new NotificationManagerShowHost(1, expiration: TimeSpan.FromSeconds(5))),
+            new PerfScenario("WindowNotificationManager.Show.Single.Progress.NoMotion", _ => new NotificationManagerShowHost(1, showProgress: true, expiration: TimeSpan.FromSeconds(5))),
             new PerfScenario("WindowNotificationManager.Show.MaxItems.NoMotion", _ => new NotificationManagerShowHost(12))
         ];
     }
@@ -48,12 +50,16 @@ internal static partial class Program
     private sealed class NotificationManagerShowHost : Border
     {
         private readonly int _notificationCount;
+        private readonly bool _showProgress;
+        private readonly TimeSpan _expiration;
         private WindowNotificationManager? _notificationManager;
         private bool _isShown;
 
-        public NotificationManagerShowHost(int notificationCount)
+        public NotificationManagerShowHost(int notificationCount, bool showProgress = false, TimeSpan? expiration = null)
         {
             _notificationCount = notificationCount;
+            _showProgress      = showProgress;
+            _expiration        = expiration ?? TimeSpan.Zero;
             _notificationManager = new WindowNotificationManager(null)
             {
                 IsMotionEnabled = false,
@@ -89,7 +95,8 @@ internal static partial class Program
                     type: i % 2 == 0 ? NotificationType.Information : NotificationType.Success,
                     title: $"Notification {i}",
                     content: "Hello, AtomUI/Avalonia!",
-                    expiration: TimeSpan.Zero));
+                    expiration: _expiration,
+                    showProgress: _showProgress));
             }
         }
     }

@@ -17,7 +17,7 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         
-        <Style Selector="^[Position=TopLeft]">
+        <Style Selector="^:topleft">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
                 <Setter Property="ReverseOrder" Value="True" />
                 <Setter Property="HorizontalAlignment" Value="Left" />
@@ -25,7 +25,7 @@
             </Style>
         </Style>
         
-        <Style Selector="^[Position=TopRight]">
+        <Style Selector="^:topright">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
                 <Setter Property="ReverseOrder" Value="True" />
                 <Setter Property="HorizontalAlignment" Value="Right" />
@@ -33,7 +33,7 @@
             </Style>
         </Style>
         
-        <Style Selector="^[Position=TopCenter]">
+        <Style Selector="^:topcenter">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
                 <Setter Property="ReverseOrder" Value="True" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
@@ -41,21 +41,21 @@
             </Style>
         </Style>
         
-        <Style Selector="^[Position=BottomLeft]">
+        <Style Selector="^:bottomleft">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
                 <Setter Property="HorizontalAlignment" Value="Left" />
                 <Setter Property="VerticalAlignment" Value="Bottom" />
             </Style>
         </Style>
         
-        <Style Selector="^[Position=BottomRight]">
+        <Style Selector="^:bottomright">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="VerticalAlignment" Value="Bottom" />
             </Style>
         </Style>
         
-        <Style Selector="^[Position=BottomCenter]">
+        <Style Selector="^:bottomcenter">
             <Style Selector="^ /template/ ReversibleStackPanel#PART_Items">
                 <Setter Property="HorizontalAlignment" Value="Center" />
                 <Setter Property="VerticalAlignment" Value="Bottom" />

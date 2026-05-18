@@ -98,10 +98,12 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     private AdornerLayer? _adornerLayer;
     private IDisposable? _safeAreaMarginSubscription;
     private IList? _items;
-    private readonly Queue<NotificationCard> _cleanupQueue;
-    private readonly HashSet<NotificationCard> _cleanupSet;
-    private readonly DispatcherTimer _cardExpiredTimer;
-    private readonly DispatcherTimer _cleanupTimer;
+    private Queue<NotificationCard>? _cleanupQueue;
+    private HashSet<NotificationCard>? _cleanupSet;
+    private DispatcherTimer? _cardExpiredTimer;
+    private DispatcherTimer? _cleanupTimer;
+    private List<PendingNotification>? _pendingNotifications;
+    private NotificationPosition? _appliedPosition;
 
     public WindowNotificationManager(TopLevel? host) : this()
     {
@@ -115,12 +117,6 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     public WindowNotificationManager()
     {
         this.RegisterTokenResourceScope(NotificationToken.ScopeProvider);
-        _cardExpiredTimer      =  new DispatcherTimer { Interval = CardExpiredPollingIntervalProperty.GetDefaultValue(typeof(WindowNotificationManager)), Tag = this };
-        _cardExpiredTimer.Tick += HandleCardExpiredTimer;
-        _cleanupTimer          =  new DispatcherTimer { Interval = CleanupPollingIntervalProperty.GetDefaultValue(typeof(WindowNotificationManager)), Tag = this };
-        _cleanupTimer.Tick     += HandleCleanupTimerTick;
-        _cleanupQueue          =  new Queue<NotificationCard>();
-        _cleanupSet            =  new HashSet<NotificationCard>();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -129,11 +125,20 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         var itemsControl = e.NameScope.Find<Panel>("PART_Items");
         _items = itemsControl?.Children;
         UpdatePseudoClasses(Position);
+        FlushPendingNotifications();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _pendingNotifications?.Clear();
+        CleanupNotificationCards();
+        _items?.Clear();
     }
 
     private void HandleCardExpiredTimer(object? sender, EventArgs eventArgs)
     {
-        if (_items != null)
+        if (_items != null && _cardExpiredTimer is not null)
         {
             foreach (var item in _items)
             {
@@ -141,12 +146,13 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
                 {
                     if (card.NotifyCloseTick(_cardExpiredTimer.Interval))
                     {
-                        if (_cleanupSet.Add(card))
+                        if (EnsureCleanupSet().Add(card))
                         {
-                            _cleanupQueue.Enqueue(card);
-                            if (!_cleanupTimer.IsEnabled)
+                            EnsureCleanupQueue().Enqueue(card);
+                            var cleanupTimer = EnsureCleanupTimer();
+                            if (!cleanupTimer.IsEnabled)
                             {
-                                _cleanupTimer.Start();
+                                cleanupTimer.Start();
                             }
                         }
                     }
@@ -157,47 +163,70 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
 
     private void HandleCleanupTimerTick(object? sender, EventArgs eventArgs)
     {
-        if (_cleanupQueue.Count > 0)
+        if (_cleanupQueue is null)
+        {
+            _cleanupTimer?.Stop();
+            return;
+        }
+
+        while (_cleanupQueue.Count > 0)
         {
             var card = _cleanupQueue.Peek();
+            if (card.IsClosed)
+            {
+                _cleanupQueue.Dequeue();
+                _cleanupSet?.Remove(card);
+                continue;
+            }
+
             if (!card.IsClosing)
             {
                 card.Close();
+                break;
             }
-            else if (card.IsClosed)
-            {
-                _cleanupQueue.Dequeue();
-                _cleanupSet.Remove(card);
-                if (_cleanupQueue.Count == 0)
-                {
-                    _cleanupTimer.Stop();
-                }
-            }
+
+            break;
+        }
+
+        if (_cleanupQueue.Count == 0)
+        {
+            _cleanupTimer?.Stop();
         }
     }
 
     private void ConfigureExpiredTimer()
     {
-        if (_items?.Count > 0)
+        if (HasActiveExpiringCards())
         {
-            _cardExpiredTimer.Start();
+            EnsureCardExpiredTimer().Start();
         }
         else
         {
-            _cardExpiredTimer.Stop();
+            _cardExpiredTimer?.Stop();
         }
     }
 
     public void Show(INotification notification, string[]? classes = null)
     {
-        if (_items is null)
+        if (_isDisposed)
         {
             return;
         }
+
+        Dispatcher.VerifyAccess();
+        if (_items is null)
+        {
+            ApplyTemplate();
+            if (_items is null)
+            {
+                (_pendingNotifications ??= new List<PendingNotification>()).Add(new PendingNotification(notification, classes));
+                return;
+            }
+        }
+
         var expiration = notification.Expiration;
         var onClick    = notification.OnClick;
         var onClose    = notification.OnClose;
-        Dispatcher.VerifyAccess();
 
         var notificationControl = new NotificationCard(this)
         {
@@ -209,6 +238,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             IsShowProgress   = notification.ShowProgress
         };
         notificationControl[!NotificationCard.PositionProperty] = this[!PositionProperty];
+        notificationControl[!NotificationCard.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
 
         // Add style classes if any
         if (classes?.Length > 0)
@@ -226,10 +256,31 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
 
         Dispatcher.Post(() =>
         {
-            _items?.Add(notificationControl);
+            if (_isDisposed || _items is null)
+            {
+                CleanupNotificationCard(notificationControl);
+                return;
+            }
+
+            _items.Add(notificationControl);
             ConfigureExpiredTimer();
             RemoveExcessNotifications();
         });
+    }
+
+    private void FlushPendingNotifications()
+    {
+        if (_items is null || _pendingNotifications is null)
+        {
+            return;
+        }
+
+        var pendingNotifications = _pendingNotifications;
+        _pendingNotifications = null;
+        foreach (var pendingNotification in pendingNotifications)
+        {
+            Show(pendingNotification.Notification, pendingNotification.Classes);
+        }
     }
     
     private static void OnNotificationPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -244,9 +295,17 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     {
         if (sender is NotificationCard card)
         {
-            card.OnClose?.Invoke();
-            _items?.Remove(card);
-            ConfigureExpiredTimer();
+            var onClose = card.OnClose;
+            CleanupNotificationCard(card);
+            try
+            {
+                onClose?.Invoke();
+            }
+            finally
+            {
+                _items?.Remove(card);
+                ConfigureExpiredTimer();
+            }
         }
     }
 
@@ -270,16 +329,27 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
             return;
         }
 
+        List<NotificationCard>? cardsToClose = null;
         foreach (var item in _items!)
         {
             if (item is NotificationCard { IsClosing: false } card)
             {
-                card.Close();
+                (cardsToClose ??= new List<NotificationCard>()).Add(card);
                 if (--closeNeed == 0)
                 {
                     break;
                 }
             }
+        }
+
+        if (cardsToClose is null)
+        {
+            return;
+        }
+
+        foreach (var card in cardsToClose)
+        {
+            card.Close();
         }
     }
 
@@ -293,16 +363,23 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         }
         else if (change.Property == CardExpiredPollingIntervalProperty)
         {
-            _cardExpiredTimer.Interval = change.GetNewValue<TimeSpan>();
+            if (_cardExpiredTimer is not null)
+            {
+                _cardExpiredTimer.Interval = change.GetNewValue<TimeSpan>();
+            }
         }
         else if (change.Property == CleanupPollingIntervalProperty)
         {
-            _cleanupTimer.Interval = change.GetNewValue<TimeSpan>();
+            if (_cleanupTimer is not null)
+            {
+                _cleanupTimer.Interval = change.GetNewValue<TimeSpan>();
+            }
         }
     }
     
     private void InstallFromTopLevel(TopLevel topLevel)
     {
+        topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
         _adornerLayer            =  AdornerLayer.GetAdornerLayer(topLevel);
         if (_adornerLayer is not null)
@@ -350,24 +427,23 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
     
     public void Dispose()
     {
-        if (_topLevel is null || _isDisposed)
+        if (_isDisposed)
         {
             return;
         }
 
         try
         {
-            // 停止定时器并取消 Tick 事件订阅
-            _cleanupTimer.Stop();
-            _cleanupTimer.Tick -= HandleCleanupTimerTick;
-            _cardExpiredTimer.Stop();
-            _cardExpiredTimer.Tick -= HandleCardExpiredTimer;
-
-            _items?.Clear();
-            _cleanupQueue.Clear();
-            _cleanupSet.Clear();
             // 卸载事件订阅
-            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+            if (_topLevel is not null)
+            {
+                _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+            }
+
+            CleanupNotificationCards();
+            _pendingNotifications?.Clear();
+            _pendingNotifications = null;
+            _items?.Clear();
 
             _safeAreaMarginSubscription?.Dispose();
             _safeAreaMarginSubscription = null;
@@ -393,21 +469,140 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
 
     private void UpdatePseudoClasses(NotificationPosition position)
     {
-        PseudoClasses.Set(NotificationPseudoClass.TopLeft, position == NotificationPosition.TopLeft);
-        PseudoClasses.Set(NotificationPseudoClass.TopRight, position == NotificationPosition.TopRight);
-        PseudoClasses.Set(NotificationPseudoClass.BottomLeft, position == NotificationPosition.BottomLeft);
-        PseudoClasses.Set(NotificationPseudoClass.BottomRight, position == NotificationPosition.BottomRight);
-        PseudoClasses.Set(NotificationPseudoClass.TopCenter, position == NotificationPosition.TopCenter);
-        PseudoClasses.Set(NotificationPseudoClass.BottomCenter, position == NotificationPosition.BottomCenter);
+        if (_appliedPosition == position)
+        {
+            return;
+        }
+
+        if (_appliedPosition is { } previousPosition)
+        {
+            PseudoClasses.Set(GetPositionPseudoClass(previousPosition), false);
+        }
+        PseudoClasses.Set(GetPositionPseudoClass(position), true);
+        _appliedPosition = position;
     }
 
     internal void StopExpiredTimer()
     {
-        _cardExpiredTimer.Stop();
+        _cardExpiredTimer?.Stop();
     }
 
     internal void StartExpiredTimer()
     {
-        _cardExpiredTimer.Start();
+        ConfigureExpiredTimer();
     }
+
+    private DispatcherTimer EnsureCardExpiredTimer()
+    {
+        if (_cardExpiredTimer is null)
+        {
+            _cardExpiredTimer = new DispatcherTimer
+            {
+                Interval = CardExpiredPollingInterval,
+                Tag      = this
+            };
+            _cardExpiredTimer.Tick += HandleCardExpiredTimer;
+        }
+
+        return _cardExpiredTimer;
+    }
+
+    private DispatcherTimer EnsureCleanupTimer()
+    {
+        if (_cleanupTimer is null)
+        {
+            _cleanupTimer = new DispatcherTimer
+            {
+                Interval = CleanupPollingInterval,
+                Tag      = this
+            };
+            _cleanupTimer.Tick += HandleCleanupTimerTick;
+        }
+
+        return _cleanupTimer;
+    }
+
+    private Queue<NotificationCard> EnsureCleanupQueue()
+    {
+        return _cleanupQueue ??= new Queue<NotificationCard>();
+    }
+
+    private HashSet<NotificationCard> EnsureCleanupSet()
+    {
+        return _cleanupSet ??= new HashSet<NotificationCard>();
+    }
+
+    private bool HasActiveExpiringCards()
+    {
+        if (_items is null)
+        {
+            return false;
+        }
+
+        foreach (var item in _items)
+        {
+            if (item is NotificationCard { IsClosing: false, Expiration: not null })
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void CleanupNotificationCards()
+    {
+        if (_items is not null)
+        {
+            foreach (var item in _items)
+            {
+                if (item is NotificationCard card)
+                {
+                    CleanupNotificationCard(card);
+                }
+            }
+        }
+
+        _cleanupTimer?.Stop();
+        if (_cleanupTimer is not null)
+        {
+            _cleanupTimer.Tick -= HandleCleanupTimerTick;
+            _cleanupTimer = null;
+        }
+
+        _cardExpiredTimer?.Stop();
+        if (_cardExpiredTimer is not null)
+        {
+            _cardExpiredTimer.Tick -= HandleCardExpiredTimer;
+            _cardExpiredTimer = null;
+        }
+
+        _cleanupQueue?.Clear();
+        _cleanupSet?.Clear();
+    }
+
+    private void CleanupNotificationCard(NotificationCard card)
+    {
+        card.PointerPressed -= OnNotificationPointerPressed;
+        card.NotificationClosed -= OnNotificationClosed;
+        card.OnClick = null;
+        card.OnClose = null;
+        _cleanupSet?.Remove(card);
+    }
+
+    private static string GetPositionPseudoClass(NotificationPosition position)
+    {
+        return position switch
+        {
+            NotificationPosition.TopLeft => NotificationPseudoClass.TopLeft,
+            NotificationPosition.TopRight => NotificationPseudoClass.TopRight,
+            NotificationPosition.BottomLeft => NotificationPseudoClass.BottomLeft,
+            NotificationPosition.BottomRight => NotificationPseudoClass.BottomRight,
+            NotificationPosition.TopCenter => NotificationPseudoClass.TopCenter,
+            NotificationPosition.BottomCenter => NotificationPseudoClass.BottomCenter,
+            _ => NotificationPseudoClass.TopRight
+        };
+    }
+
+    private readonly record struct PendingNotification(INotification Notification, string[]? Classes);
 }

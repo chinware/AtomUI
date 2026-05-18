@@ -55,7 +55,8 @@ internal static partial class Program
             options.VerifyMenuStates ||
             options.VerifyNavMenuStates ||
             options.VerifyMessageStates ||
-            options.VerifyMessageBoxStates)
+            options.VerifyMessageBoxStates ||
+            options.VerifyNotificationStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -213,6 +214,10 @@ internal static partial class Program
             if (options.VerifyMessageBoxStates)
             {
                 verified &= RunMessageBoxStateVerification();
+            }
+            if (options.VerifyNotificationStates)
+            {
+                verified &= RunNotificationStateVerification();
             }
             return verified ? 0 : 1;
         }

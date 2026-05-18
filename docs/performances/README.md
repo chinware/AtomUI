@@ -74,7 +74,7 @@
 | NavMenu | 本轮已完成 | [NavMenu](NavMenu/README.md) | 修复 prepared node binding 生命周期和默认路径遍历；`MenuShowCase` 严格完整形态 repeated mean `162.76ms -> 99.13ms`，cold mean `416.22ms -> 351.72ms` |
 | Message | 本轮已完成 | [Message](Message/README.md) | `WindowMessageManager` 只在首次实际 show 时创建；timer/event/OnClose 生命周期已释放；`MessageShowCase` repeated mean `30.97ms -> 28.52ms`，cold mean `109.07ms -> 98.86ms` |
 | MessageBox | 本轮已完成 | [MessageBox](MessageBox/README.md) | 同生命周期 binding 改为 `[!]`，loading skeleton 按需创建并验证释放；`ModalShowCase` repeated mean `34.53ms -> 32.11ms`，P95 `37.18ms -> 34.42ms` |
-| Notification | Phase 0 已完成 | [Notification](Notification/README.md) | 基线：`NotificationShowCase` cold mean `162.56ms`，repeated mean `58.21ms`，visuals `200`；发现 7 个 manager 提前创建和 `MaxItems` 批量 show 未稳定收敛风险 |
+| Notification | 本轮已完成 | [Notification](Notification/README.md) | manager/card 生命周期补齐，manager/progress bar 按需创建；`NotificationShowCase` cold mean `176.82ms -> 155.20ms`，repeated mean `37.46ms -> 29.13ms` |
 
 ## 总列表
 
@@ -145,7 +145,7 @@
 | Feedback | Message | Done | [Message](Message/README.md)；manager 按需创建，auto-close timer、MessageClosed、OnClose 生命周期已补齐，Gallery repeated mean 提升约 `7.91%` |
 | Feedback | MessageBox | Done | [MessageBox](MessageBox/README.md)；同生命周期 binding 改为 `[!]`，loading skeleton 按需创建，状态/释放验证已补齐 |
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
-| Feedback | Notification | Baseline | [Notification](Notification/README.md)；已建立控件级和 Gallery 基线，下一步优先修 manager/card 生命周期与 Gallery manager 按需创建 |
+| Feedback | Notification | Done | [Notification](Notification/README.md)；manager/card 生命周期补齐，7 个 Gallery manager 与 progress bar 按需创建，Gallery repeated mean 提升约 `22.24%` |
 | Feedback | PopupConfirm | Pending | 待建立基线 |
 | Feedback | ProgressBar | Pending | 待建立基线 |
 | Feedback | Result | Pending | 待建立基线 |

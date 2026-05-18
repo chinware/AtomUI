@@ -18,8 +18,8 @@ internal class NotificationProgressBar : TemplatedControl
     public static readonly StyledProperty<TimeSpan> ExpirationProperty =
         AvaloniaProperty.Register<NotificationProgressBar, TimeSpan>(nameof(Expiration));
 
-    public static readonly StyledProperty<TimeSpan> CurrentExpirationProperty =
-        AvaloniaProperty.Register<NotificationProgressBar, TimeSpan>(nameof(CurrentExpiration));
+    public static readonly StyledProperty<TimeSpan?> CurrentExpirationProperty =
+        AvaloniaProperty.Register<NotificationProgressBar, TimeSpan?>(nameof(CurrentExpiration));
 
     internal double ProgressIndicatorThickness
     {
@@ -39,7 +39,7 @@ internal class NotificationProgressBar : TemplatedControl
         set => SetValue(ExpirationProperty, value);
     }
 
-    public TimeSpan CurrentExpiration
+    public TimeSpan? CurrentExpiration
     {
         get => GetValue(CurrentExpirationProperty);
         set => SetValue(CurrentExpirationProperty, value);
@@ -62,15 +62,20 @@ internal class NotificationProgressBar : TemplatedControl
 
     public override void Render(DrawingContext context)
     {
+        if (ProgressIndicatorBrush is null)
+        {
+            return;
+        }
+
         var indicatorWidth = 0d;
         var total          = Expiration.TotalMilliseconds;
         if (MathUtils.GreaterThan(total, 0))
         {
-            indicatorWidth = CurrentExpiration.TotalMilliseconds / total * Bounds.Width;
+            indicatorWidth = CurrentExpiration.GetValueOrDefault().TotalMilliseconds / total * Bounds.Width;
         }
 
         var offsetY       = Bounds.Height - ProgressIndicatorThickness;
         var indicatorRect = new Rect(new Point(0, offsetY), new Size(indicatorWidth, ProgressIndicatorThickness));
-        context.FillRectangle(ProgressIndicatorBrush!, indicatorRect);
+        context.FillRectangle(ProgressIndicatorBrush, indicatorRect);
     }
 }
