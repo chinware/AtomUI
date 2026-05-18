@@ -147,7 +147,7 @@ public class ContextMenu : AvaloniaContextMenu,
         };
         CustomPopupPlacementCallback =  _popup.HandleCustomPlacement;
         _popup.Opened                += HandlePopupOpened;
-        _popup.Closed                += this.OnPopupClosed;
+        _popup.Closed                += HandlePopupClosed;
         _popup.AddClosingEventHandler(HandlePopupClosing);
         _popup.KeyUp += this.OnPopupClosing;
         
@@ -180,6 +180,7 @@ public class ContextMenu : AvaloniaContextMenu,
     private void HandlePopupOpened(object? sender, EventArgs e)
     {
         this.OnPopupOpened(sender, e);
+        ClearWindowDeactivatedSubscription();
         if (_popup?.PlacementTarget is { } target)
         {
             var topLevel = TopLevel.GetTopLevel(target);
@@ -189,6 +190,12 @@ public class ContextMenu : AvaloniaContextMenu,
                 window.Deactivated += HandleWindowDeactivated;
             }
         }
+    }
+
+    private void HandlePopupClosed(object? sender, EventArgs e)
+    {
+        this.OnPopupClosed(sender, e);
+        ClearWindowDeactivatedSubscription();
     }
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -286,6 +293,7 @@ public class ContextMenu : AvaloniaContextMenu,
     {
         if (!IsOpen)
         {
+            ClearWindowDeactivatedSubscription();
             return;
         }
         
@@ -300,11 +308,18 @@ public class ContextMenu : AvaloniaContextMenu,
 
         _popup!.IsOpen = false;
 
-        if (_attachedWindow != null)
+        ClearWindowDeactivatedSubscription();
+    }
+
+    private void ClearWindowDeactivatedSubscription()
+    {
+        if (_attachedWindow == null)
         {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-            _attachedWindow              =  null;
+            return;
         }
+
+        _attachedWindow.Deactivated -= HandleWindowDeactivated;
+        _attachedWindow              =  null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

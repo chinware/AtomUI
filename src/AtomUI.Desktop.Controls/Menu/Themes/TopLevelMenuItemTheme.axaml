@@ -22,23 +22,7 @@
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="False"
                                 RequestedPlacement="BottomEdgeAlignedLeft"
-                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                                IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
-                        <Border Name="PopupFrame"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                Padding="{TemplateBinding PopupPadding}">
-                            <atom:ScrollViewer
-                                IsScrollChainingEnabled="False"
-                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
-                                AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
-                                <ItemsPresenter
-                                    Name="PART_ItemsPresenter"
-                                    ItemsPanel="{TemplateBinding ItemsPanel}"
-                                    Grid.IsSharedSizeScope="True"
-                                    KeyboardNavigation.TabNavigation="Continue" />
-                            </atom:ScrollViewer>
-                        </Border>
+                                ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}">
                     </atom:Popup>
                 </Panel>
             </ControlTemplate>

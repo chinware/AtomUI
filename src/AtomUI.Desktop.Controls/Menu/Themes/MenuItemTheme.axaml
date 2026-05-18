@@ -11,7 +11,7 @@
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}">
-                    <Grid>
+                    <Grid Name="PART_ItemLayout">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="ToggleItemsLayout" />
                             <ColumnDefinition Width="Auto" SharedSizeGroup="IconPresenter" />
@@ -31,26 +31,8 @@
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ItemCount" />
                                 </MultiBinding>
                             </Panel.IsVisible>
-                            <atom:CheckBox Name="PART_ToggleCheckbox"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           IsChecked="{TemplateBinding IsChecked}"
-                                           IsVisible="False" />
-                            <atom:RadioButton Name="PART_ToggleRadio"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              IsChecked="{TemplateBinding IsChecked}"
-                                              GroupName="{TemplateBinding GroupName}"
-                                              IsVisible="False" />
                         </Panel>
 
-                        <atom:IconPresenter Name="ItemIconPresenter"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Icon="{TemplateBinding Icon}"
-                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                            Grid.Column="1" />
                         <ContentPresenter Name="ItemTextPresenter"
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Center"
@@ -59,13 +41,6 @@
                                           Content="{TemplateBinding Header, Converter={x:Static atom:MenuItemTheme.StringToTextBlockConverter}}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}"
                                           Grid.Column="2" />
-                        <atom:TextBlock Name="InputGestureText"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        TextAlignment="Right"
-                                        Text="{TemplateBinding InputGesture, Converter={x:Static atom:MenuItemTheme.KeyGestureConverter}}"
-                                        IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                        Grid.Column="3" />
 
                         <Panel Name="PART_MenuIndicatorIconHost"
                                HorizontalAlignment="Right"
@@ -78,20 +53,7 @@
                             IsLightDismissEnabled="False"
                             RequestedPlacement="RightEdgeAlignedTop"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                            IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
-                    <Border Name="PopupFrame"
-                            MaxHeight="{TemplateBinding MaxPopupHeight}"
-                            Padding="{TemplateBinding PopupPadding}">
-                        <atom:ScrollViewer IsScrollChainingEnabled="False"
-                                           IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                           IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
-                                           AllowAutoHide="{TemplateBinding atom:ScrollViewer.AllowAutoHide}">
-                            <ItemsPresenter Name="PART_ItemsPresenter"
-                                            ItemsPanel="{TemplateBinding ItemsPanel}"
-                                            Grid.IsSharedSizeScope="True" />
-                        </atom:ScrollViewer>
-                    </Border>
+                            ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}">
                 </atom:Popup>
             </Panel>
         </ControlTemplate>

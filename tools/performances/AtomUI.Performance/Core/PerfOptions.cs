@@ -38,7 +38,8 @@ internal sealed record PerfOptions(
     bool VerifyListBoxStates,
     bool VerifyListViewStates,
     bool VerifyMarqueeLabelStates,
-    bool VerifyMentionsStates)
+    bool VerifyMentionsStates,
+    bool VerifyMenuStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -80,6 +81,7 @@ internal sealed record PerfOptions(
         var verifyListViewStates = false;
         var verifyMarqueeLabelStates = false;
         var verifyMentionsStates = false;
+        var verifyMenuStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -202,6 +204,9 @@ internal sealed record PerfOptions(
                 case "--verify-mentions-states":
                     verifyMentionsStates = true;
                     break;
+                case "--verify-menu-states":
+                    verifyMenuStates = true;
+                    break;
             }
         }
 
@@ -243,6 +248,7 @@ internal sealed record PerfOptions(
             verifyListBoxStates,
             verifyListViewStates,
             verifyMarqueeLabelStates,
-            verifyMentionsStates);
+            verifyMentionsStates,
+            verifyMenuStates);
     }
 }

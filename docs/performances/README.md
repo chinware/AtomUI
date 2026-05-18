@@ -70,6 +70,7 @@
 | ListView | 本轮已完成 | [ListView](ListView/README.md) | `ListView.Grouped` `3.619ms/item -> 1.759ms/item`，`FilterActive` `3.421ms/item -> 1.841ms/item`；`ListShowCase` repeated mean `80.72ms -> 77.34ms` |
 | MarqueeLabel / Alert | 本轮已完成 | [MarqueeLabel](MarqueeLabel/README.md) | Alert 默认路径不再创建隐藏 `MarqueeLabel`；`AlertShowCase` runtime `MarqueeLabel 25 -> 1`，visuals `585 -> 561`，repeated mean `65.42ms -> 54.67ms` |
 | Mentions | 本轮已完成 | [Mentions](Mentions/README.md) | closed popup content 已按需创建；`MentionsShowCase` `_candidateList 15 -> 0`，repeated mean `110.05ms -> 106.95ms`，alloc `10115.79KB -> 9326.47KB` |
+| Menu | 本轮已完成 | [Menu](Menu/README.md) | closed leaf `MenuItem` visual/root `13 -> 9`，KB/item `209.8 -> 122.1`；`MenuShowCase` repeated mean `91.16ms -> 89.10ms`，cold 仍需固定 NavMenu shape 后再验收 |
 
 ## 总列表
 
@@ -89,7 +90,7 @@
 | Navigation | Breadcrumb | Pending | 待建立基线 |
 | Navigation | ComboBox | Done | [ComboBox](ComboBox/README.md)；默认 host、popup content、handle `IconButton` 成本已按需/轻量化，Gallery repeated mean 提升约 `16.72%` |
 | Navigation | DropdownButton | Pending | 已做 Button 联动 smoke；仍待独立基线 |
-| Navigation | Menu | Pending | 待建立基线 |
+| Navigation | Menu | Done | [Menu](Menu/README.md)；闭合 leaf/toggle/submenu Popup 重内容已按需创建，ContextMenu window 订阅释放已补齐，Gallery repeated mean 小幅提升 |
 | Navigation | Pagination | Pending | 待建立基线 |
 | Navigation | Steps | Pending | 待建立基线 |
 | Navigation | TabControl | Pending | 待建立基线 |
