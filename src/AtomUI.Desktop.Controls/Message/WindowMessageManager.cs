@@ -13,6 +13,12 @@ using Avalonia.Threading;
 namespace AtomUI.Desktop.Controls;
 
 [TemplatePart("PART_Items", typeof(Panel))]
+[PseudoClasses(NotificationPseudoClass.TopLeft,
+    NotificationPseudoClass.TopRight,
+    NotificationPseudoClass.BottomLeft,
+    NotificationPseudoClass.BottomRight,
+    NotificationPseudoClass.TopCenter,
+    NotificationPseudoClass.BottomCenter)]
 public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAwareControl, IDisposable
 {
     #region 公共属性定义
@@ -65,6 +71,9 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     private bool _isDisposed;
     private AdornerLayer? _adornerLayer;
     private IDisposable? _safeAreaMarginSubscription;
+    private Dictionary<MessageCard, IDisposable>? _messageCloseTimers;
+    private List<PendingMessage>? _pendingMessages;
+    private NotificationPosition? _appliedPosition;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
@@ -93,11 +102,15 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
         var itemsControl = e.NameScope.Find<Panel>("PART_Items");
         _items = itemsControl?.Children;
+        UpdatePseudoClasses(Position);
+        FlushPendingMessages();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        _pendingMessages?.Clear();
+        CleanupMessageCards();
         _items?.Clear();
     }
 
@@ -108,12 +121,21 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     /// <param name="classes">style classes to apply</param>
     public void Show(IMessage message, string[]? classes = null)
     {
-        if (_isDisposed || _items is null)
+        if (_isDisposed)
         {
             return;
         }
 
         Dispatcher.VerifyAccess();
+        if (_items is null)
+        {
+            ApplyTemplate();
+            if (_items is null)
+            {
+                (_pendingMessages ??= new List<PendingMessage>()).Add(new PendingMessage(message, classes));
+                return;
+            }
+        }
 
         var messageControl = new MessageCard
         {
@@ -137,14 +159,34 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
         Dispatcher.Post(() =>
         {
+            if (_isDisposed || _items is null)
+            {
+                CleanupMessageCard(messageControl);
+                return;
+            }
+
             _items.Add(messageControl);
+            if (message.Expiration != TimeSpan.Zero)
+            {
+                (_messageCloseTimers ??= new Dictionary<MessageCard, IDisposable>())[messageControl] =
+                    DispatcherTimer.RunOnce(messageControl.Close, message.Expiration);
+            }
             RemoveExcessMessages();
         });
+    }
 
-        // Auto-close after expiration time
-        if (message.Expiration != TimeSpan.Zero)
+    private void FlushPendingMessages()
+    {
+        if (_items is null || _pendingMessages is null)
         {
-            DispatcherTimer.RunOnce(messageControl.Close, message.Expiration);
+            return;
+        }
+
+        var pendingMessages = _pendingMessages;
+        _pendingMessages = null;
+        foreach (var pendingMessage in pendingMessages)
+        {
+            Show(pendingMessage.Message, pendingMessage.Classes);
         }
     }
 
@@ -152,8 +194,16 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     {
         if (sender is MessageCard card)
         {
-            card.OnClose?.Invoke();
-            _items?.Remove(card);
+            var onClose = card.OnClose;
+            CleanupMessageCard(card);
+            try
+            {
+                onClose?.Invoke();
+            }
+            finally
+            {
+                _items?.Remove(card);
+            }
         }
     }
 
@@ -162,20 +212,47 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     /// </summary>
     private void RemoveExcessMessages()
     {
-        var visibleMessages = _items!.OfType<MessageCard>().Where(m => !m.IsClosing).ToList();
-        var excessCount = visibleMessages.Count - MaxItems;
-
-        if (excessCount > 0)
+        var visibleCount = 0;
+        foreach (var item in _items!)
         {
-            for (int i = 0; i < excessCount; i++)
+            if (item is MessageCard { IsClosing: false })
             {
-                visibleMessages[i].Close();
+                visibleCount++;
             }
+        }
+
+        var closeNeed = visibleCount - MaxItems;
+        if (closeNeed <= 0)
+        {
+            return;
+        }
+
+        foreach (var item in _items!)
+        {
+            if (item is MessageCard { IsClosing: false } card)
+            {
+                card.Close();
+                if (--closeNeed == 0)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == PositionProperty)
+        {
+            UpdatePseudoClasses(change.GetNewValue<NotificationPosition>());
         }
     }
     
     private void InstallFromTopLevel(TopLevel topLevel)
     {
+        topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
         _adornerLayer = AdornerLayer.GetAdornerLayer(topLevel);
         if (_adornerLayer is not null)
@@ -201,7 +278,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
     public void Dispose()
     {
-        if (_topLevel is null || _isDisposed)
+        if (_isDisposed)
         {
             return;
         }
@@ -209,7 +286,13 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         try
         {
             // 卸载事件订阅
-            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+            if (_topLevel is not null)
+            {
+                _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+            }
+            CleanupMessageCards();
+            _pendingMessages?.Clear();
+            _pendingMessages = null;
             _items?.Clear();
             _safeAreaMarginSubscription?.Dispose();
             _safeAreaMarginSubscription = null;
@@ -230,6 +313,42 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         }
     }
 
+    private void CleanupMessageCards()
+    {
+        if (_items is not null)
+        {
+            foreach (var item in _items)
+            {
+                if (item is MessageCard card)
+                {
+                    card.MessageClosed -= OnMessageClosed;
+                    card.OnClose = null;
+                }
+            }
+        }
+
+        if (_messageCloseTimers is null)
+        {
+            return;
+        }
+
+        foreach (var timer in _messageCloseTimers.Values)
+        {
+            timer.Dispose();
+        }
+        _messageCloseTimers.Clear();
+    }
+
+    private void CleanupMessageCard(MessageCard card)
+    {
+        card.MessageClosed -= OnMessageClosed;
+        card.OnClose = null;
+        if (_messageCloseTimers?.Remove(card, out var timer) == true)
+        {
+            timer.Dispose();
+        }
+    }
+
     private void RemoveFromAdornerLayer()
     {
         _safeAreaMarginSubscription?.Dispose();
@@ -247,8 +366,42 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         RemoveFromAdornerLayer();
         
         // Reinstall notification manager on template reapplied.
-        var topLevel = (TopLevel)sender!;
+        if (sender is not TopLevel topLevel || _isDisposed)
+        {
+            return;
+        }
         topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         InstallFromTopLevel(topLevel);
     }
+
+    private void UpdatePseudoClasses(NotificationPosition position)
+    {
+        if (_appliedPosition == position)
+        {
+            return;
+        }
+
+        if (_appliedPosition is { } previousPosition)
+        {
+            PseudoClasses.Set(GetPositionPseudoClass(previousPosition), false);
+        }
+        PseudoClasses.Set(GetPositionPseudoClass(position), true);
+        _appliedPosition = position;
+    }
+
+    private static string GetPositionPseudoClass(NotificationPosition position)
+    {
+        return position switch
+        {
+            NotificationPosition.TopLeft => NotificationPseudoClass.TopLeft,
+            NotificationPosition.TopRight => NotificationPseudoClass.TopRight,
+            NotificationPosition.BottomLeft => NotificationPseudoClass.BottomLeft,
+            NotificationPosition.BottomRight => NotificationPseudoClass.BottomRight,
+            NotificationPosition.TopCenter => NotificationPseudoClass.TopCenter,
+            NotificationPosition.BottomCenter => NotificationPseudoClass.BottomCenter,
+            _ => NotificationPseudoClass.TopRight
+        };
+    }
+
+    private readonly record struct PendingMessage(IMessage Message, string[]? Classes);
 }

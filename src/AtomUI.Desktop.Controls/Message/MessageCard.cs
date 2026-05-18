@@ -10,7 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -136,6 +135,9 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
 
     private bool _isClosing;
     private BaseMotionActor? _motionActor;
+    private PathIcon? _generatedDefaultIcon;
+    private bool _isTemplateApplied;
+    private MessageType? _appliedMessageType;
     
     public MessageCard()
     {
@@ -156,20 +158,23 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     {
         base.OnPropertyChanged(change);
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == MessageTypeProperty)
         {
-            if (change.Property == MessageTypeProperty)
+            if (_isTemplateApplied)
             {
-                SetupDefaultMessageIcon();
                 UpdatePseudoClasses();
+                SetupDefaultMessageIcon();
             }
         }
-
-        if (change.Property == IconProperty)
+        else if (change.Property == IconProperty)
         {
-            if (Icon is null)
+            if (Icon is null && _isTemplateApplied)
             {
                 SetupDefaultMessageIcon();
+            }
+            else if (!ReferenceEquals(Icon, _generatedDefaultIcon))
+            {
+                _generatedDefaultIcon = null;
             }
         }
 
@@ -186,7 +191,7 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
         {
             if (IsClosing)
             {
-                Dispatcher.InvokeAsync(ApplyHideMotionAsync);
+                _ = Dispatcher.InvokeAsync(ApplyHideMotionAsync);
             }
         }
     }
@@ -194,103 +199,110 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _isTemplateApplied = true;
         _motionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
         if (_motionActor is not null && IsMotionEnabled)
         {
             _motionActor.Opacity = 0;
+            _ = Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
         }
-        Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
         UpdatePseudoClasses();
         SetupDefaultMessageIcon();
     }
 
     private async Task ApplyShowMotionAsync()
     {
-        if (_motionActor is not null)
+        if (_motionActor is null || !IsMotionEnabled)
         {
-            if (IsMotionEnabled)
-            {
-                var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
-                await motion.RunAsync(_motionActor);
-                _motionActor.Opacity = 1;
-            }
+            return;
         }
+
+        var motion = new MoveUpInMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseOut());
+        await motion.RunAsync(_motionActor);
+        _motionActor.Opacity = 1;
     }
 
     private async Task ApplyHideMotionAsync()
     {
-        if (_motionActor is not null)
+        if (_motionActor is null || !IsMotionEnabled)
         {
-            if (IsMotionEnabled)
-            {
-                var motion =
-                    new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
-                await motion.RunAsync(_motionActor);
-                IsClosed = true;
-            }
-            else
-            {
-                IsClosed = true;
-            }
+            IsClosed = true;
+            return;
         }
+
+        var motion = new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+        await motion.RunAsync(_motionActor);
+        IsClosed = true;
     }
 
     private void UpdatePseudoClasses()
     {
-        switch (MessageType)
+        if (_appliedMessageType == MessageType)
         {
-            case MessageType.Error:
-                PseudoClasses.Add(MessageCardPseudoClass.Error);
-                break;
-
-            case MessageType.Information:
-                PseudoClasses.Add(MessageCardPseudoClass.Information);
-                break;
-
-            case MessageType.Success:
-                PseudoClasses.Add(MessageCardPseudoClass.Success);
-                break;
-
-            case MessageType.Warning:
-                PseudoClasses.Add(MessageCardPseudoClass.Warning);
-                break;
-
-            case MessageType.Loading:
-                PseudoClasses.Add(MessageCardPseudoClass.Loading);
-                break;
+            return;
         }
+
+        if (_appliedMessageType is { } previousMessageType)
+        {
+            PseudoClasses.Set(GetMessageTypePseudoClass(previousMessageType), false);
+        }
+        PseudoClasses.Set(GetMessageTypePseudoClass(MessageType), true);
+        _appliedMessageType = MessageType;
+    }
+
+    private static string GetMessageTypePseudoClass(MessageType messageType)
+    {
+        return messageType switch
+        {
+            MessageType.Error => MessageCardPseudoClass.Error,
+            MessageType.Information => MessageCardPseudoClass.Information,
+            MessageType.Success => MessageCardPseudoClass.Success,
+            MessageType.Warning => MessageCardPseudoClass.Warning,
+            MessageType.Loading => MessageCardPseudoClass.Loading,
+            _ => MessageCardPseudoClass.Information
+        };
     }
 
     private void SetupDefaultMessageIcon()
     {
-        Icon? icon = null;
-        if (MessageType == MessageType.Information)
+        if (Icon is not null && !ReferenceEquals(Icon, _generatedDefaultIcon))
         {
-            icon = new InfoCircleFilled();
-        }
-        else if (MessageType == MessageType.Success)
-        {
-            icon = new CheckCircleFilled();
-        }
-        else if (MessageType == MessageType.Error)
-        {
-            icon = new CloseCircleFilled();
-        }
-        else if (MessageType == MessageType.Warning)
-        {
-            icon = new ExclamationCircleFilled();
-        }
-        else if (MessageType == MessageType.Loading)
-        {
-            icon                  = new LoadingOutlined();
-            icon.LoadingAnimation = IconAnimation.Spin;
+            return;
         }
 
-        if (Icon is null)
+        var icon = CreateDefaultMessageIcon();
+        _generatedDefaultIcon = icon;
+        ClearValue(IconProperty);
+        SetValue(IconProperty, icon, BindingPriority.Template);
+    }
+
+    private PathIcon? CreateDefaultMessageIcon()
+    {
+        if (MessageType == MessageType.Information)
         {
-            ClearValue(IconProperty);
-            SetValue(IconProperty, icon, BindingPriority.Template);
+            return new InfoCircleFilled();
         }
+        if (MessageType == MessageType.Success)
+        {
+            return new CheckCircleFilled();
+        }
+        if (MessageType == MessageType.Error)
+        {
+            return new CloseCircleFilled();
+        }
+        if (MessageType == MessageType.Warning)
+        {
+            return new ExclamationCircleFilled();
+        }
+        if (MessageType == MessageType.Loading)
+        {
+            return new LoadingOutlined
+            {
+                LoadingAnimation = IconAnimation.Spin
+            };
+        }
+
+        return null;
     }
     
 }

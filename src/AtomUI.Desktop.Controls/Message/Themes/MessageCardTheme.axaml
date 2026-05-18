@@ -30,35 +30,35 @@
             <Setter Property="Height" Value="{atom:MessageTokenResource MessageIconSize}" />
         </Style>
 
-        <Style Selector="^[MessageType=Information]">
+        <Style Selector="^:information">
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
-        <Style Selector="^[MessageType=Loading]">
+        <Style Selector="^:loading">
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>
 
-        <Style Selector="^[MessageType=Error]">
+        <Style Selector="^:error">
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorError}" />
             </Style>
         </Style>
 
-        <Style Selector="^[MessageType=Success]">
+        <Style Selector="^:success">
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorSuccess}" />
             </Style>
         </Style>
 
-        <Style Selector="^[MessageType=Warning]">
+        <Style Selector="^:warning">
             <Style Selector="^ /template/ atom|IconPresenter">
                 <Setter Property="IconBrush"
                         Value="{atom:SharedTokenResource ColorWarning}" />

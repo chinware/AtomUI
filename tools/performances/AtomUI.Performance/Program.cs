@@ -52,7 +52,8 @@ internal static partial class Program
             options.VerifyListViewStates ||
             options.VerifyMarqueeLabelStates ||
             options.VerifyMentionsStates ||
-            options.VerifyMenuStates)
+            options.VerifyMenuStates ||
+            options.VerifyMessageStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
@@ -199,6 +200,10 @@ internal static partial class Program
             {
                 verified &= RunMenuStateVerification();
             }
+            if (options.VerifyMessageStates)
+            {
+                verified &= RunMessageStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -266,6 +271,7 @@ internal static partial class Program
             "marqueelabel" => CreateMarqueeLabelScenarios(),
             "mentions" => CreateMentionsScenarios(),
             "menu" => CreateMenuScenarios(),
+            "message" => CreateMessageScenarios(),
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),

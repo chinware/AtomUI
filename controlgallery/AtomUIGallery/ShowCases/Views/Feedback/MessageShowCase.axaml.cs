@@ -16,16 +16,6 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
         InitializeComponent();
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        _messageManager = new WindowMessageManager(topLevel)
-        {
-            MaxItems = 10
-        };
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -35,14 +25,14 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 
     private void ShowSimpleMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             "Hello, AtomUI/Avalonia!"
         ));
     }
 
     private void ShowInfoMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             type: MessageType.Information,
             content: "This is a information message."
         ));
@@ -50,7 +40,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 
     private void ShowSuccessMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             type: MessageType.Success,
             content: "This is a success message."
         ));
@@ -58,7 +48,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 
     private void ShowWarningMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             type: MessageType.Warning,
             content: "This is a warning message."
         ));
@@ -66,7 +56,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 
     private void ShowErrorMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             type: MessageType.Error,
             content: "This is a error message."
         ));
@@ -74,7 +64,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 
     private void ShowLoadingMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             type: MessageType.Loading,
             content: "Action in progress..."
         ));
@@ -82,19 +72,19 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 
     private void ShowSequentialMessage(object? sender, RoutedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        ShowMessage(new Message(
             type: MessageType.Loading,
             content: "Action in progress...",
             expiration: TimeSpan.FromSeconds(2.5),
             onClose: () =>
             {
-                _messageManager?.Show(new Message(
+                ShowMessage(new Message(
                     type: MessageType.Success,
                     expiration: TimeSpan.FromSeconds(2.5),
                     content: "Loading finished",
                     onClose: () =>
                     {
-                        _messageManager?.Show(new Message(
+                        ShowMessage(new Message(
                             type: MessageType.Information,
                             expiration: TimeSpan.FromSeconds(2.5),
                             content: "Loading finished"
@@ -103,5 +93,30 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
                 ));
             }
         ));
+    }
+
+    private void ShowMessage(Message message)
+    {
+        GetMessageManager()?.Show(message);
+    }
+
+    private WindowMessageManager? GetMessageManager()
+    {
+        if (_messageManager is not null)
+        {
+            return _messageManager;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return null;
+        }
+
+        _messageManager = new WindowMessageManager(topLevel)
+        {
+            MaxItems = 10
+        };
+        return _messageManager;
     }
 }

@@ -71,6 +71,7 @@
 | MarqueeLabel / Alert | 本轮已完成 | [MarqueeLabel](MarqueeLabel/README.md) | Alert 默认路径不再创建隐藏 `MarqueeLabel`；`AlertShowCase` runtime `MarqueeLabel 25 -> 1`，visuals `585 -> 561`，repeated mean `65.42ms -> 54.67ms` |
 | Mentions | 本轮已完成 | [Mentions](Mentions/README.md) | closed popup content 已按需创建；`MentionsShowCase` `_candidateList 15 -> 0`，repeated mean `110.05ms -> 106.95ms`，alloc `10115.79KB -> 9326.47KB` |
 | Menu | 本轮已完成 | [Menu](Menu/README.md) | closed leaf `MenuItem` visual/root `13 -> 9`，KB/item `209.8 -> 122.1`；`MenuShowCase` repeated mean `91.16ms -> 89.10ms`，cold 仍需固定 NavMenu shape 后再验收 |
+| Message | 本轮已完成 | [Message](Message/README.md) | `WindowMessageManager` 只在首次实际 show 时创建；timer/event/OnClose 生命周期已释放；`MessageShowCase` repeated mean `30.97ms -> 28.52ms`，cold mean `109.07ms -> 98.86ms` |
 
 ## 总列表
 
@@ -137,7 +138,7 @@
 | Data Display | Tour | Pending | 待建立基线 |
 | Feedback | Alert | Done | [MarqueeLabel](MarqueeLabel/README.md)；默认非 marquee Alert 不再承担隐藏 MarqueeLabel 成本，`AlertShowCase` repeated mean 提升约 `16.43%` |
 | Feedback | Drawer | Done | [Drawer](Drawer/README.md)；关闭态 `OpenOn`/`SizeChanged` 已按需化，detach/open/close 生命周期已补齐验证；Gallery repeated mean `24.24ms -> 22.87ms` |
-| Feedback | Message | Pending | 待建立基线 |
+| Feedback | Message | Done | [Message](Message/README.md)；manager 按需创建，auto-close timer、MessageClosed、OnClose 生命周期已补齐，Gallery repeated mean 提升约 `7.91%` |
 | Feedback | Modal | Done | [Dialog](Dialog/README.md)；closed MessageBox 内部 Dialog 已按需创建，mask/resizer 生命周期已验证；Gallery 结构和分配下降，repeated timing 未证明提升 |
 | Feedback | Notification | Pending | 待建立基线 |
 | Feedback | PopupConfirm | Pending | 待建立基线 |
