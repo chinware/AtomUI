@@ -6,19 +6,11 @@
     <ControlTheme x:Key="{x:Type atom:OptionButton}" TargetType="atom:OptionButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
-                    <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                              CornerRadius="{TemplateBinding CornerRadius}" />
+                <Panel Name="PART_RootLayout">
                     <DockPanel Name="ContentLayout"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                LastChildFill="True">
-                        <atom:IconPresenter Name="IconPresenter"
-                                            DockPanel.Dock="Left"
-                                            IconBrush="{TemplateBinding Foreground}"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                            IsMotionEnabled="False"
-                                            Icon="{TemplateBinding Icon}" />
                         <atom:TextBlock Padding="0"
                                         VerticalAlignment="Center"
                                         Text="{TemplateBinding Content}" />

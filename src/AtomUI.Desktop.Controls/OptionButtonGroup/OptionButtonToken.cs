@@ -152,9 +152,9 @@ internal class OptionButtonToken : AbstractControlDesignToken
         Padding = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
             Math.Max((controlHeight - ContentFontSize * ContentLineHeight) / 2 - lineWidth, 0));
         PaddingLG = new Thickness(SharedToken.PaddingContentHorizontal - lineWidth,
+            Math.Max((controlHeightLG - ContentFontSizeLG * ContentLineHeightLG) / 2 - lineWidth, 0));
+        PaddingSM = new Thickness(8 - lineWidth,
             Math.Max((controlHeightSM - ContentFontSizeSM * ContentLineHeightSM) / 2 - lineWidth, 0));
-        PaddingSM = new Thickness(8 - SharedToken.LineWidth,
-            Math.Max((controlHeightLG - controlHeightLG * controlHeightLG) / 2 - lineWidth, 0));
     }
     
     protected override Type GetTokenKindType() => typeof(OptionButtonTokenKind);

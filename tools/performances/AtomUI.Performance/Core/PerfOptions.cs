@@ -44,7 +44,8 @@ internal sealed record PerfOptions(
     bool VerifyMessageStates,
     bool VerifyMessageBoxStates,
     bool VerifyNotificationStates,
-    bool VerifyNumericUpDownStates)
+    bool VerifyNumericUpDownStates,
+    bool VerifyOptionButtonGroupStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -92,6 +93,7 @@ internal sealed record PerfOptions(
         var verifyMessageBoxStates = false;
         var verifyNotificationStates = false;
         var verifyNumericUpDownStates = false;
+        var verifyOptionButtonGroupStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -232,6 +234,9 @@ internal sealed record PerfOptions(
                 case "--verify-numericupdown-states":
                     verifyNumericUpDownStates = true;
                     break;
+                case "--verify-optionbuttongroup-states":
+                    verifyOptionButtonGroupStates = true;
+                    break;
             }
         }
 
@@ -279,6 +284,7 @@ internal sealed record PerfOptions(
             verifyMessageStates,
             verifyMessageBoxStates,
             verifyNotificationStates,
-            verifyNumericUpDownStates);
+            verifyNumericUpDownStates,
+            verifyOptionButtonGroupStates);
     }
 }

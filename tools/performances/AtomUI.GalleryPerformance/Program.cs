@@ -258,6 +258,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.CheckBoxShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/CheckBoxShowCase.axaml",
                 stats => stats.CheckBoxCount > 0),
+            ["radiobutton"] = new(
+                "RadioButtonShowCase",
+                RadioButtonViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.RadioButtonShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/RadioButtonShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 8 && stats.IconPresenterCount > 0),
             ["datagrid"] = new(
                 "DataGridShowCase",
                 DataGridViewModel.ID,

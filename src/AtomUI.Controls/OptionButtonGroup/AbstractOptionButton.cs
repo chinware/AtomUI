@@ -2,15 +2,15 @@ using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
 
@@ -79,12 +79,17 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
         set => SetAndRaise(GroupPositionTraitProperty, ref _groupPositionTrait, value);
     }
 
-    internal event EventHandler<OptionButtonPointerEventArgs>? OptionButtonPointerEvent;
-
     #endregion
+
+    private const string RootLayoutName = "PART_RootLayout";
+    private const string ContentLayoutName = "ContentLayout";
+    private const string IconPresenterName = "IconPresenter";
 
     private CornerRadius? _originCornerRadius;
     private readonly BorderRenderHelper _borderRenderHelper;
+    private Panel? _rootLayout;
+    private DockPanel? _contentLayout;
+    private IconPresenter? _iconPresenter;
     private WaveSpiritDecorator? _waveSpiritDecorator;
 
     static AbstractOptionButton()
@@ -118,6 +123,7 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     {
         base.OnAttachedToVisualTree(e);
         HandleSizeTypeChanged();
+        UpdateIconPresenter();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -129,7 +135,8 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
         {
             if (change.Property == IsPressedProperty && change.OldValue as bool? == true && IsWaveSpiritEnabled)
             {
-                _waveSpiritDecorator?.Play();
+                UpdateWaveSpiritDecorator(createIfNeeded: true);
+                Dispatcher.Post(PlayWaveSpiritDecorator);
             }
         }
 
@@ -138,7 +145,23 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
             if (_originCornerRadius.HasValue)
             {
                 CornerRadius = BuildCornerRadius(GroupPositionTrait, _originCornerRadius!.Value);
+                SyncWaveSpiritDecorator();
             }
+        }
+
+        if (change.Property == IconProperty)
+        {
+            UpdateIconPresenter();
+        }
+
+        if (change.Property == IsWaveSpiritEnabledProperty)
+        {
+            UpdateWaveSpiritDecorator(createIfNeeded: false);
+        }
+
+        if (change.Property == CornerRadiusProperty)
+        {
+            SyncWaveSpiritDecorator();
         }
     }
 
@@ -174,46 +197,6 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
         return cornerRadius;
     }
 
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-        {
-            IsHovering = true,
-            IsPressed  = true
-        });
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        base.OnPointerReleased(e);
-        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-        {
-            IsHovering = true,
-            IsPressed  = false
-        });
-    }
-
-    protected override void OnPointerEntered(PointerEventArgs e)
-    {
-        base.OnPointerEntered(e);
-        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-        {
-            IsHovering = true,
-            IsPressed  = false
-        });
-    }
-
-    protected override void OnPointerExited(PointerEventArgs e)
-    {
-        base.OnPointerExited(e);
-        OptionButtonPointerEvent?.Invoke(this, new OptionButtonPointerEventArgs(this)
-        {
-            IsHovering = false,
-            IsPressed  = false
-        });
-    }
-
     public override void Render(DrawingContext context)
     {
         _borderRenderHelper.Render(context,
@@ -227,8 +210,19 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachIconPresenter();
+        DetachWaveSpiritDecorator();
         base.OnApplyTemplate(e);
-        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
+        _rootLayout   = e.NameScope.Find<Panel>(RootLayoutName);
+        _contentLayout = e.NameScope.Find<DockPanel>(ContentLayoutName);
+        UpdateIconPresenter();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        DetachIconPresenter();
+        DetachWaveSpiritDecorator();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnInitialized()
@@ -241,5 +235,120 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    private void UpdateIconPresenter()
+    {
+        if (Icon is null)
+        {
+            DetachIconPresenter();
+            return;
+        }
+
+        if (_contentLayout is null)
+        {
+            return;
+        }
+
+        if (_iconPresenter is null)
+        {
+            _iconPresenter = new IconPresenter
+            {
+                Name            = IconPresenterName,
+                IsMotionEnabled = false
+            };
+            DockPanel.SetDock(_iconPresenter, Dock.Left);
+            _iconPresenter.SetTemplatedParent(this);
+            _iconPresenter[!IconPresenter.IconBrushProperty] = this[!ForegroundProperty];
+            _contentLayout.Children.Insert(0, _iconPresenter);
+        }
+
+        _iconPresenter.SetCurrentValue(IconPresenter.IconProperty, Icon);
+    }
+
+    private void DetachIconPresenter()
+    {
+        if (_iconPresenter is null)
+        {
+            return;
+        }
+
+        if (_iconPresenter.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_iconPresenter);
+        }
+        else
+        {
+            _contentLayout?.Children.Remove(_iconPresenter);
+        }
+
+        _iconPresenter.ClearValue(IconPresenter.IconProperty);
+        _iconPresenter.ClearValue(IconPresenter.IconBrushProperty);
+        _iconPresenter.ClearValue(IconPresenter.IsMotionEnabledProperty);
+        _iconPresenter.SetTemplatedParent(null);
+        _iconPresenter = null;
+    }
+
+    private void UpdateWaveSpiritDecorator(bool createIfNeeded)
+    {
+        if (!IsWaveSpiritEnabled)
+        {
+            DetachWaveSpiritDecorator();
+            return;
+        }
+
+        if (!createIfNeeded || _rootLayout is null)
+        {
+            return;
+        }
+
+        if (_waveSpiritDecorator is null)
+        {
+            _waveSpiritDecorator = new WaveSpiritDecorator
+            {
+                Name     = WaveSpiritDecorator.WaveSpiritPart,
+                WaveType = WaveSpiritType.RoundRectWave
+            };
+            _waveSpiritDecorator.SetTemplatedParent(this);
+            _rootLayout.Children.Insert(0, _waveSpiritDecorator);
+        }
+
+        SyncWaveSpiritDecorator();
+    }
+
+    private void SyncWaveSpiritDecorator()
+    {
+        if (_waveSpiritDecorator is null)
+        {
+            return;
+        }
+
+        _waveSpiritDecorator.SetCurrentValue(WaveSpiritDecorator.CornerRadiusProperty, CornerRadius);
+        _waveSpiritDecorator.SetCurrentValue(WaveSpiritDecorator.WaveTypeProperty, WaveSpiritType.RoundRectWave);
+    }
+
+    private void PlayWaveSpiritDecorator()
+    {
+        _waveSpiritDecorator?.Play();
+    }
+
+    private void DetachWaveSpiritDecorator()
+    {
+        if (_waveSpiritDecorator is null)
+        {
+            return;
+        }
+
+        if (_waveSpiritDecorator.GetVisualParent() is Panel parent)
+        {
+            parent.Children.Remove(_waveSpiritDecorator);
+        }
+        else
+        {
+            _rootLayout?.Children.Remove(_waveSpiritDecorator);
+        }
+
+        _waveSpiritDecorator.SetTemplatedParent(null);
+        _waveSpiritDecorator = null;
     }
 }

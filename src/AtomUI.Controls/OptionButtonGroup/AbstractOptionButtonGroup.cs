@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AtomUI.Controls.Utils;
 using Avalonia;
 using Avalonia.Controls;
@@ -130,15 +129,6 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
         UpdateOptionButtonsPosition();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        if (this is IChildIndexProvider childIndexProvider)
-        {
-            childIndexProvider.ChildIndexChanged -= HandleChildIndexChanged;
-        }
-    }
-
     protected override void OnGotFocus(FocusChangedEventArgs e)
     {
         base.OnGotFocus(e);
@@ -262,43 +252,37 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
     {
         if (container is AbstractOptionButton optionButton)
         {
-            if (newIndex == 0)
-            {
-                optionButton.GroupPositionTrait = OptionButtonPositionTrait.First;
-            }
-            else if (newIndex == ItemCount - 1)
-            {
-                optionButton.GroupPositionTrait = OptionButtonPositionTrait.Last;
-            }
-            else
-            {
-                optionButton.GroupPositionTrait = OptionButtonPositionTrait.Middle;
-            }
+            optionButton.GroupPositionTrait = GetPositionTrait(newIndex, ItemCount);
         }
     }
 
     private void UpdateOptionButtonsPosition()
     {
-        for (var i = 0; i < Items.Count; i++)
+        var itemCount = ItemCount;
+        for (var i = 0; i < itemCount; i++)
         {
-            var button = Items[i] as AbstractOptionButton;
-            Debug.Assert(button != null);
-            if (Items.Count > 1)
+            if (ContainerFromIndex(i) is AbstractOptionButton button)
             {
-                if (i == 0)
-                {
-                    button.GroupPositionTrait = OptionButtonPositionTrait.First;
-                }
-                else if (i == Items.Count - 1)
-                {
-                    button.GroupPositionTrait = OptionButtonPositionTrait.Last;
-                }
-                else
-                {
-                    button.GroupPositionTrait = OptionButtonPositionTrait.Middle;
-                }
+                button.GroupPositionTrait = GetPositionTrait(i, itemCount);
             }
         }
+    }
+
+    private static OptionButtonPositionTrait GetPositionTrait(int index, int itemCount)
+    {
+        if (itemCount <= 1)
+        {
+            return OptionButtonPositionTrait.OnlyOne;
+        }
+        if (index == 0)
+        {
+            return OptionButtonPositionTrait.First;
+        }
+        if (index == itemCount - 1)
+        {
+            return OptionButtonPositionTrait.Last;
+        }
+        return OptionButtonPositionTrait.Middle;
     }
 
     public override void Render(DrawingContext context)
@@ -310,45 +294,51 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
             BackgroundSizing.CenterBorder,
             null,
             BorderBrush);
-        for (var i = 0; i < ItemCount; ++i)
+        var itemCount       = ItemCount;
+        var selectedIndex   = SelectedIndex;
+        var borderThickness = BorderThickness;
+        var borderWidth     = borderThickness.Left;
+        using var optionState = context.PushRenderOptions(new RenderOptions
         {
-            var optionButton = ContainerFromIndex(i);
-            Debug.Assert(optionButton != null);
+            EdgeMode = EdgeMode.Aliased
+        });
+        var separatorPen = new Pen(BorderBrush, borderWidth);
+        for (var i = 0; i < itemCount; ++i)
+        {
+            if (ContainerFromIndex(i) is not AbstractOptionButton optionButton)
+            {
+                continue;
+            }
             if (ButtonStyle == OptionButtonStyle.Solid)
             {
-                if (i <= ItemCount - 2)
+                if (i <= itemCount - 2)
                 {
-                    var nextOption = ContainerFromIndex(i + 1);
-                    if (nextOption == SelectedItem || optionButton == SelectedItem)
+                    if (i + 1 == selectedIndex || i == selectedIndex)
                     {
                         continue;
                     }
                 }
             }
 
-            if (i != ItemCount - 1)
+            if (i != itemCount - 1)
             {
-                var offsetX    = optionButton.Bounds.Right - BorderThickness.Left / 2;
+                var offsetX    = optionButton.Bounds.Right - borderWidth / 2;
                 var startPoint = new Point(offsetX, 0);
                 var endPoint   = new Point(offsetX, Bounds.Height);
-                using var optionState = context.PushRenderOptions(new RenderOptions
-                {
-                    EdgeMode = EdgeMode.Aliased
-                });
-                context.DrawLine(new Pen(BorderBrush, BorderThickness.Left), startPoint, endPoint);
+                context.DrawLine(separatorPen, startPoint, endPoint);
             }
 
             if (ButtonStyle == OptionButtonStyle.Outline)
             {
-                if (IsEnabled && optionButton.IsEnabled && optionButton == SelectedItem)
+                if (IsEnabled && optionButton.IsEnabled && i == selectedIndex)
                 {
                     // 绘制选中边框
                     var offsetX = optionButton.Bounds.X;
                     var width   = optionButton.DesiredSize.Width;
                     if (i > 0)
                     {
-                        offsetX -= BorderThickness.Left;
-                        width   += BorderThickness.Left;
+                        offsetX -= borderWidth;
+                        width   += borderWidth;
                     }
 
                     var       translationMatrix = Matrix.CreateTranslation(offsetX, 0);
@@ -358,14 +348,14 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
                     {
                         cornerRadius = new CornerRadius(CornerRadius.TopLeft, 0, 0, CornerRadius.BottomLeft);
                     }
-                    else if (i == ItemCount - 1)
+                    else if (i == itemCount - 1)
                     {
                         cornerRadius = new CornerRadius(0, CornerRadius.TopRight, CornerRadius.BottomRight, 0);
                     }
 
                     _borderRenderHelper.Render(context,
                         new Size(width, DesiredSize.Height),
-                        BorderThickness,
+                        borderThickness,
                         cornerRadius,
                         BackgroundSizing.InnerBorderEdge,
                         null,
