@@ -7,7 +7,7 @@
     TargetType="atom:OverlayDialogHost">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:OverlayDialogHost">
-            <Panel>
+            <Panel Name="PART_RootLayout">
                 <Border Name="Frame" CornerRadius="{TemplateBinding CornerRadius}" ClipToBounds="True">
                     <DockPanel Name="RootLayout" LastChildFill="True">
                         <atom:OverlayDialogHeader Name="PART_Header"
@@ -36,17 +36,6 @@
                         </Border>
                     </DockPanel>
                 </Border>
-                <atom:OverlayDialogResizer Name="PART_Resizer">
-
-                    <atom:OverlayDialogResizer.IsVisible>
-                        <MultiBinding
-                            Converter="{x:Static atom:OverlayDialogHostTheme.OverlayDialogResizerVisibleConverter}">
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                     Path="IsResizable" />
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="WindowState" />
-                        </MultiBinding>
-                    </atom:OverlayDialogResizer.IsVisible>
-                </atom:OverlayDialogResizer>
             </Panel>
 
         </ControlTemplate>

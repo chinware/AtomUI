@@ -131,16 +131,6 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
         NoBlockRuleForm.SetFormValues(formValues);
     }
     
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        _messageManager = new WindowMessageManager(topLevel)
-        {
-            MaxItems = 10
-        };
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -150,7 +140,7 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
 
     private void HandleNoBlockFormSubmitted(object? sender, FormSubmittedEventArgs args)
     {
-        _messageManager?.Show(new Message(
+        GetMessageManager()?.Show(new Message(
             type: MessageType.Success,
             content: "Submit success!"
         ));
@@ -160,11 +150,31 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
     {
         if (args.Result == FormValidateResult.Error)
         {
-            _messageManager?.Show(new Message(
+            GetMessageManager()?.Show(new Message(
                 type: MessageType.Error,
                 content: "Submit failed!"
             ));
         }
+    }
+
+    private WindowMessageManager? GetMessageManager()
+    {
+        if (_messageManager is not null)
+        {
+            return _messageManager;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return null;
+        }
+
+        _messageManager = new WindowMessageManager(topLevel)
+        {
+            MaxItems = 10
+        };
+        return _messageManager;
     }
 
     private static int Form_GID = 3;

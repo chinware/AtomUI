@@ -266,6 +266,15 @@ public class ListBox : AvaloniaListBox,
         ConfigureEmptyIndicator();
         ConfigureIsFiltering();
     }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        if (Filter != null && FilterValue != null)
+        {
+            FilterItems();
+        }
+    }
     
     private void HandleItemCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {

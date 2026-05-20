@@ -53,16 +53,6 @@ public partial class BreadcrumbShowCase : ReactiveUserControl<BreadcrumbViewMode
         });
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        _messageManager = new WindowMessageManager(topLevel)
-        {
-            MaxItems = 10
-        };
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -72,8 +62,28 @@ public partial class BreadcrumbShowCase : ReactiveUserControl<BreadcrumbViewMode
 
     private void HandleNavigateRequest(object? sender, BreadcrumbNavigateEventArgs eventArgs)
     {
-        _messageManager?.Show(new Message(
+        GetMessageManager()?.Show(new Message(
             $"Navigate context: {eventArgs.BreadcrumbItem.NavigateContext}"
         ));
+    }
+
+    private WindowMessageManager? GetMessageManager()
+    {
+        if (_messageManager is not null)
+        {
+            return _messageManager;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return null;
+        }
+
+        _messageManager = new WindowMessageManager(topLevel)
+        {
+            MaxItems = 10
+        };
+        return _messageManager;
     }
 }

@@ -49,7 +49,7 @@ public partial class ImagePreviewerShowCase : ReactiveUserControl<ImagePreviewer
                     viewModel.TwoImages     = null;
                     viewModel.FallbackImage = null;
                     viewModel.BlurImage     = null;
-                });
+                }).DisposeWith(disposables);
             }
         });
         InitializeComponent();

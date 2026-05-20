@@ -8,21 +8,35 @@
     <ControlTheme x:Key="{x:Type gallery:IconGallery}" TargetType="gallery:IconGallery">
         <Setter Property="gallery:IconGallery.Template">
             <ControlTemplate TargetType="gallery:IconGallery">
-                <ItemsControl ItemsSource="{TemplateBinding IconInfos}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:PackageIconItem">
-                            <gallery:IconInfoItem
-                                IconName="{Binding IconName}"
-                                Icon="{Binding Icon}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <DockPanel LastChildFill="True">
+                    <atom:SearchEdit Name="PART_SearchInput"
+                                     HorizontalAlignment="Stretch"
+                                     DockPanel.Dock="Top" />
+                    <atom:ScrollViewer Name="PART_ScrollViewer"
+                                       VerticalScrollBarVisibility="Auto"
+                                       AllowAutoHide="False"
+                                       BringIntoViewOnFocusChange="False">
+                        <ItemsControl ItemsSource="{TemplateBinding IconInfos}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:PackageIconItem">
+                                    <gallery:IconInfoItem
+                                        IconName="{Binding IconName}"
+                                        Icon="{Binding Icon}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </atom:ScrollViewer>
+                </DockPanel>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^ /template/ atom|SearchEdit#PART_SearchInput">
+            <Setter Property="Margin" Value="10" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

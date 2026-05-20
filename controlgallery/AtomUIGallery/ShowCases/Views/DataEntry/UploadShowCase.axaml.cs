@@ -193,16 +193,6 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
         });
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        _messageManager = new WindowMessageManager(topLevel)
-        {
-            MaxItems = 10
-        };
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
@@ -248,7 +238,7 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
     private void HandleUploadFailed(object? sender, UploadTaskFailedEventArgs e)
     {
         var errorMsg = e.Result.UserFriendlyMessage;
-        _messageManager?.Show(new Message(
+        GetMessageManager()?.Show(new Message(
             type: MessageType.Error,
             content:$"{errorMsg}"
         ));
@@ -256,10 +246,30 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
 
     private void HandleUploadCompleted(object? sender, UploadTaskCompletedEventArgs e)
     {
-        _messageManager?.Show(new Message(
+        GetMessageManager()?.Show(new Message(
             type: MessageType.Success,
             content:$"{e.UploadFileInfo.Name} upload successfully!"
         ));
+    }
+
+    private WindowMessageManager? GetMessageManager()
+    {
+        if (_messageManager is not null)
+        {
+            return _messageManager;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return null;
+        }
+
+        _messageManager = new WindowMessageManager(topLevel)
+        {
+            MaxItems = 10
+        };
+        return _messageManager;
     }
 
     private void InitPictureWallTaskList(UploadViewModel uploadViewModel)

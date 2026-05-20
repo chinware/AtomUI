@@ -188,11 +188,13 @@ internal class OverlayDialogHost : ContentControl,
 
     private readonly AtomUIPopup _popup;
     private readonly Dialog _dialog;
-    private readonly OverlayDialogMask _dialogMask;
+    private OverlayDialogMask? _dialogMask;
     private DialogButtonBox? _buttonBox;
     private OverlayDialogHeader? _header;
     private OverlayDialogResizer? _resizer;
+    private Panel? _rootLayout;
     private CompositeDisposable? _confirmLoadingBindings;
+    private IDisposable? _dialogMaskCornerRadiusBinding;
     private Rect _ownerBounds;
     private Point _popupOffset;
     private Size _hostSize;
@@ -200,7 +202,6 @@ internal class OverlayDialogHost : ContentControl,
     private bool _isCloseRequested;
     private Action? _closeCallback;
     private OverlayPopupHost? _animatedOverlayHost;
-    private Panel? _animatedOverlayLayer;
     private TopLevel? _observedTopLevel;
 
     private const double MinVisibleX = 100;
@@ -220,7 +221,6 @@ internal class OverlayDialogHost : ContentControl,
         TokenResourceBinder.CreateTokenBinding(_popup, AtomUIPopup.OverlayHostShadowProperty, SharedTokenKind.BoxShadows);
         _popup.SetPopupParent(placementTarget);
         _popup.Closed                   += HandlePopupClosed;
-        _dialogMask                     =  new OverlayDialogMask();
         _dialog                         =  dialog;
         CustomButtons.CollectionChanged += HandleCustomButtonsChanged;
     }
@@ -312,7 +312,10 @@ internal class OverlayDialogHost : ContentControl,
 
                 if (IsModal)
                 {
-                    _dialogMask.Opacity = 1.0;
+                    if (_dialogMask != null)
+                    {
+                        _dialogMask.Opacity = 1.0;
+                    }
                 }
             });
         });
@@ -342,7 +345,10 @@ internal class OverlayDialogHost : ContentControl,
 
             if (IsModal)
             {
-                _dialogMask.Opacity = 0.0;
+                if (_dialogMask != null)
+                {
+                    _dialogMask.Opacity = 0.0;
+                }
             }
 
             DispatcherTimer.RunOnce(() =>
@@ -384,6 +390,11 @@ internal class OverlayDialogHost : ContentControl,
 
     private void ResetMaskOpacityWithoutTransition(double value)
     {
+        if (_dialogMask is null)
+        {
+            return;
+        }
+
         // mask 的 Opacity transition 由主题装配；这里瞬时归位，套"清空 → 赋值 → 装回"。
         var maskTransitions = _dialogMask.Transitions;
         _dialogMask.Transitions = null;
@@ -420,7 +431,7 @@ internal class OverlayDialogHost : ContentControl,
             return;
         }
 
-        _animatedOverlayLayer = overlayLayer;
+        var dialogMask = EnsureDialogMask();
 
         // mask 与 popupHost 是兄弟节点，Z 序在 popupHost 之前（作为底层被覆盖）。
         var hostIndex = overlayLayer.Children.IndexOf(overlayHost);
@@ -429,17 +440,22 @@ internal class OverlayDialogHost : ContentControl,
             return;
         }
 
-        if (_dialogMask.Parent is Panel oldParent)
+        if (dialogMask.Parent is Panel oldParent)
         {
-            oldParent.Children.Remove(_dialogMask);
+            oldParent.Children.Remove(dialogMask);
         }
 
-        overlayLayer.Children.Insert(hostIndex, _dialogMask);
+        overlayLayer.Children.Insert(hostIndex, dialogMask);
         SyncMaskBounds();
     }
 
     private void SyncMaskBounds()
     {
+        if (_dialogMask is null)
+        {
+            return;
+        }
+
         // OverlayLayer 是 Canvas，子元素用 Canvas.Left/Top 定位，Margin 在这里不生效。
         _dialogMask.Width  = _ownerBounds.Width;
         _dialogMask.Height = _ownerBounds.Height;
@@ -536,13 +552,13 @@ internal class OverlayDialogHost : ContentControl,
         _popup.Child           = null;
         _popup.PlacementTarget = null;
         _popup.SetPopupParent(null);
-        if (_animatedOverlayLayer is { } overlayLayer)
+        if (_dialogMask?.Parent is Panel maskParent)
         {
-            overlayLayer.Children.Remove(_dialogMask);
+            maskParent.Children.Remove(_dialogMask);
         }
         DetachOwnerTopLevel();
+        _dialogMask           = null;
         _animatedOverlayHost  = null;
-        _animatedOverlayLayer = null;
         _isCloseRequested     = false;
         _closeCallback?.Invoke();
         _closeCallback = null;
@@ -678,12 +694,31 @@ internal class OverlayDialogHost : ContentControl,
         DetachOwnerTopLevel();
         _observedTopLevel            =  topLevel;
         _observedTopLevel.SizeChanged += HandleOwnerTopLevelSizeChanged;
+        ConfigureMaskCornerRadiusBinding();
+    }
+
+    private OverlayDialogMask EnsureDialogMask()
+    {
+        if (_dialogMask != null)
+        {
+            return _dialogMask;
+        }
+
+        _dialogMask = new OverlayDialogMask();
+        ConfigureMaskCornerRadiusBinding();
+        return _dialogMask;
+    }
+
+    private void ConfigureMaskCornerRadiusBinding()
+    {
+        _dialogMaskCornerRadiusBinding?.Dispose();
+        _dialogMaskCornerRadiusBinding = null;
 
         // Window 的圆角会随 WindowState 变化（Maximized/FullScreen 置 0）。CSD 下 title bar 由
         // WindowDrawnDecorations 盖在顶部，mask 只需要底部圆角；非 CSD 下 mask 作为一整块，要四个角都圆。
-        if (topLevel is Window window)
+        if (_dialogMask is not null && _observedTopLevel is Window window)
         {
-            _dialogMask.Bind(TemplatedControl.CornerRadiusProperty,
+            _dialogMaskCornerRadiusBinding = _dialogMask.Bind(TemplatedControl.CornerRadiusProperty,
                 window.GetObservable(TemplatedControl.CornerRadiusProperty)
                       .CombineLatest(
                           window.GetObservable(Window.IsCsdEnabledProperty),
@@ -699,6 +734,8 @@ internal class OverlayDialogHost : ContentControl,
         {
             return;
         }
+        _dialogMaskCornerRadiusBinding?.Dispose();
+        _dialogMaskCornerRadiusBinding = null;
         _observedTopLevel.SizeChanged -= HandleOwnerTopLevelSizeChanged;
         _observedTopLevel             =  null;
     }
@@ -755,7 +792,7 @@ internal class OverlayDialogHost : ContentControl,
 
         _buttonBox = e.NameScope.Find<DialogButtonBox>("PART_ButtonBox");
         _header    = e.NameScope.Find<OverlayDialogHeader>("PART_Header");
-        _resizer   = e.NameScope.Find<OverlayDialogResizer>("PART_Resizer");
+        _rootLayout = e.NameScope.Find<Panel>("PART_RootLayout");
 
         if (_buttonBox != null)
         {
@@ -774,13 +811,8 @@ internal class OverlayDialogHost : ContentControl,
             _header.PointerMoved     += HandleHeaderPointerMoved;
         }
 
-        if (_resizer != null)
-        {
-            _resizer.TargetDialog  =  this;
-            _resizer.ResizeRequest += HandleResizeRequest;
-        }
-
         ConfigureEffectiveFooterVisible();
+        ConfigureResizer();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -791,6 +823,11 @@ internal class OverlayDialogHost : ContentControl,
             change.Property == IsFooterVisibleProperty)
         {
             ConfigureEffectiveFooterVisible();
+        }
+        else if (change.Property == IsResizableProperty ||
+                 change.Property == WindowStateProperty)
+        {
+            ConfigureResizer();
         }
     }
 
@@ -952,6 +989,55 @@ internal class OverlayDialogHost : ContentControl,
             IsFooterVisible && !IsLoading && (StandardButtons.Count > 0 || CustomButtons.Count > 0));
     }
 
+    private void ConfigureResizer()
+    {
+        if (_rootLayout is null)
+        {
+            return;
+        }
+
+        if (IsResizable && WindowState == OverlayDialogState.Normal)
+        {
+            EnsureResizer();
+        }
+        else
+        {
+            ReleaseResizer();
+        }
+    }
+
+    private void EnsureResizer()
+    {
+        if (_rootLayout is null || _resizer != null)
+        {
+            return;
+        }
+
+        _resizer = new OverlayDialogResizer
+        {
+            Name         = "PART_Resizer",
+            TargetDialog = this
+        };
+        _resizer.ResizeRequest += HandleResizeRequest;
+        _rootLayout.Children.Add(_resizer);
+    }
+
+    private void ReleaseResizer()
+    {
+        if (_resizer is null)
+        {
+            return;
+        }
+
+        _resizer.ResizeRequest -= HandleResizeRequest;
+        _resizer.TargetDialog = null;
+        if (_resizer.Parent is Panel parent)
+        {
+            parent.Children.Remove(_resizer);
+        }
+        _resizer = null;
+    }
+
     private void HandleButtonBoxClicked(object? sender, DialogButtonClickedEventArgs args)
     {
         _dialog.NotifyDialogButtonBoxClicked(args.SourceButton);
@@ -998,7 +1084,8 @@ internal class OverlayDialogHost : ContentControl,
 
         if (_resizer != null)
         {
-            _resizer.ResizeRequest -= HandleResizeRequest;
+            ReleaseResizer();
         }
+        _rootLayout = null;
     }
 }
