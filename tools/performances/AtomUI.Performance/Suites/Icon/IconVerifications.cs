@@ -279,31 +279,40 @@ internal static partial class Program
             }
         };
         using var realized = RealizeControl(handle);
-        Expect(FindVisualByName<IconPresenter>(handle, "OpenIndicator") != null,
-            "SelectHandle default state should create OpenIndicator.", failures);
+        var indicator = FindVisualByName<IconPresenter>(handle, "OpenIndicator");
+        Expect(indicator != null,
+            "SelectHandle should create one shared indicator presenter.", failures);
+        Expect(ReferenceEquals(indicator?.Icon, openIcon) && indicator.IsVisible,
+            "SelectHandle default state should show OpenIndicator icon.", failures);
         Expect(FindVisualByName<IconPresenter>(handle, "LoadingIndicator") == null,
             "SelectHandle default state should not create LoadingIndicator.", failures);
         Expect(FindVisualByName<SearchOutlined>(handle, "SearchIndicator") == null,
-            "SelectHandle default state should not create SearchIndicator.", failures);
-        Expect(FindVisualByName<InputClearIconButton>(handle, "PART_ClearButton") == null,
-            "SelectHandle default state should not create clear button.", failures);
+            "SelectHandle default state should not create a dedicated SearchIndicator visual.", failures);
+        Expect(FindVisualByName<InputClearIconButton>(handle, "PART_ClearButton") is { IsVisible: false },
+            "SelectHandle default state should keep clear button hidden.", failures);
 
         handle.SetCurrentValue(SelectHandle.IsFilterEnabledProperty, true);
         handle.SetCurrentValue(SelectHandle.IsDropDownOpenProperty, true);
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<IconPresenter>(handle, "OpenIndicator") == null,
-            "SelectHandle filter-open state should detach OpenIndicator.", failures);
+        indicator = FindVisualByName<IconPresenter>(handle, "OpenIndicator");
+        Expect(indicator != null && ReferenceEquals(indicator.Icon, handle.FilterIndicator) && indicator.IsVisible,
+            "SelectHandle filter-open state should show FilterIndicator in the shared presenter.", failures);
         Expect(openIcon.GetVisualParent() == null,
             "Detached SelectHandle OpenIndicator icon should not keep a visual parent.", failures);
-        Expect(FindVisualByName<SearchOutlined>(handle, "SearchIndicator") != null,
-            "SelectHandle filter-open state should create SearchIndicator.", failures);
+        Expect(handle.FilterIndicator is SearchOutlined { } searchIcon && searchIcon.GetVisualParent() == indicator,
+            "SelectHandle filter-open state should attach the theme SearchOutlined through the shared presenter.", failures);
 
         handle.SetCurrentValue(SelectHandle.IsLoadingProperty, true);
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<IconPresenter>(handle, "LoadingIndicator") != null,
-            "SelectHandle loading state should create LoadingIndicator.", failures);
-        Expect(FindVisualByName<SearchOutlined>(handle, "SearchIndicator") != null,
-            "SelectHandle loading plus filter-open state should keep SearchIndicator visible.", failures);
+        indicator = FindVisualByName<IconPresenter>(handle, "OpenIndicator");
+        Expect(indicator != null && ReferenceEquals(indicator.Icon, handle.FilterIndicator),
+            "SelectHandle loading plus filter-open state should keep FilterIndicator visible.", failures);
+
+        handle.SetCurrentValue(SelectHandle.IsDropDownOpenProperty, false);
+        RefreshLayout(realized.Window);
+        indicator = FindVisualByName<IconPresenter>(handle, "OpenIndicator");
+        Expect(indicator != null && ReferenceEquals(indicator.Icon, handle.LoadingIcon) && indicator.IsVisible,
+            "SelectHandle loading state should show LoadingIcon in the shared presenter.", failures);
 
         handle.SetCurrentValue(SelectHandle.IsLoadingProperty, false);
         handle.SetCurrentValue(SelectHandle.IsAllowClearProperty, true);
@@ -315,16 +324,19 @@ internal static partial class Program
         handle.ClearRequested += (_, _) => clearRequested = true;
         clearButton?.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, clearButton));
         Expect(clearRequested, "SelectHandle clear button should raise ClearRequested.", failures);
-        Expect(clearButton != null, "SelectHandle clear state should create clear button.", failures);
+        Expect(clearButton is { IsVisible: true }, "SelectHandle clear state should show clear button.", failures);
+        Expect(indicator is { IsVisible: false },
+            "SelectHandle clear state should hide the shared indicator presenter.", failures);
         Expect(FindVisualByName<SearchOutlined>(handle, "SearchIndicator") == null,
-            "SelectHandle clear state should detach SearchIndicator.", failures);
+            "SelectHandle clear state should not create a dedicated SearchIndicator visual.", failures);
 
         handle.SetCurrentValue(SelectHandle.IsInputHoverProperty, false);
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<InputClearIconButton>(handle, "PART_ClearButton") == null,
-            "SelectHandle should remove clear button when clear state ends.", failures);
-        Expect(clearButton?.GetVisualParent() == null,
-            "Removed SelectHandle clear button should not keep a visual parent.", failures);
+        indicator = FindVisualByName<IconPresenter>(handle, "OpenIndicator");
+        Expect(clearButton is { IsVisible: false },
+            "SelectHandle should hide clear button when clear state ends.", failures);
+        Expect(indicator is { IsVisible: true },
+            "SelectHandle should restore the shared indicator when clear state ends.", failures);
     }
 
     private static void VerifyNavMenuIndicatorSlots(ICollection<string> failures)

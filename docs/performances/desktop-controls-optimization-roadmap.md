@@ -103,7 +103,7 @@
 | TopLevel | n/a | 0 | 0 | 占位目录无主题/类 |
 | Tour | **Pending** | 0 | 4 | 复合控件 |
 | Transfer | **Pending** | 0 | 7 | 高 fan-out 复合控件 |
-| TreeSelect | Partial | 1 | 5 | 已随 Select 完成 closed `TreeSelectTreeView` 懒加载，独立基线仍待补 |
+| TreeSelect | Done | 1 | 5 | 共享 `SelectHandle` 三套 indicator 收敛到单 presenter；详见 [TreeSelect](TreeSelect/README.md) |
 | TreeView | Done | 4 | 5 | `NodeSwitcherButton` 5 个 icon presenter 收敛到 1 个；详见 [TreeView](TreeView/README.md) |
 | Upload | **Pending** | 0 | 4 | 复合控件，含 ImagePreviewer 链路 |
 | Window | Demoted to Tier 2 | 13 | 1 | Fan-in 13 是派生类计数，非实例化次数。实测 Gallery 一次会话 ≤ 1 常驻 + 5-10 dialog/drawer，未通过 SKILL Tier 1 §13 资格门槛。降级到 [T2.8](#tier-2--单功能-pending-控件) 与 macOS Metal jitter 协同时再处理。 |
@@ -165,7 +165,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | Mentions | 10 | Done | AutoComplete, Empty, Form, Input, Message, Popup, Primitives, Result, Window |
 | DatePicker | 10 | Done | Buttons, Calendar, Empty, Form, Popup, Primitives, Space, TimePicker |
 | ComboBox | 10 | Done | ButtonSpinner, Buttons, Empty, Form, Input, Popup, Primitives, Window |
-| TreeSelect | 9 | Partial | Buttons, CheckBox, Form, Input, Popup, Primitives, Select, TreeView |
+| TreeSelect | 9 | Done | Buttons, CheckBox, Form, Input, Popup, Primitives, Select, TreeView |
 | TimePicker | 9 | Pending | Buttons, DatePicker, Empty, Form, ListBox, Primitives, Tag, TextBlock |
 
 ### 2.3 主题循环 / 跨层互引
@@ -202,7 +202,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | --- | --- | --- | --- | --- | --- |
 | T1.1 | TreeView | 13 | CheckBox, Empty, Flyouts, Form, Menu, Message, NavMenu, Popup, RadioButton, Result, Spin | **Done** | Templates / visual tree：`NodeSwitcherButton` 单 presenter 化；`TreeViewShowCase` repeated mean `332.44ms -> 213.41ms`，visuals `2108 -> 1646`；详见 [TreeView](TreeView/README.md) |
 | T1.2 | Transfer | 13 | Buttons, CheckBox, Empty, Flyouts, Input, ListView, Menu, Pagination, Select, Tag, TreeView | Pending | 高度复合；优化前必先做 TreeView (T1.1)、Tag (T0.4) |
-| T1.3 | TreeSelect | 9 | Buttons, CheckBox, Form, Input, Popup, Primitives, Select, TreeView | Partial | 与 T1.1 同周期 |
+| T1.3 | TreeSelect | 9 | Buttons, CheckBox, Form, Input, Popup, Primitives, Select, TreeView | **Done** | 共享 `SelectHandle` 单 presenter 化；`TreeSelectShowCase` repeated mean `124.72ms -> 108.95ms`，visuals `909 -> 858`；详见 [TreeSelect](TreeSelect/README.md) |
 | T1.4 | TimePicker | 9 | Buttons, DatePicker, Empty, Form, ListBox, Primitives, Tag, TextBlock | Pending | DatePicker 已 Done；与 Calendar (T2.1) 同周期 |
 | T1.5 | Upload | 8 | Buttons, Empty, Form, ImagePreviewer, Result, Select, Tag, TextBlock | Pending | 以 Tag (T0.4) 完成为前置 |
 | T1.6 | Tour | 7 | Buttons, Dialog, Empty, Popup, Primitives, Steps, Tag | Pending | 以 Popup (T0.2)、Tag (T0.4)、Steps (T2.4) 为前置 |

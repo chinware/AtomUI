@@ -39,6 +39,9 @@ internal class SelectHandle : TemplatedControl
     public static readonly StyledProperty<PathIcon?> LoadingIconProperty =
         AvaloniaProperty.Register<SelectHandle, PathIcon?>(nameof (LoadingIcon));
 
+    public static readonly StyledProperty<IconTemplate?> FilterIndicatorTemplateProperty =
+        AvaloniaProperty.Register<SelectHandle, IconTemplate?>(nameof (FilterIndicatorTemplate));
+
     public static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty =
         AvaloniaProperty.Register<SelectHandle, FormValidateFeedback?>(nameof (FormFeedback));
 
@@ -46,6 +49,16 @@ internal class SelectHandle : TemplatedControl
         AvaloniaProperty.RegisterDirect<SelectHandle, bool>(
             nameof(IsFormFeedbackVisible),
             o => o.IsFormFeedbackVisible);
+
+    internal static readonly DirectProperty<SelectHandle, PathIcon?> CurrentIndicatorIconProperty =
+        AvaloniaProperty.RegisterDirect<SelectHandle, PathIcon?>(
+            nameof(CurrentIndicatorIcon),
+            o => o.CurrentIndicatorIcon);
+
+    internal static readonly DirectProperty<SelectHandle, bool> IsCurrentIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<SelectHandle, bool>(
+            nameof(IsCurrentIndicatorVisible),
+            o => o.IsCurrentIndicatorVisible);
 
     public bool IsInputHover
     {
@@ -107,6 +120,12 @@ internal class SelectHandle : TemplatedControl
         set => SetValue(LoadingIconProperty, value);
     }
 
+    public IconTemplate? FilterIndicatorTemplate
+    {
+        get => GetValue(FilterIndicatorTemplateProperty);
+        set => SetValue(FilterIndicatorTemplateProperty, value);
+    }
+
     public FormValidateFeedback? FormFeedback
     {
         get => GetValue(FormFeedbackProperty);
@@ -120,6 +139,26 @@ internal class SelectHandle : TemplatedControl
         get => _isFormFeedbackVisible;
         private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
     }
+
+    private PathIcon? _currentIndicatorIcon;
+
+    internal PathIcon? CurrentIndicatorIcon
+    {
+        get => _currentIndicatorIcon;
+        private set => SetAndRaise(CurrentIndicatorIconProperty, ref _currentIndicatorIcon, value);
+    }
+
+    private bool _isCurrentIndicatorVisible;
+
+    internal bool IsCurrentIndicatorVisible
+    {
+        get => _isCurrentIndicatorVisible;
+        private set => SetAndRaise(IsCurrentIndicatorVisibleProperty, ref _isCurrentIndicatorVisible, value);
+    }
+
+    private PathIcon? _filterIndicator;
+
+    internal PathIcon? FilterIndicator => _filterIndicator;
 
     public static readonly RoutedEvent<RoutedEventArgs> ClearRequestedEvent =
         RoutedEvent.Register<Button, RoutedEventArgs>(nameof(ClearRequested), RoutingStrategies.Bubble);
@@ -154,6 +193,34 @@ internal class SelectHandle : TemplatedControl
         {
             ConfigureFormFeedbackSubscription();
         }
+        else if (change.Property == OpenIndicatorProperty ||
+                 change.Property == LoadingIconProperty ||
+                 change.Property == FilterIndicatorTemplateProperty ||
+                 change.Property == IsLoadingProperty ||
+                 change.Property == IsFilterEnabledProperty ||
+                 change.Property == IsDropDownOpenProperty)
+        {
+            if (change.Property == FilterIndicatorTemplateProperty)
+            {
+                _filterIndicator = null;
+            }
+            UpdateCurrentIndicatorIcon();
+        }
+    }
+
+    private void UpdateCurrentIndicatorIcon()
+    {
+        CurrentIndicatorIcon = IsFilterEnabled && IsDropDownOpen
+            ? GetFilterIndicator()
+            : IsLoading
+                ? LoadingIcon
+                : OpenIndicator;
+        IsCurrentIndicatorVisible = CurrentIndicatorIcon is not null;
+    }
+
+    private PathIcon? GetFilterIndicator()
+    {
+        return _filterIndicator ??= FilterIndicatorTemplate?.Build();
     }
 
     private void ConfigureFormFeedbackSubscription()

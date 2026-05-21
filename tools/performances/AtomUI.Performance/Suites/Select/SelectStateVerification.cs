@@ -1,4 +1,5 @@
 using System.Reflection;
+using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
@@ -250,24 +251,27 @@ internal static partial class Program
             OptionsSource = CreateSelectOptions()
         };
         using var realized = RealizeControl(select);
-        Expect(FindVisualByName<LoadingOutlined>(select, "LoadingIndicator") == null,
-            "Non-loading Select should not create default LoadingOutlined.",
+        var loadingIcon = select.SuffixLoadingIcon;
+        var indicator   = FindVisualByName<IconPresenter>(select, "OpenIndicator");
+        Expect(indicator != null && !ReferenceEquals(indicator.Icon, loadingIcon),
+            "Non-loading Select should not attach the suffix loading icon.",
             failures);
 
         SetSelectLoadingForTest(select, true);
         RefreshLayout(realized.Window);
-        var loadingIcon = FindVisualByTypeName(select, "IconPresenter", "LoadingIndicator");
-        Expect(loadingIcon != null,
-            "Loading Select should create a loading indicator on demand.",
+        indicator = FindVisualByName<IconPresenter>(select, "OpenIndicator");
+        Expect(indicator != null && ReferenceEquals(indicator.Icon, loadingIcon) && indicator.IsVisible,
+            "Loading Select should show the suffix loading icon in the shared SelectHandle indicator.",
             failures);
 
         SetSelectLoadingForTest(select, false);
         RefreshLayout(realized.Window);
-        Expect(FindVisualByTypeName(select, "IconPresenter", "LoadingIndicator") == null,
-            "Leaving loading state should detach the loading indicator.",
+        indicator = FindVisualByName<IconPresenter>(select, "OpenIndicator");
+        Expect(indicator != null && !ReferenceEquals(indicator.Icon, loadingIcon),
+            "Leaving loading state should restore the non-loading SelectHandle indicator.",
             failures);
         Expect(loadingIcon?.GetVisualParent() == null,
-            "Detached loading indicator should not keep a visual parent.",
+            "Detached suffix loading icon should not keep a visual parent.",
             failures);
     }
 

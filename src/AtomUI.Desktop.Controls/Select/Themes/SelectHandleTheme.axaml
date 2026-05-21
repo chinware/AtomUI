@@ -5,21 +5,20 @@
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SelectHandle}" TargetType="atom:SelectHandle">
+        <Setter Property="FilterIndicatorTemplate">
+            <atom:IconTemplate>
+                <antdicons:SearchOutlined />
+            </atom:IconTemplate>
+        </Setter>
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
                     <StackPanel Name="IconLayout" Orientation="Horizontal">
                         <Panel>
-                            <atom:IconPresenter Name="OpenIndicator" IsVisible="True"
-                                                Icon="{TemplateBinding OpenIndicator}"
+                            <atom:IconPresenter Name="OpenIndicator"
+                                                Icon="{TemplateBinding CurrentIndicatorIcon}"
+                                                IsVisible="{TemplateBinding IsCurrentIndicatorVisible}"
                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                            <atom:IconPresenter Name="LoadingIndicator"
-                                                Icon="{TemplateBinding LoadingIcon}"
-                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                IsVisible="False"/>
-                            <antdicons:SearchOutlined Name="SearchIndicator"
-                                                      IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                                      IsVisible="False" />
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
@@ -51,36 +50,13 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
         </Style>
 
-        <Style Selector="^[IsLoading=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#OpenIndicator">
-                <Setter Property="IsVisible" Value="False" />
-            </Style>
-            <Style Selector="^ /template/ atom|IconPresenter#LoadingIndicator">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[IsFilterEnabled=True][IsDropDownOpen=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#OpenIndicator">
-                <Setter Property="IsVisible" Value="False" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#SearchIndicator">
-                <Setter Property="IsVisible" Value="True" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[IsAllowClear=True]">
-            <Style Selector="^[IsSelectionEmpty=False]">
-                <Style Selector="^[IsInputHover=True], ^[IsInputPressed=True]">
-                    <Style Selector="^ /template/ atom|IconPresenter#OpenIndicator">
-                        <Setter Property="IsVisible" Value="False" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#SearchIndicator">
-                        <Setter Property="IsVisible" Value="False" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|InputClearIconButton#PART_ClearButton">
-                        <Setter Property="IsVisible" Value="True" />
-                    </Style>
+        <Style Selector="^[IsAllowClear=True][IsSelectionEmpty=False]">
+            <Style Selector="^[IsInputHover=True], ^[IsInputPressed=True]">
+                <Style Selector="^ /template/ atom|IconPresenter#OpenIndicator">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+                <Style Selector="^ /template/ atom|InputClearIconButton#PART_ClearButton">
+                    <Setter Property="IsVisible" Value="True" />
                 </Style>
             </Style>
         </Style>
