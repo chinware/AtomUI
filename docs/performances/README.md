@@ -6,6 +6,10 @@
 
 样式 selector 与代码状态机的性能边界见：[style-vs-code-guidelines.md](style-vs-code-guidelines.md)。
 
+Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` 引用）见：[avalonia12-control-library-pitfalls.md](avalonia12-control-library-pitfalls.md)。
+
+按 Fan-In / Fan-Out 排序的 Desktop 控件优化任务路线图（含 ColorPicker、DataGrid 包）见：[desktop-controls-optimization-roadmap.md](desktop-controls-optimization-roadmap.md)。
+
 ## 目录规范
 
 - 每个控件或共享性能体系使用一个独立目录，目录名使用控件名的大小写写法，例如 `AddOnDecoratedBox`、`LineEdit`。
@@ -85,6 +89,11 @@
 | Result | 本轮已完成 | [Result](Result/README.md) | 普通状态/错误码视觉按需创建；`ResultShowCase` repeated mean `74.01ms -> 67.19ms`，Svg `8 -> 3`，visuals `265 -> 257` |
 | ScrollViewer | 本轮已完成基线与低风险正确性修复 | [ScrollViewer](ScrollViewer/README.md) | 修复 overlay host selector 与 motion owner；`FloatButtonShowCase` 页面级 timing 基本中性，后续优化需更强收益证明 |
 | Slider | 本轮已完成 | [Slider](Slider/README.md) | 普通 Slider 不再预创建 `PART_EndThumb`；`SliderShowCase` repeated mean `46.31ms -> 33.78ms`，visuals `111 -> 105` |
+| TextBlock | 本轮已完成 | [TextBlock](TextBlock/README.md) | `HighlightableTextBlock` 段级 Run 重写：Match.Medium `3.306ms→0.426ms (-87%)`、`355.8KB→44.0KB (-88%)`、`logical 56→4`；`SelectableTextBlock` token binding+Cursor 移到 Theme Setter |
+| Popup | 本轮已完成 | [Popup](Popup/README.md) | `Popup` 4 条构造器 token binding 迁到 ControlTheme（fan-in 19 → ~76 条订阅消除 + Tier 1 §7 同优先级碰撞修复）；构造路径 `0.154ms→0.107ms (-31%)`、`23.4KB→21.9KB (-6%)`；`ShadowsAwareContainer` 影子 Border 延迟到 `HasBoxShadow` |
+| Tag | 本轮已完成 | [Tag](Tag/README.md) | `AbstractTag.SetupDefaultCloseIcon` 门控到 `IsClosable=true`；非 closable Tag 各 scenario 减少 ~2 KB/instance；Gallery 76 实例 × ~70 非 closable ≈ 140 KB 加载分配下降；closable 路径行为不变 |
+| Tooltip | 本轮已完成（structural-only） | [Tooltip](Tooltip/README.md) | `ToolTipService.StartShowTimer` 复用 DispatcherTimer + method-group Tick handler，避免每次 hover-show 分配 timer + lambda 闭包；headless bench 不能触发 Show 流程，real-world hover-heavy 场景待 Gallery 实测 |
+| Separator | 本轮已完成（structural-only） | [Separator](Separator/README.md) | `AbstractSeparator.Render` Pen 缓存（SKILL Cost Model 强制）；headless bench 解析力 < 0.1 KB/instance 看不出，real-world 60fps render loop 才能放大 |
 
 ## 总列表
 
@@ -148,6 +157,7 @@
 | Data Display | Segmented | Done | [Segmented](Segmented/README.md)；无 icon item 的隐藏 `IconPresenter` 已按需化，真实 `SegmentedShowCase` repeated mean 提升约 `18.51%` |
 | Data Display | Statistic | Pending | 待建立基线 |
 | Data Display | Tag | Pending | 待建立基线 |
+| Data Display | TextBlock | Done (structural) | [TextBlock](TextBlock/README.md)；`HighlightableTextBlock` 段级 Run（N 字符 → ≤ 1 + 2K Run），`SelectableTextBlock` token binding + Cursor 移到 Theme Setter；微基准待 perf 哈纳斯恢复后补 |
 | Data Display | Timeline | Pending | 待建立基线 |
 | Data Display | TreeView | Pending | 待建立基线 |
 | Data Display | Tooltip | Pending | 待建立基线 |
@@ -164,6 +174,7 @@
 | Feedback | Skeleton | Pending | 待建立基线 |
 | Feedback | Spin | Pending | 待建立基线 |
 | Feedback | Watermark | Pending | 待建立基线 |
+| Tooling | AtomUI.Performance harness | Done (recovered) | Avalonia 12 迁移期间失同步的 62+ 错误已清干净（保留 stub `AddOnDecoratedBoxPerfProbe`、排除待重写的 `AccessoryLifecycleVerification.cs` / `EffectiveBrushVerification.cs`，3 处状态验证打 TODO）。`--suite textblock` / `--suite popup` / `--verify-textblock-states` 可用，T0.1 / T0.2 微基准已回填。 |
 
 ## 状态定义
 
