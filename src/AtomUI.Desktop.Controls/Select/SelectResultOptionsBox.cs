@@ -155,7 +155,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         _searchTextBox[!SizeTypeProperty] = this[!SizeTypeProperty];
         if (IsFilterEnabled)
         {
-            if (Mode == SelectMode.Multiple)
+            if (Mode != SelectMode.Single)
             {
                 if (!IsResponsiveTagMode)
                 {
@@ -235,7 +235,7 @@ internal class SelectResultOptionsBox : TemplatedControl
     {
         if (_searchTextBox != null)
         {
-            if (Mode == SelectMode.Multiple)
+            if (Mode != SelectMode.Single)
             {
                 _searchTextBox.IsVisible = IsFilterEnabled;
             }

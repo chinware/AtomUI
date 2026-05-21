@@ -376,7 +376,8 @@ public partial class ListView
         {
             // The IsSelected property is not set on the container: update the container
             // selection based on the current selection as understood by this control.
-            MarkContainerSelected(container, Selection.IsSelected(GlobalIndex(index)));
+            var selectionIndex = SelectionIndexFromItemIndex(index);
+            MarkContainerSelected(container, selectionIndex != -1 && Selection.IsSelected(selectionIndex));
         }
         else
         {
@@ -384,10 +385,10 @@ public partial class ListView
             // container theme which has bound the IsSelected property. Update our selection
             // based on the selection state of the container.
             var containerIsSelected = GetIsSelected(container);
-            UpdateSelection(GlobalIndex(index), containerIsSelected, toggleModifier: true);
+            UpdateSelection(SelectionIndexFromItemIndex(index), containerIsSelected, toggleModifier: true);
         }
 
-        if (Selection.AnchorIndex == index)
+        if (Selection.AnchorIndex == SelectionIndexFromItemIndex(index))
         {
             KeyboardNavigation.SetTabOnceActiveElement(this, container);
         }
@@ -397,7 +398,8 @@ public partial class ListView
     {
         base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
         
-        MarkContainerSelected(container, Selection.IsSelected(GlobalIndex(newIndex)));
+        var selectionIndex = SelectionIndexFromItemIndex(newIndex);
+        MarkContainerSelected(container, selectionIndex != -1 && Selection.IsSelected(selectionIndex));
     }
     
     protected override void OnDataContextBeginUpdate()
@@ -551,7 +553,7 @@ public partial class ListView
 
         if (GetNextControl(container, direction, from, wrap) is Control next)
         {
-            var index = GlobalIndexFromContainer(next);
+            var index = SelectionIndexFromContainer(next);
 
             if (index != -1)
             {
@@ -572,7 +574,7 @@ public partial class ListView
         bool rightButton = false,
         bool fromFocus = false)
     {
-        if (index < 0 || index >= TotalItemCount)
+        if (!IsSelectionIndexValid(index))
         {
             return;
         }
@@ -636,7 +638,7 @@ public partial class ListView
         bool rightButton = false,
         bool fromFocus = false)
     {
-        var index = GlobalIndexFromContainer(container);
+        var index = SelectionIndexFromContainer(container);
 
         if (index != -1)
         {
@@ -667,6 +669,136 @@ public partial class ListView
         }
 
         return globalIndex % PageSize;
+    }
+
+    private bool UsesSourceCollectionSelectionIndex([NotNullWhen(true)] out IListCollectionView? collectionView)
+    {
+        if (ItemsSource is IListCollectionView view &&
+            !IsGroupEnabled &&
+            ReferenceEquals(Selection.Source, view.SourceCollection))
+        {
+            collectionView = view;
+            return true;
+        }
+
+        collectionView = null;
+        return false;
+    }
+
+    private int SelectionIndexFromContainer(Control container)
+    {
+        return SelectionIndexFromItemIndex(IndexFromContainer(container));
+    }
+
+    private int SelectionIndexFromItemIndex(int itemIndex)
+    {
+        if (itemIndex < 0)
+        {
+            return -1;
+        }
+
+        if (UsesSourceCollectionSelectionIndex(out var collectionView))
+        {
+            object? item;
+            try
+            {
+                item = collectionView.GetItemAt(itemIndex);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return -1;
+            }
+
+            return IndexOf(Selection.Source, item);
+        }
+
+        return GlobalIndex(itemIndex);
+    }
+
+    private int ItemIndexFromSelectionIndex(int selectionIndex)
+    {
+        if (selectionIndex < 0)
+        {
+            return -1;
+        }
+
+        if (UsesSourceCollectionSelectionIndex(out var collectionView))
+        {
+            var item = ItemAt(Selection.Source, selectionIndex);
+            return item == AvaloniaProperty.UnsetValue ? -1 : collectionView.IndexOf(item);
+        }
+
+        return GlobalIndexLocalIndex(selectionIndex);
+    }
+
+    private bool IsSelectionIndexValid(int index)
+    {
+        if (index < 0)
+        {
+            return false;
+        }
+
+        if (UsesSourceCollectionSelectionIndex(out _))
+        {
+            return ItemAt(Selection.Source, index) != AvaloniaProperty.UnsetValue;
+        }
+
+        return index < TotalItemCount;
+    }
+
+    private static int IndexOf(IEnumerable? source, object? item)
+    {
+        if (source is null)
+        {
+            return -1;
+        }
+
+        if (source is IList list)
+        {
+            return list.IndexOf(item);
+        }
+
+        if (source is ItemsSourceView itemsSourceView)
+        {
+            return itemsSourceView.IndexOf(item);
+        }
+
+        var index = 0;
+        foreach (var current in source)
+        {
+            if (Equals(current, item))
+            {
+                return index;
+            }
+            ++index;
+        }
+
+        return -1;
+    }
+
+    private static object? ItemAt(IEnumerable? source, int index)
+    {
+        if (source is null || index < 0)
+        {
+            return AvaloniaProperty.UnsetValue;
+        }
+
+        if (source is IList list)
+        {
+            return index < list.Count ? list[index] : AvaloniaProperty.UnsetValue;
+        }
+
+        var currentIndex = 0;
+        foreach (var item in source)
+        {
+            if (currentIndex == index)
+            {
+                return item;
+            }
+            ++currentIndex;
+        }
+
+        return AvaloniaProperty.UnsetValue;
     }
 
     protected bool UpdateSelectionFromEventSource(
@@ -757,7 +889,8 @@ public partial class ListView
     {
         void Mark(int index, bool selected)
         {
-            var container = ContainerFromIndex(GlobalIndexLocalIndex(index));
+            var itemIndex = ItemIndexFromSelectionIndex(index);
+            var container = itemIndex == -1 ? null : ContainerFromIndex(itemIndex);
 
             if (container != null)
             {
@@ -786,8 +919,12 @@ public partial class ListView
         {
             for (var i = 0; i < ItemCount; i++)
             {
-                var globalIndex = GlobalIndex(i);
-                Mark(i, Selection.IsSelected(globalIndex));
+                var selectionIndex = SelectionIndexFromItemIndex(i);
+                var container      = ContainerFromIndex(i);
+                if (container != null)
+                {
+                    MarkContainerSelected(container, selectionIndex != -1 && Selection.IsSelected(selectionIndex));
+                }
             }
         }
 
@@ -929,11 +1066,17 @@ public partial class ListView
             anchorIndex >= 0 &&
             this.IsAttachedToVisualTree())
         {
+            var itemIndex = ItemIndexFromSelectionIndex(anchorIndex);
+            if (itemIndex < 0)
+            {
+                return;
+            }
+
             Dispatcher.Post(state =>
             {
                 ScrollIntoView((int)state!);
                 _hasScrolledToSelectedItem = true;
-            }, anchorIndex);
+            }, itemIndex);
         }
     }
         
@@ -942,7 +1085,7 @@ public partial class ListView
         if (!_ignoreContainerSelectionChanged &&
             e.Source is Control control &&
             control.Parent == this &&
-            GlobalIndexFromContainer(control) is var index &&
+            SelectionIndexFromContainer(control) is var index &&
             index >= 0)
         {
             if (GetIsSelected(control))
@@ -983,7 +1126,9 @@ public partial class ListView
             {
                 MarkContainerSelected(
                     container,
-                    Selection.IsSelected(GlobalIndexFromContainer(container)));
+                    SelectionIndexFromContainer(container) is var selectionIndex &&
+                    selectionIndex != -1 &&
+                    Selection.IsSelected(selectionIndex));
             }
         }
     }

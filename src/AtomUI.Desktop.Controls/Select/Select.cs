@@ -13,7 +13,6 @@ using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -694,10 +693,6 @@ public partial class Select : AbstractSelect
             SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
             CleanDynamicAddedOptions();
         }
-        else if (change.Property == FilterValueSelectorProperty)
-        {
-            HandleFilterValueSelectorChanged();
-        }
         else if (change.Property == ModeProperty)
         {
             ConfigureOptionsBoxSelectionMode();
@@ -888,23 +883,7 @@ public partial class Select : AbstractSelect
         }
         e.Handled = true;
     }
-
-    private void HandleFilterValueSelectorChanged()
-    {
-        // if (_filterDescription != null && _candidateList!= null && _candidateList.FilterDescriptions != null)
-        // {
-        //     var oldFilter = _filterDescription;
-        //     _filterDescription = new ListFilterDescription()
-        //     {
-        //         FilterPropertySelector = FilterValueSelector,
-        //         Filter                 =  oldFilter.Filter,
-        //         FilterConditions       = oldFilter.FilterConditions
-        //     };
-        //     _candidateList.FilterDescriptions.Remove(oldFilter);
-        //     _candidateList.FilterDescriptions.Add(_filterDescription);
-        // }
-    }
-
+    
     private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         ClearValue();

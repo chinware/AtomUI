@@ -99,7 +99,8 @@
                              Mode="Tags"
                              PlaceholderText="Tags Mode"
                              HorizontalAlignment="Stretch"
-                             IsFilterEnabled="False" />
+                             IsFilterEnabled="True"
+                             Filter="{atom:ValueFilterProvider Contains}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
