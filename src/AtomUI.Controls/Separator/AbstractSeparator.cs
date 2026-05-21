@@ -184,6 +184,10 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
     private double _currentEdgeDistance;
     private static ImmutableDashStyle? s_dash;
     private static ImmutableDashStyle? s_dot;
+    private Pen? _cachedLinePen;
+    private SeparatorVariant _cachedVariant;
+    private IBrush? _cachedLineColor;
+    private double _cachedLineWidth;
 
     static AbstractSeparator()
     {
@@ -202,6 +206,12 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
         if (change.Property == TitleProperty)
         {
             UpdatePseudoClasses();
+        }
+        else if (change.Property == LineColorProperty ||
+                 change.Property == LineWidthProperty ||
+                 change.Property == VariantProperty)
+        {
+            _cachedLinePen = null;
         }
     }
 
@@ -334,18 +344,8 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
         {
             EdgeMode = EdgeMode.Aliased
         });
-        IDashStyle? lineStyle   = null;
-        
-        if (Variant == SeparatorVariant.Dashed)
-        {
-            lineStyle = DashStyle;
-        }
-        else if (Variant == SeparatorVariant.Dotted)
-        {
-            lineStyle = DotStyle;
-        }
-        
-        var linePen     = new Pen(LineColor, LineWidth, lineStyle);
+
+        var linePen     = GetOrCreateLinePen();
         var controlRect = new Rect(DesiredSize.Deflate(Margin));
 
         if (Orientation == Orientation.Horizontal)
@@ -399,6 +399,32 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
     
     public static IDashStyle DashStyle => s_dash ??= new ImmutableDashStyle([4, 2], 0);
     public static IDashStyle DotStyle => s_dot ??= new ImmutableDashStyle([1, 1], 0);
+
+    private Pen GetOrCreateLinePen()
+    {
+        var variant = Variant;
+        var lineColor = LineColor;
+        var lineWidth = LineWidth;
+        if (_cachedLinePen is not null &&
+            _cachedVariant == variant &&
+            ReferenceEquals(_cachedLineColor, lineColor) &&
+            MathUtils.AreClose(_cachedLineWidth, lineWidth))
+        {
+            return _cachedLinePen;
+        }
+
+        IDashStyle? lineStyle = variant switch
+        {
+            SeparatorVariant.Dashed => DashStyle,
+            SeparatorVariant.Dotted => DotStyle,
+            _                       => null
+        };
+        _cachedLinePen   = new Pen(lineColor, lineWidth, lineStyle);
+        _cachedVariant   = variant;
+        _cachedLineColor = lineColor;
+        _cachedLineWidth = lineWidth;
+        return _cachedLinePen;
+    }
     
     private void UpdatePseudoClasses()
     {

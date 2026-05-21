@@ -243,12 +243,16 @@ public abstract class AbstractTag : TemplatedControl
             {
                 if (TagColor is not null)
                 {
-                    SetupTagColorInfo(TagColor); 
+                    SetupTagColorInfo(TagColor);
                 }
             }
             else if (change.Property == IsBorderedProperty)
             {
                 ConfigureBorderThickness();
+            }
+            else if (change.Property == IsClosableProperty)
+            {
+                SetupDefaultCloseIcon();
             }
         }
     }
@@ -385,6 +389,10 @@ public abstract class AbstractTag : TemplatedControl
 
     private void SetupDefaultCloseIcon()
     {
+        if (!IsClosable)
+        {
+            return;
+        }
         if (CloseIcon is null)
         {
             ClearValue(CloseIconProperty);

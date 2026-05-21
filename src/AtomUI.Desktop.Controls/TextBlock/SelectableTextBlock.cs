@@ -1,4 +1,3 @@
-using AtomUI.Data;
 using AtomUI.Media.TextFormatting;
 using AtomUI.Theme.Styling;
 using AtomUI.Utils;
@@ -111,13 +110,6 @@ public class SelectableTextBlock : TextBlock
 
     private bool _canCopy;
     private int _wordSelectionStart = -1;
-
-    public SelectableTextBlock()
-    {
-        TokenResourceBinder.CreateTokenBinding(this, SelectionBrushProperty, SharedTokenKind.SelectionBackground);
-        TokenResourceBinder.CreateTokenBinding(this, SelectionForegroundBrushProperty, SharedTokenKind.SelectionForeground);
-        Cursor = new Cursor(StandardCursorType.Ibeam);
-    }
 
     /// <summary>
     /// Copies the current selection to the Clipboard.

@@ -4,5 +4,6 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="OverlayPopupHostTheme.axaml"/>
         <ResourceInclude Source="PopupRootTheme.axaml"/>
+        <ResourceInclude Source="PopupTheme.axaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

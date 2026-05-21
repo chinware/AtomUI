@@ -216,15 +216,28 @@ public sealed class ToolTipService : IDisposable
 
     private void StartShowTimer(int showDelay, Control control)
     {
-        _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(showDelay), Tag = (this, control) };
-        _timer.Tick += (o, e) =>
+        if (_timer == null)
         {
-            if (_timer != null)
-            {
-                Open(control);
-            }
-        };
+            _timer = new DispatcherTimer();
+            _timer.Tick += HandleShowTimerTick;
+        }
+        _timer.Stop();
+        _timer.Tag = control;
+        _timer.Interval = TimeSpan.FromMilliseconds(showDelay);
         _timer.Start();
+    }
+
+    private void HandleShowTimerTick(object? sender, EventArgs e)
+    {
+        if (_timer is null)
+        {
+            return;
+        }
+        _timer.Stop();
+        if (_timer.Tag is Control pendingControl)
+        {
+            Open(pendingControl);
+        }
     }
 
     private void Open(Control control)
@@ -254,6 +267,9 @@ public sealed class ToolTipService : IDisposable
     private void StopTimer()
     {
         _timer?.Stop();
-        _timer = null;
+        if (_timer != null)
+        {
+            _timer.Tag = null;
+        }
     }
 }

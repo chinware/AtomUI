@@ -92,10 +92,17 @@ internal class ShadowsAwareContainer : Decorator
     {
         ClipToBoundsProperty.OverrideDefaultValue<ShadowsAwareContainer>(false);
         ChildProperty.Changed.AddClassHandler<ShadowsAwareContainer>((x, e) => x.ChildChanged(e));
+        BoxShadowProperty.Changed.AddClassHandler<ShadowsAwareContainer>((x, _) =>
+        {
+            if (x.HasBoxShadow)
+            {
+                x.EnsureShadowsRenderer();
+            }
+        });
         AffectsMeasure<ShadowsAwareContainer>(
-            BoxShadowProperty, 
-            ArrowDirectionProperty, 
-            ArrowSizeProperty, 
+            BoxShadowProperty,
+            ArrowDirectionProperty,
+            ArrowSizeProperty,
             IsArrowVisibleProperty,
             IsOverlayModeProperty,
             ArrowIndicatorLayoutBoundsProperty);
@@ -206,7 +213,10 @@ internal class ShadowsAwareContainer : Decorator
 
     private void ChildChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        EnsureShadowsRenderer();
+        if (HasBoxShadow)
+        {
+            EnsureShadowsRenderer();
+        }
         _contentPresenterChildSubscription?.Dispose();
         _contentPresenterChildSubscription = null;
 

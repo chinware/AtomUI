@@ -70,51 +70,73 @@ public class HighlightableTextBlock : TextBlock
 
     protected virtual void NotifyBuildFilterHighlightRuns()
     {
-        if (!string.IsNullOrEmpty(HighlightWords))
-        {
-            if (string.IsNullOrWhiteSpace(Text))
-            {
-                return;
-            }
-            Debug.Assert(Text != null);
-            var highlightRanges = CalculateHighlightRanges(HighlightWords, Text);
-            var runs            = new InlineCollection();
-            for (var i = 0; i < Text.Length; i++)
-            {
-                var c   =  Text[i];
-                var run = new Run($"{c}");
-                
-                if (HighlightStrategy.HasFlag(TextBlockHighlightStrategy.HighlightedMatch))
-                {
-                    if (IsNeedHighlight(i, highlightRanges))
-                    {
-                        run.Foreground = HighlightForeground;
-                        run.Background = HighlightBackground;
-                        if (HighlightStrategy.HasFlag(TextBlockHighlightStrategy.BoldedMatch))
-                        {
-                            run.FontWeight = FontWeight.Bold;
-                        }
-                    }
-                }
-                else if (HighlightStrategy.HasFlag(TextBlockHighlightStrategy.HighlightedWhole))
-                {
-                    run.Foreground = HighlightForeground;
-                    run.Background = HighlightBackground;
-                    if (HighlightStrategy.HasFlag(TextBlockHighlightStrategy.BoldedMatch))
-                    {
-                        run.FontWeight = FontWeight.Bold;
-                    }
-                }
-            
-                runs.Add(run);
-            }
-        
-            Inlines = runs;
-        }
-        else
+        if (string.IsNullOrEmpty(HighlightWords))
         {
             Inlines = null;
+            return;
         }
+
+        if (string.IsNullOrWhiteSpace(Text))
+        {
+            return;
+        }
+
+        Debug.Assert(Text != null);
+
+        var strategy        = HighlightStrategy;
+        var highlightMatch  = strategy.HasFlag(TextBlockHighlightStrategy.HighlightedMatch);
+        var highlightWhole  = !highlightMatch && strategy.HasFlag(TextBlockHighlightStrategy.HighlightedWhole);
+        var bold            = strategy.HasFlag(TextBlockHighlightStrategy.BoldedMatch);
+
+        // 注意:HideUnMatched flag 在原实现里就未读取,本轮保留该行为不变(SKILL Tier 1 §1)。
+        if (highlightWhole)
+        {
+            var single = new InlineCollection { CreateRun(Text, isHighlighted: true, bold) };
+            Inlines = single;
+            return;
+        }
+
+        var highlightRanges = CalculateHighlightRanges(HighlightWords, Text);
+        var runs            = new InlineCollection();
+
+        if (highlightRanges.Count == 0)
+        {
+            runs.Add(CreateRun(Text, isHighlighted: false, bold: false));
+            Inlines = runs;
+            return;
+        }
+
+        var cursor = 0;
+        foreach (var (start, end) in highlightRanges)
+        {
+            if (start > cursor)
+            {
+                runs.Add(CreateRun(Text.Substring(cursor, start - cursor), isHighlighted: false, bold: false));
+            }
+            runs.Add(CreateRun(Text.Substring(start, end - start), isHighlighted: highlightMatch, bold: highlightMatch && bold));
+            cursor = end;
+        }
+        if (cursor < Text.Length)
+        {
+            runs.Add(CreateRun(Text.Substring(cursor), isHighlighted: false, bold: false));
+        }
+
+        Inlines = runs;
+    }
+
+    private Run CreateRun(string segment, bool isHighlighted, bool bold)
+    {
+        var run = new Run(segment);
+        if (isHighlighted)
+        {
+            run.Foreground = HighlightForeground;
+            run.Background = HighlightBackground;
+            if (bold)
+            {
+                run.FontWeight = FontWeight.Bold;
+            }
+        }
+        return run;
     }
     
     protected bool IsNeedHighlight(int pos, in List<(int, int)> ranges)
