@@ -108,6 +108,18 @@ internal class NodeSwitcherButton : ToggleButton
             nameof(IconMode),
             o => o.IconMode,
             (o, v) => o.IconMode = v);
+
+    internal static readonly DirectProperty<NodeSwitcherButton, PathIcon?> CurrentIconProperty =
+        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, PathIcon?>(
+            nameof(CurrentIcon),
+            o => o.CurrentIcon,
+            (o, v) => o.CurrentIcon = v);
+
+    internal static readonly DirectProperty<NodeSwitcherButton, bool> IsCurrentIconVisibleProperty =
+        AvaloniaProperty.RegisterDirect<NodeSwitcherButton, bool>(
+            nameof(IsCurrentIconVisible),
+            o => o.IsCurrentIconVisible,
+            (o, v) => o.IsCurrentIconVisible = v);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NodeSwitcherButton>();
@@ -131,6 +143,22 @@ internal class NodeSwitcherButton : ToggleButton
         get => _iconMode;
         set => SetAndRaise(IconModeProperty, ref _iconMode, value);
     }
+
+    private PathIcon? _currentIcon;
+
+    internal PathIcon? CurrentIcon
+    {
+        get => _currentIcon;
+        private set => SetAndRaise(CurrentIconProperty, ref _currentIcon, value);
+    }
+
+    private bool _isCurrentIconVisible;
+
+    internal bool IsCurrentIconVisible
+    {
+        get => _isCurrentIconVisible;
+        private set => SetAndRaise(IsCurrentIconVisibleProperty, ref _isCurrentIconVisible, value);
+    }
     
     internal bool IsMotionEnabled
     {
@@ -149,7 +177,7 @@ internal class NodeSwitcherButton : ToggleButton
     {
         AffectsRender<NodeSwitcherButton>(BackgroundProperty);
         AffectsMeasure<NodeSwitcherButton>(ExpandIconProperty, CollapseIconProperty, IsCheckedProperty,
-            LoadingIconProperty, LeafIconProperty);
+            LoadingIconProperty, LeafIconProperty, RotationIconProperty, IconModeProperty, IsLeafIconVisibleProperty);
     }
 
     public NodeSwitcherButton()
@@ -172,6 +200,17 @@ internal class NodeSwitcherButton : ToggleButton
             change.Property == RotationIconProperty)
         {
             SetupDefaultIcons();
+        }
+        if (change.Property == CollapseIconProperty ||
+            change.Property == ExpandIconProperty ||
+            change.Property == LoadingIconProperty ||
+            change.Property == RotationIconProperty ||
+            change.Property == LeafIconProperty ||
+            change.Property == IconModeProperty ||
+            change.Property == IsCheckedProperty ||
+            change.Property == IsLeafIconVisibleProperty)
+        {
+            UpdateCurrentIcon();
         }
     }
 
@@ -224,6 +263,22 @@ internal class NodeSwitcherButton : ToggleButton
                 LoadingAnimation = IconAnimation.Spin
             }, BindingPriority.Template);
         }
+        UpdateCurrentIcon();
+    }
+
+    private void UpdateCurrentIcon()
+    {
+        var icon = IconMode switch
+        {
+            NodeSwitcherButtonIconMode.Default => IsChecked == true ? CollapseIcon : ExpandIcon,
+            NodeSwitcherButtonIconMode.Rotation => RotationIcon,
+            NodeSwitcherButtonIconMode.Loading => LoadingIcon,
+            NodeSwitcherButtonIconMode.Leaf => IsLeafIconVisible ? LeafIcon : null,
+            _ => null
+        };
+
+        CurrentIcon = icon;
+        IsCurrentIconVisible = icon is not null;
     }
 
     protected override void Toggle()

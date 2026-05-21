@@ -2,9 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
-    x:ClassModifier="internal"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters">
-    <converters:NodeSwitcherIconModeConverter x:Key="NodeSwitcherIconModeConverter" />
+    x:ClassModifier="internal">
     <!--
         我们需要在这个切换按钮显示几种状态的图标
         1、展开和收缩两种状态的图标
@@ -17,38 +15,12 @@
             <ControlTemplate>
                 <Panel Name="RootLayout"
                        IsHitTestVisible="False">
-                    <atom:IconPresenter Name="ExpandIconPresenter"
+                    <atom:IconPresenter Name="CurrentIconPresenter"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Icon="{TemplateBinding ExpandIcon}" 
-                                        IsVisible="False"/>
-                    <atom:IconPresenter
-                        Name="CollapseIconPresenter"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Icon="{TemplateBinding CollapseIcon}" 
-                        IsVisible="False"/>
-                    <atom:IconPresenter
-                        Name="RotationIconPresenter"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        RenderTransform="{TemplateBinding RotationIconRenderTransform}"
-                        Icon="{TemplateBinding RotationIcon}"
-                        IsVisible="{TemplateBinding IconMode, Converter={StaticResource NodeSwitcherIconModeConverter},
-                                                    ConverterParameter={x:Static atom:NodeSwitcherButtonIconMode.Rotation}}" />
-                    <atom:IconPresenter
-                        Name="LoadingIconPresenter"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Icon="{TemplateBinding LoadingIcon}"
-                        IsVisible="{TemplateBinding IconMode, Converter={StaticResource NodeSwitcherIconModeConverter},
-                                                    ConverterParameter={x:Static atom:NodeSwitcherButtonIconMode.Loading}}" />
-                    <atom:IconPresenter
-                        Name="LeafIconPresenter"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Icon="{TemplateBinding LeafIcon}"
-                        IsVisible="False"/>
+                                        RenderTransform="{TemplateBinding RotationIconRenderTransform}"
+                                        Icon="{TemplateBinding CurrentIcon}"
+                                        IsVisible="{TemplateBinding IsCurrentIconVisible}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -71,12 +43,12 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}"/>
         </Style>
         
-        <Style Selector="^ /template/ atom|IconPresenter#RotationIconPresenter">
+        <Style Selector="^[IconMode=Rotation] /template/ atom|IconPresenter#CurrentIconPresenter">
             <Setter Property="Width" Value="{atom:SharedTokenResource IconSizeXS}"/>
             <Setter Property="Height" Value="{atom:SharedTokenResource IconSizeXS}"/>
         </Style>
         
-        <Style Selector="^ /template/ atom|IconPresenter#LoadingIconPresenter">
+        <Style Selector="^[IconMode=Loading] /template/ atom|IconPresenter#CurrentIconPresenter">
             <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}"/>
         </Style>
         
@@ -84,28 +56,6 @@
             <Setter Property="RotationIconRenderTransform" Value="rotate(90deg)"/>
         </Style>
         
-        <Style Selector="^[IconMode=Default]">
-            <Style Selector="^ /template/ atom|IconPresenter#ExpandIconPresenter">
-                <Setter Property="IsVisible" Value="True"/>
-            </Style>
-            <Style Selector="^ /template/ atom|IconPresenter#CollapseIconPresenter">
-                <Setter Property="IsVisible" Value="False"/>
-            </Style>
-            <Style Selector="^[IsChecked=True]">
-                <Style Selector="^ /template/ atom|IconPresenter#ExpandIconPresenter">
-                    <Setter Property="IsVisible" Value="False"/>
-                </Style>
-                <Style Selector="^ /template/ atom|IconPresenter#CollapseIconPresenter">
-                    <Setter Property="IsVisible" Value="True"/>
-                </Style>
-            </Style>
-        </Style>
-        <Style Selector="^[IconMode=Leaf][IsLeafIconVisible=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#LeafIconPresenter">
-                <Setter Property="IsVisible" Value="True"/>
-            </Style>
-        </Style>
-
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>

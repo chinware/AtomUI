@@ -104,7 +104,7 @@
 | Tour | **Pending** | 0 | 4 | 复合控件 |
 | Transfer | **Pending** | 0 | 7 | 高 fan-out 复合控件 |
 | TreeSelect | Partial | 1 | 5 | 已随 Select 完成 closed `TreeSelectTreeView` 懒加载，独立基线仍待补 |
-| TreeView | **Pending** | 4 | 5 | TreeSelect / Transfer / Cascader 复用 |
+| TreeView | Done | 4 | 5 | `NodeSwitcherButton` 5 个 icon presenter 收敛到 1 个；详见 [TreeView](TreeView/README.md) |
 | Upload | **Pending** | 0 | 4 | 复合控件，含 ImagePreviewer 链路 |
 | Window | Demoted to Tier 2 | 13 | 1 | Fan-in 13 是派生类计数，非实例化次数。实测 Gallery 一次会话 ≤ 1 常驻 + 5-10 dialog/drawer，未通过 SKILL Tier 1 §13 资格门槛。降级到 [T2.8](#tier-2--单功能-pending-控件) 与 macOS Metal jitter 协同时再处理。 |
 | WindowTitleBar | Pending | 3 | 1 | Dialog / ImagePreviewer / Window 复用 |
@@ -157,7 +157,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | --- | --- | --- | --- |
 | Cascader | 16 | Done | CheckBox, Empty, Form, Input, ListBox, Message, Popup, Primitives, Select, TextBlock, TreeSelect, TreeView |
 | Select | 15 | Done | Buttons, Empty, Form, Input, ListView, Message, Popup, Primitives, Result, ScrollViewer, Space, Spin, Tag, Window |
-| TreeView | 13 | Pending | CheckBox, Empty, Flyouts, Form, Menu, Message, NavMenu, Popup, RadioButton, Result, Spin |
+| TreeView | 13 | Done | CheckBox, Empty, Flyouts, Form, Menu, Message, NavMenu, Popup, RadioButton, Result, Spin |
 | Transfer | 13 | Pending | Buttons, CheckBox, Empty, Flyouts, Input, ListView, Menu, Pagination, Select, Tag, TreeView |
 | Primitives | 13 | 部分 | Buttons, Empty, Flyouts, Form, Input, ListBox, Popup, ScrollViewer, Select, Space, TextBlock, Window |
 | AutoComplete | 12 | Done | ComboBox, Empty, Form, Input, Menu, Message, Popup, Primitives, Result, Select, Space, Window |
@@ -200,7 +200,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 
 | # | 控件 | Fan-Out | 主要依赖 | 现状 | SKILL 提示 |
 | --- | --- | --- | --- | --- | --- |
-| T1.1 | TreeView | 13 | CheckBox, Empty, Flyouts, Form, Menu, Message, NavMenu, Popup, RadioButton, Result, Spin | Pending | 子系统：Templates / ItemsControl + Layout；虚拟化、`:nth-child` 与 `IChildIndexProvider` |
+| T1.1 | TreeView | 13 | CheckBox, Empty, Flyouts, Form, Menu, Message, NavMenu, Popup, RadioButton, Result, Spin | **Done** | Templates / visual tree：`NodeSwitcherButton` 单 presenter 化；`TreeViewShowCase` repeated mean `332.44ms -> 213.41ms`，visuals `2108 -> 1646`；详见 [TreeView](TreeView/README.md) |
 | T1.2 | Transfer | 13 | Buttons, CheckBox, Empty, Flyouts, Input, ListView, Menu, Pagination, Select, Tag, TreeView | Pending | 高度复合；优化前必先做 TreeView (T1.1)、Tag (T0.4) |
 | T1.3 | TreeSelect | 9 | Buttons, CheckBox, Form, Input, Popup, Primitives, Select, TreeView | Partial | 与 T1.1 同周期 |
 | T1.4 | TimePicker | 9 | Buttons, DatePicker, Empty, Form, ListBox, Primitives, Tag, TextBlock | Pending | DatePicker 已 Done；与 Calendar (T2.1) 同周期 |

@@ -77,6 +77,7 @@ internal static partial class Program
             options.VerifySplitViewStates ||
             options.VerifySplitterStates ||
             options.VerifySliderStates ||
+            options.VerifyTreeViewStates ||
             options.VerifyTextBlockStates)
         {
             var verified = true;
@@ -319,6 +320,10 @@ internal static partial class Program
             if (options.VerifySliderStates)
             {
                 verified &= RunSliderStateVerification();
+            }
+            if (options.VerifyTreeViewStates)
+            {
+                verified &= RunTreeViewStateVerification();
             }
             if (options.VerifyTextBlockStates)
             {
