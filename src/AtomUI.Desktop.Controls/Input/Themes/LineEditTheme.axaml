@@ -98,6 +98,7 @@
         <Setter Property="CaretBrush" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="SelectionForegroundBrush"
                 Value="{atom:SharedTokenResource SelectionForeground}" />
+        <Setter Property="PlaceholderForeground" Value="{atom:SharedTokenResource ColorTextPlaceholder}" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
