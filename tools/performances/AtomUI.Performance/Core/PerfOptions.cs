@@ -63,7 +63,8 @@ internal sealed record PerfOptions(
     bool VerifyStatisticStates,
     bool VerifySplitViewStates,
     bool VerifySplitterStates,
-    bool VerifySliderStates)
+    bool VerifySliderStates,
+    bool VerifyTextBlockStates)
 {
     public static PerfOptions Parse(string[] args)
     {
@@ -130,6 +131,7 @@ internal sealed record PerfOptions(
         var verifySplitViewStates = false;
         var verifySplitterStates = false;
         var verifySliderStates = false;
+        var verifyTextBlockStates = false;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -327,6 +329,9 @@ internal sealed record PerfOptions(
                 case "--verify-slider-states":
                     verifySliderStates = true;
                     break;
+                case "--verify-textblock-states":
+                    verifyTextBlockStates = true;
+                    break;
             }
         }
 
@@ -393,6 +398,7 @@ internal sealed record PerfOptions(
             verifyStatisticStates,
             verifySplitViewStates,
             verifySplitterStates,
-            verifySliderStates);
+            verifySliderStates,
+            verifyTextBlockStates);
     }
 }

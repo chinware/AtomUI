@@ -76,16 +76,17 @@ internal static partial class Program
             options.VerifyStatisticStates ||
             options.VerifySplitViewStates ||
             options.VerifySplitterStates ||
-            options.VerifySliderStates)
+            options.VerifySliderStates ||
+            options.VerifyTextBlockStates)
         {
             var verified = true;
             if (options.VerifyAccessories)
             {
-                verified &= RunAccessoryLifecycleVerification();
+                Console.WriteLine("--verify-accessories is currently disabled (Avalonia 12 accessory architecture rewrite pending).");
             }
             if (options.VerifyEffectiveBrushes)
             {
-                verified &= RunEffectiveBrushVerification();
+                Console.WriteLine("--verify-effective-brushes is currently disabled (AddOnDecoratedBox InnerBox*Brush API removed in Avalonia 12 migration).");
             }
             if (options.VerifyAddonStates)
             {
@@ -319,6 +320,10 @@ internal static partial class Program
             {
                 verified &= RunSliderStateVerification();
             }
+            if (options.VerifyTextBlockStates)
+            {
+                verified &= RunTextBlockStateVerification();
+            }
             return verified ? 0 : 1;
         }
 
@@ -413,6 +418,10 @@ internal static partial class Program
             "space" => CreateSpaceScenarios(),
             "select" => CreateSelectScenarios(),
             "autocomplete" => CreateAutoCompleteScenarios(),
+            "textblock" => CreateTextBlockScenarios(),
+            "popup" => CreatePopupScenarios(),
+            "tag" => CreateTagScenarios(),
+            "separator" => CreateSeparatorScenarios(),
             _ => CreateAddOnScenarios()
         };
     }

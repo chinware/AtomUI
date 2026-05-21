@@ -68,39 +68,6 @@ internal static partial class Program
         };
     }
 
-    private static void ResetEffectiveBrushState(AddOnDecoratedBox box, InputControlStyleVariant styleVariant)
-    {
-        box.SetCurrentValue(InputElement.IsEnabledProperty, true);
-        box.SetCurrentValue(AddOnDecoratedBox.StyleVariantProperty, styleVariant);
-        box.SetCurrentValue(AddOnDecoratedBox.StatusProperty, InputControlStatus.Default);
-        box.IsInnerBoxHover   = false;
-        box.IsInnerBoxPressed = false;
-    }
-
-    private static EffectiveBrushSet ApplyTestBrushes(AddOnDecoratedBox box)
-    {
-        var brushes = new EffectiveBrushSet();
-        box.InnerBoxDefaultBorderBrush        = brushes.DefaultBorder;
-        box.InnerBoxHoverBorderBrush          = brushes.HoverBorder;
-        box.InnerBoxActiveBorderBrush         = brushes.ActiveBorder;
-        box.InnerBoxFilledBackground          = brushes.FilledBackground;
-        box.InnerBoxFilledBorderBrush         = brushes.FilledBorder;
-        box.InnerBoxFilledHoverBackground     = brushes.FilledHoverBackground;
-        box.InnerBoxActiveBackground          = brushes.ActiveBackground;
-        box.InnerBoxDisabledBackground        = brushes.DisabledBackground;
-        box.InnerBoxErrorBorderBrush          = brushes.ErrorBorder;
-        box.InnerBoxErrorHoverBorderBrush     = brushes.ErrorHoverBorder;
-        box.InnerBoxErrorBackground           = brushes.ErrorBackground;
-        box.InnerBoxErrorFilledBorderBrush    = brushes.ErrorFilledBorder;
-        box.InnerBoxErrorHoverBackground      = brushes.ErrorHoverBackground;
-        box.InnerBoxWarningBorderBrush        = brushes.WarningBorder;
-        box.InnerBoxWarningHoverBorderBrush   = brushes.WarningHoverBorder;
-        box.InnerBoxWarningBackground         = brushes.WarningBackground;
-        box.InnerBoxWarningFilledBorderBrush  = brushes.WarningFilledBorder;
-        box.InnerBoxWarningHoverBackground    = brushes.WarningHoverBackground;
-        return brushes;
-    }
-
     private static IBrush Brush(Color color)
     {
         return new SolidColorBrush(color);

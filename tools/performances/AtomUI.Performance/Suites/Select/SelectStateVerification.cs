@@ -60,8 +60,7 @@ internal static partial class Program
         Expect(FindVisualByName<SelectResultOptionsBox>(select, "SelectedOptionsBox") == null,
             "Closed default single Select should not create SelectResultOptionsBox.",
             failures);
-        Expect(FindVisualByName<SelectAccessoryHost>(select, "PART_SelectAccessoryHost") == null &&
-               FindVisualByTypeName(select, "SelectAccessoryHost") == null,
+        Expect(FindVisualByTypeName(select, "SelectAccessoryHost") == null,
             "Closed default Select should use lightweight SelectHandle instead of SelectAccessoryHost.",
             failures);
         Expect(FindVisualByTypeName(select, "SelectHandle") != null,

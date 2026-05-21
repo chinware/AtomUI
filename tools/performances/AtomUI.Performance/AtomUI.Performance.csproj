@@ -13,6 +13,14 @@
     </ItemGroup>
 
     <ItemGroup>
+        <!-- Pending rewrite against the post-Avalonia-12 accessory architecture
+             (LineEditAccessoryHost / TextAreaAccessoryHost no longer exist;
+             AddOnDecoratedBox InnerBox*Brush family was removed in the migration). -->
+        <Compile Remove="Suites/AddOnDecoratedBox/AccessoryLifecycleVerification.cs" />
+        <Compile Remove="Suites/AddOnDecoratedBox/EffectiveBrushVerification.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="../../../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
         <ProjectReference Include="../../../src/AtomUI.Generator/AtomUI.Generator.csproj"
                           OutputItemType="Analyzer"
