@@ -19,6 +19,38 @@
                                Width="200" />
         </gallery:ShowCaseItem>
 
+        <gallery:ShowCaseItem Title="Custom option rendering"
+                              Description="Use OptionTemplate to render rich option content with multiple fields, badges, and multi-line layout.">
+            <atom:AutoComplete Name="CityAutoComplete"
+                               PlaceholderText="try 'a' or 'b'"
+                               Width="320"
+                               IsAllowClear="True"
+                               Filter="{atom:ValueFilterProvider Contains}">
+                <atom:AutoComplete.OptionTemplate>
+                    <DataTemplate x:DataType="vm:CityAutoCompleteOption">
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="2">
+                            <TextBlock Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding Header}"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis" />
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    Padding="6 0"
+                                    VerticalAlignment="Center"
+                                    Background="{atom:SharedTokenResource ColorFillSecondary}"
+                                    CornerRadius="{atom:SharedTokenResource BorderRadiusXS}">
+                                <TextBlock Text="{Binding Country}"
+                                           FontSize="{atom:SharedTokenResource FontSizeSM}" />
+                            </Border>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                       Text="{Binding Population, StringFormat='Population {0:N0}'}"
+                                       FontSize="{atom:SharedTokenResource FontSizeSM}"
+                                       Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                        </Grid>
+                    </DataTemplate>
+                </atom:AutoComplete.OptionTemplate>
+            </atom:AutoComplete>
+        </gallery:ShowCaseItem>
+
         <gallery:ShowCaseItem Title="Lookup-Patterns - Uncertain Category"
                               Description="Demonstration of Lookup Patterns: Uncertain Category.">
             <atom:AutoCompleteSearchEdit Name="SearchAutoComplete" PlaceholderText="input here" Width="300"

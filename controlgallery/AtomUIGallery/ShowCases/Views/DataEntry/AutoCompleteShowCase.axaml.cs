@@ -19,6 +19,7 @@ public partial class AutoCompleteShowCase : ReactiveUserControl<AutoCompleteView
                 viewModel.CustomLabelOptionsAsyncLoader = new CustomLabelOptionsAsyncLoader();
                 viewModel.SearchEditOptionsAsyncLoader  = new SearchEditOptionsAsyncLoader();
                 InitFilterCaseOptions(viewModel);
+                InitCityOptions(viewModel);
 
                 this.OneWayBind(viewModel, vm => vm.BasicOptionsAsyncLoader,
                         v => v.BasicAutoComplete.OptionsAsyncLoader)
@@ -38,6 +39,10 @@ public partial class AutoCompleteShowCase : ReactiveUserControl<AutoCompleteView
 
                 this.OneWayBind(viewModel, vm => vm.FilterCaseOptions,
                         v => v.FilterAutoComplete.OptionsSource)
+                    .DisposeWith(disposables);
+
+                this.OneWayBind(viewModel, vm => vm.CityOptions,
+                        v => v.CityAutoComplete.OptionsSource)
                     .DisposeWith(disposables);
 
                 this.OneWayBind(viewModel, vm => vm.BasicOptionsAsyncLoader,
@@ -78,6 +83,7 @@ public partial class AutoCompleteShowCase : ReactiveUserControl<AutoCompleteView
                     viewModel.CustomLabelOptionsAsyncLoader = null;
                     viewModel.SearchEditOptionsAsyncLoader  = null;
                     viewModel.FilterCaseOptions             = null;
+                    viewModel.CityOptions                   = null;
                 }).DisposeWith(disposables);
             }
         });
@@ -103,6 +109,20 @@ public partial class AutoCompleteShowCase : ReactiveUserControl<AutoCompleteView
                 Header  = "Wall Street",
                 Content = "Wall Street"
             }
+        ];
+    }
+
+    private void InitCityOptions(AutoCompleteViewModel vm)
+    {
+        vm.CityOptions =
+        [
+            new CityAutoCompleteOption { Header = "Amsterdam", Content = "Amsterdam", Country = "NL", Population = 905234 },
+            new CityAutoCompleteOption { Header = "Auckland",  Content = "Auckland",  Country = "NZ", Population = 1657200 },
+            new CityAutoCompleteOption { Header = "Beijing",   Content = "Beijing",   Country = "CN", Population = 21893095 },
+            new CityAutoCompleteOption { Header = "Berlin",    Content = "Berlin",    Country = "DE", Population = 3677472 },
+            new CityAutoCompleteOption { Header = "Boston",    Content = "Boston",    Country = "US", Population = 654776 },
+            new CityAutoCompleteOption { Header = "Jakarta",   Content = "Jakarta",   Country = "ID", Population = 10770487 },
+            new CityAutoCompleteOption { Header = "Lisbon",    Content = "Lisbon",    Country = "PT", Population = 545923 }
         ];
     }
 }

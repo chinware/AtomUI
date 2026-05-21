@@ -44,6 +44,14 @@ public class AutoCompleteViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _filterCaseOptions, value);
     }
 
+    private List<IAutoCompleteOption>? _cityOptions;
+
+    public List<IAutoCompleteOption>? CityOptions
+    {
+        get => _cityOptions;
+        set => this.RaiseAndSetIfChanged(ref _cityOptions, value);
+    }
+
     public AutoCompleteViewModel(IScreen screen)
     {
         HostScreen = screen;
@@ -164,4 +172,10 @@ public class SearchEditOptionsAsyncLoader : ICompleteOptionsAsyncLoader
 public record CustomAutoCompleteOption : AutoCompleteOption
 {
     public int ResultCount { get; set; }
+}
+
+public record CityAutoCompleteOption : AutoCompleteOption
+{
+    public string? Country { get; set; }
+    public int Population { get; set; }
 }
