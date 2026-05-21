@@ -23,6 +23,7 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
                 InitDisabledCascaderData(viewModel);
                 InitSelectParentCascaderData(viewModel);
                 InitMultiSelectCascaderData(viewModel);
+                InitCheckStrategyCascaderData(viewModel);
                 InitPrefixAndSuffixCascaderData(viewModel);
                 InitPlacementCascaderData(viewModel);
                 InitSearchCascaderData(viewModel);
@@ -274,6 +275,68 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
     private void InitMultiSelectCascaderData(CascaderViewModel viewModel)
     {
         viewModel.MultipleSelectCascaderNodes = GenerateMultiSelectCascaderNodes();
+    }
+
+    private void InitCheckStrategyCascaderData(CascaderViewModel viewModel)
+    {
+        viewModel.CheckStrategyShowAllCascaderNodes    = GenerateCheckStrategyCascaderNodes();
+        viewModel.CheckStrategyShowParentCascaderNodes = GenerateCheckStrategyCascaderNodes();
+    }
+
+    private List<ICascaderOption> GenerateCheckStrategyCascaderNodes()
+    {
+        return [
+            new CascaderOption()
+            {
+                Header  = "Zhejiang",
+                ItemKey = "zhejiang",
+                Children = [
+                    new CascaderOption()
+                    {
+                        Header  = "Hangzhou",
+                        ItemKey = "hangzhou",
+                        Children = [
+                            new CascaderOption() { Header = "West Lake",  ItemKey = "xihu" },
+                            new CascaderOption() { Header = "Lingyin shi", ItemKey = "lingyinshi" }
+                        ]
+                    },
+                    new CascaderOption()
+                    {
+                        Header  = "Ningbo",
+                        ItemKey = "ningbo",
+                        Children = [
+                            new CascaderOption() { Header = "Tianyi Pavilion", ItemKey = "tianyige" },
+                            new CascaderOption() { Header = "Moon Lake",       ItemKey = "yuehu" }
+                        ]
+                    }
+                ]
+            },
+            new CascaderOption()
+            {
+                Header  = "Jiangsu",
+                ItemKey = "jiangsu",
+                Children = [
+                    new CascaderOption()
+                    {
+                        Header  = "Nanjing",
+                        ItemKey = "nanjing",
+                        Children = [
+                            new CascaderOption() { Header = "Zhong Hua Men",         ItemKey = "zhonghuamen" },
+                            new CascaderOption() { Header = "Sun Yat-sen Mausoleum", ItemKey = "zhongshanling" }
+                        ]
+                    },
+                    new CascaderOption()
+                    {
+                        Header  = "Suzhou",
+                        ItemKey = "suzhou",
+                        Children = [
+                            new CascaderOption() { Header = "Humble Administrator's Garden", ItemKey = "zhuozhengyuan" },
+                            new CascaderOption() { Header = "Lingering Garden",              ItemKey = "liuyuan" }
+                        ]
+                    }
+                ]
+            }
+        ];
     }
 
     private List<ICascaderOption> GenerateMultiSelectCascaderNodes()
