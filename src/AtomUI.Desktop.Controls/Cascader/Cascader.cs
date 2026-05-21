@@ -705,6 +705,10 @@ public class Cascader : AbstractSelect
         {
             var option = eventArgs.Option;
             SetCurrentValue(SelectedOptionProperty, option);
+            if (option.IsEffectiveLeaf())
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false);
+            }
         }
     }
     
