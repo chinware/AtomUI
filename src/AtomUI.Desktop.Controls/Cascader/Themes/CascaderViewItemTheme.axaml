@@ -129,6 +129,12 @@
             <Setter Property="Height" Value="{atom:SharedTokenResource FontSizeIcon}" />
         </Style>
 
+        <Style Selector="^ /template/ atom|IconTemplatePresenter">
+            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorIcon}" />
+            <Setter Property="Width" Value="{atom:SharedTokenResource FontSizeIcon}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource FontSizeIcon}" />
+        </Style>
+
         <Style Selector="^[IsMotionEnabled=True]">
             <Setter Property="Transitions">
                 <Transitions>
