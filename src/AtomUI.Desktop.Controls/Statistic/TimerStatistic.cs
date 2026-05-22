@@ -75,6 +75,9 @@ public class TimerStatistic : AbstractStatistic
     #endregion
     
     private DispatcherTimer? _timer;
+    private bool _isAttachedToVisualTree;
+    private bool _isCountdown;
+    private bool _hasCountdownFinished;
 
     static TimerStatistic()
     {
@@ -84,25 +87,25 @@ public class TimerStatistic : AbstractStatistic
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _timer?.Start();
+        _isAttachedToVisualTree = true;
+        if (HasTimerTarget())
+        {
+            BuildTimer(true);
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_timer != null)
-        {
-            _timer.Stop();
-            _timer.Tick -= HandleTickElapsed;
-            _timer = null;
-        }
+        _isAttachedToVisualTree = false;
+        ReleaseTimer();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
         if (change.Property == RemainingTimeProperty ||
-            change.Property == FormatProperty)
+            (change.Property == FormatProperty && _isAttachedToVisualTree))
         {
             GenerateRemainingTimeText();
         }
@@ -110,7 +113,23 @@ public class TimerStatistic : AbstractStatistic
         if (change.Property == ValueProperty ||
             change.Property == RefreshDurationProperty)
         {
-            BuildTimer(true);
+            if (change.Property == ValueProperty)
+            {
+                _hasCountdownFinished = false;
+            }
+
+            if (_isAttachedToVisualTree)
+            {
+                if (HasTimerTarget())
+                {
+                    BuildTimer(true);
+                }
+                else
+                {
+                    ReleaseTimer();
+                    SetCurrentValue(RemainingTimeProperty, TimeSpan.Zero);
+                }
+            }
         }
     }
 
@@ -141,12 +160,11 @@ public class TimerStatistic : AbstractStatistic
     
     private void BuildTimer(bool start)
     {
-        // 先清理旧定时器
-        if (_timer != null)
-        {
-            _timer.Stop();
-            _timer.Tick -= HandleTickElapsed;
-        }
+        ReleaseTimer();
+
+        var now = DateTime.Now;
+        _isCountdown          = Value > now;
+        _hasCountdownFinished = false;
         
         _timer          =  new DispatcherTimer();
         _timer.Interval =  RefreshDuration;
@@ -156,22 +174,56 @@ public class TimerStatistic : AbstractStatistic
             _timer.Start();
         }
     }
+
+    private void ReleaseTimer()
+    {
+        if (_timer != null)
+        {
+            _timer.Stop();
+            _timer.Tick -= HandleTickElapsed;
+            _timer = null;
+        }
+    }
     
     private void HandleTickElapsed(object? sender, EventArgs args)
     {
-        if (Value > DateTime.Now)
+        RefreshRemainingTime(DateTime.Now);
+    }
+
+    private void RefreshRemainingTime(DateTime now)
+    {
+        if (_isCountdown)
         {
-            RemainingTime = Value - DateTime.Now;
+            var remaining = Value - now;
+            if (remaining <= TimeSpan.Zero)
+            {
+                SetCurrentValue(RemainingTimeProperty, TimeSpan.Zero);
+                NotifyCountdownFinished();
+                return;
+            }
+
+            SetCurrentValue(RemainingTimeProperty, remaining);
         }
         else
         {
-            RemainingTime = DateTime.Now - Value;
+            SetCurrentValue(RemainingTimeProperty, now - Value);
         }
-        if (RemainingTime <= TimeSpan.Zero)
+    }
+
+    private bool HasTimerTarget()
+    {
+        return Value != default;
+    }
+
+    private void NotifyCountdownFinished()
+    {
+        if (_hasCountdownFinished)
         {
-            RemainingTime = TimeSpan.Zero;
-            _timer?.Stop();
-            CountdownFinished?.Invoke(this, EventArgs.Empty);
+            return;
         }
+
+        _hasCountdownFinished = true;
+        _timer?.Stop();
+        CountdownFinished?.Invoke(this, EventArgs.Empty);
     }
 }

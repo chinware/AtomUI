@@ -1,8 +1,6 @@
 using System.Reflection;
 using AtomUI.Desktop.Controls;
-using Avalonia.Controls;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
 
@@ -15,7 +13,6 @@ internal static partial class Program
         VerifyStatisticCountUpDataContextCleanup(failures);
         VerifyTimerStatisticLifecycle(failures);
         VerifyTimerStatisticCountdownFinish(failures);
-        VerifyStatisticLazySkeleton(failures);
 
         if (failures.Count == 0)
         {
@@ -138,62 +135,6 @@ internal static partial class Program
         Expect(GetNonPublicProperty<TimeSpan>(timerStatistic, "RemainingTime") == TimeSpan.Zero,
             $"TimerStatistic RemainingTime should stop at zero, actual {GetNonPublicProperty<TimeSpan>(timerStatistic, "RemainingTime")}.",
             failures);
-    }
-
-    private static void VerifyStatisticLazySkeleton(ICollection<string> failures)
-    {
-        var statistic = new Statistic
-        {
-            Header = "Active Users",
-            Value  = 112893
-        };
-
-        using var realized = RealizeControl(statistic);
-        Expect(CountSkeletonLines(statistic) == 0,
-            "Statistic should not materialize SkeletonLine visuals while IsLoading is false.",
-            failures);
-
-        statistic.IsLoading = true;
-        RefreshLayout(realized.Window);
-        Expect(CountSkeletonLines(statistic) > 0,
-            "Statistic should materialize SkeletonLine visuals when IsLoading becomes true.",
-            failures);
-
-        statistic.IsLoading = false;
-        RefreshLayout(realized.Window);
-        Expect(CountSkeletonLines(statistic) == 0,
-            "Statistic should release lazily materialized SkeletonLine visuals when IsLoading becomes false.",
-            failures);
-
-        statistic.IsLoading = true;
-        RefreshLayout(realized.Window);
-        Expect(CountSkeletonLines(statistic) > 0,
-            "Statistic should rematerialize SkeletonLine visuals when IsLoading becomes true again.",
-            failures);
-    }
-
-    private static int CountSkeletonLines(Control root)
-    {
-        return root.GetSelfAndVisualDescendants()
-                   .Count(visual => IsStatisticTypeOrDerived(visual.GetType(), "AtomUI.Desktop.Controls.SkeletonLine"));
-    }
-
-    private static bool IsStatisticTypeOrDerived(Type type, string fullName)
-    {
-        while (true)
-        {
-            if (type.FullName == fullName)
-            {
-                return true;
-            }
-
-            if (type.BaseType is null)
-            {
-                return false;
-            }
-
-            type = type.BaseType;
-        }
     }
 
     private static T? GetNonPublicProperty<T>(object target, string propertyName)

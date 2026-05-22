@@ -27,6 +27,9 @@ public class Statistic : AbstractStatistic
             (o, v) => o.EffectiveValue = v);
     
     private string? _effectiveValue;
+    private object? _generatedContent;
+    private bool _isUsingGeneratedContent;
+    private bool _isInitialized;
 
     internal string? EffectiveValue
     {
@@ -56,30 +59,55 @@ public class Statistic : AbstractStatistic
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        _isInitialized = true;
         if (Content == null)
         {
-            SetCurrentValue(ContentProperty, EffectiveValue);
+            SetGeneratedContent(EffectiveValue);
         }
     }
 
     private void GenerateEffectiveValue()
     {
+        string? effectiveValue = null;
         if (Formatter != null)
         {
-            SetCurrentValue(EffectiveValueProperty, Formatter(this, Value));
+            effectiveValue = Formatter(this, Value);
         }
         else if (Value != null)
         {
-            var effectiveValue = StatisticUtils.FormatNumber(Value, GroupSeparator, DecimalSeparator, Precision);
-            SetCurrentValue(EffectiveValueProperty, effectiveValue);
+            effectiveValue = StatisticUtils.FormatNumber(Value, GroupSeparator, DecimalSeparator, Precision);
         }
+
+        SetCurrentValue(EffectiveValueProperty, effectiveValue);
+        if (_isInitialized && (Content == null || _isUsingGeneratedContent))
+        {
+            SetGeneratedContent(effectiveValue);
+        }
+    }
+
+    private void SetGeneratedContent(object? content)
+    {
+        _generatedContent         = content;
+        _isUsingGeneratedContent = true;
+        SetCurrentValue(ContentProperty, content);
     }
     
     private void HandleContentChanged(AvaloniaPropertyChangedEventArgs e)
     {
+        if (e.OldValue is StatisticCountUp oldCountUp &&
+            ReferenceEquals(oldCountUp.DataContext, this))
+        {
+            oldCountUp.DataContext = null;
+        }
+
         if (e.NewValue is StatisticCountUp countUp)
         {
             countUp.DataContext = this;
+        }
+
+        if (!ReferenceEquals(e.NewValue, _generatedContent))
+        {
+            _isUsingGeneratedContent = false;
         }
     }
 }
