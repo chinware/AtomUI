@@ -94,7 +94,7 @@
 | Statistic | **Pending** | 0 | 1 | 计数动画热路径 |
 | Steps | Done (structural-only) | 1 | 1 | 修复 `ConfigureItemsPanel` 未清理 `ColumnDefinitions`；详见 [Steps](Steps/README.md) |
 | Switch (ToggleSwitch) | **Pending** | 0 | 0 | 单一控件，可独立基线 |
-| TabControl | **Pending** | 1 | 1 | Card 复用 |
+| TabControl | Done | 1 | 1 | 默认 hidden icon/close slot 按需化；`TabControlShowCase` repeated mean `170.75ms -> 157.35ms`；详见 [TabControl](TabControl/README.md) |
 | Tag | Done | 10 | 1 | `AbstractTag.SetupDefaultCloseIcon` 门控到 `IsClosable=true`，非 closable Tag 减少 ~2 KB/instance × Gallery 76 实例 ≈ 140 KB；详见 [Tag](Tag/README.md) |
 | TextBlock | Done (structural) | 33 | 0 | `HighlightableTextBlock` 段级 Run + `SelectableTextBlock` token binding/Cursor → Theme Setter；详见 [TextBlock](TextBlock/README.md)。微基准待哈纳斯恢复 |
 | TimePicker | Done | 1 | 4 | `InfoPickerInput` closed presenter 延迟到首次打开；`TimePickerShowCase` repeated mean `148.79ms -> 138.48ms`；详见 [TimePicker](TimePicker/README.md) |
@@ -206,7 +206,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | T1.4 | TimePicker | 9 | Buttons, DatePicker, Empty, Form, ListBox, Primitives, Tag, TextBlock | **Done** | `InfoPickerInput` lazy presenter；`TimePickerShowCase` cold mean `464.82ms -> 393.11ms`，repeated mean `148.79ms -> 138.48ms`；详见 [TimePicker](TimePicker/README.md) |
 | T1.5 | Upload | 8 | Buttons, Empty, Form, ImagePreviewer, Result, Select, Tag, TextBlock | Baseline only | 已建立 baseline，3 个候选无收益/退化已回滚；运行时代码未保留 |
 | T1.6 | Tour | 7 | Buttons, Dialog, Empty, Popup, Primitives, Steps, Tag | Done (structural) | `TourStepsView` 同生命周期 `RelayBind` 改 direct binding；页面加载小幅改善，popup 打开待专项 harness |
-| T1.7 | TabControl | 5 | Buttons, Card, Flyouts, Menu, ScrollViewer | Pending | 子系统：Templates + Layout；`SelectedItem` 切换重建 ContentPresenter |
+| T1.7 | TabControl | 5 | Buttons, Card, Flyouts, Menu, ScrollViewer | **Done** | Templates / visual tree：默认 tab item hidden icon/close slot 按需化；`TabControlShowCase` visuals `1583 -> 1405`、repeated mean `170.75ms -> 157.35ms`；详见 [TabControl](TabControl/README.md) |
 
 ### Tier 2 — 单功能 Pending 控件
 

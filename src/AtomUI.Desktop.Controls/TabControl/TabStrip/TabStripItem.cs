@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AtomUI.Animations;
+﻿using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Icons.AntDesign;
@@ -10,6 +9,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -33,12 +33,12 @@ public class TabStripItem : AvaloniaTabStripItem
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsClosable));
-    
+
     public static readonly StyledProperty<bool> IsAutoHideCloseButtonProperty =
         AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsAutoHideCloseButton));
 
     public static readonly DirectProperty<TabStripItem, Dock?> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement), 
+        AvaloniaProperty.RegisterDirect<TabStripItem, Dock?>(nameof(TabStripPlacement),
             o => o.TabStripPlacement);
 
     public PathIcon? Icon
@@ -58,7 +58,7 @@ public class TabStripItem : AvaloniaTabStripItem
         get => GetValue(IsClosableProperty);
         set => SetValue(IsClosableProperty, value);
     }
-    
+
     public bool IsAutoHideCloseButton
     {
         get => GetValue(IsAutoHideCloseButtonProperty);
@@ -79,23 +79,26 @@ public class TabStripItem : AvaloniaTabStripItem
 
     internal static readonly StyledProperty<SizeType> SizeTypeProperty =
         SizeTypeControlProperty.SizeTypeProperty.AddOwner<TabStripItem>();
-    
+
     internal static readonly StyledProperty<TabSharp> ShapeProperty =
         AvaloniaProperty.Register<TabStripItem, TabSharp>(nameof(Shape));
-    
-        
+
+
     internal static readonly StyledProperty<double> CloseButtonOpacityProperty =
         AvaloniaProperty.Register<TabStripItem, double>(nameof(CloseButtonOpacity));
-    
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabStripItem>();
+
+    internal static readonly StyledProperty<bool> HasIconProperty =
+        AvaloniaProperty.Register<TabStripItem, bool>(nameof(HasIcon));
 
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     public TabSharp Shape
     {
         get => GetValue(ShapeProperty);
@@ -107,24 +110,49 @@ public class TabStripItem : AvaloniaTabStripItem
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
     internal double CloseButtonOpacity
     {
         get => GetValue(CloseButtonOpacityProperty);
         set => SetValue(CloseButtonOpacityProperty, value);
     }
+
+    internal bool HasIcon
+    {
+        get => GetValue(HasIconProperty);
+        set => SetValue(HasIconProperty, value);
+    }
     #endregion
-    
+
     private IconButton? _closeButton;
-    
+
+    private void ConfigureHasIcon()
+    {
+        HasIcon = Icon is not null;
+    }
+
     private void SetupDefaultCloseIcon()
     {
-        if (CloseIcon is null)
+        if (IsClosable && CloseIcon is null)
         {
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
-        Debug.Assert(CloseIcon is not null);
+    }
+
+    private void ReleaseCloseButton()
+    {
+        if (_closeButton is null)
+        {
+            return;
+        }
+
+        _closeButton.Click -= HandleCloseRequest;
+        if (_closeButton.GetVisualParent() is Panel parentPanel)
+        {
+            parentPanel.Children.Remove(_closeButton);
+        }
+        _closeButton = null;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -138,7 +166,9 @@ public class TabStripItem : AvaloniaTabStripItem
         SetupDefaultCloseIcon();
 
         base.OnApplyTemplate(e);
-        _closeButton   = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
+        ReleaseCloseButton();
+
+        _closeButton = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
 
         if (_closeButton is not null)
         {
@@ -165,13 +195,17 @@ public class TabStripItem : AvaloniaTabStripItem
             }
         }
 
-        if (change.Property == IconProperty ||
-            change.Property == CloseIconProperty)
+        if (change.Property == IconProperty)
         {
-            if (change.Property == CloseIconProperty)
-            {
-                SetupDefaultCloseIcon();
-            }
+            ConfigureHasIcon();
+        }
+        else if (change.Property == CloseIconProperty)
+        {
+            SetupDefaultCloseIcon();
+        }
+        else if (change.Property == IsClosableProperty)
+        {
+            SetupDefaultCloseIcon();
         }
     }
 
@@ -188,7 +222,7 @@ public class TabStripItem : AvaloniaTabStripItem
             {
                 resourceKey = "CardTabStripItemTheme";
             }
-            
+
             if (Application.Current != null)
             {
                 if (Application.Current.TryFindResource(resourceKey, out var resource))

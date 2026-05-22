@@ -15,6 +15,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -22,11 +23,11 @@ namespace AtomUI.Desktop.Controls;
 public class TabItem : HeaderedContentControl, ISelectable
 {
     #region 公共属性定义
-    
+
     public static readonly DirectProperty<TabItem, Dock?> TabStripPlacementProperty =
-        AvaloniaProperty.RegisterDirect<TabItem, Dock?>(nameof(TabStripPlacement), 
+        AvaloniaProperty.RegisterDirect<TabItem, Dock?>(nameof(TabStripPlacement),
             o => o.TabStripPlacement);
-    
+
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<TabItem>();
 
@@ -38,10 +39,10 @@ public class TabItem : HeaderedContentControl, ISelectable
 
     public static readonly StyledProperty<bool> IsClosableProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(IsClosable));
-    
+
     public static readonly StyledProperty<bool> IsAutoHideCloseButtonProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(IsAutoHideCloseButton));
-    
+
     public Dock? TabStripPlacement
     {
         get => _tabStripPlacement;
@@ -77,7 +78,7 @@ public class TabItem : HeaderedContentControl, ISelectable
         get => GetValue(IsAutoHideCloseButtonProperty);
         set => SetValue(IsAutoHideCloseButtonProperty, value);
     }
-    
+
     #endregion
 
     #region 内部属性定义
@@ -90,10 +91,13 @@ public class TabItem : HeaderedContentControl, ISelectable
 
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TabItem>();
-    
+
     internal static readonly StyledProperty<double> CloseButtonOpacityProperty =
         AvaloniaProperty.Register<TabItem, double>(nameof(CloseButtonOpacity));
-    
+
+    internal static readonly StyledProperty<bool> HasIconProperty =
+        AvaloniaProperty.Register<TabItem, bool>(nameof(HasIcon));
+
     internal static readonly DirectProperty<TabItem, Thickness> LineMaskMarginProperty =
         AvaloniaProperty.RegisterDirect<TabItem, Thickness>(
             nameof(LineMaskMargin),
@@ -111,7 +115,7 @@ public class TabItem : HeaderedContentControl, ISelectable
         get => GetValue(ShapeProperty);
         set => SetValue(ShapeProperty, value);
     }
-    
+
     internal bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
@@ -123,7 +127,13 @@ public class TabItem : HeaderedContentControl, ISelectable
         get => GetValue(CloseButtonOpacityProperty);
         set => SetValue(CloseButtonOpacityProperty, value);
     }
-    
+
+    internal bool HasIcon
+    {
+        get => GetValue(HasIconProperty);
+        set => SetValue(HasIconProperty, value);
+    }
+
     // Card only
     private Thickness _lineMaskMargin;
 
@@ -133,10 +143,10 @@ public class TabItem : HeaderedContentControl, ISelectable
         set => SetAndRaise(LineMaskMarginProperty, ref _lineMaskMargin, value);
     }
     #endregion
-    
+
     private Dock? _tabStripPlacement;
     private IconButton? _closeButton;
-    
+
     static TabItem()
     {
         SelectableMixin.Attach<TabItem>(IsSelectedProperty);
@@ -146,14 +156,34 @@ public class TabItem : HeaderedContentControl, ISelectable
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<TabItem>(AutomationControlType.TabItem);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<TabItem>(IsOffscreenBehavior.FromClip);
     }
-    
+
+    private void ConfigureHasIcon()
+    {
+        HasIcon = Icon is not null;
+    }
+
     private void SetupDefaultCloseIcon()
     {
-        if (CloseIcon is null)
+        if (IsClosable && CloseIcon is null)
         {
             ClearValue(CloseIconProperty);
             SetValue(CloseIconProperty, new CloseOutlined(), BindingPriority.Template);
         }
+    }
+
+    private void ReleaseCloseButton()
+    {
+        if (_closeButton is null)
+        {
+            return;
+        }
+
+        _closeButton.Click -= HandleCloseRequest;
+        if (_closeButton.GetVisualParent() is Panel parentPanel)
+        {
+            parentPanel.Children.Remove(_closeButton);
+        }
+        _closeButton = null;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -165,7 +195,9 @@ public class TabItem : HeaderedContentControl, ISelectable
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _closeButton   = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
+        ReleaseCloseButton();
+
+        _closeButton = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
 
         if (_closeButton is not null)
         {
@@ -195,6 +227,14 @@ public class TabItem : HeaderedContentControl, ISelectable
         }
 
         if (change.Property == CloseIconProperty)
+        {
+            SetupDefaultCloseIcon();
+        }
+        else if (change.Property == IconProperty)
+        {
+            ConfigureHasIcon();
+        }
+        else if (change.Property == IsClosableProperty)
         {
             SetupDefaultCloseIcon();
         }
@@ -229,7 +269,7 @@ public class TabItem : HeaderedContentControl, ISelectable
             }
         }
     }
-    
+
     protected override void OnGotFocus(FocusChangedEventArgs e)
     {
         base.OnGotFocus(e);
@@ -257,7 +297,7 @@ public class TabItem : HeaderedContentControl, ISelectable
         SetCurrentValue(IsSelectedProperty, true);
         e.Handled = true;
     }
-    
+
     private void UpdateHeader(AvaloniaPropertyChangedEventArgs obj)
     {
         if (Header == null)

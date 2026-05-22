@@ -1,4 +1,5 @@
 ﻿using AtomUI.Data;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -20,11 +21,22 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        if (MenuIndicator is not null)
+        {
+            MenuIndicator.Click -= HandleMenuIndicatorClicked;
+        }
+
         base.OnApplyTemplate(e);
         if (MenuIndicator is not null)
         {
             MenuIndicator.Click += HandleMenuIndicatorClicked;
         }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        CloseMenuFlyout();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleMenuIndicatorClicked(object? sender, RoutedEventArgs args)
@@ -40,10 +52,7 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
             ShouldUseOverlayPopup = true,
             IsLightDismissEnabled = true,
         };
-        MenuFlyout.Closed += (o, eventArgs) =>
-        {
-            MenuFlyout =  null;
-        };
+        MenuFlyout.Closed += HandleMenuFlyoutClosed;
         _flyoutBindingDisposable?.Dispose();
         _flyoutBindingDisposable = BindUtils.RelayBind(this, IsMotionEnabledProperty, MenuFlyout, MenuFlyout.IsMotionEnabledProperty);
         
@@ -114,6 +123,43 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
             {
                 MenuFlyout.ShowAt(MenuIndicator!);
             }
+            else
+            {
+                HandleMenuFlyoutClosed(MenuFlyout, EventArgs.Empty);
+            }
+        }
+    }
+
+    private void CloseMenuFlyout()
+    {
+        if (MenuFlyout is { } flyout)
+        {
+            flyout.Hide();
+            HandleMenuFlyoutClosed(flyout, EventArgs.Empty);
+        }
+    }
+
+    private void HandleMenuFlyoutClosed(object? sender, EventArgs args)
+    {
+        var flyout = sender as MenuFlyout ?? MenuFlyout;
+        if (flyout is null)
+        {
+            return;
+        }
+
+        flyout.Closed -= HandleMenuFlyoutClosed;
+        foreach (var item in flyout.Items.OfType<TabStripOverflowMenuItem>())
+        {
+            item.Click    -= HandleMenuItemClicked;
+            item.CloseTab -= HandleCloseTabRequest;
+        }
+        flyout.Items.Clear();
+
+        _flyoutBindingDisposable?.Dispose();
+        _flyoutBindingDisposable = null;
+        if (ReferenceEquals(MenuFlyout, flyout))
+        {
+            MenuFlyout = null;
         }
     }
 
