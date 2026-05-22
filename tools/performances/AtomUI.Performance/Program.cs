@@ -29,6 +29,7 @@ internal static partial class Program
             options.VerifyAutoCompleteStates ||
             options.VerifyAvatarStates ||
             options.VerifyBadgeStates ||
+            options.VerifyBreadcrumbStates ||
             options.VerifyButtonSpinnerStates ||
             options.VerifyCalendarStates ||
             options.VerifyCardStates ||
@@ -132,6 +133,10 @@ internal static partial class Program
             if (options.VerifyBadgeStates)
             {
                 verified &= RunBadgeStateVerification();
+            }
+            if (options.VerifyBreadcrumbStates)
+            {
+                verified &= RunBreadcrumbStateVerification();
             }
             if (options.VerifyButtonSpinnerStates)
             {
@@ -391,6 +396,7 @@ internal static partial class Program
             "icon" => CreateIconScenarios(),
             "avatar" => CreateAvatarScenarios(),
             "badge" => CreateBadgeScenarios(),
+            "breadcrumb" => CreateBreadcrumbScenarios(),
             "button" => CreateButtonScenarios(),
             "buttonspinner" => CreateButtonSpinnerScenarios(),
             "calendar" => CreateCalendarScenarios(),

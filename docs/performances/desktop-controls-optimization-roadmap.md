@@ -38,7 +38,7 @@
 | AutoComplete | Done | 1 | 2 | Done |
 | Avatar | Done | 0 | 1 | Done |
 | Badge | Done | 1 | 0 | Done |
-| Breadcrumb | Pending | 0 | 0 | 文本/分隔符为主，单测足够 |
+| Breadcrumb | Done (correctness + baseline) | 0 | 0 | separator 传播正确性修复 + 基线；Gallery cold / P95 / alloc 有收益，repeated median 基本持平 |
 | ButtonSpinner | Done | 2 | 2 | Done |
 | Buttons | Done | 34 | 0 | 基础控件，已完成 Button/IconButton/SplitButton 等子控件优化 |
 | Calendar | Done | 1 | 2 | 按当前 DisplayMode 延迟填充 MonthView/YearView cells；详见 [Calendar](Calendar/README.md) |
@@ -216,7 +216,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | T2.2 | Statistic | 2 | Done | generated content ownership、CountUp DataContext 清理、TimerStatistic attach-gated timer 生命周期；`StatisticShowCase` repeated alloc `7471.87KB -> 7228.74KB`、visuals `387 -> 384`。Skeleton active 优化尝试因 loading 分配回退 / Theme Static Rule 全部撤回 |
 | T2.3 | Timeline | 3 | Done (structural + correctness) | `TimelineIndicator.Render` Pen 缓存；pending item 生命周期/default icon 修复，页面级 timing 未证明收益；详见 [Timeline](Timeline/README.md) |
 | T2.4 | Steps | 2 | Done (structural-only) | 修复 Grid definitions 清理错误；页面级 timing 未证明稳定收益 |
-| T2.5 | Breadcrumb | 2 | Pending | Buttons + Separator 复用 |
+| T2.5 | Breadcrumb | 2 | Done (correctness + baseline) | 父级 `Separator` 变化现在同步到 direct/generated inherited items；同参数复测下 cold / P95 / alloc 有收益，repeated median 基本持平 |
 | T2.6 | Splitter | 3 | Pending | 拖拽全局事件订阅 |
 | T2.7 | Switch (ToggleSwitch) | 0 | Pending | RectTransition + WaveSpiritDecorator |
 | T2.8 | WindowTitleBar | 3 | Pending | 与 Window (T0.3) 同周期 |

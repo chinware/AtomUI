@@ -258,6 +258,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.ButtonSpinnerShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/Navigation/ButtonSpinnerShowCase.axaml",
                 stats => stats.ButtonSpinnerCount > 0),
+            ["breadcrumb"] = new(
+                "BreadcrumbShowCase",
+                BreadcrumbViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.BreadcrumbShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/Navigation/BreadcrumbShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 6 && stats.IconPresenterCount >= 21),
             ["tabcontrol"] = new(
                 "TabControlShowCase",
                 TabControlViewModel.ID,

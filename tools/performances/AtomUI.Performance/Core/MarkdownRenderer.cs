@@ -83,6 +83,7 @@ internal static partial class Program
                 "icon" => "# Icon Baseline",
                 "avatar" => "# Avatar Baseline",
                 "badge" => "# Badge Baseline",
+                "breadcrumb" => "# Breadcrumb Baseline",
                 "button" => "# Button Baseline",
                 "buttonspinner" => "# ButtonSpinner Baseline",
                 "calendar" => "# Calendar Baseline",

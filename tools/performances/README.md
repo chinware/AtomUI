@@ -100,6 +100,19 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown /tmp/atomui-buttonspinner-control.md
 ```
 
+控件级 Breadcrumb 基准与状态验证：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite breadcrumb --count 60 \
+  --markdown /tmp/atomui-breadcrumb-control.md
+
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --verify-breadcrumb-states
+```
+
 控件级 NavMenu 基准与状态验证：
 
 ```bash
@@ -181,7 +194,7 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
   --markdown /tmp/atomui-imagepreviewer-gallery.md
 ```
 
-Gallery 工具支持多个真实 ShowCase，常用例子包括 `lineedit`、`icon`、`button`、`space`、`select`、`cascader`、`drawer`、`groupbox`、`imagepreviewer`、`menu`。`menu` 的 ready 条件包含 `NavMenu` 默认路径完整展开，避免把未完全显示的 `791 visuals` 形态误判为完成。例如验证 Icon Phase 4 影响到的控件真实场景：
+Gallery 工具支持多个真实 ShowCase，常用例子包括 `lineedit`、`icon`、`button`、`space`、`select`、`cascader`、`drawer`、`groupbox`、`imagepreviewer`、`menu`、`breadcrumb`。`menu` 的 ready 条件包含 `NavMenu` 默认路径完整展开，避免把未完全显示的 `791 visuals` 形态误判为完成。例如验证 Icon Phase 4 影响到的控件真实场景：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerformance.csproj \

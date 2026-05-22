@@ -3,8 +3,8 @@ using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
@@ -16,11 +16,12 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
     #region 公共属性定义
     public static readonly StyledProperty<object?> SeparatorProperty =
         AvaloniaProperty.Register<Breadcrumb, object?>(
-            nameof(Separator)
+            nameof(Separator),
+            defaultValue: DefaultSeparator
         );
     
     public static readonly StyledProperty<IDataTemplate?> SeparatorTemplateProperty =
-        AvaloniaProperty.Register<Breadcrumb, IDataTemplate?>(nameof (SeparatorTemplate));
+        AvaloniaProperty.Register<Breadcrumb, IDataTemplate?>(nameof(SeparatorTemplate));
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Breadcrumb>();
@@ -102,14 +103,22 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
                         breadcrumbItem.SetCurrentValue(BreadcrumbItem.IconProperty, breadcrumbItemData.Icon);
                     }
                 
-                    if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorProperty) && breadcrumbItemData.Separator != null)
+                    if (breadcrumbItemData.Separator != null)
                     {
-                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
+                        breadcrumbItem.SetValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
+                    }
+                    else
+                    {
+                        breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorProperty);
                     }
                 
-                    if (!breadcrumbItem.IsSet(BreadcrumbItem.SeparatorTemplateProperty) && breadcrumbItemData.SeparatorTemplate != null)
+                    if (breadcrumbItemData.SeparatorTemplate != null)
                     {
-                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
+                        breadcrumbItem.SetValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
+                    }
+                    else
+                    {
+                        breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorTemplateProperty);
                     }
                 
                     if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateContextProperty) && breadcrumbItemData.NavigateContext != null)
@@ -130,7 +139,11 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
             }
             breadcrumbItem[!IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
             PrepareBreadcrumbItem(breadcrumbItem, item, index);
-            ConfigureItemSeparator(breadcrumbItem);
+            if (!Equals(Separator, DefaultSeparator) ||
+                SeparatorTemplate is not null)
+            {
+                ConfigureItemSeparator(breadcrumbItem);
+            }
         }
         else
         {
@@ -144,24 +157,8 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
 
     private void ConfigureItemSeparator(BreadcrumbItem breadcrumbItem)
     {
-        if (!breadcrumbItem.IsSet(SeparatorProperty))
-        {
-            breadcrumbItem.SetCurrentValue(SeparatorProperty, Separator);
-        }
-
-        if (!breadcrumbItem.IsSet(SeparatorTemplateProperty))
-        {
-            breadcrumbItem.SetCurrentValue(SeparatorTemplateProperty, SeparatorTemplate);
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        if (Separator == null)
-        {
-            SetCurrentValue(SeparatorProperty, DefaultSeparator);
-        }
+        breadcrumbItem.SetValue(BreadcrumbItem.SeparatorProperty, Separator, BindingPriority.Style);
+        breadcrumbItem.SetValue(BreadcrumbItem.SeparatorTemplateProperty, SeparatorTemplate, BindingPriority.Style);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -170,10 +167,9 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
         if (change.Property == SeparatorProperty ||
             change.Property == SeparatorTemplateProperty)
         {
-            for (int i = 0; i < ItemCount; i++)
+            foreach (Control container in GetRealizedContainers())
             {
-                var item = Items[i];
-                if (item is BreadcrumbItem breadcrumbItem)
+                if (container is BreadcrumbItem breadcrumbItem)
                 {
                     ConfigureItemSeparator(breadcrumbItem);
                 }
