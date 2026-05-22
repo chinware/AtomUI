@@ -67,10 +67,11 @@ public class ListTransfer : AbstractTransfer
         var               targetPanelSourceChanged = false;
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
+        var               targetKeySet             = TargetKeys?.Count > 0 ? TargetKeys.ToHashSet() : null;
         if (changeType.HasFlag(FilterChangeType.Source))
         {
             var sourcePanelSource = ItemsSource?
-                                    .Where(item => !(TargetKeys?.Contains(item.ItemKey ?? default) ?? false))
+                                    .Where(item => !(targetKeySet?.Contains(item.ItemKey ?? default) ?? false))
                                     .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(SourceFilterValue) || 
                                                    (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
                                                        SourceFilterValue) ?? false))
@@ -82,13 +83,20 @@ public class ListTransfer : AbstractTransfer
 
         if (changeType.HasFlag(FilterChangeType.Target))
         {
-            var targetPanelSource = ItemsSource?
-                                    .Where(item => TargetKeys?.Contains(item.ItemKey ?? default) ?? false)
-                                    .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) || 
-                                                   (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
-                                    .ToArray();
-            TargetViewSource        = targetPanelSource;
+            IEnumerable<IItemKey>? targetPanelSource = null;
+            if (ItemsSource != null)
+            {
+                targetPanelSource = targetKeySet == null
+                    ? Array.Empty<IItemKey>()
+                    : ItemsSource
+                        .Where(item => targetKeySet.Contains(item.ItemKey ?? default))
+                        .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) ||
+                                       (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
+                                           TargetFilterValue) ?? false))
+                        .ToArray();
+            }
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
+            TargetViewSource         = targetPanelSource;
             targetItemKeys           = targetPanelSource?.Select(item => item.ItemKey ?? default).ToList();
         }
 

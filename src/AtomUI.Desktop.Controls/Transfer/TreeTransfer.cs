@@ -33,6 +33,7 @@ public class TreeTransfer : AbstractTransfer
         var               targetPanelSourceChanged = false;
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
+        var               targetKeySet             = TargetKeys?.Count > 0 ? TargetKeys.ToHashSet() : null;
         if (changeType.HasFlag(FilterChangeType.Source))
         {
             var sourcePanelSource = ItemsSource;
@@ -44,12 +45,14 @@ public class TreeTransfer : AbstractTransfer
 
         if (changeType.HasFlag(FilterChangeType.Target))
         {
-            var targetPanelSource = CalculateTargetItemsSource(ItemsSource?.Cast<ITreeItemNode>().ToList())
-                .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) || 
-                               (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
-                .ToArray();
-            TargetViewSource         = targetPanelSource;
+            var targetPanelSource = targetKeySet == null
+                ? []
+                : CalculateTargetItemsSource(ItemsSource?.Cast<ITreeItemNode>().ToList(), targetKeySet)
+                    .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) ||
+                                   (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
+                    .ToArray();
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
+            TargetViewSource         = targetPanelSource;
             targetItemKeys           = targetPanelSource.Select(item => item.ItemKey ?? default).ToList();
         }
 
@@ -59,14 +62,14 @@ public class TreeTransfer : AbstractTransfer
         }
     }
 
-    private List<IListItemData> CalculateTargetItemsSource(IEnumerable<ITreeItemNode>? itemNodes)
+    private List<IListItemData> CalculateTargetItemsSource(IEnumerable<ITreeItemNode>? itemNodes, ISet<EntityKey> targetKeySet)
     {
         var results = new List<IListItemData>();
         if (itemNodes != null)
         {
             foreach (var node in itemNodes)
             {
-                if (TargetKeys?.Contains(node.ItemKey ?? default) ?? false)
+                if (targetKeySet.Contains(node.ItemKey ?? default))
                 {
                     results.Add(new ListItemData
                     {
@@ -74,7 +77,7 @@ public class TreeTransfer : AbstractTransfer
                         Content = node.Header
                     });
                 }
-                var children = CalculateTargetItemsSource(node.Children);
+                var children = CalculateTargetItemsSource(node.Children, targetKeySet);
                 results.AddRange(children);
             }
         }
