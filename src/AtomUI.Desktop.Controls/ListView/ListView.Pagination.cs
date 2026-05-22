@@ -68,6 +68,11 @@ public partial class ListView
         {
             oldPagination.CurrentPageChanged -= HandlePageChangeRequest;
             _topPaginationDisposables?.Dispose();
+            _topPaginationDisposables = null;
+            if (ReferenceEquals(_topPagination, oldPagination))
+            {
+                _topPagination = null;
+            }
         }
 
         if (args.NewValue is AbstractPagination newPagination)
@@ -90,6 +95,11 @@ public partial class ListView
         {
             oldPagination.CurrentPageChanged -= HandlePageChangeRequest;
             _bottomPaginationDisposables?.Dispose();
+            _bottomPaginationDisposables = null;
+            if (ReferenceEquals(_bottomPagination, oldPagination))
+            {
+                _bottomPagination = null;
+            }
         }
 
         if (args.NewValue is AbstractPagination newPagination)

@@ -65,6 +65,7 @@ internal sealed record PerfOptions(
     bool VerifySplitterStates,
     bool VerifySliderStates,
     bool VerifyTreeViewStates,
+    bool VerifyTransferStates,
     bool VerifyTextBlockStates)
 {
     public static PerfOptions Parse(string[] args)
@@ -133,6 +134,7 @@ internal sealed record PerfOptions(
         var verifySplitterStates = false;
         var verifySliderStates = false;
         var verifyTreeViewStates = false;
+        var verifyTransferStates = false;
         var verifyTextBlockStates = false;
 
         for (var i = 0; i < args.Length; i++)
@@ -334,6 +336,9 @@ internal sealed record PerfOptions(
                 case "--verify-treeview-states":
                     verifyTreeViewStates = true;
                     break;
+                case "--verify-transfer-states":
+                    verifyTransferStates = true;
+                    break;
                 case "--verify-textblock-states":
                     verifyTextBlockStates = true;
                     break;
@@ -405,6 +410,7 @@ internal sealed record PerfOptions(
             verifySplitterStates,
             verifySliderStates,
             verifyTreeViewStates,
+            verifyTransferStates,
             verifyTextBlockStates);
     }
 }

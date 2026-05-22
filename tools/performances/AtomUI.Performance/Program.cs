@@ -78,6 +78,7 @@ internal static partial class Program
             options.VerifySplitterStates ||
             options.VerifySliderStates ||
             options.VerifyTreeViewStates ||
+            options.VerifyTransferStates ||
             options.VerifyTextBlockStates)
         {
             var verified = true;
@@ -324,6 +325,10 @@ internal static partial class Program
             if (options.VerifyTreeViewStates)
             {
                 verified &= RunTreeViewStateVerification();
+            }
+            if (options.VerifyTransferStates)
+            {
+                verified &= RunTransferStateVerification();
             }
             if (options.VerifyTextBlockStates)
             {
