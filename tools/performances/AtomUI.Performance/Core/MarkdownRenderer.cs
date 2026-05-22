@@ -118,6 +118,7 @@ internal static partial class Program
                 "spin" => "# Spin Baseline",
                 "steps" => "# Steps Baseline",
                 "statistic" => "# Statistic Baseline",
+                "timeline" => "# Timeline Baseline",
                 "splitview" => "# SplitView Baseline",
                 "splitter" => "# Splitter Baseline",
                 "skeleton" => "# Skeleton Baseline",

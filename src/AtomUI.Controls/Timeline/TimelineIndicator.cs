@@ -1,3 +1,4 @@
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -144,12 +145,18 @@ internal class TimelineIndicator : TemplatedControl
     #endregion
 
     private IconPresenter? _iconPresenter;
+    private Pen? _cachedDotPen;
+    private IBrush? _cachedDotPenBrush;
+    private double _cachedDotPenWidth;
+    private Pen? _cachedLinePen;
+    private IBrush? _cachedLinePenBrush;
+    private double _cachedLinePenWidth;
     
     static TimelineIndicator()
     {
         AffectsMeasure<TimelineIndicator>(IsFirstProperty, IsLastProperty, IndicatorIconProperty, IndicatorMinHeightProperty);
         AffectsRender<TimelineIndicator>(IndicatorColorProperty, IndicatorDotBorderWidthProperty, IndicatorDotSizeProperty,
-            IndicatorTailWidthProperty, IndicatorTailColorProperty);
+            DefaultIndicatorColorProperty, IndicatorTailWidthProperty, IndicatorTailColorProperty);
         TextElement.FontSizeProperty.Changed.AddClassHandler<TimelineIndicator>((indicator, args) =>
         {
             indicator.IndicatorMinHeight = args.GetNewValue<double>() * indicator.RelativeLineHeight;
@@ -169,6 +176,17 @@ internal class TimelineIndicator : TemplatedControl
         if (change.Property == RelativeLineHeightProperty)
         {
             IndicatorMinHeight = RelativeLineHeight * TextElement.GetFontSize(this);
+        }
+        else if (change.Property == IndicatorColorProperty ||
+                 change.Property == DefaultIndicatorColorProperty ||
+                 change.Property == IndicatorDotBorderWidthProperty)
+        {
+            _cachedDotPen = null;
+        }
+        else if (change.Property == IndicatorTailColorProperty ||
+                 change.Property == IndicatorTailWidthProperty)
+        {
+            _cachedLinePen = null;
         }
     }
 
@@ -200,7 +218,7 @@ internal class TimelineIndicator : TemplatedControl
         if (IndicatorIcon == null)
         {
             // 绘制内置的
-            var dotPen    = new Pen(IndicatorColor ?? DefaultIndicatorColor, IndicatorDotBorderWidth);
+            var dotPen    = GetOrCreateDotPen();
             var dotRadius = IndicatorDotSize / 2;
             var centerX   = (Bounds.Width - IndicatorDotSize) / 2 + dotRadius;
             var centerY   = (IndicatorMinHeight - IndicatorDotSize) / 2 + dotRadius - 1;
@@ -215,7 +233,7 @@ internal class TimelineIndicator : TemplatedControl
         }
 
         var lineOffsetX = Bounds.Width / 2;
-        var linePen     = new Pen(IndicatorTailColor, IndicatorTailWidth);
+        var linePen     = GetOrCreateLinePen();
         if (!IsLast)
         {
             var dotBelowLineStartPoint = new Point(lineOffsetX, dotBelowLineStartOffsetY);
@@ -229,5 +247,39 @@ internal class TimelineIndicator : TemplatedControl
             var dotUpLineEndPoint   = new Point(lineOffsetX, dotUpLineEndOffsetY);
             context.DrawLine(linePen, dotUpLineStartPoint, dotUpLineEndPoint);
         }
+    }
+
+    private Pen GetOrCreateDotPen()
+    {
+        var dotBrush = IndicatorColor ?? DefaultIndicatorColor;
+        var dotWidth = IndicatorDotBorderWidth;
+        if (_cachedDotPen is not null &&
+            ReferenceEquals(_cachedDotPenBrush, dotBrush) &&
+            MathUtils.AreClose(_cachedDotPenWidth, dotWidth))
+        {
+            return _cachedDotPen;
+        }
+
+        _cachedDotPen      = new Pen(dotBrush, dotWidth);
+        _cachedDotPenBrush = dotBrush;
+        _cachedDotPenWidth = dotWidth;
+        return _cachedDotPen;
+    }
+
+    private Pen GetOrCreateLinePen()
+    {
+        var lineBrush = IndicatorTailColor;
+        var lineWidth = IndicatorTailWidth;
+        if (_cachedLinePen is not null &&
+            ReferenceEquals(_cachedLinePenBrush, lineBrush) &&
+            MathUtils.AreClose(_cachedLinePenWidth, lineWidth))
+        {
+            return _cachedLinePen;
+        }
+
+        _cachedLinePen      = new Pen(lineBrush, lineWidth);
+        _cachedLinePenBrush = lineBrush;
+        _cachedLinePenWidth = lineWidth;
+        return _cachedLinePen;
     }
 }

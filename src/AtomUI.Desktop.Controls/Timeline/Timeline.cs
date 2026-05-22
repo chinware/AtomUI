@@ -31,6 +31,7 @@ public class Timeline : AbstractTimeline
         var item = new TimelineItem
         {
             Content       = Pending,
+            IndicatorIcon = pathIcon,
             IsPending     = true
         };
         return item;

@@ -97,20 +97,23 @@ public abstract class AbstractTimeline : ItemsControl
 
     private void SetupPendingItem()
     {
+        RemovePendingItem();
         if (Pending != null)
         {
-            if (_pendingItemReference != null)
-            {
-                if (_pendingItemReference.TryGetTarget(out var item))
-                {
-                    Items.Remove(item);
-                }
-            }
-            
             var pendingTimelineItem = CreatePendingItem();
             _pendingItemReference = new WeakReference<AbstractTimelineItem>(pendingTimelineItem);
             Items.Add(pendingTimelineItem);
         }
+    }
+
+    private void RemovePendingItem()
+    {
+        if (_pendingItemReference?.TryGetTarget(out var item) == true)
+        {
+            Items.Remove(item);
+        }
+
+        _pendingItemReference = null;
     }
 
     protected abstract AbstractTimelineItem CreatePendingItem();

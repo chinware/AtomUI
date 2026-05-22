@@ -63,6 +63,7 @@ internal sealed record PerfOptions(
     bool VerifyTabControlStates,
     bool VerifyStepsStates,
     bool VerifyStatisticStates,
+    bool VerifyTimelineStates,
     bool VerifySplitViewStates,
     bool VerifySplitterStates,
     bool VerifySliderStates,
@@ -134,6 +135,7 @@ internal sealed record PerfOptions(
         var verifyTabControlStates = false;
         var verifyStepsStates = false;
         var verifyStatisticStates = false;
+        var verifyTimelineStates = false;
         var verifySplitViewStates = false;
         var verifySplitterStates = false;
         var verifySliderStates = false;
@@ -334,6 +336,9 @@ internal sealed record PerfOptions(
                 case "--verify-statistic-states":
                     verifyStatisticStates = true;
                     break;
+                case "--verify-timeline-states":
+                    verifyTimelineStates = true;
+                    break;
                 case "--verify-splitview-states":
                     verifySplitViewStates = true;
                     break;
@@ -418,6 +423,7 @@ internal sealed record PerfOptions(
             verifyTabControlStates,
             verifyStepsStates,
             verifyStatisticStates,
+            verifyTimelineStates,
             verifySplitViewStates,
             verifySplitterStates,
             verifySliderStates,

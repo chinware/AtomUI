@@ -76,6 +76,7 @@ internal static partial class Program
             options.VerifyTabControlStates ||
             options.VerifyStepsStates ||
             options.VerifyStatisticStates ||
+            options.VerifyTimelineStates ||
             options.VerifySplitViewStates ||
             options.VerifySplitterStates ||
             options.VerifySliderStates ||
@@ -320,6 +321,10 @@ internal static partial class Program
             {
                 verified &= RunStatisticStateVerification();
             }
+            if (options.VerifyTimelineStates)
+            {
+                verified &= RunTimelineStateVerification();
+            }
             if (options.VerifySplitViewStates)
             {
                 verified &= RunSplitViewStateVerification();
@@ -434,6 +439,7 @@ internal static partial class Program
             "tabcontrol" => CreateTabControlScenarios(),
             "steps" => CreateStepsScenarios(),
             "statistic" => CreateStatisticScenarios(),
+            "timeline" => CreateTimelineScenarios(),
             "splitview" => CreateSplitViewScenarios(),
             "splitter" => CreateSplitterScenarios(),
             "space" => CreateSpaceScenarios(),

@@ -128,6 +128,14 @@ internal static class Program
                 stats => stats.StatisticCount >= 9 &&
                          stats.TimerStatisticCount >= 6 &&
                          stats.StatisticCountUpCount >= 2),
+            ["timeline"] = new(
+                "TimelineShowCase",
+                TimelineViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.TimelineShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/TimelineShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 6 &&
+                         stats.ButtonCount >= 1 &&
+                         stats.RadioButtonCount >= 3),
             ["list"] = new(
                 "ListShowCase",
                 ListViewModel.ID,

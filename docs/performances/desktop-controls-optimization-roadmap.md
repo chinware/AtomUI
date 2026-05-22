@@ -16,7 +16,7 @@
 | 控件清单 | 71 个 Desktop 控件目录 + ColorPicker + DataGrid | `find src/AtomUI.Desktop.Controls -maxdepth 1 -type d` |
 | 主题依赖 | 137 条目录间边 | 在 `*.axaml` 中 grep `atom:Xxx`，去掉 token / lang / constants / converters 后映射到拥有该类型的目录 |
 | 代码依赖 | 277 条目录间边（粗筛后） | 在 `*.cs` 中匹配类名 token 与全局类→目录映射的交集；含一定假阳性（常见单词 `Empty` / `Form` / `Message` 等会误判，已通过同时观察主题边校正主要结论） |
-| 已完成基线 | 50 项 | `docs/performances/README.md` "当前文档" / "总列表" 的 Done 行 |
+| 已完成基线 | 51 项 | `docs/performances/README.md` "当前文档" / "总列表" 的 Done 行 |
 
 **结论权重**：主题依赖是优化排序的主依据；代码依赖只用于补充识别"程序化使用"的隐式耦合（例如 ContextMenu、Window、Message 等无主题模板嵌入但代码里直接 new 的依赖）。
 
@@ -98,7 +98,7 @@
 | Tag | Done | 10 | 1 | `AbstractTag.SetupDefaultCloseIcon` 门控到 `IsClosable=true`，非 closable Tag 减少 ~2 KB/instance × Gallery 76 实例 ≈ 140 KB；详见 [Tag](Tag/README.md) |
 | TextBlock | Done (structural) | 33 | 0 | `HighlightableTextBlock` 段级 Run + `SelectableTextBlock` token binding/Cursor → Theme Setter；详见 [TextBlock](TextBlock/README.md)。微基准待哈纳斯恢复 |
 | TimePicker | Done | 1 | 4 | `InfoPickerInput` closed presenter 延迟到首次打开；`TimePickerShowCase` repeated mean `148.79ms -> 138.48ms`；详见 [TimePicker](TimePicker/README.md) |
-| Timeline | **Pending** | 0 | 1 | 列表型控件 |
+| Timeline | Done (structural + correctness) | 0 | 1 | `TimelineIndicator.Render` Pen 缓存；pending item 生命周期/default icon 修复；详见 [Timeline](Timeline/README.md) |
 | Tooltip | Done (structural-only) | 5 | 1 | `ToolTipService.StartShowTimer` 复用 DispatcherTimer + method-group Tick handler；headless bench 不能触发 Show 流程，real-world hover 场景待 Gallery 实测；详见 [Tooltip](Tooltip/README.md) |
 | TopLevel | n/a | 0 | 0 | 占位目录无主题/类 |
 | Tour | Done (structural) | 0 | 4 | `TourStepsView` 同生命周期 binding 收敛；详见 [Tour](Tour/README.md)。popup 打开场景待专项 harness |
@@ -214,7 +214,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | --- | --- | --- | --- | --- |
 | T2.1 | Calendar | 7 | **Done** | `Calendar.Default` ms/item `21.765 -> 16.405`，Year/Decade 初始模式约 `48%`；Gallery visuals `201 -> 189`；详见 [Calendar](Calendar/README.md) |
 | T2.2 | Statistic | 2 | Done | generated content ownership、CountUp DataContext 清理、TimerStatistic attach-gated timer 生命周期；`StatisticShowCase` repeated alloc `7471.87KB -> 7228.74KB`、visuals `387 -> 384`。Skeleton active 优化尝试因 loading 分配回退 / Theme Static Rule 全部撤回 |
-| T2.3 | Timeline | 3 | Pending | 列表项 + ScrollViewer |
+| T2.3 | Timeline | 3 | Done (structural + correctness) | `TimelineIndicator.Render` Pen 缓存；pending item 生命周期/default icon 修复，页面级 timing 未证明收益；详见 [Timeline](Timeline/README.md) |
 | T2.4 | Steps | 2 | Done (structural-only) | 修复 Grid definitions 清理错误；页面级 timing 未证明稳定收益 |
 | T2.5 | Breadcrumb | 2 | Pending | Buttons + Separator 复用 |
 | T2.6 | Splitter | 3 | Pending | 拖拽全局事件订阅 |
