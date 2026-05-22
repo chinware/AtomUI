@@ -37,6 +37,7 @@ internal static partial class Program
             options.VerifyCollapseStates ||
             options.VerifyComboBoxStates ||
             options.VerifyDatePickerStates ||
+            options.VerifyTimePickerStates ||
             options.VerifyDescriptionsStates ||
             options.VerifyDialogStates ||
             options.VerifyDrawerStates ||
@@ -161,6 +162,10 @@ internal static partial class Program
             if (options.VerifyDatePickerStates)
             {
                 verified &= RunDatePickerStateVerification();
+            }
+            if (options.VerifyTimePickerStates)
+            {
+                verified &= RunTimePickerStateVerification();
             }
             if (options.VerifyDescriptionsStates)
             {

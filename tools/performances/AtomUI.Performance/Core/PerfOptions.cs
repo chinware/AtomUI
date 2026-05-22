@@ -24,6 +24,7 @@ internal sealed record PerfOptions(
     bool VerifyCollapseStates,
     bool VerifyComboBoxStates,
     bool VerifyDatePickerStates,
+    bool VerifyTimePickerStates,
     bool VerifyDescriptionsStates,
     bool VerifyDialogStates,
     bool VerifyDrawerStates,
@@ -93,6 +94,7 @@ internal sealed record PerfOptions(
         var verifyCollapseStates  = false;
         var verifyComboBoxStates  = false;
         var verifyDatePickerStates = false;
+        var verifyTimePickerStates = false;
         var verifyDescriptionsStates = false;
         var verifyDialogStates = false;
         var verifyDrawerStates = false;
@@ -212,6 +214,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--verify-datepicker-states":
                     verifyDatePickerStates = true;
+                    break;
+                case "--verify-timepicker-states":
+                    verifyTimePickerStates = true;
                     break;
                 case "--verify-descriptions-states":
                     verifyDescriptionsStates = true;
@@ -369,6 +374,7 @@ internal sealed record PerfOptions(
             verifyCollapseStates,
             verifyComboBoxStates,
             verifyDatePickerStates,
+            verifyTimePickerStates,
             verifyDescriptionsStates,
             verifyDialogStates,
             verifyDrawerStates,

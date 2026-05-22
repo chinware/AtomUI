@@ -223,6 +223,12 @@ public class RangeDatePicker : RangeInfoPickerInput
         _pickerPresenter?.NotifyRepairReverseRange(true);
     }
 
+    protected override void NotifyPickerPresenterCleared(Control pickerPresenter)
+    {
+        base.NotifyPickerPresenterCleared(pickerPresenter);
+        _pickerPresenter = null;
+    }
+
     protected override void NotifyPickerOpened()
     {
         base.NotifyPickerOpened();

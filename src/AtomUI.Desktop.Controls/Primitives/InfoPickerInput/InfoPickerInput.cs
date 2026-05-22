@@ -362,6 +362,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected bool IsChoosing;
     private AddOnDecoratedBox? _addOnDecoratedBox;
     private Window? _attachedWindow;
+    private Control? _ownedPickerPresenter;
     
 
     static InfoPickerInput()
@@ -389,6 +390,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (args.NewValue is true)
         {
+            EnsurePickerPresenter();
             CurrentValidSelected = false;
             NotifyFlyoutAboutToShow();
             NotifyPickerOpened();
@@ -460,12 +462,6 @@ public abstract class InfoPickerInput : TemplatedControl,
 
         PickerPopup = e.NameScope.Find<Popup>("PART_Popup");
 
-        if (PickerPresenter is null)
-        {
-            PickerPresenter = CreatePickerPresenter();
-            NotifyPickerPresenterCreated(PickerPresenter);
-        }
-
         DecoratedBox = e.NameScope.Get<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         InfoInputBox = e.NameScope.Get<TextBox>("PART_InfoInputBox");
         PickerClearUpButton = e.NameScope.Find<PickerClearUpButton>("PART_ClearUpButton");
@@ -491,6 +487,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         SetupContentRightAddOnBindings(e);
         ConfigureArrowPosition();
         ConfigureShowArrowEffective();
+        if (IsPickerOpen)
+        {
+            EnsurePickerPresenter();
+        }
     }
     
     private void HandleDecoratedBoxTemplateApplied(object? sender, TemplateAppliedEventArgs args)
@@ -565,7 +565,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     
         return false;
     }
-    
+
     private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
     {
         _contentRightAddOnBindings?.Dispose();
@@ -613,8 +613,51 @@ public abstract class InfoPickerInput : TemplatedControl,
         NotifyFlyoutPresenterCreated(pickerPresenter);
     }
 
+    protected virtual void NotifyPickerPresenterCleared(Control pickerPresenter)
+    {
+        NotifyFlyoutPresenterCleared(pickerPresenter);
+    }
+
     protected virtual void NotifyFlyoutPresenterCreated(Control flyoutPresenter)
     {
+    }
+
+    protected virtual void NotifyFlyoutPresenterCleared(Control flyoutPresenter)
+    {
+    }
+
+    private void EnsurePickerPresenter()
+    {
+        if (PickerPresenter is not null)
+        {
+            return;
+        }
+
+        var pickerPresenter = CreatePickerPresenter();
+        _ownedPickerPresenter = pickerPresenter;
+        SetCurrentValue(PickerPresenterProperty, pickerPresenter);
+        NotifyPickerPresenterCreated(pickerPresenter);
+    }
+
+    private void ClearOwnedPickerPresenter()
+    {
+        var pickerPresenter = _ownedPickerPresenter;
+        if (pickerPresenter is null)
+        {
+            return;
+        }
+
+        if (IsPickerOpen)
+        {
+            SetCurrentValue(IsPickerOpenProperty, false);
+        }
+
+        NotifyPickerPresenterCleared(pickerPresenter);
+        if (ReferenceEquals(PickerPresenter, pickerPresenter))
+        {
+            SetCurrentValue(PickerPresenterProperty, null);
+        }
+        _ownedPickerPresenter = null;
     }
 
     protected virtual void SetupPopupProperties()
@@ -688,6 +731,8 @@ public abstract class InfoPickerInput : TemplatedControl,
         {
             PickerClearUpButton.ClearRequest -= HandleClearRequest;
         }
+
+        ClearOwnedPickerPresenter();
     }
 
     protected virtual bool ShowClearButtonPredicate()

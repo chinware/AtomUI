@@ -304,6 +304,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.DatePickerShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/DatePickerShowCase.axaml",
                 stats => stats.DatePickerCount > 0 || stats.RangeDatePickerCount > 0),
+            ["timepicker"] = new(
+                "TimePickerShowCase",
+                TimePickerViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.TimePickerShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/TimePickerShowCase.axaml",
+                stats => stats.InfoPickerInputCount > 0),
             ["form"] = new(
                 "FormShowCase",
                 FormViewModel.ID,

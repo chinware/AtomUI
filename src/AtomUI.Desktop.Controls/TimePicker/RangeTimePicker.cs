@@ -201,6 +201,12 @@ public class RangeTimePicker : RangeInfoPickerInput
         _pickerPresenter = pickerPresenter as TimePickerPresenter;
     }
 
+    protected override void NotifyPickerPresenterCleared(Control pickerPresenter)
+    {
+        base.NotifyPickerPresenterCleared(pickerPresenter);
+        _pickerPresenter = null;
+    }
+
     protected override void NotifyPickerOpened()
     {
         base.NotifyPickerOpened();
