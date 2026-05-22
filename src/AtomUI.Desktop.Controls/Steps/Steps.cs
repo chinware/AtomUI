@@ -356,7 +356,7 @@ public class Steps : SelectingItemsControl,
         {
             var count = _grid.Children.Count;
             _grid.RowDefinitions.Clear();
-            _grid.RowDefinitions.Clear();
+            _grid.ColumnDefinitions.Clear();
             if (Orientation == Orientation.Horizontal)
             {
                 var columnDefinitions = new ColumnDefinitions();

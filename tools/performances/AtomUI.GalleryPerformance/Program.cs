@@ -114,6 +114,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.DescriptionsShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DescriptionsShowCase.axaml",
                 stats => stats.DescriptionsCount > 0),
+            ["tour"] = new(
+                "TourShowCase",
+                TourViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.TourShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/TourShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 7 && stats.ButtonCount >= 20 && stats.VisualCount > 0),
             ["statistic"] = new(
                 "StatisticShowCase",
                 StatisticViewModel.ID,
@@ -376,6 +382,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.TransferShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/TransferShowCase.axaml",
                 stats => stats.VisualCount > 0),
+            ["upload"] = new(
+                "UploadShowCase",
+                UploadViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.UploadShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/UploadShowCase.axaml",
+                stats => stats.ShowCaseItemCount >= 10 && stats.VisualCount > 0),
             ["menu"] = new(
                 "MenuShowCase",
                 MenuViewModel.ID,

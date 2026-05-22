@@ -1,9 +1,7 @@
 using AtomUI.Controls;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -212,14 +210,13 @@ internal class TourStepsView : SelectingItemsControl
             }
             tourStep[!TourStep.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
             tourStep[!TourStep.CloseIconTemplateProperty] = this[!CloseIconProperty];
-            // TODO 需要审查
-            BindUtils.RelayBind(this, StyleTypeProperty, tourStep, TourStep.StyleTypeProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, IsArrowVisibleProperty, tourStep, TourStep.IsArrowVisibleProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, IsPointAtCenterProperty, tourStep, TourStep.IsPointAtCenterProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, PlacementProperty, tourStep, TourStep.PlacementProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, IsShowMaskProperty, tourStep, TourStep.IsShowMaskProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, IsScrollIntoViewProperty, tourStep, TourStep.IsScrollIntoViewProperty, priority: BindingPriority.Template);
-            BindUtils.RelayBind(this, MaskColorProperty, tourStep, TourStep.MaskColorProperty, priority: BindingPriority.Template);
+            tourStep[~TourStep.StyleTypeProperty] = this[!StyleTypeProperty];
+            tourStep[~TourStep.IsArrowVisibleProperty] = this[!IsArrowVisibleProperty];
+            tourStep[~TourStep.IsPointAtCenterProperty] = this[!IsPointAtCenterProperty];
+            tourStep[~TourStep.PlacementProperty] = this[!PlacementProperty];
+            tourStep[~TourStep.IsShowMaskProperty] = this[!IsShowMaskProperty];
+            tourStep[~TourStep.IsScrollIntoViewProperty] = this[!IsScrollIntoViewProperty];
+            tourStep[~TourStep.MaskColorProperty] = this[!MaskColorProperty];
             PrepareStepItem(tourStep, item, index);
         }
         else
