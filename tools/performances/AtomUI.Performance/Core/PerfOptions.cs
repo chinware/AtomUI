@@ -17,6 +17,7 @@ internal sealed record PerfOptions(
     bool VerifyAvatarStates,
     bool VerifyBadgeStates,
     bool VerifyButtonSpinnerStates,
+    bool VerifyCalendarStates,
     bool VerifyCardStates,
     bool VerifyCarouselStates,
     bool VerifyCascaderStates,
@@ -87,6 +88,7 @@ internal sealed record PerfOptions(
         var verifyAvatarStates    = false;
         var verifyBadgeStates     = false;
         var verifyButtonSpinnerStates = false;
+        var verifyCalendarStates  = false;
         var verifyCardStates      = false;
         var verifyCarouselStates  = false;
         var verifyCascaderStates  = false;
@@ -193,6 +195,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--verify-buttonspinner-states":
                     verifyButtonSpinnerStates = true;
+                    break;
+                case "--verify-calendar-states":
+                    verifyCalendarStates = true;
                     break;
                 case "--verify-card-states":
                     verifyCardStates = true;
@@ -367,6 +372,7 @@ internal sealed record PerfOptions(
             verifyAvatarStates,
             verifyBadgeStates,
             verifyButtonSpinnerStates,
+            verifyCalendarStates,
             verifyCardStates,
             verifyCarouselStates,
             verifyCascaderStates,

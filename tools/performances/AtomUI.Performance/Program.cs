@@ -30,6 +30,7 @@ internal static partial class Program
             options.VerifyAvatarStates ||
             options.VerifyBadgeStates ||
             options.VerifyButtonSpinnerStates ||
+            options.VerifyCalendarStates ||
             options.VerifyCardStates ||
             options.VerifyCarouselStates ||
             options.VerifyCascaderStates ||
@@ -134,6 +135,10 @@ internal static partial class Program
             if (options.VerifyButtonSpinnerStates)
             {
                 verified &= RunButtonSpinnerStateVerification();
+            }
+            if (options.VerifyCalendarStates)
+            {
+                verified &= RunCalendarStateVerification();
             }
             if (options.VerifyCardStates)
             {
@@ -383,6 +388,7 @@ internal static partial class Program
             "badge" => CreateBadgeScenarios(),
             "button" => CreateButtonScenarios(),
             "buttonspinner" => CreateButtonSpinnerScenarios(),
+            "calendar" => CreateCalendarScenarios(),
             "card" => CreateCardScenarios(),
             "carousel" => CreateCarouselScenarios(),
             "cascader" => CreateCascaderScenarios(),

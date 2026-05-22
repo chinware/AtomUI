@@ -16,7 +16,7 @@
 | 控件清单 | 71 个 Desktop 控件目录 + ColorPicker + DataGrid | `find src/AtomUI.Desktop.Controls -maxdepth 1 -type d` |
 | 主题依赖 | 137 条目录间边 | 在 `*.axaml` 中 grep `atom:Xxx`，去掉 token / lang / constants / converters 后映射到拥有该类型的目录 |
 | 代码依赖 | 277 条目录间边（粗筛后） | 在 `*.cs` 中匹配类名 token 与全局类→目录映射的交集；含一定假阳性（常见单词 `Empty` / `Form` / `Message` 等会误判，已通过同时观察主题边校正主要结论） |
-| 已完成基线 | 48 项 | `docs/performances/README.md` "当前文档" / "总列表" 的 Done 行 |
+| 已完成基线 | 49 项 | `docs/performances/README.md` "当前文档" / "总列表" 的 Done 行 |
 
 **结论权重**：主题依赖是优化排序的主依据；代码依赖只用于补充识别"程序化使用"的隐式耦合（例如 ContextMenu、Window、Message 等无主题模板嵌入但代码里直接 new 的依赖）。
 
@@ -41,7 +41,7 @@
 | Breadcrumb | Pending | 0 | 0 | 文本/分隔符为主，单测足够 |
 | ButtonSpinner | Done | 2 | 2 | Done |
 | Buttons | Done | 34 | 0 | 基础控件，已完成 Button/IconButton/SplitButton 等子控件优化 |
-| Calendar | Pending | 1 | 2 | DatePicker 的子控件；DatePicker 已 Done 但 Calendar 仍待独立基线 |
+| Calendar | Done | 1 | 2 | 按当前 DisplayMode 延迟填充 MonthView/YearView cells；详见 [Calendar](Calendar/README.md) |
 | Card | Done | 1 | 2 | Done |
 | Carousel | Done | 0 | 1 | Done |
 | Cascader | Done | 0 | 8 | Done — 也是依赖最多的控件之一 |
@@ -212,7 +212,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 
 | # | 控件 | Fan-Out | 现状 | 备注 |
 | --- | --- | --- | --- | --- |
-| T2.1 | Calendar | 7 | Pending | DatePicker 已 Done；Calendar 仍需独立基线 |
+| T2.1 | Calendar | 7 | **Done** | `Calendar.Default` ms/item `21.765 -> 16.405`，Year/Decade 初始模式约 `48%`；Gallery visuals `201 -> 189`；详见 [Calendar](Calendar/README.md) |
 | T2.2 | Statistic | 2 | Pending | CountUp 动画、Skeleton 切换 |
 | T2.3 | Timeline | 3 | Pending | 列表项 + ScrollViewer |
 | T2.4 | Steps | 2 | Done (structural-only) | 修复 Grid definitions 清理错误；页面级 timing 未证明稳定收益 |

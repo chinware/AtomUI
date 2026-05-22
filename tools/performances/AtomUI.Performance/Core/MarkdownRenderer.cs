@@ -85,6 +85,7 @@ internal static partial class Program
                 "badge" => "# Badge Baseline",
                 "button" => "# Button Baseline",
                 "buttonspinner" => "# ButtonSpinner Baseline",
+                "calendar" => "# Calendar Baseline",
                 "card" => "# Card Baseline",
                 "carousel" => "# Carousel Baseline",
                 "cascader" => "# Cascader Baseline",

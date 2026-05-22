@@ -1125,6 +1125,7 @@ public class Calendar : TemplatedControl, IMotionAwareControl
         var monthControl = MonthControl;
         if (monthControl != null && monthControl.MonthView != null && monthControl.YearView != null)
         {
+            monthControl.EnsureYearViewPopulated();
             monthControl.MonthView.IsVisible = false;
             monthControl.YearView.IsVisible  = true;
             UpdateMonths();
@@ -1500,6 +1501,7 @@ public class Calendar : TemplatedControl, IMotionAwareControl
         var monthControl = MonthControl;
         if (monthControl != null && monthControl.YearView != null && monthControl.MonthView != null)
         {
+            monthControl.EnsureMonthViewPopulated();
             monthControl.YearView.IsVisible  = false;
             monthControl.MonthView.IsVisible = true;
 

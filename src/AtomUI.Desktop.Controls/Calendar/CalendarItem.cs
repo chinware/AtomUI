@@ -257,6 +257,8 @@ internal class CalendarItem : TemplatedControl
     protected IconButton? _previousButton;
     protected IconButton? _previousMonthButton;
     protected Grid? _headerLayout;
+    private bool _monthViewPopulated;
+    private bool _yearViewPopulated;
 
     internal Calendar? Owner { get; set; }
 
@@ -272,9 +274,26 @@ internal class CalendarItem : TemplatedControl
 
     private void PopulateGrids()
     {
+        if (Owner?.DisplayMode is CalendarMode.Year or CalendarMode.Decade)
+        {
+            EnsureYearViewPopulated();
+        }
+        else
+        {
+            EnsureMonthViewPopulated();
+        }
+    }
+
+    internal void EnsureMonthViewPopulated()
+    {
         if (MonthView != null)
         {
-            var       childCount = Calendar.RowsPerMonth + Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
+            if (_monthViewPopulated)
+            {
+                return;
+            }
+
+            var       childCount = Calendar.ColumnsPerMonth + (Calendar.RowsPerMonth - 1) * Calendar.ColumnsPerMonth;
             using var children   = new PooledList<Control>(childCount);
 
             for (var i = 0; i < Calendar.ColumnsPerMonth; i++)
@@ -318,10 +337,19 @@ internal class CalendarItem : TemplatedControl
             }
 
             MonthView.Children.AddRange(children);
+            _monthViewPopulated = true;
         }
+    }
 
+    internal void EnsureYearViewPopulated()
+    {
         if (YearView != null)
         {
+            if (_yearViewPopulated)
+            {
+                return;
+            }
+
             var       childCount = Calendar.RowsPerYear * Calendar.ColumnsPerYear;
             using var children   = new PooledList<Control>(childCount);
 
@@ -351,6 +379,7 @@ internal class CalendarItem : TemplatedControl
             }
 
             YearView.Children.AddRange(children);
+            _yearViewPopulated = true;
         }
     }
 
@@ -371,6 +400,8 @@ internal class CalendarItem : TemplatedControl
         MonthView           = e.NameScope.Find<Grid>("PART_MonthView");
         YearView            = e.NameScope.Find<Grid>("PART_YearView");
         _headerLayout       = e.NameScope.Get<Grid>("PART_HeaderLayout");
+        _monthViewPopulated = false;
+        _yearViewPopulated  = false;
         
         if (Owner != null)
         {
@@ -475,6 +506,8 @@ internal class CalendarItem : TemplatedControl
 
     protected internal virtual void UpdateMonthMode()
     {
+        EnsureMonthViewPopulated();
+
         if (Owner != null)
         {
             _currentMonth = Owner.DisplayDateInternal;
@@ -743,6 +776,8 @@ internal class CalendarItem : TemplatedControl
 
     internal void UpdateYearMode()
     {
+        EnsureYearViewPopulated();
+
         if (Owner != null)
         {
             _currentMonth = Owner.SelectedMonth;
@@ -834,6 +869,8 @@ internal class CalendarItem : TemplatedControl
 
     internal void UpdateDecadeMode()
     {
+        EnsureYearViewPopulated();
+
         DateTime selectedYear;
 
         if (Owner != null)
