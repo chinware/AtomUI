@@ -207,6 +207,8 @@ public class Drawer : Control,
     private DrawerContainer? _container;
     private CompositeDisposable? _relayBindingDisposables;
     private IDisposable? _dialogSizeBinding;
+    private Control? _openOnSizeChangedTarget;
+    private int _visualTreeVersion;
     
     static Drawer()
     {
@@ -235,6 +237,7 @@ public class Drawer : Control,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _visualTreeVersion++;
         var parentDrawer = FindParentDrawer();
         _relayBindingDisposables?.Dispose();
         _relayBindingDisposables = new CompositeDisposable();
@@ -256,13 +259,27 @@ public class Drawer : Control,
                 }
             }));
         }
+
+        if (IsOpen)
+        {
+            HandleIsOpenChanged();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        var visualTreeVersion = ++_visualTreeVersion;
         _relayBindingDisposables?.Dispose();
         _relayBindingDisposables = null;
+        DetachOpenOnSizeChanged();
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            if (visualTreeVersion == _visualTreeVersion && !this.IsAttachedToVisualTree())
+            {
+                ReleaseDrawerContainer();
+            }
+        });
     }
 
     private Drawer? FindParentDrawer()
@@ -302,9 +319,16 @@ public class Drawer : Control,
         }
 
         if (change.Property == OpenOnProperty ||
-            change.Property == DialogSizeProperty)
+            change.Property == DialogSizeProperty ||
+            change.Property == PlacementProperty)
         {
             ConfigureEffectiveDialogSize();
+            ConfigureOpenOnSizeChangedSubscription();
+        }
+
+        if (change.Property == PlacementProperty && IsOpen)
+        {
+            NotifyParentDrawersChildPlacementChanged();
         }
 
         if (change.Property == SizeTypeProperty)
@@ -314,14 +338,13 @@ public class Drawer : Control,
         
         if (change.Property == OpenOnProperty)
         {
-            if (change.OldValue is Control oldOpenOn)
-            {
-                oldOpenOn.SizeChanged -= HandleOpenOnSizeChanged;
-            }
             if (change.NewValue is Control newOpenOn)
             {
-                newOpenOn.SizeChanged += HandleOpenOnSizeChanged;
                 ScopeAwareAdornerLayer.SetAdornedElement(this, newOpenOn);
+            }
+            else
+            {
+                ScopeAwareAdornerLayer.SetAdornedElement(this, null);
             }
         }
     }
@@ -347,6 +370,8 @@ public class Drawer : Control,
     {
         var layer = ScopeAwareAdornerLayer.GetLayer(this);
         Debug.Assert(layer != null);
+        ConfigureEffectiveDialogSize();
+        ConfigureOpenOnSizeChangedSubscription();
         NotifyBeforeOpen(layer);
         CreateDrawerContainer();
         Debug.Assert(_container != null);
@@ -355,11 +380,11 @@ public class Drawer : Control,
 
     private void Close()
     {
+        DetachOpenOnSizeChanged();
         var layer = ScopeAwareAdornerLayer.GetLayer(this);
         Debug.Assert(layer != null);
         NotifyBeforeClose(layer);
-        Debug.Assert(_container != null);
-        _container.Close(layer);
+        _container?.Close(layer);
     }
 
     private void CreateDrawerContainer()
@@ -370,22 +395,43 @@ public class Drawer : Control,
             {
                 Drawer = new WeakReference<Drawer>(this)
             };
-            _container[!DrawerContainer.DataContextProperty]          = this[!DataContextProperty];
-            _container[!DrawerContainer.ContentProperty]              = this[!ContentProperty];
-            _container[!DrawerContainer.ContentTemplateProperty]      = this[!ContentTemplateProperty];
-            _container[!DrawerContainer.FooterProperty]               = this[!FooterProperty];
-            _container[!DrawerContainer.FooterTemplateProperty]       = this[!FooterTemplateProperty];
-            _container[!DrawerContainer.ExtraProperty]                = this[!ExtraProperty];
-            _container[!DrawerContainer.ExtraTemplateProperty]        = this[!ExtraTemplateProperty];
-            _container[!DrawerContainer.DialogSizeProperty]           = this[!EffectiveDialogSizeProperty];
-            _container[!DrawerContainer.PlacementProperty]            = this[!PlacementProperty];
-            _container[!DrawerContainer.TitleProperty]                = this[!TitleProperty];
-            _container[!DrawerContainer.IsShowMaskProperty]           = this[!IsShowMaskProperty];
-            _container[!DrawerContainer.IsShowCloseButtonProperty]    = this[!IsShowCloseButtonProperty];
-            _container[!DrawerContainer.IsMotionEnabledProperty]      = this[!IsMotionEnabledProperty];
-            _container[!DrawerContainer.IsCloseOnMaskClickProperty] = this[!IsCloseOnMaskClickProperty];
-            _container[!DrawerContainer.PushOffsetPercentProperty]    = this[!PushOffsetPercentProperty];
+            _container.BindToDrawer(this);
         }
+    }
+
+    private void ReleaseDrawerContainer()
+    {
+        _container?.Release();
+        _container = null;
+    }
+
+    private void ConfigureOpenOnSizeChangedSubscription()
+    {
+        if (!IsOpen || !DialogSize.IsPercentage || OpenOn is null)
+        {
+            DetachOpenOnSizeChanged();
+            return;
+        }
+
+        if (ReferenceEquals(_openOnSizeChangedTarget, OpenOn))
+        {
+            return;
+        }
+
+        DetachOpenOnSizeChanged();
+        _openOnSizeChangedTarget = OpenOn;
+        _openOnSizeChangedTarget.SizeChanged += HandleOpenOnSizeChanged;
+    }
+
+    private void DetachOpenOnSizeChanged()
+    {
+        if (_openOnSizeChangedTarget is null)
+        {
+            return;
+        }
+
+        _openOnSizeChangedTarget.SizeChanged -= HandleOpenOnSizeChanged;
+        _openOnSizeChangedTarget = null;
     }
 
     protected internal virtual void NotifyBeforeOpen(ScopeAwareAdornerLayer layer)
@@ -421,6 +467,11 @@ public class Drawer : Control,
         _container?.NotifyChildDrawerAboutToClose(childDrawer);
     }
 
+    internal void NotifyChildDrawerPlacementChanged(Drawer childDrawer)
+    {
+        _container?.NotifyChildDrawerPlacementChanged(childDrawer);
+    }
+
     protected virtual void NotifyBeforeClose(ScopeAwareAdornerLayer layer)
     {
         var current = Parent;
@@ -431,6 +482,23 @@ public class Drawer : Control,
                 if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
                 {
                     drawer.NotifyChildDrawerAboutToClose(this);
+                }
+            }
+
+            current = current.Parent;
+        }
+    }
+
+    private void NotifyParentDrawersChildPlacementChanged()
+    {
+        var current = Parent;
+        while (current != null && current.GetType() != typeof(ScopeAwareAdornerLayer))
+        {
+            if (current is DrawerContainer container)
+            {
+                if (container.Drawer != null && container.Drawer.TryGetTarget(out var drawer))
+                {
+                    drawer.NotifyChildDrawerPlacementChanged(this);
                 }
             }
 

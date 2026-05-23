@@ -7,7 +7,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="RootLayout">
-                    <Border Name="Mask"
+                    <Border Name="PART_Mask"
                             IsVisible="{TemplateBinding IsShowMask}"
                             Background="{TemplateBinding Background}" />
                     <atom:MotionActor

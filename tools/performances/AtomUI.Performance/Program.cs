@@ -398,6 +398,7 @@ internal static partial class Program
     {
         return suite.ToLowerInvariant() switch
         {
+            "adornerlayer" => CreateAdornerLayerScenarios(),
             "icon" => CreateIconScenarios(),
             "avatar" => CreateAvatarScenarios(),
             "badge" => CreateBadgeScenarios(),

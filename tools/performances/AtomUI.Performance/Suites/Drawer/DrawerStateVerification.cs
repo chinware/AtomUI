@@ -20,6 +20,7 @@ internal static partial class Program
         VerifyDrawerClosedStateIsLazy(failures);
         VerifyDrawerOpenCloseReuseLifecycle(failures);
         VerifyDrawerDetachReleasesContainer(failures);
+        VerifyDrawerReopenAfterReleaseDoesNotRetainContentParent(failures);
         VerifyDrawerPercentageSizeSubscriptionLifecycle(failures);
         VerifyDrawerTemplateSlotState(failures);
         VerifyNestedDrawerPlacementChangeKeepsChildOpen(failures);
@@ -121,6 +122,75 @@ internal static partial class Program
         Expect(GetPrivateField(drawer, "AtomUI.Desktop.Controls.Drawer", "_openOnSizeChangedTarget") == null,
             "Detached Drawer should not retain OpenOn.SizeChanged target.",
             failures);
+    }
+
+    private static void VerifyDrawerReopenAfterReleaseDoesNotRetainContentParent(ICollection<string> failures)
+    {
+        var drawer = CreateVerificationDrawer();
+        var content = drawer.Content as Control;
+        var host = new StackPanel
+        {
+            Children =
+            {
+                drawer
+            }
+        };
+
+        using var realized = RealizeControl(host);
+        try
+        {
+            drawer.IsOpen = true;
+            RefreshLayout(realized.Window);
+            var releasedContainer = GetDrawerContainer(drawer);
+            Expect(releasedContainer != null,
+                "Opening Drawer before release should create DrawerContainer.",
+                failures);
+            var firstContentParent = content?.GetVisualParent();
+            Expect(firstContentParent != null,
+                "Opened Drawer should attach its control content to a ContentPresenter.",
+                failures);
+
+            host.Children.Remove(drawer);
+            RefreshLayout(realized.Window);
+            Dispatcher.UIThread.RunJobs();
+            Expect(GetDrawerContainer(drawer) == null,
+                "Released Drawer should clear the old DrawerContainer before re-open.",
+                failures);
+            Expect(content?.GetVisualParent() == null,
+                "Released DrawerContainer should detach the original Drawer.Content visual from the old InfoContainer.",
+                failures);
+            Expect(releasedContainer is ContentControl { Content: null },
+                "Released DrawerContainer should clear the old Drawer.Content value.",
+                failures);
+
+            var replacementContent = new StackPanel();
+            drawer.Content = replacementContent;
+            Dispatcher.UIThread.RunJobs();
+            Expect(releasedContainer is ContentControl releasedContentControl &&
+                   !ReferenceEquals(releasedContentControl.Content, replacementContent),
+                "Released DrawerContainer should dispose the old Drawer.Content binding.",
+                failures);
+            Expect(replacementContent.GetVisualParent() == null,
+                "Detached Drawer.Content changes should not attach visuals through the released DrawerContainer.",
+                failures);
+
+            host.Children.Add(drawer);
+            RefreshLayout(realized.Window);
+            Expect(GetDrawerContainer(drawer) != null,
+                "Re-opened Drawer should create a fresh DrawerContainer after release.",
+                failures);
+            Expect(content?.GetVisualParent() == null,
+                "Re-opened Drawer should not reattach content that is no longer Drawer.Content.",
+                failures);
+            Expect(replacementContent.GetVisualParent() != null &&
+                   !ReferenceEquals(firstContentParent, replacementContent.GetVisualParent()),
+                "Re-opened Drawer should attach the current Drawer.Content visual to a fresh InfoContainer.",
+                failures);
+        }
+        catch (InvalidOperationException ex)
+        {
+            failures.Add($"Re-opening a released Drawer should not retain stale content parent: {ex.Message}");
+        }
     }
 
     private static void VerifyDrawerPercentageSizeSubscriptionLifecycle(ICollection<string> failures)
@@ -300,7 +370,10 @@ internal static partial class Program
             }
         }
 
-        parentDrawer.Placement = AtomUI.Desktop.Controls.DrawerPlacement.Left;
+        SetDrawerContainerPlacement(parentContainer, AtomUI.Desktop.Controls.DrawerPlacement.Left);
+        Expect(GetRenderOffsetX(parentInfoContainer) < 0,
+            "Transient parent-container-first Right->Left placement update should keep the previous push until the child Drawer catches up.",
+            failures);
         childDrawer.Placement  = AtomUI.Desktop.Controls.DrawerPlacement.Left;
         RefreshLayout(realized.Window);
         Expect(parentContainer?.GetVisualParent() != null,
@@ -316,8 +389,11 @@ internal static partial class Program
             "Left-placement parent Drawer should be pushed right when child Drawer remains open.",
             failures);
 
-        parentDrawer.Placement = AtomUI.Desktop.Controls.DrawerPlacement.Right;
-        childDrawer.Placement  = AtomUI.Desktop.Controls.DrawerPlacement.Right;
+        childDrawer.Placement = AtomUI.Desktop.Controls.DrawerPlacement.Right;
+        Expect(GetRenderOffsetX(parentInfoContainer) > 0,
+            "Transient child-first Left->Right placement update should keep the previous push until the parent Drawer catches up.",
+            failures);
+        SetDrawerContainerPlacement(parentContainer, AtomUI.Desktop.Controls.DrawerPlacement.Right);
         RefreshLayout(realized.Window);
         Expect(childDrawer.IsOpen,
             "Nested child Drawer should keep IsOpen=true after Left->Right switch.",
@@ -327,6 +403,20 @@ internal static partial class Program
             failures);
         Expect(GetRenderOffsetX(parentInfoContainer) < 0,
             "Right-placement parent Drawer should restore left push after switching back.",
+            failures);
+
+        SetDrawerContainerPlacement(parentContainer, AtomUI.Desktop.Controls.DrawerPlacement.Left);
+        childDrawer.Placement  = AtomUI.Desktop.Controls.DrawerPlacement.Left;
+        RefreshLayout(realized.Window);
+        childDrawer.Placement = AtomUI.Desktop.Controls.DrawerPlacement.Right;
+        Dispatcher.UIThread.RunJobs();
+        Expect(Math.Abs(GetRenderOffsetX(parentInfoContainer)) < 0.001,
+            "Persistent parent/child placement mismatch should restore the parent Drawer push after dispatcher coalescing.",
+            failures);
+        SetDrawerContainerPlacement(parentContainer, AtomUI.Desktop.Controls.DrawerPlacement.Right);
+        RefreshLayout(realized.Window);
+        Expect(GetRenderOffsetX(parentInfoContainer) < 0,
+            "Parent Drawer push should reapply after a persistent mismatch becomes matched again.",
             failures);
 
         childDrawer.IsOpen = false;
@@ -378,6 +468,13 @@ internal static partial class Program
         return container == null
             ? null
             : GetPrivateField(container, "AtomUI.Desktop.Controls.DrawerContainer", "_infoContainer");
+    }
+
+    private static void SetDrawerContainerPlacement(Control? container, AtomUI.Desktop.Controls.DrawerPlacement placement)
+    {
+        container?.GetType()
+                  .GetProperty("Placement", BindingFlags.Instance | BindingFlags.NonPublic)
+                  ?.SetValue(container, placement);
     }
 
     private static double GetRenderOffsetX(Control? control)
