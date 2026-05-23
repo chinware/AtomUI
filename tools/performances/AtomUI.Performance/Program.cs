@@ -410,6 +410,7 @@ internal static partial class Program
             "carousel" => CreateCarouselScenarios(),
             "cascader" => CreateCascaderScenarios(),
             "checkbox" => CreateCheckBoxScenarios(),
+            "colorpicker" => CreateColorPickerScenarios(),
             "collapse" => CreateCollapseScenarios(),
             "combobox" => CreateComboBoxScenarios(),
             "datepicker" => CreateDatePickerScenarios(),

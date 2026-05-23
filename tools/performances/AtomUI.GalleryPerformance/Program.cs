@@ -338,6 +338,12 @@ internal static class Program
                 "AtomUIGallery.ShowCases.Views.TimePickerShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/TimePickerShowCase.axaml",
                 stats => stats.InfoPickerInputCount > 0),
+            ["colorpicker"] = new(
+                "ColorPickerShowCase",
+                ColorPickerViewModel.ID,
+                "AtomUIGallery.ShowCases.Views.ColorPickerShowCase",
+                "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/ColorPickerShowCase.axaml",
+                stats => stats.ColorPickerCount >= 20 && stats.GradientColorPickerCount >= 3),
             ["form"] = new(
                 "FormShowCase",
                 FormViewModel.ID,
@@ -1630,7 +1636,7 @@ internal static class Program
             return "none";
         }
 
-        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, alert={stats.AlertCount}, marqueeLabel={stats.MarqueeLabelCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, groupBox={stats.GroupBoxCount}, groupBoxHeaderIcon={stats.GroupBoxHeaderIconPresenterCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, statistic={stats.StatisticCount}, timerStatistic={stats.TimerStatisticCount}, statisticCountUp={stats.StatisticCountUpCount}, steps={stats.StepsCount}, stepsItem={stats.StepsItemCount}, stepsIndicator={stats.StepsItemIndicatorCount}, calendar={stats.CalendarCount}, calendarItem={stats.CalendarItemCount}, calendarDayButton={stats.CalendarDayButtonCount}, calendarButton={stats.CalendarButtonCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, mentions={stats.MentionsCount}, mentionTextArea={stats.MentionTextAreaCount}, mentionsPopupFields={stats.MentionsPopupFieldCount}, mentionsCandidateFields={stats.MentionsCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, radioButton={stats.RadioButtonCount}, radioButtonGroup={stats.RadioButtonGroupCount}, radioIndicator={stats.RadioIndicatorCount}, wave={stats.WaveSpiritDecoratorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
+        return $"visuals={stats.VisualCount}, logical={stats.LogicalCount}, space={stats.SpaceCount}, compactSpace={stats.CompactSpaceCount}, compactItems={stats.CompactSpaceItemCount}, avatar={stats.AvatarCount}, avatarGroup={stats.AvatarGroupCount}, badge={stats.CountBadgeCount + stats.DotBadgeCount + stats.RibbonBadgeCount}, badgeAdorner={stats.CountBadgeAdornerCount + stats.DotBadgeAdornerCount + stats.RibbonBadgeAdornerCount}, flyoutHost={stats.FlyoutHostCount}, alert={stats.AlertCount}, marqueeLabel={stats.MarqueeLabelCount}, lineEdit={stats.LineEditCount}, button={stats.ButtonCount}, buttonSpinner={stats.ButtonSpinnerCount}, card={stats.CardCount}, cardActionPanel={stats.CardActionPanelCount}, groupBox={stats.GroupBoxCount}, groupBoxHeaderIcon={stats.GroupBoxHeaderIconPresenterCount}, collapse={stats.CollapseCount}, collapseItem={stats.CollapseItemCount}, collapseMotion={stats.CollapseContentMotionActorCount}, collapseExpandButton={stats.CollapseExpandButtonCount}, carousel={stats.CarouselCount}, carouselIndicator={stats.CarouselPageIndicatorCount}, carouselNavButton={stats.CarouselNavButtonCount}, carouselProgressBorder={stats.CarouselProgressBorderCount}, skeleton={stats.SkeletonCount}, skeletonLine={stats.SkeletonLineCount}, statistic={stats.StatisticCount}, timerStatistic={stats.TimerStatisticCount}, statisticCountUp={stats.StatisticCountUpCount}, steps={stats.StepsCount}, stepsItem={stats.StepsItemCount}, stepsIndicator={stats.StepsItemIndicatorCount}, calendar={stats.CalendarCount}, calendarItem={stats.CalendarItemCount}, calendarDayButton={stats.CalendarDayButtonCount}, calendarButton={stats.CalendarButtonCount}, select={stats.SelectCount}, comboBox={stats.ComboBoxCount}, comboBoxItem={stats.ComboBoxItemCount}, comboBoxHandle={stats.ComboBoxHandleCount}, comboBoxHost={stats.ComboBoxAccessoryHostCount}, colorPicker={stats.ColorPickerCount}, gradientColorPicker={stats.GradientColorPickerCount}, datePicker={stats.DatePickerCount}, rangeDatePicker={stats.RangeDatePickerCount}, datePickerPresenter={stats.DatePickerPresenterCount}, datePickerCalendar={stats.DatePickerCalendarCount}, timeView={stats.TimeViewCount}, autoComplete={stats.AutoCompleteCount}, autoCompletePopupFields={stats.AutoCompletePopupFieldCount}, autoCompleteCandidateFields={stats.AutoCompleteCandidateListFieldCount}, mentions={stats.MentionsCount}, mentionTextArea={stats.MentionTextAreaCount}, mentionsPopupFields={stats.MentionsPopupFieldCount}, mentionsCandidateFields={stats.MentionsCandidateListFieldCount}, candidateListVisuals={stats.CandidateListCount}, treeSelect={stats.TreeSelectCount}, cascader={stats.CascaderCount}, checkBox={stats.CheckBoxCount}, checkBoxGroup={stats.CheckBoxGroupCount}, checkBoxIndicator={stats.CheckBoxIndicatorCount}, radioButton={stats.RadioButtonCount}, radioButtonGroup={stats.RadioButtonGroupCount}, radioIndicator={stats.RadioIndicatorCount}, wave={stats.WaveSpiritDecoratorCount}, descriptions={stats.DescriptionsCount}, descriptionDefaultItem={stats.DescriptionDefaultItemCount}, descriptionBorderedLabel={stats.DescriptionBorderedItemLabelCount}, descriptionBorderedContent={stats.DescriptionBorderedItemContentCount}, drawer={stats.DrawerCount}, dialog={stats.DialogCount}, messageBox={stats.MessageBoxCount}, overlayHost={stats.OverlayDialogHostCount}, dialogHost={stats.DialogHostCount}, dialogButtonBox={stats.DialogButtonBoxCount}, dialogButton={stats.DialogButtonCount}, captionButton={stats.DialogCaptionButtonCount}, dialogMask={stats.OverlayDialogMaskCount}, dialogResizer={stats.OverlayDialogResizerCount}, messageBoxContent={stats.MessageBoxContentCount}, addOnDecoratedBox={stats.AddOnDecoratedBoxCount}";
     }
 }
 
@@ -1978,6 +1984,8 @@ internal sealed record RouteStats(
     int ComboBoxItemCount,
     int ComboBoxHandleCount,
     int ComboBoxAccessoryHostCount,
+    int ColorPickerCount,
+    int GradientColorPickerCount,
     int DatePickerCount,
     int RangeDatePickerCount,
     int InfoPickerInputCount,
@@ -2118,6 +2126,8 @@ internal sealed record RouteStats(
         var comboBoxItemCount       = 0;
         var comboBoxHandleCount     = 0;
         var comboBoxAccessoryHostCount = 0;
+        var colorPickerCount        = 0;
+        var gradientColorPickerCount = 0;
         var datePickerCount         = 0;
         var rangeDatePickerCount    = 0;
         var infoPickerInputCount    = 0;
@@ -2502,6 +2512,14 @@ internal sealed record RouteStats(
             {
                 comboBoxAccessoryHostCount++;
             }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.ColorPicker"))
+            {
+                colorPickerCount++;
+            }
+            if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.GradientColorPicker"))
+            {
+                gradientColorPickerCount++;
+            }
             if (IsTypeOrDerived(type, "AtomUI.Desktop.Controls.DatePicker"))
             {
                 datePickerCount++;
@@ -2792,6 +2810,8 @@ internal sealed record RouteStats(
             comboBoxItemCount,
             comboBoxHandleCount,
             comboBoxAccessoryHostCount,
+            colorPickerCount,
+            gradientColorPickerCount,
             datePickerCount,
             rangeDatePickerCount,
             infoPickerInputCount,
@@ -2929,6 +2949,8 @@ internal sealed record RouteStats(
                ComboBoxItemCount == other.ComboBoxItemCount &&
                ComboBoxHandleCount == other.ComboBoxHandleCount &&
                ComboBoxAccessoryHostCount == other.ComboBoxAccessoryHostCount &&
+               ColorPickerCount == other.ColorPickerCount &&
+               GradientColorPickerCount == other.GradientColorPickerCount &&
                DatePickerCount == other.DatePickerCount &&
                RangeDatePickerCount == other.RangeDatePickerCount &&
                InfoPickerInputCount == other.InfoPickerInputCount &&

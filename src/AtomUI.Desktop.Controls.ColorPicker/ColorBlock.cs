@@ -6,12 +6,15 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Immutable;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
 internal class ColorBlock : TemplatedControl, ISizeTypeAware
 {
+    private static readonly IPen EmptyColorPen = new ImmutablePen(Colors.Red.ToUInt32(), 2);
+
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -174,7 +177,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
             });
             var startPoint = new Point(2, DesiredSize.Height - 2);
             var endPoint = new Point(DesiredSize.Width - 2, 2);
-            context.DrawLine(new Pen(Brushes.Red, 2), startPoint, endPoint);
+            context.DrawLine(EmptyColorPen, startPoint, endPoint);
         }
     }
 
