@@ -111,8 +111,13 @@ internal class CaptionButton : AvaloniaButton
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
         base.OnSizeChanged(e);
-        var size = Math.Max(e.NewSize.Height, e.NewSize.Width);
-        EffectiveCornerRadius = new CornerRadius(size / 2);
+        UpdateEffectiveCornerRadius(e.NewSize);
+    }
+
+    protected virtual void UpdateEffectiveCornerRadius(Size size)
+    {
+        var maxSize = Math.Max(size.Height, size.Width);
+        EffectiveCornerRadius = new CornerRadius(maxSize / 2);
     }
 
     protected override void OnPointerMoved(PointerEventArgs e)

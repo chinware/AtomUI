@@ -70,6 +70,7 @@ internal sealed record PerfOptions(
     bool VerifySliderStates,
     bool VerifyTreeViewStates,
     bool VerifyTransferStates,
+    bool VerifyWindowTitleBarStates,
     bool VerifyTextBlockStates)
 {
     public static PerfOptions Parse(string[] args)
@@ -143,6 +144,7 @@ internal sealed record PerfOptions(
         var verifySliderStates = false;
         var verifyTreeViewStates = false;
         var verifyTransferStates = false;
+        var verifyWindowTitleBarStates = false;
         var verifyTextBlockStates = false;
 
         for (var i = 0; i < args.Length; i++)
@@ -359,6 +361,9 @@ internal sealed record PerfOptions(
                 case "--verify-transfer-states":
                     verifyTransferStates = true;
                     break;
+                case "--verify-windowtitlebar-states":
+                    verifyWindowTitleBarStates = true;
+                    break;
                 case "--verify-textblock-states":
                     verifyTextBlockStates = true;
                     break;
@@ -435,6 +440,7 @@ internal sealed record PerfOptions(
             verifySliderStates,
             verifyTreeViewStates,
             verifyTransferStates,
+            verifyWindowTitleBarStates,
             verifyTextBlockStates);
     }
 }

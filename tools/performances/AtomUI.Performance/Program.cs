@@ -83,6 +83,7 @@ internal static partial class Program
             options.VerifySliderStates ||
             options.VerifyTreeViewStates ||
             options.VerifyTransferStates ||
+            options.VerifyWindowTitleBarStates ||
             options.VerifyTextBlockStates)
         {
             var verified = true;
@@ -350,6 +351,10 @@ internal static partial class Program
             {
                 verified &= RunTransferStateVerification();
             }
+            if (options.VerifyWindowTitleBarStates)
+            {
+                verified &= RunWindowTitleBarStateVerification();
+            }
             if (options.VerifyTextBlockStates)
             {
                 verified &= RunTextBlockStateVerification();
@@ -446,6 +451,7 @@ internal static partial class Program
             "steps" => CreateStepsScenarios(),
             "statistic" => CreateStatisticScenarios(),
             "timeline" => CreateTimelineScenarios(),
+            "windowtitlebar" => CreateWindowTitleBarScenarios(),
             "splitview" => CreateSplitViewScenarios(),
             "splitter" => CreateSplitterScenarios(),
             "space" => CreateSpaceScenarios(),

@@ -3,11 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     xmlns:antdicons="https://atomui.net/icons/antdesign"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
-    <converters:MaximizeButtonVisibleConverter x:Key="MaximizeButtonVisibleConverter" />
-    <converters:MinimizeButtonVisibleConverter x:Key="MinimizeButtonVisibleConverter" />
-    <converters:FullScreenButtonVisibleConverter x:Key="FullScreenButtonVisibleConverter" />
     <ControlTheme x:Key="{x:Type atom:CaptionButtonGroup}" TargetType="atom:CaptionButtonGroup">
         <Style Selector="^[OsType=Linux]">
             <Setter Property="Template">
@@ -20,16 +16,8 @@
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowFullScreen}">
-                            <atom:CaptionButton.IsVisible>
-                                <MultiBinding
-                                    Converter="{StaticResource FullScreenButtonVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsFullScreenCaptionButtonVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsWindowMaximized" />
-                                </MultiBinding>
-                            </atom:CaptionButton.IsVisible>
-                        </atom:CaptionButton>
+                            IsChecked="{TemplateBinding IsWindowFullScreen}"
+                            IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}" />
                         <atom:CaptionButton
                             Name="PART_PinButton"
                             IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
@@ -43,34 +31,16 @@
                             Name="PART_MinimizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                            <atom:CaptionButton.IsVisible>
-                                <MultiBinding
-                                    Converter="{StaticResource MinimizeButtonVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsMinimizeCaptionButtonVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsWindowFullScreen" />
-                                </MultiBinding>
-                            </atom:CaptionButton.IsVisible>
-                        </atom:CaptionButton>
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                            IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}" />
                         <atom:CaptionButton
                             Name="PART_MaximizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowMaximized}">
-                            <atom:CaptionButton.IsVisible>
-                                <MultiBinding
-                                    Converter="{StaticResource MaximizeButtonVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsMaximizeCaptionButtonVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsWindowFullScreen" />
-                                </MultiBinding>
-                            </atom:CaptionButton.IsVisible>
-                        </atom:CaptionButton>
+                            IsChecked="{TemplateBinding IsWindowMaximized}"
+                            IsVisible="{TemplateBinding IsMaximizeButtonEffectivelyVisible}" />
                         <atom:CaptionButton
                             Name="PART_CloseButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowCloseOutlined}"
@@ -111,16 +81,8 @@
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=FullscreenOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=FullscreenExitOutlined}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowFullScreen}">
-                            <atom:CaptionButton.IsVisible>
-                                <MultiBinding
-                                    Converter="{StaticResource FullScreenButtonVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsFullScreenCaptionButtonVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsWindowMaximized" />
-                                </MultiBinding>
-                            </atom:CaptionButton.IsVisible>
-                        </atom:WindowsCaptionButton>
+                            IsChecked="{TemplateBinding IsWindowFullScreen}"
+                            IsVisible="{TemplateBinding IsFullScreenButtonEffectivelyVisible}" />
                         <atom:WindowsCaptionButton
                             Name="PART_PinButton"
                             IsVisible="{TemplateBinding IsPinCaptionButtonVisible}"
@@ -134,34 +96,16 @@
                             Name="PART_MinimizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                            <atom:CaptionButton.IsVisible>
-                                <MultiBinding
-                                    Converter="{StaticResource MinimizeButtonVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsMinimizeCaptionButtonVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsWindowFullScreen" />
-                                </MultiBinding>
-                            </atom:CaptionButton.IsVisible>
-                        </atom:WindowsCaptionButton>
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                            IsVisible="{TemplateBinding IsMinimizeButtonEffectivelyVisible}" />
                         <atom:WindowsCaptionButton
                             Name="PART_MaximizeButton"
                             NormalIcon="{antdicons:AntDesignIconProvider Kind=WindowMaximizedOutlined}"
                             CheckedIcon="{antdicons:AntDesignIconProvider Kind=WindowRestoreOutlined}"
                             IsWindowActive="{TemplateBinding IsWindowActive}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsChecked="{TemplateBinding IsWindowMaximized}">
-                            <atom:CaptionButton.IsVisible>
-                                <MultiBinding
-                                    Converter="{StaticResource MaximizeButtonVisibleConverter}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsMaximizeCaptionButtonVisible" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                             Path="IsWindowFullScreen" />
-                                </MultiBinding>
-                            </atom:CaptionButton.IsVisible>
-                        </atom:WindowsCaptionButton>
+                            IsChecked="{TemplateBinding IsWindowMaximized}"
+                            IsVisible="{TemplateBinding IsMaximizeButtonEffectivelyVisible}" />
                         <atom:WindowsCaptionButton
                             Name="PART_CloseButton"
                             IsCloseButton="True"

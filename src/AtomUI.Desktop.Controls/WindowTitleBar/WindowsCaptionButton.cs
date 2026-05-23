@@ -20,9 +20,8 @@ internal class WindowsCaptionButton : CaptionButton
         set => SetAndRaise(IsCloseButtonProperty, ref _isCloseButton, value);
     }
     
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    protected override void UpdateEffectiveCornerRadius(Size size)
     {
-        base.OnSizeChanged(e);
         Debug.Assert(MathUtils.AreClose(DesiredSize.Width, DesiredSize.Height));
         EffectiveCornerRadius = new CornerRadius(0);
     }

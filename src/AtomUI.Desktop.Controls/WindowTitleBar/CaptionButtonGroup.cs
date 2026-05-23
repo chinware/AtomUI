@@ -104,6 +104,24 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
             nameof(IsWindowPinned),
             o => o.IsWindowPinned,
             (o, v) => o.IsWindowPinned = v);
+
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsFullScreenButtonEffectivelyVisibleProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsFullScreenButtonEffectivelyVisible),
+            o => o.IsFullScreenButtonEffectivelyVisible,
+            (o, v) => o.IsFullScreenButtonEffectivelyVisible = v);
+
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsMinimizeButtonEffectivelyVisibleProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsMinimizeButtonEffectivelyVisible),
+            o => o.IsMinimizeButtonEffectivelyVisible,
+            (o, v) => o.IsMinimizeButtonEffectivelyVisible = v);
+
+    internal static readonly DirectProperty<CaptionButtonGroup, bool> IsMaximizeButtonEffectivelyVisibleProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButtonGroup, bool>(
+            nameof(IsMaximizeButtonEffectivelyVisible),
+            o => o.IsMaximizeButtonEffectivelyVisible,
+            (o, v) => o.IsMaximizeButtonEffectivelyVisible = v);
     
     internal bool IsMotionEnabled
     {
@@ -134,6 +152,30 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
         get => _isWindowPinned;
         set => SetAndRaise(IsWindowPinnedProperty, ref _isWindowPinned, value);
     }
+
+    private bool _isFullScreenButtonEffectivelyVisible;
+
+    internal bool IsFullScreenButtonEffectivelyVisible
+    {
+        get => _isFullScreenButtonEffectivelyVisible;
+        set => SetAndRaise(IsFullScreenButtonEffectivelyVisibleProperty, ref _isFullScreenButtonEffectivelyVisible, value);
+    }
+
+    private bool _isMinimizeButtonEffectivelyVisible = true;
+
+    internal bool IsMinimizeButtonEffectivelyVisible
+    {
+        get => _isMinimizeButtonEffectivelyVisible;
+        set => SetAndRaise(IsMinimizeButtonEffectivelyVisibleProperty, ref _isMinimizeButtonEffectivelyVisible, value);
+    }
+
+    private bool _isMaximizeButtonEffectivelyVisible = true;
+
+    internal bool IsMaximizeButtonEffectivelyVisible
+    {
+        get => _isMaximizeButtonEffectivelyVisible;
+        set => SetAndRaise(IsMaximizeButtonEffectivelyVisibleProperty, ref _isMaximizeButtonEffectivelyVisible, value);
+    }
     
     protected Window? HostWindow { get; private set; }
 
@@ -151,16 +193,21 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
 
     static CaptionButtonGroup()
     {
-        AffectsArrange<CaptionButtonGroup>(IsWindowMaximizedProperty,
-            IsWindowFullScreenProperty,
-            IsMaximizeCaptionButtonVisibleProperty,
-            IsPinCaptionButtonVisibleProperty,
-            IsMinimizeCaptionButtonVisibleProperty);
+        IsFullScreenCaptionButtonVisibleProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateFullScreenButtonVisibility());
+        IsWindowMaximizedProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateFullScreenButtonVisibility());
+        IsMinimizeCaptionButtonVisibleProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateMinimizeButtonVisibility());
+        IsMaximizeCaptionButtonVisibleProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) => group.UpdateMaximizeButtonVisibility());
+        IsWindowFullScreenProperty.Changed.AddClassHandler<CaptionButtonGroup>((group, _) =>
+        {
+            group.UpdateMinimizeButtonVisibility();
+            group.UpdateMaximizeButtonVisibility();
+        });
     }
 
     public CaptionButtonGroup()
     {
         this.ConfigureOsType();
+        UpdateCaptionButtonVisibility();
     }
 
     public virtual void Attach(Window hostWindow)
@@ -202,10 +249,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
             return;
         }
         _disposables.Dispose();
-        foreach (var disposeAction in _disposeActions)
-        {
-            disposeAction.Invoke();
-        }
+        DisposeTemplateHandlers();
         _disposables = null;
         HostWindow   = null;
     }
@@ -214,11 +258,7 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
     {
         base.OnApplyTemplate(e);
         
-        foreach (var disposeAction in _disposeActions)
-        {
-            disposeAction.Invoke();
-        }
-        _disposeActions.Clear();
+        DisposeTemplateHandlers();
         
         _closeButton      = e.NameScope.Find<CaptionButton>("PART_CloseButton");
         _maximizeButton   = e.NameScope.Find<CaptionButton>("PART_MaximizeButton");
@@ -257,6 +297,37 @@ internal class CaptionButtonGroup : TemplatedControl, IOperationSystemAware
             _pinButton.Click += HandlePinButtonClicked;
             _disposeActions.Add(() => _pinButton.Click -= HandlePinButtonClicked);
         }
+    }
+
+    private void UpdateCaptionButtonVisibility()
+    {
+        UpdateFullScreenButtonVisibility();
+        UpdateMinimizeButtonVisibility();
+        UpdateMaximizeButtonVisibility();
+    }
+
+    private void UpdateFullScreenButtonVisibility()
+    {
+        IsFullScreenButtonEffectivelyVisible = IsFullScreenCaptionButtonVisible && !IsWindowMaximized;
+    }
+
+    private void UpdateMinimizeButtonVisibility()
+    {
+        IsMinimizeButtonEffectivelyVisible = IsMinimizeCaptionButtonVisible && !IsWindowFullScreen;
+    }
+
+    private void UpdateMaximizeButtonVisibility()
+    {
+        IsMaximizeButtonEffectivelyVisible = IsMaximizeCaptionButtonVisible && !IsWindowFullScreen;
+    }
+
+    private void DisposeTemplateHandlers()
+    {
+        foreach (var disposeAction in _disposeActions)
+        {
+            disposeAction.Invoke();
+        }
+        _disposeActions.Clear();
     }
     
     private void HandleFullScreenButtonClicked(object? sender, RoutedEventArgs args)
