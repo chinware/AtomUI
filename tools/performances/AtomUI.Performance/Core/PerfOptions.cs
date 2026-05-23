@@ -23,6 +23,7 @@ internal sealed record PerfOptions(
     bool VerifyCarouselStates,
     bool VerifyCascaderStates,
     bool VerifyCheckBoxStates,
+    bool VerifyColorPickerStates,
     bool VerifyCollapseStates,
     bool VerifyComboBoxStates,
     bool VerifyDatePickerStates,
@@ -97,6 +98,7 @@ internal sealed record PerfOptions(
         var verifyCarouselStates  = false;
         var verifyCascaderStates  = false;
         var verifyCheckBoxStates  = false;
+        var verifyColorPickerStates = false;
         var verifyCollapseStates  = false;
         var verifyComboBoxStates  = false;
         var verifyDatePickerStates = false;
@@ -219,6 +221,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--verify-checkbox-states":
                     verifyCheckBoxStates = true;
+                    break;
+                case "--verify-colorpicker-states":
+                    verifyColorPickerStates = true;
                     break;
                 case "--verify-collapse-states":
                     verifyCollapseStates = true;
@@ -393,6 +398,7 @@ internal sealed record PerfOptions(
             verifyCarouselStates,
             verifyCascaderStates,
             verifyCheckBoxStates,
+            verifyColorPickerStates,
             verifyCollapseStates,
             verifyComboBoxStates,
             verifyDatePickerStates,

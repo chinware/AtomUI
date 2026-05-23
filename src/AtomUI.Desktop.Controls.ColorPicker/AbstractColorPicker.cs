@@ -389,6 +389,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             ColorBlockBackgroundProperty);
         IsPickerOpenProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, args) => picker.HandleIsPickerOpenChanged(args));
         TriggerTypeProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, _) => picker.SetupTriggerHandler());
+        InputElement.PointerPressedEvent.AddClassHandler<AbstractColorPicker>(
+            (picker, args) => picker.HandleClickModePointerPressed(args),
+            RoutingStrategies.Tunnel,
+            handledEventsToo: true);
     }
 
     public AbstractColorPicker()
@@ -409,11 +413,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         IsLightDismissEnabled = TriggerType == FlyoutTriggerType.Click;
         ApplyPopupTriggerSettings();
 
-        _triggerSubscriptions = new CompositeDisposable();
+        _triggerSubscriptions = null;
 
         switch (TriggerType)
         {
             case FlyoutTriggerType.Hover:
+                _triggerSubscriptions = new CompositeDisposable();
                 SetupHoverTrigger();
                 if (IsPickerOpen)
                 {
@@ -421,9 +426,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
                 }
                 break;
             case FlyoutTriggerType.Click:
-                SetupClickTrigger();
                 break;
             case FlyoutTriggerType.Focus:
+                _triggerSubscriptions = new CompositeDisposable();
                 SetupFocusTrigger();
                 if (IsPickerOpen)
                 {
@@ -520,16 +525,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     #region Click trigger
 
-    private void SetupClickTrigger()
+    private void HandleClickModePointerPressed(PointerPressedEventArgs e)
     {
-        AddHandler(InputElement.PointerPressedEvent, HandleClickModePointerPressed,
-            RoutingStrategies.Tunnel, handledEventsToo: true);
-        _triggerSubscriptions!.Add(Disposable.Create(() =>
-            RemoveHandler(InputElement.PointerPressedEvent, HandleClickModePointerPressed)));
-    }
+        if (TriggerType != FlyoutTriggerType.Click)
+        {
+            return;
+        }
 
-    private void HandleClickModePointerPressed(object? sender, PointerPressedEventArgs e)
-    {
         if (!IsEnabled || !IsVisible)
         {
             return;

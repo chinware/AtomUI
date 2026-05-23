@@ -36,6 +36,7 @@ internal static partial class Program
             options.VerifyCarouselStates ||
             options.VerifyCascaderStates ||
             options.VerifyCheckBoxStates ||
+            options.VerifyColorPickerStates ||
             options.VerifyCollapseStates ||
             options.VerifyComboBoxStates ||
             options.VerifyDatePickerStates ||
@@ -162,6 +163,10 @@ internal static partial class Program
             if (options.VerifyCheckBoxStates)
             {
                 verified &= RunCheckBoxStateVerification();
+            }
+            if (options.VerifyColorPickerStates)
+            {
+                verified &= RunColorPickerStateVerification();
             }
             if (options.VerifyCollapseStates)
             {
