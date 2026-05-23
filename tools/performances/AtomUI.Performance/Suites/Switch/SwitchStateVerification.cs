@@ -19,6 +19,7 @@ internal static partial class Program
         VerifySwitchContentPresenterBehavior(failures);
         VerifySwitchIconContentSync(failures);
         VerifySwitchWaveTemplateContract(failures);
+        VerifySwitchDisabledWaveDoesNotPlay(failures);
         VerifySwitchLoadingLifecycle(failures);
         VerifySwitchDisabledStateConverges(failures);
         VerifySwitchKnobBoxShadowLifecycle(failures);
@@ -208,6 +209,26 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifySwitchDisabledWaveDoesNotPlay(ICollection<string> failures)
+    {
+        var toggleSwitch = new AtomSwitch
+        {
+            IsWaveSpiritEnabled = false
+        };
+        using var realized = RealizeControl(toggleSwitch);
+        var wave = FindVisualByTypeName(toggleSwitch, "WaveSpiritDecorator", "PART_WaveSpirit");
+        Expect(wave != null,
+            "Switch should keep template PART_WaveSpirit when wave is disabled.",
+            failures);
+
+        toggleSwitch.IsChecked = true;
+        RefreshLayout(realized.Window);
+
+        Expect(GetPrivateField(wave!, "AtomUI.Controls.Primitives.WaveSpiritDecorator", "_isPlaying") is false,
+            "Switch should not start WaveSpirit animation when IsWaveSpiritEnabled is false.",
+            failures);
+    }
+
     private static void VerifySwitchLoadingLifecycle(ICollection<string> failures)
     {
         var toggleSwitch = new AtomSwitch
@@ -223,17 +244,26 @@ internal static partial class Program
         Expect(GetPrivateField(knob!, "AtomUI.Controls.SwitchKnob", "_cancellationTokenSource") != null,
             "Loading SwitchKnob should start a cancellation token source.",
             failures);
+        Expect(toggleSwitch.Cursor?.ToString() == "Arrow",
+            $"Loading Switch should use Arrow cursor, actual {toggleSwitch.Cursor?.ToString() ?? "<null>"}.",
+            failures);
 
         toggleSwitch.IsLoading = false;
         RefreshLayout(realized.Window);
         Expect(GetPrivateField(knob!, "AtomUI.Controls.SwitchKnob", "_cancellationTokenSource") == null,
             "SwitchKnob should dispose its cancellation token source when loading stops.",
             failures);
+        Expect(toggleSwitch.Cursor?.ToString() == "Hand",
+            $"Non-loading Switch should fall back to Hand cursor, actual {toggleSwitch.Cursor?.ToString() ?? "<null>"}.",
+            failures);
 
         toggleSwitch.IsLoading = true;
         RefreshLayout(realized.Window);
         Expect(GetPrivateField(knob!, "AtomUI.Controls.SwitchKnob", "_cancellationTokenSource") != null,
             "SwitchKnob should recreate its cancellation token source when loading restarts.",
+            failures);
+        Expect(toggleSwitch.Cursor?.ToString() == "Arrow",
+            $"Restarted loading Switch should use Arrow cursor, actual {toggleSwitch.Cursor?.ToString() ?? "<null>"}.",
             failures);
 
         realized.Dispose();

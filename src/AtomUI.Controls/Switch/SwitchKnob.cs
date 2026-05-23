@@ -3,7 +3,6 @@ using AtomUI.Media;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Animation.Easings;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -118,6 +117,8 @@ internal class SwitchKnob : TemplatedControl
     
     private bool _isLoading;
     private CancellationTokenSource? _cancellationTokenSource;
+    private IBrush? _loadIndicatorPenBrush;
+    private Pen? _loadIndicatorPen;
     
     static SwitchKnob()
     {
@@ -162,10 +163,9 @@ internal class SwitchKnob : TemplatedControl
     {
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
+        var loadingAnimationDuration = LoadingAnimationDuration;
         var loadingAnimation = new Animation();
-        loadingAnimation[!Animation.DurationProperty] = this[!LoadingAnimationDurationProperty];
-        loadingAnimation.Duration                     = LoadingAnimationDuration;
-        loadingAnimation.Easing                       = new LinearEasing();
+        loadingAnimation.Duration                     = loadingAnimationDuration;
         loadingAnimation.Children.Add(new KeyFrame
         {
             Setters =
@@ -188,10 +188,11 @@ internal class SwitchKnob : TemplatedControl
                     Value    = 360
                 }
             },
-            KeyTime = LoadingAnimationDuration
+            KeyTime = loadingAnimationDuration
         });
         _cancellationTokenSource = new CancellationTokenSource();
-        Dispatcher.UIThread.InvokeAsync(async () => await loadingAnimation.RunInfiniteAsync(this, _cancellationTokenSource.Token));
+        var token = _cancellationTokenSource.Token;
+        Dispatcher.UIThread.InvokeAsync(async () => await loadingAnimation.RunInfiniteAsync(this, token));
     }
 
     public void NotifyStopLoading()
@@ -231,6 +232,10 @@ internal class SwitchKnob : TemplatedControl
                     Color      = KnobBoxShadow.Value.Color,
                     BlurRadius = KnobBoxShadow.Value.Blur
                 };
+            }
+            else
+            {
+                Effect = null;
             }
         }
     }
@@ -280,7 +285,7 @@ internal class SwitchKnob : TemplatedControl
             var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
             var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
                 loadingRectSize);
-            var       pen                     = new Pen(LoadIndicatorBrush, 1, null, PenLineCap.Round);
+            var       pen                     = GetLoadIndicatorPen();
             var       translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
             var       rotationMatrix          = Matrix.CreateRotation(Rotation * Math.PI / 180);
             using var translateToCenterState  = context.PushTransform(translateToCenterMatrix);
@@ -289,5 +294,16 @@ internal class SwitchKnob : TemplatedControl
 
             context.DrawArc(pen, loadingRect, 0, 90);
         }
+    }
+
+    private Pen GetLoadIndicatorPen()
+    {
+        var brush = LoadIndicatorBrush;
+        if (_loadIndicatorPen == null || !ReferenceEquals(_loadIndicatorPenBrush, brush))
+        {
+            _loadIndicatorPenBrush = brush;
+            _loadIndicatorPen      = new Pen(brush, 1, null, PenLineCap.Round);
+        }
+        return _loadIndicatorPen;
     }
 }

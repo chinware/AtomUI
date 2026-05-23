@@ -10,6 +10,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -236,6 +237,7 @@ public abstract class AbstractToggleSwitch : ToggleButton,
     private CompositeDisposable? _offBindingDisposables;
     private WaveSpiritDecorator? _waveSpiritDecorator;
     private Canvas? _mainLayout;
+    private IDisposable? _loadingCursorValue;
     
     static AbstractToggleSwitch()
     {
@@ -383,7 +385,10 @@ public abstract class AbstractToggleSwitch : ToggleButton,
             if (change.Property == IsCheckedProperty && IsMotionEnabled)
             {
                 CalculateElementsOffset(GrooveRect().Size);
-                _waveSpiritDecorator?.Play();
+                if (IsWaveSpiritEnabled)
+                {
+                    _waveSpiritDecorator?.Play();
+                }
             }
         }
         else if (change.Property == KnobSizeProperty)
@@ -502,12 +507,13 @@ public abstract class AbstractToggleSwitch : ToggleButton,
     {
         if (isLoading)
         {
-            Cursor = new Cursor(StandardCursorType.Arrow);
+            _loadingCursorValue ??= SetValue(CursorProperty, Cursor.Default, BindingPriority.Template);
             _switchKnob?.NotifyStartLoading();
         }
         else
         {
-            Cursor = new Cursor(StandardCursorType.Hand);
+            _loadingCursorValue?.Dispose();
+            _loadingCursorValue = null;
             _switchKnob?.NotifyStopLoading();
         }
     }
