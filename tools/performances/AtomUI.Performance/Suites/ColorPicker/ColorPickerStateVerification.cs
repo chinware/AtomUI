@@ -14,6 +14,7 @@ internal static partial class Program
         VerifyColorPickerHoverIgnoresClickHandler(failures);
         VerifyColorPickerFocusTrigger(failures);
         VerifyColorPickerTriggerSubscriptionLifecycle(failures);
+        VerifyGradientColorPickerTrackPropertyOwner(failures);
 
         if (failures.Count == 0)
         {
@@ -96,6 +97,19 @@ internal static partial class Program
         realized.Dispose();
         Expect(GetColorPickerTriggerSubscriptions(picker) == null,
             "Detached ColorPicker should release trigger subscriptions.",
+            failures);
+    }
+
+    private static void VerifyGradientColorPickerTrackPropertyOwner(ICollection<string> failures)
+    {
+        var trackType = Type.GetType(
+            "AtomUI.Desktop.Controls.GradientColorPickerTrack, AtomUI.Desktop.Controls.ColorPicker");
+        var property = trackType?
+            .GetField("ActivatedThumbProperty", BindingFlags.Public | BindingFlags.Static)?
+            .GetValue(null) as Avalonia.AvaloniaProperty;
+
+        Expect(trackType is not null && property?.OwnerType == trackType,
+            $"GradientColorPickerTrack.ActivatedThumbProperty should be registered on GradientColorPickerTrack. Actual owner: {property?.OwnerType.FullName ?? "<null>"}.",
             failures);
     }
 
