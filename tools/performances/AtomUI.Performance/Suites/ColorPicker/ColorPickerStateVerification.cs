@@ -14,6 +14,7 @@ internal static partial class Program
         VerifyColorPickerHoverIgnoresClickHandler(failures);
         VerifyColorPickerFocusTrigger(failures);
         VerifyColorPickerTriggerSubscriptionLifecycle(failures);
+        VerifyColorPickerWindowDeactivatedSubscriptionLifecycle(failures);
         VerifyGradientColorPickerTrackPropertyOwner(failures);
 
         if (failures.Count == 0)
@@ -100,6 +101,36 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyColorPickerWindowDeactivatedSubscriptionLifecycle(ICollection<string> failures)
+    {
+        var picker = CreateColorPicker();
+        var realized = RealizeControl(picker);
+        var deactivatedWindow = new AtomUI.Desktop.Controls.Window();
+
+        Expect(GetColorPickerDeactivatedWindow(picker) == null,
+            "Closed ColorPicker should not subscribe to Window.Deactivated.",
+            failures);
+
+        RegisterColorPickerWindowDeactivatedHandler(picker, deactivatedWindow);
+        RefreshLayout(realized.Window);
+        Expect(ReferenceEquals(GetColorPickerDeactivatedWindow(picker), deactivatedWindow),
+            "Open ColorPicker should subscribe to Window.Deactivated.",
+            failures);
+
+        InvokeColorPickerLifecycle(picker, "NotifyPickerClosed");
+        RefreshLayout(realized.Window);
+        Expect(GetColorPickerDeactivatedWindow(picker) == null,
+            "Closed ColorPicker should release Window.Deactivated.",
+            failures);
+
+        RegisterColorPickerWindowDeactivatedHandler(picker, deactivatedWindow);
+        RefreshLayout(realized.Window);
+        realized.Dispose();
+        Expect(GetColorPickerDeactivatedWindow(picker) == null,
+            "Detached ColorPicker should release Window.Deactivated.",
+            failures);
+    }
+
     private static void VerifyGradientColorPickerTrackPropertyOwner(ICollection<string> failures)
     {
         var trackType = Type.GetType(
@@ -121,6 +152,36 @@ internal static partial class Program
 
     private static object? GetColorPickerTriggerSubscriptions(AbstractColorPicker picker)
         => GetPrivateField(picker, "AtomUI.Desktop.Controls.AbstractColorPicker", "_triggerSubscriptions");
+
+    private static object? GetColorPickerDeactivatedWindow(AbstractColorPicker picker)
+        => GetPrivateField(picker, "AtomUI.Desktop.Controls.AbstractColorPicker", "_deactivatedWindow");
+
+    private static void InvokeColorPickerLifecycle(AbstractColorPicker picker, string methodName)
+    {
+        var method = picker.GetType().GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        method?.Invoke(picker, null);
+    }
+
+    private static void RegisterColorPickerWindowDeactivatedHandler(AbstractColorPicker picker,
+                                                                    AtomUI.Desktop.Controls.Window window)
+    {
+        var method = typeof(AbstractColorPicker)
+            .GetMethod(
+                "RegisterWindowDeactivatedHandler",
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                binder: null,
+                types: new[] { typeof(AtomUI.Desktop.Controls.Window) },
+                modifiers: null);
+        if (method is null)
+        {
+            throw new MissingMethodException(
+                typeof(AbstractColorPicker).FullName,
+                "RegisterWindowDeactivatedHandler");
+        }
+        method?.Invoke(picker, new object?[] { window });
+    }
 
     private static bool RaisePointerPressedAttemptsColorPickerOpen(AtomColorPicker picker,
                                                                    Avalonia.Controls.Window window,
