@@ -12,7 +12,7 @@ internal static partial class Program
     private static bool RunSplitterStateVerification()
     {
         var failures = new List<string>();
-        VerifySplitterNonCollapsibleHandleDoesNotCreateCollapseButtons(failures);
+        VerifySplitterNonCollapsibleHandleKeepsCollapseButtonsInactive(failures);
         VerifySplitterCollapsibleButtonsLifecycle(failures);
         VerifySplitterLazyPreviewReusesTransform(failures);
 
@@ -30,7 +30,7 @@ internal static partial class Program
         return false;
     }
 
-    private static void VerifySplitterNonCollapsibleHandleDoesNotCreateCollapseButtons(ICollection<string> failures)
+    private static void VerifySplitterNonCollapsibleHandleKeepsCollapseButtonsInactive(ICollection<string> failures)
     {
         var splitter = CreateBasicSplitter(Orientation.Vertical);
 
@@ -38,8 +38,8 @@ internal static partial class Program
         Expect(CountSplitterHandles(splitter) == 1,
             $"Basic Splitter should create one handle, actual {CountSplitterHandles(splitter)}.",
             failures);
-        Expect(CountIconButtons(splitter) == 0,
-            $"Non-collapsible Splitter should not create collapse IconButtons, actual {CountIconButtons(splitter)}.",
+        ExpectCollapseButtonsInactive(splitter,
+            "Non-collapsible Splitter collapse IconButtons should stay hidden without icons.",
             failures);
     }
 
@@ -50,7 +50,10 @@ internal static partial class Program
         using var realized = RealizeControl(splitter);
         var initialButtons = splitter.GetSelfAndVisualDescendants().OfType<IconButton>().ToList();
         Expect(initialButtons.Count > 0,
-            "Collapsible Splitter should create collapse IconButtons.",
+            "Collapsible Splitter should keep template collapse IconButtons.",
+            failures);
+        Expect(initialButtons.All(button => button.IsVisible),
+            "Always-visible collapse IconButtons should be visible.",
             failures);
         Expect(initialButtons.All(button => button.Icon != null),
             "Visible collapse IconButtons should have an icon.",
@@ -62,11 +65,8 @@ internal static partial class Program
         }
         RefreshLayout(realized.Window);
 
-        Expect(CountIconButtons(splitter) == 0,
-            $"Splitter should remove collapse IconButtons after collapsible is cleared, actual {CountIconButtons(splitter)}.",
-            failures);
-        Expect(initialButtons.All(button => button.GetVisualParent() == null),
-            "Removed collapse IconButtons should not keep a visual parent.",
+        ExpectCollapseButtonsInactive(splitter,
+            "Splitter should hide collapse IconButtons and clear icons after collapsible is cleared.",
             failures);
 
         foreach (var child in splitter.Children.OfType<Control>())
@@ -79,8 +79,8 @@ internal static partial class Program
         }
         RefreshLayout(realized.Window);
 
-        Expect(CountIconButtons(splitter) == 0,
-            $"Hidden collapsible icons should not materialize IconButtons, actual {CountIconButtons(splitter)}.",
+        ExpectCollapseButtonsInactive(splitter,
+            "Hidden collapsible icons should leave template IconButtons hidden without icons.",
             failures);
     }
 
@@ -124,8 +124,20 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants().OfType<SplitterHandle>().Count();
     }
 
-    private static int CountIconButtons(Control root)
+    private static void ExpectCollapseButtonsInactive(Control root, string message, ICollection<string> failures)
     {
-        return root.GetSelfAndVisualDescendants().OfType<IconButton>().Count();
+        var buttons = root.GetSelfAndVisualDescendants().OfType<IconButton>().ToList();
+        Expect(buttons.Count > 0,
+            $"{message} Actual template IconButton count: {buttons.Count}.",
+            failures);
+        Expect(buttons.All(button => !button.IsVisible && button.Icon == null),
+            $"{message} Actual visible/icon state: {DescribeCollapseButtons(buttons)}.",
+            failures);
+    }
+
+    private static string DescribeCollapseButtons(IReadOnlyList<IconButton> buttons)
+    {
+        return string.Join(", ",
+            buttons.Select(button => $"{button.Name ?? "<unnamed>"} visible={button.IsVisible} icon={button.Icon != null}"));
     }
 }

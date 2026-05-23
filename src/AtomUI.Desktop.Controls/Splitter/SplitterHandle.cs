@@ -157,16 +157,20 @@ internal class SplitterHandle : TemplatedControl
 
         if (_collapsePrevButton != null)
         {
-            ApplyCustomIconBackground(_collapsePrevButton, PreviousIconTemplate != null);
-            _collapsePrevButton.IsVisible = hasPrevious && ShouldShowIcon(PreviousShowMode, true, onlyPrevious);
-            _collapsePrevButton.Icon      = CreatePrevIcon();
+            UpdateCollapseButton(
+                _collapsePrevButton,
+                hasPrevious && ShouldShowIcon(PreviousShowMode, true, onlyPrevious),
+                PreviousIconTemplate != null,
+                isPrevious: true);
         }
 
         if (_collapseNextButton != null)
         {
-            ApplyCustomIconBackground(_collapseNextButton, NextIconTemplate != null);
-            _collapseNextButton.IsVisible = hasNext && ShouldShowIcon(NextShowMode, false, onlyNext);
-            _collapseNextButton.Icon      = CreateNextIcon();
+            UpdateCollapseButton(
+                _collapseNextButton,
+                hasNext && ShouldShowIcon(NextShowMode, false, onlyNext),
+                NextIconTemplate != null,
+                isPrevious: false);
         }
     }
 
@@ -201,17 +205,17 @@ internal class SplitterHandle : TemplatedControl
 
     private void HandleDragBarStarted(object? sender, VectorEventArgs e)
     {
-        DragStarted?.Invoke(this, new VectorEventArgs { RoutedEvent = e.RoutedEvent, Vector = e.Vector });
+        DragStarted?.Invoke(this, e);
     }
 
     private void HandleDragBarDelta(object? sender, VectorEventArgs e)
     {
-        DragDelta?.Invoke(this, new VectorEventArgs { RoutedEvent = e.RoutedEvent, Vector = e.Vector });
+        DragDelta?.Invoke(this, e);
     }
 
     private void HandleDragBarCompleted(object? sender, VectorEventArgs e)
     {
-        DragCompleted?.Invoke(this, new VectorEventArgs { RoutedEvent = e.RoutedEvent, Vector = e.Vector });
+        DragCompleted?.Invoke(this, e);
     }
 
     private static void AttachCollapseButton(IconButton? button, EventHandler<RoutedEventArgs> handler)
@@ -253,6 +257,23 @@ internal class SplitterHandle : TemplatedControl
         else
         {
             button.ClearValue(BackgroundProperty);
+        }
+    }
+
+    private void UpdateCollapseButton(IconButton button,
+                                      bool isVisible,
+                                      bool isCustomIcon,
+                                      bool isPrevious)
+    {
+        ApplyCustomIconBackground(button, isCustomIcon);
+        button.IsVisible = isVisible;
+        if (isVisible)
+        {
+            button.Icon = isPrevious ? CreatePrevIcon() : CreateNextIcon();
+        }
+        else if (button.Icon != null)
+        {
+            button.Icon = null;
         }
     }
 

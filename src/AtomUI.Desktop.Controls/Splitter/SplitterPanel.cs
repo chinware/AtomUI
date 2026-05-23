@@ -1336,9 +1336,22 @@ internal class SplitterPanel : Panel
 
     private void ApplyHandlePreview(SplitterHandle handle, double delta)
     {
-        handle.RenderTransform = Orientation == Orientation.Vertical
-            ? new TranslateTransform(delta, 0)
-            : new TranslateTransform(0, delta);
+        if (handle.RenderTransform is not TranslateTransform transform)
+        {
+            transform              = new TranslateTransform();
+            handle.RenderTransform = transform;
+        }
+
+        if (Orientation == Orientation.Vertical)
+        {
+            transform.X = delta;
+            transform.Y = 0;
+        }
+        else
+        {
+            transform.X = 0;
+            transform.Y = delta;
+        }
     }
 
     private void ClearHandlePreview(SplitterHandle handle)
