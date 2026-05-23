@@ -91,7 +91,7 @@ public class SplitView : AvaloniaSplitView, IMotionAwareControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ConfigureTransitions(false);
+        EnsureTransitionsForPaneState(IsPaneOpen);
         this.DisableTransitions();
     }
     
@@ -103,51 +103,96 @@ public class SplitView : AvaloniaSplitView, IMotionAwareControl
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        if (change.Property == IsPaneOpenProperty && IsLoaded)
+        {
+            EnsureTransitionsForPaneState(change.GetNewValue<bool>());
+        }
+
         base.OnPropertyChanged(change);
 
-        if (IsLoaded)
+        if (!IsLoaded)
         {
-            if (change.Property == IsMotionEnabledProperty ||
-                change.Property == PanePlacementProperty ||
-                change.Property == PaneOpenMotionDurationProperty ||
-                change.Property == PaneCloseMotionDurationProperty ||
-                change.Property == PaneMotionEasingProperty)
+            return;
+        }
+
+        if (change.Property == IsMotionEnabledProperty)
+        {
+            if (IsMotionEnabled)
             {
-                ConfigureTransitions(true);
+                RefreshMaterializedTransitions();
             }
+            else
+            {
+                ClearTransitions();
+            }
+        }
+        else if (change.Property == PanePlacementProperty ||
+            change.Property == PaneOpenMotionDurationProperty ||
+            change.Property == PaneCloseMotionDurationProperty ||
+            change.Property == PaneMotionEasingProperty)
+        {
+            RefreshMaterializedTransitions();
         }
     }
 
-    private void ConfigureTransitions(bool force)
+    private void EnsureTransitionsForPaneState(bool isPaneOpen)
     {
-        if (IsMotionEnabled)
+        if (!IsMotionEnabled)
         {
-            if (force || PaneOpenTransitions == null)
-            {
-                if (PanePlacement == SplitViewPanePlacement.Left || PanePlacement == SplitViewPanePlacement.Right)
-                {
-                    PaneOpenTransitions = [
-                        TransitionUtils.CreateTransition<DoubleTransition>(WidthProperty, PaneOpenMotionDuration, PaneMotionEasing)
-                    ];
-                    PaneCloseTransitions = [
-                        TransitionUtils.CreateTransition<DoubleTransition>(WidthProperty, PaneCloseMotionDuration, PaneMotionEasing)
-                    ];
-                }
-                else
-                {
-                    PaneOpenTransitions = [
-                        TransitionUtils.CreateTransition<DoubleTransition>(HeightProperty, PaneOpenMotionDuration, PaneMotionEasing)
-                    ];
-                    PaneCloseTransitions = [
-                        TransitionUtils.CreateTransition<DoubleTransition>(HeightProperty, PaneCloseMotionDuration, PaneMotionEasing)
-                    ];
-                }
-            }
+            ClearTransitions();
+            return;
+        }
+
+        if (isPaneOpen)
+        {
+            PaneOpenTransitions ??= CreatePaneTransitions(PaneOpenMotionDuration);
         }
         else
         {
-            PaneOpenTransitions  = null;
-            PaneCloseTransitions = null;
+            PaneCloseTransitions ??= CreatePaneTransitions(PaneCloseMotionDuration);
         }
+    }
+
+    private void RefreshMaterializedTransitions()
+    {
+        if (!IsMotionEnabled)
+        {
+            ClearTransitions();
+            return;
+        }
+
+        if (PaneOpenTransitions is not null)
+        {
+            PaneOpenTransitions = CreatePaneTransitions(PaneOpenMotionDuration);
+        }
+
+        if (PaneCloseTransitions is not null)
+        {
+            PaneCloseTransitions = CreatePaneTransitions(PaneCloseMotionDuration);
+        }
+    }
+
+    private Transitions CreatePaneTransitions(TimeSpan duration)
+    {
+        return
+        [
+            TransitionUtils.CreateTransition<DoubleTransition>(
+                GetPaneTransitionProperty(),
+                duration,
+                PaneMotionEasing)
+        ];
+    }
+
+    private AvaloniaProperty GetPaneTransitionProperty()
+    {
+        return PanePlacement is SplitViewPanePlacement.Left or SplitViewPanePlacement.Right
+            ? WidthProperty
+            : HeightProperty;
+    }
+
+    private void ClearTransitions()
+    {
+        PaneOpenTransitions  = null;
+        PaneCloseTransitions = null;
     }
 }

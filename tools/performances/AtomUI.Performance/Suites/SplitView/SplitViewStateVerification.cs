@@ -171,12 +171,24 @@ internal static partial class Program
             "Constructed SplitView should not materialize PaneCloseTransitions before loading.",
             failures);
 
-        using var _ = RealizeControl(splitView);
-        Expect(GetTransitionPropertyName(GetPaneOpenTransitions(splitView)) == nameof(Control.Width),
-            "Loaded left SplitView should materialize a Width open transition.",
+        using var realized = RealizeControl(splitView);
+        Expect(GetPaneOpenTransitions(splitView) == null,
+            "Loaded closed SplitView should not materialize PaneOpenTransitions before the first open.",
             failures);
         Expect(GetTransitionPropertyName(GetPaneCloseTransitions(splitView)) == nameof(Control.Width),
-            "Loaded left SplitView should materialize a matching Width close transition.",
+            "Loaded closed SplitView should materialize only a Width close transition.",
+            failures);
+
+        splitView.IsPaneOpen = true;
+        RefreshLayout(realized.Window);
+        Expect(GetTransitionPropertyName(GetPaneOpenTransitions(splitView)) == nameof(Control.Width),
+            "Opening left SplitView should materialize a Width open transition.",
+            failures);
+
+        splitView.IsPaneOpen = false;
+        RefreshLayout(realized.Window);
+        Expect(GetTransitionPropertyName(GetPaneCloseTransitions(splitView)) == nameof(Control.Width),
+            "Closing left SplitView should materialize a matching Width close transition.",
             failures);
     }
 
