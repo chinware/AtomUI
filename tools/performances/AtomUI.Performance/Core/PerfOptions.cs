@@ -4,6 +4,7 @@ internal sealed record PerfOptions(
     int Count,
     string Suite,
     string? MarkdownOutputPath,
+    bool MeasureColorPickerInteractions,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
     bool VerifyAddonStates,
@@ -79,6 +80,7 @@ internal sealed record PerfOptions(
         var count                  = Program.DefaultCount;
         var suite                  = "addon";
         string? markdownOutput     = null;
+        var measureColorPickerInteractions = false;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
         var verifyAddonStates      = false;
@@ -164,6 +166,9 @@ internal sealed record PerfOptions(
                 case "--suite" when i + 1 < args.Length:
                     suite = args[i + 1];
                     i++;
+                    break;
+                case "--measure-colorpicker-interactions":
+                    measureColorPickerInteractions = true;
                     break;
                 case "--verify-accessories":
                     verifyAccessories = true;
@@ -379,6 +384,7 @@ internal sealed record PerfOptions(
             Math.Max(1, count),
             suite,
             markdownOutput,
+            measureColorPickerInteractions,
             verifyAccessories,
             verifyEffectiveBrushes,
             verifyAddonStates,

@@ -25,6 +25,9 @@ internal static partial class Program
             new PerfScenario("ColorPicker.Format.Rgba", _ => CreateColorPicker(isTextVisible: true, format: ColorFormat.Rgba)),
             new PerfScenario("ColorPicker.Format.Hsva", _ => CreateColorPicker(isTextVisible: true, format: ColorFormat.Hsva)),
             new PerfScenario("ColorPicker.Disabled", _ => CreateColorPicker(isTextVisible: true, isEnabled: false)),
+            new PerfScenario("ColorPickerView.Default", _ => CreateColorPickerView()),
+            new PerfScenario("ColorPickerView.NoAlpha", _ => CreateColorPickerView(isAlphaEnabled: false)),
+            new PerfScenario("GradientColorPickerView.Default", _ => CreateGradientColorPickerView()),
             new PerfScenario("GradientColorPicker.Text", _ => CreateGradientColorPicker(isTextVisible: true)),
             new PerfScenario("GradientColorPicker.Clear.Text", _ => CreateGradientColorPicker(isTextVisible: true, isClearEnabled: true)),
             new PerfScenario("ColorPicker.GalleryShape", _ => CreateColorPickerGalleryShape())
@@ -74,15 +77,35 @@ internal static partial class Program
         };
     }
 
-    private static LinearGradientBrush CreateColorPickerGradient()
+    private static LinearGradientBrush CreateColorPickerGradient(string startColor = "#108ee9",
+                                                                string endColor = "#87d068")
     {
         return new LinearGradientBrush
         {
             GradientStops =
             {
-                new GradientStop(Color.Parse("#108ee9"), 0),
-                new GradientStop(Color.Parse("#87d068"), 1)
+                new GradientStop(Color.Parse(startColor), 0),
+                new GradientStop(Color.Parse(endColor), 1)
             }
+        };
+    }
+
+    private static ColorPickerView CreateColorPickerView(bool isAlphaEnabled = true)
+    {
+        return new ColorPickerView
+        {
+            Value                 = ColorPickerDefaultColor,
+            IsAlphaEnabled        = isAlphaEnabled,
+            IsPaletteGroupEnabled = false
+        };
+    }
+
+    private static GradientColorPickerView CreateGradientColorPickerView()
+    {
+        return new GradientColorPickerView
+        {
+            DefaultValue          = CreateColorPickerGradient(),
+            IsPaletteGroupEnabled = false
         };
     }
 

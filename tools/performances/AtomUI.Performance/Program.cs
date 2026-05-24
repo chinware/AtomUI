@@ -17,6 +17,11 @@ internal static partial class Program
         SetupAvalonia();
 
         AddOnDecoratedBoxPerfProbe.IsEnabled = true;
+        if (options.MeasureColorPickerInteractions)
+        {
+            return RunColorPickerInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
+        }
+
         if (options.VerifyAccessories ||
             options.VerifyEffectiveBrushes ||
             options.VerifyAddonStates ||

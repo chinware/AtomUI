@@ -1,13 +1,13 @@
 # ColorPicker 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase E / Tier 3
-> 状态：本轮完成 closed-state `Window.Deactivated` lifecycle 收敛；ColorPicker 包仍保留后续打开态子控件优化空间。
+> 状态：closed-state `Window.Deactivated` lifecycle 已完成；本轮继续完成打开态 `GradientColorPickerView` binding 收敛和 `ColorSpectrum` brush 热路径复用。
 
 ---
 
 ## 0. 结论
 
-本轮只做低风险生命周期优化：`AbstractColorPicker` 不再在 attach 时为关闭态 picker 订阅 `Window.Deactivated`，改为 picker 打开时订阅，关闭或 detach 时释放。
+T3.1 已完成低风险生命周期优化：`AbstractColorPicker` 不再在 attach 时为关闭态 picker 订阅 `Window.Deactivated`，改为 picker 打开时订阅，关闭或 detach 时释放。
 
 这是结构收益，不是 visual tree 收益。`ColorPickerShowCase` 当前有 23 个 `ColorPicker` / `GradientColorPicker` 实例，页面加载后默认全是关闭态；优化前这些实例会在 attach 阶段全部挂到宿主 `Window.Deactivated`，优化后关闭态为 0 个订阅。打开态仍保留窗口失活自动关闭行为。
 
@@ -22,7 +22,24 @@
 | Repeated median | 66.10 ms | 68.01 ms | -2.89% | 噪声内，不作为回退结论 |
 | Repeated P95 | 110.93 ms | 104.11 ms | 6.15% | 噪声内，谨慎看待 |
 
-本轮判断：优化有效，但收益主要体现在减少 idle 事件订阅和降低长期生命周期负担；页面导航 timing 在当前机器负载下不能作为确定性收益声明。
+T3.2/T3.3 继续处理打开态子控件：
+
+- `GradientColorPickerView` 的 3 个同 owner、同生命周期 `RelativeSource={RelativeSource TemplatedParent}` binding 改为 `TemplateBinding`。
+- `ColorSpectrum` 仍按原来的 bitmap 生命周期生成图像；只把对应 `ImageBrush` 缓存在 bitmap 重建点，HSV 高频变化时复用 brush 并只更新 `Opacity` / `Fill` 引用。
+
+| 指标 | baseline | optimized | 改善 | 结论 |
+| --- | ---: | ---: | ---: | --- |
+| Gradient view full TemplatedParent bindings | 3 | 0 | 100.00% replaced | 有效，结构性收益 |
+| ColorSpectrum `UpdateBitmapSources` base/overlay brush refs / 1000 updates | source-derived 1000 / 1000 | 1 / 1 | ~99.90% fewer refs | 有效，交互热路径收益 |
+| ColorSpectrum `UpdateBitmapSources` allocation | n/a | 0.3 bytes/update | n/a | 复测确认近零分配 |
+| ColorSpectrum full `HsvColor` update allocation | n/a | 24386.6 bytes/update | n/a | 更大路径仍需后续优化 |
+| ColorPickerView.Default materialization | 17.311 ms/item | 13.066-21.383 ms/item | +24.52% to -23.52% | 波动过大，不作为收益 |
+| ColorPickerView.NoAlpha materialization | 11.233 ms/item | 6.223-6.333 ms/item | +43.62% to +44.60% | 正向，仍需谨慎 |
+| GradientColorPickerView.Default materialization | 15.002 ms/item | 11.009-11.875 ms/item | +20.84% to +26.62% | 正向，仍需谨慎 |
+| ColorPicker.GalleryShape materialization | 14.248 ms/item | 10.202-12.252 ms/item | +14.01% to +28.40% | 正向但有抖动 |
+| Opened view visual/logical count | unchanged | unchanged | 0.00% | 符合预期 |
+
+本轮判断：优化有效，主收益是打开态 ColorPicker 面板在颜色拖动/滑条联动时不再反复创建 `ImageBrush`，以及 Gradient view 模板绑定走更轻的 TemplateBinding 路径。页面闭合态 Gallery 导航不是这轮主路径；最新顺序复测期间 load averages 仍约 `8.81` 到 `11.76`，物化 timing 只能作为参考，不作为唯一收益依据。
 
 ---
 
