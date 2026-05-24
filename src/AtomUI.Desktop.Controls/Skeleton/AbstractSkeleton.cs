@@ -114,15 +114,12 @@ public abstract class AbstractSkeleton : TemplatedControl
             if (change.Property == LoadingBackgroundStartProperty ||
                 change.Property == LoadingBackgroundMiddleProperty ||
                 change.Property == LoadingBackgroundEndProperty ||
-                change.Property == MotionDurationProperty)
+                change.Property == MotionDurationProperty ||
+                change.Property == MotionEasingCurveProperty)
             {
                 if (!IsFollowMode)
                 {
-                    BuildActiveAnimation(true);
-                    if (IsActive)
-                    {
-                        StartActiveAnimation();
-                    }
+                    RebuildMaterializedActiveAnimation();
                 }
             }
         }
@@ -151,6 +148,12 @@ public abstract class AbstractSkeleton : TemplatedControl
 
     protected void StartActiveAnimation()
     {
+        if (_cancellationTokenSource is not null)
+        {
+            return;
+        }
+
+        BuildActiveAnimation();
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = new CancellationTokenSource();
@@ -171,10 +174,6 @@ public abstract class AbstractSkeleton : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (!IsFollowMode)
-        {
-            BuildActiveAnimation();
-        }
     }
 
     private void BuildActiveAnimation(bool force = false)
@@ -210,29 +209,48 @@ public abstract class AbstractSkeleton : TemplatedControl
         }
     }
 
+    private void RebuildMaterializedActiveAnimation()
+    {
+        if (_animation is null)
+        {
+            return;
+        }
+
+        var restart = IsActive && this.IsAttachedToVisualTree() && _cancellationTokenSource is not null;
+        BuildActiveAnimation(force: true);
+        if (restart)
+        {
+            StartActiveAnimation();
+        }
+    }
+
     internal void Follow(AbstractSkeleton followTarget)
     {
         if (_followTarget != null)
         {
             _followDisposables?.Dispose();
         }
-        _cancellationTokenSource?.Dispose();
+        StopActiveAnimation();
+        _animation     = null;
         _followTarget = followTarget;
 
-        _followDisposables = new  CompositeDisposable(2);
+        _followDisposables = new CompositeDisposable(2);
         _followDisposables.Add(BindUtils.RelayBind(followTarget, AnimationLayerFillProperty, this, AnimationLayerFillProperty));
         _followDisposables.Add(BindUtils.RelayBind(followTarget, IsActiveProperty, this, IsActiveProperty));
     }
 
-    internal void UnFollow()
+    internal void UnFollow(bool startStandaloneAnimation = true)
     {
         _followDisposables?.Dispose();
         _followDisposables = null;
         _followTarget      = null;
-        BuildActiveAnimation();
-        if (IsActive)
+        if (startStandaloneAnimation && IsActive && this.IsAttachedToVisualTree())
         {
             StartActiveAnimation();
+        }
+        else
+        {
+            StopActiveAnimation();
         }
     }
 }

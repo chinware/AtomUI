@@ -91,7 +91,6 @@ public class SplitView : AvaloniaSplitView, IMotionAwareControl
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        EnsureTransitionsForPaneState(IsPaneOpen);
         this.DisableTransitions();
     }
     

@@ -17,22 +17,19 @@
                                              SizeType="{TemplateBinding AvatarSizeType}"
                                              Shape="{TemplateBinding AvatarShape}"
                                              Size="{TemplateBinding AvatarSize}"
-                                             IsVisible="{TemplateBinding IsShowAvatar}"
-                                             IsActive="{TemplateBinding IsActive}"/>
+                                             IsVisible="{TemplateBinding IsShowAvatar}"/>
                         <StackPanel Orientation="Vertical"
                                     Name="PART_Content">
                             <atom:SkeletonTitle Name="PART_Title"
                                                 IsVisible="{TemplateBinding IsShowTitle}"
                                                 IsRound="{TemplateBinding IsRound}"
-                                                LineWidth="{TemplateBinding TitleWidth}"
-                                                IsActive="{TemplateBinding IsActive}"/>
+                                                LineWidth="{TemplateBinding TitleWidth}"/>
                             <atom:SkeletonParagraph Name="PART_Paragraph"
                                                     IsVisible="{TemplateBinding IsShowParagraph}"
                                                     IsRound="{TemplateBinding IsRound}"
                                                     Rows="{TemplateBinding ParagraphRows}"
                                                     LastLineWidth="{TemplateBinding ParagraphLastLineWidth}"
-                                                    LineWidths="{TemplateBinding ParagraphLineWidths}"
-                                                    IsActive="{TemplateBinding IsActive}"/>
+                                                    LineWidths="{TemplateBinding ParagraphLineWidths}"/>
                         </StackPanel>
                     </DockPanel>
                     <ContentPresenter IsVisible="{TemplateBinding IsContentVisible}"

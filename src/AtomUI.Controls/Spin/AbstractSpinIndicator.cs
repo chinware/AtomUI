@@ -133,7 +133,6 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        BuildIndicatorAnimation();
         if (IsVisible)
         {
             StartIndicatorAnimation();
@@ -148,6 +147,7 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
 
     private void StartIndicatorAnimation()
     {
+        BuildIndicatorAnimation();
         if (_animation is null)
         {
             return;
@@ -305,6 +305,26 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
                     StopIndicatorAnimation();
                 }
             }
+        }
+        else if (change.Property == MotionDurationProperty ||
+                 change.Property == MotionEasingCurveProperty)
+        {
+            RebuildMaterializedIndicatorAnimation();
+        }
+    }
+
+    private void RebuildMaterializedIndicatorAnimation()
+    {
+        if (_animation is null)
+        {
+            return;
+        }
+
+        var restart = IsVisible && this.IsAttachedToVisualTree() && _cancellationTokenSource is not null;
+        BuildIndicatorAnimation(force: true);
+        if (restart)
+        {
+            StartIndicatorAnimation();
         }
     }
 
