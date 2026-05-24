@@ -21,6 +21,10 @@ internal static partial class Program
         {
             return RunColorPickerInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
         }
+        if (options.MeasureSwitchInteractions)
+        {
+            return RunSwitchInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
+        }
 
         if (options.VerifyAccessories ||
             options.VerifyEffectiveBrushes ||

@@ -5,6 +5,7 @@ internal sealed record PerfOptions(
     string Suite,
     string? MarkdownOutputPath,
     bool MeasureColorPickerInteractions,
+    bool MeasureSwitchInteractions,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
     bool VerifyAddonStates,
@@ -81,6 +82,7 @@ internal sealed record PerfOptions(
         var suite                  = "addon";
         string? markdownOutput     = null;
         var measureColorPickerInteractions = false;
+        var measureSwitchInteractions = false;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
         var verifyAddonStates      = false;
@@ -169,6 +171,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--measure-colorpicker-interactions":
                     measureColorPickerInteractions = true;
+                    break;
+                case "--measure-switch-interactions":
+                    measureSwitchInteractions = true;
                     break;
                 case "--verify-accessories":
                     verifyAccessories = true;
@@ -385,6 +390,7 @@ internal sealed record PerfOptions(
             suite,
             markdownOutput,
             measureColorPickerInteractions,
+            measureSwitchInteractions,
             verifyAccessories,
             verifyEffectiveBrushes,
             verifyAddonStates,

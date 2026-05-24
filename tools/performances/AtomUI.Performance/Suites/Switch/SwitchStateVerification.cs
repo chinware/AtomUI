@@ -19,6 +19,7 @@ internal static partial class Program
         VerifySwitchContentPresenterBehavior(failures);
         VerifySwitchIconContentSync(failures);
         VerifySwitchWaveTemplateContract(failures);
+        VerifySwitchCheckedChangeKeepsMeasureValid(failures);
         VerifySwitchDisabledWaveDoesNotPlay(failures);
         VerifySwitchLoadingLifecycle(failures);
         VerifySwitchDisabledStateConverges(failures);
@@ -207,6 +208,45 @@ internal static partial class Program
         Expect(ReferenceEquals(wave, FindVisualByTypeName(toggleSwitch, "WaveSpiritDecorator", "PART_WaveSpirit")),
             "Switch should keep template PART_WaveSpirit while loading.",
             failures);
+    }
+
+    private static void VerifySwitchCheckedChangeKeepsMeasureValid(ICollection<string> failures)
+    {
+        var toggleSwitch = new AtomSwitch
+        {
+            OnContent  = "Enabled",
+            OffContent = "Disabled"
+        };
+        using var realized = RealizeControl(toggleSwitch);
+        RefreshLayout(realized.Window);
+
+        var uncheckedSize = toggleSwitch.DesiredSize;
+        Expect(toggleSwitch.IsMeasureValid,
+            "Switch should be measure-valid after initial layout.",
+            failures);
+
+        toggleSwitch.IsChecked = true;
+        Expect(toggleSwitch.IsMeasureValid,
+            "Switch checked-state change should not invalidate measure because switch size is state-independent.",
+            failures);
+
+        RefreshLayout(realized.Window);
+        Expect(MathUtils.AreClose(toggleSwitch.DesiredSize.Width, uncheckedSize.Width) &&
+               MathUtils.AreClose(toggleSwitch.DesiredSize.Height, uncheckedSize.Height),
+            $"Switch checked-state change should keep DesiredSize {uncheckedSize}, actual {toggleSwitch.DesiredSize}.",
+            failures);
+
+        var knob = FindVisualByTypeName(toggleSwitch, "SwitchKnob", "PART_SwitchKnob");
+        var knobMovingRect = GetNonPublicProperty(toggleSwitch, "AtomUI.Controls.AbstractToggleSwitch", "KnobMovingRect");
+        Expect(knobMovingRect is Rect,
+            "Switch KnobMovingRect should be available after checked-state change.",
+            failures);
+        if (knobMovingRect is Rect rect)
+        {
+            Expect(MathUtils.AreClose(knob?.Bounds.X ?? double.NaN, rect.X),
+                $"Checked Switch knob should arrange to the checked target X {rect.X:0.###}, actual {knob?.Bounds.X:0.###}.",
+                failures);
+        }
     }
 
     private static void VerifySwitchDisabledWaveDoesNotPlay(ICollection<string> failures)
