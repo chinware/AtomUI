@@ -164,7 +164,7 @@ internal partial class DataGridColumnHeader : ContentControl
         get => _isMiddleVisible;
         set
         {
-            SetAndRaise(IsLastVisibleProperty, ref _isMiddleVisible, value);
+            SetAndRaise(IsMiddleVisibleProperty, ref _isMiddleVisible, value);
             PseudoClasses.Set(DataGridPseudoClass.MiddleColumnHeader, value);
         }
     }
@@ -934,6 +934,7 @@ internal partial class DataGridColumnHeader : ContentControl
             change.Property == CanUserFilterProperty)
         {
             ConfigureIndicatorLayoutVisible();
+            _filterIndicator?.RefreshFilterFlyoutState();
         }
         NotifyPropertyChangedForSorting(change);
     }

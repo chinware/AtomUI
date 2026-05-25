@@ -48,6 +48,7 @@ internal static partial class Program
             options.VerifyColorPickerStates ||
             options.VerifyCollapseStates ||
             options.VerifyComboBoxStates ||
+            options.VerifyDataGridStates ||
             options.VerifyDatePickerStates ||
             options.VerifyTimePickerStates ||
             options.VerifyDescriptionsStates ||
@@ -184,6 +185,10 @@ internal static partial class Program
             if (options.VerifyComboBoxStates)
             {
                 verified &= RunComboBoxStateVerification();
+            }
+            if (options.VerifyDataGridStates)
+            {
+                verified &= RunDataGridStateVerification();
             }
             if (options.VerifyDatePickerStates)
             {
@@ -427,6 +432,7 @@ internal static partial class Program
             "colorpicker" => CreateColorPickerScenarios(),
             "collapse" => CreateCollapseScenarios(),
             "combobox" => CreateComboBoxScenarios(),
+            "datagrid" => CreateDataGridScenarios(),
             "datepicker" => CreateDatePickerScenarios(),
             "descriptions" => CreateDescriptionsScenarios(),
             "dialog" => CreateDialogScenarios(),

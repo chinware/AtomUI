@@ -28,6 +28,7 @@ internal sealed record PerfOptions(
     bool VerifyColorPickerStates,
     bool VerifyCollapseStates,
     bool VerifyComboBoxStates,
+    bool VerifyDataGridStates,
     bool VerifyDatePickerStates,
     bool VerifyTimePickerStates,
     bool VerifyDescriptionsStates,
@@ -105,6 +106,7 @@ internal sealed record PerfOptions(
         var verifyColorPickerStates = false;
         var verifyCollapseStates  = false;
         var verifyComboBoxStates  = false;
+        var verifyDataGridStates = false;
         var verifyDatePickerStates = false;
         var verifyTimePickerStates = false;
         var verifyDescriptionsStates = false;
@@ -240,6 +242,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--verify-combobox-states":
                     verifyComboBoxStates = true;
+                    break;
+                case "--verify-datagrid-states":
+                    verifyDataGridStates = true;
                     break;
                 case "--verify-datepicker-states":
                     verifyDatePickerStates = true;
@@ -413,6 +418,7 @@ internal sealed record PerfOptions(
             verifyColorPickerStates,
             verifyCollapseStates,
             verifyComboBoxStates,
+            verifyDataGridStates,
             verifyDatePickerStates,
             verifyTimePickerStates,
             verifyDescriptionsStates,
