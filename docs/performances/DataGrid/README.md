@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding + row/row group header pointer handler + core input handler + rows presenter scroll gesture cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding + row/row group header pointer handler + core input handler + rows presenter scroll gesture / clip geometry cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -20,6 +20,7 @@
 - row group header press 不再为每个 realized `DataGridRowGroupHeader` 注册本地 `PointerPressed` lambda，改为 class handler，同时保留 current slot 行为。
 - `DataGrid` core `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` 不再为每个 grid 实例注册本地 routed handlers，改为 Avalonia virtual override 路径。
 - `DataGridRowsPresenter` 不再为每个 presenter 注册本地 `ScrollGesture` handler，改为 class handler，同时保留滚动手势更新 `VerticalOffset` 的行为。
+- `DataGridRowsPresenter` 不再在每次 arrange 时新建 clip `RectangleGeometry`，改为 presenter 级复用并在 `Rect` 变化时显式 invalidation。
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
@@ -43,6 +44,8 @@ Avalonia 依据：
 - Avalonia 已通过 `InputElement` class handlers 把 `GotFocus` / `LostFocus` / `KeyDown` / `KeyUp` 分发到 virtual `OnGotFocus` / `OnLostFocus` / `OnKeyDown` / `OnKeyUp`：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:235-240`、`:596-657`。
 - `KeyDown` / `KeyUp` 是 tunnel + bubble routed events，事件属性 `+=` 默认只添加 direct/bubble 本地 handler；`AddClassHandler` 默认也覆盖 direct/bubble route，因此 override 路径与原实例订阅的 bubble 处理口径一致：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:106-118`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:30-64`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:78-99`。
 - `ScrollGestureEvent` 是 bubble routed event，事件属性 `+=` 同样走 `AddHandler` 进入本地 `_eventHandlers`；`AddClassHandler` 默认覆盖 direct/bubble route，因此 rows presenter 的 class handler 与原本地 handler 路由口径一致：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.Gestures.cs:65-69`、`:197-200`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:30-64`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:78-99`。
+- `Visual.Clip` 是 `StyledProperty<Geometry?>`，且 `Visual` static constructor 把 `ClipProperty` 注册进 `AffectsRender`；`InvalidateVisual()` 会把 visual 加入 renderer dirty 集合：`.referenceprojects/Avalonia/src/Avalonia.Base/Visual.cs:52-53`、`:141-149`、`:418-421`。
+- `RectangleGeometry.RectProperty` 通过 `AffectsGeometry` 标记 geometry dirty；复用同一个 geometry 时本轮在 `Rect` 变化后显式调用 `InvalidateVisual()`，不依赖 `Clip` 换引用来触发重绘：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/RectangleGeometry.cs:25-33`、`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Geometry.cs:146-172`。
 - `PressedMixin.Attach<T>` 本身通过 class handler 维护 `:pressed`，本轮 column header class handler 注册在 `PressedMixin.Attach<DataGridColumnHeader>()` 之后，避免影响 pressed 状态：`.referenceprojects/Avalonia/src/Avalonia.Controls/Mixins/PressedMixin.cs:14-33`。
 - `AvaloniaObjectExtensions.Bind(IObservable<T>)` 对 DirectProperty 进入 `DirectBindingObserver<T>` 路径：`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObjectExtensions.cs:188-225`、`.referenceprojects/Avalonia/src/Avalonia.Base/PropertyStore/DirectBindingObserver.cs:7-84`。
 - `Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` / `DashStyle` 都是 styled properties：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`。
@@ -96,6 +99,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Row header owner/template ordering | template assumed owner ready | owner-dependent state retries from `Owner` setter | null-ref path removed | 正确性修复；分组行头覆盖验证 |
 | DataGrid core input handlers | 4 local routed handlers per grid | 0 local core input handlers per grid | 100.00% removed | 结构/分配优化；KeyDown / GotFocus 行为已验证 |
 | Rows presenter scroll gesture handler | 1 local handler per rows presenter | 0 local handlers per rows presenter | 100.00% removed | 结构/分配优化；ScrollGesture 滚动行为已验证 |
+| Rows presenter clip geometry allocation | 1 new `RectangleGeometry` per arrange | 0 new `RectangleGeometry` per arrange after first | 100.00% repeated-arrange allocation removed | 结构/分配优化；clip instance 复用和 Rect 更新已验证 |
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
@@ -451,6 +455,32 @@ Gallery `Grouping table head` 示例声明 4 个 `DataGridColumnGroupItem`，页
 | DataGrid.RowGroups | 10.038 | 3001.2 | 321.0 | 1.0 | smoke 通过；timing 只作异常检查 |
 | DataGrid.GalleryShape | 45.845 | 12488.7 | 1260.0 | 5.0 | smoke 通过；timing 只作异常检查 |
 
+### 2.16 Rows presenter clip geometry allocation
+
+本轮优化点：`DataGridRowsPresenter.ArrangeOverride()` 原先每次布局都会创建新的 `RectangleGeometry` 并赋给 `Clip`。每个 `DataGrid` 模板会创建一个 rows presenter，真实 Gallery `DataGridShowCase` 声明 65 个 `DataGrid`；页面导航、窗口尺寸变化、滚动带来的布局 pass 都会触发 rows presenter arrange。
+
+修复后 presenter 持有一个 `_clipGeometry`，首次 arrange 创建，后续只更新 `Rect`。由于换新 `Clip` 对象会触发 `Visual.ClipProperty` 的 `AffectsRender`，但复用同一个 geometry 后不应依赖 property 引用变化，本轮在 `Rect` 变化时显式 `InvalidateVisual()`，保持裁剪刷新语义。
+
+| 场景 | baseline | optimized | 改善 | 结论 |
+| --- | --- | --- | --- | --- |
+| Rows presenter clip allocation / repeated arrange | 1 new `RectangleGeometry` / arrange | 0 new `RectangleGeometry` / arrange after first | 100.00% repeated allocation removed | 有效；每 presenter 生命周期内从 `N` 次分配降到 `1` 次 |
+| 65-grid Gallery shape estimated clip allocation / repeated arrange pass | 65 new `RectangleGeometry` / pass | 0 new `RectangleGeometry` / pass after first | 100.00% repeated allocation removed | 结构收益；按真实 `DataGridShowCase` 声明数量估算 |
+| Clip geometry instance | replaced every arrange | reused across repeated arrange and resize | reuse verified | `--verify-datagrid-states` 覆盖 |
+| Clip geometry rect | implicit by new geometry | reused geometry updates `Rect` | 行为保留 | 尺寸变化后 `Rect` 更新已验证 |
+
+当前工作区 smoke：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.Basic | 14.596 | 2966.0 | 305.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.Filter.Menu.Closed | 9.496 | 2601.3 | 267.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.Filter.Tree.Closed | 8.789 | 2598.1 | 267.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowHeaders | 10.236 | 3124.3 | 336.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowDetails.Collapsed | 10.969 | 3043.9 | 320.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.GroupHeaders | 8.684 | 2592.9 | 266.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowGroups | 9.989 | 3000.6 | 321.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.GalleryShape | 43.319 | 12486.5 | 1260.0 | 5.0 | smoke 通过；timing 只作异常检查 |
+
 ---
 
 ## 3. 验证
@@ -459,7 +489,7 @@ Gallery `Grouping table head` 示例声明 4 个 `DataGridColumnGroupItem`，页
 dotnet build -c Release -f net10.0 tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
 ```
 
-结果：构建通过，0 warning。
+结果：构建通过，1 个既有 warning：`DataGridColumn._clipboardContentBinding` 未使用。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -467,7 +497,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、realized row group header 不再注册本地 press handler 且左键点击仍更新 `CurrentSlot`、realized DataGrid core 不再注册本地 `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` handlers，且 `GotFocus` 更新 `ContainsFocus`、`Down` key 仍推动 current slot、realized rows presenter 不再注册本地 `ScrollGesture` handler，且滚动手势仍 handled 并更新 `VerticalOffset`、分组行头内 row header 的 owner/template 顺序不再空引用、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、realized row group header 不再注册本地 press handler 且左键点击仍更新 `CurrentSlot`、realized DataGrid core 不再注册本地 `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` handlers，且 `GotFocus` 更新 `ContainsFocus`、`Down` key 仍推动 current slot、realized rows presenter 不再注册本地 `ScrollGesture` handler，且滚动手势仍 handled 并更新 `VerticalOffset`、rows presenter clip `RectangleGeometry` 跨重复 arrange 和尺寸变化复用且 `Rect` 会更新、分组行头内 row header 的 owner/template 顺序不再空引用、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -479,11 +509,11 @@ dotnet run -c Release -f net10.0 --no-build \
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 15.096 | 2966.6 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 10.287 | 2602.3 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 9.460 | 2598.5 | 267.0 | 1.0 |
-| DataGrid.RowHeaders | 9.872 | 3124.8 | 336.0 | 1.0 |
-| DataGrid.RowDetails.Collapsed | 10.518 | 3044.4 | 320.0 | 1.0 |
-| DataGrid.GroupHeaders | 9.734 | 2593.5 | 266.0 | 1.0 |
-| DataGrid.RowGroups | 10.038 | 3001.2 | 321.0 | 1.0 |
-| DataGrid.GalleryShape | 45.845 | 12488.7 | 1260.0 | 5.0 |
+| DataGrid.Basic | 14.596 | 2966.0 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 9.496 | 2601.3 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 8.789 | 2598.1 | 267.0 | 1.0 |
+| DataGrid.RowHeaders | 10.236 | 3124.3 | 336.0 | 1.0 |
+| DataGrid.RowDetails.Collapsed | 10.969 | 3043.9 | 320.0 | 1.0 |
+| DataGrid.GroupHeaders | 8.684 | 2592.9 | 266.0 | 1.0 |
+| DataGrid.RowGroups | 9.989 | 3000.6 | 321.0 | 1.0 |
+| DataGrid.GalleryShape | 43.319 | 12486.5 | 1260.0 | 5.0 |

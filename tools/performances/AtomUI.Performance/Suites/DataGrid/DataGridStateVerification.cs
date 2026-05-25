@@ -29,6 +29,7 @@ internal static partial class Program
         VerifyDataGridRowGroupHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridCoreInputHandlersUseOverrides(failures);
         VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(failures);
+        VerifyDataGridRowsPresenterReusesClipGeometry(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -442,6 +443,54 @@ internal static partial class Program
             failures);
         Expect(GetDataGridVerticalOffset(grid) > initialVerticalOffset,
             $"DataGrid rows presenter ScrollGesture should still update vertical offset. Initial: {initialVerticalOffset}, actual: {GetDataGridVerticalOffset(grid)}.",
+            failures);
+    }
+
+    private static void VerifyDataGridRowsPresenterReusesClipGeometry(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 12, columnCount: 4);
+        using var realized = RealizeControl(grid);
+
+        var rowsPresenter = GetDataGridRowsPresenters(grid).FirstOrDefault();
+        if (rowsPresenter == null)
+        {
+            Expect(false,
+                "DataGrid should realize one rows presenter for clip geometry verification.",
+                failures);
+            return;
+        }
+
+        var firstClip = rowsPresenter.Clip as RectangleGeometry;
+        Expect(firstClip is not null,
+            $"DataGrid rows presenter clip should be a RectangleGeometry. Actual: {rowsPresenter.Clip?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstClip == null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        Expect(firstRect.Width > 0 && firstRect.Height > 0,
+            $"DataGrid rows presenter clip should have non-zero bounds. Actual: {firstRect}.",
+            failures);
+
+        rowsPresenter.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        var secondClip = rowsPresenter.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, secondClip),
+            "DataGrid rows presenter should reuse its clip RectangleGeometry across repeated arrange passes.",
+            failures);
+
+        grid.Width = 520;
+        RefreshLayout(realized.Window);
+
+        var resizedClip = rowsPresenter.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, resizedClip),
+            "DataGrid rows presenter should keep reusing the same clip RectangleGeometry after a size change.",
+            failures);
+        Expect(resizedClip is not null && !resizedClip.Rect.Equals(firstRect),
+            $"DataGrid rows presenter reused clip geometry should update Rect after a size change. Before: {firstRect}, after: {resizedClip?.Rect}.",
             failures);
     }
 

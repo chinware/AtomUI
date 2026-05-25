@@ -33,6 +33,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     #endregion
     
     private DataGridRow? _dragIndicator;
+    private RectangleGeometry? _clipGeometry;
 
     static DataGridRowsPresenter()
     {
@@ -129,13 +130,30 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         double finalHeight = Math.Max(topEdge + OwningGrid.NegVerticalOffset, finalSize.Height);
 
         // Clip the RowsPresenter so rows cannot overlap other elements in certain styling scenarios
-        var rg = new RectangleGeometry
-        {
-            Rect = new Rect(0, 0, finalSize.Width, finalHeight)
-        };
-        Clip = rg;
+        UpdateClipGeometry(new Rect(0, 0, finalSize.Width, finalHeight));
 
         return new Size(finalSize.Width, finalHeight);
+    }
+
+    private void UpdateClipGeometry(Rect clipRect)
+    {
+        if (_clipGeometry is null)
+        {
+            _clipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+        }
+        else if (!_clipGeometry.Rect.Equals(clipRect))
+        {
+            _clipGeometry.Rect = clipRect;
+            InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(Clip, _clipGeometry))
+        {
+            Clip = _clipGeometry;
+        }
     }
 
     /// <summary>
