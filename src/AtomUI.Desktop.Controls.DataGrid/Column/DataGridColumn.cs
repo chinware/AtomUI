@@ -521,6 +521,16 @@ public abstract partial class DataGridColumn : AvaloniaObject
     /// </summary>
     public event EventHandler<PointerReleasedEventArgs>? HeaderPointerReleased;
 
+    internal void NotifyHeaderPointerPressed(PointerPressedEventArgs e)
+    {
+        HeaderPointerPressed?.Invoke(this, e);
+    }
+
+    internal void NotifyHeaderPointerReleased(PointerReleasedEventArgs e)
+    {
+        HeaderPointerReleased?.Invoke(this, e);
+    }
+
     #endregion
     
     #region 继承属性定义

@@ -121,7 +121,7 @@
 
 | 控件 | 状态 | 跨包依赖 |
 | --- | --- | --- |
-| DataGrid | Partial | Primitives.ArrowDecoratedBox, Buttons.Button, TextBlock, Pagination, PopupConfirm, ScrollViewer, Spin, Tooltip.ToolTip, TreeView.TreeViewItemTheme；cell header-state binding / filter flyout lifecycle / filter indicator binding / column header hover handler cleanup / special column detach lifecycle / column reorder indicator pen cache / details presenter measure registration 已完成，详见 [DataGrid](DataGrid/README.md) |
+| DataGrid | Partial | Primitives.ArrowDecoratedBox, Buttons.Button, TextBlock, Pagination, PopupConfirm, ScrollViewer, Spin, Tooltip.ToolTip, TreeView.TreeViewItemTheme；cell header-state binding / filter flyout lifecycle / filter indicator binding / column header pointer handler cleanup / special column detach lifecycle / column reorder indicator pen cache / details presenter measure registration / row expander details binding 已完成，详见 [DataGrid](DataGrid/README.md) |
 | DataGridRow / DataGridCell / DataGridColumnHeader 等 ~40 内部子控件 | Pending | 同上 |
 
 DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
@@ -240,8 +240,8 @@ DataGrid 是单文件最复杂的控件之一（~110 个公开类型）。依赖
 | # | 子模块 | 备注 |
 | --- | --- | --- |
 | T4.1 | DataGrid 核心（DataGrid / DataGridRow / DataGridCell / Presenter 系列） | Partial：DataGridCell header sort / reorder state binding converter 闭包已移除；DetailsPresenter measure registration 已收敛；DataGrid / DataGridRow / 其他 Presenter / virtualization 仍待专项 |
-| T4.2 | 列模型（DataGridColumn / DataGridColumnHeader / FilterFlyout / SortIndicator） | Partial：filter flyout closed-state 内容已延迟；filter indicator visibility binding 已收敛；column header hover 本地 handler 已清理；其余 sort / resize / reorder 仍待专项 |
-| T4.3 | 行展开 / 详情（RowExpander / DetailsPresenter） | Partial：detail / reorder / selection / checkbox / operation columns 的 `Columns.Clear()` detach 事件链已释放；DetailsPresenter `ContentHeight` measure registration 已移到 static constructor；RowExpander 仍需与 T4.1 协同 |
+| T4.2 | 列模型（DataGridColumn / DataGridColumnHeader / FilterFlyout / SortIndicator） | Partial：filter flyout closed-state 内容已延迟；filter indicator visibility binding 已收敛；column header hover / press / release / move 本地 handler 已清理；其余 sort / resize / reorder 仍待专项 |
+| T4.3 | 行展开 / 详情（RowExpander / DetailsPresenter） | Partial：detail / reorder / selection / checkbox / operation columns 的 `Columns.Clear()` detach 事件链已释放；DetailsPresenter `ContentHeight` measure registration 已移到 static constructor；RowExpander details visibility binding 已从 `RelayBind` 收敛到 direct observable + detach 释放；其余 row details layout 仍需与 T4.1 协同 |
 | T4.4 | 行重排 / 选择（RowReorder / SelectionColumn） | Partial：column reorder dragging-over indicator 已缓存 dashed `Pen`；拖拽全局订阅仍是 Lifecycle Pairing 重点 |
 | T4.5 | 分组 / 过滤（CollectionView / FilterDescription / GroupDescription） | 数据层成本，不在主题路径上但是真热点 |
 

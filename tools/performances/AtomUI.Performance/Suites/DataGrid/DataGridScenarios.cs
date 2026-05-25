@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 
 namespace AtomUI.Performance;
@@ -14,6 +15,7 @@ internal static partial class Program
             new PerfScenario("DataGrid.Basic", _ => CreateBasicDataGrid()),
             new PerfScenario("DataGrid.Filter.Menu.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Menu)),
             new PerfScenario("DataGrid.Filter.Tree.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Tree)),
+            new PerfScenario("DataGrid.RowDetails.Collapsed", _ => CreateRowDetailsDataGrid()),
             new PerfScenario("DataGrid.GalleryShape", _ => CreateDataGridGalleryShape())
         ];
     }
@@ -77,6 +79,34 @@ internal static partial class Program
         panel.Children.Add(CreateBasicDataGrid(rowCount: 20, columnCount: 8));
 
         return panel;
+    }
+
+    private static DataGrid CreateRowDetailsDataGrid()
+    {
+        var grid = CreateDataGridShell(8);
+        grid.Columns.Add(new DataGridDetailExpanderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Age",
+            Binding = new Binding(nameof(PerfDataGridRow.Age))
+        });
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Address",
+            Binding = new Binding(nameof(PerfDataGridRow.Address))
+        });
+        grid.RowDetailsTemplate = new FuncDataTemplate<PerfDataGridRow>((row, _) =>
+            new Avalonia.Controls.TextBlock
+            {
+                Text         = row?.Address,
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap
+            });
+        return grid;
     }
 
     private static DataGrid CreateDataGridShell(int rowCount)

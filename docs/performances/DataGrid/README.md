@@ -1,23 +1,25 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column header hover handler cleanup partial done；T4.3 special column detach lifecycle partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
 ## 0. 结论
 
-本轮优化有效，但不是大幅减少 DataGrid 主视觉树的优化。收益集中在关闭态过滤列头：
+本轮优化有效，但不是大幅减少 DataGrid 主视觉树的优化。收益集中在关闭态过滤列头、列/行生命周期和 row details binding：
 
 - 无过滤项的列头不再创建空 filter flyout shell。
 - 有过滤项的列头只保留轻量 flyout shell，菜单/树过滤项延迟到首次打开前创建。
 - filter indicator detach 时释放 flyout shell，并补齐 `CollectionView.FilterDescriptions` 订阅切换/释放。
 - filter indicator 可见性不再为每个列头创建 3 路 `MultiBinding` + converter，改为列头 DirectProperty + `{TemplateBinding}`。
 - column header hover 不再为每个 realized `DataGridColumnHeader` 注册本地 `PointerEntered` / `PointerExited` handler，改走 Avalonia 的 virtual override 路径。
+- column header press/release/move 不再为每个 realized `DataGridColumnHeader` 注册本地 handler；内部 resize/reorder/sort 逻辑和 `DataGridColumn.HeaderPointerPressed/Released` 转发都改为 class handler。
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
 - `DataGridDetailsPresenter.ContentHeight` 的 `AffectsMeasure` 注册从实例构造函数移到静态构造函数，避免每个 details presenter 重复添加 class-level property observer。
+- `DataGridRowExpander` 不再为每个 realized row expander 创建 `Binding + Path` 的 `BindUtils.RelayBind` 双向绑定，改为 direct observable binding + checked-state writeback，并在 visual detach 时兜底释放 row 引用。
 - 运行时增删 `DataGridColumn.Filters` 会同步刷新 filter indicator 可见性和 flyout shell。
 - 修复 `DataGridColumnHeader.IsMiddleVisible` 错误 raise 到 `IsLastVisibleProperty` 的正确性问题。
 
@@ -30,11 +32,15 @@ Avalonia 依据：
 - `MultiBindingExpression` 在子 observable 变更后进入 converter 路径：`.referenceprojects/Avalonia/src/Avalonia.Base/Data/Core/MultiBindingExpression.cs:23-49`、`:86-98`。
 - `PointerEntered` / `PointerExited` 是 `Direct` routed event：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:144-155`。
 - Avalonia 已通过 class handler 调用 `OnPointerEnteredCore` / `OnPointerExitedCore`，再进入 virtual `OnPointerEntered` / `OnPointerExited`：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:242-243`、`:1019-1035`。
-- 事件属性 `PointerEntered +=` / `PointerExited +=` 会走 `AddHandler`，本地订阅进入 `_eventHandlers` 字典：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:353-365`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:176-190`。
+- `PointerMoved` / `PointerPressed` / `PointerReleased` 是 tunnel + bubble routed events：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:158-179`。
+- 事件属性 `PointerXxx +=` 会走 `AddHandler`，本地订阅进入 `_eventHandlers` 字典；class handler 通过 `RoutedEvent.Raised` 按类型订阅一次：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:353-389`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:176-190`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:84-99`。
+- `PressedMixin.Attach<T>` 本身通过 class handler 维护 `:pressed`，本轮 column header class handler 注册在 `PressedMixin.Attach<DataGridColumnHeader>()` 之后，避免影响 pressed 状态：`.referenceprojects/Avalonia/src/Avalonia.Controls/Mixins/PressedMixin.cs:14-33`。
 - `AvaloniaObjectExtensions.Bind(IObservable<T>)` 对 DirectProperty 进入 `DirectBindingObserver<T>` 路径：`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObjectExtensions.cs:188-225`、`.referenceprojects/Avalonia/src/Avalonia.Base/PropertyStore/DirectBindingObserver.cs:7-84`。
 - `Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` / `DashStyle` 都是 styled properties：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`。
 - `Visual.AffectsRender` 会在注册属性变更时 invalidate render：`.referenceprojects/Avalonia/src/Avalonia.Base/Visual.cs:446-500`。
 - `AffectsMeasure<T>` 注释要求在控件 static constructor 中调用，且实现会对 `property.Changed` 订阅 observer：`.referenceprojects/Avalonia/src/Avalonia.Base/Layout/Layoutable.cs:502-512`。
+- `AvaloniaObjectExtensions.GetObservable` 为属性提供直接 observable；`AvaloniaObject.Bind(StyledProperty<T>, IObservable<T>)` 直接走 value store binding，非 `BindingBase` 时不创建 path binding expression：`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObjectExtensions.cs:59-77`、`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObject.cs:511-522`。
+- `BindUtils.RelayBind` 会创建 `Binding`、设置 `Source` 和 `Path`，再调用 `target.Bind(...)`：`src/AtomUI.Core/Data/BindUtils.cs:8-36`。
 
 因此，过滤菜单项属于 popup-open-only 内容，延迟到 `FlyoutAboutToShow` 前创建符合 Popup Lazy Content Rule。
 
@@ -74,10 +80,12 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Filter indicator visibility bindings per header | 3 bindings + MultiBinding converter | 1 TemplateBinding | binding graph reduced | 有效；DataGridShowCase 210 个列声明受益 |
 | Runtime `Filters` collection visibility refresh | binding-path dependent | explicit `CollectionChanged` refresh | correctness path added | 正确性修复；add/clear filter items 均验证 |
 | Column header local hover routed handlers | 2 per realized header | 0 per realized header | 100.00% removed | 结构/分配优化；hover 语义保留在 `OnPointerEntered` / `OnPointerExited` override |
+| Column header local press/release/move handlers | 5 per standard header | 0 per standard header | 100.00% removed | 结构/分配优化；internal handler + public column event forwarding 均迁到 class handler |
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
 | Details presenter measure registration | 1 `property.Changed` subscription per presenter instance | 1 static registration per control type | duplicate class-level subscriptions removed | 结构/生命周期优化；`ContentHeight` 仍触发 measure invalidation |
+| Row expander details binding | 1 `Binding + Path` TwoWay relay per row expander | 1 direct observable binding + checked-state writeback | path binding removed | 结构/生命周期优化；checked ↔ row details 双向同步和 detach 释放均验证 |
 
 ### 2.2 Gallery 同参数复测
 
@@ -257,6 +265,55 @@ dotnet run -c Release -f net10.0 --no-build \
 | DataGrid.Filter.Tree.Closed | 8.769 | 2606.1 | 267.0 | 1.0 | smoke 通过 |
 | DataGrid.GalleryShape | 42.884 | 12536.5 | 1260.0 | 5.0 | smoke 通过 |
 
+### 2.9 Row expander details visibility binding
+
+本轮优化点：`DataGridRowExpander.NotifyLoadingRow()` 原先用 `BindUtils.RelayBind(this, IsCheckedProperty, row, DataGridRow.IsDetailsVisibleProperty, BindingMode.TwoWay)`。这会为每个 realized row expander 创建一个 `Binding`、字符串 `Path` 和完整 binding expression。Gallery `Expandable Row`、`Order Specific Column`、`Hidden Columns` 等详情列场景会在页面加载时创建 row expander；用户展开/折叠详情时还会反复走 `IsChecked` ↔ `IsDetailsVisible` 同步。
+
+修复后：
+
+| 场景 | baseline | optimized | 结论 |
+| --- | --- | --- | --- |
+| Row expander loading | `BindUtils.RelayBind` TwoWay path binding | row `IsDetailsVisible` direct observable -> expander `IsChecked` | 构造路径更轻 |
+| 用户点击 expander | Binding engine 写回 row | `OnPropertyChanged(IsChecked)` 写回 row `IsDetailsVisible` | 双向语义保留 |
+| Row details programmatic change | Binding engine 更新 expander | direct observable 更新 expander | 双向语义保留 |
+| Row unload / visual detach | 依赖 `UnloadingRow` | `UnloadingRow` + `OnDetachedFromVisualTree` 兜底释放 | 修复 detach-only 路径 stale row 引用风险 |
+
+本轮还给性能工具补了 `DataGrid.RowDetails.Collapsed` 场景，用于覆盖关闭态详情列和 row expander binding setup。当前工作区 smoke：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.RowDetails.Collapsed | 10.266 | 3046.7 | 320.0 | 1.0 | smoke 通过；本轮新增场景，无历史 timing 对比 |
+
+### 2.10 Column header press/release/move handler cleanup
+
+本轮优化点：`DataGridColumnHeader` 构造函数原先为每个 realized header 注册 `PointerPressed` / `PointerReleased` / `PointerMoved` 三个本地 routed handlers；`DataGridColumn.CreateHeader()` 还为 `HeaderPointerPressed` / `HeaderPointerReleased` 转发注册两个 per-header lambda。DataGrid 页面列声明多、列头频繁 realized，这类 handler 会进入每个控件实例的 `_eventHandlers` 字典。
+
+修复后把内部 resize / reorder / sort 逻辑和 column public event 转发迁到 `DataGridColumnHeader` static constructor 的 class handlers：
+
+| 场景 | baseline | optimized | 结论 |
+| --- | --- | --- | --- |
+| Header press/move/release internal logic | 3 local handlers / realized header | 3 class handlers / control type | per-header `_eventHandlers` 记录移除 |
+| `DataGridColumn.HeaderPointerPressed/Released` 转发 | 2 per-header lambda | 2 class handlers / control type | per-header lambda 移除 |
+| Routed strategy | event adders 默认 Direct/Bubble | class handler 默认 Direct/Bubble | 与原 `PointerXxx +=` 路由策略一致 |
+| `HeaderPointerPressed` 转发 | local lambda | class handler | 状态验证覆盖 exactly once 和 sender 保持为 `DataGridColumn` |
+
+这轮属于结构/分配和生命周期清理，不把 `datagrid --count 100` timing smoke 当成确定加速。主收益是 standard column header 的本地 routed handlers 从 `5/header` 收敛到 `0/header`，并且验证 realized header 不再持有 `PointerPressed` / `PointerReleased` / `PointerMoved` 本地订阅。
+
+同口径复测：baseline 使用临时 worktree `HEAD=ac3db9f2e`，optimized 使用当前工作区；两边均运行 `datagrid --count 100`。提升公式：`(baseline - optimized) / baseline`。
+
+| Scenario | 指标 | baseline | optimized | 提升 |
+| --- | --- | ---: | ---: | ---: |
+| DataGrid.Basic | ms/item | 17.471 | 14.494 | 17.04% |
+| DataGrid.Basic | KB/item | 2975.3 | 2969.5 | 0.19% |
+| DataGrid.Filter.Menu.Closed | ms/item | 10.317 | 10.312 | 0.05% |
+| DataGrid.Filter.Menu.Closed | KB/item | 2607.7 | 2604.8 | 0.11% |
+| DataGrid.Filter.Tree.Closed | ms/item | 9.141 | 8.662 | 5.24% |
+| DataGrid.Filter.Tree.Closed | KB/item | 2605.3 | 2600.8 | 0.17% |
+| DataGrid.GalleryShape | ms/item | 44.224 | 43.936 | 0.65% |
+| DataGrid.GalleryShape | KB/item | 12536.7 | 12512.4 | 0.19% |
+
+`DataGrid.RowDetails.Collapsed` 是本轮新增 scenario，baseline 没有同名场景，不能给 timing 百分比；它对应的收益按 RowExpander details binding 结构项记录。
+
 ---
 
 ## 3. 验证
@@ -265,7 +322,7 @@ dotnet run -c Release -f net10.0 --no-build \
 dotnet build -c Release -f net10.0 tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
 ```
 
-结果：构建通过；保留既有 warning `DataGridColumn._clipboardContentBinding is never used`，非本轮新增。
+结果：构建通过，0 warning。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -273,7 +330,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover routed handlers、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -285,7 +342,8 @@ dotnet run -c Release -f net10.0 --no-build \
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 16.477 | 2975.2 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 9.892 | 2608.5 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 8.769 | 2606.1 | 267.0 | 1.0 |
-| DataGrid.GalleryShape | 42.884 | 12536.5 | 1260.0 | 5.0 |
+| DataGrid.Basic | 14.494 | 2969.5 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 10.312 | 2604.8 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 8.662 | 2600.8 | 267.0 | 1.0 |
+| DataGrid.RowDetails.Collapsed | 10.266 | 3046.7 | 320.0 | 1.0 |
+| DataGrid.GalleryShape | 43.936 | 12512.4 | 1260.0 | 5.0 |

@@ -277,9 +277,6 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         result[!DataGridColumnHeader.SupportedSortDirectionsProperty] = this[!SupportedSortDirectionsProperty];
         result[!DataGridColumnHeader.HorizontalContentAlignmentProperty] = this[!HeaderContentHorizontalAlignmentProperty];
         result[!DataGridColumnHeader.VerticalContentAlignmentProperty] = this[!HeaderContentVerticalAlignmentProperty];
-       
-        result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
-        result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
         return result;
     }
 

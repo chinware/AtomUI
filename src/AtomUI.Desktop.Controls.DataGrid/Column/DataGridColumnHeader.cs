@@ -295,15 +295,13 @@ internal partial class DataGridColumnHeader : ContentControl
         AffectsMeasure<DataGridColumnHeader>(CanUserSortProperty);
         IsSeparatorsVisibleProperty.Changed.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandleIsSeparatorsVisibleChanged(e));
         PressedMixin.Attach<DataGridColumnHeader>();
+        PointerPressedEvent.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandlePointerPressed(e));
+        PointerPressedEvent.AddClassHandler<DataGridColumnHeader>((x, e) => x.NotifyHeaderPointerPressed(e));
+        PointerReleasedEvent.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandlePointerReleased(e));
+        PointerReleasedEvent.AddClassHandler<DataGridColumnHeader>((x, e) => x.NotifyHeaderPointerReleased(e));
+        PointerMovedEvent.AddClassHandler<DataGridColumnHeader>((x, e) => x.HandlePointerMoved(e));
         IsTabStopProperty.OverrideDefaultValue<DataGridColumnHeader>(false);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridColumnHeader>(IsOffscreenBehavior.FromClip);
-    }
-    
-    public DataGridColumnHeader()
-    {
-        PointerPressed  += HandlePointerPressed;
-        PointerReleased += HandlePointerReleased;
-        PointerMoved    += HandlePointerMoved;
     }
 
     // protected override AutomationPeer OnCreateAutomationPeer()
@@ -550,7 +548,7 @@ internal partial class DataGridColumnHeader : ContentControl
         UpdatePseudoClasses();
     }
 
-    private void HandlePointerPressed(object? sender, PointerPressedEventArgs e)
+    private void HandlePointerPressed(PointerPressedEventArgs e)
     {
         if (OwningColumn == null || e.Handled || !IsEnabled || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
@@ -565,7 +563,12 @@ internal partial class DataGridColumnHeader : ContentControl
         UpdatePseudoClasses();
     }
 
-    private void HandlePointerReleased(object? sender, PointerReleasedEventArgs e)
+    private void NotifyHeaderPointerPressed(PointerPressedEventArgs e)
+    {
+        OwningColumn?.NotifyHeaderPointerPressed(e);
+    }
+
+    private void HandlePointerReleased(PointerReleasedEventArgs e)
     {
         if (OwningColumn == null || e.Handled || !IsEnabled || e.InitialPressMouseButton != MouseButton.Left)
         {
@@ -581,7 +584,12 @@ internal partial class DataGridColumnHeader : ContentControl
         UpdatePseudoClasses();
     }
 
-    private void HandlePointerMoved(object? sender, PointerEventArgs e)
+    private void NotifyHeaderPointerReleased(PointerReleasedEventArgs e)
+    {
+        OwningColumn?.NotifyHeaderPointerReleased(e);
+    }
+
+    private void HandlePointerMoved(PointerEventArgs e)
     {
         if (OwningGrid == null || !IsEnabled)
         {

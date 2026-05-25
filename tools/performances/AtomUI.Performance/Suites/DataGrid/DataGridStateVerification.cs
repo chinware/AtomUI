@@ -7,6 +7,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.VisualTree;
@@ -21,11 +23,12 @@ internal static partial class Program
         VerifyDataGridPlainHeadersDoNotCreateFilterFlyouts(failures);
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
-        VerifyDataGridColumnHeaderHoverUsesOverrides(failures);
+        VerifyDataGridColumnHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
         VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(failures);
+        VerifyDataGridRowExpanderDetailsVisibilityBindings(failures);
 
         if (failures.Count == 0)
         {
@@ -140,7 +143,7 @@ internal static partial class Program
             failures);
     }
 
-    private static void VerifyDataGridColumnHeaderHoverUsesOverrides(ICollection<string> failures)
+    private static void VerifyDataGridColumnHeaderPointerHandlersUseClassHandlers(ICollection<string> failures)
     {
         var grid = CreateBasicDataGrid(rowCount: 4, columnCount: 3);
         using var realized = RealizeControl(grid);
@@ -159,7 +162,48 @@ internal static partial class Program
             Expect(!localHandlerNames.Contains("InputElement.PointerExited"),
                 "DataGrid column headers should handle PointerExited through OnPointerExited instead of per-instance handlers.",
                 failures);
+            Expect(!localHandlerNames.Contains("InputElement.PointerPressed"),
+                "DataGrid column headers should handle PointerPressed through class handlers instead of per-instance handlers.",
+                failures);
+            Expect(!localHandlerNames.Contains("InputElement.PointerReleased"),
+                "DataGrid column headers should handle PointerReleased through class handlers instead of per-instance handlers.",
+                failures);
+            Expect(!localHandlerNames.Contains("InputElement.PointerMoved"),
+                "DataGrid column headers should handle PointerMoved through class handlers instead of per-instance handlers.",
+                failures);
         }
+
+        var firstColumn = grid.Columns[0];
+        var firstHeader = GetDataGridColumnHeader(firstColumn, failures);
+        if (firstHeader is null)
+        {
+            return;
+        }
+
+        var pressedCount = 0;
+        object? pressedSender = null;
+        void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            pressedCount++;
+            pressedSender = sender;
+        }
+
+        firstColumn.HeaderPointerPressed += HandleHeaderPointerPressed;
+        try
+        {
+            RaiseDataGridHeaderPrimaryPointerPressed(firstHeader, realized.Window);
+        }
+        finally
+        {
+            firstColumn.HeaderPointerPressed -= HandleHeaderPointerPressed;
+        }
+
+        Expect(pressedCount == 1,
+            $"DataGrid column HeaderPointerPressed should be forwarded exactly once from the header class handler. Actual: {pressedCount}.",
+            failures);
+        Expect(ReferenceEquals(pressedSender, firstColumn),
+            "DataGrid column HeaderPointerPressed should preserve the DataGridColumn sender.",
+            failures);
     }
 
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
@@ -328,6 +372,64 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridRowExpanderDetailsVisibilityBindings(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.Columns.Add(new DataGridDetailExpanderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        var realized = RealizeControl(grid);
+        var expander = GetDataGridRowExpanders(grid).FirstOrDefault();
+        Expect(expander != null,
+            "DataGrid with a detail expander column should realize row expander controls.",
+            failures);
+        if (expander == null)
+        {
+            realized.Dispose();
+            return;
+        }
+
+        var row = expander.GetVisualAncestors().OfType<DataGridRow>().FirstOrDefault();
+        Expect(row != null,
+            "DataGrid row expander should be hosted inside a DataGridRow for details visibility verification.",
+            failures);
+        if (row == null)
+        {
+            realized.Dispose();
+            return;
+        }
+
+        expander.IsChecked = true;
+        RefreshLayout(realized.Window);
+        Expect(row.IsDetailsVisible,
+            "Checking a DataGrid row expander should update the owning row details visibility.",
+            failures);
+
+        row.IsDetailsVisible = false;
+        RefreshLayout(realized.Window);
+        Expect(expander.IsChecked == false,
+            "Clearing row details visibility should update the DataGrid row expander checked state.",
+            failures);
+
+        row.IsDetailsVisible = true;
+        RefreshLayout(realized.Window);
+        Expect(expander.IsChecked == true,
+            "Setting row details visibility should update the DataGrid row expander checked state.",
+            failures);
+
+        realized.Dispose();
+        Expect(GetPrivateFieldValue(expander, "_detailsVisibilitySubscription") is null,
+            "DataGrid row expander should release details visibility subscriptions when its row unloads or detaches.",
+            failures);
+        Expect(GetPrivateFieldValue(expander, "_owningRow") is null,
+            "DataGrid row expander should clear its owning row reference when its row unloads or detaches.",
+            failures);
+    }
+
     private static List<Control> GetDataGridFilterIndicators(Control root)
     {
         return root.GetSelfAndVisualDescendants()
@@ -341,6 +443,14 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants()
                    .OfType<Control>()
                    .Where(control => control.GetType().Name == "DataGridColumnHeader")
+                   .ToList();
+    }
+
+    private static List<ToggleButton> GetDataGridRowExpanders(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<ToggleButton>()
+                   .Where(control => control.GetType().Name == "DataGridRowExpander")
                    .ToList();
     }
 
@@ -468,6 +578,30 @@ internal static partial class Program
         return instance.GetType()
                        .GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
                        ?.GetValue(instance);
+    }
+
+    private static void RaiseDataGridHeaderPrimaryPointerPressed(Control target, Visual root)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        var properties = new PointerPointProperties(
+            RawInputModifiers.LeftMouseButton,
+            PointerUpdateKind.LeftButtonPressed);
+        var localPoint = new Point(
+            Math.Max(1, target.Bounds.Width / 2),
+            Math.Max(1, target.Bounds.Height / 2));
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        target.RaiseEvent(new PointerPressedEventArgs(
+            target,
+            pointer,
+            root,
+            rootPoint,
+            1,
+            properties,
+            KeyModifiers.None));
     }
 
     private static PopupFlyoutBase? GetDataGridFilterFlyout(Control indicator)
