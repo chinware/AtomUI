@@ -6,7 +6,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
@@ -195,6 +194,8 @@ public class DataGridCell : ContentControl
     private IDisposable? _sortingStateSubscription;
     private IDisposable? _headerDragModeSubscription;
     private bool _templateApplied;
+    private static readonly Func<ListSortDirection?, bool> IsActiveSortDirectionConverter = IsActiveSortDirection;
+    private static readonly Func<DataGridColumnHeader.DragMode, bool> IsReorderDragModeConverter = IsReorderDragMode;
 
     static DataGridCell()
     {
@@ -231,43 +232,43 @@ public class DataGridCell : ContentControl
         {
             EnsureGridLine(null);
         }
-        // 可能会影响性能
         EnsureSortBindings();
     }
     
     private void EnsureSortBindings()
     {
-        if (OwningGrid != null && OwningColumn != null && OwningGrid.DataConnection.AllowSort)
+        if (OwningGrid == null ||
+            OwningColumn == null ||
+            OwningColumn is DataGridFillerColumn ||
+            !OwningGrid.DataConnection.AllowSort)
         {
-            _sortingStateSubscription = BindUtils.RelayBind(OwningColumn.HeaderCell,
-                DataGridColumnHeader.CurrentSortingStateProperty,
-                this,
-                IsSortingProperty,
-                (v) =>
-                {
-                    if (v is not null && OwningColumn is not DataGridFillerColumn)
-                    {
-                        return v == ListSortDirection.Ascending || v == ListSortDirection.Descending;
-                    }
-
-                    return false;
-                },
-                BindingPriority.Template);
-            _headerDragModeSubscription = BindUtils.RelayBind(OwningColumn.HeaderCell,
-                DataGridColumnHeader.HeaderDragModeProperty,
-                this,
-                OwningColumnDraggingProperty,
-                (v) =>
-                {
-                    if (OwningColumn is not DataGridFillerColumn)
-                    {
-                        return v == DataGridColumnHeader.DragMode.Reorder;
-                    }
-
-                    return false;
-                },
-                BindingPriority.Template);
+            return;
         }
+
+        var headerCell = OwningColumn.HeaderCell;
+        _sortingStateSubscription = this.Bind(
+            IsSortingProperty,
+            headerCell.GetObservable(
+                DataGridColumnHeader.CurrentSortingStateProperty,
+                IsActiveSortDirectionConverter),
+            BindingPriority.Template);
+        _headerDragModeSubscription = this.Bind(
+            OwningColumnDraggingProperty,
+            headerCell.GetObservable(
+                DataGridColumnHeader.HeaderDragModeProperty,
+                IsReorderDragModeConverter),
+            BindingPriority.Template);
+    }
+
+    private static bool IsActiveSortDirection(ListSortDirection? direction)
+    {
+        return direction == ListSortDirection.Ascending ||
+               direction == ListSortDirection.Descending;
+    }
+
+    private static bool IsReorderDragMode(DataGridColumnHeader.DragMode dragMode)
+    {
+        return dragMode == DataGridColumnHeader.DragMode.Reorder;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

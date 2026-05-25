@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 using System.Reflection;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
@@ -20,6 +21,7 @@ internal static partial class Program
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
         VerifyDataGridColumnHeaderHoverUsesOverrides(failures);
+        VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
 
@@ -158,6 +160,68 @@ internal static partial class Program
         }
     }
 
+    private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserSortColumns = true;
+
+        var firstColumn = new DataGridTextColumn
+        {
+            Header = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name)),
+            SortMemberPath = nameof(PerfDataGridRow.Name)
+        };
+        grid.Columns.Add(firstColumn);
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header = "Age",
+            Binding = new Binding(nameof(PerfDataGridRow.Age)),
+            SortMemberPath = nameof(PerfDataGridRow.Age)
+        });
+
+        var realized = RealizeControl(grid);
+        var firstColumnCells = GetDataGridCells(grid)
+            .Where(cell => GetDataGridCellColumnIndex(cell) == 0)
+            .ToList();
+        Expect(firstColumnCells.Count > 0,
+            "Sortable DataGrid should realize first-column cells for header state binding verification.",
+            failures);
+
+        var firstHeader = GetDataGridColumnHeader(firstColumn, failures);
+        if (firstHeader != null)
+        {
+            SetDataGridColumnHeaderProperty(firstHeader, "CurrentSortingState", ListSortDirection.Ascending, failures);
+            RefreshLayout(realized.Window);
+            Expect(firstColumnCells.All(cell => cell.IsSorting),
+                "DataGrid cells should track the owning header active sort state.",
+                failures);
+
+            SetDataGridColumnHeaderProperty(firstHeader, "CurrentSortingState", null, failures);
+            RefreshLayout(realized.Window);
+            Expect(firstColumnCells.All(cell => !cell.IsSorting),
+                "DataGrid cells should clear sorting state when the owning header sort is cleared.",
+                failures);
+
+            SetDataGridColumnHeaderDragMode(firstHeader, "Reorder", failures);
+            RefreshLayout(realized.Window);
+            Expect(firstColumnCells.All(cell => cell.OwningColumnDragging),
+                "DataGrid cells should track the owning header reorder drag state.",
+                failures);
+
+            SetDataGridColumnHeaderDragMode(firstHeader, "None", failures);
+            RefreshLayout(realized.Window);
+            Expect(firstColumnCells.All(cell => !cell.OwningColumnDragging),
+                "DataGrid cells should clear dragging state when the owning header drag mode is reset.",
+                failures);
+        }
+
+        realized.Dispose();
+        foreach (var cell in firstColumnCells)
+        {
+            ExpectDataGridCellHeaderSubscriptionsReleased(cell, failures);
+        }
+    }
+
     private static void VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -263,6 +327,13 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<DataGridCell> GetDataGridCells(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridCell>()
+                   .ToList();
+    }
+
     private static int CountVisibleDataGridFilterIndicators(Control root)
     {
         return GetDataGridFilterIndicators(root).Count(indicator => indicator.IsVisible);
@@ -309,6 +380,77 @@ internal static partial class Program
         Expect(field.GetValue(column) is null,
             $"{column.GetType().Name} should release its cached owning grid and grid event subscriptions when DataGrid.Columns.Clear() detaches the column.",
             failures);
+    }
+
+    private static int GetDataGridCellColumnIndex(DataGridCell cell)
+    {
+        var property = typeof(DataGridCell).GetProperty(
+            "ColumnIndex",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        return property?.GetValue(cell) as int? ?? -1;
+    }
+
+    private static Control? GetDataGridColumnHeader(DataGridColumn column, ICollection<string> failures)
+    {
+        var property = typeof(DataGridColumn).GetProperty(
+            "HeaderCell",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var header = property?.GetValue(column) as Control;
+        Expect(header != null,
+            "DataGrid column header should be available for cell header state binding verification.",
+            failures);
+        return header;
+    }
+
+    private static void SetDataGridColumnHeaderProperty(
+        Control header,
+        string propertyName,
+        object? value,
+        ICollection<string> failures)
+    {
+        var property = header.GetType().GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        Expect(property != null,
+            $"DataGrid column header should expose {propertyName} for state binding verification.",
+            failures);
+        property?.SetValue(header, value);
+    }
+
+    private static void SetDataGridColumnHeaderDragMode(
+        Control header,
+        string modeName,
+        ICollection<string> failures)
+    {
+        var dragModeType = header.GetType().GetNestedType("DragMode", BindingFlags.NonPublic);
+        Expect(dragModeType != null,
+            "DataGrid column header DragMode enum should be available for state binding verification.",
+            failures);
+        if (dragModeType == null)
+        {
+            return;
+        }
+
+        SetDataGridColumnHeaderProperty(header, "HeaderDragMode", Enum.Parse(dragModeType, modeName), failures);
+    }
+
+    private static void ExpectDataGridCellHeaderSubscriptionsReleased(
+        DataGridCell cell,
+        ICollection<string> failures)
+    {
+        Expect(GetPrivateFieldValue(cell, "_sortingStateSubscription") is null,
+            "DataGrid cells should release header sort-state subscriptions when detached.",
+            failures);
+        Expect(GetPrivateFieldValue(cell, "_headerDragModeSubscription") is null,
+            "DataGrid cells should release header drag-state subscriptions when detached.",
+            failures);
+    }
+
+    private static object? GetPrivateFieldValue(object instance, string fieldName)
+    {
+        return instance.GetType()
+                       .GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic)
+                       ?.GetValue(instance);
     }
 
     private static PopupFlyoutBase? GetDataGridFilterFlyout(Control indicator)

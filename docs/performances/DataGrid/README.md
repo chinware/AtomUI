@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.2 column filter flyout lifecycle + filter indicator binding + column header hover handler cleanup partial done；T4.3 special column detach lifecycle partial done；T4.4 column reorder drag indicator render partial done；DataGrid core / row / cell / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column header hover handler cleanup partial done；T4.3 special column detach lifecycle partial done；T4.4 column reorder drag indicator render partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -14,6 +14,7 @@
 - filter indicator detach 时释放 flyout shell，并补齐 `CollectionView.FilterDescriptions` 订阅切换/释放。
 - filter indicator 可见性不再为每个列头创建 3 路 `MultiBinding` + converter，改为列头 DirectProperty + `{TemplateBinding}`。
 - column header hover 不再为每个 realized `DataGridColumnHeader` 注册本地 `PointerEntered` / `PointerExited` handler，改走 Avalonia 的 virtual override 路径。
+- `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
 - 运行时增删 `DataGridColumn.Filters` 会同步刷新 filter indicator 可见性和 flyout shell。
@@ -29,6 +30,7 @@ Avalonia 依据：
 - `PointerEntered` / `PointerExited` 是 `Direct` routed event：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:144-155`。
 - Avalonia 已通过 class handler 调用 `OnPointerEnteredCore` / `OnPointerExitedCore`，再进入 virtual `OnPointerEntered` / `OnPointerExited`：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:242-243`、`:1019-1035`。
 - 事件属性 `PointerEntered +=` / `PointerExited +=` 会走 `AddHandler`，本地订阅进入 `_eventHandlers` 字典：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:353-365`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:176-190`。
+- `AvaloniaObjectExtensions.Bind(IObservable<T>)` 对 DirectProperty 进入 `DirectBindingObserver<T>` 路径：`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObjectExtensions.cs:188-225`、`.referenceprojects/Avalonia/src/Avalonia.Base/PropertyStore/DirectBindingObserver.cs:7-84`。
 - `Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` / `DashStyle` 都是 styled properties：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`。
 - `Visual.AffectsRender` 会在注册属性变更时 invalidate render：`.referenceprojects/Avalonia/src/Avalonia.Base/Visual.cs:446-500`。
 
@@ -70,6 +72,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Filter indicator visibility bindings per header | 3 bindings + MultiBinding converter | 1 TemplateBinding | binding graph reduced | 有效；DataGridShowCase 210 个列声明受益 |
 | Runtime `Filters` collection visibility refresh | binding-path dependent | explicit `CollectionChanged` refresh | correctness path added | 正确性修复；add/clear filter items 均验证 |
 | Column header local hover routed handlers | 2 per realized header | 0 per realized header | 100.00% removed | 结构/分配优化；hover 语义保留在 `OnPointerEntered` / `OnPointerExited` override |
+| Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
 
@@ -194,6 +197,36 @@ dotnet run -c Release -f net10.0 --no-build \
 
 这轮不影响页面加载和默认 DataGrid visual tree；收益只在用户拖拽重排列时发生。
 
+### 2.7 Cell header-state binding converters
+
+本轮优化点：`DataGridCell.EnsureSortBindings()` 原先对每个 realized cell 使用 `BindUtils.RelayBind` 建立两条转换订阅：
+
+- `DataGridColumnHeader.CurrentSortingState -> DataGridCell.IsSorting`
+- `DataGridColumnHeader.HeaderDragMode -> DataGridCell.OwningColumnDragging`
+
+`DataGrid.GalleryShape` 控件级场景有 `115` 个 realized data cells；真实 `DataGridShowCase` 声明 `65` 个 DataGrid、`210` 个 columns，因此 per-cell setup 成本会按页面实例量放大。修复后保留 DirectProperty binding 路径，但直接使用 `headerCell.GetObservable(...)` + `this.Bind(...)`，并把转换函数缓存为静态 delegate，避免每 cell 创建捕获 lambda 和 `BindUtils` 注册检查。
+
+控件级命令：baseline 使用临时 worktree `HEAD=af9e97309`，optimized 使用当前工作区；两边各运行两轮 `count=300` 后取平均。
+
+```bash
+dotnet run -c Release -f net10.0 --no-build \
+  --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- \
+  --suite datagrid --count 300
+```
+
+| Scenario | 指标 | baseline | optimized | 改善 | 结论 |
+| --- | --- | ---: | ---: | ---: | --- |
+| DataGrid.Basic | ms/item | 15.019 | 13.630 | 9.25% | 正向 |
+| DataGrid.Basic | KB/item | 3030.3 | 3028.5 | 0.06% | 小幅正向 |
+| DataGrid.Filter.Menu.Closed | ms/item | 10.262 | 9.538 | 7.06% | 正向 |
+| DataGrid.Filter.Menu.Closed | KB/item | 2625.3 | 2624.0 | 0.05% | 小幅正向 |
+| DataGrid.Filter.Tree.Closed | ms/item | 9.600 | 9.445 | 1.61% | 小幅正向 |
+| DataGrid.Filter.Tree.Closed | KB/item | 2625.0 | 2623.6 | 0.05% | 小幅正向 |
+| DataGrid.GalleryShape | ms/item | 46.846 | 43.783 | 6.54% | 正向 |
+| DataGrid.GalleryShape | KB/item | 12708.7 | 12701.2 | 0.06% | 小幅正向 |
+
+本轮判断：保留。主收益仍按结构/分配记录；visual/logical 计数不变，sort / reorder state propagation 由 `--verify-datagrid-states` 覆盖。
+
 ---
 
 ## 3. 验证
@@ -210,7 +243,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover routed handlers、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover routed handlers、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
