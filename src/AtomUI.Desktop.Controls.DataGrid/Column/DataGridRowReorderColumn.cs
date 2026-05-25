@@ -67,14 +67,25 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
 
         EnsureOnlyOneReorderColumn();
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
+        _owningGrid.PropertyChanged           -= HandleOwningGridItemsSourceChanged;
+        _owningGrid                           =  null;
     }
 
     private void EnsureOnlyOneReorderColumn()
@@ -135,10 +146,7 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
     protected internal override void NotifyOwningGridAboutToDetached()
     {
         base.NotifyOwningGridAboutToDetached();
-        if (OwningGrid != null)
-        {
-            OwningGrid.PropertyChanged -= HandleOwningGridItemsSourceChanged;
-        }
+        ReleaseOwningGrid();
     }
 
     private void HandleOwningGridItemsSourceChanged(object? sender, AvaloniaPropertyChangedEventArgs change)

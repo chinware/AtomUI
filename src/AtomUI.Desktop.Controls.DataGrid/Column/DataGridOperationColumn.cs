@@ -63,12 +63,22 @@ internal class DataGridOperationColumn : DataGridColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
+        _owningGrid                           =  null;
     }
 
     private void HandleLoadingRow(object? sender, DataGridRowEventArgs e)
@@ -97,6 +107,12 @@ internal class DataGridOperationColumn : DataGridColumn
     {
         base.NotifyOwningGridAttached(owningGrid);
         ConfigureOwningGrid();
+    }
+
+    protected internal override void NotifyOwningGridAboutToDetached()
+    {
+        base.NotifyOwningGridAboutToDetached();
+        ReleaseOwningGrid();
     }
 
     public override bool IsEditable()

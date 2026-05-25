@@ -241,13 +241,24 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.CurrentCellChanged        -= HandleCurrentCellChanged;
-                _owningGrid.KeyDown                   -= HandleKeyDown;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.CurrentCellChanged        -= HandleCurrentCellChanged;
+        _owningGrid.KeyDown                   -= HandleKeyDown;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid                           =  null;
+        _currentCheckBox                      =  null;
     }
 
     private void ConfigureCheckBox(CheckBox checkBox)
@@ -336,5 +347,11 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
                 }
             }
         }
+    }
+
+    protected internal override void NotifyOwningGridAboutToDetached()
+    {
+        base.NotifyOwningGridAboutToDetached();
+        ReleaseOwningGrid();
     }
 }

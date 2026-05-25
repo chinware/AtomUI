@@ -2,9 +2,11 @@ using System.Collections;
 using System.Reflection;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -18,6 +20,8 @@ internal static partial class Program
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
         VerifyDataGridColumnHeaderHoverUsesOverrides(failures);
+        VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
+        VerifyDataGridColumnDragIndicatorCachesPen(failures);
 
         if (failures.Count == 0)
         {
@@ -154,6 +158,95 @@ internal static partial class Program
         }
     }
 
+    private static void VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserReorderRows = true;
+
+        var detailColumn = new DataGridDetailExpanderColumn();
+        var reorderColumn = new DataGridRowReorderColumn();
+        var selectionColumn = new DataGridSelectionColumn();
+        var checkBoxColumn = new DataGridCheckBoxColumn
+        {
+            Binding = new Binding(nameof(PerfDataGridRow.Age))
+        };
+        var operationColumn = CreateDataGridOperationColumn(failures);
+
+        grid.Columns.Add(detailColumn);
+        grid.Columns.Add(reorderColumn);
+        grid.Columns.Add(selectionColumn);
+        grid.Columns.Add(checkBoxColumn);
+        if (operationColumn != null)
+        {
+            grid.Columns.Add(operationColumn);
+        }
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        using var realized = RealizeControl(grid);
+
+        grid.Columns.Clear();
+
+        ExpectColumnOwningGridReleased(detailColumn, failures);
+        ExpectColumnOwningGridReleased(reorderColumn, failures);
+        ExpectColumnOwningGridReleased(selectionColumn, failures);
+        ExpectColumnOwningGridReleased(checkBoxColumn, failures);
+        if (operationColumn != null)
+        {
+            ExpectColumnOwningGridReleased(operationColumn, failures);
+        }
+    }
+
+    private static void VerifyDataGridColumnDragIndicatorCachesPen(ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.DataGridColumnDraggingOverIndicator");
+        Expect(type != null,
+            "DataGrid column drag indicator type should be available for render resource verification.",
+            failures);
+        if (type == null)
+        {
+            return;
+        }
+
+        var indicator = Activator.CreateInstance(type, nonPublic: true) as Control;
+        Expect(indicator != null,
+            "DataGrid column drag indicator should be constructible for render resource verification.",
+            failures);
+        if (indicator == null)
+        {
+            return;
+        }
+
+        var getPen = type.GetMethod("GetIndicatorPen", BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(getPen != null,
+            "DataGrid column drag indicator should expose a cached render pen factory.",
+            failures);
+        if (getPen == null)
+        {
+            return;
+        }
+
+        var firstPen = getPen.Invoke(indicator, null);
+        var secondPen = getPen.Invoke(indicator, null);
+        Expect(ReferenceEquals(firstPen, secondPen),
+            "DataGrid column drag indicator should reuse the same dashed Pen while Foreground is unchanged.",
+            failures);
+
+        TextElement.SetForeground(indicator, Brushes.Red);
+
+        var thirdPen = getPen.Invoke(indicator, null);
+        var fourthPen = getPen.Invoke(indicator, null);
+        Expect(!ReferenceEquals(firstPen, thirdPen),
+            "DataGrid column drag indicator should rebuild its cached Pen after Foreground changes.",
+            failures);
+        Expect(ReferenceEquals(thirdPen, fourthPen),
+            "DataGrid column drag indicator should reuse the rebuilt dashed Pen while the new Foreground is unchanged.",
+            failures);
+    }
+
     private static List<Control> GetDataGridFilterIndicators(Control root)
     {
         return root.GetSelfAndVisualDescendants()
@@ -192,6 +285,30 @@ internal static partial class Program
             }
         }
         return names;
+    }
+
+    private static DataGridColumn? CreateDataGridOperationColumn(ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.DataGridOperationColumn");
+        Expect(type != null,
+            "DataGrid operation column type should be available for subscription lifecycle verification.",
+            failures);
+        return type == null
+            ? null
+            : (DataGridColumn?)Activator.CreateInstance(type, nonPublic: true);
+    }
+
+    private static void ExpectColumnOwningGridReleased(DataGridColumn column, ICollection<string> failures)
+    {
+        var field = column.GetType().GetField("_owningGrid", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (field == null)
+        {
+            return;
+        }
+
+        Expect(field.GetValue(column) is null,
+            $"{column.GetType().Name} should release its cached owning grid and grid event subscriptions when DataGrid.Columns.Clear() detaches the column.",
+            failures);
     }
 
     private static PopupFlyoutBase? GetDataGridFilterFlyout(Control indicator)

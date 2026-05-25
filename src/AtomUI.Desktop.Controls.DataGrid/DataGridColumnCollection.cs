@@ -82,6 +82,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
                 for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
                 {
                     // Detach the column...
+                    ItemsInternal[columnIndex].NotifyOwningGridAboutToDetached();
                     ItemsInternal[columnIndex].OwningGrid = null;
                 }
                 ItemsInternal.Clear();

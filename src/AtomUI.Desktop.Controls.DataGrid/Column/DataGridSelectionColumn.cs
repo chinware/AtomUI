@@ -121,13 +121,23 @@ public class DataGridSelectionColumn : DataGridColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid.SelectionChanged          -= HandleSelectionChanged;
-                _owningGrid.PropertyChanged           -= HandleDataGridPropertyChanged;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid.SelectionChanged          -= HandleSelectionChanged;
+        _owningGrid.PropertyChanged           -= HandleDataGridPropertyChanged;
+        _owningGrid                           =  null;
     }
 
     private void HandleDataGridPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
@@ -243,6 +253,12 @@ public class DataGridSelectionColumn : DataGridColumn
                 radioButton.IsChecked = e.Row.IsSelected;
             }
         }
+    }
+
+    protected internal override void NotifyOwningGridAboutToDetached()
+    {
+        base.NotifyOwningGridAboutToDetached();
+        ReleaseOwningGrid();
     }
     
     internal override DataGridColumnHeader CreateHeader()
