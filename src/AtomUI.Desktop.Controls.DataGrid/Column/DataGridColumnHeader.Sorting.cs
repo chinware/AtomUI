@@ -162,6 +162,7 @@ internal partial class DataGridColumnHeader
         {
             ToolTip.SetIsOpen(this, true);
         }
+        HandlePointerEntered(e);
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
@@ -171,6 +172,7 @@ internal partial class DataGridColumnHeader
         {
             ToolTip.SetIsOpen(this, false);
         }
+        HandlePointerExited(e);
     }
 
     internal void InvokeProcessSort(KeyModifiers keyModifiers, ListSortDirection? forcedDirection = null)

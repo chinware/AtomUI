@@ -4,6 +4,7 @@ using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -16,6 +17,7 @@ internal static partial class Program
         VerifyDataGridPlainHeadersDoNotCreateFilterFlyouts(failures);
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
+        VerifyDataGridColumnHeaderHoverUsesOverrides(failures);
 
         if (failures.Count == 0)
         {
@@ -130,6 +132,28 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridColumnHeaderHoverUsesOverrides(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 4, columnCount: 3);
+        using var realized = RealizeControl(grid);
+
+        var headers = GetDataGridColumnHeaders(grid);
+        Expect(headers.Count >= 3,
+            $"Basic 3-column grid should realize at least 3 standard column headers. Actual: {headers.Count}.",
+            failures);
+
+        foreach (var header in headers)
+        {
+            var localHandlerNames = GetLocalRoutedHandlerNames(header);
+            Expect(!localHandlerNames.Contains("InputElement.PointerEntered"),
+                "DataGrid column headers should handle PointerEntered through OnPointerEntered instead of per-instance handlers.",
+                failures);
+            Expect(!localHandlerNames.Contains("InputElement.PointerExited"),
+                "DataGrid column headers should handle PointerExited through OnPointerExited instead of per-instance handlers.",
+                failures);
+        }
+    }
+
     private static List<Control> GetDataGridFilterIndicators(Control root)
     {
         return root.GetSelfAndVisualDescendants()
@@ -138,9 +162,36 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<Control> GetDataGridColumnHeaders(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<Control>()
+                   .Where(control => control.GetType().Name == "DataGridColumnHeader")
+                   .ToList();
+    }
+
     private static int CountVisibleDataGridFilterIndicators(Control root)
     {
         return GetDataGridFilterIndicators(root).Count(indicator => indicator.IsVisible);
+    }
+
+    private static HashSet<string> GetLocalRoutedHandlerNames(Control control)
+    {
+        var field = typeof(Interactive).GetField("_eventHandlers", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (field?.GetValue(control) is not IDictionary eventHandlers)
+        {
+            return [];
+        }
+
+        var names = new HashSet<string>();
+        foreach (DictionaryEntry entry in eventHandlers)
+        {
+            if (entry.Key != null)
+            {
+                names.Add(entry.Key.ToString() ?? string.Empty);
+            }
+        }
+        return names;
     }
 
     private static PopupFlyoutBase? GetDataGridFilterFlyout(Control indicator)

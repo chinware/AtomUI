@@ -304,8 +304,6 @@ internal partial class DataGridColumnHeader : ContentControl
         PointerPressed  += HandlePointerPressed;
         PointerReleased += HandlePointerReleased;
         PointerMoved    += HandlePointerMoved;
-        PointerEntered  += HandlePointerEntered;
-        PointerExited   += HandlePointerExited;
     }
 
     // protected override AutomationPeer OnCreateAutomationPeer()
@@ -529,7 +527,7 @@ internal partial class DataGridColumnHeader : ContentControl
         return false;
     }
 
-    private void HandlePointerEntered(object? sender, PointerEventArgs e)
+    private void HandlePointerEntered(PointerEventArgs e)
     {
         if (!IsEnabled)
         {
@@ -541,7 +539,7 @@ internal partial class DataGridColumnHeader : ContentControl
         UpdatePseudoClasses();
     }
 
-    private void HandlePointerExited(object? sender, PointerEventArgs e)
+    private void HandlePointerExited(PointerEventArgs e)
     {
         if (!IsEnabled)
         {
