@@ -1,7 +1,6 @@
 <ControlTheme TargetType="atom:DataGridColumnHeader"
               xmlns="https://github.com/avaloniaui"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
               x:Class="AtomUI.Desktop.Controls.Themes.DataGridColumnHeaderTheme"
               x:ClassModifier="internal"
               xmlns:atom="https://atomui.net">
@@ -22,19 +21,8 @@
                                     SupportedSortDirections="{TemplateBinding SupportedSortDirections}" />
                                 <atom:DataGridFilterIndicator
                                     Name="{x:Static atom:DataGridColumnHeaderThemeConstants.FilterIndicatorPart}"
-                                    VerticalAlignment="Center">
-                                    <atom:DataGridFilterIndicator.IsVisible>
-                                        <MultiBinding
-                                            Converter="{x:Static converters:DataGridFilterIndicatorVisibleConvert.Default}">
-                                            <Binding Path="IsSeparatorsVisible"
-                                                     RelativeSource="{RelativeSource TemplatedParent}" />
-                                            <Binding Path="CanUserFilter"
-                                                     RelativeSource="{RelativeSource TemplatedParent}" />
-                                            <Binding Path="OwningColumn?.Filters.Count"
-                                                     RelativeSource="{RelativeSource TemplatedParent}" />
-                                        </MultiBinding>
-                                    </atom:DataGridFilterIndicator.IsVisible>
-                                </atom:DataGridFilterIndicator>
+                                    VerticalAlignment="Center"
+                                    IsVisible="{TemplateBinding FilterIndicatorVisible}" />
                             </StackPanel>
                             <ContentPresenter
                                 Name="ContentPresenter"

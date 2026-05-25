@@ -3,6 +3,7 @@ using System.Reflection;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -14,6 +15,7 @@ internal static partial class Program
         var failures = new List<string>();
         VerifyDataGridPlainHeadersDoNotCreateFilterFlyouts(failures);
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
+        VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
 
         if (failures.Count == 0)
         {
@@ -86,12 +88,59 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserFilterColumns = true;
+
+        var filterColumn = new DataGridTextColumn
+        {
+            Header           = "Name",
+            Binding          = new Binding(nameof(PerfDataGridRow.Name)),
+            FilterMemberPath = nameof(PerfDataGridRow.Name)
+        };
+        grid.Columns.Add(filterColumn);
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Age",
+            Binding = new Binding(nameof(PerfDataGridRow.Age))
+        });
+
+        using var realized = RealizeControl(grid);
+        Expect(CountVisibleDataGridFilterIndicators(grid) == 0,
+            "Columns without filter items should keep filter indicators hidden even when filtering is enabled.",
+            failures);
+
+        filterColumn.Filters.Add(new DataGridFilterItem { Text = "Joe", Value = "Joe" });
+        RefreshLayout(realized.Window);
+        Expect(CountVisibleDataGridFilterIndicators(grid) == 1,
+            $"Adding one filter item should reveal one filter indicator. Actual: {CountVisibleDataGridFilterIndicators(grid)}.",
+            failures);
+        Expect(GetDataGridFilterIndicators(grid).Count(indicator => GetDataGridFilterFlyout(indicator) is not null) == 1,
+            "Adding one filter item should create exactly one closed filter flyout shell.",
+            failures);
+
+        filterColumn.Filters.Clear();
+        RefreshLayout(realized.Window);
+        Expect(CountVisibleDataGridFilterIndicators(grid) == 0,
+            $"Clearing filter items should hide the filter indicator. Actual: {CountVisibleDataGridFilterIndicators(grid)}.",
+            failures);
+        Expect(GetDataGridFilterIndicators(grid).All(indicator => GetDataGridFilterFlyout(indicator) is null),
+            "Clearing filter items should release the closed filter flyout shell.",
+            failures);
+    }
+
     private static List<Control> GetDataGridFilterIndicators(Control root)
     {
         return root.GetSelfAndVisualDescendants()
                    .OfType<Control>()
                    .Where(control => control.GetType().Name == "DataGridFilterIndicator")
                    .ToList();
+    }
+
+    private static int CountVisibleDataGridFilterIndicators(Control root)
+    {
+        return GetDataGridFilterIndicators(root).Count(indicator => indicator.IsVisible);
     }
 
     private static PopupFlyoutBase? GetDataGridFilterFlyout(Control indicator)

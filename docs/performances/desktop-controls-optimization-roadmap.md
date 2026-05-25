@@ -121,7 +121,7 @@
 
 | 控件 | 状态 | 跨包依赖 |
 | --- | --- | --- |
-| DataGrid | Partial | Primitives.ArrowDecoratedBox, Buttons.Button, TextBlock, Pagination, PopupConfirm, ScrollViewer, Spin, Tooltip.ToolTip, TreeView.TreeViewItemTheme；filter flyout lifecycle 已完成，详见 [DataGrid](DataGrid/README.md) |
+| DataGrid | Partial | Primitives.ArrowDecoratedBox, Buttons.Button, TextBlock, Pagination, PopupConfirm, ScrollViewer, Spin, Tooltip.ToolTip, TreeView.TreeViewItemTheme；filter flyout lifecycle / filter indicator binding 已完成，详见 [DataGrid](DataGrid/README.md) |
 | DataGridRow / DataGridCell / DataGridColumnHeader 等 ~40 内部子控件 | Pending | 同上 |
 
 DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
@@ -240,7 +240,7 @@ DataGrid 是单文件最复杂的控件之一（~110 个公开类型）。依赖
 | # | 子模块 | 备注 |
 | --- | --- | --- |
 | T4.1 | DataGrid 核心（DataGrid / DataGridRow / DataGridCell / Presenter 系列） | 前置：ScrollViewer 真正速度优化、Spin (T0.5)、Tooltip (T0.6)、TreeView (T1.1) |
-| T4.2 | 列模型（DataGridColumn / DataGridColumnHeader / FilterFlyout / SortIndicator） | Partial：filter flyout closed-state 内容已延迟；其余 column header / sort / resize / reorder 仍待专项 |
+| T4.2 | 列模型（DataGridColumn / DataGridColumnHeader / FilterFlyout / SortIndicator） | Partial：filter flyout closed-state 内容已延迟；filter indicator visibility binding 已收敛；其余 sort / resize / reorder 仍待专项 |
 | T4.3 | 行展开 / 详情（RowExpander / DetailsPresenter） | 与 T4.1 协同 |
 | T4.4 | 行重排 / 选择（RowReorder / SelectionColumn） | 拖拽全局订阅 — Lifecycle Pairing 重点 |
 | T4.5 | 分组 / 过滤（CollectionView / FilterDescription / GroupDescription） | 数据层成本，不在主题路径上但是真热点 |

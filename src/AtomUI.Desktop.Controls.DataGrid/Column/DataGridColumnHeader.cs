@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.ComponentModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls;
@@ -95,6 +96,12 @@ internal partial class DataGridColumnHeader : ContentControl
             nameof(IndicatorLayoutVisible),
             o => o.IndicatorLayoutVisible,
             (o, v) => o.IndicatorLayoutVisible = v);
+
+    internal static readonly DirectProperty<DataGridColumnHeader, bool> FilterIndicatorVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
+            nameof(FilterIndicatorVisible),
+            o => o.FilterIndicatorVisible,
+            (o, v) => o.FilterIndicatorVisible = v);
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGridColumnHeader>();
@@ -188,11 +195,19 @@ internal partial class DataGridColumnHeader : ContentControl
         get => _owningColumn;
         set
         {
+            if (ReferenceEquals(_owningColumn, value))
+            {
+                return;
+            }
+
+            UnregisterFilterItems();
             _owningColumn = value;
+            RegisterFilterItems(value);
             if (_filterIndicator != null)
             {
                 _filterIndicator.OwningColumn = OwningColumn;
             }
+            ConfigureIndicatorLayoutVisible();
         }
     }
     
@@ -201,6 +216,13 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         get => _indicatorLayoutVisible;
         set => SetAndRaise(IndicatorLayoutVisibleProperty, ref _indicatorLayoutVisible, value);
+    }
+
+    private bool _filterIndicatorVisible;
+    internal bool FilterIndicatorVisible
+    {
+        get => _filterIndicatorVisible;
+        set => SetAndRaise(FilterIndicatorVisibleProperty, ref _filterIndicatorVisible, value);
     }
     
     internal bool IsMotionEnabled
@@ -265,6 +287,7 @@ internal partial class DataGridColumnHeader : ContentControl
     private static double _rightFrozenColumnsWidth;
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
+    private INotifyCollectionChanged? _subscribedFilterItems;
     private static Lazy<Cursor> ResizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
     
     static DataGridColumnHeader()
@@ -916,6 +939,7 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         base.OnApplyTemplate(e);
 
+        ClearFilterIndicator();
         _filterIndicator = e.NameScope.Find<DataGridFilterIndicator>(DataGridColumnHeaderThemeConstants.FilterIndicatorPart);
         if (_filterIndicator != null && OwningColumn != null)
         {
@@ -941,7 +965,72 @@ internal partial class DataGridColumnHeader : ContentControl
 
     private void ConfigureIndicatorLayoutVisible()
     {
-        SetCurrentValue(IndicatorLayoutVisibleProperty, CanUserSort || (IsSeparatorsVisible && CanUserFilter && OwningColumn?.Filters.Count > 0));
+        ConfigureFilterIndicatorVisible();
+        IndicatorLayoutVisible = CanUserSort || FilterIndicatorVisible;
+    }
+
+    private void ConfigureFilterIndicatorVisible()
+    {
+        FilterIndicatorVisible = IsSeparatorsVisible &&
+                                 CanUserFilter &&
+                                 OwningColumn?.Filters.Count > 0;
+    }
+
+    private void RegisterFilterItems(DataGridColumn? column)
+    {
+        if (ReferenceEquals(_subscribedFilterItems, column?.Filters))
+        {
+            return;
+        }
+
+        UnregisterFilterItems();
+        if (column?.Filters is { } filters)
+        {
+            _subscribedFilterItems = filters;
+            _subscribedFilterItems.CollectionChanged += HandleFilterItemsChanged;
+        }
+    }
+
+    private void UnregisterFilterItems()
+    {
+        if (_subscribedFilterItems != null)
+        {
+            _subscribedFilterItems.CollectionChanged -= HandleFilterItemsChanged;
+            _subscribedFilterItems = null;
+        }
+    }
+
+    private void HandleFilterItemsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        ConfigureIndicatorLayoutVisible();
+        _filterIndicator?.RefreshFilterFlyoutState();
+    }
+
+    private void ClearFilterIndicator()
+    {
+        if (_filterIndicator != null)
+        {
+            _filterIndicator.FilterRequest -= HandleFilterRequest;
+            _filterIndicator.OwningColumn = null;
+            _filterIndicator = null;
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        RegisterFilterItems(OwningColumn);
+        ConfigureIndicatorLayoutVisible();
+        if (_filterIndicator != null)
+        {
+            _filterIndicator.OwningColumn = OwningColumn;
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        UnregisterFilterItems();
     }
 
     protected override void OnInitialized()
