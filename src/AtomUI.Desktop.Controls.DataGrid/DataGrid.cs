@@ -1008,12 +1008,6 @@ public partial class DataGrid : TemplatedControl,
     public DataGrid()
     {
         this.RegisterTokenResourceScope(DataGridToken.ScopeProvider);
-        KeyDown += HandleKeyDown;
-        KeyUp   += HandleKeyUp;
-
-        //TODO: Check if override works
-        GotFocus  += HandleGotFocus;
-        LostFocus += HandleLostFocus;
 
         CurrentCellCoordinates   = new DataGridCellCoordinates(-1, -1);
         _loadedRows              = new List<DataGridRow>();

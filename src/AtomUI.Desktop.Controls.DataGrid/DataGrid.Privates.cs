@@ -378,6 +378,15 @@ public partial class DataGrid
         }
     }
 
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (!e.Handled)
+        {
+            HandleKeyDown(this, e);
+        }
+    }
+
     internal bool UpdateScroll(Vector delta)
     {
         if (IsEnabled && DisplayData.NumDisplayedScrollingElements > 0)
@@ -465,6 +474,15 @@ public partial class DataGrid
         }
     }
 
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+        if (!e.Handled)
+        {
+            HandleKeyUp(this, e);
+        }
+    }
+
     private void HandleGotFocus(object? sender, RoutedEventArgs e)
     {
         if (!ContainsFocus)
@@ -490,6 +508,15 @@ public partial class DataGrid
         {
             ResetFocusedRow();
             _focusedRow = focusedRow.IsVisible ? focusedRow : null;
+        }
+    }
+
+    protected override void OnGotFocus(FocusChangedEventArgs e)
+    {
+        base.OnGotFocus(e);
+        if (!e.Handled)
+        {
+            HandleGotFocus(this, e);
         }
     }
 
@@ -532,6 +559,15 @@ public partial class DataGrid
                     focusedElement.LostFocus += HandleExternalEditingElementLostFocus;
                 }
             }
+        }
+    }
+
+    protected override void OnLostFocus(FocusChangedEventArgs e)
+    {
+        base.OnLostFocus(e);
+        if (!e.Handled)
+        {
+            HandleLostFocus(this, e);
         }
     }
 

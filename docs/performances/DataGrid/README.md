@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding + row/row group header pointer handler cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding + row/row group header pointer handler + core input handler cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -18,6 +18,7 @@
 - column group header press/release 不再为每个 realized `DataGridColumnGroupHeader` 注册本地 forwarding lambda，改为 class handler 转发到 `DataGridColumnGroupItem.HeaderPointerPressed/Released`。
 - row header press 不再为每个 realized `DataGridRowHeader` 注册本地 `PointerPressed` handler，改为 class handler，同时保留 focus / selection / current slot 行为。
 - row group header press 不再为每个 realized `DataGridRowGroupHeader` 注册本地 `PointerPressed` lambda，改为 class handler，同时保留 current slot 行为。
+- `DataGrid` core `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` 不再为每个 grid 实例注册本地 routed handlers，改为 Avalonia virtual override 路径。
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
@@ -38,6 +39,8 @@ Avalonia 依据：
 - Avalonia 已通过 class handler 调用 `OnPointerEnteredCore` / `OnPointerExitedCore`，再进入 virtual `OnPointerEntered` / `OnPointerExited`：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:242-243`、`:1019-1035`。
 - `PointerMoved` / `PointerPressed` / `PointerReleased` 是 tunnel + bubble routed events：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:158-179`。
 - 事件属性 `PointerXxx +=` 会走 `AddHandler`，本地订阅进入 `_eventHandlers` 字典；class handler 通过 `RoutedEvent.Raised` 按类型订阅一次：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:353-389`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:176-190`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:84-99`。
+- Avalonia 已通过 `InputElement` class handlers 把 `GotFocus` / `LostFocus` / `KeyDown` / `KeyUp` 分发到 virtual `OnGotFocus` / `OnLostFocus` / `OnKeyDown` / `OnKeyUp`：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:235-240`、`:596-657`。
+- `KeyDown` / `KeyUp` 是 tunnel + bubble routed events，事件属性 `+=` 默认只添加 direct/bubble 本地 handler；`AddClassHandler` 默认也覆盖 direct/bubble route，因此 override 路径与原实例订阅的 bubble 处理口径一致：`.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:106-118`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:30-64`、`.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:78-99`。
 - `PressedMixin.Attach<T>` 本身通过 class handler 维护 `:pressed`，本轮 column header class handler 注册在 `PressedMixin.Attach<DataGridColumnHeader>()` 之后，避免影响 pressed 状态：`.referenceprojects/Avalonia/src/Avalonia.Controls/Mixins/PressedMixin.cs:14-33`。
 - `AvaloniaObjectExtensions.Bind(IObservable<T>)` 对 DirectProperty 进入 `DirectBindingObserver<T>` 路径：`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObjectExtensions.cs:188-225`、`.referenceprojects/Avalonia/src/Avalonia.Base/PropertyStore/DirectBindingObserver.cs:7-84`。
 - `Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` / `DashStyle` 都是 styled properties：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`。
@@ -89,6 +92,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Row header local press handler | 1 per row header | 0 per row header | 100.00% removed | 结构/分配优化；行头点击 selection / current slot 语义已验证 |
 | Row group header local press handler | 1 per row group header | 0 per row group header | 100.00% removed | 结构/分配优化；分组头点击 current slot 语义已验证 |
 | Row header owner/template ordering | template assumed owner ready | owner-dependent state retries from `Owner` setter | null-ref path removed | 正确性修复；分组行头覆盖验证 |
+| DataGrid core input handlers | 4 local routed handlers per grid | 0 local core input handlers per grid | 100.00% removed | 结构/分配优化；KeyDown / GotFocus 行为已验证 |
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
@@ -386,6 +390,37 @@ Gallery `Grouping table head` 示例声明 4 个 `DataGridColumnGroupItem`，页
 | --- | ---: | ---: | ---: | ---: | --- |
 | DataGrid.RowGroups | 13.517 | 3003.0 | 321.0 | 1.0 | smoke 通过；本轮新增场景，无历史 timing 对比 |
 
+### 2.14 DataGrid core input handler cleanup
+
+本轮优化点：`DataGrid` 构造函数原先为每个 grid 实例注册 4 个本地 routed event handlers：
+
+- `KeyDown += HandleKeyDown`
+- `KeyUp += HandleKeyUp`
+- `GotFocus += HandleGotFocus`
+- `LostFocus += HandleLostFocus`
+
+真实 Gallery `DataGridShowCase` 声明 65 个 `DataGrid`，页面导航时会放大这类每实例 `_eventHandlers` 记录。Avalonia `InputElement` 已经通过 class handlers 把 `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` 分发到 virtual override；修复后改为 `OnKeyDown` / `OnKeyUp` / `OnGotFocus` / `OnLostFocus` 调用原处理函数，并保留 `!e.Handled` 口径。`DataGridCheckBoxColumn` 等按需附加到 grid 的功能订阅不属于本轮 core constructor cleanup，仍按对应功能生命周期管理。
+
+| 场景 | baseline | optimized | 改善 | 结论 |
+| --- | --- | --- | --- | --- |
+| Core input routed handler registration | 4 local handlers / grid | 0 local handlers / grid | 100.00% removed | 有效；`_eventHandlers` 记录移除 |
+| `KeyDown` navigation | constructor instance handler | `OnKeyDown` override | behavior preserved | `Down` key 从 slot `0 -> 1` 覆盖 |
+| `GotFocus` state | constructor instance handler | `OnGotFocus` override | behavior preserved | `ContainsFocus` 更新覆盖 |
+| `KeyUp` / `LostFocus` dispatch | constructor instance handler | virtual override calls same handler body | handler body preserved | 本地 handler 移除覆盖；交互语义未改 |
+
+当前工作区 smoke：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.Basic | 15.101 | 2967.1 | 305.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.Filter.Menu.Closed | 9.487 | 2601.1 | 267.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.Filter.Tree.Closed | 8.805 | 2598.4 | 267.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowHeaders | 11.064 | 3125.3 | 336.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowDetails.Collapsed | 12.351 | 3044.9 | 320.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.GroupHeaders | 8.580 | 2594.6 | 266.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowGroups | 10.986 | 3001.7 | 321.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.GalleryShape | 44.297 | 12490.5 | 1260.0 | 5.0 | smoke 通过；timing 只作异常检查 |
+
 ---
 
 ## 3. 验证
@@ -402,7 +437,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、realized row group header 不再注册本地 press handler 且左键点击仍更新 `CurrentSlot`、分组行头内 row header 的 owner/template 顺序不再空引用、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、realized row group header 不再注册本地 press handler 且左键点击仍更新 `CurrentSlot`、realized DataGrid core 不再注册本地 `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` handlers，且 `GotFocus` 更新 `ContainsFocus`、`Down` key 仍推动 current slot、分组行头内 row header 的 owner/template 顺序不再空引用、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -414,11 +449,11 @@ dotnet run -c Release -f net10.0 --no-build \
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 16.717 | 2968.4 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 11.931 | 2602.2 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 10.711 | 2599.5 | 267.0 | 1.0 |
-| DataGrid.RowHeaders | 12.069 | 3126.6 | 336.0 | 1.0 |
-| DataGrid.RowDetails.Collapsed | 12.898 | 3046.2 | 320.0 | 1.0 |
-| DataGrid.GroupHeaders | 12.206 | 2595.2 | 266.0 | 1.0 |
-| DataGrid.RowGroups | 13.517 | 3003.0 | 321.0 | 1.0 |
-| DataGrid.GalleryShape | 55.077 | 12495.7 | 1260.0 | 5.0 |
+| DataGrid.Basic | 15.101 | 2967.1 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 9.487 | 2601.1 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 8.805 | 2598.4 | 267.0 | 1.0 |
+| DataGrid.RowHeaders | 11.064 | 3125.3 | 336.0 | 1.0 |
+| DataGrid.RowDetails.Collapsed | 12.351 | 3044.9 | 320.0 | 1.0 |
+| DataGrid.GroupHeaders | 8.580 | 2594.6 | 266.0 | 1.0 |
+| DataGrid.RowGroups | 10.986 | 3001.7 | 321.0 | 1.0 |
+| DataGrid.GalleryShape | 44.297 | 12490.5 | 1260.0 | 5.0 |

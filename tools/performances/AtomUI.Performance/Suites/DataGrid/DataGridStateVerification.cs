@@ -27,6 +27,7 @@ internal static partial class Program
         VerifyDataGridColumnGroupHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridRowHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridRowGroupHeaderPointerHandlerUsesClassHandler(failures);
+        VerifyDataGridCoreInputHandlersUseOverrides(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -354,6 +355,55 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridCoreInputHandlersUseOverrides(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 4, columnCount: 3);
+        using var realized = RealizeControl(grid);
+
+        var localHandlerNames = GetLocalRoutedHandlerNames(grid);
+        Expect(!localHandlerNames.Contains("InputElement.KeyDown"),
+            "DataGrid should process KeyDown through OnKeyDown instead of a per-instance handler.",
+            failures);
+        Expect(!localHandlerNames.Contains("InputElement.KeyUp"),
+            "DataGrid should process KeyUp through OnKeyUp instead of a per-instance handler.",
+            failures);
+        Expect(!localHandlerNames.Contains("InputElement.GotFocus"),
+            "DataGrid should process GotFocus through OnGotFocus instead of a per-instance handler.",
+            failures);
+        Expect(!localHandlerNames.Contains("InputElement.LostFocus"),
+            "DataGrid should process LostFocus through OnLostFocus instead of a per-instance handler.",
+            failures);
+
+        grid.RaiseEvent(new FocusChangedEventArgs(InputElement.GotFocusEvent)
+        {
+            NewFocusedElement = grid,
+            NavigationMethod  = NavigationMethod.Tab
+        });
+        Expect(GetDataGridContainsFocus(grid),
+            "DataGrid GotFocus override should still update ContainsFocus.",
+            failures);
+
+        Expect(SetDataGridCurrentCell(grid, columnIndex: 0, slot: 0),
+            "DataGrid should accept a reflected current-cell setup for keyboard navigation verification.",
+            failures);
+
+        var keyDown = new KeyEventArgs
+        {
+            RoutedEvent  = InputElement.KeyDownEvent,
+            Key          = Key.Down,
+            KeyModifiers = KeyModifiers.None
+        };
+        grid.RaiseEvent(keyDown);
+        RefreshLayout(realized.Window);
+
+        Expect(keyDown.Handled,
+            "DataGrid OnKeyDown override should still handle a Down key navigation request.",
+            failures);
+        Expect(GetDataGridCurrentSlot(grid) == 1,
+            $"DataGrid Down key should still move the current slot from 0 to 1. Actual: {GetDataGridCurrentSlot(grid)}.",
+            failures);
+    }
+
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -636,6 +686,24 @@ internal static partial class Program
         return typeof(DataGrid)
                    .GetProperty("CurrentSlot", BindingFlags.Instance | BindingFlags.NonPublic)
                    ?.GetValue(grid) as int? ?? -1;
+    }
+
+    private static bool GetDataGridContainsFocus(DataGrid grid)
+    {
+        return typeof(DataGrid)
+                   .GetProperty("ContainsFocus", BindingFlags.Instance | BindingFlags.NonPublic)
+                   ?.GetValue(grid) as bool? ?? false;
+    }
+
+    private static bool SetDataGridCurrentCell(DataGrid grid, int columnIndex, int slot)
+    {
+        var method = typeof(DataGrid).GetMethod(
+            "SetCurrentCellCore",
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(int), typeof(int)],
+            modifiers: null);
+        return method?.Invoke(grid, new object[] { columnIndex, slot }) as bool? ?? false;
     }
 
     private static int GetDataGridRowGroupHeaderSlot(DataGridRowGroupHeader header)
