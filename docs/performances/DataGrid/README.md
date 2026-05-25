@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column header hover handler cleanup partial done；T4.3 special column detach lifecycle partial done；T4.4 column reorder drag indicator render partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column header hover handler cleanup partial done；T4.3 special column detach lifecycle partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -17,6 +17,7 @@
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
+- `DataGridDetailsPresenter.ContentHeight` 的 `AffectsMeasure` 注册从实例构造函数移到静态构造函数，避免每个 details presenter 重复添加 class-level property observer。
 - 运行时增删 `DataGridColumn.Filters` 会同步刷新 filter indicator 可见性和 flyout shell。
 - 修复 `DataGridColumnHeader.IsMiddleVisible` 错误 raise 到 `IsLastVisibleProperty` 的正确性问题。
 
@@ -33,6 +34,7 @@ Avalonia 依据：
 - `AvaloniaObjectExtensions.Bind(IObservable<T>)` 对 DirectProperty 进入 `DirectBindingObserver<T>` 路径：`.referenceprojects/Avalonia/src/Avalonia.Base/AvaloniaObjectExtensions.cs:188-225`、`.referenceprojects/Avalonia/src/Avalonia.Base/PropertyStore/DirectBindingObserver.cs:7-84`。
 - `Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` / `DashStyle` 都是 styled properties：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`。
 - `Visual.AffectsRender` 会在注册属性变更时 invalidate render：`.referenceprojects/Avalonia/src/Avalonia.Base/Visual.cs:446-500`。
+- `AffectsMeasure<T>` 注释要求在控件 static constructor 中调用，且实现会对 `property.Changed` 订阅 observer：`.referenceprojects/Avalonia/src/Avalonia.Base/Layout/Layoutable.cs:502-512`。
 
 因此，过滤菜单项属于 popup-open-only 内容，延迟到 `FlyoutAboutToShow` 前创建符合 Popup Lazy Content Rule。
 
@@ -75,6 +77,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
+| Details presenter measure registration | 1 `property.Changed` subscription per presenter instance | 1 static registration per control type | duplicate class-level subscriptions removed | 结构/生命周期优化；`ContentHeight` 仍触发 measure invalidation |
 
 ### 2.2 Gallery 同参数复测
 
@@ -227,6 +230,33 @@ dotnet run -c Release -f net10.0 --no-build \
 
 本轮判断：保留。主收益仍按结构/分配记录；visual/logical 计数不变，sort / reorder state propagation 由 `--verify-datagrid-states` 覆盖。
 
+### 2.8 Details presenter measure registration
+
+本轮优化点：`DataGridDetailsPresenter` 原先在实例构造函数里调用 `AffectsMeasure<DataGridDetailsPresenter>(ContentHeightProperty)`。Avalonia 的 `AffectsMeasure<T>` 是 class-level 注册：源码注释要求在控件 static constructor 中调用，实现会对 `property.Changed` 订阅 observer。因此每个 realized `DataGridDetailsPresenter` 都会重复注册同一个类型/属性的 observer。
+
+`DataGridRowTheme` 中每个 realized row 都包含一个 `DataGridDetailsPresenter` 槽位，即使 details frame 通过 `IsDetailsVisible` 折叠；Gallery 的 `Expandable Row`、`Order Specific Column`、`Row Header` 等场景会使用 `RowDetailsTemplate`。修复后只保留一次静态注册，所有实例共享同一条 class-level observer。
+
+| 场景 | baseline | optimized | 改善 | 结论 |
+| --- | --- | --- | --- | --- |
+| `DataGridDetailsPresenter` 构造 | 每实例调用 `AffectsMeasure` | 不调用 | 构造路径去掉 class-level observer 订阅 | 有效；row 越多，重复订阅越多 |
+| `ContentHeight` measure invalidation | 依赖重复注册 | 依赖静态注册 | 行为保留 | `--verify-datagrid-states` 覆盖 `ContentHeight` 改变后 `IsMeasureValid=false` |
+| 默认 DataGrid visual/logical tree | 不变 | 不变 | 无结构变化 | 本轮不宣称页面导航或 visual count 下降 |
+
+当前工作区 smoke：
+
+```bash
+dotnet run -c Release -f net10.0 --no-build \
+  --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- \
+  --suite datagrid --count 100
+```
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.Basic | 16.477 | 2975.2 | 305.0 | 1.0 | smoke 通过 |
+| DataGrid.Filter.Menu.Closed | 9.892 | 2608.5 | 267.0 | 1.0 | smoke 通过 |
+| DataGrid.Filter.Tree.Closed | 8.769 | 2606.1 | 267.0 | 1.0 | smoke 通过 |
+| DataGrid.GalleryShape | 42.884 | 12536.5 | 1260.0 | 5.0 | smoke 通过 |
+
 ---
 
 ## 3. 验证
@@ -243,19 +273,19 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover routed handlers、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover routed handlers、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
   --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- \
-  --suite datagrid --count 20
+  --suite datagrid --count 100
 ```
 
 关键结果：
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 33.713 | 2947.6 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 16.627 | 2657.6 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 11.390 | 2656.4 | 267.0 | 1.0 |
-| DataGrid.GalleryShape | 61.388 | 12845.4 | 1260.0 | 5.0 |
+| DataGrid.Basic | 16.477 | 2975.2 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 9.892 | 2608.5 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 8.769 | 2606.1 | 267.0 | 1.0 |
+| DataGrid.GalleryShape | 42.884 | 12536.5 | 1260.0 | 5.0 |

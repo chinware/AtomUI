@@ -35,7 +35,7 @@ public sealed class DataGridDetailsPresenter : Panel
     
     private DataGrid? OwningGrid => OwningRow?.OwningGrid;
 
-    public DataGridDetailsPresenter()
+    static DataGridDetailsPresenter()
     {
         AffectsMeasure<DataGridDetailsPresenter>(ContentHeightProperty);
     }

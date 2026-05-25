@@ -2,6 +2,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using AtomUI.Desktop.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
@@ -24,6 +25,7 @@ internal static partial class Program
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
+        VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(failures);
 
         if (failures.Count == 0)
         {
@@ -308,6 +310,21 @@ internal static partial class Program
             failures);
         Expect(ReferenceEquals(thirdPen, fourthPen),
             "DataGrid column drag indicator should reuse the rebuilt dashed Pen while the new Foreground is unchanged.",
+            failures);
+    }
+
+    private static void VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(ICollection<string> failures)
+    {
+        var presenter = new DataGridDetailsPresenter();
+
+        presenter.Measure(new Size(100, 100));
+        Expect(presenter.IsMeasureValid,
+            "DataGrid details presenter should have a valid measure after Measure().",
+            failures);
+
+        presenter.ContentHeight = 24;
+        Expect(!presenter.IsMeasureValid,
+            "DataGrid details presenter ContentHeight changes should invalidate measure.",
             failures);
     }
 
