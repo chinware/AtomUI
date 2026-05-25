@@ -14,6 +14,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
@@ -253,6 +254,7 @@ public partial class DataGridRow
     private int? _mouseOverColumnIndex;
  
     private Rectangle? _bottomGridLine;
+    private RectangleGeometry? _bottomGridLineClipGeometry;
     private bool _areHandlersSuspended;
     
     // In the case where Details scales vertically when it's arranged at a different width, we
@@ -636,7 +638,8 @@ public partial class DataGridRow
 
     internal void ResetGridLine()
     {
-        _bottomGridLine = null;
+        _bottomGridLine             = null;
+        _bottomGridLineClipGeometry = null;
     }
 
     private void UnloadDetailsTemplate(bool recycle)

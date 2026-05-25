@@ -30,6 +30,7 @@ internal static partial class Program
         VerifyDataGridCoreInputHandlersUseOverrides(failures);
         VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(failures);
         VerifyDataGridRowsPresenterReusesClipGeometry(failures);
+        VerifyDataGridRowReusesBottomGridLineClipGeometry(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -494,6 +495,66 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridRowReusesBottomGridLineClipGeometry(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 12, columnCount: 10);
+        grid.Width = 260;
+        using var realized = RealizeControl(grid);
+
+        var row = GetDataGridRows(grid).FirstOrDefault();
+        Expect(row is not null,
+            "DataGrid should realize rows for bottom grid-line clip verification.",
+            failures);
+        if (row is null)
+        {
+            return;
+        }
+
+        var bottomGridLine = GetDataGridRowBottomGridLine(row);
+        Expect(bottomGridLine is not null,
+            "DataGrid row should realize its bottom grid-line template part.",
+            failures);
+        if (bottomGridLine is null)
+        {
+            return;
+        }
+
+        var firstClip = bottomGridLine.Clip as RectangleGeometry;
+        Expect(firstClip is not null,
+            $"DataGrid row bottom grid-line clip should be a RectangleGeometry. Actual: {bottomGridLine.Clip?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        Expect(firstRect.Width > 0 && firstRect.Height >= 0,
+            $"DataGrid row bottom grid-line clip should have usable bounds. Actual: {firstRect}.",
+            failures);
+
+        row.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        var secondClip = bottomGridLine.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, secondClip),
+            "DataGrid row should reuse its bottom grid-line clip RectangleGeometry across repeated arrange passes.",
+            failures);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 80),
+            "DataGrid should accept a reflected horizontal offset update for row bottom grid-line clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var scrolledClip = bottomGridLine.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, scrolledClip),
+            "DataGrid row should keep reusing the same bottom grid-line clip RectangleGeometry after horizontal offset changes.",
+            failures);
+        Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
+            $"DataGrid row reused bottom grid-line clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
+            failures);
+    }
+
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -764,6 +825,13 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<DataGridRow> GetDataGridRows(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridRow>()
+                   .ToList();
+    }
+
     private static Control? GetDataGridRowHeaderOwner(DataGridRowHeader header)
     {
         return header.GetType()
@@ -810,6 +878,14 @@ internal static partial class Program
         return method?.Invoke(grid, new object[] { columnIndex, slot }) as bool? ?? false;
     }
 
+    private static bool UpdateDataGridHorizontalOffset(DataGrid grid, double horizontalOffset)
+    {
+        var method = typeof(DataGrid).GetMethod(
+            "UpdateHorizontalOffset",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        return method?.Invoke(grid, new object[] { horizontalOffset }) as bool? ?? false;
+    }
+
     private static int GetDataGridRowGroupHeaderSlot(DataGridRowGroupHeader header)
     {
         var rowGroupInfo = header.GetType()
@@ -850,6 +926,11 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants()
                    .OfType<DataGridCell>()
                    .ToList();
+    }
+
+    private static Avalonia.Controls.Shapes.Rectangle? GetDataGridRowBottomGridLine(DataGridRow row)
+    {
+        return GetPrivateFieldValue(row, "_bottomGridLine") as Avalonia.Controls.Shapes.Rectangle;
     }
 
     private static int CountVisibleDataGridFilterIndicators(Control root)

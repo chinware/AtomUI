@@ -213,9 +213,11 @@ public partial class DataGridRow : TemplatedControl
         
         if (_bottomGridLine != null)
         {
-            RectangleGeometry gridlineClipGeometry = new RectangleGeometry();
-            gridlineClipGeometry.Rect = new Rect(0, 0, Math.Max(0, DesiredSize.Width - OwningGrid.HorizontalOffset), _bottomGridLine.DesiredSize.Height);
-            _bottomGridLine.Clip = gridlineClipGeometry;
+            UpdateBottomGridLineClip(new Rect(
+                0,
+                0,
+                Math.Max(0, DesiredSize.Width - OwningGrid.HorizontalOffset),
+                _bottomGridLine.DesiredSize.Height));
         }
 
         return size;
@@ -297,7 +299,8 @@ public partial class DataGridRow : TemplatedControl
             }
         }
 
-        _bottomGridLine = e.NameScope.Find<Rectangle>(DataGridRowThemeConstants.BottomGridLinePart);
+        _bottomGridLineClipGeometry = null;
+        _bottomGridLine             = e.NameScope.Find<Rectangle>(DataGridRowThemeConstants.BottomGridLinePart);
         EnsureGridLines();
 
         _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowThemeConstants.RowHeaderPart);
@@ -328,6 +331,32 @@ public partial class DataGridRow : TemplatedControl
     {
         base.OnPointerEntered(e);
         IsMouseOver = true;
+    }
+
+    private void UpdateBottomGridLineClip(Rect clipRect)
+    {
+        if (_bottomGridLine is null)
+        {
+            return;
+        }
+
+        if (_bottomGridLineClipGeometry is null)
+        {
+            _bottomGridLineClipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+        }
+        else if (!_bottomGridLineClipGeometry.Rect.Equals(clipRect))
+        {
+            _bottomGridLineClipGeometry.Rect = clipRect;
+            _bottomGridLine.InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(_bottomGridLine.Clip, _bottomGridLineClipGeometry))
+        {
+            _bottomGridLine.Clip = _bottomGridLineClipGeometry;
+        }
     }
     
     protected override void OnPointerExited(PointerEventArgs e)
