@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
@@ -35,6 +36,7 @@ internal static partial class Program
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
         VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(failures);
+        VerifyDataGridDetailsPresenterReusesClipGeometry(failures);
         VerifyDataGridRowExpanderDetailsVisibilityBindings(failures);
 
         if (failures.Count == 0)
@@ -721,6 +723,88 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridDetailsPresenterReusesClipGeometry(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(8);
+        grid.Width                    = 260;
+        grid.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Visible;
+        grid.RowDetailsTemplate       = new FuncDataTemplate<PerfDataGridRow>((row, _) =>
+            new Avalonia.Controls.TextBlock
+            {
+                Text = row?.Address
+            });
+        for (var i = 0; i < 10; i++)
+        {
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header  = $"Column {i + 1}",
+                Binding = new Binding(GetDataGridBindingPath(i))
+            });
+        }
+
+        using var realized = RealizeControl(grid);
+
+        var presenter = GetDataGridDetailsPresenters(grid).FirstOrDefault();
+        Expect(presenter is not null,
+            "DataGrid with visible row details should realize details presenters for clip verification.",
+            failures);
+        if (presenter is null)
+        {
+            return;
+        }
+
+        var firstClip = presenter.Clip as RectangleGeometry;
+        Expect(firstClip is not null,
+            $"DataGrid details presenter clip should be a RectangleGeometry when row details are not frozen. Actual: {presenter.Clip?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        Expect(firstRect.Width > 0 && firstRect.Height >= 0,
+            $"DataGrid details presenter clip should have usable bounds. Actual: {firstRect}.",
+            failures);
+
+        presenter.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        var secondClip = presenter.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, secondClip),
+            "DataGrid details presenter should reuse its clip RectangleGeometry across repeated arrange passes.",
+            failures);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 80),
+            "DataGrid should accept a reflected horizontal offset update for details presenter clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var scrolledClip = presenter.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, scrolledClip),
+            "DataGrid details presenter should keep reusing the same clip RectangleGeometry after horizontal offset changes.",
+            failures);
+        Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
+            $"DataGrid details presenter reused clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
+            failures);
+
+        grid.IsRowDetailsFrozen = true;
+        presenter.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        Expect(presenter.Clip is null,
+            "DataGrid details presenter should clear Clip when row details are frozen.",
+            failures);
+
+        grid.IsRowDetailsFrozen = false;
+        presenter.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        Expect(ReferenceEquals(firstClip, presenter.Clip),
+            "DataGrid details presenter should reuse the cached clip RectangleGeometry after row details return from frozen mode.",
+            failures);
+    }
+
     private static void VerifyDataGridRowExpanderDetailsVisibilityBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -822,6 +906,13 @@ internal static partial class Program
     {
         return root.GetSelfAndVisualDescendants()
                    .OfType<DataGridRowsPresenter>()
+                   .ToList();
+    }
+
+    private static List<DataGridDetailsPresenter> GetDataGridDetailsPresenters(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridDetailsPresenter>()
                    .ToList();
     }
 

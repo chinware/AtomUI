@@ -34,6 +34,7 @@ public sealed class DataGridDetailsPresenter : Panel
     internal DataGridRow? OwningRow { get; set; }
     
     private DataGrid? OwningGrid => OwningRow?.OwningGrid;
+    private RectangleGeometry? _clipGeometry;
 
     static DataGridDetailsPresenter()
     {
@@ -87,18 +88,44 @@ public sealed class DataGridDetailsPresenter : Panel
         if (OwningGrid.IsRowDetailsFrozen)
         {
             // Frozen Details should not be clipped, similar to frozen cells
-            Clip = null;
+            ClearClipGeometry();
         }
         else
         {
             // Clip so Details doesn't obstruct elements to the left (the RowHeader by default) as we scroll to the right
-            Clip = new RectangleGeometry
-            {
-                Rect = new Rect(xClip, 0, Math.Max(0, width - xClip + rowGroupSpacerWidth), height)
-            };
+            UpdateClipGeometry(new Rect(xClip, 0, Math.Max(0, width - xClip + rowGroupSpacerWidth), height));
         }
 
         return finalSize;
+    }
+
+    private void UpdateClipGeometry(Rect clipRect)
+    {
+        if (_clipGeometry is null)
+        {
+            _clipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+        }
+        else if (!_clipGeometry.Rect.Equals(clipRect))
+        {
+            _clipGeometry.Rect = clipRect;
+            InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(Clip, _clipGeometry))
+        {
+            Clip = _clipGeometry;
+        }
+    }
+
+    private void ClearClipGeometry()
+    {
+        if (Clip is not null)
+        {
+            Clip = null;
+        }
     }
 
     /// <summary>
