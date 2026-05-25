@@ -24,6 +24,7 @@ internal static partial class Program
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
         VerifyDataGridColumnHeaderPointerHandlersUseClassHandlers(failures);
+        VerifyDataGridColumnGroupHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -203,6 +204,65 @@ internal static partial class Program
             failures);
         Expect(ReferenceEquals(pressedSender, firstColumn),
             "DataGrid column HeaderPointerPressed should preserve the DataGridColumn sender.",
+            failures);
+    }
+
+    private static void VerifyDataGridColumnGroupHeaderPointerHandlersUseClassHandlers(ICollection<string> failures)
+    {
+        var grid = CreateColumnGroupDataGrid();
+        using var realized = RealizeControl(grid);
+
+        var groupHeaders = GetDataGridColumnGroupHeaders(grid);
+        Expect(groupHeaders.Count >= 2,
+            $"Column-group DataGrid should realize group header controls. Actual: {groupHeaders.Count}.",
+            failures);
+
+        foreach (var header in groupHeaders)
+        {
+            var localHandlerNames = GetLocalRoutedHandlerNames(header);
+            Expect(!localHandlerNames.Contains("InputElement.PointerPressed"),
+                "DataGrid column group headers should forward PointerPressed through class handlers instead of per-instance handlers.",
+                failures);
+            Expect(!localHandlerNames.Contains("InputElement.PointerReleased"),
+                "DataGrid column group headers should forward PointerReleased through class handlers instead of per-instance handlers.",
+                failures);
+        }
+
+        var firstGroup = grid.ColumnGroups.OfType<DataGridColumnGroupItem>().FirstOrDefault();
+        var firstHeader = firstGroup == null
+            ? null
+            : GetDataGridColumnGroupHeader(firstGroup, groupHeaders);
+        Expect(firstGroup != null && firstHeader != null,
+            "Column-group DataGrid should expose a group item and group header for pointer forwarding verification.",
+            failures);
+        if (firstGroup == null || firstHeader == null)
+        {
+            return;
+        }
+
+        var pressedCount = 0;
+        object? pressedSender = null;
+        void HandleHeaderPointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            pressedCount++;
+            pressedSender = sender;
+        }
+
+        firstGroup.HeaderPointerPressed += HandleHeaderPointerPressed;
+        try
+        {
+            RaiseDataGridHeaderPrimaryPointerPressed(firstHeader, realized.Window);
+        }
+        finally
+        {
+            firstGroup.HeaderPointerPressed -= HandleHeaderPointerPressed;
+        }
+
+        Expect(pressedCount == 1,
+            $"DataGrid column group HeaderPointerPressed should be forwarded exactly once from the header class handler. Actual: {pressedCount}.",
+            failures);
+        Expect(ReferenceEquals(pressedSender, firstGroup),
+            "DataGrid column group HeaderPointerPressed should preserve the DataGridColumnGroupItem sender.",
             failures);
     }
 
@@ -444,6 +504,31 @@ internal static partial class Program
                    .OfType<Control>()
                    .Where(control => control.GetType().Name == "DataGridColumnHeader")
                    .ToList();
+    }
+
+    private static List<Control> GetDataGridColumnGroupHeaders(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<Control>()
+                   .Where(control => control.GetType().Name == "DataGridColumnGroupHeader")
+                   .ToList();
+    }
+
+    private static Control? GetDataGridColumnGroupHeader(
+        DataGridColumnGroupItem groupItem,
+        IEnumerable<Control> groupHeaders)
+    {
+        foreach (var header in groupHeaders)
+        {
+            var owningGroupItem = header.GetType()
+                                        .GetProperty("OwningGroupItem", BindingFlags.Instance | BindingFlags.NonPublic)
+                                        ?.GetValue(header);
+            if (ReferenceEquals(owningGroupItem, groupItem))
+            {
+                return header;
+            }
+        }
+        return null;
     }
 
     private static List<ToggleButton> GetDataGridRowExpanders(Control root)

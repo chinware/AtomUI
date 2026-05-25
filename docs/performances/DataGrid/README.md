@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -15,6 +15,7 @@
 - filter indicator 可见性不再为每个列头创建 3 路 `MultiBinding` + converter，改为列头 DirectProperty + `{TemplateBinding}`。
 - column header hover 不再为每个 realized `DataGridColumnHeader` 注册本地 `PointerEntered` / `PointerExited` handler，改走 Avalonia 的 virtual override 路径。
 - column header press/release/move 不再为每个 realized `DataGridColumnHeader` 注册本地 handler；内部 resize/reorder/sort 逻辑和 `DataGridColumn.HeaderPointerPressed/Released` 转发都改为 class handler。
+- column group header press/release 不再为每个 realized `DataGridColumnGroupHeader` 注册本地 forwarding lambda，改为 class handler 转发到 `DataGridColumnGroupItem.HeaderPointerPressed/Released`。
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
@@ -81,6 +82,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Runtime `Filters` collection visibility refresh | binding-path dependent | explicit `CollectionChanged` refresh | correctness path added | 正确性修复；add/clear filter items 均验证 |
 | Column header local hover routed handlers | 2 per realized header | 0 per realized header | 100.00% removed | 结构/分配优化；hover 语义保留在 `OnPointerEntered` / `OnPointerExited` override |
 | Column header local press/release/move handlers | 5 per standard header | 0 per standard header | 100.00% removed | 结构/分配优化；internal handler + public column event forwarding 均迁到 class handler |
+| Column group header forwarding handlers | 2 per group header | 0 per group header | 100.00% removed | 结构/分配优化；Gallery group header 示例有 4 个 group items |
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
@@ -314,6 +316,27 @@ dotnet run -c Release -f net10.0 --no-build \
 
 `DataGrid.RowDetails.Collapsed` 是本轮新增 scenario，baseline 没有同名场景，不能给 timing 百分比；它对应的收益按 RowExpander details binding 结构项记录。
 
+### 2.11 Column group header pointer forwarding cleanup
+
+本轮优化点：`DataGridColumnGroupItem.CreateHeader()` 原先为每个 group header 注册两个本地 forwarding lambda：
+
+- `PointerPressed -> HeaderPointerPressed`
+- `PointerReleased -> HeaderPointerReleased`
+
+Gallery `Grouping table head` 示例声明 4 个 `DataGridColumnGroupItem`，页面导航时会创建对应的 `DataGridColumnGroupHeader`。修复后由 `DataGridColumnGroupHeader` static constructor 注册 class handlers，再通过 `OwningGroupItem` 转发事件；路由策略与原 `PointerXxx +=` 保持一致，都是 Direct/Bubble。
+
+| 场景 | baseline | optimized | 结论 |
+| --- | --- | --- | --- |
+| Group header pointer forwarding | 2 per-header lambda | 2 class handlers / control type | per-header `_eventHandlers` 记录移除 |
+| `HeaderPointerPressed` sender | `DataGridColumnGroupItem` | `DataGridColumnGroupItem` | 状态验证覆盖 exactly once 和 sender 保持 |
+| Group header smoke scenario | n/a | `DataGrid.GroupHeaders` | 本轮新增，用于覆盖 group header 初始化路径 |
+
+当前工作区 smoke：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.GroupHeaders | 9.534 | 2595.9 | 266.0 | 1.0 | smoke 通过；本轮新增场景，无历史 timing 对比 |
+
 ---
 
 ## 3. 验证
@@ -330,7 +353,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -342,8 +365,9 @@ dotnet run -c Release -f net10.0 --no-build \
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 14.494 | 2969.5 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 10.312 | 2604.8 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 8.662 | 2600.8 | 267.0 | 1.0 |
-| DataGrid.RowDetails.Collapsed | 10.266 | 3046.7 | 320.0 | 1.0 |
-| DataGrid.GalleryShape | 43.936 | 12512.4 | 1260.0 | 5.0 |
+| DataGrid.Basic | 14.857 | 2969.4 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 9.467 | 2603.8 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 8.722 | 2601.4 | 267.0 | 1.0 |
+| DataGrid.RowDetails.Collapsed | 9.694 | 3046.8 | 320.0 | 1.0 |
+| DataGrid.GroupHeaders | 9.534 | 2595.9 | 266.0 | 1.0 |
+| DataGrid.GalleryShape | 40.614 | 12512.6 | 1260.0 | 5.0 |

@@ -16,6 +16,7 @@ internal static partial class Program
             new PerfScenario("DataGrid.Filter.Menu.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Menu)),
             new PerfScenario("DataGrid.Filter.Tree.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Tree)),
             new PerfScenario("DataGrid.RowDetails.Collapsed", _ => CreateRowDetailsDataGrid()),
+            new PerfScenario("DataGrid.GroupHeaders", _ => CreateColumnGroupDataGrid()),
             new PerfScenario("DataGrid.GalleryShape", _ => CreateDataGridGalleryShape())
         ];
     }
@@ -106,6 +107,47 @@ internal static partial class Program
                 Text         = row?.Address,
                 TextWrapping = Avalonia.Media.TextWrapping.Wrap
             });
+        return grid;
+    }
+
+    private static DataGrid CreateColumnGroupDataGrid()
+    {
+        var grid = CreateDataGridShell(8);
+        grid.CanUserResizeColumns = true;
+        grid.LeftFrozenColumnCount = 1;
+        grid.RightFrozenColumnCount = 1;
+
+        var addressGroup = new DataGridColumnGroupItem { Header = "Address" };
+        addressGroup.GroupChildren.Add(new DataGridTextColumn
+        {
+            Header  = "Address",
+            Binding = new Binding(nameof(PerfDataGridRow.Address))
+        });
+        addressGroup.GroupChildren.Add(new DataGridTextColumn
+        {
+            Header  = "Score",
+            Binding = new Binding(nameof(PerfDataGridRow.Score))
+        });
+
+        var profileGroup = new DataGridColumnGroupItem { Header = "Profile" };
+        profileGroup.GroupChildren.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+        profileGroup.GroupChildren.Add(new DataGridTextColumn
+        {
+            Header  = "Age",
+            Binding = new Binding(nameof(PerfDataGridRow.Age))
+        });
+        profileGroup.GroupChildren.Add(addressGroup);
+
+        grid.ColumnGroups.Add(profileGroup);
+        grid.ColumnGroups.Add(new DataGridTextColumn
+        {
+            Header  = "Score",
+            Binding = new Binding(nameof(PerfDataGridRow.Score))
+        });
         return grid;
     }
 
