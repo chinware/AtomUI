@@ -25,6 +25,7 @@ internal static partial class Program
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
         VerifyDataGridColumnHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridColumnGroupHeaderPointerHandlersUseClassHandlers(failures);
+        VerifyDataGridRowHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -263,6 +264,56 @@ internal static partial class Program
             failures);
         Expect(ReferenceEquals(pressedSender, firstGroup),
             "DataGrid column group HeaderPointerPressed should preserve the DataGridColumnGroupItem sender.",
+            failures);
+    }
+
+    private static void VerifyDataGridRowHeaderPointerHandlerUsesClassHandler(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 4, columnCount: 3);
+        grid.HeadersVisibility = DataGridHeadersVisibility.All;
+        grid.SelectionMode     = DataGridSelectionMode.Single;
+        using var realized = RealizeControl(grid);
+
+        var rowHeaders = GetDataGridRowHeaders(grid);
+        Expect(rowHeaders.Count >= 4,
+            $"DataGrid with row headers visible should realize row header controls. Actual: {rowHeaders.Count}.",
+            failures);
+
+        foreach (var header in rowHeaders)
+        {
+            var localHandlerNames = GetLocalRoutedHandlerNames(header);
+            Expect(!localHandlerNames.Contains("InputElement.PointerPressed"),
+                "DataGrid row headers should handle PointerPressed through class handlers instead of per-instance handlers.",
+                failures);
+        }
+
+        var firstRowHeader = rowHeaders
+            .Select(header => new
+            {
+                Header = header,
+                Owner  = GetDataGridRowHeaderOwner(header)
+            })
+            .FirstOrDefault(x => x.Owner is DataGridRow);
+        Expect(firstRowHeader?.Owner is DataGridRow,
+            "DataGrid row header should expose a DataGridRow owner for pointer behavior verification.",
+            failures);
+        if (firstRowHeader?.Owner is not DataGridRow row)
+        {
+            return;
+        }
+
+        var rowSlot = GetDataGridRowSlot(row);
+        Expect(rowSlot >= 0,
+            $"DataGrid row header owner should expose a realized row slot. Actual: {rowSlot}.",
+            failures);
+
+        RaiseDataGridHeaderPrimaryPointerPressed(firstRowHeader.Header, realized.Window);
+
+        Expect(row.IsSelected,
+            "DataGrid row header left press should still select the owning row after moving to a class handler.",
+            failures);
+        Expect(GetDataGridCurrentSlot(grid) == rowSlot,
+            "DataGrid row header left press should still update DataGrid.CurrentSlot after moving to a class handler.",
             failures);
     }
 
@@ -512,6 +563,35 @@ internal static partial class Program
                    .OfType<Control>()
                    .Where(control => control.GetType().Name == "DataGridColumnGroupHeader")
                    .ToList();
+    }
+
+    private static List<DataGridRowHeader> GetDataGridRowHeaders(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridRowHeader>()
+                   .Where(header => GetDataGridRowHeaderOwner(header) is DataGridRow)
+                   .ToList();
+    }
+
+    private static Control? GetDataGridRowHeaderOwner(DataGridRowHeader header)
+    {
+        return header.GetType()
+                     .GetProperty("Owner", BindingFlags.Instance | BindingFlags.NonPublic)
+                     ?.GetValue(header) as Control;
+    }
+
+    private static int GetDataGridRowSlot(DataGridRow row)
+    {
+        return row.GetType()
+                  .GetProperty("Slot", BindingFlags.Instance | BindingFlags.NonPublic)
+                  ?.GetValue(row) as int? ?? -1;
+    }
+
+    private static int GetDataGridCurrentSlot(DataGrid grid)
+    {
+        return typeof(DataGrid)
+                   .GetProperty("CurrentSlot", BindingFlags.Instance | BindingFlags.NonPublic)
+                   ?.GetValue(grid) as int? ?? -1;
     }
 
     private static Control? GetDataGridColumnGroupHeader(

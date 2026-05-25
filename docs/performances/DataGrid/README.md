@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding + row header pointer handler cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -16,6 +16,7 @@
 - column header hover 不再为每个 realized `DataGridColumnHeader` 注册本地 `PointerEntered` / `PointerExited` handler，改走 Avalonia 的 virtual override 路径。
 - column header press/release/move 不再为每个 realized `DataGridColumnHeader` 注册本地 handler；内部 resize/reorder/sort 逻辑和 `DataGridColumn.HeaderPointerPressed/Released` 转发都改为 class handler。
 - column group header press/release 不再为每个 realized `DataGridColumnGroupHeader` 注册本地 forwarding lambda，改为 class handler 转发到 `DataGridColumnGroupItem.HeaderPointerPressed/Released`。
+- row header press 不再为每个 realized `DataGridRowHeader` 注册本地 `PointerPressed` handler，改为 class handler，同时保留 focus / selection / current slot 行为。
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
@@ -83,6 +84,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Column header local hover routed handlers | 2 per realized header | 0 per realized header | 100.00% removed | 结构/分配优化；hover 语义保留在 `OnPointerEntered` / `OnPointerExited` override |
 | Column header local press/release/move handlers | 5 per standard header | 0 per standard header | 100.00% removed | 结构/分配优化；internal handler + public column event forwarding 均迁到 class handler |
 | Column group header forwarding handlers | 2 per group header | 0 per group header | 100.00% removed | 结构/分配优化；Gallery group header 示例有 4 个 group items |
+| Row header local press handler | 1 per row header | 0 per row header | 100.00% removed | 结构/分配优化；行头点击 selection / current slot 语义已验证 |
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
@@ -335,7 +337,26 @@ Gallery `Grouping table head` 示例声明 4 个 `DataGridColumnGroupItem`，页
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
 | --- | ---: | ---: | ---: | ---: | --- |
-| DataGrid.GroupHeaders | 9.534 | 2595.9 | 266.0 | 1.0 | smoke 通过；本轮新增场景，无历史 timing 对比 |
+| DataGrid.GroupHeaders | 9.618 | 2595.5 | 266.0 | 1.0 | smoke 通过；本轮新增场景，无历史 timing 对比 |
+
+### 2.12 Row header pointer handler cleanup
+
+本轮优化点：`DataGridRowHeader` 构造函数原先为每个 row header 调用 `AddHandler(PointerPressedEvent, HandlePointerPressed, handledEventsToo: true)`。Row header 是 `DataGridRowTheme` 的模板槽位，Gallery 的 `Row Header`、row details、特殊列等场景会随 realized rows 创建这些 header；即使后续通过 `HeadersVisibility` 控制可见性，本地 handler 仍已经进入每个 header 实例的 `_eventHandlers` 字典。
+
+修复后把 press 逻辑迁到 `DataGridRowHeader` static constructor 的 class handler，并继续使用 `handledEventsToo: true`。保留原有行为：左键点击行头会 focus grid、更新 selection 和 `CurrentSlot`；右键路径仍调用原来的 grid 状态更新。
+
+| 场景 | baseline | optimized | 改善 | 结论 |
+| --- | --- | --- | --- | --- |
+| Row header `PointerPressed` 注册 | 1 local handler / row header | 1 class handler / control type | 100.00% per-row handler removed | 有效；per-instance `_eventHandlers` 记录移除 |
+| `handledEventsToo` 语义 | true | true | preserved | 保留子元素已处理事件后的行头选择路径 |
+| 左键点击行头 | focus + select row + update current slot | focus + select row + update current slot | 行为保留 | `--verify-datagrid-states` 覆盖 |
+| Row header smoke scenario | n/a | `DataGrid.RowHeaders` | 新增覆盖 | 本轮新增，无历史 timing 百分比 |
+
+当前工作区 smoke：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.RowHeaders | 9.838 | 3127.2 | 336.0 | 1.0 | smoke 通过；本轮新增场景，无历史 timing 对比 |
 
 ---
 
@@ -353,7 +374,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -365,9 +386,10 @@ dotnet run -c Release -f net10.0 --no-build \
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 14.857 | 2969.4 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 9.467 | 2603.8 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 8.722 | 2601.4 | 267.0 | 1.0 |
-| DataGrid.RowDetails.Collapsed | 9.694 | 3046.8 | 320.0 | 1.0 |
-| DataGrid.GroupHeaders | 9.534 | 2595.9 | 266.0 | 1.0 |
-| DataGrid.GalleryShape | 40.614 | 12512.6 | 1260.0 | 5.0 |
+| DataGrid.Basic | 16.991 | 2967.8 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 10.001 | 2603.1 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 9.450 | 2599.1 | 267.0 | 1.0 |
+| DataGrid.RowHeaders | 9.838 | 3127.2 | 336.0 | 1.0 |
+| DataGrid.RowDetails.Collapsed | 10.425 | 3045.6 | 320.0 | 1.0 |
+| DataGrid.GroupHeaders | 9.618 | 2595.5 | 266.0 | 1.0 |
+| DataGrid.GalleryShape | 44.344 | 12493.6 | 1260.0 | 5.0 |

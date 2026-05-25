@@ -96,16 +96,11 @@ public class DataGridRowHeader : ContentControl
     
     #endregion
     
-    /// <summary>
-    /// Initializes a new instance of the <see cref="T:AtomUI.Desktop.Controls.DataGridRowHeader" /> class. 
-    /// </summary>
-    public DataGridRowHeader()
-    {
-        AddHandler(PointerPressedEvent, HandlePointerPressed, handledEventsToo: true);
-    }
-
     static DataGridRowHeader()
     {
+        PointerPressedEvent.AddClassHandler<DataGridRowHeader>(
+            (x, e) => x.HandlePointerPressed(e),
+            handledEventsToo: true);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridRowHeader>(IsOffscreenBehavior.FromClip);
     }
     
@@ -210,7 +205,7 @@ public class DataGridRowHeader : ContentControl
         base.OnPointerExited(e);
     }
     
-    private void HandlePointerPressed(object? sender, PointerPressedEventArgs e)
+    private void HandlePointerPressed(PointerPressedEventArgs e)
     {
         if (OwningGrid == null)
         {
@@ -226,8 +221,6 @@ public class DataGridRowHeader : ContentControl
             }
             if (OwningRow != null)
             {
-                Debug.Assert(sender is DataGridRowHeader);
-                Debug.Assert(sender == this);
                 e.Handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, -1, Slot, false);
             }
         }
@@ -239,8 +232,6 @@ public class DataGridRowHeader : ContentControl
             }
             if (OwningRow != null)
             {
-                Debug.Assert(sender is DataGridRowHeader);
-                Debug.Assert(sender == this);
                 e.Handled = OwningGrid.UpdateStateOnMouseRightButtonDown(e, -1, Slot, false);
             }
         }

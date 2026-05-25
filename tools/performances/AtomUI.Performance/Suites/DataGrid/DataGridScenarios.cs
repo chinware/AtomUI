@@ -15,6 +15,7 @@ internal static partial class Program
             new PerfScenario("DataGrid.Basic", _ => CreateBasicDataGrid()),
             new PerfScenario("DataGrid.Filter.Menu.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Menu)),
             new PerfScenario("DataGrid.Filter.Tree.Closed", _ => CreateFilterDataGrid(DataGridFilterMode.Tree)),
+            new PerfScenario("DataGrid.RowHeaders", _ => CreateRowHeadersDataGrid()),
             new PerfScenario("DataGrid.RowDetails.Collapsed", _ => CreateRowDetailsDataGrid()),
             new PerfScenario("DataGrid.GroupHeaders", _ => CreateColumnGroupDataGrid()),
             new PerfScenario("DataGrid.GalleryShape", _ => CreateDataGridGalleryShape())
@@ -64,6 +65,13 @@ internal static partial class Program
             new DataGridFilterItem { Text = "London", Value = "London" },
             new DataGridFilterItem { Text = "New York", Value = "New York" }
         ]));
+        return grid;
+    }
+
+    private static DataGrid CreateRowHeadersDataGrid()
+    {
+        var grid = CreateBasicDataGrid();
+        grid.HeadersVisibility = DataGridHeadersVisibility.All;
         return grid;
     }
 
