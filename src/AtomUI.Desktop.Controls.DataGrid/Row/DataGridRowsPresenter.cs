@@ -33,10 +33,10 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
     #endregion
     
     private DataGridRow? _dragIndicator;
-    
-    public DataGridRowsPresenter()
+
+    static DataGridRowsPresenter()
     {
-        AddHandler(InputElement.ScrollGestureEvent, OnScrollGesture);
+        InputElement.ScrollGestureEvent.AddClassHandler<DataGridRowsPresenter>((x, e) => x.OnScrollGesture(e));
     }
 
     event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
@@ -225,7 +225,7 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         return new Size(totalCellsWidth + headerWidth, totalHeight);
     }
 
-    private void OnScrollGesture(object? sender, ScrollGestureEventArgs e)
+    private void OnScrollGesture(ScrollGestureEventArgs e)
     {
         e.Handled = e.Handled || (OwningGrid?.UpdateScroll(-e.Delta) ?? false);
     }

@@ -28,6 +28,7 @@ internal static partial class Program
         VerifyDataGridRowHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridRowGroupHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridCoreInputHandlersUseOverrides(failures);
+        VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -404,6 +405,46 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 40, columnCount: 3);
+        using var realized = RealizeControl(grid);
+
+        var rowsPresenters = GetDataGridRowsPresenters(grid);
+        Expect(rowsPresenters.Count == 1,
+            $"DataGrid should realize one rows presenter. Actual: {rowsPresenters.Count}.",
+            failures);
+
+        foreach (var presenter in rowsPresenters)
+        {
+            var localHandlerNames = GetLocalRoutedHandlerNames(presenter);
+            Expect(!localHandlerNames.Contains("InputElement.ScrollGesture"),
+                "DataGrid rows presenter should handle ScrollGesture through a class handler instead of a per-instance handler.",
+                failures);
+        }
+
+        var rowsPresenter = rowsPresenters.FirstOrDefault();
+        if (rowsPresenter == null)
+        {
+            return;
+        }
+
+        var initialVerticalOffset = GetDataGridVerticalOffset(grid);
+        var scrollGesture = new ScrollGestureEventArgs(
+            ScrollGestureEventArgs.GetNextFreeId(),
+            new Vector(0, 48));
+
+        rowsPresenter.RaiseEvent(scrollGesture);
+        RefreshLayout(realized.Window);
+
+        Expect(scrollGesture.Handled,
+            "DataGrid rows presenter ScrollGesture class handler should still mark handled gestures that scroll the grid.",
+            failures);
+        Expect(GetDataGridVerticalOffset(grid) > initialVerticalOffset,
+            $"DataGrid rows presenter ScrollGesture should still update vertical offset. Initial: {initialVerticalOffset}, actual: {GetDataGridVerticalOffset(grid)}.",
+            failures);
+    }
+
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -667,6 +708,13 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<DataGridRowsPresenter> GetDataGridRowsPresenters(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridRowsPresenter>()
+                   .ToList();
+    }
+
     private static Control? GetDataGridRowHeaderOwner(DataGridRowHeader header)
     {
         return header.GetType()
@@ -686,6 +734,13 @@ internal static partial class Program
         return typeof(DataGrid)
                    .GetProperty("CurrentSlot", BindingFlags.Instance | BindingFlags.NonPublic)
                    ?.GetValue(grid) as int? ?? -1;
+    }
+
+    private static double GetDataGridVerticalOffset(DataGrid grid)
+    {
+        return typeof(DataGrid)
+                   .GetProperty("VerticalOffset", BindingFlags.Instance | BindingFlags.NonPublic)
+                   ?.GetValue(grid) as double? ?? 0;
     }
 
     private static bool GetDataGridContainsFocus(DataGrid grid)

@@ -39,6 +39,8 @@ Violating any of these blocks merge. No exception, no tradeoff, no "it's only on
 
 13. **Optimization qualification documented.** Every perf commit must state — in the commit description — the realistic instance count for the targeted control in its busiest Gallery ShowCase, and the per-session frequency of the operation being optimized. If instance count ≤ 5 AND operation frequency < 1/session, the commit must explain why optimization is still warranted, or be rejected before measurement begins. The investigation playbook's qualification gate (see [First-60-Minutes Investigation Playbook](#first-60-minutes-investigation-playbook)) is the operational form of this rule.
 
+14. **Benefit report is mandatory at completion.** Every optimization turn MUST proactively report the benefit to the user before stopping, even if the user did not ask. The report must be a table with `metric / baseline / optimized / formula / improvement / conclusion`. If the optimization is structural-only, report the structural count reduction (for example `handlers per instance`, `bindings per item`, `visuals per root`) and its percentage. If timing data is single-run smoke, label it smoke-only and do not present it as proof of speedup. If no valid before/after timing exists, explicitly say that no timing percentage is claimed and use the structural/correctness result as the benefit. This is part of the definition of "done".
+
 ---
 
 ## Avalonia 12 Source-of-Truth
@@ -514,6 +516,19 @@ Mandatory commit-time gates. A perf commit description without all of them fille
 [ ] 拥有项目构建通过（无新增 warning）
 [ ] git diff --check 干净
 [ ] 没有遗留未使用的 using 指令
+```
+
+### Gate 7 — 用户收益汇报
+
+Every completed optimization must include a user-facing benefit table in the final response. Do not wait for the user to ask "汇报收益".
+
+```
+[ ] 最终回复包含收益表，列为: metric / baseline / optimized / formula / improvement / conclusion
+[ ] baseline 与 optimized 的口径一致；若是结构收益，单位写清楚（per control / per item / per root / Gallery estimated total）
+[ ] 百分比使用 `(baseline - optimized) / baseline`；对 "removed" 类指标也给出百分比
+[ ] timing 数据若只是单次 smoke，明确标记 smoke-only，不当作确定性能提升
+[ ] 若没有可靠 timing before/after，明确说明不声明 timing 百分比，只声明结构/分配/正确性收益
+[ ] 正确性修复、验证命令、未能验证的残余风险一并汇报
 ```
 
 ---
