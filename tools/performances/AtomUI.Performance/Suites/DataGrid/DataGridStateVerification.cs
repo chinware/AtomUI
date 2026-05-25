@@ -26,6 +26,7 @@ internal static partial class Program
         VerifyDataGridColumnHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridColumnGroupHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridRowHeaderPointerHandlerUsesClassHandler(failures);
+        VerifyDataGridRowGroupHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -317,6 +318,42 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridRowGroupHeaderPointerHandlerUsesClassHandler(ICollection<string> failures)
+    {
+        var grid = CreateRowGroupDataGrid();
+        using var realized = RealizeControl(grid);
+
+        var groupHeaders = GetDataGridRowGroupHeaders(grid);
+        Expect(groupHeaders.Count >= 1,
+            $"Grouped DataGrid should realize row group header controls. Actual: {groupHeaders.Count}.",
+            failures);
+
+        foreach (var header in groupHeaders)
+        {
+            var localHandlerNames = GetLocalRoutedHandlerNames(header);
+            Expect(!localHandlerNames.Contains("InputElement.PointerPressed"),
+                "DataGrid row group headers should handle PointerPressed through class handlers instead of per-instance handlers.",
+                failures);
+        }
+
+        var firstGroupHeader = groupHeaders.FirstOrDefault();
+        if (firstGroupHeader == null)
+        {
+            return;
+        }
+
+        var groupSlot = GetDataGridRowGroupHeaderSlot(firstGroupHeader);
+        Expect(groupSlot >= 0,
+            $"DataGrid row group header should expose a realized group slot. Actual: {groupSlot}.",
+            failures);
+
+        RaiseDataGridHeaderPrimaryPointerPressed(firstGroupHeader, realized.Window);
+
+        Expect(GetDataGridCurrentSlot(grid) == groupSlot,
+            "DataGrid row group header left press should still update DataGrid.CurrentSlot after moving to a class handler.",
+            failures);
+    }
+
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -573,6 +610,13 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<DataGridRowGroupHeader> GetDataGridRowGroupHeaders(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridRowGroupHeader>()
+                   .ToList();
+    }
+
     private static Control? GetDataGridRowHeaderOwner(DataGridRowHeader header)
     {
         return header.GetType()
@@ -592,6 +636,16 @@ internal static partial class Program
         return typeof(DataGrid)
                    .GetProperty("CurrentSlot", BindingFlags.Instance | BindingFlags.NonPublic)
                    ?.GetValue(grid) as int? ?? -1;
+    }
+
+    private static int GetDataGridRowGroupHeaderSlot(DataGridRowGroupHeader header)
+    {
+        var rowGroupInfo = header.GetType()
+                                 .GetProperty("RowGroupInfo", BindingFlags.Instance | BindingFlags.NonPublic)
+                                 ?.GetValue(header);
+        return rowGroupInfo?.GetType()
+                            .GetProperty("Slot", BindingFlags.Instance | BindingFlags.Public)
+                            ?.GetValue(rowGroupInfo) as int? ?? -1;
     }
 
     private static Control? GetDataGridColumnGroupHeader(

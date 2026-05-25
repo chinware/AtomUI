@@ -55,9 +55,23 @@ public class DataGridRowHeader : ContentControl
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     private Control? _rootElement;
-    internal Control? Owner { get; set; }
+    private Control? _owner;
+
+    internal Control? Owner
+    {
+        get => _owner;
+        set
+        {
+            if (_owner != value)
+            {
+                _owner = value;
+                ConfigureOwnerDependentState();
+            }
+        }
+    }
+
     private DataGridRow? OwningRow => Owner as DataGridRow;
     private DataGridRowGroupHeader? OwningRowGroupHeader => Owner as DataGridRowGroupHeader;
     private Rectangle? _horizontalSeparator;
@@ -111,24 +125,33 @@ public class DataGridRowHeader : ContentControl
     {
         _rootElement         = e.NameScope.Find<Control>(DataGridRowHeaderThemeConstants.RootLayoutPart);
         _horizontalSeparator = e.NameScope.Find<Rectangle>(DataGridRowHeaderThemeConstants.HorizontalSeparatorPart);
+        ConfigureOwnerDependentState();
+    }
+
+    private void ConfigureOwnerDependentState()
+    {
         if (_rootElement != null)
         {
             UpdatePseudoClasses();
         }
 
-        Debug.Assert(OwningGrid != null);
-        if (_horizontalSeparator != null)
+        var owningGrid = OwningGrid;
+        if (owningGrid == null)
         {
-            _horizontalSeparator.Height = OwningGrid.BorderThickness.Left;
+            return;
         }
 
-        ConfigureSeparatorVisible();
+        if (_horizontalSeparator != null)
+        {
+            _horizontalSeparator.Height = owningGrid.BorderThickness.Left;
+        }
+
+        ConfigureSeparatorVisible(owningGrid);
     }
 
-    private void ConfigureSeparatorVisible()
+    private void ConfigureSeparatorVisible(DataGrid owningGrid)
     {
-        Debug.Assert(OwningGrid != null);
-        bool newVisibility = OwningGrid.AreHorizontalGridLinesVisible;
+        bool newVisibility = owningGrid.AreHorizontalGridLinesVisible;
 
         if (newVisibility != IsSeparatorsVisible)
         {

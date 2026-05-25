@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using AtomUI.Desktop.Controls;
+using AtomUI.Desktop.Controls.Data;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
@@ -18,6 +19,7 @@ internal static partial class Program
             new PerfScenario("DataGrid.RowHeaders", _ => CreateRowHeadersDataGrid()),
             new PerfScenario("DataGrid.RowDetails.Collapsed", _ => CreateRowDetailsDataGrid()),
             new PerfScenario("DataGrid.GroupHeaders", _ => CreateColumnGroupDataGrid()),
+            new PerfScenario("DataGrid.RowGroups", _ => CreateRowGroupDataGrid()),
             new PerfScenario("DataGrid.GalleryShape", _ => CreateDataGridGalleryShape())
         ];
     }
@@ -159,13 +161,43 @@ internal static partial class Program
         return grid;
     }
 
+    private static DataGrid CreateRowGroupDataGrid()
+    {
+        var view = new DataGridCollectionView(CreateDataGridRows(12));
+        view.GroupDescriptions.Add(new DataGridPathGroupDescription(nameof(PerfDataGridRow.Name)));
+
+        var grid = CreateDataGridShell(view);
+        grid.SelectionMode = DataGridSelectionMode.Single;
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Age",
+            Binding = new Binding(nameof(PerfDataGridRow.Age))
+        });
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Address",
+            Binding = new Binding(nameof(PerfDataGridRow.Address))
+        });
+        return grid;
+    }
+
     private static DataGrid CreateDataGridShell(int rowCount)
+    {
+        return CreateDataGridShell(CreateDataGridRows(rowCount));
+    }
+
+    private static DataGrid CreateDataGridShell(System.Collections.IEnumerable rows)
     {
         return new DataGrid
         {
             Width       = 720,
             Height      = 220,
-            ItemsSource = CreateDataGridRows(rowCount)
+            ItemsSource = rows
         };
     }
 

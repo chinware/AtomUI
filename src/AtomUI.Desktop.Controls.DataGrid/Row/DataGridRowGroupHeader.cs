@@ -143,6 +143,9 @@ public class DataGridRowGroupHeader : TemplatedControl
     static DataGridRowGroupHeader()
     {
         SublevelIndentProperty.Changed.AddClassHandler<DataGridRowGroupHeader>((x,e) => x.HandleSublevelIndentChanged(e));
+        PointerPressedEvent.AddClassHandler<DataGridRowGroupHeader>(
+            (x, e) => x.HandlePointerPressed(e),
+            handledEventsToo: true);
         PressedMixin.Attach<DataGridRowGroupHeader>();
         IsTabStopProperty.OverrideDefaultValue<DataGridRowGroupHeader>(false);
     }
@@ -153,14 +156,6 @@ public class DataGridRowGroupHeader : TemplatedControl
         {
             OwningGrid.OnSublevelIndentUpdated(this, (double)(change.NewValue ?? 0));
         }
-    }
-    
-    /// <summary>
-    /// Constructs a DataGridRowGroupHeader
-    /// </summary>
-    public DataGridRowGroupHeader()
-    {
-        AddHandler(PointerPressedEvent, (s, e) => HandlePointerPressed(e), handledEventsToo: true);
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
