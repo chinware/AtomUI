@@ -24,10 +24,12 @@ internal static class DataGridHeaderViewItemThemeConstants
 
 internal static class DataGridRowGroupHeaderThemeConstants
 {
+    public const string RootLayoutPart = "RootLayout";
     public const string ExpanderButtonPart = "PART_ExpanderButton";
     public const string IndentSpacerPart = "PART_IndentSpacer";
     public const string ItemCountElementPart = "PART_ItemCountElement";
     public const string PropertyNameElementPart = "PART_PropertyNameElement";
+    public const string RowHeaderPart = "RowHeader";
 }
 
 internal static class DataGridRowHeaderThemeConstants

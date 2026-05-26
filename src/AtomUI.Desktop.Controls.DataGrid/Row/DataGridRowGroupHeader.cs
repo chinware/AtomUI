@@ -3,6 +3,7 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using AtomUI.Desktop.Controls.Utils;
@@ -134,6 +135,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     private Panel? _rootElement;
     private double _totalIndent;
     private IDisposable? _expanderButtonSubscription;
+    private Dictionary<Visual, RectangleGeometry>? _childClipGeometries;
     
     private static bool IsValidSublevelIndent(double value)
     {
@@ -160,7 +162,9 @@ public class DataGridRowGroupHeader : TemplatedControl
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _rootElement = e.NameScope.Find<Panel>(DataGridRowThemeConstants.FramePart);
+        ClearChildClipGeometries();
+        _rootElement = e.NameScope.Find<Panel>(DataGridRowThemeConstants.FramePart) ??
+                       e.NameScope.Find<Panel>(DataGridRowGroupHeaderThemeConstants.RootLayoutPart);
 
         _expanderButtonSubscription?.Dispose();
         _expanderButton = e.NameScope.Find<ToggleButton>(DataGridRowGroupHeaderThemeConstants.ExpanderButtonPart);
@@ -173,7 +177,8 @@ public class DataGridRowGroupHeader : TemplatedControl
                                .Subscribe(HandleExpanderButtonIsCheckedChanged);
         }
 
-        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowThemeConstants.RowHeaderPart);
+        _headerElement = e.NameScope.Find<DataGridRowHeader>(DataGridRowThemeConstants.RowHeaderPart) ??
+                         e.NameScope.Find<DataGridRowHeader>(DataGridRowGroupHeaderThemeConstants.RowHeaderPart);
         if(_headerElement != null)
         {
             _headerElement.Owner = this;
@@ -222,10 +227,7 @@ public class DataGridRowGroupHeader : TemplatedControl
         {
             if (OwningGrid.IsRowGroupHeadersFrozen)
             {
-                foreach (Control child in _rootElement.Children)
-                {
-                    child.Clip = null;
-                }
+                ClearChildClipGeometries();
             }
             else
             {
@@ -309,17 +311,58 @@ public class DataGridRowGroupHeader : TemplatedControl
         if (frozenLeftEdge > childLeftEdge)
         {
             double xClip = Math.Round(frozenLeftEdge - childLeftEdge);
-            var    rg    = new RectangleGeometry();
-            rg.Rect =
-                new Rect(xClip, 0,
-                    Math.Max(0, child.Bounds.Width - xClip),
-                    child.Bounds.Height);
-            child.Clip = rg;
+            var    clipRect = new Rect(xClip, 0,
+                Math.Max(0, child.Bounds.Width - xClip),
+                child.Bounds.Height);
+            UpdateChildClipGeometry(child, clipRect);
         }
         else
         {
+            ClearChildClipGeometry(child);
+        }
+    }
+
+    private void UpdateChildClipGeometry(Visual child, Rect clipRect)
+    {
+        _childClipGeometries ??= new Dictionary<Visual, RectangleGeometry>();
+        if (!_childClipGeometries.TryGetValue(child, out var clipGeometry))
+        {
+            clipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+            _childClipGeometries.Add(child, clipGeometry);
+        }
+        else if (!clipGeometry.Rect.Equals(clipRect))
+        {
+            clipGeometry.Rect = clipRect;
+            child.InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(child.Clip, clipGeometry))
+        {
+            child.Clip = clipGeometry;
+        }
+    }
+
+    private void ClearChildClipGeometry(Visual child)
+    {
+        if (child.Clip is not null)
+        {
             child.Clip = null;
         }
+    }
+
+    private void ClearChildClipGeometries()
+    {
+        if (_rootElement != null)
+        {
+            foreach (Control child in _rootElement.Children)
+            {
+                ClearChildClipGeometry(child);
+            }
+        }
+        _childClipGeometries?.Clear();
     }
 
     internal void EnsureExpanderButtonIsChecked()
@@ -450,5 +493,6 @@ public class DataGridRowGroupHeader : TemplatedControl
         base.OnDetachedFromVisualTree(e);
         _expanderButtonSubscription?.Dispose();
         _expanderButtonSubscription = null;
+        ClearChildClipGeometries();
     }
 }

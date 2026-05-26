@@ -255,6 +255,7 @@ public partial class DataGridRow
  
     private Rectangle? _bottomGridLine;
     private RectangleGeometry? _bottomGridLineClipGeometry;
+    private RectangleGeometry? _hiddenClipGeometry;
     private bool _areHandlersSuspended;
     
     // In the case where Details scales vertically when it's arranged at a different width, we

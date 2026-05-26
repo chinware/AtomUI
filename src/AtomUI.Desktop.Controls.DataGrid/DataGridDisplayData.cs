@@ -5,7 +5,6 @@
 
 using System.Diagnostics;
 using Avalonia.Controls;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -85,7 +84,7 @@ internal class DataGridDisplayData
                     }
                     else
                     {
-                        row.Clip = new RectangleGeometry();
+                        row.ApplyHiddenClipGeometry();
                     }
                 }
                 else if (element is DataGridRowGroupHeader groupHeader)

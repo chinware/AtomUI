@@ -222,6 +222,23 @@ public partial class DataGridRow : TemplatedControl
 
         return size;
     }
+
+    internal void ApplyHiddenClipGeometry()
+    {
+        _hiddenClipGeometry ??= new RectangleGeometry();
+        if (!ReferenceEquals(Clip, _hiddenClipGeometry))
+        {
+            Clip = _hiddenClipGeometry;
+        }
+    }
+
+    internal void ClearHiddenClipGeometry()
+    {
+        if (Clip is not null)
+        {
+            Clip = null;
+        }
+    }
     
     /// <summary>
     /// Measures the children of a <see cref="T:AtomUI.Desktop.Controls.DataGridRow" /> to

@@ -12,7 +12,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -1375,7 +1374,7 @@ public partial class DataGrid
                 }
                 else
                 {
-                    element.Clip = null;
+                    row.ClearHiddenClipGeometry();
                     Debug.Assert(row.Index == RowIndexFromSlot(slot));
                 }
             }
@@ -1728,7 +1727,7 @@ public partial class DataGrid
             }
             else
             {
-                dataGridRow.Clip = new RectangleGeometry();
+                dataGridRow.ApplyHiddenClipGeometry();
             }
         }
         else if (element is DataGridRowGroupHeader groupHeader)

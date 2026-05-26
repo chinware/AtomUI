@@ -32,6 +32,8 @@ internal static partial class Program
         VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(failures);
         VerifyDataGridRowsPresenterReusesClipGeometry(failures);
         VerifyDataGridRowReusesBottomGridLineClipGeometry(failures);
+        VerifyDataGridRowReusesHiddenClipGeometry(failures);
+        VerifyDataGridRowGroupHeaderReusesChildClipGeometry(failures);
         VerifyDataGridCellsPresenterReusesCellClipGeometry(failures);
         VerifyDataGridColumnHeadersPresenterReusesHeaderClipGeometry(failures);
         VerifyDataGridGroupColumnHeadersPresenterReusesHeaderViewItemClipGeometry(failures);
@@ -558,6 +560,119 @@ internal static partial class Program
             failures);
         Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
             $"DataGrid row reused bottom grid-line clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
+            failures);
+    }
+
+    private static void VerifyDataGridRowReusesHiddenClipGeometry(ICollection<string> failures)
+    {
+        var row = new DataGridRow();
+
+        InvokeDataGridRowClipMethod(row, "ApplyHiddenClipGeometry", failures);
+        var firstClip = row.Clip as RectangleGeometry;
+        Expect(firstClip is not null,
+            $"DataGrid row hidden clip should be a RectangleGeometry. Actual: {row.Clip?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        InvokeDataGridRowClipMethod(row, "ApplyHiddenClipGeometry", failures);
+        Expect(ReferenceEquals(firstClip, row.Clip),
+            "DataGrid row should reuse its hidden clip RectangleGeometry across repeated hidden-state applications.",
+            failures);
+
+        InvokeDataGridRowClipMethod(row, "ClearHiddenClipGeometry", failures);
+        Expect(row.Clip is null,
+            "DataGrid row should clear Clip when returning from hidden state.",
+            failures);
+
+        InvokeDataGridRowClipMethod(row, "ApplyHiddenClipGeometry", failures);
+        Expect(ReferenceEquals(firstClip, row.Clip),
+            "DataGrid row should reuse the cached hidden clip RectangleGeometry after hidden state is reapplied.",
+            failures);
+    }
+
+    private static void VerifyDataGridRowGroupHeaderReusesChildClipGeometry(ICollection<string> failures)
+    {
+        var grid = CreateRowGroupDataGrid();
+        grid.Width                   = 260;
+        grid.HeadersVisibility       = DataGridHeadersVisibility.All;
+        grid.RowHeaderWidth          = 48;
+        grid.IsRowGroupHeadersFrozen = false;
+        foreach (var column in grid.Columns)
+        {
+            column.Width = new DataGridLength(120);
+        }
+
+        using var realized = RealizeControl(grid);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 50),
+            "DataGrid should accept a reflected horizontal offset update for row group header child clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var groupHeader = GetDataGridRowGroupHeaders(grid).FirstOrDefault();
+        Expect(groupHeader is not null,
+            "Grouped DataGrid should realize a row group header for child clip geometry verification.",
+            failures);
+        if (groupHeader is null)
+        {
+            return;
+        }
+
+        var clippedChild = GetDataGridRowGroupHeaderRootChildren(groupHeader)
+            .FirstOrDefault(child => child.Clip is RectangleGeometry geometry && geometry.Rect.X > 0);
+        Expect(clippedChild is not null,
+            "Scrollable row group header child should be clipped when row headers are frozen within an unfrozen row group header. " +
+            DescribeDataGridRowGroupHeaderRootChildren(groupHeader),
+            failures);
+        if (clippedChild is null)
+        {
+            return;
+        }
+
+        var firstClip = clippedChild.Clip as RectangleGeometry;
+        Expect(firstClip is not null,
+            $"DataGrid row group header child clip should be a RectangleGeometry. Actual: {clippedChild.Clip?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        Expect(firstRect.Width >= 0 && firstRect.Height >= 0,
+            $"DataGrid row group header child clip should have usable bounds. Actual: {firstRect}.",
+            failures);
+
+        groupHeader.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        var secondClip = clippedChild.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, secondClip),
+            "DataGrid row group header child should reuse its clip RectangleGeometry across repeated arrange passes.",
+            failures);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 80),
+            "DataGrid should accept a second horizontal offset update for row group header child clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var scrolledClip = clippedChild.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, scrolledClip),
+            "DataGrid row group header child should keep reusing the same clip RectangleGeometry after horizontal offset changes.",
+            failures);
+        Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
+            $"DataGrid reused row group header child clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
+            failures);
+
+        grid.IsRowGroupHeadersFrozen = true;
+        groupHeader.InvalidateArrange();
+        RefreshLayout(realized.Window);
+
+        Expect(GetDataGridRowGroupHeaderRootChildren(groupHeader).All(child => child.Clip is null),
+            "DataGrid row group header should clear child Clip values when row group headers become fully frozen.",
             failures);
     }
 
@@ -1337,6 +1452,21 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<Control> GetDataGridRowGroupHeaderRootChildren(DataGridRowGroupHeader header)
+    {
+        var root = header.GetType()
+                         .GetField("_rootElement", BindingFlags.Instance | BindingFlags.NonPublic)
+                         ?.GetValue(header) as Panel;
+        return root?.Children.OfType<Control>().ToList() ?? new List<Control>();
+    }
+
+    private static string DescribeDataGridRowGroupHeaderRootChildren(DataGridRowGroupHeader header)
+    {
+        var children = GetDataGridRowGroupHeaderRootChildren(header);
+        return "Children: " + string.Join("; ", children.Select(child =>
+            $"{child.GetType().Name}#{child.Name ?? "<null>"} visible={child.IsVisible} bounds={child.Bounds} clip={child.Clip?.GetType().Name ?? "null"}"));
+    }
+
     private static List<DataGridRowsPresenter> GetDataGridRowsPresenters(Control root)
     {
         return root.GetSelfAndVisualDescendants()
@@ -1578,6 +1708,17 @@ internal static partial class Program
         control.Measure(new Size(100, 20));
         control.Arrange(new Rect(0, 0, 100, 20));
         return control;
+    }
+
+    private static void InvokeDataGridRowClipMethod(DataGridRow row, string methodName, ICollection<string> failures)
+    {
+        var method = typeof(DataGridRow).GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(method != null,
+            $"DataGrid row should expose {methodName} for clip geometry verification.",
+            failures);
+        method?.Invoke(row, null);
     }
 
     private static void InvokeDataGridColumnHeadersPresenterReorderingClip(
