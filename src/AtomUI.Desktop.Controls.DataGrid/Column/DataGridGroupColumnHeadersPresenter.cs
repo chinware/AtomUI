@@ -315,7 +315,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         if (dataGridColumn.IsLeftFrozen)
         {
             headerViewItem.Arrange(new Rect(_frozenLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
-            headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+            headerViewItem.ClearClipGeometry(); // The layout system could have clipped this because it's not aware of our render transform
             if (DragColumn == dataGridColumn && DragIndicator != null)
             {
                 _dragIndicatorLeftEdge = _frozenLeftEdge + DragIndicatorOffset;
@@ -329,7 +329,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             var columnFrozenRightEdge = _frozenRightEdge - RightFrozenWidth(dataGridColumn);
             headerViewItem.Arrange(new Rect(columnFrozenRightEdge,  rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
-            headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+            headerViewItem.ClearClipGeometry(); // The layout system could have clipped this because it's not aware of our render transform
             headerViewItem.IsFrozen             =  true;
             headerViewItem.IsShowLeftFrozenShadow   =  (_visibleColumnIndex == _visibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
             SetupParentShadowInfo(dataGridColumn, headerViewItem.IsShowLeftFrozenShadow, false);
@@ -614,14 +614,12 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         // because cells could be transparent
         if (frozenLeftEdge > columnHeaderLeftEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge);
-            rg.Rect             = new Rect(xClip, 0, width - xClip, height);
-            headerViewItem.Clip = rg;
+            headerViewItem.UpdateClipGeometry(new Rect(xClip, 0, width - xClip, height));
         }
         else
         {
-            headerViewItem.Clip = null;
+            headerViewItem.ClearClipGeometry();
         }
     }
 

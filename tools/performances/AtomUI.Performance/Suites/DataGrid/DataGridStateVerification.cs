@@ -34,6 +34,7 @@ internal static partial class Program
         VerifyDataGridRowReusesBottomGridLineClipGeometry(failures);
         VerifyDataGridCellsPresenterReusesCellClipGeometry(failures);
         VerifyDataGridColumnHeadersPresenterReusesHeaderClipGeometry(failures);
+        VerifyDataGridGroupColumnHeadersPresenterReusesHeaderViewItemClipGeometry(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -731,6 +732,96 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridGroupColumnHeadersPresenterReusesHeaderViewItemClipGeometry(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(8);
+        grid.Width                  = 260;
+        grid.LeftFrozenColumnCount  = 1;
+        grid.RightFrozenColumnCount = 1;
+        var columns = new List<DataGridColumn>();
+        var group   = new DataGridColumnGroupItem { Header = "Profile" };
+        for (var i = 0; i < 6; i++)
+        {
+            var column = new DataGridTextColumn
+            {
+                Header  = $"Column {i + 1}",
+                Width   = new DataGridLength(120),
+                Binding = new Binding(GetDataGridBindingPath(i))
+            };
+            columns.Add(column);
+            group.GroupChildren.Add(column);
+        }
+        grid.ColumnGroups.Add(group);
+
+        using var realized = RealizeControl(grid);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 50),
+            "DataGrid should accept a reflected horizontal offset update for group column header clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var headerViewItem = GetDataGridColumnGroupHeaderViewItem(columns[1], failures);
+        Expect(headerViewItem is not null,
+            "DataGrid group column leaf should realize a DataGridHeaderViewItem for clip geometry verification.",
+            failures);
+        if (headerViewItem is null)
+        {
+            return;
+        }
+
+        var firstClip = headerViewItem.Clip as RectangleGeometry;
+        Expect(firstClip is not null && firstClip.Rect.X > 0,
+            $"DataGrid group column header view item should be clipped by a RectangleGeometry after horizontal offset. Actual: {headerViewItem.Clip?.GetType().Name ?? "null"} {firstClip?.Rect}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        Expect(firstRect.Height > 0,
+            $"DataGrid group column header view item clip should have usable bounds. Actual: {firstRect}.",
+            failures);
+
+        foreach (var presenter in GetDataGridGroupColumnHeadersPresenters(grid))
+        {
+            presenter.InvalidateArrange();
+        }
+        RefreshLayout(realized.Window);
+
+        var secondClip = headerViewItem.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, secondClip),
+            "DataGrid group column header view item should reuse its clip RectangleGeometry across repeated group header presenter arrange passes.",
+            failures);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 80),
+            "DataGrid should accept a second horizontal offset update for group column header clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var scrolledClip = headerViewItem.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, scrolledClip),
+            "DataGrid group column header view item should keep reusing the same clip RectangleGeometry after horizontal offset changes.",
+            failures);
+        Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
+            $"DataGrid reused group column header view item clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
+            failures);
+
+        grid.LeftFrozenColumnCount  = 0;
+        grid.RightFrozenColumnCount = 0;
+        grid.Width                  = 900;
+        UpdateDataGridHorizontalOffset(grid, 0);
+        foreach (var presenter in GetDataGridGroupColumnHeadersPresenters(grid))
+        {
+            presenter.InvalidateArrange();
+        }
+        RefreshLayout(realized.Window);
+
+        Expect(headerViewItem.Clip is null,
+            "DataGrid group column header view item should clear Clip when frozen-column clipping is no longer needed.",
+            failures);
+    }
+
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -1097,6 +1188,13 @@ internal static partial class Program
                    .ToList();
     }
 
+    private static List<DataGridGroupColumnHeadersPresenter> GetDataGridGroupColumnHeadersPresenters(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridGroupColumnHeadersPresenter>()
+                   .ToList();
+    }
+
     private static List<DataGridDetailsPresenter> GetDataGridDetailsPresenters(Control root)
     {
         return root.GetSelfAndVisualDescendants()
@@ -1278,6 +1376,26 @@ internal static partial class Program
             "DataGrid column header should be available for cell header state binding verification.",
             failures);
         return header;
+    }
+
+    private static Control? GetDataGridColumnGroupHeaderViewItem(DataGridColumn column, ICollection<string> failures)
+    {
+        var groupItemType = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.IDataGridColumnGroupItemInternal");
+        Expect(groupItemType != null,
+            "DataGrid column group item internal interface should be available for header view item verification.",
+            failures);
+        if (groupItemType == null)
+        {
+            return null;
+        }
+
+        var property = groupItemType.GetProperty(
+            "GroupHeaderViewItem",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Expect(property != null,
+            "DataGrid column group item should expose GroupHeaderViewItem for clip geometry verification.",
+            failures);
+        return property?.GetValue(column) as Control;
     }
 
     private static void SetDataGridColumnHeaderProperty(

@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -86,6 +87,7 @@ internal class DataGridHeaderViewItem : ContentControl
     
     internal DataGridColumn? OwningColumn { get; set; }
     internal DataGrid OwningGrid { get; set; }
+    private RectangleGeometry? _clipGeometry;
     
     #endregion
     
@@ -123,6 +125,35 @@ internal class DataGridHeaderViewItem : ContentControl
         else
         {
             EffectiveBorderThickness = new Thickness(0, 0, BorderThickness.Right, BorderThickness.Bottom);
+        }
+    }
+
+    internal void UpdateClipGeometry(Rect clipRect)
+    {
+        if (_clipGeometry is null)
+        {
+            _clipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+        }
+        else if (!_clipGeometry.Rect.Equals(clipRect))
+        {
+            _clipGeometry.Rect = clipRect;
+            InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(Clip, _clipGeometry))
+        {
+            Clip = _clipGeometry;
+        }
+    }
+
+    internal void ClearClipGeometry()
+    {
+        if (Clip is not null)
+        {
+            Clip = null;
         }
     }
 }
