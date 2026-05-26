@@ -621,6 +621,31 @@ internal static partial class Program
             return;
         }
 
+        var frozenChild = GetDataGridRowGroupHeaderRootChildren(groupHeader)
+            .FirstOrDefault(child => child.RenderTransform is TranslateTransform transform && transform.X > 0);
+        Expect(frozenChild is not null,
+            "Frozen row group header child should receive a TranslateTransform when row group headers scroll horizontally. " +
+            DescribeDataGridRowGroupHeaderRootChildren(groupHeader),
+            failures);
+        if (frozenChild is null)
+        {
+            return;
+        }
+
+        var firstTransform = frozenChild.RenderTransform as TranslateTransform;
+        Expect(firstTransform is not null,
+            $"DataGrid row group header frozen child transform should be a TranslateTransform. Actual: {frozenChild.RenderTransform?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstTransform is null)
+        {
+            return;
+        }
+
+        var firstTransformX = firstTransform.X;
+        Expect(firstTransformX > 0,
+            $"DataGrid row group header frozen child transform should track horizontal offset. Actual X: {firstTransformX}.",
+            failures);
+
         var clippedChild = GetDataGridRowGroupHeaderRootChildren(groupHeader)
             .FirstOrDefault(child => child.Clip is RectangleGeometry geometry && geometry.Rect.X > 0);
         Expect(clippedChild is not null,
@@ -653,6 +678,10 @@ internal static partial class Program
         Expect(ReferenceEquals(firstClip, secondClip),
             "DataGrid row group header child should reuse its clip RectangleGeometry across repeated arrange passes.",
             failures);
+        var secondTransform = frozenChild.RenderTransform as TranslateTransform;
+        Expect(ReferenceEquals(firstTransform, secondTransform),
+            "DataGrid row group header frozen child should reuse its TranslateTransform across repeated arrange passes.",
+            failures);
 
         Expect(UpdateDataGridHorizontalOffset(grid, 80),
             "DataGrid should accept a second horizontal offset update for row group header child clip verification.",
@@ -666,6 +695,13 @@ internal static partial class Program
         Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
             $"DataGrid reused row group header child clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
             failures);
+        var scrolledTransform = frozenChild.RenderTransform as TranslateTransform;
+        Expect(ReferenceEquals(firstTransform, scrolledTransform),
+            "DataGrid row group header frozen child should keep reusing the same TranslateTransform after horizontal offset changes.",
+            failures);
+        Expect(scrolledTransform is not null && !scrolledTransform.X.Equals(firstTransformX),
+            $"DataGrid reused row group header frozen child transform should update X after horizontal offset changes. Before: {firstTransformX}, after: {scrolledTransform?.X}.",
+            failures);
 
         grid.IsRowGroupHeadersFrozen = true;
         groupHeader.InvalidateArrange();
@@ -673,6 +709,9 @@ internal static partial class Program
 
         Expect(GetDataGridRowGroupHeaderRootChildren(groupHeader).All(child => child.Clip is null),
             "DataGrid row group header should clear child Clip values when row group headers become fully frozen.",
+            failures);
+        Expect(GetDataGridRowGroupHeaderRootChildren(groupHeader).All(child => child.RenderTransform is null),
+            "DataGrid row group header should clear child RenderTransform values when row group headers become fully frozen.",
             failures);
     }
 
@@ -1464,7 +1503,7 @@ internal static partial class Program
     {
         var children = GetDataGridRowGroupHeaderRootChildren(header);
         return "Children: " + string.Join("; ", children.Select(child =>
-            $"{child.GetType().Name}#{child.Name ?? "<null>"} visible={child.IsVisible} bounds={child.Bounds} clip={child.Clip?.GetType().Name ?? "null"}"));
+            $"{child.GetType().Name}#{child.Name ?? "<null>"} visible={child.IsVisible} bounds={child.Bounds} clip={child.Clip?.GetType().Name ?? "null"} transform={child.RenderTransform?.GetType().Name ?? "null"}"));
     }
 
     private static List<DataGridRowsPresenter> GetDataGridRowsPresenters(Control root)

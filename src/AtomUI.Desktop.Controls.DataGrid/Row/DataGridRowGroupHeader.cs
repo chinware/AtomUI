@@ -136,6 +136,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     private double _totalIndent;
     private IDisposable? _expanderButtonSubscription;
     private Dictionary<Visual, RectangleGeometry>? _childClipGeometries;
+    private Dictionary<Visual, TranslateTransform>? _childTranslateTransforms;
     
     private static bool IsValidSublevelIndent(double value)
     {
@@ -163,6 +164,7 @@ public class DataGridRowGroupHeader : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         ClearChildClipGeometries();
+        ClearChildTranslateTransforms();
         _rootElement = e.NameScope.Find<Panel>(DataGridRowThemeConstants.FramePart) ??
                        e.NameScope.Find<Panel>(DataGridRowGroupHeaderThemeConstants.RootLayoutPart);
 
@@ -228,6 +230,7 @@ public class DataGridRowGroupHeader : TemplatedControl
             if (OwningGrid.IsRowGroupHeadersFrozen)
             {
                 ClearChildClipGeometries();
+                ClearChildTranslateTransforms();
             }
             else
             {
@@ -236,10 +239,8 @@ public class DataGridRowGroupHeader : TemplatedControl
                 {
                     if (DataGridFrozenGrid.GetIsFrozen(child) && child.IsVisible)
                     {
-                        TranslateTransform transform = new TranslateTransform();
                         // Automatic layout rounding doesn't apply to transforms so we need to Round this
-                        transform.X           = Math.Round(OwningGrid.HorizontalOffset);
-                        child.RenderTransform = transform;
+                        var transform = UpdateChildTranslateTransform(child, Math.Round(OwningGrid.HorizontalOffset));
 
                         double childLeftEdge = child.Translate(this, new Point(child.Bounds.Width, 0)).X - transform.X;
                         frozenLeftEdge = Math.Max(frozenLeftEdge, childLeftEdge + OwningGrid.HorizontalOffset);
@@ -260,13 +261,49 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     internal void ClearFrozenStates()
     {
+        ClearChildTranslateTransforms();
+    }
+
+    private TranslateTransform UpdateChildTranslateTransform(Visual child, double x)
+    {
+        _childTranslateTransforms ??= new Dictionary<Visual, TranslateTransform>();
+        if (!_childTranslateTransforms.TryGetValue(child, out var transform))
+        {
+            transform = new TranslateTransform();
+            _childTranslateTransforms.Add(child, transform);
+        }
+
+        if (!transform.X.Equals(x))
+        {
+            transform.X = x;
+        }
+
+        if (!transform.Y.Equals(0))
+        {
+            transform.Y = 0;
+        }
+
+        if (!ReferenceEquals(child.RenderTransform, transform))
+        {
+            child.RenderTransform = transform;
+        }
+
+        return transform;
+    }
+
+    private void ClearChildTranslateTransforms()
+    {
         if (_rootElement != null)
         {
             foreach (Control child in _rootElement.Children)
             {
-                child.RenderTransform = null;
+                if (child.RenderTransform is not null)
+                {
+                    child.RenderTransform = null;
+                }
             }
         }
+        _childTranslateTransforms?.Clear();
     }
 
     //TODO TabStop
@@ -494,5 +531,6 @@ public class DataGridRowGroupHeader : TemplatedControl
         _expanderButtonSubscription?.Dispose();
         _expanderButtonSubscription = null;
         ClearChildClipGeometries();
+        ClearChildTranslateTransforms();
     }
 }
