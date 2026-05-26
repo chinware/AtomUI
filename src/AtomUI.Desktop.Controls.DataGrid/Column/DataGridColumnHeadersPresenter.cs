@@ -15,6 +15,7 @@ namespace AtomUI.Desktop.Controls;
 public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 {
     private Control? _dragIndicator;
+    private RectangleGeometry? _dragIndicatorClipGeometry;
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
 
     /// <summary>
@@ -34,6 +35,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             {
                 if (_dragIndicator != null)
                 {
+                    ClearColumnReorderingClip(_dragIndicator);
                     if (Children.Contains(_dragIndicator))
                     {
                         Children.Remove(_dragIndicator);
@@ -277,22 +279,59 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         Debug.Assert(DragColumn != null);
         double width     = control.Bounds.Width;
         
-        RectangleGeometry? rg = null;
+        Rect? clipRect = null;
         if (frozenLeftEdge > columnHeaderLeftEdge)
         {
-            rg = new RectangleGeometry();
             double xClip = Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge);
-            rg.Rect = new Rect(xClip, 0, width - xClip, height);
+            clipRect = new Rect(xClip, 0, width - xClip, height);
         }
         if (columnHeaderRightEdge >= frozenRightEdge)
         {
-            if (rg == null)
-            {
-                rg = new RectangleGeometry();
-            }
-            rg.Rect = new Rect(rg.Rect.X, rg.Rect.Y, Math.Max(0, frozenRightEdge - columnHeaderLeftEdge - rg.Rect.X), height);
+            var currentRect = clipRect ?? default;
+            clipRect = new Rect(
+                currentRect.X,
+                currentRect.Y,
+                Math.Max(0, frozenRightEdge - columnHeaderLeftEdge - currentRect.X),
+                height);
         }
-        control.Clip = rg;
+
+        UpdateColumnReorderingClip(control, ref _dragIndicatorClipGeometry, clipRect);
+    }
+
+    private static void UpdateColumnReorderingClip(Control control, ref RectangleGeometry? clipGeometry, Rect? clipRect)
+    {
+        if (clipRect.HasValue)
+        {
+            if (clipGeometry is null)
+            {
+                clipGeometry = new RectangleGeometry
+                {
+                    Rect = clipRect.Value
+                };
+            }
+            else if (!clipGeometry.Rect.Equals(clipRect.Value))
+            {
+                clipGeometry.Rect = clipRect.Value;
+                control.InvalidateVisual();
+            }
+
+            if (!ReferenceEquals(control.Clip, clipGeometry))
+            {
+                control.Clip = clipGeometry;
+            }
+        }
+        else
+        {
+            ClearColumnReorderingClip(control);
+        }
+    }
+
+    private static void ClearColumnReorderingClip(Control control)
+    {
+        if (control.Clip is not null)
+        {
+            control.Clip = null;
+        }
     }
 
     /// <summary>

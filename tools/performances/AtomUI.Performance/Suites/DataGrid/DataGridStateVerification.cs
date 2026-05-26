@@ -38,6 +38,7 @@ internal static partial class Program
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
+        VerifyDataGridColumnReorderingClipGeometryReuse(failures);
         VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(failures);
         VerifyDataGridDetailsPresenterReusesClipGeometry(failures);
         VerifyDataGridRowExpanderDetailsVisibilityBindings(failures);
@@ -973,6 +974,175 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridColumnReorderingClipGeometryReuse(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(1);
+        var column = new DataGridTextColumn
+        {
+            Header  = "Column 1",
+            Width   = new DataGridLength(500),
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        };
+        grid.Columns.Add(column);
+        SetNonPublicProperty(grid, "RowsPresenterAvailableSize", new Size(500, 100), failures);
+
+        var columnHeadersPresenter = new DataGridColumnHeadersPresenter();
+        SetNonPublicProperty(columnHeadersPresenter, "OwningGrid", grid, failures);
+        SetNonPublicProperty(columnHeadersPresenter, "DragColumn", column, failures);
+        var dragIndicator = CreateDataGridReorderingIndicator();
+        SetNonPublicProperty(columnHeadersPresenter, "DragIndicator", dragIndicator, failures);
+
+        InvokeDataGridColumnHeadersPresenterReorderingClip(
+            columnHeadersPresenter,
+            dragIndicator,
+            height: 20,
+            frozenLeftEdge: 20,
+            frozenRightEdge: 200,
+            columnHeaderLeftEdge: 0,
+            columnHeaderRightEdge: 100,
+            failures);
+
+        var firstClip = dragIndicator.Clip as RectangleGeometry;
+        Expect(firstClip is not null && firstClip.Rect.X > 0,
+            $"DataGrid column drag indicator should be clipped by a RectangleGeometry. Actual: {dragIndicator.Clip?.GetType().Name ?? "null"} {firstClip?.Rect}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        InvokeDataGridColumnHeadersPresenterReorderingClip(
+            columnHeadersPresenter,
+            dragIndicator,
+            height: 20,
+            frozenLeftEdge: 20,
+            frozenRightEdge: 200,
+            columnHeaderLeftEdge: 0,
+            columnHeaderRightEdge: 100,
+            failures);
+        Expect(ReferenceEquals(firstClip, dragIndicator.Clip),
+            "DataGrid column drag indicator should reuse its clip RectangleGeometry across repeated reordering clip updates.",
+            failures);
+
+        InvokeDataGridColumnHeadersPresenterReorderingClip(
+            columnHeadersPresenter,
+            dragIndicator,
+            height: 20,
+            frozenLeftEdge: 40,
+            frozenRightEdge: 200,
+            columnHeaderLeftEdge: 0,
+            columnHeaderRightEdge: 100,
+            failures);
+        var movedClip = dragIndicator.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, movedClip),
+            "DataGrid column drag indicator should keep reusing the same clip RectangleGeometry after clip bounds change.",
+            failures);
+        Expect(movedClip is not null && !movedClip.Rect.Equals(firstRect),
+            $"DataGrid column drag indicator reused clip geometry should update Rect after bounds change. Before: {firstRect}, after: {movedClip?.Rect}.",
+            failures);
+
+        InvokeDataGridColumnHeadersPresenterReorderingClip(
+            columnHeadersPresenter,
+            dragIndicator,
+            height: 20,
+            frozenLeftEdge: 0,
+            frozenRightEdge: 200,
+            columnHeaderLeftEdge: 20,
+            columnHeaderRightEdge: 100,
+            failures);
+        Expect(dragIndicator.Clip is null,
+            "DataGrid column drag indicator should clear Clip when reordering clipping is no longer needed.",
+            failures);
+
+        InvokeDataGridColumnHeadersPresenterReorderingClip(
+            columnHeadersPresenter,
+            dragIndicator,
+            height: 20,
+            frozenLeftEdge: 20,
+            frozenRightEdge: 200,
+            columnHeaderLeftEdge: 0,
+            columnHeaderRightEdge: 100,
+            failures);
+        Expect(ReferenceEquals(firstClip, dragIndicator.Clip),
+            "DataGrid column drag indicator should reuse the cached clip RectangleGeometry after clipping is reapplied.",
+            failures);
+
+        var replacementDragIndicator = CreateDataGridReorderingIndicator();
+        SetNonPublicProperty(columnHeadersPresenter, "DragIndicator", replacementDragIndicator, failures);
+        Expect(dragIndicator.Clip is null,
+            "Replacing a DataGrid column drag indicator should clear Clip on the old indicator.",
+            failures);
+
+        var groupPresenter = new DataGridGroupColumnHeadersPresenter();
+        SetNonPublicProperty(groupPresenter, "OwningGrid", grid, failures);
+        grid.LeftFrozenColumnCount = 1;
+        var groupDragColumn = new DataGridTextColumn { Header = "Drag Column" };
+        groupDragColumn.IsFrozen = false;
+        SetNonPublicProperty(groupPresenter, "DragColumn", groupDragColumn, failures);
+        var groupDragIndicator = CreateDataGridReorderingIndicator();
+        var dropLocationIndicator = CreateDataGridReorderingIndicator();
+        SetNonPublicProperty(groupPresenter, "DragIndicator", groupDragIndicator, failures);
+        SetNonPublicProperty(groupPresenter, "DropLocationIndicator", dropLocationIndicator, failures);
+
+        InvokeDataGridGroupColumnHeadersPresenterReorderingClip(
+            groupPresenter,
+            groupDragIndicator,
+            height: 20,
+            frozenColumnsWidth: 20,
+            controlLeftEdge: 0,
+            failures);
+        var groupDragClip = groupDragIndicator.Clip as RectangleGeometry;
+        Expect(groupDragClip is not null && groupDragClip.Rect.X > 0,
+            $"DataGrid group column drag indicator should be clipped by a RectangleGeometry. Actual: {groupDragIndicator.Clip?.GetType().Name ?? "null"} {groupDragClip?.Rect}.",
+            failures);
+        if (groupDragClip is null)
+        {
+            return;
+        }
+
+        InvokeDataGridGroupColumnHeadersPresenterReorderingClip(
+            groupPresenter,
+            groupDragIndicator,
+            height: 20,
+            frozenColumnsWidth: 40,
+            controlLeftEdge: 0,
+            failures);
+        Expect(ReferenceEquals(groupDragClip, groupDragIndicator.Clip),
+            "DataGrid group column drag indicator should reuse its clip RectangleGeometry after clip bounds change.",
+            failures);
+
+        InvokeDataGridGroupColumnHeadersPresenterReorderingClip(
+            groupPresenter,
+            dropLocationIndicator,
+            height: 20,
+            frozenColumnsWidth: 20,
+            controlLeftEdge: 0,
+            failures);
+        var dropClip = dropLocationIndicator.Clip as RectangleGeometry;
+        Expect(dropClip is not null && !ReferenceEquals(groupDragClip, dropClip),
+            "DataGrid group column drag and drop-location indicators should use separate cached clip RectangleGeometry instances.",
+            failures);
+
+        grid.LeftFrozenColumnCount = 0;
+        InvokeDataGridGroupColumnHeadersPresenterReorderingClip(
+            groupPresenter,
+            groupDragIndicator,
+            height: 20,
+            frozenColumnsWidth: 0,
+            controlLeftEdge: 0,
+            failures);
+        Expect(groupDragIndicator.Clip is null,
+            "DataGrid group column drag indicator should clear Clip when reordering clipping is no longer needed.",
+            failures);
+
+        var replacementDropLocationIndicator = CreateDataGridReorderingIndicator();
+        SetNonPublicProperty(groupPresenter, "DropLocationIndicator", replacementDropLocationIndicator, failures);
+        Expect(dropLocationIndicator.Clip is null,
+            "Replacing a DataGrid group drop-location indicator should clear Clip on the old indicator.",
+            failures);
+    }
+
     private static void VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(ICollection<string> failures)
     {
         var presenter = new DataGridDetailsPresenter();
@@ -1396,6 +1566,104 @@ internal static partial class Program
             "DataGrid column group item should expose GroupHeaderViewItem for clip geometry verification.",
             failures);
         return property?.GetValue(column) as Control;
+    }
+
+    private static Border CreateDataGridReorderingIndicator()
+    {
+        var control = new Border
+        {
+            Width  = 100,
+            Height = 20
+        };
+        control.Measure(new Size(100, 20));
+        control.Arrange(new Rect(0, 0, 100, 20));
+        return control;
+    }
+
+    private static void InvokeDataGridColumnHeadersPresenterReorderingClip(
+        DataGridColumnHeadersPresenter presenter,
+        Control control,
+        double height,
+        double frozenLeftEdge,
+        double frozenRightEdge,
+        double columnHeaderLeftEdge,
+        double columnHeaderRightEdge,
+        ICollection<string> failures)
+    {
+        var method = typeof(DataGridColumnHeadersPresenter).GetMethod(
+            "EnsureColumnReorderingClip",
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            binder: null,
+            types:
+            [
+                typeof(Control),
+                typeof(double),
+                typeof(double),
+                typeof(double),
+                typeof(double),
+                typeof(double)
+            ],
+            modifiers: null);
+        Expect(method != null,
+            "DataGrid column headers presenter should expose EnsureColumnReorderingClip for clip geometry verification.",
+            failures);
+        method?.Invoke(presenter,
+        [
+            control,
+            height,
+            frozenLeftEdge,
+            frozenRightEdge,
+            columnHeaderLeftEdge,
+            columnHeaderRightEdge
+        ]);
+    }
+
+    private static void InvokeDataGridGroupColumnHeadersPresenterReorderingClip(
+        DataGridGroupColumnHeadersPresenter presenter,
+        Control control,
+        double height,
+        double frozenColumnsWidth,
+        double controlLeftEdge,
+        ICollection<string> failures)
+    {
+        var method = typeof(DataGridGroupColumnHeadersPresenter).GetMethod(
+            "EnsureColumnReorderingClip",
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            binder: null,
+            types:
+            [
+                typeof(Control),
+                typeof(double),
+                typeof(double),
+                typeof(double)
+            ],
+            modifiers: null);
+        Expect(method != null,
+            "DataGrid group column headers presenter should expose EnsureColumnReorderingClip for clip geometry verification.",
+            failures);
+        method?.Invoke(presenter,
+        [
+            control,
+            height,
+            frozenColumnsWidth,
+            controlLeftEdge
+        ]);
+    }
+
+    private static void SetNonPublicProperty(
+        object instance,
+        string propertyName,
+        object? value,
+        ICollection<string> failures)
+    {
+        var property = instance.GetType()
+                               .GetProperty(
+                                   propertyName,
+                                   BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Expect(property != null,
+            $"{instance.GetType().Name} should expose {propertyName} for DataGrid state verification.",
+            failures);
+        property?.SetValue(instance, value);
     }
 
     private static void SetDataGridColumnHeaderProperty(
