@@ -89,9 +89,17 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         double scrollingLeftEdge  = -OwningGrid.HorizontalOffset;
         var    visibleColumnCount = 0;
         var    hasRightFrozen     = false;
+        var columns              = OwningGrid.ColumnsInternal;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
         // 需要先计算出 frozenRightEdge
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             if (column.IsRightFrozen)
             {
                 realFrozenRightEdge -= column.ActualWidth;
@@ -104,14 +112,18 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         var maxOffsetX = finalSize.Width - frozenRightEdge;
         
         var visibleColumnIndex = 0;
-        var visibleColumns     = OwningGrid.ColumnsInternal.GetVisibleColumns().ToList();
         // left and normal
-        foreach (DataGridColumn column in visibleColumns)
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             double       cellLeftEdge;
             DataGridCell cell = OwningRow.Cells[column.Index];
             Debug.Assert(cell.OwningColumn == column);
-            Debug.Assert(column.IsVisible);
             if (column.IsLeftFrozen)
             {
                 cellLeftEdge = frozenLeftEdge;
@@ -143,15 +155,19 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
 
         if (hasRightFrozen)
         {
-            visibleColumnIndex = visibleColumns.Count - 1;
+            visibleColumnIndex = visibleColumnCount - 1;
             // right
-            for (var i = visibleColumns.Count - 1; i >= 0; i--)
+            for (int displayIndex = displayedColumnCount - 1; displayIndex >= 0; displayIndex--)
             {
-                DataGridColumn column       = visibleColumns[i];
+                DataGridColumn column       = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 double         cellLeftEdge = 0.0;
                 DataGridCell   cell         = OwningRow.Cells[column.Index];
                 Debug.Assert(cell.OwningColumn == column);
-                Debug.Assert(column.IsVisible);
                 if (column.IsRightFrozen)
                 {
                     frozenRightEdge           -= column.ActualWidth;
@@ -303,10 +319,18 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         double frozenLeftEdge    = 0;
         double totalDisplayWidth = 0;
         double scrollingLeftEdge = -OwningGrid.HorizontalOffset;
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-        DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var    columns           = OwningGrid.ColumnsInternal;
+        columns.EnsureVisibleEdgedColumnsWidth();
+        DataGridColumn? lastVisibleColumn = columns.LastVisibleColumn;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             DataGridCell cell = OwningRow.Cells[column.Index];
             // Measure the entire first row to make the horizontal scrollbar more accurate
             bool shouldDisplayCell = ShouldDisplayCell(column, frozenLeftEdge, scrollingLeftEdge) || OwningRow.Index == 0;
@@ -371,8 +395,14 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             if (autoSizeHeight)
                 _desiredHeight = 0;
 
-            foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 DataGridCell cell = OwningRow.Cells[column.Index];
                 column.ComputeLayoutRoundedWidth(leftEdge);
                 cell.Measure(new Size(column.LayoutRoundedWidth, measureHeight));
@@ -388,8 +418,8 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         // column and we don't want to cause another Measure if we do
         OwningRow.FillerCell.Measure(new Size(double.PositiveInfinity, _desiredHeight));
 
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-        return new Size(OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, _desiredHeight);
+        columns.EnsureVisibleEdgedColumnsWidth();
+        return new Size(columns.VisibleEdgedColumnsWidth, _desiredHeight);
     }
 
     internal void Recycle()

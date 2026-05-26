@@ -9,21 +9,17 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
     private Button? _resetButton;
     private Button? _okButton;
 
+    static DataGridMenuFilterFlyoutPresenter()
+    {
+        Button.ClickEvent.AddClassHandler<DataGridMenuFilterFlyoutPresenter>(
+            (presenter, args) => presenter.HandleButtonClick(args));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _resetButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.ResetButtonPart);
         _okButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.OkButtonPart);
-
-        if (_resetButton != null)
-        {
-            _resetButton.Click += HandleResetButtonClick;
-        }
-
-        if (_okButton != null)
-        {
-            _okButton.Click += HandleOkButtonClick;
-        }
     }
 
     internal List<String> GetFilterValues()
@@ -33,12 +29,24 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
         return values;
     }
 
-    private void HandleResetButtonClick(object? sender, RoutedEventArgs e)
+    private void HandleButtonClick(RoutedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, _resetButton))
+        {
+            ResetFilter();
+        }
+        else if (ReferenceEquals(e.Source, _okButton))
+        {
+            ConfirmFilter();
+        }
+    }
+
+    private void ResetFilter()
     {
         ClearCheckStateRecursive(this);
     }
 
-    private void HandleOkButtonClick(object? sender, RoutedEventArgs e)
+    private void ConfirmFilter()
     {
         if (MenuFlyout is DataGridMenuFilterFlyout dataGridMenuFlyout)
         {

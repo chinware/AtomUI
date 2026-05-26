@@ -2618,7 +2618,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     private void CopySourceToInternalList()
     {
-        _internalList = new List<object>();
+        _internalList = CreateListForSource(SourceCollection);
         var enumerator = SourceCollection.GetEnumerator();
         try
         {
@@ -2634,6 +2634,13 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 disposable.Dispose();
             }
         }
+    }
+
+    private static List<object> CreateListForSource(IEnumerable source)
+    {
+        return source is ICollection collection
+            ? new List<object>(collection.Count)
+            : new List<object>();
     }
 
     /// <summary>
@@ -3197,7 +3204,9 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         Debug.Assert(enumerable != null, "Input list to filter/sort should not be null");
 
         // filter the collection's array into the local array
-        List<object> localList = new List<object>();
+        List<object> localList = _filter == null
+            ? CreateListForSource(enumerable)
+            : new List<object>();
 
         foreach (object item in enumerable)
         {
@@ -4000,7 +4009,17 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             }
         }
 
-        return seq.ToList();
+        return MaterializeSortedList(seq, list.Count);
+    }
+
+    private static List<object> MaterializeSortedList(IEnumerable<object> seq, int count)
+    {
+        var sortedList = new List<object>(count);
+        foreach (var item in seq)
+        {
+            sortedList.Add(item);
+        }
+        return sortedList;
     }
 
     /// <summary>
@@ -4324,9 +4343,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         private static IComparer<object>[] MakeComparerArray(DataGridSortDescriptionCollection coll)
         {
-            return
-                coll.Select(c => c.Comparer)
-                    .ToArray();
+            var comparers = new IComparer<object>[coll.Count];
+            for (var i = 0; i < coll.Count; i++)
+            {
+                comparers[i] = coll[i].Comparer;
+            }
+            return comparers;
         }
 
         /// <summary>

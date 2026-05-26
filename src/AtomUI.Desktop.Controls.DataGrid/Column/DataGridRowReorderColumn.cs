@@ -93,10 +93,17 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
         // 检查只能有一列排序列
         if (_owningGrid != null)
         {
-            var count = _owningGrid.Columns.Count(column => column is DataGridRowReorderColumn);
-            if (count > 1)
+            var reorderColumnCount = 0;
+            for (var i = 0; i < _owningGrid.Columns.Count; i++)
             {
-                throw DataGridError.DataGridRow.RowReorderColumnAlreadyExistException();
+                if (_owningGrid.Columns[i] is DataGridRowReorderColumn)
+                {
+                    reorderColumnCount++;
+                    if (reorderColumnCount > 1)
+                    {
+                        throw DataGridError.DataGridRow.RowReorderColumnAlreadyExistException();
+                    }
+                }
             }
         }
     }

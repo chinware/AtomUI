@@ -158,8 +158,10 @@ public partial class DataGrid
 
             // Add the height of all the rows currently displayed, AvailableRowRoom
             // is not always up to date enough for this
-            foreach (Control element in DisplayData.GetScrollingElements())
+            int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+            for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
             {
+                Control element = DisplayData.GetScrollingElementAtDisplayIndex(displayIndex);
                 if (element is DataGridRow row)
                 {
                     totalRowsHeight += IsInvalidSlotElementHeight(row.TargetHeight)
@@ -514,9 +516,13 @@ public partial class DataGrid
             // If the slot is displayed and we scrolled horizontally, column virtualization could cause the rows to grow.
             // As a result we need to force measure on the rows we're displaying and recalculate our First and Last slots
             // so they're accurate
-            foreach (var row in DisplayData.GetScrollingRows())
+            int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+            for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
             {
-                row.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
+                {
+                    row.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                }
             }
 
             UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
@@ -925,9 +931,10 @@ public partial class DataGrid
         }
 
         // Take care of the visible rows
-        foreach (var control in DisplayData.GetScrollingRows())
+        int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
         {
-            if (control is DataGridRow row)
+            if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
             {
                 if (row.Slot > slotDeleted)
                 {
@@ -986,9 +993,10 @@ public partial class DataGrid
         }
 
         // Take care of the visible rows
-        foreach (var control in DisplayData.GetScrollingRows())
+        int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
         {
-            if (control is DataGridRow row)
+            if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
             {
                 if (row.Slot >= slotInserted)
                 {
@@ -1129,8 +1137,15 @@ public partial class DataGrid
         {
             Debug.Assert(EditingRow.Cells.Count == ColumnsItemsInternal.Count);
             Debug.Assert(EditingRow.DataContext != null);
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c => c.IsVisible && !c.IsReadOnly))
+            int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible || column.IsReadOnly)
+                {
+                    continue;
+                }
+
                 column.GenerateEditingElementInternal(EditingRow.Cells[column.Index], EditingRow.DataContext);
             }
         }
@@ -1812,8 +1827,10 @@ public partial class DataGrid
     {
         if (UnloadingRow != null || UnloadingRowGroup != null)
         {
-            foreach (Control element in DisplayData.GetScrollingElements())
+            int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+            for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
             {
+                Control element = DisplayData.GetScrollingElementAtDisplayIndex(displayIndex);
                 // Raise Unloading Row for all the rows we're displaying
                 if (element is DataGridRow row)
                 {

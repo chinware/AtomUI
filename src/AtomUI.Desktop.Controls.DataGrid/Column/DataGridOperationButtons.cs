@@ -26,13 +26,13 @@ internal class DataGridOperationButtons : TemplatedControl
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
     public bool IsEditEnabled
     {
         get => GetValue(IsEditEnabledProperty);
         set => SetValue(IsEditEnabledProperty, value);
     }
-    
+
     public bool IsDeleteEnabled
     {
         get => GetValue(IsDeleteEnabledProperty);
@@ -62,6 +62,14 @@ internal class DataGridOperationButtons : TemplatedControl
     internal DataGrid? OwningGrid { get; set; }
     internal DataGridRow? OwningRow { get; set; }
 
+    static DataGridOperationButtons()
+    {
+        HyperLinkTextBlock.ClickEvent.AddClassHandler<DataGridOperationButtons>(
+            (buttons, args) => buttons.HandleActionClick(args));
+        PopupConfirm.ConfirmedEvent.AddClassHandler<DataGridOperationButtons>(
+            (buttons, args) => buttons.HandlePopupConfirmed(args));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -69,29 +77,33 @@ internal class DataGridOperationButtons : TemplatedControl
         _deleteAction = e.NameScope.Find<PopupConfirm>(DataGridOperationButtonsThemeConstants.DeleteActionPart);
         _saveAction   = e.NameScope.Find<HyperLinkTextBlock>(DataGridOperationButtonsThemeConstants.SaveActionPart);
         _cancelAction = e.NameScope.Find<PopupConfirm>(DataGridOperationButtonsThemeConstants.CancelActionPart);
+    }
 
-        if (_editAction != null)
+    private void HandleActionClick(RoutedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, _editAction))
         {
-            _editAction.Click += HandleEditingRow;
+            BeginEditingRow();
         }
-
-        if (_deleteAction != null)
+        else if (ReferenceEquals(e.Source, _saveAction))
         {
-            _deleteAction.Confirmed += HandleDeleteRow;
-        }
-
-        if (_cancelAction != null)
-        {
-            _cancelAction.Confirmed += HandleCancelEditingRow;
-        }
-
-        if (_saveAction != null)
-        {
-            _saveAction.Click += HandleSaveRow;
+            EndEditingRow();
         }
     }
 
-    private void HandleDeleteRow(object? sender, RoutedEventArgs e)
+    private void HandlePopupConfirmed(RoutedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, _deleteAction))
+        {
+            DeleteRow();
+        }
+        else if (ReferenceEquals(e.Source, _cancelAction))
+        {
+            EndEditingRow();
+        }
+    }
+
+    private void DeleteRow()
     {
         if (OwningGrid != null)
         {
@@ -105,7 +117,7 @@ internal class DataGridOperationButtons : TemplatedControl
         }
     }
 
-    private void HandleEditingRow(object? sender, RoutedEventArgs e)
+    private void BeginEditingRow()
     {
         if (OwningRow != null && OwningGrid != null)
         {
@@ -113,16 +125,7 @@ internal class DataGridOperationButtons : TemplatedControl
         }
     }
     
-    private void HandleSaveRow(object? sender, RoutedEventArgs e)
-    {
-        if (OwningRow != null && OwningGrid != null)
-        {
-            SetValue(IsEditingProperty, false, BindingPriority.Template);
-        }
-    }
-    
-    
-    private void HandleCancelEditingRow(object? sender, RoutedEventArgs e)
+    private void EndEditingRow()
     {
         if (OwningRow != null && OwningGrid != null)
         {

@@ -91,40 +91,19 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         double rowDesiredWidth = OwningGrid.RowHeadersDesiredWidth + OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth + OwningGrid.ColumnsInternal.FillerColumn.FillerWidth;
         double topEdge = -OwningGrid.NegVerticalOffset;
 
-        var visibleRows = new List<Control>();
-        visibleRows.AddRange(OwningGrid.DisplayData.GetScrollingElements());
-        
+        var displayData           = OwningGrid.DisplayData;
+        int displayedElementCount = displayData.NumDisplayedScrollingElements;
+        for (int i = 0; i < displayedElementCount; i++)
+        {
+            topEdge = ArrangeElement(
+                displayData.GetScrollingElementAtDisplayIndex(i),
+                rowDesiredWidth,
+                topEdge);
+        }
+
         if (_dragIndicator != null)
         {
-            visibleRows.Add(_dragIndicator);
-        }
-        
-        foreach (Control element in visibleRows)
-        {
-            double elementHeight = OwningGrid.GetDisplayedElementHeight(element);
-            if (element is DataGridRow row)
-            {
-                Debug.Assert(row.Index != -1); // A displayed row should always have its index
-
-                // Visibility for all filler cells needs to be set in one place.  Setting it individually in
-                // each CellsPresenter causes an NxN layout cycle (see DevDiv Bugs 211557)
-                row.EnsureFillerVisibility();
-                if (_dragIndicator == row)
-                {
-                    row.Arrange(new Rect(0, DragRowOffset, rowDesiredWidth, elementHeight));
-                }
-                else
-                {
-                    row.Arrange(new Rect(0, topEdge, rowDesiredWidth, elementHeight));
-                }
-            }
-            else if (element is DataGridRowGroupHeader groupHeader)
-            {
-                double leftEdge = (OwningGrid.IsRowGroupHeadersFrozen) ? 0 : -OwningGrid.HorizontalOffset;
-                groupHeader.Arrange(new Rect(leftEdge, topEdge, rowDesiredWidth - leftEdge, elementHeight));
-            }
-
-            topEdge += elementHeight;
+            topEdge = ArrangeElement(_dragIndicator, rowDesiredWidth, topEdge);
         }
 
         double finalHeight = Math.Max(topEdge + OwningGrid.NegVerticalOffset, finalSize.Height);
@@ -133,6 +112,36 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         UpdateClipGeometry(new Rect(0, 0, finalSize.Width, finalHeight));
 
         return new Size(finalSize.Width, finalHeight);
+    }
+
+    private double ArrangeElement(Control element, double rowDesiredWidth, double topEdge)
+    {
+        Debug.Assert(OwningGrid != null);
+
+        double elementHeight = OwningGrid.GetDisplayedElementHeight(element);
+        if (element is DataGridRow row)
+        {
+            Debug.Assert(row.Index != -1); // A displayed row should always have its index
+
+            // Visibility for all filler cells needs to be set in one place. Setting it individually in
+            // each CellsPresenter causes an NxN layout cycle (see DevDiv Bugs 211557).
+            row.EnsureFillerVisibility();
+            if (_dragIndicator == row)
+            {
+                row.Arrange(new Rect(0, DragRowOffset, rowDesiredWidth, elementHeight));
+            }
+            else
+            {
+                row.Arrange(new Rect(0, topEdge, rowDesiredWidth, elementHeight));
+            }
+        }
+        else if (element is DataGridRowGroupHeader groupHeader)
+        {
+            double leftEdge = OwningGrid.IsRowGroupHeadersFrozen ? 0 : -OwningGrid.HorizontalOffset;
+            groupHeader.Arrange(new Rect(leftEdge, topEdge, rowDesiredWidth - leftEdge, elementHeight));
+        }
+
+        return topEdge + elementHeight;
     }
 
     private void UpdateClipGeometry(Rect clipRect)
@@ -200,38 +209,20 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
 
         double headerWidth = 0;
         
-        var visibleRows = OwningGrid.DisplayData.GetScrollingElements().ToList();
+        var displayData           = OwningGrid.DisplayData;
+        int displayedElementCount = displayData.NumDisplayedScrollingElements;
+        for (int i = 0; i < displayedElementCount; i++)
+        {
+            MeasureElement(
+                displayData.GetScrollingElementAtDisplayIndex(i),
+                invalidateRows,
+                ref headerWidth,
+                ref totalHeight);
+        }
+
         if (_dragIndicator != null)
         {
-            visibleRows.Add(_dragIndicator);
-        }
-        
-        foreach (Control element in visibleRows)
-        {
-            DataGridRow? row = element as DataGridRow;
-            if (row != null)
-            {
-                if (invalidateRows)
-                {
-                    row.InvalidateMeasure();
-                }
-            }
-
-            element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-
-            if (row != null && row.HeaderCell != null)
-            {
-                headerWidth = Math.Max(headerWidth, row.HeaderCell.DesiredSize.Width);
-            }
-            else if (element is DataGridRowGroupHeader groupHeader && groupHeader.HeaderCell != null)
-            {
-                headerWidth = Math.Max(headerWidth, groupHeader.HeaderCell.DesiredSize.Width);
-            }
-            
-            if (element != _dragIndicator)
-            {
-                totalHeight += OwningGrid.GetDisplayedElementHeight(element);
-            }
+            MeasureElement(_dragIndicator, invalidateRows, ref headerWidth, ref totalHeight);
         }
 
         OwningGrid.RowHeadersDesiredWidth = headerWidth;
@@ -241,6 +232,32 @@ public sealed class DataGridRowsPresenter : Panel, IChildIndexProvider
         totalHeight = Math.Max(0, totalHeight);
 
         return new Size(totalCellsWidth + headerWidth, totalHeight);
+    }
+
+    private void MeasureElement(Control element, bool invalidateRows, ref double headerWidth, ref double totalHeight)
+    {
+        Debug.Assert(OwningGrid != null);
+
+        if (element is DataGridRow row && invalidateRows)
+        {
+            row.InvalidateMeasure();
+        }
+
+        element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+        if (element is DataGridRow { HeaderCell: not null } dataRow)
+        {
+            headerWidth = Math.Max(headerWidth, dataRow.HeaderCell.DesiredSize.Width);
+        }
+        else if (element is DataGridRowGroupHeader { HeaderCell: not null } groupHeader)
+        {
+            headerWidth = Math.Max(headerWidth, groupHeader.HeaderCell.DesiredSize.Width);
+        }
+
+        if (element != _dragIndicator)
+        {
+            totalHeight += OwningGrid.GetDisplayedElementHeight(element);
+        }
     }
 
     private void OnScrollGesture(ScrollGestureEventArgs e)

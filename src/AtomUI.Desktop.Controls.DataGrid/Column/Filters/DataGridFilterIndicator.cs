@@ -70,7 +70,7 @@ internal class DataGridFilterIndicator : IconButton
     
     private DataGridColumn? _owningColumn;
     private static int _indicatorSeed = 0;
-    private readonly string _treeRadioCheckGroupName;
+    private string? _treeRadioCheckGroupName;
     private DataGrid? _subscribedGrid;
     private IDataGridCollectionView? _subscribedCollectionView;
     private INotifyCollectionChanged? _subscribedFilters;
@@ -108,7 +108,6 @@ internal class DataGridFilterIndicator : IconButton
             TriggerType  = FlyoutTriggerType.Click
         };
         _flyoutStateHelper.FlyoutAboutToShow += HandleFlyoutAboutToShow;
-        _treeRadioCheckGroupName = $"tree-{nameof(DataGridFilterIndicator)}-{_indicatorSeed++}";
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -229,39 +228,31 @@ internal class DataGridFilterIndicator : IconButton
         EnsureFlyoutShell();
         if (Flyout is DataGridMenuFilterFlyout menuFlyout)
         {
-            foreach (var menuItem in BuildMenuItems(OwningColumn.Filters))
-            {
-                menuFlyout.Items.Add(menuItem);
-            }
+            PopulateMenuItems(menuFlyout.Items, OwningColumn.Filters);
             _isFlyoutContentMaterialized = true;
         }
         else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
         {
-            var treeItems = BuildTreeItems(OwningColumn.Filters);
             if (IsMultipleFilterEnabled)
             {
                 var selectAllTreeItem = new DataGridFilterTreeViewItem();
                 selectAllTreeItem[!DataGridFilterTreeViewItem.HeaderProperty] = this[!SelectedAllTextProperty];
-                foreach (var treeItem in treeItems)
-                {
-                    selectAllTreeItem.Items.Add(treeItem);
-                }
+                PopulateTreeItems(selectAllTreeItem.Items, OwningColumn.Filters);
                 treeFlyout.Items.Add(selectAllTreeItem);
             }
             else
             {
-                foreach (var treeItem in treeItems)
-                {
-                    treeFlyout.Items.Add(treeItem);
-                }
+                PopulateTreeItems(treeFlyout.Items, OwningColumn.Filters);
             }
             _isFlyoutContentMaterialized = true;
         }
     }
 
-    private List<DataGridFilterMenuItem> BuildMenuItems(IEnumerable<DataGridFilterItem> filterItems)
+    private string TreeRadioCheckGroupName =>
+        _treeRadioCheckGroupName ??= $"tree-{nameof(DataGridFilterIndicator)}-{_indicatorSeed++}";
+
+    private void PopulateMenuItems(ItemCollection targetItems, IEnumerable<DataGridFilterItem> filterItems)
     {
-        var menuItems = new List<DataGridFilterMenuItem>();
         foreach (var item in filterItems)
         {
             var menuItem = new DataGridFilterMenuItem()
@@ -273,44 +264,31 @@ internal class DataGridFilterIndicator : IconButton
                     ? MenuItemToggleType.CheckBox
                     : MenuItemToggleType.Radio
             };
-            menuItems.Add(menuItem);
+            targetItems.Add(menuItem);
             if (item.Children.Count > 0)
             {
-                var childItems = BuildMenuItems(item.Children);
-                foreach (var childItem in childItems)
-                {
-                    menuItem.Items.Add(childItem);
-                }
+                PopulateMenuItems(menuItem.Items, item.Children);
             }
         }
-
-        return menuItems;
     }
 
-    private List<DataGridFilterTreeViewItem> BuildTreeItems(IEnumerable<DataGridFilterItem> filterItems)
+    private void PopulateTreeItems(ItemCollection targetItems, IEnumerable<DataGridFilterItem> filterItems)
     {
-        var treeItems = new List<DataGridFilterTreeViewItem>();
         foreach (var item in filterItems)
         {
             var treeItem = new DataGridFilterTreeViewItem
             {
                 Header      = item.Text,
                 FilterValue = item.Value,
-                GroupName   = _treeRadioCheckGroupName,
+                GroupName   = TreeRadioCheckGroupName,
             };
   
-            treeItems.Add(treeItem);
+            targetItems.Add(treeItem);
             if (item.Children.Count > 0)
             {
-                var childItems = BuildTreeItems(item.Children);
-                foreach (var childItem in childItems)
-                {
-                    treeItem.Items.Add(childItem);
-                }
+                PopulateTreeItems(treeItem.Items, item.Children);
             }
         }
-
-        return treeItems;
     }
 
     private void HandleFilterValuesSelected(object? sender, DataGridFilterValuesSelectedEventArgs args)

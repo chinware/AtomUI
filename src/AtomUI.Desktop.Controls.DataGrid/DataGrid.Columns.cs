@@ -21,6 +21,13 @@ namespace AtomUI.Desktop.Controls;
 
 public partial class DataGrid
 {
+    private enum ColumnWidthTarget
+    {
+        Desired,
+        Min,
+        Max
+    }
+
     #region 内部属性定义
 
     internal DataGridColumnHeadersPresenter? ColumnHeaders => _columnHeadersPresenter;
@@ -395,16 +402,16 @@ public partial class DataGrid
     internal double DecreaseColumnWidths(int displayIndex, double amount, bool userInitiated)
     {
         // 1. Take space from non-star columns with widths larger than desired widths (left to right).
-        amount = DecreaseNonStarColumnWidths(displayIndex, c => c.Width.DesiredValue, amount, false, false);
+        amount = DecreaseNonStarColumnWidths(displayIndex, ColumnWidthTarget.Desired, amount, false, false);
 
         // 2. Take space from star columns until they reach their min.
         amount = AdjustStarColumnWidths(displayIndex, amount, userInitiated);
 
         // 3. Take space from non-star columns that have already been initialized, until they reach their min (right to left).
-        amount = DecreaseNonStarColumnWidths(displayIndex, c => c.ActualMinWidth, amount, true, false);
+        amount = DecreaseNonStarColumnWidths(displayIndex, ColumnWidthTarget.Min, amount, true, false);
 
         // 4. Take space from all non-star columns until they reach their min, even if they are new (right to left).
-        amount = DecreaseNonStarColumnWidths(displayIndex, c => c.ActualMinWidth, amount, true, true);
+        amount = DecreaseNonStarColumnWidths(displayIndex, ColumnWidthTarget.Min, amount, true, true);
 
         return amount;
     }
@@ -436,6 +443,26 @@ public partial class DataGrid
         return dataGridColumn.ActualWidth;
     }
 
+    private static double GetColumnWidthTarget(DataGridColumn column, ColumnWidthTarget target)
+    {
+        return target switch
+        {
+            ColumnWidthTarget.Desired => column.Width.DesiredValue,
+            ColumnWidthTarget.Min     => column.ActualMinWidth,
+            ColumnWidthTarget.Max     => column.ActualMaxWidth,
+            _                         => column.Width.DesiredValue
+        };
+    }
+
+    private static bool CanAdjustNonStarColumn(DataGridColumn column, int displayIndex, bool affectNewColumns)
+    {
+        return column.IsVisible &&
+               column.Width.UnitType != DataGridLengthUnitType.Star &&
+               column.DisplayIndex >= displayIndex &&
+               column.ActualCanUserResize &&
+               (affectNewColumns || column.IsInitialDesiredWidthDetermined);
+    }
+
     /// <summary>
     /// Increases the widths of all columns with DisplayIndex >= displayIndex such that the total
     /// width is increased by the given amount, if possible.  If the total desired adjustment amount
@@ -448,16 +475,16 @@ public partial class DataGrid
     internal double IncreaseColumnWidths(int displayIndex, double amount, bool userInitiated)
     {
         // 1. Give space to non-star columns that are smaller than their desired widths (left to right).
-        amount = IncreaseNonStarColumnWidths(displayIndex, c => c.Width.DesiredValue, amount, false, false);
+        amount = IncreaseNonStarColumnWidths(displayIndex, ColumnWidthTarget.Desired, amount, false, false);
 
         // 2. Give space to star columns until they reach their max.
         amount = AdjustStarColumnWidths(displayIndex, amount, userInitiated);
 
         // 3. Give space to non-star columns that have already been initialized, until they reach their max (right to left).
-        amount = IncreaseNonStarColumnWidths(displayIndex, c => c.ActualMaxWidth, amount, true, false);
+        amount = IncreaseNonStarColumnWidths(displayIndex, ColumnWidthTarget.Max, amount, true, false);
 
         // 4. Give space to all non-star columns until they reach their max, even if they are new (right to left).
-        amount = IncreaseNonStarColumnWidths(displayIndex, c => c.ActualMaxWidth, amount, true, false);
+        amount = IncreaseNonStarColumnWidths(displayIndex, ColumnWidthTarget.Max, amount, true, false);
 
         return amount;
     }
@@ -1114,10 +1141,18 @@ public partial class DataGrid
         double               totalStarColumnsWidth      = 0;
         double               totalStarColumnsWidthLimit = 0;
         double               totalStarWeights           = 0;
-        List<DataGridColumn> starColumns                = new List<DataGridColumn>();
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c =>
-                     c.Width.IsStar && c.IsVisible && (c.ActualCanUserResize || !userInitiated)))
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        List<DataGridColumn> starColumns = new List<DataGridColumn>();
+        for (int columnDisplayIndex = 0; columnDisplayIndex < displayedColumnCount; columnDisplayIndex++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(columnDisplayIndex);
+            if (!column.Width.IsStar ||
+                !column.IsVisible ||
+                (!column.ActualCanUserResize && userInitiated))
+            {
+                continue;
+            }
+
             if (column.DisplayIndex < displayIndex)
             {
                 scaleStarWeights = true;
@@ -1142,9 +1177,9 @@ public partial class DataGrid
 
         // Adjust the star column widths first towards their desired values, and then towards their limits.
         remainingAdjustment =
-            AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated, c => c.Width.DesiredValue);
+            AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated, ColumnWidthTarget.Desired);
         remainingAdjustment = AdjustStarColumnWidths(displayIndex, remainingAdjustment, userInitiated,
-            c => increase ? c.ActualMaxWidth : c.ActualMinWidth);
+            increase ? ColumnWidthTarget.Max : ColumnWidthTarget.Min);
 
         // Set the new star value weights according to how much the total column widths have changed.
         // Only do this if there were other star columns to the left, though.  If there weren't any then that means
@@ -1173,7 +1208,7 @@ public partial class DataGrid
     /// <param name="targetWidth">The target width of the column.</param>
     /// <returns>The remaining amount of adjustment.</returns>
     private double AdjustStarColumnWidths(int displayIndex, double remainingAdjustment, bool userInitiated,
-                                          Func<DataGridColumn, double> targetWidth)
+                                          ColumnWidthTarget targetWidth)
     {
         if (MathUtils.IsZero(remainingAdjustment))
         {
@@ -1190,14 +1225,23 @@ public partial class DataGrid
         // is computed based on the distance from each column's current display width to its target width.  Because each column
         // could have different star ratios, though, this distance is then adjusted according to its star value.  A column with
         // a larger star value, for example, will change size more rapidly than a column with a lower star value.
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
         List<KeyValuePair<DataGridColumn, double>> starColumnPairs = new List<KeyValuePair<DataGridColumn, double>>();
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c =>
-                     c.Width.IsStar && c.DisplayIndex >= displayIndex && c.IsVisible && c.Width.Value > 0 &&
-                     (c.ActualCanUserResize || !userInitiated)))
+        for (int columnDisplayIndex = 0; columnDisplayIndex < displayedColumnCount; columnDisplayIndex++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(columnDisplayIndex);
+            if (!column.Width.IsStar ||
+                column.DisplayIndex < displayIndex ||
+                !column.IsVisible ||
+                column.Width.Value <= 0 ||
+                (!column.ActualCanUserResize && userInitiated))
+            {
+                continue;
+            }
+
             int insertIndex = 0;
             double distanceToTarget =
-                Math.Min(column.ActualMaxWidth, Math.Max(targetWidth(column), column.ActualMinWidth)) -
+                Math.Min(column.ActualMaxWidth, Math.Max(GetColumnWidthTarget(column, targetWidth), column.ActualMinWidth)) -
                 column.Width.DisplayValue;
             double factor = (increase ? Math.Max(0, distanceToTarget) : Math.Min(0, distanceToTarget)) /
                             column.Width.Value;
@@ -1254,8 +1298,15 @@ public partial class DataGrid
             return invalidate;
         }
 
-        foreach (DataGridColumn dataGridColumn in ColumnsInternal.GetVisibleFrozenColumns())
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn dataGridColumn = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!dataGridColumn.IsVisible || !dataGridColumn.IsFrozen)
+            {
+                continue;
+            }
+
             if (firstDisplayedFrozenCol == -1)
             {
                 firstDisplayedFrozenCol = dataGridColumn.Index;
@@ -1551,10 +1602,10 @@ public partial class DataGrid
 
     private void CorrectColumnFrozenStates()
     {
-        int    index                = 0;
         int    displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+        for (int index = 0; index < displayedColumnCount; index++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(index);
             bool isLeftFrozen  = index < LeftFrozenColumnCountWithFiller;
             bool isRightFrozen = index >= (displayedColumnCount - RightFrozenColumnCount);
             
@@ -1572,8 +1623,6 @@ public partial class DataGrid
             {
                 column.IsFrozen = false;
             }
-
-            index++;
         }
 
         UpdateHorizontalOffset(0);
@@ -1640,7 +1689,7 @@ public partial class DataGrid
     /// <param name="reverse">Whether or not to reverse the order in which the columns are traversed.</param>
     /// <param name="affectNewColumns">Whether or not to adjust widths of columns that do not yet have their initial desired width.</param>
     /// <returns>The remaining amount of adjustment.</returns>
-    private double DecreaseNonStarColumnWidths(int displayIndex, Func<DataGridColumn, double> targetWidth,
+    private double DecreaseNonStarColumnWidths(int displayIndex, ColumnWidthTarget targetWidth,
                                                double amount, bool reverse, bool affectNewColumns)
     {
         if (MathUtils.GreaterThanOrClose(amount, 0))
@@ -1648,15 +1697,21 @@ public partial class DataGrid
             return amount;
         }
 
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(reverse,
-                     column =>
-                         column.IsVisible &&
-                         column.Width.UnitType != DataGridLengthUnitType.Star &&
-                         column.DisplayIndex >= displayIndex &&
-                         column.ActualCanUserResize &&
-                         (affectNewColumns || column.IsInitialDesiredWidthDetermined)))
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        int start = reverse ? displayedColumnCount - 1 : 0;
+        int end = reverse ? -1 : displayedColumnCount;
+        int step = reverse ? -1 : 1;
+        for (int columnDisplayIndex = start; columnDisplayIndex != end; columnDisplayIndex += step)
         {
-            amount = DecreaseNonStarColumnWidth(column, Math.Max(column.ActualMinWidth, targetWidth(column)), amount);
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(columnDisplayIndex);
+            if (!CanAdjustNonStarColumn(column, displayIndex, affectNewColumns))
+            {
+                continue;
+            }
+
+            amount = DecreaseNonStarColumnWidth(column,
+                Math.Max(column.ActualMinWidth, GetColumnWidthTarget(column, targetWidth)),
+                amount);
             if (MathUtils.IsZero(amount))
             {
                 break;
@@ -1700,8 +1755,15 @@ public partial class DataGrid
         Debug.Assert(ColumnsItemsInternal[index].IsVisible);
 
         double x = 0;
-        foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             if (index == column.Index)
             {
                 break;
@@ -1715,8 +1777,15 @@ public partial class DataGrid
 
     private double GetNegHorizontalOffsetFromHorizontalOffset(double horizontalOffset)
     {
-        foreach (DataGridColumn column in ColumnsInternal.GetVisibleScrollingColumns())
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible || column.IsFrozen)
+            {
+                continue;
+            }
+
             if (GetEdgedColumnWidth(column) > horizontalOffset)
             {
                 break;
@@ -1767,7 +1836,7 @@ public partial class DataGrid
     /// <param name="reverse">Whether or not to reverse the order in which the columns are traversed.</param>
     /// <param name="affectNewColumns">Whether or not to adjust widths of columns that do not yet have their initial desired width.</param>
     /// <returns>The remaining amount of adjustment.</returns>
-    private double IncreaseNonStarColumnWidths(int displayIndex, Func<DataGridColumn, double> targetWidth,
+    private double IncreaseNonStarColumnWidths(int displayIndex, ColumnWidthTarget targetWidth,
                                                double amount, bool reverse, bool affectNewColumns)
     {
         if (MathUtils.LessThanOrClose(amount, 0))
@@ -1775,15 +1844,21 @@ public partial class DataGrid
             return amount;
         }
 
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(reverse,
-                     column =>
-                         column.IsVisible &&
-                         column.Width.UnitType != DataGridLengthUnitType.Star &&
-                         column.DisplayIndex >= displayIndex &&
-                         column.ActualCanUserResize &&
-                         (affectNewColumns || column.IsInitialDesiredWidthDetermined)))
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        int start = reverse ? displayedColumnCount - 1 : 0;
+        int end = reverse ? -1 : displayedColumnCount;
+        int step = reverse ? -1 : 1;
+        for (int columnDisplayIndex = start; columnDisplayIndex != end; columnDisplayIndex += step)
         {
-            amount = IncreaseNonStarColumnWidth(column, Math.Min(column.ActualMaxWidth, targetWidth(column)), amount);
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(columnDisplayIndex);
+            if (!CanAdjustNonStarColumn(column, displayIndex, affectNewColumns))
+            {
+                continue;
+            }
+
+            amount = IncreaseNonStarColumnWidth(column,
+                Math.Min(column.ActualMaxWidth, GetColumnWidthTarget(column, targetWidth)),
+                amount);
             if (MathUtils.IsZero(amount))
             {
                 break;
@@ -2063,8 +2138,15 @@ public partial class DataGrid
         }
 
         double newColOffset = 0;
-        foreach (DataGridColumn dataGridColumn in ColumnsInternal.GetVisibleScrollingColumns())
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn dataGridColumn = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!dataGridColumn.IsVisible || dataGridColumn.IsFrozen)
+            {
+                continue;
+            }
+
             if (dataGridColumn == newFirstVisibleScrollingCol)
             {
                 break;

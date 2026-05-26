@@ -188,6 +188,14 @@ internal class DataGridDisplayData
 
         return _scrollingElements[GetCircularListIndex(slot, true /*wrap*/)];
     }
+
+    internal Control GetScrollingElementAtDisplayIndex(int displayIndex)
+    {
+        Debug.Assert(displayIndex >= 0);
+        Debug.Assert(displayIndex < _scrollingElements.Count);
+
+        return _scrollingElements[(_headScrollingElements + displayIndex) % _scrollingElements.Count];
+    }
     
     internal DataGridRow? GetDisplayedRow(int rowIndex)
     {
@@ -199,7 +207,7 @@ internal class DataGridDisplayData
     {
         for (int i = 0; i < _scrollingElements.Count; i++)
         {
-            Control element = _scrollingElements[(_headScrollingElements + i) % _scrollingElements.Count];
+            Control element = GetScrollingElementAtDisplayIndex(i);
             if (filter == null || filter(element))
             {
                 // _scrollingRows is a circular list that wraps

@@ -174,8 +174,8 @@ internal class DataGridDataConnection
     }
     
     /// <summary>Try get number of DataSource items.</summary>
-    /// <param name="allowSlow">When "allowSlow" is false, method will not use Linq.Count() method and will return 0 or 1 instead.</param>
-    /// <param name="getAny">If "getAny" is true, method can use Linq.Any() method to speedup.</param>
+    /// <param name="allowSlow">When "allowSlow" is false, method will not fully count non-collection sequences and will return 0 or 1 instead.</param>
+    /// <param name="getAny">If "getAny" is true, method can stop after detecting the first sequence item.</param>
     /// <param name="count">number of DataSource items.</param>
     /// <returns>true if able to retrieve number of DataSource items; otherwise, false.</returns>
     internal bool TryGetCount(bool allowSlow, bool getAny, out int count)
@@ -184,15 +184,55 @@ internal class DataGridDataConnection
         (result, count) = DataSource switch
         {
             ICollection collection => (true, collection.Count),
-            IEnumerable enumerable when allowSlow && !getAny => (true, enumerable.Cast<object>().Count()),
-            IEnumerable enumerable when getAny => (true, enumerable.Cast<object>().Any() ? 1 : 0),
+            IEnumerable enumerable when allowSlow && !getAny => (true, CountEnumerable(enumerable)),
+            IEnumerable enumerable when getAny => (true, EnumerableHasAny(enumerable) ? 1 : 0),
             _ => (false, 0)
         };
         return result;
     }
+
+    private static int CountEnumerable(IEnumerable enumerable)
+    {
+        int count = 0;
+        IEnumerator enumerator = enumerable.GetEnumerator();
+        try
+        {
+            while (enumerator.MoveNext())
+            {
+                checked
+                {
+                    count++;
+                }
+            }
+        }
+        finally
+        {
+            (enumerator as IDisposable)?.Dispose();
+        }
+
+        return count;
+    }
+
+    private static bool EnumerableHasAny(IEnumerable enumerable)
+    {
+        IEnumerator enumerator = enumerable.GetEnumerator();
+        try
+        {
+            return enumerator.MoveNext();
+        }
+        finally
+        {
+            (enumerator as IDisposable)?.Dispose();
+        }
+    }
     
     internal bool Any()
     {
+        if (CollectionView != null)
+        {
+            return !CollectionView.IsEmpty;
+        }
+
         return TryGetCount(false, true, out var count) && count > 0;
     }
     

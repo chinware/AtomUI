@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -191,18 +192,17 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
                     }
                 }
                     
-                void OnLayoutUpdated(object? sender, EventArgs e)
-                {
-                    if (editingCheckBox.Bounds.Width != 0 || editingCheckBox.Bounds.Height != 0)
-                    {
-                        editingCheckBox.LayoutUpdated -= OnLayoutUpdated;
-                        ProcessPointerArgs();
-                    }
-                }
-
                 if (editingCheckBox.Bounds.Width == 0 && editingCheckBox.Bounds.Height == 0)
                 {
-                    editingCheckBox.LayoutUpdated += OnLayoutUpdated;
+                    IDisposable? boundsSubscription = null;
+                    boundsSubscription = editingCheckBox.GetObservable(Visual.BoundsProperty).Subscribe(bounds =>
+                    {
+                        if (bounds.Width != 0 || bounds.Height != 0)
+                        {
+                            Dispatcher.UIThread.Post(ProcessPointerArgs);
+                            boundsSubscription?.Dispose();
+                        }
+                    });
                 }
                 else
                 {

@@ -130,14 +130,17 @@ public abstract class DataGridSortDescription
         private readonly string _propertyPath;
         private readonly Lazy<CultureSensitiveComparer> _cultureSensitiveComparer;
         private readonly Lazy<IComparer<object>> _comparer;
+        private readonly IComparer? _customComparer;
         private Type? _propertyType;
         private IComparer? _internalComparer;
         private IComparer<object?>? _internalComparerTyped;
+        private Type? _internalComparerType;
 
         private IComparer<object?>? InternalComparer
         {
             get
             {
+                EnsureInternalComparer();
                 if (_internalComparerTyped == null && _internalComparer != null)
                 {
                     if (_internalComparer is IComparer<object?> c)
@@ -165,6 +168,7 @@ public abstract class DataGridSortDescription
             _direction    = direction;
             _cultureSensitiveComparer = new Lazy<CultureSensitiveComparer>(() =>
                 new CultureSensitiveComparer(culture ?? CultureInfo.CurrentCulture));
+            _customComparer   = internalComparer;
             _internalComparer = internalComparer;
             _comparer         = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
@@ -175,8 +179,10 @@ public abstract class DataGridSortDescription
             _direction                = direction;
             _propertyType             = inner._propertyType;
             _cultureSensitiveComparer = inner._cultureSensitiveComparer;
+            _customComparer           = inner._customComparer;
             _internalComparer         = inner._internalComparer;
             _internalComparerTyped    = inner._internalComparerTyped;
+            _internalComparerType     = inner._internalComparerType;
 
             _comparer = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
@@ -236,6 +242,30 @@ public abstract class DataGridSortDescription
             return o.GetType().GetNestedPropertyType(_propertyPath);
         }
 
+        private void EnsureInternalComparer()
+        {
+            if (_customComparer != null)
+            {
+                if (!ReferenceEquals(_internalComparer, _customComparer))
+                {
+                    _internalComparer      = _customComparer;
+                    _internalComparerTyped = null;
+                }
+
+                _internalComparerType = null;
+                return;
+            }
+
+            if (_propertyType == null || _internalComparerType == _propertyType)
+            {
+                return;
+            }
+
+            _internalComparer      = GetComparerForType(_propertyType);
+            _internalComparerTyped = null;
+            _internalComparerType  = _propertyType;
+        }
+
         private int Compare(object? x, object? y)
         {
             int result = 0;
@@ -256,10 +286,7 @@ public abstract class DataGridSortDescription
             var v1 = GetValue(x);
             var v2 = GetValue(y);
 
-            if (_propertyType != null)
-            {
-                _internalComparer = GetComparerForType(_propertyType);
-            }
+            EnsureInternalComparer();
 
             result = _internalComparer?.Compare(v1, v2) ?? 0;
 
@@ -278,10 +305,8 @@ public abstract class DataGridSortDescription
             {
                 _propertyType = itemType.GetNestedPropertyType(_propertyPath);
             }
-            else
-            {
-                _internalComparer = GetComparerForType(_propertyType);
-            }
+
+            EnsureInternalComparer();
         }
 
         public override IOrderedEnumerable<object> OrderBy(IEnumerable<object> seq)

@@ -6,7 +6,24 @@ namespace AtomUI.Desktop.Controls.Data;
 
 public class DataGridFilterDescription
 {
-    public string? PropertyPath { get; set; }
+    private string? _propertyPath;
+    private Type? _propertyOwnerType;
+    private Type? _propertyType;
+
+    public string? PropertyPath
+    {
+        get => _propertyPath;
+        set
+        {
+            if (!string.Equals(_propertyPath, value, StringComparison.Ordinal))
+            {
+                _propertyPath      = value;
+                _propertyOwnerType = null;
+                _propertyType      = null;
+            }
+        }
+    }
+
     public bool HasPropertyPath => !string.IsNullOrEmpty(PropertyPath);
     public StringComparison ComparisonType { get; } = StringComparison.InvariantCultureIgnoreCase;
     
@@ -15,22 +32,36 @@ public class DataGridFilterDescription
     
     public virtual bool FilterBy(object record)
     {
+        if (FilterConditions.Count == 0)
+        {
+            return false;
+        }
+
+        var value = GetValue(record);
+        // 为空就不比较
+        if (value == null)
+        {
+            return false;
+        }
+
+        if (Filter != null)
+        {
+            return Filter(value, FilterConditions[0]);
+        }
+
+        // 默认按照字符串来比较
+        var stringValue = value.ToString();
+        if (string.IsNullOrEmpty(stringValue))
+        {
+            return false;
+        }
+
         foreach (var filterValue in FilterConditions)
         {
-            var value = GetValue(record);
-            // 为空就不比较
-            if (value != null)
+            if (filterValue is string stringFilterValue &&
+                stringValue.Contains(stringFilterValue, ComparisonType))
             {
-                if (Filter != null)
-                {
-                    return Filter(value, filterValue);
-                }
-                // 默认按照字符串来比较
-                var stringValue = value.ToString();
-                if (!string.IsNullOrEmpty(stringValue) && filterValue is string stringFilterValue)
-                {
-                    return stringValue.Contains(stringFilterValue, ComparisonType);
-                }
+                return true;
             }
         }
 
@@ -39,7 +70,14 @@ public class DataGridFilterDescription
     
     private Type? GetPropertyType(object o)
     {
-        return o.GetType().GetNestedPropertyType(PropertyPath);
+        var ownerType = o.GetType();
+        if (_propertyOwnerType != ownerType)
+        {
+            _propertyType      = ownerType.GetNestedPropertyType(PropertyPath);
+            _propertyOwnerType = ownerType;
+        }
+
+        return _propertyType;
     }
     
     private static object? InvokePath(object item, string propertyPath, Type propertyType)

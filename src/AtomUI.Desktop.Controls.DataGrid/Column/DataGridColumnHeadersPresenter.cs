@@ -113,22 +113,36 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         
         double scrollingLeftEdge  = -OwningGrid.HorizontalOffset;
         var    visibleColumnIndex = 0;
-        var    visibleColumnCount = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
-        var    hasRightFrozen     = false;
+        var columns                  = OwningGrid.ColumnsInternal;
+        int displayedColumnCount     = columns.GetDisplayedColumnCount();
+        var actualVisibleColumnCount = 0;
+        var hasRightFrozen           = false;
         
         // 需要先计算出 frozenRightEdge
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
+            actualVisibleColumnCount++;
             if (column.IsRightFrozen)
             {
                 realFrozenRightEdge -= column.ActualWidth;
                 hasRightFrozen      =  true;
             }
         }
-        var visibleColumns     = OwningGrid.ColumnsInternal.GetVisibleColumns().ToList();
         // left and normal
-         foreach (DataGridColumn dataGridColumn in visibleColumns)
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn dataGridColumn = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!dataGridColumn.IsVisible)
+            {
+                continue;
+            }
+
             DataGridColumnHeader columnHeader = dataGridColumn.HeaderCell;
             Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
             if (dataGridColumn.IsLeftFrozen)
@@ -165,11 +179,16 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
 
         if (hasRightFrozen)
         {
-            visibleColumnIndex = visibleColumns.Count - 1;
+            visibleColumnIndex = actualVisibleColumnCount - 1;
             // right
-            for (var i = visibleColumns.Count - 1; i >= 0; i--)
+            for (int displayIndex = displayedColumnCount - 1; displayIndex >= 0; displayIndex--)
             {
-                DataGridColumn       dataGridColumn = visibleColumns[i];
+                DataGridColumn       dataGridColumn = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!dataGridColumn.IsVisible)
+                {
+                    continue;
+                }
+
                 DataGridColumnHeader columnHeader   = dataGridColumn.HeaderCell;
                 Debug.Assert(columnHeader.OwningColumn == dataGridColumn);
                 if (dataGridColumn.IsRightFrozen)
@@ -180,7 +199,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                     columnHeader.IsFrozen             =  true;
                     columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
                     var horizontalScrollBarVisible = OwningGrid.HorizontalScrollBar?.IsVisible ?? false;
-                    columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == visibleColumnCount - OwningGrid.RightFrozenColumnCount) && 
+                    columnHeader.IsShowFrozenShadow   =  (visibleColumnIndex == displayedColumnCount - OwningGrid.RightFrozenColumnCount) &&
                                                          horizontalScrollBarVisible &&
                                                          OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
                     visibleColumnIndex--;
@@ -415,10 +434,18 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
         }
 
         double totalDisplayWidth = 0;
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-        DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var    columns           = OwningGrid.ColumnsInternal;
+        columns.EnsureVisibleEdgedColumnsWidth();
+        DataGridColumn? lastVisibleColumn = columns.LastVisibleColumn;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             // Measure each column header
             bool                 autoGrowWidth = column.Width.IsAuto || column.Width.IsSizeToHeader;
             DataGridColumnHeader columnHeader  = column.HeaderCell;
@@ -468,8 +495,14 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
             double leftEdge = 0;
-            foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 column.ComputeLayoutRoundedWidth(leftEdge);
                 column.HeaderCell.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
                 if (autoSizeHeight)
@@ -499,8 +532,8 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             DragIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         }
 
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
-        return new Size(OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, height);
+        columns.EnsureVisibleEdgedColumnsWidth();
+        return new Size(columns.VisibleEdgedColumnsWidth, height);
     }
 
     protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)

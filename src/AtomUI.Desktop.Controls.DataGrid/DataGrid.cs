@@ -1623,7 +1623,16 @@ public partial class DataGrid : TemplatedControl,
             PresetImage = PresetEmptyImage.Simple
         }, BindingPriority.Template);
 
-        _topPagination = e.NameScope.Find<Pagination>(DataGridThemeConstants.TopPaginationPart);
+        if (_topPagination != null)
+        {
+            _topPagination.CurrentPageChanged -= HandlePageChangeRequest;
+        }
+        if (_bottomPagination != null)
+        {
+            _bottomPagination.CurrentPageChanged -= HandlePageChangeRequest;
+        }
+
+        _topPagination    = e.NameScope.Find<Pagination>(DataGridThemeConstants.TopPaginationPart);
         _bottomPagination = e.NameScope.Find<Pagination>(DataGridThemeConstants.BottomPaginationPart);
 
         if (_topPagination != null)

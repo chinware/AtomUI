@@ -144,11 +144,19 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         }
 
         double totalDisplayWidth = 0;
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        var    columns           = OwningGrid.ColumnsInternal;
+        columns.EnsureVisibleEdgedColumnsWidth();
 
-        DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        DataGridColumn? lastVisibleColumn = columns.LastVisibleColumn;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             // Measure each column header
             bool                    autoGrowWidth  = column.Width.IsAuto || column.Width.IsSizeToHeader;
             DataGridHeaderViewItem? headerViewItem = null;
@@ -205,8 +213,14 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
             double leftEdge = 0;
-            foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 column.ComputeLayoutRoundedWidth(leftEdge);
                 column.HeaderCell.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
                 if (autoSizeHeight)
@@ -243,7 +257,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             DropLocationIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         }
 
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        columns.EnsureVisibleEdgedColumnsWidth();
         
         double totalHeight = 0.0;
         // 递归求高度
@@ -253,7 +267,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             totalHeight =  Math.Max(totalHeight, childTotalHeight);
         }
         
-        return new Size(OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, totalHeight);
+        return new Size(columns.VisibleEdgedColumnsWidth, totalHeight);
     }
 
     private Size MeasureGroupRecursive(IDataGridColumnGroupItem item, out double totalHeight)
@@ -437,8 +451,16 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             autoSizeHeight = false;
         }
   
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var columns              = OwningGrid.ColumnsInternal;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             DataGridHeaderViewItem? headerViewItem = null;
             if (column is IDataGridColumnGroupItemInternal groupItem)
             {
@@ -460,8 +482,14 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
-            foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 if (autoSizeHeight)
                 {
                     _leafHeight = Math.Max(_leafHeight, column.HeaderCell.DesiredSize.Height);
@@ -473,9 +501,9 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         _frozenLeftEdge        = 0;
         _frozenRightEdge       = DesiredSize.Width;
         _visibleColumnIndex    = 0;
-        _visibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
+        _visibleColumnCount    = displayedColumnCount;
         _scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
-        DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
+        DataGridFillerColumn? fillerColumn = columns.FillerColumn;
         Debug.Assert(fillerColumn != null);
     
         var offsetX     = 0.0d;

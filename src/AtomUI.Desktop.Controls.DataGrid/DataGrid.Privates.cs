@@ -181,8 +181,15 @@ public partial class DataGrid
             {
                 double adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
                 AdjustColumnWidths(0, adjustment, false);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible)
+                    {
+                        continue;
+                    }
+
                     column.IsInitialDesiredWidthDetermined = true;
                 }
 
@@ -1424,8 +1431,10 @@ public partial class DataGrid
                 // Setup the column headers
                 if (DataConnection.DataType != null)
                 {
-                    foreach (var column in ColumnsInternal.GetDisplayedColumns())
+                    int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                    for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                     {
+                        DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                         if (column is DataGridBoundColumn boundColumn)
                         {
                             boundColumn.SetHeaderFromBinding();
@@ -1475,15 +1484,30 @@ public partial class DataGrid
 
     internal void UpdatePseudoClasses()
     {
-        var visibleColumns = ColumnsInternal.GetVisibleColumns().ToList();
-        for (var i = 0; i < visibleColumns.Count; i++)
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        int visibleColumnCount = 0;
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
-            var column = visibleColumns[i];
-            if (i == 0)
+            if (ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex).IsVisible)
+            {
+                visibleColumnCount++;
+            }
+        }
+
+        int visibleColumnIndex = 0;
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
+        {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
+            if (visibleColumnIndex == 0)
             {
                 column.HeaderCell.IsFirstVisible = true;
             }
-            else if (i == visibleColumns.Count - 1)
+            else if (visibleColumnIndex == visibleColumnCount - 1)
             {
                 column.HeaderCell.IsLastVisible = true;
             }
@@ -1497,9 +1521,10 @@ public partial class DataGrid
             column.HeaderCell.CanUserSort       = column.CanUserSort;
             column.HeaderCell.CanUserFilter     = column.CanUserFilter;
             column.HeaderCell.IsSorterTooltipVisible = column.IsSorterTooltipVisible;
+            visibleColumnIndex++;
         }
 
-        PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
+        PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, visibleColumnCount == 0);
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());
     }
 
@@ -2249,8 +2274,10 @@ public partial class DataGrid
     {
         var value = (DataGridLength)(change.NewValue ?? DataGridLength.Auto);
 
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
             if (column.InheritsWidth)
             {
                 column.SetWidthInternalNoCallback(value);
@@ -2388,8 +2415,10 @@ public partial class DataGrid
         if (!_areHandlersSuspended)
         {
             var oldValue = (double)(change.OldValue ?? 0);
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                 HandleColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
             }
         }
@@ -2400,8 +2429,10 @@ public partial class DataGrid
         if (!_areHandlersSuspended)
         {
             double oldValue = (double)(change.OldValue ?? 0);
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                 HandleColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
             }
         }
@@ -4488,8 +4519,15 @@ public partial class DataGrid
             if (ClipboardCopyMode == DataGridClipboardCopyMode.IncludeHeader)
             {
                 DataGridRowClipboardEventArgs headerArgs = new DataGridRowClipboardEventArgs(null, true);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible)
+                    {
+                        continue;
+                    }
+
                     headerArgs.ClipboardRowContent.Add(new DataGridClipboardCellContent(null, column, column.Header));
                 }
 
@@ -4502,8 +4540,15 @@ public partial class DataGrid
                 var item = SelectedItems[index];
                 Debug.Assert(item != null);
                 DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(item, false);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible)
+                    {
+                        continue;
+                    }
+
                     object? content = column.GetCellValue(item, column.ClipboardContentBinding);
                     itemArgs.ClipboardRowContent.Add(new DataGridClipboardCellContent(item, column, content));
                 }

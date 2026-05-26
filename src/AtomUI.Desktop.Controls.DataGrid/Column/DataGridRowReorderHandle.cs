@@ -30,6 +30,7 @@ internal class DataGridRowReorderHandle : TemplatedControl
     private static Rect? _dragRowBounds;
     private static int? _dragRowIndex;
     private static int? _currentDraggingOverRowIndex;
+    private static DataGridRowReorderHandle? _dragOwner;
     
     private static Point? _lastMousePositionInPresenter;
     private IconButton? _indicatorButton;
@@ -59,6 +60,12 @@ internal class DataGridRowReorderHandle : TemplatedControl
         var rowsPresenter = OwningGrid.RowsPresenter;
         Debug.Assert(rowsPresenter != null);
         Debug.Assert(OwningRow != null);
+
+        if (_dragRowIndex == null)
+        {
+            ResetDragState(rowsPresenter, invalidateArrange: false);
+            return;
+        }
 
         // Find header we're hovering over
         DataGridRowEventArgs rowEventArgs = new DataGridRowEventArgs(OwningRow);
@@ -92,14 +99,7 @@ internal class DataGridRowReorderHandle : TemplatedControl
             }
         }
         
-        _dragDelta                    = null;
-        _dragRowIndex                 = null;
-        _dragRowBounds                = null;
-        _dragStart                    = null;
-        _lastMousePositionInPresenter = null;
-        _currentDraggingOverRowIndex  = null;
-        rowsPresenter.DragRowOffset   = 0.0;
-        rowsPresenter.InvalidateArrange();
+        ResetDragState(rowsPresenter, invalidateArrange: true);
     }
 
     protected override void OnPointerMoved(PointerEventArgs e)
@@ -193,8 +193,10 @@ internal class DataGridRowReorderHandle : TemplatedControl
             mousePositionPresenter = mousePositionPresenter.WithY(bottomEdge - 1);
         }
 
-        foreach (Control child in OwningGrid.DisplayData.GetScrollingElements())
+        int displayedElementCount = OwningGrid.DisplayData.NumDisplayedScrollingElements;
+        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
         {
+            Control child = OwningGrid.DisplayData.GetScrollingElementAtDisplayIndex(displayIndex);
             if (child is DataGridRow row)
             {
                 Point mousePosition = OwningGrid.RowsPresenter.Translate(row, mousePositionPresenter);
@@ -225,6 +227,7 @@ internal class DataGridRowReorderHandle : TemplatedControl
         _dragRowIndex     = OwningRow.Index;
         _dragRowBounds    = OwningRow.Bounds;
         _dragStart        = mousePosition;
+        _dragOwner        = this;
         
         Debug.Assert(OwningGrid.RowsPresenter != null);
         // Display the reordering thumb
@@ -236,7 +239,52 @@ internal class DataGridRowReorderHandle : TemplatedControl
     {
         if (OwningGrid != null && OwningGrid.RowsPresenter != null)
         {
+            _dragOwner                    = this;
             _lastMousePositionInPresenter = this.Translate(OwningGrid.RowsPresenter, mousePosition);
+        }
+    }
+
+    private static void ResetDragState(DataGridRowsPresenter rowsPresenter, bool invalidateArrange)
+    {
+        ClearDragState();
+        rowsPresenter.DraggedRowIndex = null;
+        rowsPresenter.DragRowOffset   = 0.0;
+        if (invalidateArrange)
+        {
+            rowsPresenter.InvalidateArrange();
+        }
+    }
+
+    private static void ClearDragState()
+    {
+        _dragDelta                    = null;
+        _dragRowIndex                 = null;
+        _dragRowBounds                = null;
+        _dragStart                    = null;
+        _dragOwner                    = null;
+        _lastMousePositionInPresenter = null;
+        _currentDraggingOverRowIndex  = null;
+    }
+
+    private void ReleaseDragStateIfOwned(bool removeDragIndicator)
+    {
+        if (!ReferenceEquals(_dragOwner, this))
+        {
+            return;
+        }
+
+        if (OwningGrid?.RowsPresenter is { } rowsPresenter)
+        {
+            var hadDraggingRow = _dragRowIndex != null || rowsPresenter.DraggedRowIndex != null;
+            if (removeDragIndicator && hadDraggingRow)
+            {
+                rowsPresenter.NotifyDropped();
+            }
+            ResetDragState(rowsPresenter, invalidateArrange: hadDraggingRow);
+        }
+        else
+        {
+            ClearDragState();
         }
     }
 
@@ -247,12 +295,23 @@ internal class DataGridRowReorderHandle : TemplatedControl
 
     internal void NotifyUnLoadingRow(DataGridRow row)
     {
-        OwningRow = null;
+        if (ReferenceEquals(OwningRow, row))
+        {
+            ReleaseDragStateIfOwned(removeDragIndicator: true);
+            OwningRow = null;
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _indicatorButton = e.NameScope.Find<IconButton>(DataGridRowReorderHandleConstants.IndicatorIconButtonPart);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ReleaseDragStateIfOwned(removeDragIndicator: false);
+        _indicatorButton = null;
     }
 }

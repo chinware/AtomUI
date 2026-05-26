@@ -125,7 +125,6 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     private DataGridColumnHeader? _headerCell;
     private Control? _editingElement;
     private BindingExpressionBase? _editBinding;
-    private BindingBase? _clipboardContentBinding;
     private ControlTheme? _cellTheme;
     private Classes? _cellStyleClasses;
     private bool _setWidthInternalNoCallback;
@@ -179,14 +178,24 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         double desiredValue = width.DesiredValue;
         if (double.IsNaN(desiredValue))
         {
-            if (width.IsStar && target.OwningGrid != null)
+            var owningGrid = target.OwningGrid;
+            if (width.IsStar && owningGrid != null)
             {
                 double totalStarValues           = 0;
                 double totalStarDesiredValues    = 0;
                 double totalNonStarDisplayWidths = 0;
-                foreach (DataGridColumn column in target.OwningGrid.ColumnsInternal.GetDisplayedColumns(c =>
-                             c.IsVisible && c != target && !double.IsNaN(c.Width.DesiredValue)))
+                var    columns                   = owningGrid.ColumnsInternal;
+                int    displayedColumnCount      = columns.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible ||
+                        column == target ||
+                        double.IsNaN(column.Width.DesiredValue))
+                    {
+                        continue;
+                    }
+
                     if (column.Width.IsStar)
                     {
                         totalStarValues        += column.Width.Value;
@@ -202,7 +211,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
                 {
                     // Compute the new star column's desired value based on the available space if there are no other visible star columns
                     desiredValue = Math.Max(target.ActualMinWidth,
-                        target.OwningGrid.CellsWidth - totalNonStarDisplayWidths);
+                        owningGrid.CellsWidth - totalNonStarDisplayWidths);
                 }
                 else
                 {
@@ -322,8 +331,16 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
 
         int    starColumnsCount  = 0;
         double totalDisplayWidth = 0;
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var    columns           = OwningGrid.ColumnsInternal;
+        int    displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             column.EnsureWidth();
             totalDisplayWidth += column.ActualWidth;
             starColumnsCount  += (column != this && column.Width.IsStar) ? 1 : 0;
@@ -484,19 +501,33 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     /// </summary>
     internal DataGridSortDescription? GetSortDescription()
     {
-        if (OwningGrid != null && OwningGrid.DataConnection.SortDescriptions != null)
+        var sortDescriptions = OwningGrid?.DataConnection.SortDescriptions;
+        if (sortDescriptions != null)
         {
             if (CustomSortComparer != null)
             {
-                return
-                    OwningGrid.DataConnection.SortDescriptions
-                              .OfType<DataGridComparerSortDescription>()
-                              .FirstOrDefault(s => s.SourceComparer == CustomSortComparer);
+                for (var i = 0; i < sortDescriptions.Count; i++)
+                {
+                    if (sortDescriptions[i] is DataGridComparerSortDescription comparerSort &&
+                        comparerSort.SourceComparer == CustomSortComparer)
+                    {
+                        return comparerSort;
+                    }
+                }
+
+                return null;
             }
 
             var propertyName = GetSortPropertyName();
-            return OwningGrid.DataConnection.SortDescriptions.FirstOrDefault(s =>
-                s.HasPropertyPath && s.PropertyPath == propertyName);
+            for (var i = 0; i < sortDescriptions.Count; i++)
+            {
+                var sortDescription = sortDescriptions[i];
+                if (sortDescription.HasPropertyPath &&
+                    sortDescription.PropertyPath == propertyName)
+                {
+                    return sortDescription;
+                }
+            }
         }
 
         return null;
@@ -526,11 +557,19 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
     
     internal DataGridFilterDescription? GetFilterDescription()
     {
-        if (OwningGrid != null && OwningGrid.DataConnection.FilterDescriptions != null)
+        var filterDescriptions = OwningGrid?.DataConnection.FilterDescriptions;
+        if (filterDescriptions != null)
         {
             var propertyName = GetFilterPropertyName();
-            return OwningGrid.DataConnection.FilterDescriptions.FirstOrDefault(s =>
-                s.HasPropertyPath && s.PropertyPath == propertyName);
+            for (var i = 0; i < filterDescriptions.Count; i++)
+            {
+                var filterDescription = filterDescriptions[i];
+                if (filterDescription.HasPropertyPath &&
+                    filterDescription.PropertyPath == propertyName)
+                {
+                    return filterDescription;
+                }
+            }
         }
 
         return null;

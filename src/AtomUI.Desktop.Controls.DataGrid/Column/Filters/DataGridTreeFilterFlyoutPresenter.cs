@@ -8,25 +8,32 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
 {
     private Button? _resetButton;
     private Button? _okButton;
-    
+
+    static DataGridTreeFilterFlyoutPresenter()
+    {
+        Button.ClickEvent.AddClassHandler<DataGridTreeFilterFlyoutPresenter>(
+            (presenter, args) => presenter.HandleButtonClick(args));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _resetButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.ResetButtonPart);
         _okButton    = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.OkButtonPart);
-        
-        if (_resetButton != null)
+    }
+    private void HandleButtonClick(RoutedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, _resetButton))
         {
-            _resetButton.Click += HandleResetButtonClick;
+            ResetFilter();
         }
-
-        if (_okButton != null)
+        else if (ReferenceEquals(e.Source, _okButton))
         {
-            _okButton.Click += HandleOkButtonClick;
+            ConfirmFilter();
         }
     }
     
-    private void HandleResetButtonClick(object? sender, RoutedEventArgs e)
+    private void ResetFilter()
     {
         ClearCheckStateRecursive(this);
     }
@@ -59,7 +66,7 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
     }
 
 
-    private void HandleOkButtonClick(object? sender, RoutedEventArgs e)
+    private void ConfirmFilter()
     {
         if (TreeViewFlyout is DataGridTreeFilterFlyout treeFilterFlyout)
         {

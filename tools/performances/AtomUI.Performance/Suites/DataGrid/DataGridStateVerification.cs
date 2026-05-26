@@ -1,7 +1,10 @@
 using System.Collections;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using AtomUI.Desktop.Controls;
+using AtomUI.Desktop.Controls.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -23,12 +26,20 @@ internal static partial class Program
         var failures = new List<string>();
         VerifyDataGridPlainHeadersDoNotCreateFilterFlyouts(failures);
         VerifyDataGridFilterFlyoutContentIsLazy(failures);
+        VerifyDataGridFilterFlyoutTreeGroupNameIsLazy(failures);
+        VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(failures);
         VerifyDataGridFilterIndicatorVisibilityTracksFilterItems(failures);
+        VerifyDataGridColumnHeaderFilterRequestCopiesValues(failures);
+        VerifyDataGridFilterDescriptionCachesPropertyType(failures);
+        VerifyDataGridFilterDescriptionReusesRecordValuePerFilter(failures);
+        VerifyDataGridColumnSortFilterDescriptionLookup(failures);
+        VerifyDataGridColumnClipboardContentBindingBehavior(failures);
         VerifyDataGridColumnHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridColumnGroupHeaderPointerHandlersUseClassHandlers(failures);
         VerifyDataGridRowHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridRowGroupHeaderPointerHandlerUsesClassHandler(failures);
         VerifyDataGridCoreInputHandlersUseOverrides(failures);
+        VerifyDataGridPaginationTemplateSubscriptionsReleaseOnRetemplate(failures);
         VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(failures);
         VerifyDataGridRowsPresenterReusesClipGeometry(failures);
         VerifyDataGridRowReusesBottomGridLineClipGeometry(failures);
@@ -39,11 +50,26 @@ internal static partial class Program
         VerifyDataGridGroupColumnHeadersPresenterReusesHeaderViewItemClipGeometry(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
+        VerifyDataGridRowReorderColumnDuplicateCheck(failures);
+        VerifyDataGridRowReorderHandleClickDoesNotDrop(failures);
+        VerifyDataGridRowReorderHandleDragStateReleases(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
+        VerifyDataGridColumnHeaderSuppressesRepeatedNullDraggingOver(failures);
+        VerifyDataGridColumnHeaderClickDoesNotClearDragOver(failures);
         VerifyDataGridColumnReorderingClipGeometryReuse(failures);
         VerifyDataGridDetailsPresenterContentHeightInvalidatesMeasure(failures);
         VerifyDataGridDetailsPresenterReusesClipGeometry(failures);
         VerifyDataGridRowExpanderDetailsVisibilityBindings(failures);
+        VerifyDataGridOperationButtonsUseClassHandlers(failures);
+        VerifyDataGridSelectionColumnHeaderCheckBoxUsesClassHandler(failures);
+        VerifyDataGridCheckBoxColumnPointerEditUsesBoundsSubscription(failures);
+        VerifyDataGridDataConnectionCountsEnumerableWithoutLinqCast(failures);
+        VerifyDataGridDataConnectionAnyUsesCollectionViewIsEmpty(failures);
+        VerifyDataGridValidationUtilsFiltersExceptionsWithoutLinq(failures);
+        VerifyDataGridCollectionViewPreallocatesUnfilteredSourceLists(failures);
+        VerifyDataGridCollectionViewMaterializesSortedListsWithCapacity(failures);
+        VerifyDataGridMergedComparerPreservesSortDescriptionOrder(failures);
+        VerifyDataGridPathSortDescriptionCachesPropertyComparer(failures);
 
         if (failures.Count == 0)
         {
@@ -101,8 +127,8 @@ internal static partial class Program
         var firstFilterIndicator = indicatorsWithFlyout[0];
         MaterializeDataGridFilterFlyoutContent(firstFilterIndicator);
         var firstFlyout = GetDataGridFilterFlyout(firstFilterIndicator);
-        Expect(firstFlyout is not null && GetDataGridFlyoutItemCount(firstFlyout) > 0,
-            "First filter flyout should materialize its items immediately before opening.",
+        Expect(firstFlyout is not null && GetDataGridFlyoutItemCount(firstFlyout) == 5,
+            $"First filter flyout should materialize the 5 configured menu items immediately before opening. Actual: {(firstFlyout is null ? -1 : GetDataGridFlyoutItemCount(firstFlyout))}.",
             failures);
 
         var secondFlyout = GetDataGridFilterFlyout(indicatorsWithFlyout[1]);
@@ -113,6 +139,136 @@ internal static partial class Program
         realized.Dispose();
         Expect(indicators.All(indicator => GetDataGridFilterFlyout(indicator) is null),
             "Detached DataGrid filter indicators should clear their flyout shells.",
+            failures);
+    }
+
+    private static void VerifyDataGridFilterFlyoutTreeGroupNameIsLazy(ICollection<string> failures)
+    {
+        var menuGrid = CreateFilterDataGrid(DataGridFilterMode.Menu);
+        using var realizedMenu = RealizeControl(menuGrid);
+
+        var menuIndicators = GetDataGridFilterIndicators(menuGrid);
+        Expect(menuIndicators.All(indicator => GetDataGridFilterIndicatorTreeGroupName(indicator) is null),
+            "DataGrid menu filter indicators should not allocate tree radio group names.",
+            failures);
+
+        var treeGrid = CreateFilterDataGrid(DataGridFilterMode.Tree);
+        using var realizedTree = RealizeControl(treeGrid);
+
+        var treeIndicators = GetDataGridFilterIndicators(treeGrid);
+        Expect(treeIndicators.All(indicator => GetDataGridFilterIndicatorTreeGroupName(indicator) is null),
+            "DataGrid tree filter indicators should defer tree radio group name allocation until flyout content is materialized.",
+            failures);
+
+        var firstTreeIndicator = treeIndicators.FirstOrDefault(indicator => GetDataGridFilterFlyout(indicator) is not null);
+        Expect(firstTreeIndicator is not null,
+            "DataGrid tree filter scenario should realize a filter indicator with a flyout.",
+            failures);
+        if (firstTreeIndicator is null)
+        {
+            return;
+        }
+
+        MaterializeDataGridFilterFlyoutContent(firstTreeIndicator);
+        var firstTreeFlyout = GetDataGridFilterFlyout(firstTreeIndicator);
+        var groupNames = firstTreeFlyout is null
+            ? new List<string?>()
+            : GetDataGridFilterTreeItemGroupNames(firstTreeFlyout);
+        Expect(firstTreeFlyout is not null && GetDataGridFlyoutItemCount(firstTreeFlyout) == 6,
+            $"DataGrid tree filter flyout should preserve the select-all root plus 5 configured filter items. Actual: {(firstTreeFlyout is null ? -1 : GetDataGridFlyoutItemCount(firstTreeFlyout))}.",
+            failures);
+        Expect(groupNames.Count == 5 &&
+               !string.IsNullOrEmpty(groupNames[0]) &&
+               groupNames.All(groupName => groupName == groupNames[0]),
+            $"DataGrid tree filter items should share one lazily-created radio group name. Actual: {string.Join(", ", groupNames)}.",
+            failures);
+        Expect(!string.IsNullOrEmpty(GetDataGridFilterIndicatorTreeGroupName(firstTreeIndicator)),
+            "DataGrid tree filter indicator should create its tree radio group name when materializing tree items.",
+            failures);
+
+        var unopenedTreeIndicators = treeIndicators.Where(indicator => !ReferenceEquals(indicator, firstTreeIndicator));
+        Expect(unopenedTreeIndicators.All(indicator => GetDataGridFilterIndicatorTreeGroupName(indicator) is null),
+            "Unopened sibling tree filter indicators should keep their tree radio group name unallocated.",
+            failures);
+    }
+
+    private static void VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(ICollection<string> failures)
+    {
+        VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(
+            DataGridFilterMode.Menu,
+            "DataGridMenuFilterFlyoutPresenter",
+            failures);
+        VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(
+            DataGridFilterMode.Tree,
+            "DataGridTreeFilterFlyoutPresenter",
+            failures);
+    }
+
+    private static void VerifyDataGridFilterFlyoutPresenterButtonsUseClassHandlers(
+        DataGridFilterMode filterMode,
+        string presenterTypeName,
+        ICollection<string> failures)
+    {
+        var grid = CreateFilterDataGrid(filterMode);
+        using var realizedGrid = RealizeControl(grid);
+
+        var indicator = GetDataGridFilterIndicators(grid)
+            .FirstOrDefault(indicator => GetDataGridFilterFlyout(indicator) != null);
+        Expect(indicator != null,
+            $"DataGrid {filterMode} filter scenario should realize a filter indicator with a flyout.",
+            failures);
+        if (indicator == null)
+        {
+            return;
+        }
+
+        MaterializeDataGridFilterFlyoutContent(indicator);
+        var flyout = GetDataGridFilterFlyout(indicator);
+        Expect(flyout != null,
+            $"DataGrid {filterMode} filter indicator should expose a filter flyout.",
+            failures);
+        if (flyout == null)
+        {
+            return;
+        }
+
+        var presenter = CreateDataGridFilterFlyoutPresenter(flyout);
+        Expect(presenter != null && presenter.GetType().Name == presenterTypeName,
+            $"DataGrid {filterMode} filter flyout should create {presenterTypeName}. Actual: {presenter?.GetType().Name ?? "null"}.",
+            failures);
+        if (presenter == null)
+        {
+            return;
+        }
+
+        using var realizedPresenter = RealizeControl(presenter);
+        var resetButton = GetNamedDescendant<AtomUI.Desktop.Controls.Button>(
+            presenter,
+            "PART_ResetButton");
+        var okButton = GetNamedDescendant<AtomUI.Desktop.Controls.Button>(
+            presenter,
+            "PART_OkButton");
+        Expect(resetButton != null && okButton != null,
+            $"DataGrid {filterMode} filter presenter should realize reset and ok buttons.",
+            failures);
+        if (resetButton == null || okButton == null)
+        {
+            return;
+        }
+
+        Expect(!GetLocalRoutedHandlerNames(resetButton).Any(name => name.Contains("Click")),
+            $"DataGrid {filterMode} filter reset button should use the presenter class handler instead of a local Click handler.",
+            failures);
+        Expect(!GetLocalRoutedHandlerNames(okButton).Any(name => name.Contains("Click")),
+            $"DataGrid {filterMode} filter ok button should use the presenter class handler instead of a local Click handler.",
+            failures);
+
+        okButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent)
+        {
+            Source = okButton
+        });
+        Expect(GetDataGridFilterFlyoutActiveShutdown(flyout),
+            $"DataGrid {filterMode} filter ok button should still mark active shutdown through the presenter class handler.",
             failures);
     }
 
@@ -155,6 +311,244 @@ internal static partial class Program
             failures);
         Expect(GetDataGridFilterIndicators(grid).All(indicator => GetDataGridFilterFlyout(indicator) is null),
             "Clearing filter items should release the closed filter flyout shell.",
+            failures);
+    }
+
+    private static void VerifyDataGridColumnHeaderFilterRequestCopiesValues(ICollection<string> failures)
+    {
+        var grid = CreateFilterDataGrid(DataGridFilterMode.Menu);
+        using var realized = RealizeControl(grid);
+
+        var column = grid.Columns[0];
+        var header = GetDataGridColumnHeader(column, failures);
+        if (header == null)
+        {
+            return;
+        }
+
+        var requestedValues = new List<string> { "Joe" };
+        InvokeDataGridColumnHeaderFilterRequest(header, column, requestedValues, failures);
+        requestedValues[0] = "Jim";
+        requestedValues.Add("Late mutation");
+
+        RefreshLayout(realized.Window);
+
+        var filterDescriptions = grid.CollectionView?.FilterDescriptions;
+        Expect(filterDescriptions != null && filterDescriptions.Count == 1,
+            $"DataGrid filter request should create one filter description. Actual: {filterDescriptions?.Count ?? -1}.",
+            failures);
+        if (filterDescriptions is not { Count: 1 })
+        {
+            return;
+        }
+
+        var filterConditions = filterDescriptions[0].FilterConditions;
+        Expect(filterConditions.Count == 1 && filterConditions[0] is string value && value == "Joe",
+            $"DataGrid filter request should copy selected values before deferred processing. Actual: {string.Join(", ", filterConditions)}.",
+            failures);
+
+        var firstFilterDescription = filterDescriptions[0];
+        var sameSetValues = new List<string> { "Joe", "Joe" };
+        InvokeDataGridColumnHeaderFilterRequest(header, column, sameSetValues, failures);
+        sameSetValues[0] = "Jim";
+        RefreshLayout(realized.Window);
+        Expect(ReferenceEquals(filterDescriptions[0], firstFilterDescription),
+            "DataGrid filter request should keep the existing filter description when selected values are set-equal.",
+            failures);
+
+        var replacementValues = new List<string> { "Jim" };
+        InvokeDataGridColumnHeaderFilterRequest(header, column, replacementValues, failures);
+        replacementValues[0] = "London";
+        RefreshLayout(realized.Window);
+        filterConditions = filterDescriptions[0].FilterConditions;
+        Expect(filterConditions.Count == 1 && filterConditions[0] is string replacedValue && replacedValue == "Jim",
+            $"DataGrid replacement filter request should copy selected values before deferred processing. Actual: {string.Join(", ", filterConditions)}.",
+            failures);
+    }
+
+    private static void VerifyDataGridFilterDescriptionCachesPropertyType(ICollection<string> failures)
+    {
+        var filter = new DataGridFilterDescription
+        {
+            PropertyPath      = nameof(FilterProbe.Name),
+            FilterConditions = new List<object> { "zzz" }
+        };
+        var probe = new FilterProbe("alice", 42);
+
+        Expect(!filter.FilterBy(probe),
+            "DataGrid filter description should keep normal string contains filtering behavior while caching property metadata.",
+            failures);
+        Expect(Equals(GetPrivateFieldValue(filter, "_propertyOwnerType"), typeof(FilterProbe)),
+            $"DataGrid filter description should cache the owner item type. Actual: {GetPrivateFieldValue(filter, "_propertyOwnerType")}.",
+            failures);
+        Expect(Equals(GetPrivateFieldValue(filter, "_propertyType"), typeof(string)),
+            $"DataGrid filter description should cache the property type. Actual: {GetPrivateFieldValue(filter, "_propertyType")}.",
+            failures);
+
+        var cachedPropertyType = GetPrivateFieldValue(filter, "_propertyType");
+        filter.FilterBy(new FilterProbe("bob", 7));
+        Expect(ReferenceEquals(cachedPropertyType, GetPrivateFieldValue(filter, "_propertyType")),
+            "DataGrid filter description should reuse the cached property type for the same owner type.",
+            failures);
+
+        filter.PropertyPath      = nameof(FilterProbe.Score);
+        filter.FilterConditions = new List<object> { "4" };
+        Expect(filter.FilterBy(probe),
+            "DataGrid filter description should keep non-string value ToString filtering behavior after PropertyPath changes.",
+            failures);
+        Expect(Equals(GetPrivateFieldValue(filter, "_propertyType"), typeof(int)),
+            $"DataGrid filter description should invalidate and recache property type when PropertyPath changes. Actual: {GetPrivateFieldValue(filter, "_propertyType")}.",
+            failures);
+    }
+
+    private static void VerifyDataGridFilterDescriptionReusesRecordValuePerFilter(ICollection<string> failures)
+    {
+        var value = new CountingStringValue("alpha beta");
+        var probe = new CountingFilterProbe(value);
+        var filter = new DataGridFilterDescription
+        {
+            PropertyPath      = nameof(CountingFilterProbe.Value),
+            FilterConditions = new List<object> { "zzz", "beta" }
+        };
+
+        Expect(filter.FilterBy(probe),
+            "DataGrid filter description should still match later filter conditions after hoisting record value lookup.",
+            failures);
+        Expect(probe.ValueAccessCount == 1,
+            $"DataGrid filter description should read the filtered property once per record. Actual: {probe.ValueAccessCount}.",
+            failures);
+        Expect(value.ToStringCallCount == 1,
+            $"DataGrid filter description should stringify the filtered value once per record. Actual: {value.ToStringCallCount}.",
+            failures);
+
+        var customValue = new CountingStringValue("custom");
+        var customProbe = new CountingFilterProbe(customValue);
+        var customFilter = new DataGridFilterDescription
+        {
+            PropertyPath      = nameof(CountingFilterProbe.Value),
+            FilterConditions = new List<object> { "first", "second" },
+            Filter           = (_, condition) => Equals(condition, "second")
+        };
+
+        Expect(!customFilter.FilterBy(customProbe),
+            "DataGrid custom filter descriptions should preserve the original first-condition return behavior.",
+            failures);
+        Expect(customProbe.ValueAccessCount == 1,
+            $"DataGrid custom filter description should read the filtered property once. Actual: {customProbe.ValueAccessCount}.",
+            failures);
+        Expect(customValue.ToStringCallCount == 0,
+            $"DataGrid custom filter description should not stringify values. Actual: {customValue.ToStringCallCount}.",
+            failures);
+    }
+
+    private static void VerifyDataGridColumnSortFilterDescriptionLookup(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(8);
+        var pathColumn = new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        };
+        var customComparer = new NoopComparer();
+        var customColumn = new DataGridTextColumn
+        {
+            Header             = "Address",
+            Binding            = new Binding(nameof(PerfDataGridRow.Address)),
+            CustomSortComparer = customComparer
+        };
+        var unmatchedColumn = new DataGridTextColumn
+        {
+            Header  = "Score",
+            Binding = new Binding(nameof(PerfDataGridRow.Score))
+        };
+
+        grid.Columns.Add(pathColumn);
+        grid.Columns.Add(customColumn);
+        grid.Columns.Add(unmatchedColumn);
+
+        using var realized = RealizeControl(grid);
+        var collectionView = grid.CollectionView;
+        Expect(collectionView != null,
+            "DataGrid column sort/filter lookup verification should realize a collection view.",
+            failures);
+        if (collectionView == null)
+        {
+            return;
+        }
+        var sortDescriptions = collectionView.SortDescriptions;
+        var filterDescriptions = collectionView.FilterDescriptions;
+        Expect(sortDescriptions != null && filterDescriptions != null,
+            "DataGrid column sort/filter lookup verification should expose sort and filter description collections.",
+            failures);
+        if (sortDescriptions == null || filterDescriptions == null)
+        {
+            return;
+        }
+
+        var targetPathSort = DataGridSortDescription.FromPath(nameof(PerfDataGridRow.Name));
+        var targetComparerSort = DataGridSortDescription.FromComparer(customComparer);
+        sortDescriptions.Add(DataGridSortDescription.FromPath(nameof(PerfDataGridRow.Age)));
+        sortDescriptions.Add(targetPathSort);
+        sortDescriptions.Add(DataGridSortDescription.FromComparer(new NoopComparer()));
+        sortDescriptions.Add(targetComparerSort);
+        sortDescriptions.Add(DataGridSortDescription.FromPath(nameof(PerfDataGridRow.Name)));
+
+        Expect(ReferenceEquals(InvokeDataGridColumnGetSortDescription(pathColumn, failures), targetPathSort),
+            "DataGrid column path sort lookup should return the first matching path sort description.",
+            failures);
+        Expect(ReferenceEquals(InvokeDataGridColumnGetSortDescription(customColumn, failures), targetComparerSort),
+            "DataGrid column custom sort lookup should return the first matching comparer sort description and ignore path sorts.",
+            failures);
+        Expect(InvokeDataGridColumnGetSortDescription(unmatchedColumn, failures) == null,
+            "DataGrid column sort lookup should return null when no sort description matches.",
+            failures);
+
+        var targetFilter = new DataGridFilterDescription
+        {
+            PropertyPath      = nameof(PerfDataGridRow.Name),
+            FilterConditions = new List<object> { "Joe" }
+        };
+        filterDescriptions.Add(new DataGridFilterDescription
+        {
+            PropertyPath      = nameof(PerfDataGridRow.Address),
+            FilterConditions = new List<object> { "London" }
+        });
+        filterDescriptions.Add(targetFilter);
+        filterDescriptions.Add(new DataGridFilterDescription
+        {
+            PropertyPath      = nameof(PerfDataGridRow.Name),
+            FilterConditions = new List<object> { "Jim" }
+        });
+
+        Expect(ReferenceEquals(InvokeDataGridColumnGetFilterDescription(pathColumn, failures), targetFilter),
+            "DataGrid column filter lookup should return the first matching property path filter description.",
+            failures);
+        Expect(InvokeDataGridColumnGetFilterDescription(unmatchedColumn, failures) == null,
+            "DataGrid column filter lookup should return null when no filter description matches.",
+            failures);
+    }
+
+    private static void VerifyDataGridColumnClipboardContentBindingBehavior(ICollection<string> failures)
+    {
+        var displayBinding = new Binding(nameof(PerfDataGridRow.Name));
+        var clipboardBinding = new Binding(nameof(PerfDataGridRow.Address));
+        var column = new DataGridTextColumn
+        {
+            Binding = displayBinding
+        };
+
+        Expect(ReferenceEquals(column.ClipboardContentBinding, displayBinding),
+            "DataGrid bound columns should use Binding as the clipboard binding fallback.",
+            failures);
+
+        column.ClipboardContentBinding = clipboardBinding;
+        Expect(ReferenceEquals(column.ClipboardContentBinding, clipboardBinding),
+            "DataGrid bound columns should return explicitly assigned ClipboardContentBinding.",
+            failures);
+
+        column.ClipboardContentBinding = null;
+        Expect(ReferenceEquals(column.ClipboardContentBinding, displayBinding),
+            "DataGrid bound columns should restore Binding fallback when ClipboardContentBinding is cleared.",
             failures);
     }
 
@@ -412,6 +806,81 @@ internal static partial class Program
             failures);
         Expect(GetDataGridCurrentSlot(grid) == 1,
             $"DataGrid Down key should still move the current slot from 0 to 1. Actual: {GetDataGridCurrentSlot(grid)}.",
+            failures);
+    }
+
+    private static void VerifyDataGridPaginationTemplateSubscriptionsReleaseOnRetemplate(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 24, columnCount: 3);
+        using var realized = RealizeControl(grid);
+
+        var topPagination    = GetDataGridTopPagination(grid);
+        var bottomPagination = GetDataGridBottomPagination(grid);
+        Expect(topPagination != null && bottomPagination != null,
+            "DataGrid template should realize top and bottom Pagination parts for template subscription verification.",
+            failures);
+        if (topPagination == null || bottomPagination == null)
+        {
+            return;
+        }
+
+        Expect(GetPaginationCurrentPageChangedHandlerCount(topPagination) == 1,
+            $"DataGrid top Pagination should start with one page-changed handler. Actual: {GetPaginationCurrentPageChangedHandlerCount(topPagination)}.",
+            failures);
+        Expect(GetPaginationCurrentPageChangedHandlerCount(bottomPagination) == 1,
+            $"DataGrid bottom Pagination should start with one page-changed handler. Actual: {GetPaginationCurrentPageChangedHandlerCount(bottomPagination)}.",
+            failures);
+
+        var appliedTemplate = grid.Template;
+        Expect(appliedTemplate != null,
+            "DataGrid should have an applied template for re-template subscription verification.",
+            failures);
+        if (appliedTemplate == null)
+        {
+            return;
+        }
+
+        grid.Template = null;
+        grid.ApplyTemplate();
+        RefreshLayout(realized.Window);
+
+        grid.Template = appliedTemplate;
+        grid.ApplyTemplate();
+        RefreshLayout(realized.Window);
+
+        Expect(GetPaginationCurrentPageChangedHandlerCount(topPagination) == 0,
+            $"Old top Pagination should release DataGrid page-changed handler after re-template. Actual: {GetPaginationCurrentPageChangedHandlerCount(topPagination)}.",
+            failures);
+        Expect(GetPaginationCurrentPageChangedHandlerCount(bottomPagination) == 0,
+            $"Old bottom Pagination should release DataGrid page-changed handler after re-template. Actual: {GetPaginationCurrentPageChangedHandlerCount(bottomPagination)}.",
+            failures);
+
+        var newTopPagination    = GetDataGridTopPagination(grid);
+        var newBottomPagination = GetDataGridBottomPagination(grid);
+        Expect(newTopPagination != null && !ReferenceEquals(newTopPagination, topPagination),
+            "DataGrid should replace the top Pagination part after re-template.",
+            failures);
+        Expect(newBottomPagination != null && !ReferenceEquals(newBottomPagination, bottomPagination),
+            "DataGrid should replace the bottom Pagination part after re-template.",
+            failures);
+        if (newTopPagination == null || newBottomPagination == null)
+        {
+            return;
+        }
+
+        Expect(GetPaginationCurrentPageChangedHandlerCount(newTopPagination) == 1,
+            $"New top Pagination should keep exactly one page-changed handler after re-template. Actual: {GetPaginationCurrentPageChangedHandlerCount(newTopPagination)}.",
+            failures);
+        Expect(GetPaginationCurrentPageChangedHandlerCount(newBottomPagination) == 1,
+            $"New bottom Pagination should keep exactly one page-changed handler after re-template. Actual: {GetPaginationCurrentPageChangedHandlerCount(newBottomPagination)}.",
+            failures);
+
+        realized.Dispose();
+        Expect(GetPaginationCurrentPageChangedHandlerCount(newTopPagination) == 0,
+            $"Detached top Pagination should release DataGrid page-changed handler. Actual: {GetPaginationCurrentPageChangedHandlerCount(newTopPagination)}.",
+            failures);
+        Expect(GetPaginationCurrentPageChangedHandlerCount(newBottomPagination) == 0,
+            $"Detached bottom Pagination should release DataGrid page-changed handler. Actual: {GetPaginationCurrentPageChangedHandlerCount(newBottomPagination)}.",
             failures);
     }
 
@@ -1081,6 +1550,823 @@ internal static partial class Program
         }
     }
 
+    private static void VerifyDataGridRowReorderColumnDuplicateCheck(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserReorderRows = true;
+        grid.Columns.Add(new DataGridRowReorderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        var duplicateRejected = false;
+        try
+        {
+            grid.Columns.Add(new DataGridRowReorderColumn());
+        }
+        catch (InvalidOperationException exception)
+            when (exception.Message.Contains("Only one DataGridRowReorderColumn", StringComparison.Ordinal))
+        {
+            duplicateRejected = true;
+        }
+
+        Expect(duplicateRejected,
+            "DataGridRowReorderColumn should still reject duplicate reorder columns after replacing Count(predicate) with indexed scanning.",
+            failures);
+    }
+
+    private static void VerifyDataGridRowReorderHandleClickDoesNotDrop(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserReorderRows = true;
+        grid.Columns.Add(new DataGridRowReorderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        using var realized = RealizeControl(grid);
+        var handle = GetDataGridRowReorderHandles(grid).FirstOrDefault();
+        Expect(handle != null,
+            "DataGrid row reorder verification should realize a row reorder handle.",
+            failures);
+        if (handle == null)
+        {
+            return;
+        }
+        var rowsPresenter = GetDataGridRowsPresenters(grid).FirstOrDefault();
+        Expect(rowsPresenter != null,
+            "DataGrid row reorder verification should realize a rows presenter.",
+            failures);
+        if (rowsPresenter == null)
+        {
+            return;
+        }
+        RefreshLayout(realized.Window);
+        Expect(rowsPresenter.IsArrangeValid,
+            "DataGrid row reorder verification should start from a valid arranged rows presenter.",
+            failures);
+
+        var reorderedCount = 0;
+        grid.RowReordered += HandleRowReordered;
+        try
+        {
+            RaiseControlPrimaryPointerPressed(handle, realized.Window);
+            RaiseControlPrimaryPointerReleased(handle, realized.Window);
+        }
+        finally
+        {
+            grid.RowReordered -= HandleRowReordered;
+        }
+
+        Expect(reorderedCount == 0,
+            $"DataGrid row reorder handle should not fire RowReordered for a click that never enters drag mode. Actual: {reorderedCount}.",
+            failures);
+        var draggedRowIndex = GetNonPublicPropertyValue(rowsPresenter, "DraggedRowIndex");
+        var dragRowOffset = GetNonPublicPropertyValue(rowsPresenter, "DragRowOffset");
+        Expect(draggedRowIndex == null,
+            "DataGrid row reorder handle click should not leave a dragged row index.",
+            failures);
+        Expect(dragRowOffset is double offset && Math.Abs(offset) < double.Epsilon,
+            $"DataGrid row reorder handle click should leave DragRowOffset at 0. Actual: {dragRowOffset}.",
+            failures);
+        Expect(rowsPresenter.IsArrangeValid,
+            "DataGrid row reorder handle click should not invalidate the rows presenter arrange when no drag starts.",
+            failures);
+
+        void HandleRowReordered(object? sender, DataGridRowEventArgs e)
+        {
+            reorderedCount++;
+        }
+    }
+
+    private static void VerifyDataGridRowReorderHandleDragStateReleases(ICollection<string> failures)
+    {
+        VerifyDataGridRowReorderHandleDropClearsDragState(failures);
+        VerifyDataGridRowReorderHandleUnloadClearsDragState(failures);
+        VerifyDataGridRowReorderHandleDetachClearsStaticState(failures);
+    }
+
+    private static void VerifyDataGridRowReorderHandleDropClearsDragState(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserReorderRows = true;
+        grid.Columns.Add(new DataGridRowReorderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        using var realized = RealizeControl(grid);
+        var handle = GetDataGridRowReorderHandles(grid).FirstOrDefault();
+        var rowsPresenter = GetDataGridRowsPresenters(grid).FirstOrDefault();
+        Expect(handle != null && rowsPresenter != null,
+            "DataGrid row reorder drag release verification should realize a handle and rows presenter.",
+            failures);
+        if (handle == null || rowsPresenter == null)
+        {
+            return;
+        }
+
+        RefreshLayout(realized.Window);
+        InvokeDataGridRowReorderHandleBeginReorder(handle, new Point(1, 1), failures);
+        ExpectDataGridRowReorderDragStateActive(rowsPresenter, failures);
+
+        var reorderedCount = 0;
+        grid.RowReordered += HandleRowReordered;
+        try
+        {
+            RaiseControlPrimaryPointerReleased(handle, realized.Window);
+        }
+        finally
+        {
+            grid.RowReordered -= HandleRowReordered;
+        }
+
+        Expect(reorderedCount == 1,
+            $"DataGrid row reorder drag release should keep the existing RowReordered notification. Actual: {reorderedCount}.",
+            failures);
+        ExpectDataGridRowReorderDragStateReleased(rowsPresenter,
+            "DataGrid row reorder drag release",
+            failures);
+
+        void HandleRowReordered(object? sender, DataGridRowEventArgs e)
+        {
+            reorderedCount++;
+        }
+    }
+
+    private static void VerifyDataGridRowReorderHandleUnloadClearsDragState(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserReorderRows = true;
+        grid.Columns.Add(new DataGridRowReorderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        var realized = RealizeControl(grid);
+        var handle = GetDataGridRowReorderHandles(grid).FirstOrDefault();
+        var rowsPresenter = GetDataGridRowsPresenters(grid).FirstOrDefault();
+        var row = GetDataGridRows(grid).FirstOrDefault();
+        Expect(handle != null && rowsPresenter != null && row != null,
+            "DataGrid row reorder unload verification should realize a handle, row, and rows presenter.",
+            failures);
+        if (handle == null || rowsPresenter == null || row == null)
+        {
+            realized.Dispose();
+            return;
+        }
+
+        RefreshLayout(realized.Window);
+        InvokeDataGridRowReorderHandleBeginReorder(handle, new Point(1, 1), failures);
+        ExpectDataGridRowReorderDragStateActive(rowsPresenter, failures);
+
+        InvokeDataGridRowReorderHandleNotifyUnLoadingRow(handle, row, failures);
+        ExpectDataGridRowReorderDragStateReleased(rowsPresenter,
+            "DataGrid row reorder handle unload",
+            failures);
+        realized.Dispose();
+    }
+
+    private static void VerifyDataGridRowReorderHandleDetachClearsStaticState(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.CanUserReorderRows = true;
+        grid.Columns.Add(new DataGridRowReorderColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        var realized = RealizeControl(grid);
+        var handle = GetDataGridRowReorderHandles(grid).FirstOrDefault();
+        var rowsPresenter = GetDataGridRowsPresenters(grid).FirstOrDefault();
+        Expect(handle != null && rowsPresenter != null,
+            "DataGrid row reorder detach verification should realize a handle and rows presenter.",
+            failures);
+        if (handle == null || rowsPresenter == null)
+        {
+            realized.Dispose();
+            return;
+        }
+
+        RefreshLayout(realized.Window);
+        InvokeDataGridRowReorderHandleBeginReorder(handle, new Point(1, 1), failures);
+        ExpectDataGridRowReorderDragStateActive(rowsPresenter, failures);
+
+        realized.Dispose();
+        ExpectDataGridRowReorderDragStateReleased(rowsPresenter,
+            "DataGrid row reorder handle detach",
+            false,
+            failures);
+    }
+
+    private static void ExpectDataGridRowReorderDragStateActive(
+        DataGridRowsPresenter rowsPresenter,
+        ICollection<string> failures)
+    {
+        var draggedRowIndex = GetNonPublicPropertyValue(rowsPresenter, "DraggedRowIndex");
+        var dragIndicator = GetPrivateFieldValue(rowsPresenter, "_dragIndicator");
+        Expect(draggedRowIndex is int,
+            $"DataGrid row reorder drag should set a dragged row index. Actual: {draggedRowIndex ?? "null"}.",
+            failures);
+        Expect(dragIndicator is DataGridRow,
+            $"DataGrid row reorder drag should create a ghost row indicator. Actual: {dragIndicator?.GetType().Name ?? "null"}.",
+            failures);
+    }
+
+    private static void ExpectDataGridRowReorderDragStateReleased(
+        DataGridRowsPresenter rowsPresenter,
+        string scenario,
+        bool expectGhostRowRemoved,
+        ICollection<string> failures)
+    {
+        var draggedRowIndex = GetNonPublicPropertyValue(rowsPresenter, "DraggedRowIndex");
+        var dragRowOffset = GetNonPublicPropertyValue(rowsPresenter, "DragRowOffset");
+        var dragIndicator = GetPrivateFieldValue(rowsPresenter, "_dragIndicator");
+        Expect(draggedRowIndex == null,
+            $"{scenario} should clear the dragged row index. Actual: {draggedRowIndex ?? "null"}.",
+            failures);
+        Expect(dragRowOffset is double offset && Math.Abs(offset) < double.Epsilon,
+            $"{scenario} should reset DragRowOffset to 0. Actual: {dragRowOffset}.",
+            failures);
+        if (expectGhostRowRemoved)
+        {
+            Expect(dragIndicator == null,
+                $"{scenario} should remove the ghost row indicator. Actual: {dragIndicator?.GetType().Name ?? "null"}.",
+                failures);
+        }
+    }
+
+    private static void ExpectDataGridRowReorderDragStateReleased(
+        DataGridRowsPresenter rowsPresenter,
+        string scenario,
+        ICollection<string> failures)
+    {
+        ExpectDataGridRowReorderDragStateReleased(rowsPresenter, scenario, expectGhostRowRemoved: true, failures);
+    }
+
+    private static void VerifyDataGridOperationButtonsUseClassHandlers(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(3);
+        var operationColumn = CreateDataGridOperationColumn(failures);
+        if (operationColumn == null)
+        {
+            return;
+        }
+
+        grid.Columns.Add(operationColumn);
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        using var realized = RealizeControl(grid);
+
+        var operationButtons = GetDataGridOperationButtons(grid).FirstOrDefault();
+        Expect(operationButtons != null,
+            "DataGrid operation column should realize operation buttons for handler verification.",
+            failures);
+        if (operationButtons == null)
+        {
+            return;
+        }
+
+        var editAction = GetDataGridOperationButtonPart<HyperLinkTextBlock>(operationButtons, "PART_EditAction");
+        var saveAction = GetDataGridOperationButtonPart<HyperLinkTextBlock>(operationButtons, "PAR_SaveAction");
+        var deleteAction = GetDataGridOperationButtonPart<PopupConfirm>(operationButtons, "PART_DeleteAction");
+        var cancelAction = GetDataGridOperationButtonPart<PopupConfirm>(operationButtons, "PAR_CancelAction");
+
+        Expect(editAction != null && saveAction != null && deleteAction != null && cancelAction != null,
+            "DataGrid operation buttons should realize edit/save/delete/cancel template parts.",
+            failures);
+        if (editAction == null || saveAction == null || deleteAction == null || cancelAction == null)
+        {
+            return;
+        }
+
+        Expect(!GetLocalRoutedHandlerNames(editAction).Contains("HyperLinkTextBlock.Click"),
+            "DataGrid operation edit action should use the owner class handler instead of a per-part Click handler.",
+            failures);
+        Expect(!GetLocalRoutedHandlerNames(saveAction).Contains("HyperLinkTextBlock.Click"),
+            "DataGrid operation save action should use the owner class handler instead of a per-part Click handler.",
+            failures);
+        Expect(!GetLocalRoutedHandlerNames(deleteAction).Contains("PopupConfirm.Confirmed"),
+            "DataGrid operation delete action should use the owner class handler instead of a per-part Confirmed handler.",
+            failures);
+        Expect(!GetLocalRoutedHandlerNames(cancelAction).Contains("PopupConfirm.Confirmed"),
+            "DataGrid operation cancel action should use the owner class handler instead of a per-part Confirmed handler.",
+            failures);
+
+        editAction.RaiseEvent(new RoutedEventArgs(HyperLinkTextBlock.ClickEvent)
+        {
+            Source = editAction
+        });
+        RefreshLayout(realized.Window);
+        Expect(GetDataGridOperationButtonsIsEditing(operationButtons),
+            "DataGrid operation edit action should still enter editing mode after moving to a class handler.",
+            failures);
+
+        saveAction.RaiseEvent(new RoutedEventArgs(HyperLinkTextBlock.ClickEvent)
+        {
+            Source = saveAction
+        });
+        RefreshLayout(realized.Window);
+        Expect(!GetDataGridOperationButtonsIsEditing(operationButtons),
+            "DataGrid operation save action should still leave editing mode after moving to a class handler.",
+            failures);
+
+        editAction.RaiseEvent(new RoutedEventArgs(HyperLinkTextBlock.ClickEvent)
+        {
+            Source = editAction
+        });
+        cancelAction.RaiseEvent(new RoutedEventArgs(PopupConfirm.ConfirmedEvent)
+        {
+            Source = cancelAction
+        });
+        RefreshLayout(realized.Window);
+        Expect(!GetDataGridOperationButtonsIsEditing(operationButtons),
+            "DataGrid operation cancel confirmation should still leave editing mode after moving to a class handler.",
+            failures);
+    }
+
+    private static void VerifyDataGridSelectionColumnHeaderCheckBoxUsesClassHandler(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(4);
+        grid.SelectionMode = DataGridSelectionMode.Extended;
+        grid.Columns.Add(new DataGridSelectionColumn());
+        grid.Columns.Add(new DataGridTextColumn
+        {
+            Header  = "Name",
+            Binding = new Binding(nameof(PerfDataGridRow.Name))
+        });
+
+        using var realized = RealizeControl(grid);
+
+        var headerCheckBox = GetDataGridSelectionHeaderCheckBox(grid);
+        Expect(headerCheckBox != null,
+            "DataGrid selection column should realize a header CheckBox in Extended selection mode.",
+            failures);
+        if (headerCheckBox == null)
+        {
+            return;
+        }
+
+        Expect(!GetLocalRoutedHandlerNames(headerCheckBox).Any(name => name.Contains("Click")),
+            "DataGrid selection column header CheckBox should use a class handler instead of a local Click handler.",
+            failures);
+
+        headerCheckBox.IsChecked = true;
+        headerCheckBox.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent)
+        {
+            Source = headerCheckBox
+        });
+        RefreshLayout(realized.Window);
+        Expect(grid.SelectedItems.Count == 4,
+            $"DataGrid selection column header CheckBox should still select all rows. Actual selected count: {grid.SelectedItems.Count}.",
+            failures);
+
+        headerCheckBox.IsChecked = false;
+        headerCheckBox.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent)
+        {
+            Source = headerCheckBox
+        });
+        RefreshLayout(realized.Window);
+        Expect(grid.SelectedItems.Count == 0,
+            $"DataGrid selection column header CheckBox should still clear row selection. Actual selected count: {grid.SelectedItems.Count}.",
+            failures);
+    }
+
+    private static void VerifyDataGridCheckBoxColumnPointerEditUsesBoundsSubscription(ICollection<string> failures)
+    {
+        var panel = new Canvas
+        {
+            Width  = 40,
+            Height = 40
+        };
+        using var realized = RealizeControl(panel);
+
+        var column = new DataGridCheckBoxColumn();
+        var editingCheckBox = new AtomUI.Desktop.Controls.CheckBox
+        {
+            Width     = 18,
+            Height    = 18,
+            IsChecked = false
+        };
+        Expect(editingCheckBox.Bounds.Width == 0 && editingCheckBox.Bounds.Height == 0,
+            $"DataGrid checkbox edit verification should start with zero Bounds. Actual: {editingCheckBox.Bounds}.",
+            failures);
+
+        var pointerArgs = CreatePrimaryPointerPressedEventArgs(
+            editingCheckBox,
+            realized.Window,
+            panel.TranslatePoint(new Point(9, 9), realized.Window) ?? new Point(9, 9));
+        var uneditedValue = InvokeDataGridPrepareCellForEdit(
+            column,
+            editingCheckBox,
+            pointerArgs,
+            failures);
+
+        Expect(uneditedValue is false,
+            $"DataGrid checkbox edit should return the original unchecked value. Actual: {uneditedValue ?? "null"}.",
+            failures);
+        Expect(!HasLayoutUpdatedSubscription(editingCheckBox),
+            "DataGrid checkbox pointer edit should wait for first non-zero Bounds without subscribing to LayoutUpdated.",
+            failures);
+        Expect(editingCheckBox.IsChecked == false,
+            "DataGrid checkbox pointer edit should defer toggling while the editing checkbox still has zero Bounds.",
+            failures);
+
+        panel.Children.Add(editingCheckBox);
+        RefreshLayout(realized.Window);
+
+        Expect(editingCheckBox.Bounds.Width != 0 || editingCheckBox.Bounds.Height != 0,
+            $"DataGrid checkbox edit verification should realize non-zero Bounds. Actual: {editingCheckBox.Bounds}.",
+            failures);
+        var pointerPosition = pointerArgs.GetPosition(editingCheckBox);
+        Expect(new Rect(editingCheckBox.Bounds.Size).Contains(pointerPosition),
+            $"DataGrid checkbox edit verification pointer should land inside the editing checkbox. Position: {pointerPosition}, bounds: {editingCheckBox.Bounds}.",
+            failures);
+        Expect(editingCheckBox.IsChecked == true,
+            "DataGrid checkbox pointer edit should still toggle once the editing checkbox receives non-zero Bounds.",
+            failures);
+        Expect(!HasLayoutUpdatedSubscription(editingCheckBox),
+            "DataGrid checkbox pointer edit should not leave a LayoutUpdated handler after the deferred toggle.",
+            failures);
+    }
+
+    private static void VerifyDataGridDataConnectionCountsEnumerableWithoutLinqCast(ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.Data.DataGridDataConnection");
+        Expect(type != null,
+            "DataGridDataConnection type should be available for enumerable count verification.",
+            failures);
+        if (type == null)
+        {
+            return;
+        }
+
+        var connection = Activator.CreateInstance(type, new object[] { new DataGrid() });
+        var dataSourceProperty = type.GetProperty(
+            "DataSource",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        var tryGetCountMethod = type.GetMethod(
+            "TryGetCount",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Expect(connection != null && dataSourceProperty != null && tryGetCountMethod != null,
+            "DataGridDataConnection should expose DataSource and TryGetCount for enumerable count verification.",
+            failures);
+        if (connection == null || dataSourceProperty == null || tryGetCountMethod == null)
+        {
+            return;
+        }
+
+        var countedEnumerable = new InstrumentedEnumerable(3);
+        dataSourceProperty.SetValue(connection, countedEnumerable);
+        var countArgs = new object?[] { true, false, 0 };
+        var countResult = tryGetCountMethod.Invoke(connection, countArgs) is true;
+        int count = countArgs[2] is int value ? value : -1;
+        Expect(countResult && count == 3,
+            $"DataGridDataConnection should count non-ICollection IEnumerable items. Actual: {count}.",
+            failures);
+        Expect(countedEnumerable.MoveNextCount == 4,
+            $"DataGridDataConnection count should enumerate exactly count + 1 times. Actual MoveNext count: {countedEnumerable.MoveNextCount}.",
+            failures);
+        Expect(countedEnumerable.DisposeCount == 1,
+            $"DataGridDataConnection count should dispose the raw enumerator. Actual dispose count: {countedEnumerable.DisposeCount}.",
+            failures);
+
+        var anyEnumerable = new InstrumentedEnumerable(3);
+        dataSourceProperty.SetValue(connection, anyEnumerable);
+        var anyArgs = new object?[] { false, true, 0 };
+        var anyResult = tryGetCountMethod.Invoke(connection, anyArgs) is true;
+        int anyCount = anyArgs[2] is int anyValue ? anyValue : -1;
+        Expect(anyResult && anyCount == 1,
+            $"DataGridDataConnection getAny should return one when a non-ICollection IEnumerable has items. Actual: {anyCount}.",
+            failures);
+        Expect(anyEnumerable.MoveNextCount == 1,
+            $"DataGridDataConnection getAny should stop after the first item. Actual MoveNext count: {anyEnumerable.MoveNextCount}.",
+            failures);
+        Expect(anyEnumerable.DisposeCount == 1,
+            $"DataGridDataConnection getAny should dispose the raw enumerator. Actual dispose count: {anyEnumerable.DisposeCount}.",
+            failures);
+    }
+
+    private static void VerifyDataGridDataConnectionAnyUsesCollectionViewIsEmpty(ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.Data.DataGridDataConnection");
+        Expect(type != null,
+            "DataGridDataConnection type should be available for collection view empty-state verification.",
+            failures);
+        if (type == null)
+        {
+            return;
+        }
+
+        var connection = Activator.CreateInstance(type, new object[] { new DataGrid() });
+        var dataSourceProperty = type.GetProperty(
+            "DataSource",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        var anyMethod = type.GetMethod(
+            "Any",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Expect(connection != null && dataSourceProperty != null && anyMethod != null,
+            "DataGridDataConnection should expose DataSource and Any for collection view empty-state verification.",
+            failures);
+        if (connection == null || dataSourceProperty == null || anyMethod == null)
+        {
+            return;
+        }
+
+        var nonEmptyView = new InstrumentedCollectionView(isEmpty: false);
+        dataSourceProperty.SetValue(connection, nonEmptyView);
+        Expect(anyMethod.Invoke(connection, null) is true,
+            "DataGridDataConnection.Any should return true when IDataGridCollectionView.IsEmpty is false.",
+            failures);
+        Expect(nonEmptyView.IsEmptyAccessCount == 1,
+            $"DataGridDataConnection.Any should read IDataGridCollectionView.IsEmpty once. Actual: {nonEmptyView.IsEmptyAccessCount}.",
+            failures);
+        Expect(nonEmptyView.GetEnumeratorCount == 0,
+            $"DataGridDataConnection.Any should not enumerate IDataGridCollectionView. Actual GetEnumerator count: {nonEmptyView.GetEnumeratorCount}.",
+            failures);
+
+        var emptyView = new InstrumentedCollectionView(isEmpty: true);
+        dataSourceProperty.SetValue(connection, emptyView);
+        Expect(anyMethod.Invoke(connection, null) is false,
+            "DataGridDataConnection.Any should return false when IDataGridCollectionView.IsEmpty is true.",
+            failures);
+        Expect(emptyView.IsEmptyAccessCount == 1,
+            $"DataGridDataConnection.Any should read empty IDataGridCollectionView.IsEmpty once. Actual: {emptyView.IsEmptyAccessCount}.",
+            failures);
+        Expect(emptyView.GetEnumeratorCount == 0,
+            $"DataGridDataConnection.Any should not enumerate empty IDataGridCollectionView. Actual GetEnumerator count: {emptyView.GetEnumeratorCount}.",
+            failures);
+    }
+
+    private static void VerifyDataGridValidationUtilsFiltersExceptionsWithoutLinq(ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.Utils.ValidationUtils");
+        Expect(type != null,
+            "DataGrid ValidationUtils type should be available for validation exception verification.",
+            failures);
+        if (type == null)
+        {
+            return;
+        }
+
+        var unpackMethod = type.GetMethod(
+            "UnpackException",
+            BindingFlags.Static | BindingFlags.Public);
+        var addExceptionIfNewMethod = type.GetMethod(
+            "AddExceptionIfNew",
+            BindingFlags.Static | BindingFlags.Public);
+        Expect(unpackMethod != null && addExceptionIfNewMethod != null,
+            "DataGrid ValidationUtils should expose UnpackException and AddExceptionIfNew for verification.",
+            failures);
+        if (unpackMethod == null || addExceptionIfNewMethod == null)
+        {
+            return;
+        }
+
+        Expect(InvokeValidationUnpackException(unpackMethod, null, failures).Count == 0,
+            "ValidationUtils.UnpackException should return empty for null exceptions.",
+            failures);
+
+        var singleException = new InvalidOperationException("single");
+        var singleResult = InvokeValidationUnpackException(unpackMethod, singleException, failures);
+        Expect(singleResult.Count == 1 && ReferenceEquals(singleResult[0], singleException),
+            "ValidationUtils.UnpackException should preserve a single non-binding exception.",
+            failures);
+
+        var bindingException = new BindingChainException("binding", "expression", "point");
+        Expect(InvokeValidationUnpackException(unpackMethod, bindingException, failures).Count == 0,
+            "ValidationUtils.UnpackException should filter a single BindingChainException.",
+            failures);
+
+        var firstException = new InvalidOperationException("first");
+        var secondException = new DataValidationException("second");
+        var aggregate = new AggregateException(
+            firstException,
+            bindingException,
+            secondException);
+        var aggregateResult = InvokeValidationUnpackException(unpackMethod, aggregate, failures);
+        Expect(aggregateResult.Count == 2 &&
+               ReferenceEquals(aggregateResult[0], firstException) &&
+               ReferenceEquals(aggregateResult[1], secondException),
+            "ValidationUtils.UnpackException should filter binding exceptions from aggregates while preserving non-binding order.",
+            failures);
+
+        var allBindingAggregate = new AggregateException(
+            bindingException,
+            new BindingChainException("binding2", "expression", "point"));
+        Expect(InvokeValidationUnpackException(unpackMethod, allBindingAggregate, failures).Count == 0,
+            "ValidationUtils.UnpackException should return empty when every aggregate item is a BindingChainException.",
+            failures);
+
+        var collection = new List<Exception> { new InvalidOperationException("same") };
+        addExceptionIfNewMethod.Invoke(null, [collection, new DataValidationException("same")]);
+        Expect(collection.Count == 1,
+            $"ValidationUtils.AddExceptionIfNew should keep matching exception messages unique. Actual count: {collection.Count}.",
+            failures);
+
+        var differentException = new InvalidOperationException("different");
+        addExceptionIfNewMethod.Invoke(null, [collection, differentException]);
+        Expect(collection.Count == 2 && ReferenceEquals(collection[1], differentException),
+            "ValidationUtils.AddExceptionIfNew should add exceptions with new messages.",
+            failures);
+    }
+
+    private static void VerifyDataGridCollectionViewPreallocatesUnfilteredSourceLists(ICollection<string> failures)
+    {
+        var source = new ArrayList();
+        for (var i = 0; i < 8; i++)
+        {
+            source.Add(i);
+        }
+
+        using var view = new DataGridCollectionView(source);
+        var internalList = GetDataGridCollectionViewInternalList(view, failures);
+        if (internalList == null)
+        {
+            return;
+        }
+        Expect(internalList.Count == source.Count,
+            $"DataGridCollectionView should copy every source item. Actual count: {internalList.Count}.",
+            failures);
+        Expect(internalList.Capacity == source.Count,
+            $"DataGridCollectionView should preallocate unfiltered ICollection source copies. Actual capacity: {internalList.Capacity}.",
+            failures);
+
+        source.Add(8);
+        view.Refresh();
+        internalList = GetDataGridCollectionViewInternalList(view, failures);
+        if (internalList == null)
+        {
+            return;
+        }
+        Expect(internalList.Count == source.Count && internalList.Capacity == source.Count,
+            $"DataGridCollectionView refresh should preallocate unfiltered ICollection source copies. Actual count/capacity: {internalList?.Count ?? -1}/{internalList?.Capacity ?? -1}.",
+            failures);
+
+        view.Filter = item => (int)item! < 2;
+        internalList = GetDataGridCollectionViewInternalList(view, failures);
+        if (internalList == null)
+        {
+            return;
+        }
+        Expect(internalList.Count == 2 && Equals(internalList[0], 0) && Equals(internalList[1], 1),
+            "DataGridCollectionView filtered refresh should preserve filtered item order.",
+            failures);
+        Expect(internalList.Capacity < source.Count,
+            $"DataGridCollectionView filtered refresh should not preallocate the full source count. Actual capacity/source count: {internalList.Capacity}/{source.Count}.",
+            failures);
+    }
+
+    private static void VerifyDataGridCollectionViewMaterializesSortedListsWithCapacity(ICollection<string> failures)
+    {
+        var source = new ArrayList();
+        for (var i = 0; i < 9; i++)
+        {
+            source.Add(new SortProbe(i % 3, i));
+        }
+
+        using var view = new DataGridCollectionView(source);
+        view.SortDescriptions.Add(DataGridSortDescription.FromComparer(new SortProbeGroupComparer()));
+
+        var internalList = GetDataGridCollectionViewInternalList(view, failures);
+        if (internalList == null)
+        {
+            return;
+        }
+
+        Expect(internalList.Count == source.Count && internalList.Capacity == source.Count,
+            $"DataGridCollectionView sorted refresh should materialize into a preallocated list. Actual count/capacity: {internalList.Count}/{internalList.Capacity}.",
+            failures);
+
+        var sortedItems = internalList.Cast<SortProbe>().ToList();
+        Expect(sortedItems.Select(item => item.Order).SequenceEqual([0, 3, 6, 1, 4, 7, 2, 5, 8]),
+            $"DataGridCollectionView sorted refresh should preserve stable ordering within equal keys. Actual order: {string.Join(", ", sortedItems.Select(item => item.Order))}.",
+            failures);
+    }
+
+    private static void VerifyDataGridMergedComparerPreservesSortDescriptionOrder(ICollection<string> failures)
+    {
+        var descriptions = new DataGridSortDescriptionCollection
+        {
+            DataGridSortDescription.FromComparer(new SortProbeGroupComparer()),
+            DataGridSortDescription.FromComparer(new SortProbeOrderComparer())
+        };
+        var comparerType = typeof(DataGridCollectionView).GetNestedType("MergedComparer", BindingFlags.NonPublic);
+        Expect(comparerType != null,
+            "DataGridCollectionView should expose MergedComparer for sort comparer verification.",
+            failures);
+        if (comparerType == null)
+        {
+            return;
+        }
+
+        var constructor = comparerType.GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(DataGridSortDescriptionCollection)],
+            modifiers: null);
+        var compareMethod = comparerType.GetMethod("Compare", BindingFlags.Instance | BindingFlags.Public);
+        var comparersField = comparerType.GetField("_comparers", BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(constructor != null && compareMethod != null && comparersField != null,
+            "DataGrid MergedComparer should expose constructor, Compare, and comparer storage for verification.",
+            failures);
+        if (constructor == null || compareMethod == null || comparersField == null)
+        {
+            return;
+        }
+
+        var comparer = constructor.Invoke([descriptions]);
+        var builtComparers = comparersField.GetValue(comparer) as Array;
+        Expect(builtComparers?.Length == 2,
+            $"DataGrid MergedComparer should copy all sort comparers. Actual comparer count: {builtComparers?.Length ?? -1}.",
+            failures);
+        Expect(CompareSortProbe(comparer, compareMethod, new SortProbe(1, 0), new SortProbe(2, 0)) < 0,
+            "DataGrid MergedComparer should use the first sort comparer before later comparers.",
+            failures);
+        Expect(CompareSortProbe(comparer, compareMethod, new SortProbe(1, 2), new SortProbe(1, 1)) > 0,
+            "DataGrid MergedComparer should fall through to the second sort comparer when the first returns equal.",
+            failures);
+        Expect(CompareSortProbe(comparer, compareMethod, new SortProbe(1, 1), new SortProbe(1, 1)) == 0,
+            "DataGrid MergedComparer should return equal when every sort comparer returns equal.",
+            failures);
+    }
+
+    private static void VerifyDataGridPathSortDescriptionCachesPropertyComparer(ICollection<string> failures)
+    {
+        var initializeMethod = typeof(DataGridSortDescription).GetMethod(
+            "Initialize",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(initializeMethod != null,
+            "DataGridSortDescription should expose Initialize for path comparer cache verification.",
+            failures);
+        if (initializeMethod == null)
+        {
+            return;
+        }
+
+        var pathSort = DataGridSortDescription.FromPath(nameof(SortProbe.Group));
+        initializeMethod.Invoke(pathSort, [typeof(SortProbe)]);
+
+        var internalComparer = GetPrivateFieldValue(pathSort, "_internalComparer");
+        Expect(internalComparer != null,
+            "DataGrid path sort description should prepare its property comparer during Initialize.",
+            failures);
+        Expect(Equals(GetPrivateFieldValue(pathSort, "_internalComparerType"), typeof(int)),
+            $"DataGrid path sort description should cache the comparer type. Actual: {GetPrivateFieldValue(pathSort, "_internalComparerType")}.",
+            failures);
+
+        Expect(pathSort.Comparer.Compare(new SortProbe(2, 0), new SortProbe(1, 0)) > 0,
+            "DataGrid path sort comparer should keep ascending property ordering.",
+            failures);
+        Expect(ReferenceEquals(internalComparer, GetPrivateFieldValue(pathSort, "_internalComparer")),
+            "DataGrid path sort comparer should reuse its cached property comparer across comparisons.",
+            failures);
+
+        var descriptions = new DataGridSortDescriptionCollection
+        {
+            DataGridSortDescription.FromPath(
+                nameof(SortProbe.Group),
+                ListSortDirection.Ascending,
+                new DescendingIntValueComparer())
+        };
+        var comparerType = typeof(DataGridCollectionView).GetNestedType("MergedComparer", BindingFlags.NonPublic);
+        var constructor = comparerType?.GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(DataGridSortDescriptionCollection)],
+            modifiers: null);
+        var compareMethod = comparerType?.GetMethod("Compare", BindingFlags.Instance | BindingFlags.Public);
+        Expect(constructor != null && compareMethod != null,
+            "DataGrid MergedComparer should expose constructor and Compare for path comparer verification.",
+            failures);
+        if (constructor == null || compareMethod == null)
+        {
+            return;
+        }
+
+        var comparer = constructor.Invoke([descriptions]);
+        Expect(CompareSortProbe(comparer, compareMethod, new SortProbe(2, 0), new SortProbe(1, 0)) < 0,
+            "DataGrid path sort descriptions should preserve custom value comparers in MergedComparer.",
+            failures);
+        Expect(CompareSortProbe(comparer, compareMethod, new SortProbe(1, 0), new SortProbe(2, 0)) > 0,
+            "DataGrid path sort descriptions should keep custom comparer direction for reversed values.",
+            failures);
+    }
+
     private static void VerifyDataGridColumnDragIndicatorCachesPen(ICollection<string> failures)
     {
         var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.DataGridColumnDraggingOverIndicator");
@@ -1125,6 +2411,154 @@ internal static partial class Program
             failures);
         Expect(ReferenceEquals(thirdPen, fourthPen),
             "DataGrid column drag indicator should reuse the rebuilt dashed Pen while the new Foreground is unchanged.",
+            failures);
+    }
+
+    private static void VerifyDataGridColumnHeaderSuppressesRepeatedNullDraggingOver(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 4, columnCount: 2);
+        grid.CanUserReorderColumns = true;
+        using var realized = RealizeControl(grid);
+
+        var column = grid.Columns[0];
+        var header = GetDataGridColumnHeader(column, failures);
+        var presenter = GetDataGridColumnHeadersPresenters(grid).FirstOrDefault();
+        Expect(header != null && presenter != null,
+            "DataGrid column reorder drag-over verification should realize a column header and presenter.",
+            failures);
+        if (header == null || presenter == null)
+        {
+            return;
+        }
+
+        SetNonPublicProperty(presenter, "DragColumn", column, failures);
+        SetNonPublicProperty(presenter, "DragIndicator", CreateDataGridReorderingIndicator(), failures);
+
+        var dragOverCount = 0;
+        var nullTargetCount = 0;
+        void HandleDraggingOver(object? sender, DataGridColumnDraggingOverEventArgs e)
+        {
+            dragOverCount++;
+            if (e.DraggingOverColumn == null)
+            {
+                nullTargetCount++;
+            }
+        }
+
+        grid.ColumnDraggingOver += HandleDraggingOver;
+        try
+        {
+            SetDataGridColumnHeaderDragMode(header, "Reorder", failures);
+            SetDataGridColumnHeaderStaticField("_dragStart", new Point(0, 0), failures);
+            SetDataGridColumnHeaderStaticField("_dragColumn", column, failures);
+            SetDataGridColumnHeaderStaticField("_currentDraggingOverColumn", column, failures);
+
+            column.IsVisible = false;
+            InvokeDataGridColumnHeaderMouseMoveReorder(
+                header,
+                new Point(0, 0),
+                new Point(0, 0),
+                failures);
+            InvokeDataGridColumnHeaderMouseMoveReorder(
+                header,
+                new Point(0, 0),
+                new Point(0, 0),
+                failures);
+        }
+        finally
+        {
+            grid.ColumnDraggingOver -= HandleDraggingOver;
+            SetDataGridColumnHeaderStaticField("_dragStart", null, failures);
+            SetDataGridColumnHeaderStaticField("_dragColumn", null, failures);
+            SetDataGridColumnHeaderStaticField("_currentDraggingOverColumn", null, failures);
+            SetDataGridColumnHeaderDragMode(header, "None", failures);
+        }
+
+        Expect(dragOverCount == 1 && nullTargetCount == 1,
+            $"DataGrid column reorder should notify the null drag-over target once until the target changes. Actual notifications/null-target notifications: {dragOverCount}/{nullTargetCount}.",
+            failures);
+    }
+
+    private static void VerifyDataGridColumnHeaderClickDoesNotClearDragOver(ICollection<string> failures)
+    {
+        var grid = CreateBasicDataGrid(rowCount: 4, columnCount: 2);
+        using var realized = RealizeControl(grid);
+
+        var column = grid.Columns[0];
+        var header = GetDataGridColumnHeader(column, failures);
+        Expect(header != null,
+            "DataGrid column header click drag-over verification should realize a column header.",
+            failures);
+        if (header == null)
+        {
+            return;
+        }
+
+        var dragOverCount = 0;
+        void HandleDraggingOver(object? sender, DataGridColumnDraggingOverEventArgs e)
+        {
+            dragOverCount++;
+        }
+
+        grid.ColumnDraggingOver += HandleDraggingOver;
+        try
+        {
+            RaiseDataGridHeaderPrimaryPointerPressed(header, realized.Window);
+            RaiseControlPrimaryPointerReleased(header, realized.Window);
+        }
+        finally
+        {
+            grid.ColumnDraggingOver -= HandleDraggingOver;
+        }
+
+        Expect(dragOverCount == 0,
+            $"DataGrid column header click should not send drag-over cleanup notifications. Actual: {dragOverCount}.",
+            failures);
+
+        var presenter = GetDataGridColumnHeadersPresenters(grid).FirstOrDefault();
+        Expect(presenter != null,
+            "DataGrid column reorder cleanup verification should realize a column headers presenter.",
+            failures);
+        if (presenter == null)
+        {
+            return;
+        }
+
+        var cleanupCount = 0;
+        var nullCleanupCount = 0;
+        void HandleReorderCleanup(object? sender, DataGridColumnDraggingOverEventArgs e)
+        {
+            cleanupCount++;
+            if (e.DraggedColumn == null && e.DraggingOverColumn == null)
+            {
+                nullCleanupCount++;
+            }
+        }
+
+        grid.ColumnDraggingOver += HandleReorderCleanup;
+        try
+        {
+            SetNonPublicProperty(presenter, "DragColumn", column, failures);
+            SetNonPublicProperty(presenter, "DragIndicator", CreateDataGridReorderingIndicator(), failures);
+            SetDataGridColumnHeaderDragMode(header, "Reorder", failures);
+            SetDataGridColumnHeaderStaticField("_dragColumn", column, failures);
+            SetDataGridColumnHeaderStaticField("_currentDraggingOverColumn", column, failures);
+
+            InvokeDataGridColumnHeaderLostMouseCapture(header, failures);
+        }
+        finally
+        {
+            grid.ColumnDraggingOver -= HandleReorderCleanup;
+            SetDataGridColumnHeaderStaticField("_dragStart", null, failures);
+            SetDataGridColumnHeaderStaticField("_dragColumn", null, failures);
+            SetDataGridColumnHeaderStaticField("_currentDraggingOverColumn", null, failures);
+            SetDataGridColumnHeaderDragMode(header, "None", failures);
+            SetNonPublicProperty(presenter, "DragColumn", null, failures);
+            SetNonPublicProperty(presenter, "DragIndicator", null, failures);
+        }
+
+        Expect(cleanupCount == 1 && nullCleanupCount == 1,
+            $"DataGrid column reorder cleanup should still notify one null drag-over event. Actual notifications/null cleanups: {cleanupCount}/{nullCleanupCount}.",
             failures);
     }
 
@@ -1452,6 +2886,360 @@ internal static partial class Program
             failures);
     }
 
+    private static int CompareSortProbe(object comparer, MethodInfo compareMethod, SortProbe x, SortProbe y)
+    {
+        return compareMethod.Invoke(comparer, [x, y]) is int result ? result : int.MinValue;
+    }
+
+    private static DataGridSortDescription? InvokeDataGridColumnGetSortDescription(
+        DataGridColumn column,
+        ICollection<string> failures)
+    {
+        var method = typeof(DataGridColumn).GetMethod(
+            "GetSortDescription",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(method != null,
+            "DataGridColumn should expose GetSortDescription for lookup verification.",
+            failures);
+        return method?.Invoke(column, null) as DataGridSortDescription;
+    }
+
+    private static DataGridFilterDescription? InvokeDataGridColumnGetFilterDescription(
+        DataGridColumn column,
+        ICollection<string> failures)
+    {
+        var method = typeof(DataGridColumn).GetMethod(
+            "GetFilterDescription",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(method != null,
+            "DataGridColumn should expose GetFilterDescription for lookup verification.",
+            failures);
+        return method?.Invoke(column, null) as DataGridFilterDescription;
+    }
+
+    private static List<Exception> InvokeValidationUnpackException(
+        MethodInfo unpackMethod,
+        Exception? exception,
+        ICollection<string> failures)
+    {
+        var result = unpackMethod.Invoke(null, [exception]) as IEnumerable<Exception>;
+        Expect(result != null,
+            "ValidationUtils.UnpackException should return an exception sequence.",
+            failures);
+        return result?.ToList() ?? [];
+    }
+
+    private static List<object>? GetDataGridCollectionViewInternalList(
+        DataGridCollectionView view,
+        ICollection<string> failures)
+    {
+        var internalList = GetPrivateFieldValue(view, "_internalList") as List<object>;
+        Expect(internalList != null,
+            "DataGridCollectionView should use a List<object> internal list for capacity verification.",
+            failures);
+        return internalList;
+    }
+
+    private sealed class SortProbe
+    {
+        public int Group { get; }
+
+        public int Order { get; }
+
+        public SortProbe(int group, int order)
+        {
+            Group = group;
+            Order = order;
+        }
+    }
+
+    private sealed class FilterProbe
+    {
+        public string Name { get; }
+
+        public int Score { get; }
+
+        public FilterProbe(string name, int score)
+        {
+            Name  = name;
+            Score = score;
+        }
+    }
+
+    private sealed class CountingFilterProbe
+    {
+        private readonly CountingStringValue _value;
+
+        public int ValueAccessCount { get; private set; }
+
+        public CountingStringValue Value
+        {
+            get
+            {
+                ValueAccessCount++;
+                return _value;
+            }
+        }
+
+        public CountingFilterProbe(CountingStringValue value)
+        {
+            _value = value;
+        }
+    }
+
+    private sealed class CountingStringValue
+    {
+        private readonly string _value;
+
+        public int ToStringCallCount { get; private set; }
+
+        public CountingStringValue(string value)
+        {
+            _value = value;
+        }
+
+        public override string ToString()
+        {
+            ToStringCallCount++;
+            return _value;
+        }
+    }
+
+    private sealed class SortProbeGroupComparer : IComparer
+    {
+        public int Compare(object? x, object? y)
+        {
+            return ((SortProbe)x!).Group.CompareTo(((SortProbe)y!).Group);
+        }
+    }
+
+    private sealed class SortProbeOrderComparer : IComparer
+    {
+        public int Compare(object? x, object? y)
+        {
+            return ((SortProbe)x!).Order.CompareTo(((SortProbe)y!).Order);
+        }
+    }
+
+    private sealed class DescendingIntValueComparer : IComparer
+    {
+        public int Compare(object? x, object? y)
+        {
+            return ((int)y!).CompareTo((int)x!);
+        }
+    }
+
+    private sealed class NoopComparer : IComparer
+    {
+        public int Compare(object? x, object? y)
+        {
+            return 0;
+        }
+    }
+
+    private sealed class InstrumentedEnumerable : IEnumerable
+    {
+        private readonly int _count;
+
+        public int MoveNextCount { get; private set; }
+
+        public int DisposeCount { get; private set; }
+
+        public InstrumentedEnumerable(int count)
+        {
+            _count = count;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return new Enumerator(this);
+        }
+
+        private sealed class Enumerator : IEnumerator, IDisposable
+        {
+            private readonly InstrumentedEnumerable _owner;
+            private int _index = -1;
+
+            public Enumerator(InstrumentedEnumerable owner)
+            {
+                _owner = owner;
+            }
+
+            public object Current => _index;
+
+            public bool MoveNext()
+            {
+                _owner.MoveNextCount++;
+                _index++;
+                return _index < _owner._count;
+            }
+
+            public void Reset()
+            {
+                _index = -1;
+            }
+
+            public void Dispose()
+            {
+                _owner.DisposeCount++;
+            }
+        }
+    }
+
+    private sealed class InstrumentedCollectionView : IDataGridCollectionView
+    {
+        private readonly bool _isEmpty;
+
+        public int IsEmptyAccessCount { get; private set; }
+
+        public int GetEnumeratorCount { get; private set; }
+
+        public InstrumentedCollectionView(bool isEmpty)
+        {
+            _isEmpty = isEmpty;
+        }
+
+        public CultureInfo Culture { get; set; } = CultureInfo.InvariantCulture;
+
+        public IEnumerable SourceCollection => this;
+
+        public Func<object, bool>? Filter { get; set; }
+
+        public bool CanFilter => false;
+
+        public DataGridSortDescriptionCollection? SortDescriptions => null;
+
+        public DataGridFilterDescriptionCollection? FilterDescriptions => null;
+
+        public bool CanSort => false;
+
+        public bool CanGroup => false;
+
+        public bool IsGrouping => false;
+
+        public int GroupingDepth => 0;
+
+        public Avalonia.Collections.IAvaloniaReadOnlyList<object>? Groups => null;
+
+        public bool IsEmpty
+        {
+            get
+            {
+                IsEmptyAccessCount++;
+                return _isEmpty;
+            }
+        }
+
+        public object? CurrentItem => null;
+
+        public int CurrentPosition => -1;
+
+        public bool IsCurrentAfterLast => false;
+
+        public bool IsCurrentBeforeFirst => true;
+
+        public event NotifyCollectionChangedEventHandler? CollectionChanged
+        {
+            add { }
+            remove { }
+        }
+
+        public event EventHandler<DataGridCurrentChangingEventArgs>? CurrentChanging
+        {
+            add { }
+            remove { }
+        }
+
+        public event EventHandler? CurrentChanged
+        {
+            add { }
+            remove { }
+        }
+
+        public bool Contains(object item)
+        {
+            return false;
+        }
+
+        public string GetGroupingPropertyNameAtDepth(int level)
+        {
+            return string.Empty;
+        }
+
+        public void Refresh()
+        {
+        }
+
+        public IDisposable DeferRefresh()
+        {
+            return new NoopDisposable();
+        }
+
+        public bool MoveCurrentToFirst()
+        {
+            return false;
+        }
+
+        public bool MoveCurrentToLast()
+        {
+            return false;
+        }
+
+        public bool MoveCurrentToNext()
+        {
+            return false;
+        }
+
+        public bool MoveCurrentToPrevious()
+        {
+            return false;
+        }
+
+        public bool MoveCurrentTo(object? item)
+        {
+            return false;
+        }
+
+        public bool MoveCurrentToPosition(int position)
+        {
+            return false;
+        }
+
+        public object AddNew()
+        {
+            throw new NotSupportedException();
+        }
+
+        public void CancelNew()
+        {
+        }
+
+        public void CommitNew()
+        {
+        }
+
+        public void Remove(object? item)
+        {
+        }
+
+        public void RemoveAt(int index)
+        {
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            GetEnumeratorCount++;
+            return Array.Empty<object>().GetEnumerator();
+        }
+    }
+
+    private sealed class NoopDisposable : IDisposable
+    {
+        public void Dispose()
+        {
+        }
+    }
+
     private static List<Control> GetDataGridFilterIndicators(Control root)
     {
         return root.GetSelfAndVisualDescendants()
@@ -1583,6 +3371,29 @@ internal static partial class Program
                    ?.GetValue(grid) as bool? ?? false;
     }
 
+    private static AbstractPagination? GetDataGridTopPagination(DataGrid grid)
+    {
+        return GetPrivateFieldValue(grid, "_topPagination") as AbstractPagination;
+    }
+
+    private static AbstractPagination? GetDataGridBottomPagination(DataGrid grid)
+    {
+        return GetPrivateFieldValue(grid, "_bottomPagination") as AbstractPagination;
+    }
+
+    private static int GetPaginationCurrentPageChangedHandlerCount(AbstractPagination? pagination)
+    {
+        if (pagination == null)
+        {
+            return 0;
+        }
+
+        var field = typeof(AbstractPagination).GetField(
+            "CurrentPageChanged",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        return (field?.GetValue(pagination) as MulticastDelegate)?.GetInvocationList().Length ?? 0;
+    }
+
     private static bool SetDataGridCurrentCell(DataGrid grid, int columnIndex, int slot)
     {
         var method = typeof(DataGrid).GetMethod(
@@ -1642,6 +3453,52 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants()
                    .OfType<DataGridCell>()
                    .ToList();
+    }
+
+    private static List<Control> GetDataGridOperationButtons(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<Control>()
+                   .Where(control => control.GetType().Name == "DataGridOperationButtons")
+                   .ToList();
+    }
+
+    private static List<Control> GetDataGridRowReorderHandles(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<Control>()
+                   .Where(control => control.GetType().Name == "DataGridRowReorderHandle")
+                   .ToList();
+    }
+
+    private static T? GetDataGridOperationButtonPart<T>(Control operationButtons, string name)
+        where T : Control
+    {
+        return GetNamedDescendant<T>(operationButtons, name);
+    }
+
+    private static Avalonia.Controls.CheckBox? GetDataGridSelectionHeaderCheckBox(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<Avalonia.Controls.CheckBox>()
+                   .FirstOrDefault(control => control.GetType().Name == "SelectionHeaderCheckBox");
+    }
+
+    private static T? GetNamedDescendant<T>(Control root, string name)
+        where T : Control
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<T>()
+                   .FirstOrDefault(control => control.Name == name);
+    }
+
+    private static bool GetDataGridOperationButtonsIsEditing(Control operationButtons)
+    {
+        var property = operationButtons.GetType()
+                                       .GetProperty(
+                                           "IsEditing",
+                                           BindingFlags.Instance | BindingFlags.NonPublic);
+        return property?.GetValue(operationButtons) is true;
     }
 
     private static Avalonia.Controls.Shapes.Rectangle? GetDataGridRowBottomGridLine(DataGridRow row)
@@ -1846,6 +3703,15 @@ internal static partial class Program
         property?.SetValue(instance, value);
     }
 
+    private static object? GetNonPublicPropertyValue(object instance, string propertyName)
+    {
+        return instance.GetType()
+                       .GetProperty(
+                           propertyName,
+                           BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                       ?.GetValue(instance);
+    }
+
     private static void SetDataGridColumnHeaderProperty(
         Control header,
         string propertyName,
@@ -1878,6 +3744,115 @@ internal static partial class Program
         SetDataGridColumnHeaderProperty(header, "HeaderDragMode", Enum.Parse(dragModeType, modeName), failures);
     }
 
+    private static void SetDataGridColumnHeaderStaticField(
+        string fieldName,
+        object? value,
+        ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.DataGridColumnHeader");
+        Expect(type != null,
+            "DataGrid column header type should be available for reorder verification.",
+            failures);
+        if (type == null)
+        {
+            return;
+        }
+
+        var field = type.GetField(
+            fieldName,
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Expect(field != null,
+            $"DataGrid column header should expose static field {fieldName} for reorder verification.",
+            failures);
+        field?.SetValue(null, value);
+    }
+
+    private static void InvokeDataGridColumnHeaderMouseMoveReorder(
+        Control header,
+        Point mousePosition,
+        Point mousePositionHeaders,
+        ICollection<string> failures)
+    {
+        var method = header.GetType().GetMethod(
+            "HandleMouseMoveReorder",
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            binder: null,
+            types:
+            [
+                typeof(bool).MakeByRefType(),
+                typeof(Point),
+                typeof(Point)
+            ],
+            modifiers: null);
+        Expect(method != null,
+            "DataGrid column header should expose HandleMouseMoveReorder for reorder verification.",
+            failures);
+        object[] args = [false, mousePosition, mousePositionHeaders];
+        method?.Invoke(header, args);
+    }
+
+    private static void InvokeDataGridColumnHeaderLostMouseCapture(
+        Control header,
+        ICollection<string> failures)
+    {
+        var method = header.GetType().GetMethod(
+            "HandleLostMouseCapture",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(method != null,
+            "DataGrid column header should expose HandleLostMouseCapture for reorder cleanup verification.",
+            failures);
+        method?.Invoke(header, null);
+    }
+
+    private static void InvokeDataGridRowReorderHandleBeginReorder(
+        Control handle,
+        Point mousePosition,
+        ICollection<string> failures)
+    {
+        var method = handle.GetType().GetMethod(
+            "HandleMouseMoveBeginReorder",
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(Point)],
+            modifiers: null);
+        Expect(method != null,
+            "DataGrid row reorder handle should expose HandleMouseMoveBeginReorder for drag lifecycle verification.",
+            failures);
+        method?.Invoke(handle, [mousePosition]);
+    }
+
+    private static void InvokeDataGridRowReorderHandleNotifyUnLoadingRow(
+        Control handle,
+        DataGridRow row,
+        ICollection<string> failures)
+    {
+        var method = handle.GetType().GetMethod(
+            "NotifyUnLoadingRow",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(DataGridRow)],
+            modifiers: null);
+        Expect(method != null,
+            "DataGrid row reorder handle should expose NotifyUnLoadingRow for drag lifecycle verification.",
+            failures);
+        method?.Invoke(handle, [row]);
+    }
+
+    private static void InvokeDataGridColumnHeaderFilterRequest(
+        Control header,
+        DataGridColumn column,
+        List<string> filterValues,
+        ICollection<string> failures)
+    {
+        var method = header.GetType().GetMethod(
+            "HandleFilterRequest",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(method != null,
+            "DataGrid column header should expose HandleFilterRequest for filter request verification.",
+            failures);
+        method?.Invoke(header, [null, new DataGridColumnFilterEventArgs(column, filterValues)]);
+    }
+
     private static void ExpectDataGridCellHeaderSubscriptionsReleased(
         DataGridCell cell,
         ICollection<string> failures)
@@ -1897,7 +3872,78 @@ internal static partial class Program
                        ?.GetValue(instance);
     }
 
+    private static object? InvokeDataGridPrepareCellForEdit(
+        DataGridColumn column,
+        Control editingElement,
+        RoutedEventArgs editingEventArgs,
+        ICollection<string> failures)
+    {
+        var method = typeof(DataGridColumn).GetMethod(
+            "PrepareCellForEditInternal",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Expect(method != null,
+            "DataGridColumn should expose PrepareCellForEditInternal for checkbox edit verification.",
+            failures);
+        return method?.Invoke(column, [editingElement, editingEventArgs]);
+    }
+
+    private static bool HasLayoutUpdatedSubscription(Control control)
+    {
+        var field = typeof(Avalonia.Layout.Layoutable).GetField(
+            "_layoutUpdated",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        return field?.GetValue(control) is not null;
+    }
+
     private static void RaiseDataGridHeaderPrimaryPointerPressed(Control target, Visual root)
+    {
+        var localPoint = new Point(
+            Math.Max(1, target.Bounds.Width / 2),
+            Math.Max(1, target.Bounds.Height / 2));
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        target.RaiseEvent(CreatePrimaryPointerPressedEventArgs(target, root, rootPoint));
+    }
+
+    private static void RaiseControlPrimaryPointerPressed(Control target, Visual root)
+    {
+        var localPoint = new Point(
+            Math.Max(1, target.Bounds.Width / 2),
+            Math.Max(1, target.Bounds.Height / 2));
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        target.RaiseEvent(CreatePrimaryPointerPressedEventArgs(target, root, rootPoint));
+    }
+
+    private static void RaiseControlPrimaryPointerReleased(Control target, Visual root)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        var properties = new PointerPointProperties(
+            RawInputModifiers.None,
+            PointerUpdateKind.LeftButtonReleased);
+        var localPoint = new Point(
+            Math.Max(1, target.Bounds.Width / 2),
+            Math.Max(1, target.Bounds.Height / 2));
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        target.RaiseEvent(new PointerReleasedEventArgs(
+            target,
+            pointer,
+            root,
+            rootPoint,
+            1,
+            properties,
+            KeyModifiers.None,
+            MouseButton.Left));
+    }
+
+    private static PointerPressedEventArgs CreatePrimaryPointerPressedEventArgs(
+        Control source,
+        Visual root,
+        Point rootPoint)
     {
         var pointer = new Avalonia.Input.Pointer(
             Avalonia.Input.Pointer.GetNextFreeId(),
@@ -1906,19 +3952,15 @@ internal static partial class Program
         var properties = new PointerPointProperties(
             RawInputModifiers.LeftMouseButton,
             PointerUpdateKind.LeftButtonPressed);
-        var localPoint = new Point(
-            Math.Max(1, target.Bounds.Width / 2),
-            Math.Max(1, target.Bounds.Height / 2));
-        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
 
-        target.RaiseEvent(new PointerPressedEventArgs(
-            target,
+        return new PointerPressedEventArgs(
+            source,
             pointer,
             root,
             rootPoint,
             1,
             properties,
-            KeyModifiers.None));
+            KeyModifiers.None);
     }
 
     private static PopupFlyoutBase? GetDataGridFilterFlyout(Control indicator)
@@ -1937,12 +3979,49 @@ internal static partial class Program
         method?.Invoke(indicator, null);
     }
 
+    private static Control? CreateDataGridFilterFlyoutPresenter(PopupFlyoutBase flyout)
+    {
+        var method = flyout.GetType()
+                           .GetMethod(
+                               "CreatePresenter",
+                               BindingFlags.Instance | BindingFlags.NonPublic);
+        return method?.Invoke(flyout, null) as Control;
+    }
+
+    private static bool GetDataGridFilterFlyoutActiveShutdown(PopupFlyoutBase flyout)
+    {
+        var field = flyout.GetType()
+                          .GetField(
+                              "IsActiveShutdown",
+                              BindingFlags.Instance | BindingFlags.NonPublic);
+        return field?.GetValue(flyout) is true;
+    }
+
+    private static string? GetDataGridFilterIndicatorTreeGroupName(Control indicator)
+    {
+        var field = indicator.GetType()
+                             .GetField(
+                                 "_treeRadioCheckGroupName",
+                                 BindingFlags.Instance | BindingFlags.NonPublic);
+        return field?.GetValue(indicator) as string;
+    }
+
     private static int GetDataGridFlyoutItemCount(PopupFlyoutBase flyout)
     {
         var items = flyout.GetType()
                           .GetProperty("Items", BindingFlags.Instance | BindingFlags.Public)?
                           .GetValue(flyout) as IEnumerable;
         return CountDataGridFlyoutItems(items);
+    }
+
+    private static List<string?> GetDataGridFilterTreeItemGroupNames(PopupFlyoutBase flyout)
+    {
+        var items = flyout.GetType()
+                          .GetProperty("Items", BindingFlags.Instance | BindingFlags.Public)?
+                          .GetValue(flyout) as IEnumerable;
+        var groupNames = new List<string?>();
+        CollectDataGridFilterTreeItemGroupNames(items, groupNames);
+        return groupNames;
     }
 
     private static int CountDataGridFlyoutItems(IEnumerable? items)
@@ -1962,5 +4041,35 @@ internal static partial class Program
             }
         }
         return count;
+    }
+
+    private static void CollectDataGridFilterTreeItemGroupNames(IEnumerable? items, List<string?> groupNames)
+    {
+        if (items is null)
+        {
+            return;
+        }
+
+        foreach (var item in items)
+        {
+            if (item?.GetType().Name == "DataGridFilterTreeViewItem")
+            {
+                var filterValue = item.GetType()
+                                      .GetProperty("FilterValue", BindingFlags.Instance | BindingFlags.Public)?
+                                      .GetValue(item);
+                if (filterValue is not null)
+                {
+                    var groupName = item.GetType()
+                                        .GetProperty("GroupName", BindingFlags.Instance | BindingFlags.Public)?
+                                        .GetValue(item) as string;
+                    groupNames.Add(groupName);
+                }
+            }
+
+            if (item is ItemsControl itemsControl)
+            {
+                CollectDataGridFilterTreeItemGroupNames(itemsControl.Items, groupNames);
+            }
+        }
     }
 }

@@ -686,8 +686,16 @@ internal partial class DataGridColumnHeader : ContentControl
         }
 
         Debug.Assert(OwningGrid.ColumnHeaders != null);
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var columns = OwningGrid.ColumnsInternal;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             Point  mousePosition = OwningGrid.ColumnHeaders.Translate(column.HeaderCell, mousePositionHeaders);
             if (mousePosition.X >= 0 && mousePosition.X <= column.HeaderCell.Bounds.Width)
             {
@@ -741,6 +749,7 @@ internal partial class DataGridColumnHeader : ContentControl
         // When we stop interacting with the column headers, we need to reset the drag mode
         // and close any popups if they are open.
 
+        bool notifyDraggingOverCleared = HeaderDragMode == DragMode.Reorder || _currentDraggingOverColumn != null;
         if (_dragColumn != null)
         {
             _dragColumn.HeaderCell.Cursor = _originalCursor;
@@ -751,9 +760,12 @@ internal partial class DataGridColumnHeader : ContentControl
         _lastMousePositionHeaders = null;
 
         _currentDraggingOverColumn = null;
-        DataGridColumnDraggingOverEventArgs draggingOverEventArgs =
-            new DataGridColumnDraggingOverEventArgs(null, null);
-        OwningGrid?.NotifyColumnDraggingOver(draggingOverEventArgs);
+        if (notifyDraggingOverCleared)
+        {
+            DataGridColumnDraggingOverEventArgs draggingOverEventArgs =
+                new DataGridColumnDraggingOverEventArgs(null, null);
+            OwningGrid?.NotifyColumnDraggingOver(draggingOverEventArgs);
+        }
 
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
@@ -895,7 +907,8 @@ internal partial class DataGridColumnHeader : ContentControl
             
             DataGridColumn? targetColumn = GetReorderingTargetColumn(mousePositionHeaders, !OwningColumn.IsFrozen /*scroll*/, out double scrollAmount);
 
-            if (_currentDraggingOverColumn != targetColumn && (targetColumn != null && !targetColumn.IsFrozen) || targetColumn == null)
+            if (_currentDraggingOverColumn != targetColumn &&
+                (targetColumn == null || !targetColumn.IsFrozen))
             {
                 DataGridColumnDraggingOverEventArgs draggingOverEventArgs =
                     new DataGridColumnDraggingOverEventArgs(_dragColumn, targetColumn);

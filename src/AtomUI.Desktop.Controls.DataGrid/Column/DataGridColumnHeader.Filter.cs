@@ -69,15 +69,13 @@ internal partial class DataGridColumnHeader
                     if (filter != null)
                     {
                         // 比较一下值，如果过滤的值不相等就重新添加
-                        var oldFilterValues = filter.FilterConditions.ToHashSet();
-                        var newFilterValues = filterValues.ToHashSet();
-                        if (newFilterValues.Count > 0 && !oldFilterValues.SetEquals(newFilterValues))
+                        if (filterValues.Count > 0 && !FilterConditionsSetEquals(filter.FilterConditions, filterValues))
                         {
                             newFilter = new DataGridFilterDescription()
                             {
-                                PropertyPath = filter.PropertyPath,
-                                Filter =  filter.Filter,
-                                FilterConditions = filterValues.ToList(),
+                                PropertyPath     = filter.PropertyPath,
+                                Filter           = filter.Filter,
+                                FilterConditions = CopyFilterValues(filterValues),
                             };
                             int oldIndex = owningGrid.DataConnection.FilterDescriptions.IndexOf(filter);
                             if (oldIndex >= 0)
@@ -90,7 +88,7 @@ internal partial class DataGridColumnHeader
                                 owningGrid.DataConnection.FilterDescriptions.Add(newFilter);
                             }
                         }
-                        else if (newFilterValues.Count == 0)
+                        else if (filterValues.Count == 0)
                         {
                             owningGrid.DataConnection.FilterDescriptions.Remove(filter);
                         }
@@ -125,7 +123,62 @@ internal partial class DataGridColumnHeader
 
     private void HandleFilterRequest(object? sender, DataGridColumnFilterEventArgs args)
     {
-        InvokeProcessFilter(args.FilterValues.Cast<object>().ToList());
+        InvokeProcessFilter(CopyFilterValues(args.FilterValues));
+    }
+
+    private static List<object> CopyFilterValues(List<string> filterValues)
+    {
+        var values = new List<object>(filterValues.Count);
+        foreach (var filterValue in filterValues)
+        {
+            values.Add(filterValue);
+        }
+        return values;
+    }
+
+    private static List<object> CopyFilterValues(List<object> filterValues)
+    {
+        var values = new List<object>(filterValues.Count);
+        foreach (var filterValue in filterValues)
+        {
+            values.Add(filterValue);
+        }
+        return values;
+    }
+
+    private static bool FilterConditionsSetEquals(List<object> oldFilterValues, List<object> newFilterValues)
+    {
+        return DistinctValuesAreContained(oldFilterValues, newFilterValues) &&
+               DistinctValuesAreContained(newFilterValues, oldFilterValues);
+    }
+
+    private static bool DistinctValuesAreContained(List<object> source, List<object> target)
+    {
+        for (var i = 0; i < source.Count; i++)
+        {
+            var value = source[i];
+            if (ContainsValue(source, value, i))
+            {
+                continue;
+            }
+            if (!ContainsValue(target, value, target.Count))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool ContainsValue(List<object> values, object? value, int endExclusive)
+    {
+        for (var i = 0; i < endExclusive; i++)
+        {
+            if (Equals(values[i], value))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     internal void InvokeClearFilter()
