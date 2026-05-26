@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding + row/row group header pointer handler + core input handler + rows presenter scroll gesture / clip geometry + row gridline / details presenter clip geometry cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1 cell header-state binding + row/row group header pointer handler + core input handler + rows presenter scroll gesture / clip geometry + row gridline / details presenter / cell clip geometry cleanup partial done；T4.2 column filter flyout lifecycle + filter indicator binding + column/group header pointer handler cleanup partial done；T4.3 special column detach lifecycle + row expander details binding partial done；T4.4 column reorder drag indicator render partial done；T4.5 row details presenter measure registration partial done；DataGrid core / row / virtualization 仍待后续专项。
 
 ---
 
@@ -23,6 +23,7 @@
 - `DataGridRowsPresenter` 不再在每次 arrange 时新建 clip `RectangleGeometry`，改为 presenter 级复用并在 `Rect` 变化时显式 invalidation。
 - `DataGridRow` 底部分割线不再在每次 arrange 时新建 clip `RectangleGeometry`，改为 row 级复用并在模板重套 / reset 时释放引用。
 - `DataGridDetailsPresenter` 不再在 non-frozen row details 每次 arrange 时新建 clip `RectangleGeometry`，改为 presenter 级复用；frozen row details 仍清空 `Clip`。
+- `DataGridCell` 在 frozen-column 裁剪路径不再每次 cells presenter arrange 新建 clip `RectangleGeometry`，改为 cell 级复用；不需要裁剪时仍清空 `Clip`。
 - `DataGridCell` 跟随 column header 的 sort / reorder 状态绑定不再通过 `BindUtils.RelayBind` 创建每 cell 捕获 lambda，改为直接 observable 绑定 + 静态 converter delegate。
 - `Columns.Clear()` 现在和单列 remove 一样走 column about-to-detach，释放 special columns 缓存的 grid 事件订阅。
 - column reorder dragging-over indicator 不再在每次 `Render()` 时创建 dashed `Pen`，改为按 foreground 缓存。
@@ -104,6 +105,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataDisplay/DataG
 | Rows presenter clip geometry allocation | 1 new `RectangleGeometry` per arrange | 0 new `RectangleGeometry` per arrange after first | 100.00% repeated-arrange allocation removed | 结构/分配优化；clip instance 复用和 Rect 更新已验证 |
 | Row bottom grid-line clip geometry allocation | 1 new `RectangleGeometry` per realized row arrange | 0 new `RectangleGeometry` per row arrange after first | 100.00% repeated-arrange allocation removed | 结构/分配优化；gridline clip instance 复用和 horizontal offset Rect 更新已验证 |
 | Details presenter clip geometry allocation | 1 new `RectangleGeometry` per non-frozen details arrange | 0 new `RectangleGeometry` per non-frozen details arrange after first | 100.00% repeated-arrange allocation removed | 结构/分配优化；clip instance 复用、Rect 更新和 frozen clear 已验证 |
+| Cell clip geometry allocation | 1 new `RectangleGeometry` per clipped cell arrange | 0 new `RectangleGeometry` per clipped cell arrange after first | 100.00% repeated-arrange allocation removed | 结构/分配优化；frozen-column cell clip instance 复用、Rect 更新和 clear 已验证 |
 | Cell header-state binding converters | 2 captured lambdas per realized data cell | 2 cached static converter delegates | per-cell converter closures removed | 结构/分配优化；sort / reorder header state 语义保留 |
 | Special column grid subscriptions after `Columns.Clear()` | retained via Reset path | released | leak path removed | 正确性/生命周期修复；覆盖 detail / reorder / selection / checkbox / operation columns |
 | Column reorder drag indicator `Pen` allocations | 1 per render | 1 per foreground value | render allocation removed | 结构优化；只影响列拖拽重排交互 |
@@ -541,6 +543,32 @@ Gallery `Grouping table head` 示例声明 4 个 `DataGridColumnGroupItem`，页
 | DataGrid.RowGroups | 9.951 | 3000.0 | 321.0 | 1.0 | smoke 通过；timing 只作异常检查 |
 | DataGrid.GalleryShape | 43.034 | 12486.4 | 1260.0 | 5.0 | smoke 通过；timing 只作异常检查 |
 
+### 2.19 Cell clip geometry allocation
+
+本轮优化点：`DataGridCellsPresenter.EnsureCellClip()` 原先只要 scrolling cell 被 frozen columns 或右侧边界裁剪，每次 cells presenter arrange 都会创建新的 `RectangleGeometry` 并赋给 `DataGridCell.Clip`。真实 Gallery `DataGridShowCase` 声明 65 个 `DataGrid`，多个 frozen-column 示例设置 `LeftFrozenColumnCount` / `RightFrozenColumnCount`；水平滚动、窗口尺寸变化、列宽变化、行虚拟化复用和 grid relayout 都会触发 realized row 的 cells presenter arrange。
+
+修复后 `DataGridCell` 持有一个 `_clipGeometry`，首次需要裁剪时创建，后续只更新 `Rect`；裁剪不再需要时仍清空 `Clip`。由于 `Visual.Clip` 换引用会触发 `AffectsRender`，而复用 geometry 只更新 `RectangleGeometry.Rect`，本轮在 `Rect` 变化时显式 `InvalidateVisual()`，保持裁剪刷新语义。`EnsureCellDisplay()` 的 current-cell hidden clip 也改走同一个缓存路径，避免当前格在横向虚拟化隐藏路径重复分配。
+
+| 场景 | baseline | optimized | 改善 | 结论 |
+| --- | --- | --- | --- | --- |
+| Cell clip allocation / repeated arrange | 1 new `RectangleGeometry` / clipped cell arrange | 0 new `RectangleGeometry` / clipped cell arrange after first | 100.00% repeated allocation removed | 有效；每 cell 生命周期内从 `N` 次分配降到 `1` 次 |
+| 8-row frozen-column verification pass | 8 new `RectangleGeometry` / clipped column pass | 0 new `RectangleGeometry` / clipped column pass after first | 100.00% repeated allocation removed | 结构收益；按验证场景单个 clipped scrolling column 估算 |
+| Clip geometry instance | replaced every arrange | reused across repeated arrange and horizontal offset change | reuse verified | `--verify-datagrid-states` 覆盖 |
+| Clip clear path | assign `Clip = null` | `ClearClipGeometry()` clears `Clip` while keeping reusable cache | 行为保留 | frozen clipping 取消后 `Clip` 清空已验证 |
+
+当前工作区 smoke：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.Basic | 15.326 | 2964.9 | 305.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.Filter.Menu.Closed | 10.343 | 2600.7 | 267.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.Filter.Tree.Closed | 8.870 | 2596.6 | 267.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowHeaders | 10.448 | 3123.2 | 336.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowDetails.Collapsed | 10.622 | 3042.1 | 320.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.GroupHeaders | 10.193 | 2592.2 | 266.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.RowGroups | 10.897 | 2998.9 | 321.0 | 1.0 | smoke 通过；timing 只作异常检查 |
+| DataGrid.GalleryShape | 45.449 | 12482.3 | 1260.0 | 5.0 | smoke 通过；timing 只作异常检查 |
+
 ---
 
 ## 3. 验证
@@ -557,7 +585,7 @@ dotnet run -c Release -f net10.0 --no-build \
   --verify-datagrid-states
 ```
 
-结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、realized row group header 不再注册本地 press handler 且左键点击仍更新 `CurrentSlot`、realized DataGrid core 不再注册本地 `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` handlers，且 `GotFocus` 更新 `ContainsFocus`、`Down` key 仍推动 current slot、realized rows presenter 不再注册本地 `ScrollGesture` handler，且滚动手势仍 handled 并更新 `VerticalOffset`、rows presenter clip `RectangleGeometry` 跨重复 arrange 和尺寸变化复用且 `Rect` 会更新、row bottom grid-line clip `RectangleGeometry` 跨重复 arrange 和水平偏移变化复用且 `Rect` 会更新、details presenter clip `RectangleGeometry` 跨重复 arrange 和水平偏移变化复用且 frozen 模式清空 `Clip`、分组行头内 row header 的 owner/template 顺序不再空引用、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
+结果：`DataGrid state verification passed.` 覆盖：无 filter items 不创建 shell、关闭态 filter content lazy、运行时 add/clear filter items 后 indicator 可见性和 flyout shell 同步、realized column header 不再注册本地 hover / press / release / move routed handlers、`HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumn`、realized column group header 不再注册本地 press / release forwarding handlers、group `HeaderPointerPressed` class handler 转发 exactly once 且 sender 保持为 `DataGridColumnGroupItem`、realized row header 不再注册本地 press handler 且左键点击仍选中行并更新 `CurrentSlot`、realized row group header 不再注册本地 press handler 且左键点击仍更新 `CurrentSlot`、realized DataGrid core 不再注册本地 `KeyDown` / `KeyUp` / `GotFocus` / `LostFocus` handlers，且 `GotFocus` 更新 `ContainsFocus`、`Down` key 仍推动 current slot、realized rows presenter 不再注册本地 `ScrollGesture` handler，且滚动手势仍 handled 并更新 `VerticalOffset`、rows presenter clip `RectangleGeometry` 跨重复 arrange 和尺寸变化复用且 `Rect` 会更新、row bottom grid-line clip `RectangleGeometry` 跨重复 arrange 和水平偏移变化复用且 `Rect` 会更新、cell clip `RectangleGeometry` 跨 repeated cells presenter arrange 和水平偏移变化复用且 clipping 取消后清空 `Clip`、details presenter clip `RectangleGeometry` 跨重复 arrange 和水平偏移变化复用且 frozen 模式清空 `Clip`、分组行头内 row header 的 owner/template 顺序不再空引用、DataGridCell 跟随 header sort / reorder state 且 detach 后释放订阅、special columns 在 `Columns.Clear()` 后释放 cached owning grid、column reorder drag indicator 复用 cached render pen 且 foreground 变化后重建、DetailsPresenter `ContentHeight` 改变后触发 measure invalidation、RowExpander checked/details visibility 双向同步和 detach 释放。
 
 ```bash
 dotnet run -c Release -f net10.0 --no-build \
@@ -569,11 +597,11 @@ dotnet run -c Release -f net10.0 --no-build \
 
 | Scenario | ms/item | KB/item | Visual/root | Logical/root |
 | --- | ---: | ---: | ---: | ---: |
-| DataGrid.Basic | 14.711 | 2966.1 | 305.0 | 1.0 |
-| DataGrid.Filter.Menu.Closed | 9.631 | 2601.7 | 267.0 | 1.0 |
-| DataGrid.Filter.Tree.Closed | 8.381 | 2597.4 | 267.0 | 1.0 |
-| DataGrid.RowHeaders | 9.931 | 3124.3 | 336.0 | 1.0 |
-| DataGrid.RowDetails.Collapsed | 10.321 | 3043.3 | 320.0 | 1.0 |
-| DataGrid.GroupHeaders | 9.066 | 2592.3 | 266.0 | 1.0 |
-| DataGrid.RowGroups | 9.951 | 3000.0 | 321.0 | 1.0 |
-| DataGrid.GalleryShape | 43.034 | 12486.4 | 1260.0 | 5.0 |
+| DataGrid.Basic | 15.326 | 2964.9 | 305.0 | 1.0 |
+| DataGrid.Filter.Menu.Closed | 10.343 | 2600.7 | 267.0 | 1.0 |
+| DataGrid.Filter.Tree.Closed | 8.870 | 2596.6 | 267.0 | 1.0 |
+| DataGrid.RowHeaders | 10.448 | 3123.2 | 336.0 | 1.0 |
+| DataGrid.RowDetails.Collapsed | 10.622 | 3042.1 | 320.0 | 1.0 |
+| DataGrid.GroupHeaders | 10.193 | 2592.2 | 266.0 | 1.0 |
+| DataGrid.RowGroups | 10.897 | 2998.9 | 321.0 | 1.0 |
+| DataGrid.GalleryShape | 45.449 | 12482.3 | 1260.0 | 5.0 |

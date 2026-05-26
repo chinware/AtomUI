@@ -14,6 +14,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -191,6 +192,7 @@ public class DataGridCell : ContentControl
     #endregion
 
     private Rectangle? _rightGridLine;
+    private RectangleGeometry? _clipGeometry;
     private IDisposable? _sortingStateSubscription;
     private IDisposable? _headerDragModeSubscription;
     private bool _templateApplied;
@@ -404,6 +406,35 @@ public class DataGridCell : ContentControl
             }
 
             _rightGridLine.Width = OwningGrid.BorderThickness.Left;
+        }
+    }
+
+    internal void UpdateClipGeometry(Rect clipRect)
+    {
+        if (_clipGeometry is null)
+        {
+            _clipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+        }
+        else if (!_clipGeometry.Rect.Equals(clipRect))
+        {
+            _clipGeometry.Rect = clipRect;
+            InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(Clip, _clipGeometry))
+        {
+            Clip = _clipGeometry;
+        }
+    }
+
+    internal void ClearClipGeometry()
+    {
+        if (Clip is not null)
+        {
+            Clip = null;
         }
     }
 

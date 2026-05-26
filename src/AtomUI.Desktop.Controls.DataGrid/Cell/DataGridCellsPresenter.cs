@@ -10,7 +10,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -189,28 +188,26 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
         if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && frozenLeftEdge > cellLeftEdge &&
                  cellRightEdge > frozenRightEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - cellLeftEdge));
-            rg.Rect   = new Rect(xClip, 0, Math.Max(0, width - (frozenLeftEdge - cellLeftEdge) - (cellRightEdge - frozenRightEdge)), height);
-            cell.Clip = rg;
+            cell.UpdateClipGeometry(new Rect(
+                xClip,
+                0,
+                Math.Max(0, width - (frozenLeftEdge - cellLeftEdge) - (cellRightEdge - frozenRightEdge)),
+                height));
         }
         else if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && frozenLeftEdge > cellLeftEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - cellLeftEdge));
-            rg.Rect   = new Rect(xClip, 0, Math.Max(0, width - xClip), height);
-            cell.Clip = rg;
+            cell.UpdateClipGeometry(new Rect(xClip, 0, Math.Max(0, width - xClip), height));
         }
         else if (cell.OwningColumn != null && !cell.OwningColumn.IsFrozen && cellRightEdge > frozenRightEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, cellRightEdge - frozenRightEdge));
-            rg.Rect   = new Rect(0, 0, Math.Max(0, width - xClip), height);
-            cell.Clip = rg;
+            cell.UpdateClipGeometry(new Rect(0, 0, Math.Max(0, width - xClip), height));
         }
         else
         {
-            cell.Clip = null;
+            cell.ClearClipGeometry();
         }
     }
     
@@ -233,9 +230,7 @@ public sealed class DataGridCellsPresenter : Panel, IChildIndexProvider
             else
             {
                 // Clip
-                RectangleGeometry rg = new RectangleGeometry();
-                rg.Rect   = default;
-                cell.Clip = rg;
+                cell.UpdateClipGeometry(default);
             }
         }
         else

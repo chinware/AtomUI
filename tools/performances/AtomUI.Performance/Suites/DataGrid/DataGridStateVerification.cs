@@ -32,6 +32,7 @@ internal static partial class Program
         VerifyDataGridRowsPresenterScrollGestureUsesClassHandler(failures);
         VerifyDataGridRowsPresenterReusesClipGeometry(failures);
         VerifyDataGridRowReusesBottomGridLineClipGeometry(failures);
+        VerifyDataGridCellsPresenterReusesCellClipGeometry(failures);
         VerifyDataGridCellHeaderStateBindings(failures);
         VerifyDataGridSpecialColumnsReleaseGridSubscriptionsOnClear(failures);
         VerifyDataGridColumnDragIndicatorCachesPen(failures);
@@ -557,6 +558,93 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridCellsPresenterReusesCellClipGeometry(ICollection<string> failures)
+    {
+        var grid = CreateDataGridShell(8);
+        grid.Width                  = 260;
+        grid.LeftFrozenColumnCount  = 1;
+        grid.RightFrozenColumnCount = 1;
+        for (var i = 0; i < 6; i++)
+        {
+            grid.Columns.Add(new DataGridTextColumn
+            {
+                Header  = $"Column {i + 1}",
+                Width   = new DataGridLength(120),
+                Binding = new Binding(GetDataGridBindingPath(i))
+            });
+        }
+
+        using var realized = RealizeControl(grid);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 50),
+            "DataGrid should accept a reflected horizontal offset update for cell clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var clippedCell = GetDataGridCells(grid)
+            .Where(cell => GetDataGridCellColumnIndex(cell) == 1)
+            .FirstOrDefault(cell => cell.Clip is RectangleGeometry geometry && geometry.Rect.X > 0);
+        Expect(clippedCell is not null,
+            "Frozen-column DataGrid should realize a clipped scrolling cell for cell clip geometry verification.",
+            failures);
+        if (clippedCell is null)
+        {
+            return;
+        }
+
+        var firstClip = clippedCell.Clip as RectangleGeometry;
+        Expect(firstClip is not null,
+            $"DataGrid scrolling cell clip should be a RectangleGeometry. Actual: {clippedCell.Clip?.GetType().Name ?? "null"}.",
+            failures);
+        if (firstClip is null)
+        {
+            return;
+        }
+
+        var firstRect = firstClip.Rect;
+        Expect(firstRect.Height > 0,
+            $"DataGrid scrolling cell clip should have usable bounds. Actual: {firstRect}.",
+            failures);
+
+        foreach (var presenter in GetDataGridCellsPresenters(grid))
+        {
+            presenter.InvalidateArrange();
+        }
+        RefreshLayout(realized.Window);
+
+        var secondClip = clippedCell.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, secondClip),
+            "DataGrid cell should reuse its clip RectangleGeometry across repeated cells presenter arrange passes.",
+            failures);
+
+        Expect(UpdateDataGridHorizontalOffset(grid, 80),
+            "DataGrid should accept a second horizontal offset update for cell clip verification.",
+            failures);
+        RefreshLayout(realized.Window);
+
+        var scrolledClip = clippedCell.Clip as RectangleGeometry;
+        Expect(ReferenceEquals(firstClip, scrolledClip),
+            "DataGrid cell should keep reusing the same clip RectangleGeometry after horizontal offset changes.",
+            failures);
+        Expect(scrolledClip is not null && !scrolledClip.Rect.Equals(firstRect),
+            $"DataGrid reused cell clip geometry should update Rect after horizontal offset changes. Before: {firstRect}, after: {scrolledClip?.Rect}.",
+            failures);
+
+        grid.LeftFrozenColumnCount  = 0;
+        grid.RightFrozenColumnCount = 0;
+        grid.Width                  = 900;
+        UpdateDataGridHorizontalOffset(grid, 0);
+        foreach (var presenter in GetDataGridCellsPresenters(grid))
+        {
+            presenter.InvalidateArrange();
+        }
+        RefreshLayout(realized.Window);
+
+        Expect(clippedCell.Clip is null,
+            "DataGrid cell should clear Clip when frozen-column clipping is no longer needed.",
+            failures);
+    }
+
     private static void VerifyDataGridCellHeaderStateBindings(ICollection<string> failures)
     {
         var grid = CreateDataGridShell(4);
@@ -906,6 +994,13 @@ internal static partial class Program
     {
         return root.GetSelfAndVisualDescendants()
                    .OfType<DataGridRowsPresenter>()
+                   .ToList();
+    }
+
+    private static List<DataGridCellsPresenter> GetDataGridCellsPresenters(Control root)
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<DataGridCellsPresenter>()
                    .ToList();
     }
 
