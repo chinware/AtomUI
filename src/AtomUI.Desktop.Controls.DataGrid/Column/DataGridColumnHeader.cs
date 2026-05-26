@@ -288,6 +288,7 @@ internal partial class DataGridColumnHeader : ContentControl
     private bool _areHandlersSuspended;
     private bool _desiredSeparatorVisibility = true;
     private INotifyCollectionChanged? _subscribedFilterItems;
+    private RectangleGeometry? _clipGeometry;
     private static Lazy<Cursor> ResizeCursor = new (() => new Cursor(StandardCursorType.SizeWestEast));
     
     static DataGridColumnHeader()
@@ -327,6 +328,35 @@ internal partial class DataGridColumnHeader : ContentControl
         if (IsSeparatorsVisible != newVisibility)
         {
             SetValueNoCallback(IsSeparatorsVisibleProperty, newVisibility);
+        }
+    }
+
+    internal void UpdateClipGeometry(Rect clipRect)
+    {
+        if (_clipGeometry is null)
+        {
+            _clipGeometry = new RectangleGeometry
+            {
+                Rect = clipRect
+            };
+        }
+        else if (!_clipGeometry.Rect.Equals(clipRect))
+        {
+            _clipGeometry.Rect = clipRect;
+            InvalidateVisual();
+        }
+
+        if (!ReferenceEquals(Clip, _clipGeometry))
+        {
+            Clip = _clipGeometry;
+        }
+    }
+
+    internal void ClearClipGeometry()
+    {
+        if (Clip is not null)
+        {
+            Clip = null;
         }
     }
     

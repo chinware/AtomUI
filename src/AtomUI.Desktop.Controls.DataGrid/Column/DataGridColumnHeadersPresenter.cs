@@ -132,7 +132,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             if (dataGridColumn.IsLeftFrozen)
             {
                 columnHeader.Arrange(new Rect(frozenLeftEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
-                columnHeader.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+                columnHeader.ClearClipGeometry(); // The layout system could have clipped this because it's not aware of our render transform
                 if (DragColumn == dataGridColumn && DragIndicator != null)
                 {
                     dragIndicatorLeftEdge = frozenLeftEdge + DragIndicatorOffset;
@@ -174,7 +174,7 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
                 {
                     frozenRightEdge -= dataGridColumn.ActualWidth;
                     columnHeader.Arrange(new Rect(frozenRightEdge, 0, dataGridColumn.LayoutRoundedWidth, finalSize.Height));
-                    columnHeader.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+                    columnHeader.ClearClipGeometry(); // The layout system could have clipped this because it's not aware of our render transform
                     columnHeader.IsFrozen             =  true;
                     columnHeader.FrozenShadowPosition =  FrozenColumnShadowPosition.Left;
                     var horizontalScrollBarVisible = OwningGrid.HorizontalScrollBar?.IsVisible ?? false;
@@ -241,30 +241,28 @@ public sealed class DataGridColumnHeadersPresenter : Panel, IChildIndexProvider
             frozenLeftEdge > columnHeaderLeftEdge &&
             columnHeaderRightEdge > frozenRightEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge));
-            rg.Rect   = new Rect(xClip, 0, Math.Max(0, width - (frozenLeftEdge - columnHeaderLeftEdge) - (columnHeaderRightEdge - frozenRightEdge)), height);
-            columnHeader.Clip = rg;
+            columnHeader.UpdateClipGeometry(new Rect(
+                xClip,
+                0,
+                Math.Max(0, width - (frozenLeftEdge - columnHeaderLeftEdge) - (columnHeaderRightEdge - frozenRightEdge)),
+                height));
         }
         else if (columnHeader.OwningColumn != null && !columnHeader.OwningColumn.IsFrozen && 
                  frozenLeftEdge > columnHeaderLeftEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge));
-            rg.Rect           = new Rect(xClip, 0, Math.Max(0, width - xClip), height);
-            columnHeader.Clip = rg;
+            columnHeader.UpdateClipGeometry(new Rect(xClip, 0, Math.Max(0, width - xClip), height));
         }
         else if (columnHeader.OwningColumn != null && !columnHeader.OwningColumn.IsFrozen && 
                  columnHeaderRightEdge > frozenRightEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Round(Math.Min(width, columnHeaderRightEdge - frozenRightEdge));
-            rg.Rect           = new Rect(0, 0, Math.Max(0, width - xClip), height);
-            columnHeader.Clip = rg;
+            columnHeader.UpdateClipGeometry(new Rect(0, 0, Math.Max(0, width - xClip), height));
         }
         else
         {
-            columnHeader.Clip = null;
+            columnHeader.ClearClipGeometry();
         }
         
     }
