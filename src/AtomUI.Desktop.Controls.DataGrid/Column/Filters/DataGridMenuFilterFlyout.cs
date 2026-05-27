@@ -9,6 +9,7 @@ namespace AtomUI.Desktop.Controls;
 internal class DataGridMenuFilterFlyout : MenuFlyout
 {
     public event EventHandler<DataGridFilterValuesSelectedEventArgs>? FilterValuesSelected;
+    internal Func<bool>? ShouldFilterOnPassiveClose { get; set; }
     internal bool IsActiveShutdown = false;
     
     public DataGridMenuFilterFlyout()
@@ -54,11 +55,14 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
     protected override void OnClosed()
     {
         base.OnClosed();
-        var selectedItems = new List<string>();
-        if (Popup.Child is DataGridMenuFilterFlyoutPresenter presenter)
+        if (!IsActiveShutdown && ShouldFilterOnPassiveClose?.Invoke() != true)
         {
-            selectedItems = presenter.GetFilterValues();
+            return;
         }
+
+        var selectedItems = Popup.Child is DataGridMenuFilterFlyoutPresenter presenter
+            ? presenter.GetFilterValues()
+            : new List<string>();
         NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
     }
 
@@ -97,7 +101,7 @@ internal class DataGridFilterMenuItem : MenuItem
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)
         {
-            var item = itemsControl.ContainerFromIndex(i);
+            var item = DataGridMenuFilterFlyoutPresenter.GetFilterItem(itemsControl, i);
             if (item is MenuItem filterMenuItem)
             {
                 ClearCheckStateRecursive(filterMenuItem);

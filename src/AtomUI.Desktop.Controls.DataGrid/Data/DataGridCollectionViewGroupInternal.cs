@@ -12,6 +12,9 @@ namespace AtomUI.Desktop.Controls.Data;
 
 internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
 {
+    private static readonly PropertyChangedEventArgs IsBottomLevelPropertyChangedEventArgs =
+        new(nameof(IsBottomLevel));
+
     /// <summary>
     /// GroupDescription used to define how to group the items
     /// </summary>
@@ -58,7 +61,7 @@ internal class DataGridCollectionViewGroupInternal : DataGridCollectionViewGroup
 
             if (oldIsBottomLevel != IsBottomLevel)
             {
-                OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsBottomLevel)));
+                OnPropertyChanged(IsBottomLevelPropertyChangedEventArgs);
             }
         }
     }

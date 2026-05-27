@@ -17,6 +17,11 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         _list = new List<Range<T>>();
     }
 
+    private IndexToValueTable(int capacity)
+    {
+        _list = new List<Range<T>>(capacity);
+    }
+
     /// <summary>
     /// Total number of indices represented in the table
     /// </summary>
@@ -143,7 +148,7 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
     /// <returns>copy of this IndexToValueTable</returns>
     public IndexToValueTable<T> Copy()
     {
-        IndexToValueTable<T> copy = new IndexToValueTable<T>();
+        IndexToValueTable<T> copy = new IndexToValueTable<T>(_list.Count);
         foreach (Range<T> range in this._list)
         {
             copy._list.Add(range.Copy());
@@ -176,6 +181,11 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
         }
         rangeIndex++;
         return rangeIndex < _list.Count ? _list[rangeIndex].LowerBound : -1;
+    }
+
+    public int GetFirstIndex()
+    {
+        return _list.Count == 0 ? -1 : _list[0].LowerBound;
     }
 
     public int GetPreviousGap(int index)
@@ -317,6 +327,16 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
                 yield return i;
             }
         }
+    }
+
+    public IndexEnumerable EnumerateIndexes()
+    {
+        return new IndexEnumerable(_list);
+    }
+
+    public IndexEnumerable EnumerateIndexes(int startIndex)
+    {
+        return new IndexEnumerable(_list, startIndex);
     }
 
     /// <summary>
@@ -791,6 +811,85 @@ internal class IndexToValueTable<T> : IEnumerable<Range<T>>
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
     {
         return _list.GetEnumerator();
+    }
+
+    public readonly struct IndexEnumerable
+    {
+        private readonly List<Range<T>> _ranges;
+        private readonly int _startIndex;
+
+        internal IndexEnumerable(List<Range<T>> ranges)
+            : this(ranges, int.MinValue)
+        {
+        }
+
+        internal IndexEnumerable(List<Range<T>> ranges, int startIndex)
+        {
+            _ranges     = ranges;
+            _startIndex = startIndex;
+        }
+
+        public IndexEnumerator GetEnumerator()
+        {
+            return new IndexEnumerator(_ranges, _startIndex);
+        }
+    }
+
+    public struct IndexEnumerator
+    {
+        private readonly List<Range<T>> _ranges;
+        private readonly int _startIndex;
+        private int _rangeIndex;
+        private int _current;
+        private int _upperBound;
+        private bool _initialized;
+
+        internal IndexEnumerator(List<Range<T>> ranges)
+            : this(ranges, int.MinValue)
+        {
+        }
+
+        internal IndexEnumerator(List<Range<T>> ranges, int startIndex)
+        {
+            _ranges      = ranges;
+            _startIndex  = startIndex;
+            _rangeIndex  = -1;
+            _current     = 0;
+            _upperBound  = -1;
+            _initialized = false;
+            Current      = 0;
+        }
+
+        public int Current { get; private set; }
+
+        public bool MoveNext()
+        {
+            if (!_initialized || _current >= _upperBound)
+            {
+                _rangeIndex = _initialized ? _rangeIndex + 1 : 0;
+                _initialized = true;
+
+                while (_rangeIndex < _ranges.Count && _ranges[_rangeIndex].UpperBound < _startIndex)
+                {
+                    _rangeIndex++;
+                }
+
+                if (_rangeIndex >= _ranges.Count)
+                {
+                    return false;
+                }
+
+                Range<T> range = _ranges[_rangeIndex];
+                _current    = Math.Max(range.LowerBound, _startIndex);
+                _upperBound = range.UpperBound;
+                Current     = _current;
+                return true;
+            }
+
+            _current++;
+            Current = _current;
+            return true;
+        }
     }
 
 #if DEBUG

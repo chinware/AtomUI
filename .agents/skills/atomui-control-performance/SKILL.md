@@ -39,7 +39,7 @@ Violating any of these blocks merge. No exception, no tradeoff, no "it's only on
 
 13. **Optimization qualification documented.** Every perf commit must state — in the commit description — the realistic instance count for the targeted control in its busiest Gallery ShowCase, and the per-session frequency of the operation being optimized. If instance count ≤ 5 AND operation frequency < 1/session, the commit must explain why optimization is still warranted, or be rejected before measurement begins. The investigation playbook's qualification gate (see [First-60-Minutes Investigation Playbook](#first-60-minutes-investigation-playbook)) is the operational form of this rule.
 
-14. **Benefit report is mandatory at completion.** Every optimization turn MUST proactively report the benefit to the user before stopping, even if the user did not ask. The report must be a table with `metric / baseline / optimized / formula / improvement / conclusion`. If the optimization is structural-only, report the structural count reduction (for example `handlers per instance`, `bindings per item`, `visuals per root`) and its percentage. If timing data is single-run smoke, label it smoke-only and do not present it as proof of speedup. If no valid before/after timing exists, explicitly say that no timing percentage is claimed and use the structural/correctness result as the benefit. This is part of the definition of "done".
+14. **Benefit report is mandatory at completion.** Every optimization turn MUST proactively report the benefit to the user before stopping, even if the user did not ask. Start with a one-sentence plain-language takeaway that says what became cheaper and where the user benefits. Then include a table with `metric / baseline / optimized / formula / improvement / conclusion`. Metric names must be user-readable and include units/scopes such as `per close`, `per row`, `per DataGrid`, or `per Gallery page`; do not report only internal method/class names or raw callsite counts. If the optimization is structural-only, report the structural count reduction (for example `handlers per instance`, `bindings per item`, `visuals per root`, `objects allocated per operation`) and its percentage, and explicitly say it does not claim page-load speedup unless timing proves it. If timing data is single-run smoke, label it smoke-only and do not present it as proof of speedup. If no valid before/after timing exists, explicitly say that no timing percentage is claimed and use the structural/correctness result as the benefit. This is part of the definition of "done".
 
 ---
 
@@ -523,10 +523,15 @@ Mandatory commit-time gates. A perf commit description without all of them fille
 Every completed optimization must include a user-facing benefit table in the final response. Do not wait for the user to ask "汇报收益".
 
 ```
+[ ] 先给一句话结论，用直观语言说明「减少了什么 / 少了多少 / 哪个用户场景受益」
 [ ] 最终回复包含收益表，列为: metric / baseline / optimized / formula / improvement / conclusion
+[ ] metric 使用用户能看懂的名称和单位，不只写内部类名、方法名、callsite count
+[ ] conclusion 说明影响场景，例如每次关闭、每行生成、每个 DataGrid、Gallery 页面加载
 [ ] baseline 与 optimized 的口径一致；若是结构收益，单位写清楚（per control / per item / per root / Gallery estimated total）
 [ ] 百分比使用 `(baseline - optimized) / baseline`；对 "removed" 类指标也给出百分比
+[ ] 结构收益必须翻译成直观说法，例如「每次操作少创建 X 个对象」「每个实例少 Y 个订阅」「每次 arrange 少 Z 个 Geometry」
 [ ] timing 数据若只是单次 smoke，明确标记 smoke-only，不当作确定性能提升
+[ ] smoke-only timing 单独标明，不混入确定收益；结构优化不能用单次 timing 包装成确定速度提升
 [ ] 若没有可靠 timing before/after，明确说明不声明 timing 百分比，只声明结构/分配/正确性收益
 [ ] 正确性修复、验证命令、未能验证的残余风险一并汇报
 ```

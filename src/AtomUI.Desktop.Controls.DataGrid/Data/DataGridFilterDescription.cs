@@ -7,6 +7,7 @@ namespace AtomUI.Desktop.Controls.Data;
 public class DataGridFilterDescription
 {
     private string? _propertyPath;
+    private List<object>? _filterConditions;
     private Type? _propertyOwnerType;
     private Type? _propertyType;
 
@@ -27,12 +28,18 @@ public class DataGridFilterDescription
     public bool HasPropertyPath => !string.IsNullOrEmpty(PropertyPath);
     public StringComparison ComparisonType { get; } = StringComparison.InvariantCultureIgnoreCase;
     
-    public List<object> FilterConditions { get; set; } = new List<object>();
+    public List<object> FilterConditions
+    {
+        get => _filterConditions ??= new List<object>();
+        set => _filterConditions = value;
+    }
+
     public Func<object, object, bool>? Filter { get; set; }
     
     public virtual bool FilterBy(object record)
     {
-        if (FilterConditions.Count == 0)
+        var filterConditions = _filterConditions;
+        if (filterConditions == null || filterConditions.Count == 0)
         {
             return false;
         }
@@ -46,7 +53,7 @@ public class DataGridFilterDescription
 
         if (Filter != null)
         {
-            return Filter(value, FilterConditions[0]);
+            return Filter(value, filterConditions[0]);
         }
 
         // 默认按照字符串来比较
@@ -56,7 +63,7 @@ public class DataGridFilterDescription
             return false;
         }
 
-        foreach (var filterValue in FilterConditions)
+        foreach (var filterValue in filterConditions)
         {
             if (filterValue is string stringFilterValue &&
                 stringValue.Contains(stringFilterValue, ComparisonType))

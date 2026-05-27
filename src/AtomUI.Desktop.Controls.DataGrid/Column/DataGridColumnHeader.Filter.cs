@@ -11,6 +11,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal partial class DataGridColumnHeader
 {
+    private static readonly List<object> EmptyFilterValues = new(0);
+
     internal static readonly DirectProperty<DataGridColumnHeader, bool> CanUserFilterProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
             nameof(CanUserFilter),
@@ -128,6 +130,11 @@ internal partial class DataGridColumnHeader
 
     private static List<object> CopyFilterValues(List<string> filterValues)
     {
+        if (filterValues.Count == 0)
+        {
+            return EmptyFilterValues;
+        }
+
         var values = new List<object>(filterValues.Count);
         foreach (var filterValue in filterValues)
         {
@@ -138,6 +145,11 @@ internal partial class DataGridColumnHeader
 
     private static List<object> CopyFilterValues(List<object> filterValues)
     {
+        if (filterValues.Count == 0)
+        {
+            return EmptyFilterValues;
+        }
+
         var values = new List<object>(filterValues.Count);
         foreach (var filterValue in filterValues)
         {

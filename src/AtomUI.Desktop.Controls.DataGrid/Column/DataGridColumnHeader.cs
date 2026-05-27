@@ -283,6 +283,7 @@ internal partial class DataGridColumnHeader : ContentControl
     private static Point? _dragStart;
     private static DataGridColumn? _dragColumn;
     private static DataGridColumn? _currentDraggingOverColumn;
+    private static DataGridColumnHeader? _dragOwner;
     private static double _leftFrozenColumnsWidth;
     private static double _rightFrozenColumnsWidth;
     private bool _areHandlersSuspended;
@@ -395,6 +396,7 @@ internal partial class DataGridColumnHeader : ContentControl
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
             HeaderDragMode            = DragMode.MouseDown;
+            _dragOwner                = this;
             _leftFrozenColumnsWidth   = OwningGrid.ColumnsInternal.GetVisibleLeftFrozenEdgedColumnsWidth();
             _rightFrozenColumnsWidth   = OwningGrid.ColumnsInternal.GetVisibleRightFrozenEdgedColumnsWidth();
             _lastMousePositionHeaders = this.Translate(OwningGrid.ColumnHeaders, mousePosition);
@@ -547,6 +549,7 @@ internal partial class DataGridColumnHeader : ContentControl
         if (CanResizeColumn(column))
         {
             _dragColumn = column;
+            _dragOwner  = this;
 
             HeaderDragMode = DragMode.Resize;
 
@@ -748,8 +751,21 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         // When we stop interacting with the column headers, we need to reset the drag mode
         // and close any popups if they are open.
+        ReleaseDragState(
+            notifyDraggingOverCleared: HeaderDragMode == DragMode.Reorder || _currentDraggingOverColumn != null,
+            removeDragIndicator: true);
+    }
 
-        bool notifyDraggingOverCleared = HeaderDragMode == DragMode.Reorder || _currentDraggingOverColumn != null;
+    private void ReleaseDragStateIfOwned(bool notifyDraggingOverCleared, bool removeDragIndicator)
+    {
+        if (ReferenceEquals(_dragOwner, this))
+        {
+            ReleaseDragState(notifyDraggingOverCleared, removeDragIndicator);
+        }
+    }
+
+    private void ReleaseDragState(bool notifyDraggingOverCleared, bool removeDragIndicator)
+    {
         if (_dragColumn != null)
         {
             _dragColumn.HeaderCell.Cursor = _originalCursor;
@@ -757,8 +773,13 @@ internal partial class DataGridColumnHeader : ContentControl
         HeaderDragMode            = DragMode.None;
         _dragColumn               = null;
         _dragStart                = null;
+        _dragOwner                = null;
         _lastMousePositionHeaders = null;
-
+        _originalCursor           = null;
+        _originalHorizontalOffset = 0;
+        _originalWidth            = 0;
+        _leftFrozenColumnsWidth   = 0;
+        _rightFrozenColumnsWidth  = 0;
         _currentDraggingOverColumn = null;
         if (notifyDraggingOverCleared)
         {
@@ -769,8 +790,11 @@ internal partial class DataGridColumnHeader : ContentControl
 
         if (OwningGrid != null && OwningGrid.ColumnHeaders != null)
         {
-            OwningGrid.ColumnHeaders.DragColumn            = null;
-            OwningGrid.ColumnHeaders.DragIndicator         = null;
+            OwningGrid.ColumnHeaders.DragColumn = null;
+            if (removeDragIndicator)
+            {
+                OwningGrid.ColumnHeaders.DragIndicator = null;
+            }
         }
     }
 
@@ -822,6 +846,7 @@ internal partial class DataGridColumnHeader : ContentControl
         _dragColumn    = OwningColumn;
         HeaderDragMode = DragMode.Reorder;
         _dragStart     = mousePosition;
+        _dragOwner     = this;
 
         Debug.Assert(OwningGrid.ColumnHeaders != null);
         // Display the reordering thumb
@@ -1079,6 +1104,10 @@ internal partial class DataGridColumnHeader : ContentControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        var removeDragIndicator = e.AttachmentPoint != null;
+        ReleaseDragStateIfOwned(
+            notifyDraggingOverCleared: removeDragIndicator,
+            removeDragIndicator: removeDragIndicator);
         UnregisterFilterItems();
     }
 

@@ -24,6 +24,48 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
    
     /// </summary>
     private static readonly DataGridCurrentChangingEventArgs UnCancelableCurrentChangingEventArgs = new (false);
+    private static readonly NotifyCollectionChangedEventArgs ResetCollectionChangedEventArgs =
+        new(NotifyCollectionChangedAction.Reset);
+    private static readonly object?[] EmptyPagedItems = [];
+
+    private static readonly PropertyChangedEventArgs CanCancelEditPropertyChangedEventArgs =
+        new(nameof(CanCancelEdit));
+    private static readonly PropertyChangedEventArgs CountPropertyChangedEventArgs =
+        new(nameof(Count));
+    private static readonly PropertyChangedEventArgs CulturePropertyChangedEventArgs =
+        new(nameof(Culture));
+    private static readonly PropertyChangedEventArgs CurrentAddItemPropertyChangedEventArgs =
+        new(nameof(CurrentAddItem));
+    private static readonly PropertyChangedEventArgs CurrentEditItemPropertyChangedEventArgs =
+        new(nameof(CurrentEditItem));
+    private static readonly PropertyChangedEventArgs CurrentItemPropertyChangedEventArgs =
+        new(nameof(CurrentItem));
+    private static readonly PropertyChangedEventArgs CurrentPositionPropertyChangedEventArgs =
+        new(nameof(CurrentPosition));
+    private static readonly PropertyChangedEventArgs FilterPropertyChangedEventArgs =
+        new(nameof(Filter));
+    private static readonly PropertyChangedEventArgs FilterDescriptionsPropertyChangedEventArgs =
+        new(nameof(FilterDescriptions));
+    private static readonly PropertyChangedEventArgs IsAddingNewPropertyChangedEventArgs =
+        new(nameof(IsAddingNew));
+    private static readonly PropertyChangedEventArgs IsCurrentAfterLastPropertyChangedEventArgs =
+        new(nameof(IsCurrentAfterLast));
+    private static readonly PropertyChangedEventArgs IsCurrentBeforeFirstPropertyChangedEventArgs =
+        new(nameof(IsCurrentBeforeFirst));
+    private static readonly PropertyChangedEventArgs IsEditingItemPropertyChangedEventArgs =
+        new(nameof(IsEditingItem));
+    private static readonly PropertyChangedEventArgs IsEmptyPropertyChangedEventArgs =
+        new(nameof(IsEmpty));
+    private static readonly PropertyChangedEventArgs IsPageChangingPropertyChangedEventArgs =
+        new(nameof(IsPageChanging));
+    private static readonly PropertyChangedEventArgs ItemCountPropertyChangedEventArgs =
+        new(nameof(ItemCount));
+    private static readonly PropertyChangedEventArgs PageIndexPropertyChangedEventArgs =
+        new(nameof(PageIndex));
+    private static readonly PropertyChangedEventArgs PageSizePropertyChangedEventArgs =
+        new(nameof(PageSize));
+    private static readonly PropertyChangedEventArgs SortDescriptionsPropertyChangedEventArgs =
+        new(nameof(SortDescriptions));
 
     /// <summary>
     /// Value that we cache for the PageIndex if we are in a DeferRefresh,
@@ -861,9 +903,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 ResetCurrencyValues(oldCurrentItem, oldIsCurrentBeforeFirst, oldIsCurrentAfterLast);
 
                 // send a notification that our collection has been updated
-                HandleCollectionChanged(
-                    new NotifyCollectionChangedEventArgs(
-                        NotifyCollectionChangedAction.Reset));
+                HandleCollectionChanged(ResetCollectionChangedEventArgs);
 
                 // now raise currency changes at the end
                 RaiseCurrencyChanges(false, oldCurrentItem, oldCurrentPosition, oldIsCurrentBeforeFirst,
@@ -1856,22 +1896,13 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // if we are paging
         if (PageSize > 0)
         {
-            var list = new List<object?>();
-
             // if we are in the middle of asynchronous load
             if (PageIndex < 0)
             {
-                return list.GetEnumerator();
+                return EmptyPagedItems.GetEnumerator();
             }
 
-            for (int index = _pageSize * PageIndex;
-                 index < (int)Math.Min(_pageSize * (PageIndex + 1), InternalList.Count);
-                 index++)
-            {
-                list.Add(InternalList[index]);
-            }
-
-            return new NewItemAwareEnumerator(this, list.GetEnumerator(), CurrentAddItem);
+            return new NewItemAwareEnumerator(this, CreatePagedEnumerator(), CurrentAddItem);
         }
         return new NewItemAwareEnumerator(this, InternalList.GetEnumerator(), CurrentAddItem);
     }
@@ -1883,6 +1914,13 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    private IEnumerator CreatePagedEnumerator()
+    {
+        var pageStartIndex = _pageSize * PageIndex;
+        var pageEndIndex   = Math.Min(_pageSize * (PageIndex + 1), InternalList.Count);
+        return new PageEnumerator(InternalList, pageStartIndex, pageEndIndex);
     }
 
     /// <summary>
@@ -2588,8 +2626,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         }
 
         HandleCollectionChanged(
-            new NotifyCollectionChangedEventArgs(
-                NotifyCollectionChangedAction.Reset));
+            ResetCollectionChangedEventArgs);
 
         // Always raise CurrentChanged since the calling method MoveToPage(pageIndex) raised CurrentChanging.
         RaiseCurrencyChanges(true /*fireChangedEvent*/, oldCurrentItem, oldCurrentPosition, oldIsCurrentBeforeFirst,
@@ -2641,6 +2678,27 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         return source is ICollection collection
             ? new List<object>(collection.Count)
             : new List<object>();
+    }
+
+    private static bool IsSourceCollectionEmpty(IEnumerable source)
+    {
+        if (source is ICollection collection)
+        {
+            return collection.Count == 0;
+        }
+
+        var enumerator = source.GetEnumerator();
+        try
+        {
+            return !enumerator.MoveNext();
+        }
+        finally
+        {
+            if (enumerator is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
     }
 
     /// <summary>
@@ -3022,7 +3080,34 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="propertyName">Property name for the property that changed</param>
     private void NotifyPropertyChanged(string propertyName)
     {
-        NotifyPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        NotifyPropertyChanged(GetPropertyChangedEventArgs(propertyName));
+    }
+
+    private static PropertyChangedEventArgs GetPropertyChangedEventArgs(string propertyName)
+    {
+        return propertyName switch
+        {
+            nameof(CanCancelEdit)        => CanCancelEditPropertyChangedEventArgs,
+            nameof(Count)                => CountPropertyChangedEventArgs,
+            nameof(Culture)              => CulturePropertyChangedEventArgs,
+            nameof(CurrentAddItem)       => CurrentAddItemPropertyChangedEventArgs,
+            nameof(CurrentEditItem)      => CurrentEditItemPropertyChangedEventArgs,
+            nameof(CurrentItem)          => CurrentItemPropertyChangedEventArgs,
+            nameof(CurrentPosition)      => CurrentPositionPropertyChangedEventArgs,
+            nameof(Filter)               => FilterPropertyChangedEventArgs,
+            nameof(FilterDescriptions)   => FilterDescriptionsPropertyChangedEventArgs,
+            nameof(IsAddingNew)          => IsAddingNewPropertyChangedEventArgs,
+            nameof(IsCurrentAfterLast)   => IsCurrentAfterLastPropertyChangedEventArgs,
+            nameof(IsCurrentBeforeFirst) => IsCurrentBeforeFirstPropertyChangedEventArgs,
+            nameof(IsEditingItem)        => IsEditingItemPropertyChangedEventArgs,
+            nameof(IsEmpty)              => IsEmptyPropertyChangedEventArgs,
+            nameof(IsPageChanging)       => IsPageChangingPropertyChangedEventArgs,
+            nameof(ItemCount)            => ItemCountPropertyChangedEventArgs,
+            nameof(PageIndex)            => PageIndexPropertyChangedEventArgs,
+            nameof(PageSize)             => PageSizePropertyChangedEventArgs,
+            nameof(SortDescriptions)     => SortDescriptionsPropertyChangedEventArgs,
+            _                            => new PropertyChangedEventArgs(propertyName)
+        };
     }
 
     /// <summary>
@@ -3203,16 +3288,24 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         Debug.Assert(enumerable != null, "Input list to filter/sort should not be null");
 
-        // filter the collection's array into the local array
-        List<object> localList = _filter == null
-            ? CreateListForSource(enumerable)
-            : new List<object>();
-
-        foreach (object item in enumerable)
+        List<object> localList;
+        if (_filter == null)
         {
-            if (Filter == null || PassesFilter(item))
+            localList = CreateListForSource(enumerable);
+            foreach (object item in enumerable)
             {
                 localList.Add(item);
+            }
+        }
+        else
+        {
+            localList = new List<object>();
+            foreach (object item in enumerable)
+            {
+                if (PassesFilter(item))
+                {
+                    localList.Add(item);
+                }
             }
         }
 
@@ -3375,21 +3468,10 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         if (args.Action == NotifyCollectionChangedAction.Reset)
         {
-            var enumerator = SourceCollection.GetEnumerator();
-            try
+            // if we have no items now, clear our own internal list
+            if (IsSourceCollectionEmpty(SourceCollection))
             {
-                // if we have no items now, clear our own internal list
-                if (!enumerator.MoveNext())
-                {
-                    _internalList.Clear();
-                }
-            }
-            finally
-            {
-                if (enumerator is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
+                _internalList.Clear();
             }
 
             // calling Refresh, will fire the collectionchanged event
@@ -3723,9 +3805,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         // reset currency values
         ResetCurrencyValues(oldCurrentItem, oldIsCurrentBeforeFirst, oldIsCurrentAfterLast);
 
-        HandleCollectionChanged(
-            new NotifyCollectionChangedEventArgs(
-                NotifyCollectionChangedAction.Reset));
+        HandleCollectionChanged(ResetCollectionChangedEventArgs);
 
         // now raise currency changes at the end
         RaiseCurrencyChanges(false, oldCurrentItem, oldCurrentPosition, oldIsCurrentBeforeFirst, oldIsCurrentAfterLast);
@@ -4059,7 +4139,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         SourceList?.Clear();
         if (SourceList is not INotifyCollectionChanged)
         {
-            ProcessCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            ProcessCollectionChanged(ResetCollectionChangedEventArgs);
         }
     }
 
@@ -4325,6 +4405,50 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         /// Timestamp to let us know whether there have been updates to the collection
         /// </summary>
         private int _timestamp;
+    }
+
+    private sealed class PageEnumerator : IEnumerator
+    {
+        private readonly IList _items;
+        private readonly int _startIndex;
+        private readonly int _endIndex;
+        private int _index;
+
+        public PageEnumerator(IList items, int startIndex, int endIndex)
+        {
+            _items      = items;
+            _startIndex = startIndex;
+            _endIndex   = endIndex;
+            _index      = startIndex - 1;
+        }
+
+        public object? Current
+        {
+            get
+            {
+                if (_index < _startIndex || _index >= _endIndex)
+                {
+                    throw new InvalidOperationException("Enumeration has either not started or has already finished.");
+                }
+
+                return _items[_index];
+            }
+        }
+
+        public bool MoveNext()
+        {
+            if (_index < _endIndex)
+            {
+                _index++;
+            }
+
+            return _index < _endIndex;
+        }
+
+        public void Reset()
+        {
+            _index = _startIndex - 1;
+        }
     }
 
     internal class MergedComparer

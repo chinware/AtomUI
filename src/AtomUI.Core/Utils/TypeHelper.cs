@@ -127,13 +127,17 @@ internal static class TypeHelper
         PropertyInfo? propertyInfo = type.GetNestedProperty(propertyPath);
         if (propertyInfo != null)
         {
-            object[] attributes = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true);
-            if (attributes.Length > 0)
+            // Most members do not carry DisplayAttribute; avoid allocating an empty attribute array.
+            if (propertyInfo.IsDefined(typeof(DisplayAttribute), true))
             {
-                Debug.Assert(attributes.Length == 1);
-                if (attributes[0] is DisplayAttribute displayAttribute)
+                object[] attributes = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true);
+                if (attributes.Length > 0)
                 {
-                    return displayAttribute.GetShortName();
+                    Debug.Assert(attributes.Length == 1);
+                    if (attributes[0] is DisplayAttribute displayAttribute)
+                    {
+                        return displayAttribute.GetShortName();
+                    }
                 }
             }
         }
@@ -559,12 +563,15 @@ internal static class TypeHelper
     {
         if (memberInfo != null)
         {
-            // Check if ReadOnlyAttribute is defined on the member
-            object[] attributes = memberInfo.GetCustomAttributes(typeof(ReadOnlyAttribute), true);
-            if (attributes.Length > 0)
+            // Most members do not carry ReadOnlyAttribute; avoid allocating an empty attribute array.
+            if (memberInfo.IsDefined(typeof(ReadOnlyAttribute), true))
             {
-                ReadOnlyAttribute readOnlyAttribute = (ReadOnlyAttribute)attributes[0];
-                return readOnlyAttribute.IsReadOnly;
+                object[] attributes = memberInfo.GetCustomAttributes(typeof(ReadOnlyAttribute), true);
+                if (attributes.Length > 0)
+                {
+                    ReadOnlyAttribute readOnlyAttribute = (ReadOnlyAttribute)attributes[0];
+                    return readOnlyAttribute.IsReadOnly;
+                }
             }
         }
 

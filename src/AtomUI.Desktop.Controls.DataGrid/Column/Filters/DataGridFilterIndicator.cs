@@ -211,6 +211,25 @@ internal class DataGridFilterIndicator : IconButton
             _flyoutStateHelper.Flyout = treeFlyout;
             treeFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
+
+        ConfigureFlyoutPassiveCloseFilter();
+    }
+
+    private bool ShouldFilterOnPassiveClose()
+    {
+        return OwningColumn?.FilterOnClose == true;
+    }
+
+    private void ConfigureFlyoutPassiveCloseFilter()
+    {
+        if (Flyout is DataGridMenuFilterFlyout menuFlyout)
+        {
+            menuFlyout.ShouldFilterOnPassiveClose = ShouldFilterOnPassiveClose;
+        }
+        else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
+        {
+            treeFlyout.ShouldFilterOnPassiveClose = ShouldFilterOnPassiveClose;
+        }
     }
 
     private void HandleFlyoutAboutToShow(object? sender, EventArgs args)
@@ -265,7 +284,7 @@ internal class DataGridFilterIndicator : IconButton
                     : MenuItemToggleType.Radio
             };
             targetItems.Add(menuItem);
-            if (item.Children.Count > 0)
+            if (item.HasChildren)
             {
                 PopulateMenuItems(menuItem.Items, item.Children);
             }
@@ -284,7 +303,7 @@ internal class DataGridFilterIndicator : IconButton
             };
   
             targetItems.Add(treeItem);
-            if (item.Children.Count > 0)
+            if (item.HasChildren)
             {
                 PopulateTreeItems(treeItem.Items, item.Children);
             }
@@ -472,11 +491,13 @@ internal class DataGridFilterIndicator : IconButton
         if (Flyout is DataGridMenuFilterFlyout menuFlyout)
         {
             menuFlyout.FilterValuesSelected -= HandleFilterValuesSelected;
+            menuFlyout.ShouldFilterOnPassiveClose = null;
             menuFlyout.Items.Clear();
         }
         else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
         {
             treeFlyout.FilterValuesSelected -= HandleFilterValuesSelected;
+            treeFlyout.ShouldFilterOnPassiveClose = null;
             treeFlyout.Items.Clear();
         }
 

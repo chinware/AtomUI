@@ -1547,12 +1547,12 @@ public partial class DataGrid : TemplatedControl,
 
                 _columnHeadersPresenter.OwningGrid = this;
 
-                // Columns were added before our Template was applied, add the ColumnHeaders now
-                var sortedInternal = new List<DataGridColumn>(ColumnsItemsInternal);
-                sortedInternal.Sort(new DisplayIndexComparer());
-
-                foreach (DataGridColumn column in sortedInternal)
+                // Columns were added before our Template was applied, add the ColumnHeaders now.
+                // DisplayIndexMap already stores the same display order that the old temp-list sort rebuilt.
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                     InsertDisplayedColumnHeader(column);
                 }
             }

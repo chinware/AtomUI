@@ -658,8 +658,10 @@ public partial class DataGrid
             // is no longer relevant, so we should force a cancel edit.
             CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
 
-            // We want to persist selection throughout a reset, so store away the selected items
-            List<object> selectedItemsCache = new List<object>(_selectedItems.SelectedItemsCache);
+            // We want to persist selection throughout a reset, so store away the selected items when needed.
+            List<object>? selectedItemsCache = _selectedItems.SelectedItemsCache.Count > 0
+                ? new List<object>(_selectedItems.SelectedItemsCache)
+                : null;
 
             if (recycleRows)
             {
@@ -671,7 +673,14 @@ public partial class DataGrid
             }
 
             // Re-select the old items
-            _selectedItems.SelectedItemsCache = selectedItemsCache;
+            if (selectedItemsCache != null)
+            {
+                _selectedItems.SelectedItemsCache = selectedItemsCache;
+            }
+            else
+            {
+                _selectedItems.UpdateIndexes();
+            }
             CoerceSelectedItem();
             if (RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Collapsed)
             {
@@ -1578,7 +1587,7 @@ public partial class DataGrid
         }
     }
 
-    private static void NotifyDataContextPropertyForAllRowCells(IEnumerable<DataGridRow> rowSource, bool arg2)
+    private static void NotifyDataContextPropertyForAllRowCells(DataGridRowsEnumerable rowSource, bool arg2)
     {
         foreach (DataGridRow row in rowSource)
         {
@@ -4474,20 +4483,17 @@ public partial class DataGrid
 
     /// <summary>
     /// This method formats a row (specified by a DataGridRowClipboardEventArgs) into
-    /// a single string to be added to the Clipboard when the DataGrid is copying its contents.
+    /// the clipboard text builder when the DataGrid is copying its contents.
     /// </summary>
-    /// <param name="e">DataGridRowClipboardEventArgs</param>
-    /// <returns>The formatted string.</returns>
-    private string FormatClipboardContent(DataGridRowClipboardEventArgs e)
+    /// <param name="text">The destination clipboard text builder.</param>
+    /// <param name="e">DataGridRowClipboardEventArgs.</param>
+    private static void AppendClipboardContent(StringBuilder text, DataGridRowClipboardEventArgs e)
     {
-        var text                = new StringBuilder();
         var clipboardRowContent = e.ClipboardRowContent;
         var numberOfItem        = clipboardRowContent.Count;
         for (int cellIndex = 0; cellIndex < numberOfItem; cellIndex++)
         {
-            var cellContent = clipboardRowContent[cellIndex].Content?.ToString();
-            cellContent = cellContent?.Replace("\"", "\"\"");
-            text.Append($"\"{cellContent}\"");
+            AppendEscapedClipboardCellContent(text, clipboardRowContent[cellIndex].Content);
             if (cellIndex < numberOfItem - 1)
             {
                 text.Append('\t');
@@ -4498,8 +4504,33 @@ public partial class DataGrid
                 text.Append('\n');
             }
         }
+    }
 
-        return text.ToString();
+    private static void AppendEscapedClipboardCellContent(StringBuilder text, object? content)
+    {
+        text.Append('"');
+        var cellContent = content?.ToString();
+        if (!string.IsNullOrEmpty(cellContent))
+        {
+            var segmentStart = 0;
+            for (var charIndex = 0; charIndex < cellContent.Length; charIndex++)
+            {
+                if (cellContent[charIndex] != '"')
+                {
+                    continue;
+                }
+
+                text.Append(cellContent, segmentStart, charIndex - segmentStart);
+                text.Append("\"\"");
+                segmentStart = charIndex + 1;
+            }
+
+            if (segmentStart < cellContent.Length)
+            {
+                text.Append(cellContent, segmentStart, cellContent.Length - segmentStart);
+            }
+        }
+        text.Append('"');
     }
 
     /// <summary>
@@ -4518,7 +4549,10 @@ public partial class DataGrid
 
             if (ClipboardCopyMode == DataGridClipboardCopyMode.IncludeHeader)
             {
-                DataGridRowClipboardEventArgs headerArgs = new DataGridRowClipboardEventArgs(null, true);
+                DataGridRowClipboardEventArgs headerArgs = new DataGridRowClipboardEventArgs(
+                    null,
+                    true,
+                    ColumnsInternal.VisibleColumnCount);
                 int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
                 for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
@@ -4532,14 +4566,17 @@ public partial class DataGrid
                 }
 
                 OnCopyingRowClipboardContent(headerArgs);
-                textBuilder.Append(FormatClipboardContent(headerArgs));
+                AppendClipboardContent(textBuilder, headerArgs);
             }
 
             for (int index = 0; index < SelectedItems.Count; index++)
             {
                 var item = SelectedItems[index];
                 Debug.Assert(item != null);
-                DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(item, false);
+                DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(
+                    item,
+                    false,
+                    ColumnsInternal.VisibleColumnCount);
                 int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
                 for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
@@ -4554,7 +4591,7 @@ public partial class DataGrid
                 }
 
                 OnCopyingRowClipboardContent(itemArgs);
-                textBuilder.Append(FormatClipboardContent(itemArgs));
+                AppendClipboardContent(textBuilder, itemArgs);
             }
 
             string text = textBuilder.ToString();
