@@ -121,13 +121,23 @@ public class DataGridSelectionColumn : DataGridColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid.SelectionChanged          -= HandleSelectionChanged;
-                _owningGrid.PropertyChanged           -= HandleDataGridPropertyChanged;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid.SelectionChanged          -= HandleSelectionChanged;
+        _owningGrid.PropertyChanged           -= HandleDataGridPropertyChanged;
+        _owningGrid                           =  null;
     }
 
     private void HandleDataGridPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
@@ -244,6 +254,12 @@ public class DataGridSelectionColumn : DataGridColumn
             }
         }
     }
+
+    protected internal override void NotifyOwningGridAboutToDetached()
+    {
+        base.NotifyOwningGridAboutToDetached();
+        ReleaseOwningGrid();
+    }
     
     internal override DataGridColumnHeader CreateHeader()
     {
@@ -267,27 +283,41 @@ public class DataGridSelectionColumn : DataGridColumn
             header[!DataGridColumnHeader.VerticalContentAlignmentProperty] = this[!HeaderContentVerticalAlignmentProperty];
             header[!DataGridColumnHeader.IsMotionEnabledProperty] = OwningGrid[!DataGrid.IsMotionEnabledProperty];
             
-            _headerCheckBox       =  new CheckBox();
-            _headerCheckBox.Click += HandleSelectedAllChanged;
-            header.Content        =  _headerCheckBox;
+            _headerCheckBox = new SelectionHeaderCheckBox(this);
+            header.Content  = _headerCheckBox;
         }
         return header;
     }
 
-    private void HandleSelectedAllChanged(object? sender, EventArgs e)
+    internal void HandleSelectedAllChanged(CheckBox checkBox)
     {
-        if (sender is CheckBox checkBox)
+        if (checkBox.IsChecked == false)
         {
-            if (checkBox.IsChecked == false)
-            {
-                OwningGrid?.ClearRowSelection(true);
-            }
-            else if (checkBox.IsChecked == true)
-            {
-                OwningGrid?.SelectAll();
-            }
+            OwningGrid?.ClearRowSelection(true);
+        }
+        else if (checkBox.IsChecked == true)
+        {
+            OwningGrid?.SelectAll();
         }
     }
+}
+
+internal class SelectionHeaderCheckBox : CheckBox
+{
+    private readonly DataGridSelectionColumn _owningColumn;
+
+    static SelectionHeaderCheckBox()
+    {
+        Button.ClickEvent.AddClassHandler<SelectionHeaderCheckBox>(
+            (checkBox, _) => checkBox._owningColumn.HandleSelectedAllChanged(checkBox));
+    }
+
+    public SelectionHeaderCheckBox(DataGridSelectionColumn owningColumn)
+    {
+        _owningColumn = owningColumn;
+    }
+
+    protected override Type StyleKeyOverride { get; } = typeof(CheckBox);
 }
 
 internal class SelectionRadioButton : RadioButton

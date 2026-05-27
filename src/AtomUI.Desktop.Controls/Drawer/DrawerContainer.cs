@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
@@ -12,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
+using Avalonia.VisualTree;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
@@ -86,7 +88,13 @@ internal class DrawerContainer : ContentControl
     internal DrawerPlacement Placement
     {
         get => _placement;
-        set => SetAndRaise(PlacementProperty, ref _placement, value);
+        set
+        {
+            if (SetAndRaise(PlacementProperty, ref _placement, value))
+            {
+                RefreshActiveChildDrawerPushTransform();
+            }
+        }
     }
 
     private bool _isShowMask;
@@ -178,7 +186,13 @@ internal class DrawerContainer : ContentControl
     internal double PushOffsetPercent
     {
         get => _pushOffsetPercent;
-        set => SetAndRaise(PushOffsetPercentProperty, ref _pushOffsetPercent, value);
+        set
+        {
+            if (SetAndRaise(PushOffsetPercentProperty, ref _pushOffsetPercent, value))
+            {
+                RefreshActiveChildDrawerPushTransform();
+            }
+        }
     }
 
     #endregion
@@ -188,17 +202,53 @@ internal class DrawerContainer : ContentControl
     private BaseMotionActor? _motionActor;
     private DrawerInfoContainer? _infoContainer;
     private ITransform? _originInfoContainerTransform;
+    private WeakReference<Drawer>? _activeChildDrawer;
+    private bool _isChildDrawerPushed;
     private bool _openAnimating;
     private bool _closeAnimating;
+    private int _lifecycleVersion;
+    private int _pushTransformVersion;
+    private CompositeDisposable? _drawerBindingDisposables;
+
+    internal void BindToDrawer(Drawer drawer)
+    {
+        _drawerBindingDisposables?.Dispose();
+        _drawerBindingDisposables = new CompositeDisposable
+        {
+            Bind(DataContextProperty, drawer[!DataContextProperty]),
+            Bind(ContentProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ContentProperty]),
+            Bind(ContentTemplateProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ContentTemplateProperty]),
+            Bind(FooterProperty, drawer[!AtomUI.Desktop.Controls.Drawer.FooterProperty]),
+            Bind(FooterTemplateProperty, drawer[!AtomUI.Desktop.Controls.Drawer.FooterTemplateProperty]),
+            Bind(ExtraProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ExtraProperty]),
+            Bind(ExtraTemplateProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ExtraTemplateProperty]),
+            Bind(DialogSizeProperty, drawer[!AtomUI.Desktop.Controls.Drawer.EffectiveDialogSizeProperty]),
+            Bind(PlacementProperty, drawer[!AtomUI.Desktop.Controls.Drawer.PlacementProperty]),
+            Bind(TitleProperty, drawer[!AtomUI.Desktop.Controls.Drawer.TitleProperty]),
+            Bind(IsShowMaskProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsShowMaskProperty]),
+            Bind(IsShowCloseButtonProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsShowCloseButtonProperty]),
+            Bind(IsMotionEnabledProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsMotionEnabledProperty]),
+            Bind(IsCloseOnMaskClickProperty, drawer[!AtomUI.Desktop.Controls.Drawer.IsCloseOnMaskClickProperty]),
+            Bind(PushOffsetPercentProperty, drawer[!AtomUI.Desktop.Controls.Drawer.PushOffsetPercentProperty])
+        };
+    }
 
     internal void Open(ScopeAwareAdornerLayer layer)
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {
+            var lifecycleVersion = ++_lifecycleVersion;
+            _closeAnimating = false;
             ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
-            layer.Children.Add(this);
+            AttachToLayer(layer);
+            ApplyTemplate();
             Dispatcher.InvokeAsync(async () =>
             {
+                if (lifecycleVersion != _lifecycleVersion)
+                {
+                    return;
+                }
+
                 // 让 layer 更新
                 if (_motionActor is null || _openAnimating)
                 {
@@ -220,6 +270,10 @@ internal class DrawerContainer : ContentControl
                 var motion = BuildMotionByPlacement(Placement, MotionDuration, true);
 
                 await motion.RunAsync(_motionActor);
+                if (lifecycleVersion != _lifecycleVersion)
+                {
+                    return;
+                }
                 _openAnimating = false;
                 drawer.NotifyOpened();
             });
@@ -231,14 +285,16 @@ internal class DrawerContainer : ContentControl
     {
         if (Drawer != null && Drawer.TryGetTarget(out var drawer))
         {
-            if (_motionActor is null || _closeAnimating)
+            if (_closeAnimating)
             {
                 return;
             }
 
-            if (!IsMotionEnabled)
+            var lifecycleVersion = ++_lifecycleVersion;
+            _openAnimating = false;
+            if (_motionActor is null || !IsMotionEnabled)
             {
-                layer.Children.Remove(this);
+                DetachFromLayer(layer);
                 drawer.NotifyClosed();
                 return;
             }
@@ -264,13 +320,105 @@ internal class DrawerContainer : ContentControl
             Dispatcher.InvokeAsync(async () =>
             {
                 await Task.WhenAll(motion.RunAsync(_motionActor), Task.Delay(duration));
+                if (lifecycleVersion != _lifecycleVersion)
+                {
+                    _closeAnimating = false;
+                    return;
+                }
                 _closeAnimating      = false;
                 _motionActor.Opacity = 0.0;
-                layer.Children.Remove(this);
+                DetachFromLayer(layer);
                 _motionActor.Opacity = 1.0;
                 drawer.NotifyClosed();
             });
         }
+    }
+
+    internal void Release()
+    {
+        ++_lifecycleVersion;
+        ++_pushTransformVersion;
+        _openAnimating  = false;
+        _closeAnimating = false;
+        DetachFromLayer(null);
+        _drawerBindingDisposables?.Dispose();
+        _drawerBindingDisposables = null;
+        ReleaseTemplateContent();
+
+        if (_infoContainer != null)
+        {
+            _infoContainer.CloseRequested -= HandleCloseRequested;
+            _infoContainer = null;
+        }
+
+        _motionActor                  = null;
+        _originInfoContainerTransform = null;
+        _activeChildDrawer            = null;
+        _isChildDrawerPushed          = false;
+        Drawer                        = null;
+    }
+
+    private void ReleaseTemplateContent()
+    {
+        ClearValue(DataContextProperty);
+        ClearValue(ContentProperty);
+        ClearValue(ContentTemplateProperty);
+        ClearValue(FooterProperty);
+        ClearValue(FooterTemplateProperty);
+        ClearValue(ExtraProperty);
+        ClearValue(ExtraTemplateProperty);
+        ClearValue(DialogSizeProperty);
+        ClearValue(PlacementProperty);
+        ClearValue(TitleProperty);
+        ClearValue(IsShowMaskProperty);
+        ClearValue(IsShowCloseButtonProperty);
+        ClearValue(IsMotionEnabledProperty);
+        ClearValue(IsCloseOnMaskClickProperty);
+        ClearValue(PushOffsetPercentProperty);
+
+        if (_infoContainer == null)
+        {
+            return;
+        }
+
+        _infoContainer.Content         = null;
+        _infoContainer.ContentTemplate = null;
+        _infoContainer.Footer          = null;
+        _infoContainer.FooterTemplate  = null;
+        _infoContainer.Extra           = null;
+        _infoContainer.ExtraTemplate   = null;
+    }
+
+    private void AttachToLayer(ScopeAwareAdornerLayer layer)
+    {
+        if (this.GetVisualParent() is Panel currentParent)
+        {
+            if (ReferenceEquals(currentParent, layer))
+            {
+                return;
+            }
+
+            currentParent.Children.Remove(this);
+        }
+
+        if (!layer.Children.Contains(this))
+        {
+            layer.Children.Add(this);
+        }
+    }
+
+    private void DetachFromLayer(ScopeAwareAdornerLayer? layer)
+    {
+        if (this.GetVisualParent() is Panel currentParent)
+        {
+            currentParent.Children.Remove(this);
+        }
+        else
+        {
+            layer?.Children.Remove(this);
+        }
+
+        ScopeAwareAdornerLayer.SetAdornedElement(this, null);
     }
 
     private AbstractMotion BuildMotionByPlacement(DrawerPlacement placement, TimeSpan duration, bool isOpen)
@@ -347,6 +495,7 @@ internal class DrawerContainer : ContentControl
         {
             _infoContainer.CloseRequested += HandleCloseRequested;
         }
+        RefreshActiveChildDrawerPushTransform();
     }
 
     private void HandleCloseRequested(object? sender, EventArgs e)
@@ -359,48 +508,114 @@ internal class DrawerContainer : ContentControl
 
     internal void NotifyChildDrawerAboutToOpen(Drawer childDrawer)
     {
-        if (_infoContainer != null)
-        {
-            var builder = new TransformOperations.Builder(1);
-            if (Placement != childDrawer.Placement)
-            {
-                return;
-            }
-        
-            double offsetX = 0d;
-            double offsetY = 0d;
-        
-            if (Placement == DrawerPlacement.Left)
-            {
-                offsetX = DesiredSize.Width * PushOffsetPercent;
-            }
-            else if (Placement == DrawerPlacement.Right)
-            {
-                offsetX = -DesiredSize.Width * PushOffsetPercent;
-            }
-            else if (Placement == DrawerPlacement.Top)
-            {
-                offsetY = DesiredSize.Height * PushOffsetPercent;
-            }
-            else
-            {
-                offsetY = -DesiredSize.Height * PushOffsetPercent;
-            }
-            builder.AppendTranslate(offsetX, offsetY);
-            _originInfoContainerTransform  = _infoContainer.RenderTransform;
-            _infoContainer.RenderTransform = builder.Build();
-        }
+        _activeChildDrawer = new WeakReference<Drawer>(childDrawer);
+        RefreshActiveChildDrawerPushTransform();
     }
 
     internal void NotifyChildDrawerAboutToClose(Drawer childDrawer)
     {
-        if (_infoContainer != null)
+        if (IsActiveChildDrawer(childDrawer))
         {
-            if (Placement != childDrawer.Placement)
+            _activeChildDrawer = null;
+            RestoreChildDrawerPushTransform();
+        }
+    }
+
+    internal void NotifyChildDrawerPlacementChanged(Drawer childDrawer)
+    {
+        if (IsActiveChildDrawer(childDrawer))
+        {
+            RefreshActiveChildDrawerPushTransform();
+        }
+    }
+
+    private bool IsActiveChildDrawer(Drawer childDrawer)
+    {
+        return _activeChildDrawer != null &&
+               _activeChildDrawer.TryGetTarget(out var activeChildDrawer) &&
+               ReferenceEquals(activeChildDrawer, childDrawer);
+    }
+
+    private void RefreshActiveChildDrawerPushTransform()
+    {
+        if (_activeChildDrawer == null || !_activeChildDrawer.TryGetTarget(out var childDrawer))
+        {
+            _activeChildDrawer = null;
+            RestoreChildDrawerPushTransform();
+            return;
+        }
+
+        if (_infoContainer == null)
+        {
+            return;
+        }
+
+        if (Placement != childDrawer.Placement)
+        {
+            // Parent and child Placement bindings can settle in separate notifications.
+            // Keep the current push for this dispatcher turn so no zero-offset frame is shown.
+            ScheduleChildDrawerPushRestore(childDrawer);
+            return;
+        }
+
+        ++_pushTransformVersion;
+        if (!_isChildDrawerPushed)
+        {
+            _originInfoContainerTransform = _infoContainer.RenderTransform;
+            _isChildDrawerPushed          = true;
+        }
+
+        double offsetX = 0d;
+        double offsetY = 0d;
+
+        if (Placement == DrawerPlacement.Left)
+        {
+            offsetX = DesiredSize.Width * PushOffsetPercent;
+        }
+        else if (Placement == DrawerPlacement.Right)
+        {
+            offsetX = -DesiredSize.Width * PushOffsetPercent;
+        }
+        else if (Placement == DrawerPlacement.Top)
+        {
+            offsetY = DesiredSize.Height * PushOffsetPercent;
+        }
+        else
+        {
+            offsetY = -DesiredSize.Height * PushOffsetPercent;
+        }
+
+        var builder = new TransformOperations.Builder(1);
+        builder.AppendTranslate(offsetX, offsetY);
+        _infoContainer.RenderTransform = builder.Build();
+    }
+
+    private void ScheduleChildDrawerPushRestore(Drawer childDrawer)
+    {
+        var pushTransformVersion = ++_pushTransformVersion;
+        Dispatcher.Post(() =>
+        {
+            if (pushTransformVersion != _pushTransformVersion ||
+                _infoContainer == null ||
+                !IsActiveChildDrawer(childDrawer) ||
+                Placement == childDrawer.Placement)
             {
                 return;
             }
+
+            RestoreChildDrawerPushTransform();
+        });
+    }
+
+    private void RestoreChildDrawerPushTransform()
+    {
+        ++_pushTransformVersion;
+        if (_infoContainer != null && _isChildDrawerPushed)
+        {
             _infoContainer.RenderTransform = _originInfoContainerTransform;
         }
+
+        _originInfoContainerTransform = null;
+        _isChildDrawerPushed          = false;
     }
 }

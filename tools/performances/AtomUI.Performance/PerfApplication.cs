@@ -12,6 +12,8 @@ public sealed class PerfApplication : Application
         {
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseDesktopControls();
+            builder.UseDesktopColorPicker();
+            builder.UseDesktopDataGrid();
         });
     }
 }

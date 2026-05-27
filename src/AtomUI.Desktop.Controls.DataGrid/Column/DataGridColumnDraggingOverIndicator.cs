@@ -35,11 +35,16 @@ internal class DataGridColumnDraggingOverIndicator : Control
 
     static DataGridColumnDraggingOverIndicator()
     {
-        AffectsRender<DataGridColumnDraggingOverIndicator>(DraggingOverColumnProperty, DraggedColumnProperty);
+        AffectsRender<DataGridColumnDraggingOverIndicator>(
+            DraggingOverColumnProperty,
+            DraggedColumnProperty,
+            TextElement.ForegroundProperty);
     }
 
     private double _indicatorOffsetX;
-    private double _indicatorLineWidth = 1.0;
+    private const double IndicatorLineWidth = 1.0;
+    private Pen? _indicatorPen;
+    private IBrush? _indicatorPenBrush;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -48,6 +53,11 @@ internal class DataGridColumnDraggingOverIndicator : Control
             change.Property == DraggedColumnProperty)
         {
             CalculateIndicatorOffset();
+        }
+        else if (change.Property == TextElement.ForegroundProperty)
+        {
+            _indicatorPen = null;
+            _indicatorPenBrush = null;
         }
     }
 
@@ -81,7 +91,18 @@ internal class DataGridColumnDraggingOverIndicator : Control
             });
             var startPoint = new Point(_indicatorOffsetX, 0);
             var endPoint   = new Point(_indicatorOffsetX, Bounds.Height);
-            context.DrawLine(new Pen(TextElement.GetForeground(this), _indicatorLineWidth, DashStyle.Dash), startPoint, endPoint);
+            context.DrawLine(GetIndicatorPen(), startPoint, endPoint);
         }
+    }
+
+    private Pen GetIndicatorPen()
+    {
+        var foreground = TextElement.GetForeground(this);
+        if (_indicatorPen == null || !ReferenceEquals(_indicatorPenBrush, foreground))
+        {
+            _indicatorPenBrush = foreground;
+            _indicatorPen      = new Pen(foreground, IndicatorLineWidth, DashStyle.Dash);
+        }
+        return _indicatorPen;
     }
 }

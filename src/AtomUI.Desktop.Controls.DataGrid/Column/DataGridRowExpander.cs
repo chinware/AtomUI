@@ -1,11 +1,9 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
-using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -13,6 +11,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class DataGridRowExpander : ToggleButton
 {
+    private static readonly Func<bool, bool?> s_detailsVisibleToIsChecked = ConvertDetailsVisibleToIsChecked;
+
     internal static readonly DirectProperty<DataGridRowExpander, double> IndicatorThicknessProperty =
         AvaloniaProperty.RegisterDirect<DataGridRowExpander, double>(
             nameof(IndicatorThickness),
@@ -38,6 +38,7 @@ internal class DataGridRowExpander : ToggleButton
     }
 
     private double _indicatorThickness;
+    private DataGridRow? _owningRow;
 
     internal bool IsMotionEnabled
     {
@@ -65,7 +66,7 @@ internal class DataGridRowExpander : ToggleButton
 
     private Rectangle? _horizontalIndicator;
     private Rectangle? _verticalIndicator;
-    private IDisposable? _detailsVisibilityBinding;
+    private IDisposable? _detailsVisibilitySubscription;
 
     protected override Size ArrangeOverride(Size finalSize)
     {
@@ -99,6 +100,10 @@ internal class DataGridRowExpander : ToggleButton
         {
             IndicatorThickness = BorderThickness.Left;
         }
+        else if (change.Property == IsCheckedProperty && _owningRow != null)
+        {
+            _owningRow.IsDetailsVisible = change.GetNewValue<bool?>() == true;
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -110,19 +115,28 @@ internal class DataGridRowExpander : ToggleButton
 
     internal void NotifyLoadingRow(DataGridRow row)
     {
-        _detailsVisibilityBinding?.Dispose();
-        _detailsVisibilityBinding = BindUtils.RelayBind(
-            this,
+        ReleaseDetailsVisibilitySubscription();
+        _owningRow = row;
+        _detailsVisibilitySubscription = this.Bind(
             IsCheckedProperty,
-            row,
-            DataGridRow.IsDetailsVisibleProperty,
-            BindingMode.TwoWay);
+            row.GetObservable(DataGridRow.IsDetailsVisibleProperty, s_detailsVisibleToIsChecked));
     }
 
     internal void NotifyUnLoadingRow(DataGridRow row)
     {
-        _detailsVisibilityBinding?.Dispose();
-        _detailsVisibilityBinding = null;
+        ReleaseDetailsVisibilitySubscription();
+    }
+
+    private void ReleaseDetailsVisibilitySubscription()
+    {
+        _owningRow = null;
+        _detailsVisibilitySubscription?.Dispose();
+        _detailsVisibilitySubscription = null;
+    }
+
+    private static bool? ConvertDetailsVisibleToIsChecked(bool isDetailsVisible)
+    {
+        return isDetailsVisible;
     }
 
     protected override void OnInitialized()
@@ -135,5 +149,11 @@ internal class DataGridRowExpander : ToggleButton
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ReleaseDetailsVisibilitySubscription();
     }
 }

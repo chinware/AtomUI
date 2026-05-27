@@ -181,8 +181,15 @@ public partial class DataGrid
             {
                 double adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
                 AdjustColumnWidths(0, adjustment, false);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible)
+                    {
+                        continue;
+                    }
+
                     column.IsInitialDesiredWidthDetermined = true;
                 }
 
@@ -378,6 +385,15 @@ public partial class DataGrid
         }
     }
 
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (!e.Handled)
+        {
+            HandleKeyDown(this, e);
+        }
+    }
+
     internal bool UpdateScroll(Vector delta)
     {
         if (IsEnabled && DisplayData.NumDisplayedScrollingElements > 0)
@@ -465,6 +481,15 @@ public partial class DataGrid
         }
     }
 
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+        if (!e.Handled)
+        {
+            HandleKeyUp(this, e);
+        }
+    }
+
     private void HandleGotFocus(object? sender, RoutedEventArgs e)
     {
         if (!ContainsFocus)
@@ -490,6 +515,15 @@ public partial class DataGrid
         {
             ResetFocusedRow();
             _focusedRow = focusedRow.IsVisible ? focusedRow : null;
+        }
+    }
+
+    protected override void OnGotFocus(FocusChangedEventArgs e)
+    {
+        base.OnGotFocus(e);
+        if (!e.Handled)
+        {
+            HandleGotFocus(this, e);
         }
     }
 
@@ -532,6 +566,15 @@ public partial class DataGrid
                     focusedElement.LostFocus += HandleExternalEditingElementLostFocus;
                 }
             }
+        }
+    }
+
+    protected override void OnLostFocus(FocusChangedEventArgs e)
+    {
+        base.OnLostFocus(e);
+        if (!e.Handled)
+        {
+            HandleLostFocus(this, e);
         }
     }
 
@@ -615,8 +658,10 @@ public partial class DataGrid
             // is no longer relevant, so we should force a cancel edit.
             CancelEdit(DataGridEditingUnit.Row, raiseEvents: false);
 
-            // We want to persist selection throughout a reset, so store away the selected items
-            List<object> selectedItemsCache = new List<object>(_selectedItems.SelectedItemsCache);
+            // We want to persist selection throughout a reset, so store away the selected items when needed.
+            List<object>? selectedItemsCache = _selectedItems.SelectedItemsCache.Count > 0
+                ? new List<object>(_selectedItems.SelectedItemsCache)
+                : null;
 
             if (recycleRows)
             {
@@ -628,7 +673,14 @@ public partial class DataGrid
             }
 
             // Re-select the old items
-            _selectedItems.SelectedItemsCache = selectedItemsCache;
+            if (selectedItemsCache != null)
+            {
+                _selectedItems.SelectedItemsCache = selectedItemsCache;
+            }
+            else
+            {
+                _selectedItems.UpdateIndexes();
+            }
             CoerceSelectedItem();
             if (RowDetailsVisibilityMode != DataGridRowDetailsVisibilityMode.Collapsed)
             {
@@ -1388,8 +1440,10 @@ public partial class DataGrid
                 // Setup the column headers
                 if (DataConnection.DataType != null)
                 {
-                    foreach (var column in ColumnsInternal.GetDisplayedColumns())
+                    int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                    for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                     {
+                        DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                         if (column is DataGridBoundColumn boundColumn)
                         {
                             boundColumn.SetHeaderFromBinding();
@@ -1439,15 +1493,30 @@ public partial class DataGrid
 
     internal void UpdatePseudoClasses()
     {
-        var visibleColumns = ColumnsInternal.GetVisibleColumns().ToList();
-        for (var i = 0; i < visibleColumns.Count; i++)
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        int visibleColumnCount = 0;
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
-            var column = visibleColumns[i];
-            if (i == 0)
+            if (ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex).IsVisible)
+            {
+                visibleColumnCount++;
+            }
+        }
+
+        int visibleColumnIndex = 0;
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
+        {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
+            if (visibleColumnIndex == 0)
             {
                 column.HeaderCell.IsFirstVisible = true;
             }
-            else if (i == visibleColumns.Count - 1)
+            else if (visibleColumnIndex == visibleColumnCount - 1)
             {
                 column.HeaderCell.IsLastVisible = true;
             }
@@ -1461,9 +1530,10 @@ public partial class DataGrid
             column.HeaderCell.CanUserSort       = column.CanUserSort;
             column.HeaderCell.CanUserFilter     = column.CanUserFilter;
             column.HeaderCell.IsSorterTooltipVisible = column.IsSorterTooltipVisible;
+            visibleColumnIndex++;
         }
 
-        PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, !visibleColumns.Any());
+        PseudoClasses.Set(DataGridPseudoClass.EmptyColumns, visibleColumnCount == 0);
         PseudoClasses.Set(DataGridPseudoClass.EmptyRows, !DataConnection.Any());
     }
 
@@ -1517,7 +1587,7 @@ public partial class DataGrid
         }
     }
 
-    private static void NotifyDataContextPropertyForAllRowCells(IEnumerable<DataGridRow> rowSource, bool arg2)
+    private static void NotifyDataContextPropertyForAllRowCells(DataGridRowsEnumerable rowSource, bool arg2)
     {
         foreach (DataGridRow row in rowSource)
         {
@@ -2213,8 +2283,10 @@ public partial class DataGrid
     {
         var value = (DataGridLength)(change.NewValue ?? DataGridLength.Auto);
 
-        foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+        int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
             if (column.InheritsWidth)
             {
                 column.SetWidthInternalNoCallback(value);
@@ -2352,8 +2424,10 @@ public partial class DataGrid
         if (!_areHandlersSuspended)
         {
             var oldValue = (double)(change.OldValue ?? 0);
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                 HandleColumnMaxWidthChanged(column, Math.Min(column.MaxWidth, oldValue));
             }
         }
@@ -2364,8 +2438,10 @@ public partial class DataGrid
         if (!_areHandlersSuspended)
         {
             double oldValue = (double)(change.OldValue ?? 0);
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns())
+            int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
                 HandleColumnMinWidthChanged(column, Math.Max(column.MinWidth, oldValue));
             }
         }
@@ -4407,20 +4483,17 @@ public partial class DataGrid
 
     /// <summary>
     /// This method formats a row (specified by a DataGridRowClipboardEventArgs) into
-    /// a single string to be added to the Clipboard when the DataGrid is copying its contents.
+    /// the clipboard text builder when the DataGrid is copying its contents.
     /// </summary>
-    /// <param name="e">DataGridRowClipboardEventArgs</param>
-    /// <returns>The formatted string.</returns>
-    private string FormatClipboardContent(DataGridRowClipboardEventArgs e)
+    /// <param name="text">The destination clipboard text builder.</param>
+    /// <param name="e">DataGridRowClipboardEventArgs.</param>
+    private static void AppendClipboardContent(StringBuilder text, DataGridRowClipboardEventArgs e)
     {
-        var text                = new StringBuilder();
         var clipboardRowContent = e.ClipboardRowContent;
         var numberOfItem        = clipboardRowContent.Count;
         for (int cellIndex = 0; cellIndex < numberOfItem; cellIndex++)
         {
-            var cellContent = clipboardRowContent[cellIndex].Content?.ToString();
-            cellContent = cellContent?.Replace("\"", "\"\"");
-            text.Append($"\"{cellContent}\"");
+            AppendEscapedClipboardCellContent(text, clipboardRowContent[cellIndex].Content);
             if (cellIndex < numberOfItem - 1)
             {
                 text.Append('\t');
@@ -4431,8 +4504,33 @@ public partial class DataGrid
                 text.Append('\n');
             }
         }
+    }
 
-        return text.ToString();
+    private static void AppendEscapedClipboardCellContent(StringBuilder text, object? content)
+    {
+        text.Append('"');
+        var cellContent = content?.ToString();
+        if (!string.IsNullOrEmpty(cellContent))
+        {
+            var segmentStart = 0;
+            for (var charIndex = 0; charIndex < cellContent.Length; charIndex++)
+            {
+                if (cellContent[charIndex] != '"')
+                {
+                    continue;
+                }
+
+                text.Append(cellContent, segmentStart, charIndex - segmentStart);
+                text.Append("\"\"");
+                segmentStart = charIndex + 1;
+            }
+
+            if (segmentStart < cellContent.Length)
+            {
+                text.Append(cellContent, segmentStart, cellContent.Length - segmentStart);
+            }
+        }
+        text.Append('"');
     }
 
     /// <summary>
@@ -4451,29 +4549,49 @@ public partial class DataGrid
 
             if (ClipboardCopyMode == DataGridClipboardCopyMode.IncludeHeader)
             {
-                DataGridRowClipboardEventArgs headerArgs = new DataGridRowClipboardEventArgs(null, true);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                DataGridRowClipboardEventArgs headerArgs = new DataGridRowClipboardEventArgs(
+                    null,
+                    true,
+                    ColumnsInternal.VisibleColumnCount);
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible)
+                    {
+                        continue;
+                    }
+
                     headerArgs.ClipboardRowContent.Add(new DataGridClipboardCellContent(null, column, column.Header));
                 }
 
                 OnCopyingRowClipboardContent(headerArgs);
-                textBuilder.Append(FormatClipboardContent(headerArgs));
+                AppendClipboardContent(textBuilder, headerArgs);
             }
 
             for (int index = 0; index < SelectedItems.Count; index++)
             {
                 var item = SelectedItems[index];
                 Debug.Assert(item != null);
-                DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(item, false);
-                foreach (DataGridColumn column in ColumnsInternal.GetVisibleColumns())
+                DataGridRowClipboardEventArgs itemArgs = new DataGridRowClipboardEventArgs(
+                    item,
+                    false,
+                    ColumnsInternal.VisibleColumnCount);
+                int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+                for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
                 {
+                    DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                    if (!column.IsVisible)
+                    {
+                        continue;
+                    }
+
                     object? content = column.GetCellValue(item, column.ClipboardContentBinding);
                     itemArgs.ClipboardRowContent.Add(new DataGridClipboardCellContent(item, column, content));
                 }
 
                 OnCopyingRowClipboardContent(itemArgs);
-                textBuilder.Append(FormatClipboardContent(itemArgs));
+                AppendClipboardContent(textBuilder, itemArgs);
             }
 
             string text = textBuilder.ToString();

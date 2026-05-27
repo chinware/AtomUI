@@ -82,6 +82,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
                 for (int columnIndex = 0; columnIndex < ItemsInternal.Count; columnIndex++)
                 {
                     // Detach the column...
+                    ItemsInternal[columnIndex].NotifyOwningGridAboutToDetached();
                     ItemsInternal[columnIndex].OwningGrid = null;
                 }
                 ItemsInternal.Clear();
@@ -225,6 +226,16 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
         }
         int columnIndex = DisplayIndexMap[displayIndex];
         return ItemsInternal[columnIndex];
+    }
+
+    internal DataGridColumn GetDisplayedColumnAtDisplayIndex(int displayIndex)
+    {
+        Debug.Assert(ItemsInternal != null);
+        Debug.Assert(displayIndex >= 0);
+        Debug.Assert(displayIndex < ItemsInternal.Count);
+        Debug.Assert(displayIndex < DisplayIndexMap.Count);
+
+        return ItemsInternal[DisplayIndexMap[displayIndex]];
     }
     
     internal int GetColumnCount(bool isVisible, bool isFrozen, int fromColumnIndex, int toColumnIndex)

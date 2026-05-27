@@ -73,16 +73,31 @@ internal static class ValidationUtils
 
     public static IEnumerable<Exception> UnpackException(Exception? exception)
     {
-        if (exception != null)
+        if (exception == null)
         {
-            var exceptions = exception is AggregateException aggregate ?
-                aggregate.InnerExceptions :
-                (IEnumerable<Exception>)new[] { exception };
-
-            return exceptions.Where(x => !(x is BindingChainException)).ToList();
+            return Array.Empty<Exception>();
         }
 
-        return Array.Empty<Exception>();
+        if (exception is not AggregateException aggregate)
+        {
+            return exception is BindingChainException
+                ? Array.Empty<Exception>()
+                : new[] { exception };
+        }
+
+        List<Exception>? exceptions = null;
+        foreach (var innerException in aggregate.InnerExceptions)
+        {
+            if (innerException is BindingChainException)
+            {
+                continue;
+            }
+
+            exceptions ??= new List<Exception>(aggregate.InnerExceptions.Count);
+            exceptions.Add(innerException);
+        }
+
+        return exceptions ?? (IEnumerable<Exception>)Array.Empty<Exception>();
     }
 
     public static object? UnpackDataValidationException(Exception? exception)
@@ -125,10 +140,15 @@ internal static class ValidationUtils
     }
     public static void AddExceptionIfNew(this ICollection<Exception> collection, Exception value)
     {
-        if(!collection.Any(e => ExceptionsMatch(e, value)))
+        foreach (var exception in collection)
         {
-            collection.Add(value);
+            if (ExceptionsMatch(exception, value))
+            {
+                return;
+            }
         }
+
+        collection.Add(value);
     }
 
     /// <summary>

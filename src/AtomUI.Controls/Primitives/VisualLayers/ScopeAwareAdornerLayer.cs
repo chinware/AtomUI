@@ -40,6 +40,11 @@ public class ScopeAwareAdornerLayer : Canvas
     private static readonly AttachedProperty<ScopeAwareAdornerLayer?> SavedAdornerLayerProperty =
         AvaloniaProperty.RegisterAttached<Visual, Visual, ScopeAwareAdornerLayer?>("SavedAdornerLayer");
 
+    private static readonly AttachedProperty<ScopeAwareAdornerLayer?> CachedLayerProperty =
+        AvaloniaProperty.RegisterAttached<ScopeAwareAdornerLayer, Visual, ScopeAwareAdornerLayer?>("CachedLayer");
+
+    private static readonly RelativePoint TransformOrigin = new(new Point(0, 0), RelativeUnit.Absolute);
+
     #endregion
 
     static ScopeAwareAdornerLayer()
@@ -76,16 +81,32 @@ public class ScopeAwareAdornerLayer : Canvas
         }
 
         layerHost ??= visual.FindAncestorOfType<VisualLayerManager>();
-        layerHost ??= TopLevel.GetTopLevel(visual);
+        if (layerHost == null && TopLevel.GetTopLevel(visual) is { } topLevel)
+        {
+            layerHost = topLevel.GetVisualDescendants()
+                                .OfType<VisualLayerManager>()
+                                .FirstOrDefault();
+            layerHost ??= topLevel;
+        }
 
         if (layerHost == null)
         {
             return null;
         }
 
+        var cachedLayer = layerHost.GetValue(CachedLayerProperty);
+        if (cachedLayer?.GetVisualParent() != null)
+        {
+            return cachedLayer;
+        }
+
         var layer =
             layerHost.GetVisualChildren().FirstOrDefault(c => c is ScopeAwareAdornerLayer) as ScopeAwareAdornerLayer;
         layer ??= InjectLayer(layerHost);
+        if (layer != null)
+        {
+            layerHost.SetValue(CachedLayerProperty, layer);
+        }
 
         return layer;
     }
@@ -132,8 +153,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
                 if (info != null && info.Bounds.HasValue)
                 {
-                    child.RenderTransform       = new MatrixTransform(info.Bounds.Value.Transform);
-                    child.RenderTransformOrigin = new RelativePoint(new Point(0, 0), RelativeUnit.Absolute);
+                    UpdateTransform(child, info, info.Bounds.Value.Transform);
                     UpdateClip(child, info.Bounds.Value);
                     child.Arrange(info.Bounds.Value.Bounds);
                 }
@@ -145,6 +165,26 @@ public class ScopeAwareAdornerLayer : Canvas
         }
 
         return finalSize;
+    }
+
+    private static void UpdateTransform(Control child, AdornedElementInfo info, Matrix matrix)
+    {
+        info.Transform ??= new MatrixTransform();
+
+        if (!ReferenceEquals(child.RenderTransform, info.Transform))
+        {
+            child.RenderTransform = info.Transform;
+        }
+
+        if (info.Transform.Matrix != matrix)
+        {
+            info.Transform.Matrix = matrix;
+        }
+
+        if (child.RenderTransformOrigin != TransformOrigin)
+        {
+            child.RenderTransformOrigin = TransformOrigin;
+        }
     }
 
     private void ChildrenCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -331,7 +371,7 @@ public class ScopeAwareAdornerLayer : Canvas
         }
     }
 
-    private static ScopeAwareAdornerLayer InjectLayer(Layoutable layerHost)
+    private static ScopeAwareAdornerLayer? InjectLayer(Layoutable layerHost)
     {
         var layer = FindAdornerLayer(layerHost);
         if (layer != null)
@@ -392,8 +432,37 @@ public class ScopeAwareAdornerLayer : Canvas
                 scrollContentPresenter.ContentTemplate = injectTemplate;
             }
         }
+        else if (layerHost is ContentControl contentControl)
+        {
+            var content         = contentControl.Content;
+            var contentTemplate = contentControl.ContentTemplate;
+            contentControl.Content         = null;
+            contentControl.ContentTemplate = null;
 
-        return layer;
+            var panel = new Panel
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment   = VerticalAlignment.Stretch,
+            };
+
+            if (content is Control controlContent && contentTemplate == null)
+            {
+                panel.Children.Add(controlContent);
+            }
+            else if (content != null)
+            {
+                panel.Children.Add(new ContentPresenter
+                {
+                    Content         = content,
+                    ContentTemplate = contentTemplate
+                });
+            }
+
+            panel.Children.Add(layer);
+            contentControl.Content = panel;
+        }
+
+        return layer.GetVisualParent() == null ? null : layer;
     }
 
     private static ScopeAwareAdornerLayer? FindAdornerLayer(Layoutable layerHost)
@@ -413,6 +482,13 @@ public class ScopeAwareAdornerLayer : Canvas
             // 直接就在下面
             layer = visualLayerManager.FindChildOfType<ScopeAwareAdornerLayer>();
         }
+        else if (layerHost is ContentControl contentControl)
+        {
+            if (contentControl.Content is Control content)
+            {
+                layer = content.FindChildOfType<ScopeAwareAdornerLayer>();
+            }
+        }
 
         return layer;
     }
@@ -422,5 +498,7 @@ public class ScopeAwareAdornerLayer : Canvas
         public IDisposable? Subscription { get; set; }
 
         public TransformedBounds? Bounds { get; set; }
+
+        public MatrixTransform? Transform { get; set; }
     }
 }

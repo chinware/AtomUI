@@ -277,6 +277,18 @@ internal class ColorSpectrum : TemplatedControl
     private Bitmap? _minBitmap;
     private Bitmap? _maxBitmap;
 
+    private ImageBrush? _hueRedBrush;
+    private ImageBrush? _hueYellowBrush;
+    private ImageBrush? _hueGreenBrush;
+    private ImageBrush? _hueCyanBrush;
+    private ImageBrush? _hueBlueBrush;
+    private ImageBrush? _huePurpleBrush;
+
+    private ImageBrush? _saturationMinimumBrush;
+    private ImageBrush? _saturationMaximumBrush;
+
+    private ImageBrush? _valueBrush;
+
     // Fields used by UpdateEllipse() to ensure that it's using the data
     // associated with the last call to CreateBitmapsAndColorMap(),
     // in order to function properly while the asynchronous bitmap creation
@@ -1251,11 +1263,14 @@ internal class ColorSpectrum : TemplatedControl
                         _saturationMinimumBitmap = _minBitmap;
                         _saturationMaximumBitmap?.Dispose();
                         _saturationMaximumBitmap = _maxBitmap;
+                        _saturationMinimumBrush = new ImageBrush(_saturationMinimumBitmap);
+                        _saturationMaximumBrush = new ImageBrush(_saturationMaximumBitmap);
                         break;
                     case ColorSpectrumComponents.HueSaturation:
                     case ColorSpectrumComponents.SaturationHue:
                         _valueBitmap?.Dispose();
                         _valueBitmap = _maxBitmap;
+                        _valueBrush = new ImageBrush(_valueBitmap);
                         break;
                     case ColorSpectrumComponents.ValueSaturation:
                     case ColorSpectrumComponents.SaturationValue:
@@ -1271,6 +1286,12 @@ internal class ColorSpectrum : TemplatedControl
                         _hueBlueBitmap = ColorPickerHelpers.CreateBitmapFromPixelData(bgraMiddle4PixelData, pixelWidth, pixelHeight);
                         _huePurpleBitmap?.Dispose();
                         _huePurpleBitmap = _maxBitmap;
+                        _hueRedBrush = new ImageBrush(_hueRedBitmap);
+                        _hueYellowBrush = new ImageBrush(_hueYellowBitmap);
+                        _hueGreenBrush = new ImageBrush(_hueGreenBitmap);
+                        _hueCyanBrush = new ImageBrush(_hueCyanBitmap);
+                        _hueBlueBrush = new ImageBrush(_hueBlueBitmap);
+                        _huePurpleBrush = new ImageBrush(_huePurpleBitmap);
                         break;
                 }
 
@@ -1481,49 +1502,37 @@ internal class ColorSpectrum : TemplatedControl
             case ColorSpectrumComponents.HueValue:
             case ColorSpectrumComponents.ValueHue:
                 {
-                    if (_saturationMinimumBitmap == null ||
-                        _saturationMaximumBitmap == null)
+                    if (_saturationMinimumBrush == null ||
+                        _saturationMaximumBrush == null)
                     {
                         return;
                     }
 
-                    ImageBrush spectrumBrush = new ImageBrush(_saturationMinimumBitmap);
-                    ImageBrush spectrumOverlayBrush = new ImageBrush(_saturationMaximumBitmap);
-
-                    _spectrumOverlayRectangle.Opacity = hsvColor.S;
-                    _spectrumRectangle.Fill = spectrumBrush;
-                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
-                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                    SetSpectrumBrushes(_saturationMinimumBrush, _saturationMaximumBrush, hsvColor.S);
                 }
                 break;
 
             case ColorSpectrumComponents.HueSaturation:
             case ColorSpectrumComponents.SaturationHue:
                 {
-                    if (_valueBitmap == null)
+                    if (_valueBrush == null)
                     {
                         return;
                     }
 
-                    ImageBrush spectrumBrush = new ImageBrush(_valueBitmap);
-                    ImageBrush spectrumOverlayBrush = new ImageBrush(_valueBitmap);
-
-                    _spectrumOverlayRectangle.Opacity = 1.0;
-                    _spectrumRectangle.Fill = spectrumBrush;
-                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
-                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                    SetSpectrumBrushes(_valueBrush, _valueBrush, 1.0);
                 }
                 break;
 
             case ColorSpectrumComponents.ValueSaturation:
             case ColorSpectrumComponents.SaturationValue:
                 {
-                    if (_hueRedBitmap == null ||
-                        _hueYellowBitmap == null ||
-                        _hueGreenBitmap == null ||
-                        _hueCyanBitmap == null ||
-                        _hueBlueBitmap == null ||
-                        _huePurpleBitmap == null)
+                    if (_hueRedBrush == null ||
+                        _hueYellowBrush == null ||
+                        _hueGreenBrush == null ||
+                        _hueCyanBrush == null ||
+                        _hueBlueBrush == null ||
+                        _huePurpleBrush == null)
                     {
                         return;
                     }
@@ -1535,42 +1544,52 @@ internal class ColorSpectrum : TemplatedControl
 
                     if (sextant < 1)
                     {
-                        spectrumBrush = new ImageBrush(_hueRedBitmap);
-                        spectrumOverlayBrush = new ImageBrush(_hueYellowBitmap);
+                        spectrumBrush = _hueRedBrush;
+                        spectrumOverlayBrush = _hueYellowBrush;
                     }
                     else if (sextant >= 1 && sextant < 2)
                     {
-                        spectrumBrush = new ImageBrush(_hueYellowBitmap);
-                        spectrumOverlayBrush = new ImageBrush(_hueGreenBitmap);
+                        spectrumBrush = _hueYellowBrush;
+                        spectrumOverlayBrush = _hueGreenBrush;
                     }
                     else if (sextant >= 2 && sextant < 3)
                     {
-                        spectrumBrush = new ImageBrush(_hueGreenBitmap);
-                        spectrumOverlayBrush = new ImageBrush(_hueCyanBitmap);
+                        spectrumBrush = _hueGreenBrush;
+                        spectrumOverlayBrush = _hueCyanBrush;
                     }
                     else if (sextant >= 3 && sextant < 4)
                     {
-                        spectrumBrush = new ImageBrush(_hueCyanBitmap);
-                        spectrumOverlayBrush = new ImageBrush(_hueBlueBitmap);
+                        spectrumBrush = _hueCyanBrush;
+                        spectrumOverlayBrush = _hueBlueBrush;
                     }
                     else if (sextant >= 4 && sextant < 5)
                     {
-                        spectrumBrush = new ImageBrush(_hueBlueBitmap);
-                        spectrumOverlayBrush = new ImageBrush(_huePurpleBitmap);
+                        spectrumBrush = _hueBlueBrush;
+                        spectrumOverlayBrush = _huePurpleBrush;
                     }
                     else
                     {
-                        spectrumBrush = new ImageBrush(_huePurpleBitmap);
-                        spectrumOverlayBrush = new ImageBrush(_hueRedBitmap);
+                        spectrumBrush = _huePurpleBrush;
+                        spectrumOverlayBrush = _hueRedBrush;
                     }
 
-                    _spectrumOverlayRectangle.Opacity = sextant - (int)sextant;
-                    _spectrumRectangle.Fill = spectrumBrush;
-                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
-                    _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+                    SetSpectrumBrushes(spectrumBrush, spectrumOverlayBrush, sextant - (int)sextant);
                 }
                 break;
         }
+    }
+
+    private void SetSpectrumBrushes(IBrush spectrumBrush, IBrush spectrumOverlayBrush, double overlayOpacity)
+    {
+        if (_spectrumOverlayRectangle == null ||
+            _spectrumRectangle == null)
+        {
+            return;
+        }
+
+        _spectrumOverlayRectangle.Opacity = overlayOpacity;
+        _spectrumRectangle.Fill = spectrumBrush;
+        _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
     }
 
     /// <summary>

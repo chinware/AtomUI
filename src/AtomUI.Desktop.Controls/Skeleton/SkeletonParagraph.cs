@@ -93,6 +93,14 @@ public class SkeletonParagraph : AbstractSkeleton
     {
         if (_linesLayout != null)
         {
+            for (var i = 0; i < _linesLayout.Children.Count; i++)
+            {
+                if (_linesLayout.Children[i] is SkeletonLine oldLine)
+                {
+                    oldLine.UnFollow(startStandaloneAnimation: false);
+                }
+            }
+
             _linesLayout.Children.Clear();
             for (var i = 0; i < Rows; i++)
             {
@@ -133,17 +141,21 @@ public class SkeletonParagraph : AbstractSkeleton
     {
         if (_linesLayout != null)
         {
-            for (var i = 0; i < Rows; i++)
+            for (var i = 0; i < Math.Min(Rows, _linesLayout.Children.Count); i++)
             {
-                if (_linesLayout.Children.Last() is SkeletonLine lastLine)
+                if (_linesLayout.Children[i] is SkeletonLine line)
                 {
                     if (LineWidths != null && i < LineWidths.Count)
                     {
-                        lastLine.LineWidth = LineWidths[i];
+                        line.LineWidth = LineWidths[i];
                     }
                     else if (i == Rows - 1)
                     {
-                        lastLine.LineWidth = LastLineWidth;
+                        line.LineWidth = LastLineWidth;
+                    }
+                    else
+                    {
+                        line.ClearValue(SkeletonLine.LineWidthProperty);
                     }
                 }
             }

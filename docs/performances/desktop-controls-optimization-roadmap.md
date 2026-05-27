@@ -16,7 +16,7 @@
 | 控件清单 | 71 个 Desktop 控件目录 + ColorPicker + DataGrid | `find src/AtomUI.Desktop.Controls -maxdepth 1 -type d` |
 | 主题依赖 | 137 条目录间边 | 在 `*.axaml` 中 grep `atom:Xxx`，去掉 token / lang / constants / converters 后映射到拥有该类型的目录 |
 | 代码依赖 | 277 条目录间边（粗筛后） | 在 `*.cs` 中匹配类名 token 与全局类→目录映射的交集；含一定假阳性（常见单词 `Empty` / `Form` / `Message` 等会误判，已通过同时观察主题边校正主要结论） |
-| 已完成基线 | 52 项 | `docs/performances/README.md` "当前文档" / "总列表" 的 Done 行 |
+| 已完成基线 | 56 项 | `docs/performances/README.md` "当前文档" / "总列表" 的 Done 行 |
 
 **结论权重**：主题依赖是优化排序的主依据；代码依赖只用于补充识别"程序化使用"的隐式耦合（例如 ContextMenu、Window、Message 等无主题模板嵌入但代码里直接 new 的依赖）。
 
@@ -85,15 +85,15 @@
 | Segmented | Done | 0 | 1 | Done |
 | Select | Done | 12 | 5 | Done — 大型聚合控件 |
 | Separator | Done (structural-only) | 4 | 1 | `AbstractSeparator.Render` Pen 缓存（SKILL Cost Model 强制）；详见 [Separator](Separator/README.md)。Headless bench 解析力 < 0.1 KB |
-| Skeleton | Skipped (sub-noise) | 3 | 0 | 形状同 T0.5 Spin，`BuildActiveAnimation` 在 attach 时无条件构造，但 headless bench 不可见；推迟到 Gallery 级实测 |
+| Skeleton | Done (structural lifecycle + correctness) | 3 | 0 | 重复 class handler、inactive animation、paragraph line rebuild/follow 生命周期已修复；详见 [Skeleton](Skeleton/README.md) |
 | Slider | Done | 0 | 1 | Done |
 | Space | Done | 11 | 0 | Done |
-| Spin | Skipped (sub-noise) | 8 | 0 | `BuildIndicatorAnimation` lazy-build 改动 KB/item 落在变异范围内；Render 路径 (4 × DrawEllipse/frame) 才是真热点，需 Gallery 级实测 |
-| SplitView | Pending | 0 | 0 | 简单容器 |
+| Spin | Done (structural lifecycle + correctness) | 8 | 0 | hidden `SpinIndicator` animation 延迟到可见时创建；motion 参数变化后重建已 materialized 动画；详见 [Spin](Spin/README.md) |
+| SplitView | Done (structural lifecycle) | 0 | 0 | 初始 pane transition 延迟到第一次 runtime open/close；详见 [SplitView](SplitView/README.md) |
 | Splitter | Done | 0 | 1 | hidden collapse icon 不再构造/保留 PathIcon，lazy preview transform 复用；详见 [Splitter](Splitter/README.md) |
 | Statistic | Done | 0 | 1 | generated content ownership、CountUp DataContext 清理、TimerStatistic attach-gated timer 生命周期；详见 [Statistic](Statistic/README.md) |
 | Steps | Done (structural-only) | 1 | 1 | 修复 `ConfigureItemsPanel` 未清理 `ColumnDefinitions`；详见 [Steps](Steps/README.md) |
-| Switch (ToggleSwitch) | **Pending** | 0 | 0 | 单一控件，可独立基线 |
+| Switch (ToggleSwitch) | Done (interaction structural) | 0 | 0 | `IsChecked` 切换不再触发 measure invalidation；详见 [Switch](Switch/README.md) |
 | TabControl | Done | 1 | 1 | 默认 hidden icon/close slot 按需化；`TabControlShowCase` repeated mean `170.75ms -> 157.35ms`；详见 [TabControl](TabControl/README.md) |
 | Tag | Done | 10 | 1 | `AbstractTag.SetupDefaultCloseIcon` 门控到 `IsClosable=true`，非 closable Tag 减少 ~2 KB/instance × Gallery 76 实例 ≈ 140 KB；详见 [Tag](Tag/README.md) |
 | TextBlock | Done (structural) | 33 | 0 | `HighlightableTextBlock` 段级 Run + `SelectableTextBlock` token binding/Cursor → Theme Setter；详见 [TextBlock](TextBlock/README.md)。微基准待哈纳斯恢复 |
@@ -113,15 +113,15 @@
 
 | 控件 | 状态 | 跨包依赖 |
 | --- | --- | --- |
-| ColorPicker | Pending | Primitives.ArrowDecoratedBox, Collapse.CollapseItem, ComboBox, ComboBoxItem, Input.LineEdit, NumericUpDown, Popup |
-| GradientColorPicker | Pending | （同上 + 内部 Gradient 子控件） |
+| ColorPicker | Done (structural lifecycle) | Primitives.ArrowDecoratedBox, Collapse.CollapseItem, ComboBox, ComboBoxItem, Input.LineEdit, NumericUpDown, Popup；closed `Window.Deactivated` 订阅 `23 -> 0`，详见 [ColorPicker](ColorPicker/README.md) |
+| GradientColorPicker | Partial | 共享 `AbstractColorPicker` lifecycle 收益；打开态 Gradient 子控件仍待后续专项 |
 | ColorSlider / ColorPickerPalette / ColorBlock | Pending | 内部子控件 |
 
 ### 1.3 `AtomUI.Desktop.Controls.DataGrid`
 
 | 控件 | 状态 | 跨包依赖 |
 | --- | --- | --- |
-| DataGrid | Pending | Primitives.ArrowDecoratedBox, Buttons.Button, TextBlock, Pagination, PopupConfirm, ScrollViewer, Spin, Tooltip.ToolTip, TreeView.TreeViewItemTheme |
+| DataGrid | Partial | Primitives.ArrowDecoratedBox, Buttons.Button, TextBlock, Pagination, PopupConfirm, ScrollViewer, Spin, Tooltip.ToolTip, TreeView.TreeViewItemTheme；cell header-state binding / filter flyout lifecycle / filter indicator binding / filter materialization allocation cleanup / filter close selected-values allocation cleanup / filter selected-values capacity preallocation / filter item children lazy allocation / column/group/row/row group header pointer handler cleanup / column header click drag-over cleanup guard / column header resize/reorder drag state release cleanup / plain column header template-apply sort/list cleanup / column header clip cleanup / group header view item clip cleanup / core input handler cleanup / pagination re-template subscription cleanup / rows presenter scroll gesture + clip geometry cleanup / row bottom gridline clip cleanup / row hidden clip cleanup / row group header child clip + transform cleanup / details presenter clip cleanup / cell clip cleanup / GetAllRows struct enumerable cleanup / row group header slot struct enumeration cleanup / clipboard row content visible-column preallocation / clipboard content direct append formatting cleanup / auto-generated column order-list preallocation / star column width adjustment list lazy/preallocation / special column detach lifecycle / column reorder indicator pen cache / column reordering indicator clip cleanup / column drag-over null-target notification dedup / row reorder duplicate check LINQ cleanup / row reorder click no-op drop cleanup / row reorder drag state release cleanup / selected-items empty reset cache cleanup / selected-items index enumeration cleanup / selection-inclusive start-slot enumeration cleanup / selected-slots table copy preallocation / single-selection first-slot lookup cleanup / checkbox edit pointer bounds wait cleanup / details presenter measure registration / row expander details binding / column sort-filter description lookup cleanup / empty filter request object copy cleanup / column clipboard dead field cleanup / column group tree direct add/remove cleanup / DataConnection enumerable cleanup + bare IEnumerable item-type probe disposal + collection-view `Any()` fast path + editable-attribute/read-only-attribute/display-attribute no-attribute lookup cleanup / CollectionView sorted result preallocation / CollectionView paged enumerator direct range cleanup / CollectionView empty paged enumerator shared array / CollectionView group key matching correctness / CollectionView property changed args cache + reset collection changed args cache + Reset ICollection empty-check fast path / group data property changed args cache / PathGroupDescription owner-type cache / PathSortDescription comparer cache + key selector delegate cache / PrepareLocalArray no-filter copy fast path / FilterDescription property type cache + record value reuse 已完成，分组行头模板 part lookup 正确性已修复，详见 [DataGrid](DataGrid/README.md) |
 | DataGridRow / DataGridCell / DataGridColumnHeader 等 ~40 内部子控件 | Pending | 同上 |
 
 DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
@@ -148,7 +148,7 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | 12 | **Tag** | **10** | **0** | **Pending — Dialog/Select/Transfer/Tour/Upload 复用** |
 | 13 | Message | 9 | 0 | Done |
 | 14 | Flyouts | 9 | 0 | Done |
-| 15 | **Spin** | **8** | **5** | **Pending** |
+| 15 | Spin | 8 | 5 | Done |
 | 16 | Result | 8 | 0 | Done |
 
 ### 2.2 Top Fan-Out（消耗依赖最多 → 内部聚合控件，需要先做底层）
@@ -189,9 +189,9 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | T0.2 | **Popup** | Desktop.Controls | 19 | window-host vs overlay-host 决策；motion 与 IsOpen 重入；嵌套 popup 边界（参见 SKILL [Re-entrancy](Re-entrancy)） | **Done (structural)** | 子系统：Popup + Binding；详见 [Popup](Popup/README.md)。微基准待哈纳斯恢复 |
 | T0.3 | ~~**Window**~~ Demoted | Desktop.Controls | 13 | Fan-in 13 是派生类计数（DialogHost / ImagePreviewerDialog / Drawer host 等都 `: Window`），不是实例化次数。Gallery 实测 1 个常驻 `WorkspaceWindow`，dialog/drawer 操作 < 1/session 触发。 | **Skipped (Tier 1 §13)** | 转 [T2.8 WindowTitleBar](#tier-2--单功能-pending-控件) 同周期，并与 macOS Metal jitter 项（memory `project_metal_resize_jitter`）协同时回到此项 |
 | T0.4 | ~~**Tag**~~ | Desktop.Controls | 10 | 每条 Select 的标签都创建 `IconButton` + `IconPresenter`；移除 / 输入框 hover 切换重 | **Done** | 子系统：Property + Render；详见 [Tag](Tag/README.md) |
-| T0.5 | ~~**Spin**~~ | Desktop.Controls | 8 | 旋转动画 + token brush；ListView/Mentions/QRCode/TreeView 都嵌入 | **Skipped (sub-noise)** | Headless bench 下 `BuildIndicatorAnimation` lazy-build 改动 KB/item 落在变异范围内，未达 SKILL Tier 1 §9 量级。Render() 每帧 4 × DrawEllipse 才是真热点，需要 Gallery 级"持续 spinning"场景实测；推迟到 Tier 0 收尾后视情况回来 |
+| T0.5 | ~~**Spin**~~ | Desktop.Controls | 8 | 旋转动画 + token brush；ListView/Mentions/QRCode/TreeView 都嵌入 | **Done (structural lifecycle + correctness)** | hidden `SpinIndicator` animation 延迟到可见时创建；`MotionDuration` / `MotionEasingCurve` 变化后重建已 materialized 动画；非 spinning KB/item `78.8 -> 77.4`，GalleryShape KB/item `575.1 -> 564.2`；详见 [Spin](Spin/README.md)。持续 spinning 的 render 热点仍需专项 Gallery 场景 |
 | T0.6 | ~~**Tooltip**~~ | Desktop.Controls | 5 | Form / Slider / Steps / Upload / DataGrid 都用 ToolTipService 全局订阅；hover 触发率高 | **Done (structural-only)** | `ToolTipService.StartShowTimer` 复用 DispatcherTimer；详见 [Tooltip](Tooltip/README.md)。Headless bench 无法触发 Show 流程 |
-| T0.7 | ~~Skeleton~~ | Desktop.Controls | 3 | Card / Dialog / Statistic 切换 IsLoading；shimmer 动画始终活跃 | **Skipped (sub-noise)** | 与 T0.5 Spin 同样的 `BuildActiveAnimation` 在 attach 时无条件构造 Animation+3 KeyFrame+3 Setter，但 headless bench 解析力 < 0.1 KB/instance 看不出来。Render 路径 (`SkeletonElement` shimmer) 是真热点，需 Gallery 级"持续 IsActive=true"实测，推迟到 Tier 0 收尾后视情况回来 |
+| T0.7 | ~~Skeleton~~ | Desktop.Controls | 3 | Card / Dialog / Statistic 切换 IsLoading；shimmer 动画始终活跃 | **Done (structural lifecycle + correctness)** | 修复重复 `ContentProperty` class handler、inactive animation 预创建、paragraph line rebuild/follow 生命周期；`Content.NotLoading` logical/root `902.5 -> 4.0`，KB/item `172.3 -> 129.9`；详见 [Skeleton](Skeleton/README.md)。持续 shimmer render 仍需 Gallery 级 active 场景专项 |
 | T0.8 | ~~Separator~~ | Desktop.Controls | 4 | Drawer / Menu / Breadcrumb / NavMenu 内嵌；本身渲染廉价但 Children 计数大 | **Done (structural-only)** | `AbstractSeparator.Render` 加 Pen 缓存（SKILL Cost Model 强制）；详见 [Separator](Separator/README.md)。Headless bench < 解析力 |
 
 ### Tier 1 — 复合 Pending 控件（Fan-Out ≥ 4 且 Pending）
@@ -218,10 +218,10 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 | T2.4 | Steps | 2 | Done (structural-only) | 修复 Grid definitions 清理错误；页面级 timing 未证明稳定收益 |
 | T2.5 | Breadcrumb | 2 | Done (correctness + baseline) | 父级 `Separator` 变化现在同步到 direct/generated inherited items；同参数复测下 cold / P95 / alloc 有收益，repeated median 基本持平 |
 | T2.6 | Splitter | 3 | **Done** | hidden collapse icon 不再构造/保留 `PathIcon`，lazy preview transform 复用；`SplitterShowCase` repeated mean `36.91ms -> 34.66ms`，alloc `5770.31KB -> 5659.40KB`；详见 [Splitter](Splitter/README.md) |
-| T2.7 | Switch (ToggleSwitch) | 0 | Pending | RectTransition + WaveSpiritDecorator |
+| T2.7 | Switch (ToggleSwitch) | 0 | Done (interaction structural) | `IsChecked` 切换 measure invalidations `1000 -> 0`，页面加载中性/噪声内；详见 [Switch](Switch/README.md) |
 | T2.8 | WindowTitleBar | 3 | Pending | 与 Window (T0.3) 同周期 |
 | T2.9 | AdornerLayer | 0 | Pending | 与 Drawer/Dialog/Tooltip overlay 协同 |
-| T2.10 | SplitView | 0 | Pending | 简单容器 |
+| T2.10 | SplitView | 0 | Done (structural lifecycle) | 初始 pane transition 延迟到第一次 runtime open/close；详见 [SplitView](SplitView/README.md) |
 
 ### Tier 3 — ColorPicker 包
 
@@ -229,8 +229,8 @@ DataGrid 是最重的复合控件，独立子表才是合理的优化粒度。
 
 | # | 控件 | 现状 | 备注 |
 | --- | --- | --- | --- |
-| T3.1 | ColorPicker | Pending | 整个包做一次基线 + 独立 ShowCase；前置：Popup (T0.2) |
-| T3.2 | GradientColorPicker | Pending | 与 T3.1 同周期 |
+| T3.1 | ColorPicker | Done (structural lifecycle) | closed `Window.Deactivated` 订阅 `23 -> 0`；页面 timing 噪声内，不作为主收益；详见 [ColorPicker](ColorPicker/README.md) |
+| T3.2 | GradientColorPicker | Partial | 继承 T3.1 lifecycle 收益；打开态 Gradient 子控件仍待后续专项 |
 | T3.3 | ColorSlider / Track / Spectrum / Palette | Pending | 子控件，跟随 T3.1 |
 
 ### Tier 4 — DataGrid 包
@@ -239,11 +239,15 @@ DataGrid 是单文件最复杂的控件之一（~110 个公开类型）。依赖
 
 | # | 子模块 | 备注 |
 | --- | --- | --- |
-| T4.1 | DataGrid 核心（DataGrid / DataGridRow / DataGridCell / Presenter 系列） | 前置：ScrollViewer 真正速度优化、Spin (T0.5)、Tooltip (T0.6)、TreeView (T1.1) |
-| T4.2 | 列模型（DataGridColumn / DataGridColumnHeader / FilterFlyout / SortIndicator） | 与 T4.1 协同 |
-| T4.3 | 行展开 / 详情（RowExpander / DetailsPresenter） | 与 T4.1 协同 |
-| T4.4 | 行重排 / 选择（RowReorder / SelectionColumn） | 拖拽全局订阅 — Lifecycle Pairing 重点 |
-| T4.5 | 分组 / 过滤（CollectionView / FilterDescription / GroupDescription） | 数据层成本，不在主题路径上但是真热点 |
+| T4.1 | DataGrid 核心（DataGrid / DataGridRow / DataGridCell / Presenter 系列） | Partial：DataGridCell header sort / reorder state binding converter 闭包已移除，cell clip repeated arrange 分配和 cells presenter arrange/measure visible-column iterator/list 分配已收敛；DataGridRowHeader press 本地 handler 已迁到 class handler，且 owner/template 顺序空引用已修复；DataGridRowGroupHeader press 本地 handler 已迁到 class handler，内置模板 part lookup、child clip repeated arrange 分配和 frozen child transform repeated arrange 分配已收敛；DataGrid core input handlers 已迁到 virtual override；plain column header template apply 不再复制/排序列集合，直接按 DisplayIndexMap 插入且乱序 DisplayIndex 已验证；DataGrid pagination 重套模板后旧 top/bottom page-change handler 已释放；DataGridRowsPresenter scroll gesture handler 已迁到 class handler，presenter clip geometry repeated arrange 分配和 layout list/iterator 分配已收敛；GetAllRows realized-row traversal 和 RowGroupHeadersTable 分组 slot traversal 已改走 struct enumerable；row/core scrolling element iterator callsites 已收敛；column width adjustment iterator/delegate 分配和 star column width adjustment list lazy/preallocation 已收敛；column frozen-state / header pseudo-class refresh iterator/list 分配已收敛；horizontal column coordinate / scroll offset iterator 分配已收敛；column lifecycle / edit / copy iterator callsites 已收敛，clipboard row content visible-column preallocation、clipboard content direct append formatting cleanup 和 auto-generated column order-list preallocation 已完成；DataGridRow bottom gridline clip / hidden clip repeated 分配已收敛；DataGridDetailsPresenter clip repeated arrange 分配已收敛；DetailsPresenter measure registration 已收敛；DataGrid / virtualization / data layer 仍待专项 |
+| T4.2 | 列模型（DataGridColumn / DataGridColumnHeader / FilterFlyout / SortIndicator） | Partial：filter flyout closed-state 内容已延迟；filter indicator visibility binding 已收敛；filter indicator tree group name 已延迟到首次 materialize tree items，menu/tree filter item materialization 临时 list 已清理；filter request `Cast<object>().ToList()` LINQ iterator、replacement filter `ToHashSet()` set-compare 和 `ToList()` copy 已移除且 deferred 快照 / set 语义已验证；empty filter request object-list copy 已复用 shared zero-capacity list，非空请求快照语义已验证；filter flyout presenter reset / ok 本地 Click handlers 已迁到 class handler；默认 `FilterOnClose=false` 的 filter flyout 被动关闭不再收集 selected values / 创建内部 selected-values event args，`FilterOnClose=true` 与确认关闭语义已验证；filter flyout close 有 presenter 时不再创建被覆盖的空 selected-values list，passive close 空选择语义已验证；filter selected-values list 已按 checked leaf count 预分配，空选 / 单选 / 6 个嵌套 leaf 全选容量已验证；filter item `Children` 已懒创建，leaf 空 children list 不再默认分配且 menu/tree materialize 不触发 leaf children allocation；column header hover / press / release / move 本地 handler 已清理；column header 普通点击不再发送无效 drag-over cleanup 且 reorder cleanup 保持；column header resize/reorder detach lifecycle 已按 owner 清理 static drag state 和 presenter drag state；column sort/filter description lookup 的 `OfType()` / `FirstOrDefault(predicate)` LINQ callsites 已移除且 first-match / no-match 语义已验证；column clipboard dead field 已移除且 Binding fallback / explicit override 语义已验证；column header clip repeated arrange 分配和 column/header/group header presenter arrange/measure visible-column iterator/list 分配已收敛；column width adjustment iterator/delegate 分配已收敛；column frozen-state / header pseudo-class refresh iterator/list 分配已收敛；horizontal column coordinate / scroll offset iterator 分配已收敛；column lifecycle / edit / copy / resize hit-test iterator callsites 已收敛；group column header view item clip repeated arrange 分配已收敛；column group header press / release forwarding handler 已清理；column group tree collection 递归临时 list 已清理，operation-level leaf list 已移除且 nested group remove 释放 `OwningGrid` 已验证；其余 resize / reorder 仍待专项 |
+| T4.3 | 行展开 / 详情（RowExpander / DetailsPresenter） | Partial：detail / reorder / selection / checkbox / operation columns 的 `Columns.Clear()` detach 事件链已释放；DetailsPresenter `ContentHeight` measure registration 已移到 static constructor；DetailsPresenter clip repeated arrange 分配已收敛且 frozen clear 已验证；RowExpander details visibility binding 已从 `RelayBind` 收敛到 direct observable + detach 释放；DataGridOperationButtons edit/save/delete/cancel 本地 part routed handlers 已迁到 owner class handler；其余 row details layout 仍需与 T4.1 协同 |
+| T4.4 | 行重排 / 选择（RowReorder / SelectionColumn） | Partial：column reorder dragging-over indicator 已缓存 dashed `Pen`；column reordering drag/drop-location indicator clip repeated arrange 分配已收敛；column drag-over target 已为 `null` 时连续 pointer move 不再重复通知；column header resize/reorder detach lifecycle 已在 T4.2 按 owner 清理；row reorder hit-test scrolling-element iterator 已收敛；DataGridRowReorderColumn duplicate check 已移除 `Count(predicate)` LINQ callsite 且重复列异常语义已验证；row reorder handle click 未进入拖拽时不再触发 no-op drop / `RowReordered` / rows presenter arrange invalidation；row reorder drag release / unload / detach 已清理 stale dragged-row state 和 ghost row 生命周期；selection column header checkbox 本地 `Click` handler 已迁到 class handler；SelectionChanged added/removed item list 已按 delta count 预分配；selected-items index rebuild cache 已按旧 selected count 预分配；empty selection reset 不再复制/替换默认空 selected-items cache，清空后仍持有容量的 cache 继续释放 backing array；selected-items selection diff / public enumeration 已移除内部 selected-slot yield iterator；selected-items public outer yield state machine 已移除；selection-inclusive 起始 slot 枚举已改走 struct enumerable 且 `GetSelectionInclusive(1,3)` 顺序已验证；selected-slots table copy 已按 range count 预分配；single-selection first selected slot lookup 已移除 `GetIndexes().First()` iterator / LINQ callsite；DataGridCheckBoxColumn pointer-triggered edit zero-bounds 等待已从 `LayoutUpdated` 改为一次性 Bounds 观察；其余拖拽全局订阅仍是 Lifecycle Pairing 重点 |
+| T4.5 | 分组 / 过滤（CollectionView / FilterDescription / GroupDescription） | Partial：DataConnection 非集合 `IEnumerable` count/getAny fallback 已移除 `Cast<object>()` LINQ iterator，裸 `IEnumerable` item-type probe 已补齐 enumerator dispose，`IDataGridCollectionView.Any()` 已改走 `IsEmpty` fast path 且不枚举 view，DataProperties 已按 data type 缓存 `PropertyInfo[]` 且 clear / DataSource replacement 刷新已验证；DataConnection editable check 的无 `EditableAttribute` 常见路径已跳过 `GetCustomAttributes()` 空数组创建，`Editable(false/true)` / getter-only / nested path 语义已验证；`TypeHelper.GetIsReadOnly()` 的无 `ReadOnlyAttribute` 常见路径已跳过 `GetCustomAttributes()` 空数组创建，DataConnection property type / property info read-only checks 受益，`ReadOnly(true/false)` property 和 type-level 语义已验证；`TypeHelper.GetDisplayName()` 和自动生成列的无 `DisplayAttribute` 常见路径已跳过 `GetCustomAttributes()` 空数组创建，`ShortName` / `Name` fallback / `Order` / `AutoGenerateField=false` 语义已验证；MergedComparer comparer array 构造已移除 `Select().ToArray()` LINQ iterator 且排序顺序已验证；CollectionView unfiltered source copy / refresh 已按 `ICollection.Count` 预分配且 filtered refresh 不预分配全量源 Count；PrepareLocalArray 无 Filter 路径已直接复制 source item，不再每 item 进入 filter 分支，filtered refresh 语义已验证；CollectionView sorted result materialization 已移除末端 `ToList()` callsite 并按输入 count 预分配，stable sort order 已验证；CollectionView paged enumerator 已改为 direct page range，不再创建临时页 list 或复制页内 item，第 2 页 / 末页 / Reset 后枚举顺序已验证；CollectionView empty paged enumerator 在 `PageIndex < 0` 时复用 shared empty array，不再创建空 `List<object?>` 且空枚举语义已验证；CollectionView group insert 已恢复 `KeysMatch`，非连续重复 key 的 subgroup / leaf order / `IndexOf()` 正确；CollectionView 已知 `PropertyChanged` 属性名复用 cached event args，未知属性名仍不缓存；CollectionView 无 payload Reset collection changed 通知复用 cached event args，带 value 的兼容路径未改；CollectionView 处理 `ICollection` source Reset 空检查已改走 Count，Reset-to-empty 清空语义已验证；GroupDescription / group item 固定 `PropertyChanged` 通知复用 cached event args；PathGroupDescription 已按 owner type 缓存 property type，混合 item type key 解析正确；PathSortDescription property comparer 已按属性类型缓存且 custom value comparer 覆盖风险已验证修复；SortDescription comparer/path key selector delegate 已缓存，`OrderBy()` / `ThenBy()` 每次调用不再创建 selector 委托且升/降序语义已验证；FilterDescription property type 已按 item type 缓存且 path 变更重置已验证，多条件过滤复用 record value / `ToString()` 且 custom filter first-condition 语义已验证，默认 FilterConditions 空 list 已懒创建；ValidationUtils exception filtering / duplicate-message add 已移除 `Where().ToList()` 和 `Any(...)` predicate 且过滤语义已验证；其余数据层成本不在主题路径上但是真热点 |
+
+T4.2 补充：filter flyout presenter 未生成容器时的 selected-values item fallback 已改为 `ItemsView[index]`，不再通过 `foreach (Items)` 线性扫描；未 realized / realized menu-tree presenter 语义已验证，详见 [DataGrid](DataGrid/README.md) 2.94。
+
+T4.2 补充：filter flyout presenter reset / menu radio clear traversal 已复用 `ItemsView[index]` fallback，未生成容器的 nested checked leaf 也会被 reset 清空，详见 [DataGrid](DataGrid/README.md) 2.95。
 
 ---
 
@@ -255,8 +259,7 @@ Phase A (Tier 0) ─────────────────────
   T0.2 Popup          │  并行；任意一项独立 PR
   T0.5 Spin           ┘
   T0.4 Tag
-  T0.6 Tooltip        ┐  与 T0.4 收尾后开始
-  T0.7 Skeleton       ┘
+  T0.6 Tooltip done → T0.7 Skeleton done
 
 Phase B (Tier 0 Window 系) ────────────────────────────────────
   T0.3 Window — **降级**（实测未过 SKILL Tier 1 §13 资格门槛，详见 Tier 0 表）
@@ -272,10 +275,10 @@ Phase C (Tier 1 复合) ──────────────────�
 
 Phase D (Tier 2 单功能) ──────────────────────────────────────
   T2.2 Statistic done → T2.3 Timeline / T2.5 Breadcrumb / T2.6 Splitter done
-  T2.7 Switch / T2.10 SplitView
+  T2.7 Switch done → T2.10 SplitView done
 
 Phase E (Tier 3 ColorPicker) ─────────────────────────────────
-  T3.1 / T3.2 / T3.3  Popup (T0.2) done 后
+  T3.1 lifecycle done → T3.2 / T3.3 打开态子控件专项
 
 Phase F (Tier 4 DataGrid) ────────────────────────────────────
   T4.1 核心 → T4.2 列模型 → T4.3 行展开 → T4.4 行重排 → T4.5 数据层

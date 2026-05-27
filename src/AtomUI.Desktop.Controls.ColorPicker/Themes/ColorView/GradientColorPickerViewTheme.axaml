@@ -39,9 +39,9 @@
                                              IsVisible="{TemplateBinding IsClearEnabled}" />
                             <atom:GradientColorSlider
                                 Name="PART_GradientColorSlider"
-                                ActivatedHsvValue="{Binding HsvValue, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
-                                GradientValue="{Binding Value, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
-                                ActivatedStopIndex="{Binding ActivatedStopIndex, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"/>
+                                ActivatedHsvValue="{TemplateBinding HsvValue, Mode=TwoWay}"
+                                GradientValue="{TemplateBinding Value, Mode=TwoWay}"
+                                ActivatedStopIndex="{TemplateBinding ActivatedStopIndex, Mode=TwoWay}"/>
                             <StackPanel Orientation="Vertical" Name="ColorPickerContainer" ClipToBounds="False">
                                 <atom:ColorSpectrum
                                     Name="ColorSpectrum"

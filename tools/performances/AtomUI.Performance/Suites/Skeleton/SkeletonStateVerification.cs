@@ -127,8 +127,28 @@ internal static partial class Program
 
         line.IsActive = true;
         RefreshLayout(realized.Window);
-        Expect(GetPrivateField(line, "AtomUI.Desktop.Controls.AbstractSkeleton", "_animation") != null,
+        var firstAnimation = GetPrivateField(line, "AtomUI.Desktop.Controls.AbstractSkeleton", "_animation");
+        var firstToken = GetPrivateField(line, "AtomUI.Desktop.Controls.AbstractSkeleton", "_cancellationTokenSource");
+        Expect(firstAnimation != null,
             "Activating SkeletonLine should lazily create the active Animation.",
+            failures);
+        Expect(firstToken != null,
+            "Activating SkeletonLine should start the active Animation.",
+            failures);
+
+        line.MotionDuration = TimeSpan.FromMilliseconds(1234);
+        RefreshLayout(realized.Window);
+        Expect(!ReferenceEquals(GetPrivateField(line, "AtomUI.Desktop.Controls.AbstractSkeleton", "_animation"), firstAnimation),
+            "Materialized SkeletonLine animation should rebuild when MotionDuration changes.",
+            failures);
+        Expect(!ReferenceEquals(GetPrivateField(line, "AtomUI.Desktop.Controls.AbstractSkeleton", "_cancellationTokenSource"), firstToken),
+            "Running SkeletonLine animation should restart when MotionDuration changes.",
+            failures);
+
+        line.IsActive = false;
+        RefreshLayout(realized.Window);
+        Expect(GetPrivateField(line, "AtomUI.Desktop.Controls.AbstractSkeleton", "_cancellationTokenSource") == null,
+            "Inactive SkeletonLine should stop the active Animation.",
             failures);
     }
 

@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
 
 namespace AtomUI.Desktop.Controls;
@@ -72,4 +73,20 @@ internal class DataGridColumnGroupHeader : TemplatedControl
     #endregion
     
     internal DataGridColumnGroupItem? OwningGroupItem { get; set; }
+
+    static DataGridColumnGroupHeader()
+    {
+        PointerPressedEvent.AddClassHandler<DataGridColumnGroupHeader>((x, e) => x.NotifyHeaderPointerPressed(e));
+        PointerReleasedEvent.AddClassHandler<DataGridColumnGroupHeader>((x, e) => x.NotifyHeaderPointerReleased(e));
+    }
+
+    private void NotifyHeaderPointerPressed(PointerPressedEventArgs e)
+    {
+        OwningGroupItem?.NotifyHeaderPointerPressed(e);
+    }
+
+    private void NotifyHeaderPointerReleased(PointerReleasedEventArgs e)
+    {
+        OwningGroupItem?.NotifyHeaderPointerReleased(e);
+    }
 }

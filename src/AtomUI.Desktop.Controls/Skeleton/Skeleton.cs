@@ -180,10 +180,14 @@ public class Skeleton : AbstractSkeleton
     
     #endregion
 
+    static Skeleton()
+    {
+        ContentProperty.Changed.AddClassHandler<Skeleton>((x, e) => x.HandleContentChanged(e));
+    }
+
     public Skeleton()
     {
         this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
-        ContentProperty.Changed.AddClassHandler<Skeleton>((x, e) => x.HandleContentChanged(e));
     }
 
     private SkeletonAvatar? _avatar;
@@ -193,6 +197,10 @@ public class Skeleton : AbstractSkeleton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _avatar?.UnFollow(startStandaloneAnimation: false);
+        _title?.UnFollow(startStandaloneAnimation: false);
+        _paragraph?.UnFollow(startStandaloneAnimation: false);
+
         _avatar = e.NameScope.Find<SkeletonAvatar>("PART_Avatar");
         _title = e.NameScope.Find<SkeletonTitle>("PART_Title");
         _paragraph = e.NameScope.Find<SkeletonParagraph>("PART_Paragraph");
@@ -205,10 +213,6 @@ public class Skeleton : AbstractSkeleton
         _title.Follow(this);
         _paragraph.Follow(this);
 
-        if (IsActive)
-        {
-            StartActiveAnimation();
-        }
         IsContentVisible = !IsLoading;
     }
 

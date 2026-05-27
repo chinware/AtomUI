@@ -17,6 +17,15 @@ internal static partial class Program
         SetupAvalonia();
 
         AddOnDecoratedBoxPerfProbe.IsEnabled = true;
+        if (options.MeasureColorPickerInteractions)
+        {
+            return RunColorPickerInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
+        }
+        if (options.MeasureSwitchInteractions)
+        {
+            return RunSwitchInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
+        }
+
         if (options.VerifyAccessories ||
             options.VerifyEffectiveBrushes ||
             options.VerifyAddonStates ||
@@ -36,8 +45,10 @@ internal static partial class Program
             options.VerifyCarouselStates ||
             options.VerifyCascaderStates ||
             options.VerifyCheckBoxStates ||
+            options.VerifyColorPickerStates ||
             options.VerifyCollapseStates ||
             options.VerifyComboBoxStates ||
+            options.VerifyDataGridStates ||
             options.VerifyDatePickerStates ||
             options.VerifyTimePickerStates ||
             options.VerifyDescriptionsStates ||
@@ -163,6 +174,10 @@ internal static partial class Program
             {
                 verified &= RunCheckBoxStateVerification();
             }
+            if (options.VerifyColorPickerStates)
+            {
+                verified &= RunColorPickerStateVerification();
+            }
             if (options.VerifyCollapseStates)
             {
                 verified &= RunCollapseStateVerification();
@@ -170,6 +185,10 @@ internal static partial class Program
             if (options.VerifyComboBoxStates)
             {
                 verified &= RunComboBoxStateVerification();
+            }
+            if (options.VerifyDataGridStates)
+            {
+                verified &= RunDataGridStateVerification();
             }
             if (options.VerifyDatePickerStates)
             {
@@ -398,6 +417,7 @@ internal static partial class Program
     {
         return suite.ToLowerInvariant() switch
         {
+            "adornerlayer" => CreateAdornerLayerScenarios(),
             "icon" => CreateIconScenarios(),
             "avatar" => CreateAvatarScenarios(),
             "badge" => CreateBadgeScenarios(),
@@ -409,8 +429,10 @@ internal static partial class Program
             "carousel" => CreateCarouselScenarios(),
             "cascader" => CreateCascaderScenarios(),
             "checkbox" => CreateCheckBoxScenarios(),
+            "colorpicker" => CreateColorPickerScenarios(),
             "collapse" => CreateCollapseScenarios(),
             "combobox" => CreateComboBoxScenarios(),
+            "datagrid" => CreateDataGridScenarios(),
             "datepicker" => CreateDatePickerScenarios(),
             "descriptions" => CreateDescriptionsScenarios(),
             "dialog" => CreateDialogScenarios(),

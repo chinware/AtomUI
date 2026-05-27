@@ -67,14 +67,25 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
 
         EnsureOnlyOneReorderColumn();
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
+        _owningGrid.PropertyChanged           -= HandleOwningGridItemsSourceChanged;
+        _owningGrid                           =  null;
     }
 
     private void EnsureOnlyOneReorderColumn()
@@ -82,10 +93,17 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
         // 检查只能有一列排序列
         if (_owningGrid != null)
         {
-            var count = _owningGrid.Columns.Count(column => column is DataGridRowReorderColumn);
-            if (count > 1)
+            var reorderColumnCount = 0;
+            for (var i = 0; i < _owningGrid.Columns.Count; i++)
             {
-                throw DataGridError.DataGridRow.RowReorderColumnAlreadyExistException();
+                if (_owningGrid.Columns[i] is DataGridRowReorderColumn)
+                {
+                    reorderColumnCount++;
+                    if (reorderColumnCount > 1)
+                    {
+                        throw DataGridError.DataGridRow.RowReorderColumnAlreadyExistException();
+                    }
+                }
             }
         }
     }
@@ -135,10 +153,7 @@ public sealed class DataGridRowReorderColumn : DataGridColumn
     protected internal override void NotifyOwningGridAboutToDetached()
     {
         base.NotifyOwningGridAboutToDetached();
-        if (OwningGrid != null)
-        {
-            OwningGrid.PropertyChanged -= HandleOwningGridItemsSourceChanged;
-        }
+        ReleaseOwningGrid();
     }
 
     private void HandleOwningGridItemsSourceChanged(object? sender, AvaloniaPropertyChangedEventArgs change)

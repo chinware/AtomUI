@@ -12,6 +12,7 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
         TreeView.ToggleTypeProperty.AddOwner<DataGridTreeFilterFlyout>();
 
     internal bool IsActiveShutdown = false;
+    internal Func<bool>? ShouldFilterOnPassiveClose { get; set; }
 
     public ItemToggleType ToggleType
     {
@@ -64,11 +65,14 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
     protected override void OnClosed()
     {
         base.OnClosed();
-        var selectedItems = new List<string>();
-        if (Popup.Child is DataGridTreeFilterFlyoutPresenter presenter)
+        if (!IsActiveShutdown && ShouldFilterOnPassiveClose?.Invoke() != true)
         {
-            selectedItems = presenter.GetFilterValues();
+            return;
         }
+
+        var selectedItems = Popup.Child is DataGridTreeFilterFlyoutPresenter presenter
+            ? presenter.GetFilterValues()
+            : new List<string>();
         
         NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
     }

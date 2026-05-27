@@ -10,6 +10,9 @@ namespace AtomUI.Desktop.Controls.Data;
 
 public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
 {
+    private static readonly PropertyChangedEventArgs ItemCountPropertyChangedEventArgs =
+        new(nameof(ItemCount));
+
     private int _itemCount;
 
     public object Key { get; }
@@ -24,7 +27,7 @@ public abstract class DataGridCollectionViewGroup : INotifyPropertyChanged
         set
         {
             _itemCount = value;
-            OnPropertyChanged(new PropertyChangedEventArgs(nameof(ItemCount)));
+            OnPropertyChanged(ItemCountPropertyChangedEventArgs);
         }
     }
 

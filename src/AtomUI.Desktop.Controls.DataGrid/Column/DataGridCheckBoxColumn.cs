@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -191,18 +192,17 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
                     }
                 }
                     
-                void OnLayoutUpdated(object? sender, EventArgs e)
-                {
-                    if (editingCheckBox.Bounds.Width != 0 || editingCheckBox.Bounds.Height != 0)
-                    {
-                        editingCheckBox.LayoutUpdated -= OnLayoutUpdated;
-                        ProcessPointerArgs();
-                    }
-                }
-
                 if (editingCheckBox.Bounds.Width == 0 && editingCheckBox.Bounds.Height == 0)
                 {
-                    editingCheckBox.LayoutUpdated += OnLayoutUpdated;
+                    IDisposable? boundsSubscription = null;
+                    boundsSubscription = editingCheckBox.GetObservable(Visual.BoundsProperty).Subscribe(bounds =>
+                    {
+                        if (bounds.Width != 0 || bounds.Height != 0)
+                        {
+                            Dispatcher.UIThread.Post(ProcessPointerArgs);
+                            boundsSubscription?.Dispose();
+                        }
+                    });
                 }
                 else
                 {
@@ -241,13 +241,24 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
         {
             if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
             {
-                _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
-                _owningGrid.CurrentCellChanged        -= HandleCurrentCellChanged;
-                _owningGrid.KeyDown                   -= HandleKeyDown;
-                _owningGrid.LoadingRow                -= HandleLoadingRow;
-                _owningGrid                           =  null;
+                ReleaseOwningGrid();
             }
         }
+    }
+
+    private void ReleaseOwningGrid()
+    {
+        if (_owningGrid == null)
+        {
+            return;
+        }
+
+        _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
+        _owningGrid.CurrentCellChanged        -= HandleCurrentCellChanged;
+        _owningGrid.KeyDown                   -= HandleKeyDown;
+        _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid                           =  null;
+        _currentCheckBox                      =  null;
     }
 
     private void ConfigureCheckBox(CheckBox checkBox)
@@ -336,5 +347,11 @@ public class DataGridCheckBoxColumn : DataGridBoundColumn
                 }
             }
         }
+    }
+
+    protected internal override void NotifyOwningGridAboutToDetached()
+    {
+        base.NotifyOwningGridAboutToDetached();
+        ReleaseOwningGrid();
     }
 }

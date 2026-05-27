@@ -8,32 +8,45 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
 {
     private Button? _resetButton;
     private Button? _okButton;
-    
+
+    static DataGridTreeFilterFlyoutPresenter()
+    {
+        Button.ClickEvent.AddClassHandler<DataGridTreeFilterFlyoutPresenter>(
+            (presenter, args) => presenter.HandleButtonClick(args));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _resetButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.ResetButtonPart);
         _okButton    = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.OkButtonPart);
-        
-        if (_resetButton != null)
+    }
+    private void HandleButtonClick(RoutedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, _resetButton))
         {
-            _resetButton.Click += HandleResetButtonClick;
+            ResetFilter();
         }
-
-        if (_okButton != null)
+        else if (ReferenceEquals(e.Source, _okButton))
         {
-            _okButton.Click += HandleOkButtonClick;
+            ConfirmFilter();
         }
     }
     
-    private void HandleResetButtonClick(object? sender, RoutedEventArgs e)
+    private void ResetFilter()
     {
         ClearCheckStateRecursive(this);
     }
     
-    internal List<String> GetFilterValues()
+    internal List<string> GetFilterValues()
     {
-        var values =  new List<String>();
+        var selectedValueCount = CountSelectedFilterValueLeaves(this);
+        if (selectedValueCount == 0)
+        {
+            return new List<string>();
+        }
+
+        var values = new List<string>(selectedValueCount);
         CollectFilterValues(values, this);
         return values;
     }
@@ -42,7 +55,7 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)
         {
-            var item = itemsControl.ContainerFromIndex(i);
+            var item = GetFilterItem(itemsControl, i);
             if (item is DataGridFilterTreeViewItem filterTreeItem)
             {
                 CollectFilterValues(filterValues, filterTreeItem);
@@ -58,8 +71,43 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
         }
     }
 
+    private int CountSelectedFilterValueLeaves(ItemsControl itemsControl)
+    {
+        var count = 0;
+        for (var i = 0; i < itemsControl.ItemCount; i++)
+        {
+            var item = GetFilterItem(itemsControl, i);
+            if (item is DataGridFilterTreeViewItem filterTreeItem)
+            {
+                count += CountSelectedFilterValueLeaves(filterTreeItem);
+            }
+        }
 
-    private void HandleOkButtonClick(object? sender, RoutedEventArgs e)
+        if (itemsControl is DataGridFilterTreeViewItem treeItem &&
+            itemsControl.ItemCount == 0 &&
+            treeItem.IsChecked == true &&
+            treeItem.FilterValue != null)
+        {
+            count++;
+        }
+
+        return count;
+    }
+
+    private Control? GetFilterItem(ItemsControl itemsControl, int index)
+    {
+        if (itemsControl.ContainerFromIndex(index) is Control container)
+        {
+            return container;
+        }
+
+        return index >= 0 && index < itemsControl.ItemsView.Count
+            ? itemsControl.ItemsView[index] as Control
+            : null;
+    }
+
+
+    private void ConfirmFilter()
     {
         if (TreeViewFlyout is DataGridTreeFilterFlyout treeFilterFlyout)
         {
@@ -73,7 +121,7 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)
         {
-            var item = itemsControl.ContainerFromIndex(i);
+            var item = GetFilterItem(itemsControl, i);
             if (item is TreeViewItem filterTreeViewItem)
             {
                 ClearCheckStateRecursive(filterTreeViewItem);

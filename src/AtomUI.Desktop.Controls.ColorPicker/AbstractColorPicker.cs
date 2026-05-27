@@ -373,7 +373,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     #endregion
 
-    private Window? _attachedWindow;
+    private Window? _deactivatedWindow;
     private Popup? _popup;
     private CompositeDisposable? _triggerSubscriptions;
     private DispatcherTimer? _mouseEnterDelayTimer;
@@ -389,6 +389,10 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             ColorBlockBackgroundProperty);
         IsPickerOpenProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, args) => picker.HandleIsPickerOpenChanged(args));
         TriggerTypeProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, _) => picker.SetupTriggerHandler());
+        InputElement.PointerPressedEvent.AddClassHandler<AbstractColorPicker>(
+            (picker, args) => picker.HandleClickModePointerPressed(args),
+            RoutingStrategies.Tunnel,
+            handledEventsToo: true);
     }
 
     public AbstractColorPicker()
@@ -409,11 +413,12 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         IsLightDismissEnabled = TriggerType == FlyoutTriggerType.Click;
         ApplyPopupTriggerSettings();
 
-        _triggerSubscriptions = new CompositeDisposable();
+        _triggerSubscriptions = null;
 
         switch (TriggerType)
         {
             case FlyoutTriggerType.Hover:
+                _triggerSubscriptions = new CompositeDisposable();
                 SetupHoverTrigger();
                 if (IsPickerOpen)
                 {
@@ -421,9 +426,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
                 }
                 break;
             case FlyoutTriggerType.Click:
-                SetupClickTrigger();
                 break;
             case FlyoutTriggerType.Focus:
+                _triggerSubscriptions = new CompositeDisposable();
                 SetupFocusTrigger();
                 if (IsPickerOpen)
                 {
@@ -520,16 +525,13 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     #region Click trigger
 
-    private void SetupClickTrigger()
+    private void HandleClickModePointerPressed(PointerPressedEventArgs e)
     {
-        AddHandler(InputElement.PointerPressedEvent, HandleClickModePointerPressed,
-            RoutingStrategies.Tunnel, handledEventsToo: true);
-        _triggerSubscriptions!.Add(Disposable.Create(() =>
-            RemoveHandler(InputElement.PointerPressedEvent, HandleClickModePointerPressed)));
-    }
+        if (TriggerType != FlyoutTriggerType.Click)
+        {
+            return;
+        }
 
-    private void HandleClickModePointerPressed(object? sender, PointerPressedEventArgs e)
-    {
         if (!IsEnabled || !IsVisible)
         {
             return;
@@ -890,23 +892,17 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow = window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
         SetupTriggerHandler();
+        if (IsPickerOpen)
+        {
+            RegisterWindowDeactivatedHandler();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-            _attachedWindow = null;
-        }
+        UnregisterWindowDeactivatedHandler();
 
         StopMouseEnterTimer();
         StopMouseLeaveTimer();
@@ -920,6 +916,37 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     private void HandleWindowDeactivated(object? sender, EventArgs e)
     {
         SetCurrentValue(IsPickerOpenProperty, false);
+    }
+
+    private void RegisterWindowDeactivatedHandler()
+    {
+        RegisterWindowDeactivatedHandler(TopLevel.GetTopLevel(this) as Window);
+    }
+
+    private void RegisterWindowDeactivatedHandler(Window? window)
+    {
+        if (ReferenceEquals(_deactivatedWindow, window))
+        {
+            return;
+        }
+
+        UnregisterWindowDeactivatedHandler();
+        if (window is null)
+        {
+            return;
+        }
+
+        _deactivatedWindow = window;
+        window.Deactivated += HandleWindowDeactivated;
+    }
+
+    private void UnregisterWindowDeactivatedHandler()
+    {
+        if (_deactivatedWindow != null)
+        {
+            _deactivatedWindow.Deactivated -= HandleWindowDeactivated;
+            _deactivatedWindow = null;
+        }
     }
 
     protected virtual void SetupPopupProperties()
@@ -951,6 +978,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     protected virtual void NotifyPickerOpened()
     {
+        RegisterWindowDeactivatedHandler();
+
         if (PickerPresenter is null)
         {
             PickerPresenter = CreatePresenter();
@@ -970,6 +999,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     protected virtual void NotifyPickerClosed()
     {
+        UnregisterWindowDeactivatedHandler();
         UnregisterRootPointerHandler();
         UnsubscribeFromPopupPointer();
     }

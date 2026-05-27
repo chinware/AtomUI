@@ -12,6 +12,8 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
     private Control? _dragIndicator;
     private Control? _dropLocationIndicator;
+    private RectangleGeometry? _dragIndicatorClipGeometry;
+    private RectangleGeometry? _dropLocationIndicatorClipGeometry;
 
     internal DataGrid? OwningGrid { get; set; }
 
@@ -38,6 +40,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             {
                 if (_dragIndicator != null)
                 {
+                    ClearColumnReorderingClip(_dragIndicator);
                     if (Children.Contains(_dragIndicator))
                     {
                         Children.Remove(_dragIndicator);
@@ -72,6 +75,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             {
                 if (_dropLocationIndicator != null)
                 {
+                    ClearColumnReorderingClip(_dropLocationIndicator);
                     if (Children.Contains(_dropLocationIndicator))
                     {
                         Children.Remove(_dropLocationIndicator);
@@ -140,11 +144,19 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         }
 
         double totalDisplayWidth = 0;
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        var    columns           = OwningGrid.ColumnsInternal;
+        columns.EnsureVisibleEdgedColumnsWidth();
 
-        DataGridColumn? lastVisibleColumn = OwningGrid.ColumnsInternal.LastVisibleColumn;
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        DataGridColumn? lastVisibleColumn = columns.LastVisibleColumn;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             // Measure each column header
             bool                    autoGrowWidth  = column.Width.IsAuto || column.Width.IsSizeToHeader;
             DataGridHeaderViewItem? headerViewItem = null;
@@ -201,8 +213,14 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
             double leftEdge = 0;
-            foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 column.ComputeLayoutRoundedWidth(leftEdge);
                 column.HeaderCell.Measure(new Size(column.LayoutRoundedWidth, double.PositiveInfinity));
                 if (autoSizeHeight)
@@ -239,7 +257,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             DropLocationIndicator.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
         }
 
-        OwningGrid.ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        columns.EnsureVisibleEdgedColumnsWidth();
         
         double totalHeight = 0.0;
         // 递归求高度
@@ -249,7 +267,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             totalHeight =  Math.Max(totalHeight, childTotalHeight);
         }
         
-        return new Size(OwningGrid.ColumnsInternal.VisibleEdgedColumnsWidth, totalHeight);
+        return new Size(columns.VisibleEdgedColumnsWidth, totalHeight);
     }
 
     private Size MeasureGroupRecursive(IDataGridColumnGroupItem item, out double totalHeight)
@@ -315,7 +333,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         if (dataGridColumn.IsLeftFrozen)
         {
             headerViewItem.Arrange(new Rect(_frozenLeftEdge, rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
-            headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+            headerViewItem.ClearClipGeometry(); // The layout system could have clipped this because it's not aware of our render transform
             if (DragColumn == dataGridColumn && DragIndicator != null)
             {
                 _dragIndicatorLeftEdge = _frozenLeftEdge + DragIndicatorOffset;
@@ -329,7 +347,7 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             var columnFrozenRightEdge = _frozenRightEdge - RightFrozenWidth(dataGridColumn);
             headerViewItem.Arrange(new Rect(columnFrozenRightEdge,  rect.Y, dataGridColumn.LayoutRoundedWidth, rect.Height));
-            headerViewItem.Clip = null; // The layout system could have clipped this because it's not aware of our render transform
+            headerViewItem.ClearClipGeometry(); // The layout system could have clipped this because it's not aware of our render transform
             headerViewItem.IsFrozen             =  true;
             headerViewItem.IsShowLeftFrozenShadow   =  (_visibleColumnIndex == _visibleColumnCount - OwningGrid.RightFrozenColumnCount) && OwningGrid.HorizontalOffset < OwningGrid.HorizontalMaximizeOffset;
             SetupParentShadowInfo(dataGridColumn, headerViewItem.IsShowLeftFrozenShadow, false);
@@ -433,8 +451,16 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             autoSizeHeight = false;
         }
   
-        foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+        var columns              = OwningGrid.ColumnsInternal;
+        int displayedColumnCount = columns.GetDisplayedColumnCount();
+        for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
         {
+            DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+            if (!column.IsVisible)
+            {
+                continue;
+            }
+
             DataGridHeaderViewItem? headerViewItem = null;
             if (column is IDataGridColumnGroupItemInternal groupItem)
             {
@@ -456,8 +482,14 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         {
             // Since we didn't know the final widths of the columns until we resized,
             // we waited until now to measure each header
-            foreach (DataGridColumn column in OwningGrid.ColumnsInternal.GetVisibleColumns())
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = columns.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible)
+                {
+                    continue;
+                }
+
                 if (autoSizeHeight)
                 {
                     _leafHeight = Math.Max(_leafHeight, column.HeaderCell.DesiredSize.Height);
@@ -469,9 +501,9 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         _frozenLeftEdge        = 0;
         _frozenRightEdge       = DesiredSize.Width;
         _visibleColumnIndex    = 0;
-        _visibleColumnCount    = OwningGrid.ColumnsInternal.GetDisplayedColumnCount();
+        _visibleColumnCount    = displayedColumnCount;
         _scrollingLeftEdge     = -OwningGrid.HorizontalOffset;
-        DataGridFillerColumn? fillerColumn = OwningGrid.ColumnsInternal.FillerColumn;
+        DataGridFillerColumn? fillerColumn = columns.FillerColumn;
         Debug.Assert(fillerColumn != null);
     
         var offsetX     = 0.0d;
@@ -614,14 +646,12 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         // because cells could be transparent
         if (frozenLeftEdge > columnHeaderLeftEdge)
         {
-            RectangleGeometry rg    = new RectangleGeometry();
             double            xClip = Math.Min(width, frozenLeftEdge - columnHeaderLeftEdge);
-            rg.Rect             = new Rect(xClip, 0, width - xClip, height);
-            headerViewItem.Clip = rg;
+            headerViewItem.UpdateClipGeometry(new Rect(xClip, 0, width - xClip, height));
         }
         else
         {
-            headerViewItem.Clip = null;
+            headerViewItem.ClearClipGeometry();
         }
     }
 
@@ -656,24 +686,66 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             leftEdge = frozenColumnsWidth;
         }
 
-        RectangleGeometry? rg = null;
+        Rect? clipRect = null;
         if (leftEdge > controlLeftEdge)
         {
-            rg = new RectangleGeometry();
             double xClip = Math.Min(width, leftEdge - controlLeftEdge);
-            rg.Rect = new Rect(xClip, 0, width - xClip, height);
+            clipRect = new Rect(xClip, 0, width - xClip, height);
         }
 
         if (controlLeftEdge + width >= rightEdge)
         {
-            if (rg == null)
-            {
-                rg = new RectangleGeometry();
-            }
-
-            rg.Rect = new Rect(rg.Rect.X, rg.Rect.Y, Math.Max(0, rightEdge - controlLeftEdge - rg.Rect.X), height);
+            var currentRect = clipRect ?? default;
+            clipRect = new Rect(
+                currentRect.X,
+                currentRect.Y,
+                Math.Max(0, rightEdge - controlLeftEdge - currentRect.X),
+                height);
         }
 
-        control.Clip = rg;
+        if (ReferenceEquals(control, DragIndicator))
+        {
+            UpdateColumnReorderingClip(control, ref _dragIndicatorClipGeometry, clipRect);
+        }
+        else
+        {
+            UpdateColumnReorderingClip(control, ref _dropLocationIndicatorClipGeometry, clipRect);
+        }
+    }
+
+    private static void UpdateColumnReorderingClip(Control control, ref RectangleGeometry? clipGeometry, Rect? clipRect)
+    {
+        if (clipRect.HasValue)
+        {
+            if (clipGeometry is null)
+            {
+                clipGeometry = new RectangleGeometry
+                {
+                    Rect = clipRect.Value
+                };
+            }
+            else if (!clipGeometry.Rect.Equals(clipRect.Value))
+            {
+                clipGeometry.Rect = clipRect.Value;
+                control.InvalidateVisual();
+            }
+
+            if (!ReferenceEquals(control.Clip, clipGeometry))
+            {
+                control.Clip = clipGeometry;
+            }
+        }
+        else
+        {
+            ClearColumnReorderingClip(control);
+        }
+    }
+
+    private static void ClearColumnReorderingClip(Control control)
+    {
+        if (control.Clip is not null)
+        {
+            control.Clip = null;
+        }
     }
 }

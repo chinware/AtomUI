@@ -60,6 +60,7 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Carousel | 本轮已完成 | [Carousel](Carousel/README.md) | `CarouselShowCase` alloc `6113.86KB -> 5213.10KB`，visuals `369 -> 326`；nav `14 -> 4`，progress `28 -> 1`，transition `7 -> 0`，repeated mean 基本持平 |
 | Cascader | 本轮已完成 | [Cascader](Cascader/README.md) | filter/multiple closed visual `41/25 -> 20`；`CascaderShowCase` visuals `1250 -> 1169`，repeated mean `141.81ms -> 133.27ms` |
 | CheckBox | 本轮已完成 | [CheckBox](CheckBox/README.md) | 默认 unchecked `visuals 12 -> 8`，contentless unchecked `11 -> 6`，`CheckBoxShowCase` visuals `420 -> 318`，repeated alloc `6385.60KB -> 4629.80KB` |
+| ColorPicker | 本轮已完成结构生命周期优化 | [ColorPicker](ColorPicker/README.md) | closed `Window.Deactivated` 订阅 `23 -> 0`；打开态自动关闭语义保留；`ColorPickerShowCase` visuals/logical `370/49` 不变，timing 噪声内 |
 | Collapse | 本轮已完成 | [Collapse](Collapse/README.md) | `CollapseShowCase` repeated mean `119.31ms -> 100.18ms`，visuals `616 -> 553`；content motion `33 -> 1`，addon presenter `33 -> 3` |
 | ComboBox | 本轮已完成 | [ComboBox](ComboBox/README.md) | `ComboBoxShowCase` repeated mean `109.35ms -> 91.07ms`，alloc `11384.83KB -> 9534.28KB`，visuals `562 -> 497`；默认 `Button/IconButton 23 -> 0` |
 | DatePicker | 本轮已完成 | [DatePicker](DatePicker/README.md) | closed route `PickerHost 30 -> 0`，visuals `1570 -> 1540`，alloc `30959.16KB -> 29762.89KB`，长样本 repeated mean `174.77ms -> 154.21ms` |
@@ -89,9 +90,13 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Rate | 本轮已完成 | [Rate](Rate/README.md) | `Rate.GalleryShape` `15.846ms/item -> 10.354ms/item`；`RateShowCase` repeated mean `62.75ms -> 55.87ms`，visuals `376 -> 331` |
 | Result | 本轮已完成 | [Result](Result/README.md) | 普通状态/错误码视觉按需创建；`ResultShowCase` repeated mean `74.01ms -> 67.19ms`，Svg `8 -> 3`，visuals `265 -> 257` |
 | ScrollViewer | 本轮已完成基线与低风险正确性修复 | [ScrollViewer](ScrollViewer/README.md) | 修复 overlay host selector 与 motion owner；`FloatButtonShowCase` 页面级 timing 基本中性，后续优化需更强收益证明 |
+| Skeleton | 本轮已完成结构生命周期与正确性修复 | [Skeleton](Skeleton/README.md) | 修复重复 class handler 导致的 logical children 异常；inactive animation 延迟创建；`Content.NotLoading` logical/root `902.5 -> 4.0`，KB/item `172.3 -> 129.9` |
 | Slider | 本轮已完成 | [Slider](Slider/README.md) | 普通 Slider 不再预创建 `PART_EndThumb`；`SliderShowCase` repeated mean `46.31ms -> 33.78ms`，visuals `111 -> 105` |
+| SplitView | 本轮已完成结构生命周期优化 | [SplitView](SplitView/README.md) | 初始 closed/open 不再 materialize pane transition；典型场景 KB/item 约下降 `~1KB`，runtime open/close transition 行为保留 |
+| Spin | 本轮已完成结构生命周期与正确性修复 | [Spin](Spin/README.md) | hidden `SpinIndicator` 不再提前构造 animation；非 spinning KB/item `78.8 -> 77.4`，GalleryShape KB/item `575.1 -> 564.2`；motion 参数变化后动画重建 |
 | Splitter | 本轮已完成 Gallery 实测 | [Splitter](Splitter/README.md) | hidden collapse icon 不再构造/保留 `PathIcon`，lazy preview transform 复用；`SplitterShowCase` repeated mean `36.91ms -> 34.66ms`，P95 `51.79ms -> 40.43ms`，alloc `5770.31KB -> 5659.40KB` |
 | Statistic | 本轮已完成正确性与生命周期优化 | [Statistic](Statistic/README.md) | generated `Content` ownership、`StatisticCountUp.DataContext` 清理、`TimerStatistic` attach-gated timer 释放；`StatisticShowCase` repeated alloc `7471.87KB -> 7228.74KB`，visuals `387 -> 384` |
+| Switch | 本轮已完成交互路径结构优化 | [Switch](Switch/README.md) | `IsChecked` 切换不再触发 measure invalidation；1000 次切换 measure invalidations `1000 -> 0`，arrange 保持 `1000`，页面加载指标中性/噪声内 |
 | Timeline | 本轮已完成结构与正确性修复 | [Timeline](Timeline/README.md) | `TimelineIndicator.Render` Pen 缓存；修复 pending item 清空和默认/custom icon 显示；页面级 timing 未证明收益，pending spinner 正确显示带来 `+2` visuals |
 | TextBlock | 本轮已完成 | [TextBlock](TextBlock/README.md) | `HighlightableTextBlock` 段级 Run 重写：Match.Medium `3.306ms→0.426ms (-87%)`、`355.8KB→44.0KB (-88%)`、`logical 56→4`；`SelectableTextBlock` token binding+Cursor 移到 Theme Setter |
 | Popup | 本轮已完成 | [Popup](Popup/README.md) | `Popup` 4 条构造器 token binding 迁到 ControlTheme（fan-in 19 → ~76 条订阅消除 + Tier 1 §7 同优先级碰撞修复）；构造路径 `0.154ms→0.107ms (-31%)`、`23.4KB→21.9KB (-6%)`；`ShadowsAwareContainer` 影子 Border 延迟到 `HasBoxShadow` |
@@ -122,6 +127,7 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Layout | FlexPanel | Pending | 待建立基线 |
 | Layout | Grid | Pending | 待建立基线 |
 | Layout | Space | Done | 已完成 Phase 0-7；`CompactSpaceFiller` 不再承担 wrapper，repeated timing 小幅改善，cold 仍需后续针对子控件/Gallery 拆解 |
+| Layout | SplitView | Done (structural lifecycle) | [SplitView](SplitView/README.md)；初始 pane transition 延迟到第一次 runtime open/close，典型场景 KB/item 约下降 `~1KB` |
 | Layout | Splitter | Done | [Splitter](Splitter/README.md)；hidden collapse icon 不再构造/保留 `PathIcon`，lazy preview transform 复用，`SplitterShowCase` repeated mean 提升约 `6.10%`，P95 提升约 `21.93%` |
 | Navigation | Breadcrumb | Done (correctness + baseline) | [Breadcrumb](Breadcrumb/README.md)；修复父级 separator 传播到 direct/generated inherited items；Gallery cold / P95 / alloc 有收益，repeated median 基本持平 |
 | Navigation | ComboBox | Done | [ComboBox](ComboBox/README.md)；默认 host、popup content、handle `IconButton` 成本已按需/轻量化，Gallery repeated mean 提升约 `16.72%` |
@@ -134,7 +140,7 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Data Entry | AutoComplete | Done | 关闭态 CandidateList/PopupFrame 已按需创建；Gallery repeated mean 提升约 `25.79%` |
 | Data Entry | Cascader | Done | [Cascader](Cascader/README.md)；closed popup、filter input、multiple tags、filter list、checkbox/loading slot 已按需创建，Gallery repeated mean 小幅下降 |
 | Data Entry | CheckBox | Done | [CheckBox](CheckBox/README.md)；unchecked/contentless 默认路径不再创建 wave、Icon mark、tristate mark；`CheckBoxShowCase` visuals `420 -> 318`，alloc `6385.60KB -> 4629.80KB` |
-| Data Entry | ColorPicker | Pending | 待建立基线 |
+| Data Entry | ColorPicker | Done (structural lifecycle) | [ColorPicker](ColorPicker/README.md)；关闭态不再订阅 `Window.Deactivated`，Gallery 23 个 idle 订阅降为 0，页面 timing 噪声内 |
 | Data Entry | DatePicker | Done | [DatePicker](DatePicker/README.md)；关闭态 popup content、默认 accessory host、Window.Deactivated 订阅已按需化 |
 | Data Entry | TimePicker | Done | [TimePicker](TimePicker/README.md)；`InfoPickerInput` closed presenter 延迟到首次打开，真实 `TimePickerShowCase` repeated mean 提升约 `6.93%` |
 | Data Entry | Form | Done | [Form](Form/README.md)；已完成低风险结构与生命周期优化，控件级小幅提升，Gallery 结构/分配下降，页面 repeated timing 基本持平 |
@@ -147,7 +153,7 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Data Entry | Rate | Done | [Rate](Rate/README.md)；默认星形、焦点虚线框和全局 input 订阅成本已收敛，`RateShowCase` repeated mean 提升约 `10.96%` |
 | Data Entry | Select | Done | [Select](Select/README.md)；`SelectShowCase` repeated mean `220.31ms -> 143.76ms`，alloc `28027.36KB -> 23904.61KB`；closed popup/list/accessory hidden cost 已按需化 |
 | Data Entry | Slider | Done | [Slider](Slider/README.md)；普通 Slider 的 `PART_EndThumb` 按需创建，marks cache 与全局 input 订阅已收敛，Gallery repeated mean 提升约 `27.06%` |
-| Data Entry | ToggleSwitch | Pending | 待建立基线 |
+| Data Entry | ToggleSwitch | Done (interaction structural) | [Switch](Switch/README.md)；`IsChecked` 切换 measure invalidations `1000 -> 0`，页面加载不作为主收益 |
 | Data Entry | TreeSelect | Done | [TreeSelect](TreeSelect/README.md)；共享 `SelectHandle` 单 presenter 化，真实 `TreeSelectShowCase` repeated mean 提升约 `12.64%`，visuals `909 -> 858` |
 | Data Entry | Transfer | Done | [Transfer](Transfer/README.md)；`TargetKeys` lookup 复用 `HashSet`，空 target panel 直接短路，`TransferShowCase` repeated mean 提升约 `8.49%`，cold mean 提升约 `10.22%` |
 | Data Entry | Upload | Baseline only | [Upload](Upload/README.md)；已建立 Gallery baseline，3 个候选无收益/退化已回滚，仅保留测量入口 |
@@ -158,7 +164,7 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Data Display | Carousel | Done | [Carousel](Carousel/README.md)；nav/progress/PageTransition 已按需创建，真实 Gallery alloc `6113.86KB -> 5213.10KB`，cold `164.35ms -> 149.05ms`，repeated timing 基本持平 |
 | Data Display | Collapse | Done | [Collapse](Collapse/README.md)；addon、no-arrow、closed content 已按需创建，Gallery repeated mean 提升约 `16.03%` |
 | Data Display | Descriptions | Done | [Descriptions](Descriptions/README.md)；`DescriptionsShowCase` repeated mean `75.84ms -> 68.64ms`，visuals `579 -> 571`；binding/collection/window 订阅生命周期已补齐验证 |
-| Data Display | DataGrid | Pending | 待建立基线 |
+| Data Display | DataGrid | Partial | [DataGrid](DataGrid/README.md)；filter flyout 内容延迟到首次打开，关闭态过滤菜单项 `7 -> 0`；filter indicator 可见性由 `MultiBinding` 收敛到 `TemplateBinding`；column/group/row header 本地 routed handlers 已收敛（column header hover `2/header -> 0/header`，press/release/move + forwarding `5/header -> 0/header`，group header forwarding `2/header -> 0/header`，row header press `1/header -> 0/header`，row group header press `1/header -> 0/header`）；column header clip repeated arrange allocation `1/header -> 0/header` after first；group column header view item clip repeated arrange allocation `1/header -> 0/header` after first；column reordering indicator clip repeated arrange allocation `1/indicator -> 0/indicator` after first；DataGrid core input handlers `4/grid -> 0/grid`；rows presenter scroll gesture handler `1/presenter -> 0/presenter`；rows presenter clip geometry repeated arrange allocation `1 -> 0` after first；row bottom grid-line clip repeated arrange allocation `1/row -> 0/row` after first；row hidden clip repeated allocation `1/row -> 0/row` after first；row group header child clip repeated arrange allocation `1/child -> 0/child` after first；row group header frozen child transform repeated arrange allocation `1/child -> 0/child` after first；details presenter clip repeated arrange allocation `1/details -> 0/details` after first；cell clip repeated arrange allocation `1/cell -> 0/cell` after first；DataGridCell header-state binding converter 闭包已移除；special columns 在 `Columns.Clear()` 后释放 grid 事件链；列重排拖拽 indicator 复用 dashed `Pen`；DetailsPresenter measure registration 与 RowExpander details binding cleanup 已完成；分组行头内 row header owner/template 顺序和内置模板 part lookup 已修复，`DataGrid.RowGroups` smoke visual/root `321 -> 315` |
 | Data Display | Expander | Done | [Expander](Expander/README.md)；closed content/addon/no-arrow slot 已按需创建，Gallery repeated mean 提升约 `18.11%` |
 | Data Display | Empty | Done | [Empty](Empty/README.md)；低风险正确性修复与热路径收敛，Gallery repeated mean 小幅改善，visual tree 不变 |
 | Data Display | GroupBox | Done | [GroupBox](GroupBox/README.md)；header icon presenter 已按需创建，`GroupBoxShowCase` visuals `151 -> 143`，repeated mean `27.79ms -> 26.16ms` |
@@ -183,8 +189,8 @@ Avalonia 12 控件库研发的成本模型与高频踩雷点（含 `path:line` �
 | Feedback | PopupConfirm | Done | [PopupConfirm](PopupConfirm/README.md)；cancel/content slot 已按需创建，detach/reattach 与事件释放已验证，Gallery repeated mean 提升约 `10.60%` |
 | Feedback | ProgressBar | Done | [ProgressBar](ProgressBar/README.md)；status icon 按需创建，真实 `ProgressBarShowCase` repeated mean `154.17ms -> 111.26ms`，runtime visuals `1389 -> 977` |
 | Feedback | Result | Done | [Result](Result/README.md)；状态 icon presenter 与错误码 Svg 互斥按需创建，`ResultShowCase` repeated mean 提升约 `9.21%` |
-| Feedback | Skeleton | Pending | 待建立基线 |
-| Feedback | Spin | Pending | 待建立基线 |
+| Feedback | Skeleton | Done (structural lifecycle + correctness) | [Skeleton](Skeleton/README.md)；重复 class handler、inactive animation、paragraph line rebuild/follow 生命周期已修复；页面 timing 不作为主收益 |
+| Feedback | Spin | Done (structural lifecycle + correctness) | [Spin](Spin/README.md)；hidden `SpinIndicator` animation 延迟到可见时创建，motion 参数变化后重建已 materialized 动画；页面 timing 不作为主收益 |
 | Feedback | Watermark | Pending | 待建立基线 |
 | Tooling | AtomUI.Performance harness | Done (recovered) | Avalonia 12 迁移期间失同步的 62+ 错误已清干净（保留 stub `AddOnDecoratedBoxPerfProbe`、排除待重写的 `AccessoryLifecycleVerification.cs` / `EffectiveBrushVerification.cs`，3 处状态验证打 TODO）。`--suite textblock` / `--suite popup` / `--verify-textblock-states` 可用，T0.1 / T0.2 微基准已回填。 |
 

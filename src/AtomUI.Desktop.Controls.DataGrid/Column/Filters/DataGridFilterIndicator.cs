@@ -2,7 +2,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Data;
-using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
@@ -71,20 +70,31 @@ internal class DataGridFilterIndicator : IconButton
     
     private DataGridColumn? _owningColumn;
     private static int _indicatorSeed = 0;
-    private readonly string _treeRadioCheckGroupName;
+    private string? _treeRadioCheckGroupName;
+    private DataGrid? _subscribedGrid;
+    private IDataGridCollectionView? _subscribedCollectionView;
+    private INotifyCollectionChanged? _subscribedFilters;
+    private bool _isFlyoutContentMaterialized;
 
     internal DataGridColumn? OwningColumn
     {
         get => _owningColumn;
         set
         {
-            HandleOwningColumnAssigned(value);
+            if (ReferenceEquals(_owningColumn, value))
+            {
+                return;
+            }
+
+            UnregisterOwningColumnSubscriptions();
             _owningColumn = value;
             if (_owningColumn != null)
             {
-                FilterMode     = _owningColumn.FilterMode;
+                RegisterOwningColumnSubscriptions(_owningColumn);
+                FilterMode              = _owningColumn.FilterMode;
                 IsMultipleFilterEnabled = _owningColumn.IsMultipleFilterEnabled;
             }
+            RefreshFilterFlyoutState();
         }
     }
 
@@ -97,7 +107,7 @@ internal class DataGridFilterIndicator : IconButton
             AnchorTarget = this,
             TriggerType  = FlyoutTriggerType.Click
         };
-        _treeRadioCheckGroupName = $"tree-{nameof(DataGridFilterIndicator)}-{_indicatorSeed++}";
+        _flyoutStateHelper.FlyoutAboutToShow += HandleFlyoutAboutToShow;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -107,139 +117,197 @@ internal class DataGridFilterIndicator : IconButton
             SetValue(IconProperty, new FilterFilled(), BindingPriority.Template);
         }
         base.OnApplyTemplate(e);
-        CreateFlyout();
+        RefreshFilterFlyoutState();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs changed)
     {
         base.OnPropertyChanged(changed);
-        if (this.IsAttachedToVisualTree())
+        if (changed.Property == FilterModeProperty)
         {
-            if (changed.Property == FilterModeProperty)
+            RecreateFlyoutShell();
+        }
+        else if (changed.Property == IsMultipleFilterEnabledProperty)
+        {
+            var rematerialize = _isFlyoutContentMaterialized;
+            ConfigureTreeFlyoutToggleType();
+            ClearFlyoutContent();
+            if (rematerialize)
             {
-                CreateFlyout();
+                MaterializeFlyoutContent();
             }
         }
     }
 
-    private void CreateFlyout()
+    internal void RefreshFilterFlyoutState()
+    {
+        if (ShouldProvideFlyout())
+        {
+            EnsureFlyoutShell();
+        }
+        else
+        {
+            ClearFlyout();
+        }
+    }
+
+    private bool ShouldProvideFlyout()
+    {
+        return OwningColumn?.OwningGrid is not null &&
+               OwningColumn.Filters.Count > 0;
+    }
+
+    private void RecreateFlyoutShell()
+    {
+        var rematerialize = _isFlyoutContentMaterialized;
+        ClearFlyout();
+        RefreshFilterFlyoutState();
+        if (rematerialize)
+        {
+            MaterializeFlyoutContent();
+        }
+    }
+
+    private void EnsureFlyoutShell()
     {
         Debug.Assert(OwningColumn is not null);
         Debug.Assert(OwningColumn.OwningGrid is not null);
-        var owningGrid = OwningColumn.OwningGrid;
-       
+
+        if (OwningColumn?.OwningGrid is not { } owningGrid)
+        {
+            return;
+        }
+
         if (FilterMode == DataGridFilterMode.Menu && Flyout is not DataGridMenuFilterFlyout)
         {
+            ClearFlyout();
             var menuFlyout = new DataGridMenuFilterFlyout
             {
-                IsArrowVisible               = false,
+                IsArrowVisible             = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
-                ShouldUseOverlayPopup     = true,
+                ShouldUseOverlayPopup     = true
             };
             menuFlyout[!MotionAwareControlProperty.IsMotionEnabledProperty] =
                 owningGrid[!MotionAwareControlProperty.IsMotionEnabledProperty];
-            var menuItems = BuildMenuItems(OwningColumn.Filters.ToList());
-            foreach (var menuItem in menuItems)
-            {
-                menuFlyout.Items.Add(menuItem);
-            }
-            
+
             Flyout                          =  menuFlyout;
             _flyoutStateHelper.Flyout       =  menuFlyout;
             menuFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
         else if (FilterMode == DataGridFilterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
         {
+            ClearFlyout();
             var treeFlyout = new DataGridTreeFilterFlyout
             {
-                IsArrowVisible               = false,
+                IsArrowVisible             = false,
                 Placement                 = PlacementMode.BottomEdgeAlignedRight,
                 ShouldUseOverlayPopup     = true
             };
-            BindUtils.RelayBind(this, IsMultipleFilterEnabledProperty, treeFlyout, DataGridTreeFilterFlyout.ToggleTypeProperty,
-                (v) =>
-                {
-                    return v ? ItemToggleType.CheckBox : ItemToggleType.Radio;
-                });
-            treeFlyout[!MotionAwareControlProperty.IsMotionEnabledProperty] = owningGrid[!MotionAwareControlProperty.IsMotionEnabledProperty];
-            var treeItems = BuildTreeItems(OwningColumn.Filters.ToList());
-            if (IsMultipleFilterEnabled)
-            {
-                var selectAllTreeItem = new DataGridFilterTreeViewItem();
-                selectAllTreeItem[!DataGridFilterTreeViewItem.HeaderProperty] = this[!SelectedAllTextProperty];
-                foreach (var treeItem in treeItems)
-                {
-                    selectAllTreeItem.Items.Add(treeItem);
-                }
-                treeFlyout.Items.Add(selectAllTreeItem);
-            }
-            else
-            {
-                foreach (var treeItem in treeItems)
-                {
-                    treeFlyout.Items.Add(treeItem);
-                }
-            }
-            
+            treeFlyout[!MotionAwareControlProperty.IsMotionEnabledProperty] =
+                owningGrid[!MotionAwareControlProperty.IsMotionEnabledProperty];
+            ConfigureTreeFlyoutToggleType(treeFlyout);
+
             Flyout                    = treeFlyout;
             _flyoutStateHelper.Flyout = treeFlyout;
             treeFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
+
+        ConfigureFlyoutPassiveCloseFilter();
     }
 
-    private List<DataGridFilterMenuItem> BuildMenuItems(List<DataGridFilterItem> filterItems)
+    private bool ShouldFilterOnPassiveClose()
     {
-        var menuItems = new List<DataGridFilterMenuItem>();
+        return OwningColumn?.FilterOnClose == true;
+    }
+
+    private void ConfigureFlyoutPassiveCloseFilter()
+    {
+        if (Flyout is DataGridMenuFilterFlyout menuFlyout)
+        {
+            menuFlyout.ShouldFilterOnPassiveClose = ShouldFilterOnPassiveClose;
+        }
+        else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
+        {
+            treeFlyout.ShouldFilterOnPassiveClose = ShouldFilterOnPassiveClose;
+        }
+    }
+
+    private void HandleFlyoutAboutToShow(object? sender, EventArgs args)
+    {
+        MaterializeFlyoutContent();
+    }
+
+    private void MaterializeFlyoutContent()
+    {
+        if (_isFlyoutContentMaterialized || OwningColumn is null)
+        {
+            return;
+        }
+
+        EnsureFlyoutShell();
+        if (Flyout is DataGridMenuFilterFlyout menuFlyout)
+        {
+            PopulateMenuItems(menuFlyout.Items, OwningColumn.Filters);
+            _isFlyoutContentMaterialized = true;
+        }
+        else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
+        {
+            if (IsMultipleFilterEnabled)
+            {
+                var selectAllTreeItem = new DataGridFilterTreeViewItem();
+                selectAllTreeItem[!DataGridFilterTreeViewItem.HeaderProperty] = this[!SelectedAllTextProperty];
+                PopulateTreeItems(selectAllTreeItem.Items, OwningColumn.Filters);
+                treeFlyout.Items.Add(selectAllTreeItem);
+            }
+            else
+            {
+                PopulateTreeItems(treeFlyout.Items, OwningColumn.Filters);
+            }
+            _isFlyoutContentMaterialized = true;
+        }
+    }
+
+    private string TreeRadioCheckGroupName =>
+        _treeRadioCheckGroupName ??= $"tree-{nameof(DataGridFilterIndicator)}-{_indicatorSeed++}";
+
+    private void PopulateMenuItems(ItemCollection targetItems, IEnumerable<DataGridFilterItem> filterItems)
+    {
         foreach (var item in filterItems)
         {
             var menuItem = new DataGridFilterMenuItem()
             {
                 Header           = item.Text,
                 FilterValue      = item.Value,
-                StaysOpenOnClick = true
+                StaysOpenOnClick = true,
+                ToggleType       = IsMultipleFilterEnabled
+                    ? MenuItemToggleType.CheckBox
+                    : MenuItemToggleType.Radio
             };
-            BindUtils.RelayBind(this, IsMultipleFilterEnabledProperty, menuItem, MenuItem.ToggleTypeProperty, (v) =>
+            targetItems.Add(menuItem);
+            if (item.HasChildren)
             {
-                return v ? MenuItemToggleType.CheckBox : MenuItemToggleType.Radio;
-            }, BindingPriority.Template);
-            menuItems.Add(menuItem);
-            if (item.Children.Count > 0)
-            {
-                var childItems = BuildMenuItems(item.Children);
-                foreach (var childItem in childItems)
-                {
-                    menuItem.Items.Add(childItem);
-                }
+                PopulateMenuItems(menuItem.Items, item.Children);
             }
         }
-
-        return menuItems;
     }
 
-    private List<DataGridFilterTreeViewItem> BuildTreeItems(List<DataGridFilterItem> filterItems)
+    private void PopulateTreeItems(ItemCollection targetItems, IEnumerable<DataGridFilterItem> filterItems)
     {
-        var treeItems = new List<DataGridFilterTreeViewItem>();
         foreach (var item in filterItems)
         {
             var treeItem = new DataGridFilterTreeViewItem
             {
                 Header      = item.Text,
                 FilterValue = item.Value,
-                GroupName   = _treeRadioCheckGroupName,
+                GroupName   = TreeRadioCheckGroupName,
             };
   
-            treeItems.Add(treeItem);
-            if (item.Children.Count > 0)
+            targetItems.Add(treeItem);
+            if (item.HasChildren)
             {
-                var childItems = BuildTreeItems(item.Children);
-                foreach (var childItem in childItems)
-                {
-                    treeItem.Items.Add(childItem);
-                }
+                PopulateTreeItems(treeItem.Items, item.Children);
             }
         }
-
-        return treeItems;
     }
 
     private void HandleFilterValuesSelected(object? sender, DataGridFilterValuesSelectedEventArgs args)
@@ -255,12 +323,19 @@ internal class DataGridFilterIndicator : IconButton
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
+        UnregisterOwningColumnSubscriptions();
+        ClearFlyout();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        if (OwningColumn != null)
+        {
+            RegisterOwningColumnSubscriptions(OwningColumn);
+        }
         _flyoutStateHelper.NotifyAttachedToVisualTree();
+        RefreshFilterFlyoutState();
     }
 
     protected override void OnClick()
@@ -278,33 +353,92 @@ internal class DataGridFilterIndicator : IconButton
         }
     }
 
-    private void HandleOwningColumnAssigned(DataGridColumn? column)
+    private void RegisterOwningColumnSubscriptions(DataGridColumn column)
     {
-        if (column?.OwningGrid is not null)
+        if (!ReferenceEquals(_subscribedFilters, column.Filters))
         {
-            var grid =  column.OwningGrid;
-            grid.PropertyChanged -= HandleOwningPropertyChanged;
-            grid.PropertyChanged += HandleOwningPropertyChanged;
+            if (_subscribedFilters != null)
+            {
+                _subscribedFilters.CollectionChanged -= HandleFiltersChanged;
+            }
+            _subscribedFilters = column.Filters;
+            _subscribedFilters.CollectionChanged += HandleFiltersChanged;
+        }
+
+        if (column.OwningGrid is { } grid && !ReferenceEquals(_subscribedGrid, grid))
+        {
+            UnregisterGrid();
+            _subscribedGrid = grid;
+            _subscribedGrid.PropertyChanged += HandleOwningGridPropertyChanged;
+            RegisterCollectionView(grid.CollectionView);
         }
     }
 
-    private void HandleOwningPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
+    private void UnregisterOwningColumnSubscriptions()
+    {
+        if (_subscribedFilters != null)
+        {
+            _subscribedFilters.CollectionChanged -= HandleFiltersChanged;
+            _subscribedFilters = null;
+        }
+        UnregisterGrid();
+    }
+
+    private void UnregisterGrid()
+    {
+        if (_subscribedGrid != null)
+        {
+            _subscribedGrid.PropertyChanged -= HandleOwningGridPropertyChanged;
+            _subscribedGrid = null;
+        }
+        RegisterCollectionView(null);
+    }
+
+    private void RegisterCollectionView(IDataGridCollectionView? collectionView)
+    {
+        if (ReferenceEquals(_subscribedCollectionView, collectionView))
+        {
+            return;
+        }
+
+        if (_subscribedCollectionView?.FilterDescriptions != null)
+        {
+            _subscribedCollectionView.FilterDescriptions.CollectionChanged -= HandleFilterDescriptionsChanged;
+        }
+
+        _subscribedCollectionView = collectionView;
+        if (_subscribedCollectionView?.FilterDescriptions != null)
+        {
+            _subscribedCollectionView.FilterDescriptions.CollectionChanged += HandleFilterDescriptionsChanged;
+        }
+        UpdateFilterActivatedState();
+    }
+
+    private void HandleOwningGridPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
     {
         if (change.Property == DataGrid.CollectionViewProperty)
         {
-            if (change.OldValue is DataGridCollectionView oldCollectionView)
-            {
-                oldCollectionView.FilterDescriptions.CollectionChanged -= HandleFilterDescriptionsChanged;
-            }
+            RegisterCollectionView(change.NewValue as IDataGridCollectionView);
+        }
+    }
 
-            if (change.NewValue is DataGridCollectionView newCollectionView)
-            {
-                newCollectionView.FilterDescriptions.CollectionChanged += HandleFilterDescriptionsChanged;
-            }
+    private void HandleFiltersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        var rematerialize = _isFlyoutContentMaterialized;
+        ClearFlyoutContent();
+        RefreshFilterFlyoutState();
+        if (rematerialize)
+        {
+            MaterializeFlyoutContent();
         }
     }
 
     private void HandleFilterDescriptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        UpdateFilterActivatedState();
+    }
+
+    private void UpdateFilterActivatedState()
     {
         Debug.Assert(OwningColumn != null);
         var collectionView = OwningColumn.OwningGrid?.CollectionView;
@@ -317,5 +451,58 @@ internal class DataGridFilterIndicator : IconButton
         {
             IsFilterActivated = false;
         }
+    }
+
+    private void ConfigureTreeFlyoutToggleType()
+    {
+        if (Flyout is DataGridTreeFilterFlyout treeFlyout)
+        {
+            ConfigureTreeFlyoutToggleType(treeFlyout);
+        }
+    }
+
+    private void ConfigureTreeFlyoutToggleType(DataGridTreeFilterFlyout treeFlyout)
+    {
+        treeFlyout.ToggleType = IsMultipleFilterEnabled
+            ? ItemToggleType.CheckBox
+            : ItemToggleType.Radio;
+    }
+
+    private void ClearFlyoutContent()
+    {
+        if (Flyout is DataGridMenuFilterFlyout menuFlyout)
+        {
+            menuFlyout.Items.Clear();
+        }
+        else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
+        {
+            treeFlyout.Items.Clear();
+        }
+        _isFlyoutContentMaterialized = false;
+    }
+
+    private void ClearFlyout()
+    {
+        if (Flyout is PopupFlyoutBase { IsOpen: true } openFlyout)
+        {
+            openFlyout.Hide();
+        }
+
+        if (Flyout is DataGridMenuFilterFlyout menuFlyout)
+        {
+            menuFlyout.FilterValuesSelected -= HandleFilterValuesSelected;
+            menuFlyout.ShouldFilterOnPassiveClose = null;
+            menuFlyout.Items.Clear();
+        }
+        else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
+        {
+            treeFlyout.FilterValuesSelected -= HandleFilterValuesSelected;
+            treeFlyout.ShouldFilterOnPassiveClose = null;
+            treeFlyout.Items.Clear();
+        }
+
+        Flyout                    = null;
+        _flyoutStateHelper.Flyout = null;
+        _isFlyoutContentMaterialized = false;
     }
 }

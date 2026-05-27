@@ -124,6 +124,7 @@ public class DataGridRowClipboardEventArgs : EventArgs
 {
 
     private List<DataGridClipboardCellContent>? _clipboardRowContent;
+    private readonly int _clipboardRowContentCapacity;
     private bool _isColumnHeadersRow;
     private object? _item;
 
@@ -132,10 +133,13 @@ public class DataGridRowClipboardEventArgs : EventArgs
     /// </summary>
     /// <param name="item">The row's associated data item.</param>
     /// <param name="isColumnHeadersRow">Whether or not this EventArgs is for the column headers.</param>
-    internal DataGridRowClipboardEventArgs(object? item, bool isColumnHeadersRow)
+    internal DataGridRowClipboardEventArgs(object? item, bool isColumnHeadersRow, int clipboardRowContentCapacity = 0)
     {
-        _isColumnHeadersRow = isColumnHeadersRow;
-        _item               = item;
+        _isColumnHeadersRow          = isColumnHeadersRow;
+        _item                        = item;
+        _clipboardRowContentCapacity = clipboardRowContentCapacity > 0
+            ? clipboardRowContentCapacity
+            : 0;
     }
 
     /// <summary>
@@ -147,7 +151,9 @@ public class DataGridRowClipboardEventArgs : EventArgs
         {
             if (_clipboardRowContent == null)
             {
-                _clipboardRowContent = new List<DataGridClipboardCellContent>();
+                _clipboardRowContent = _clipboardRowContentCapacity > 0
+                    ? new List<DataGridClipboardCellContent>(_clipboardRowContentCapacity)
+                    : new List<DataGridClipboardCellContent>();
             }
             return _clipboardRowContent;
         }

@@ -207,12 +207,41 @@ internal class DataGridSelectedItemsCollection : IList
         Debug.Assert(OwningGrid != null);
         Debug.Assert(OwningGrid.DataConnection != null);
         Debug.Assert(_selectedSlotsTable != null);
-        
-        foreach (int slot in _selectedSlotsTable.GetIndexes())
+
+        return new SelectedItemsEnumerator(this);
+    }
+
+    private sealed class SelectedItemsEnumerator : IEnumerator
+    {
+        private readonly DataGridSelectedItemsCollection _owner;
+        private IndexToValueTable<bool>.IndexEnumerator _slotEnumerator;
+        private object? _current;
+
+        public SelectedItemsEnumerator(DataGridSelectedItemsCollection owner)
         {
-            int rowIndex = OwningGrid.RowIndexFromSlot(slot);
+            _owner          = owner;
+            _slotEnumerator = owner._selectedSlotsTable.EnumerateIndexes().GetEnumerator();
+        }
+
+        public object? Current => _current;
+
+        public bool MoveNext()
+        {
+            if (!_slotEnumerator.MoveNext())
+            {
+                return false;
+            }
+
+            int slot     = _slotEnumerator.Current;
+            int rowIndex = _owner.OwningGrid.RowIndexFromSlot(slot);
             Debug.Assert(rowIndex > -1);
-            yield return OwningGrid.DataConnection.GetDataItem(rowIndex);
+            _current = _owner.OwningGrid.DataConnection.GetDataItem(rowIndex);
+            return true;
+        }
+
+        public void Reset()
+        {
+            throw new NotSupportedException();
         }
     }
 
@@ -273,24 +302,33 @@ internal class DataGridSelectedItemsCollection : IList
         return _selectedSlotsTable.GetIndexCount(lowerBound, upperBound, true);
     }
 
+    internal int GetFirstSlot()
+    {
+        return _selectedSlotsTable.GetFirstIndex();
+    }
+
     internal IEnumerable<int> GetIndexes()
     {
         return _selectedSlotsTable.GetIndexes();
     }
 
-    internal IEnumerable<int> GetSlots(int startSlot)
+    internal IndexToValueTable<bool>.IndexEnumerable GetSlots(int startSlot)
     {
-        return _selectedSlotsTable.GetIndexes(startSlot);
+        return _selectedSlotsTable.EnumerateIndexes(startSlot);
     }
 
     internal SelectionChangedEventArgs GetSelectionChangedEventArgs()
     {
-        List<object> addedSelectedItems   = new List<object>();
-        List<object> removedSelectedItems = new List<object>();
+        int currentSelectedCount  = _selectedItemsCache.Count;
+        int previousSelectedCount = _oldSelectedItemsCache.Count;
+        List<object> addedSelectedItems =
+            new List<object>(Math.Max(0, currentSelectedCount - previousSelectedCount));
+        List<object> removedSelectedItems =
+            new List<object>(Math.Max(0, previousSelectedCount - currentSelectedCount));
         
         // Compare the old selected indexes with the current selection to determine which items
         // have been added and removed since the last time this method was called
-        foreach (int newSlot in _selectedSlotsTable.GetIndexes())
+        foreach (int newSlot in _selectedSlotsTable.EnumerateIndexes())
         {
             object? newItem = OwningGrid.DataConnection.GetDataItem(OwningGrid.RowIndexFromSlot(newSlot));
             Debug.Assert(newItem != null);
@@ -439,15 +477,25 @@ internal class DataGridSelectedItemsCollection : IList
         }
         else
         {
-            List<object> tempSelectedItemsCache = new List<object>();
-            foreach (object item in _selectedItemsCache)
+            if (_selectedItemsCache.Count > 0)
             {
-                int index = OwningGrid.DataConnection.IndexOf(item);
-                if (index != -1)
+                List<object> tempSelectedItemsCache = new List<object>(_selectedItemsCache.Count);
+                foreach (object item in _selectedItemsCache)
                 {
-                    tempSelectedItemsCache.Add(item);
-                    _selectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
+                    int index = OwningGrid.DataConnection.IndexOf(item);
+                    if (index != -1)
+                    {
+                        tempSelectedItemsCache.Add(item);
+                        _selectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
+                    }
                 }
+
+                _selectedItemsCache = tempSelectedItemsCache;
+            }
+            else if (_selectedItemsCache.Capacity > 0)
+            {
+                // Preserve the old shrink behavior after a previously non-empty selection is cleared.
+                _selectedItemsCache = new List<object>();
             }
         
             foreach (object item in _oldSelectedItemsCache)
@@ -462,8 +510,6 @@ internal class DataGridSelectedItemsCollection : IList
                     _oldSelectedSlotsTable.AddValue(OwningGrid.SlotFromRowIndex(index), true);
                 }
             }
-        
-            _selectedItemsCache = tempSelectedItemsCache;
         }
     }
 }

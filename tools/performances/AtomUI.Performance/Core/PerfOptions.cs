@@ -4,6 +4,8 @@ internal sealed record PerfOptions(
     int Count,
     string Suite,
     string? MarkdownOutputPath,
+    bool MeasureColorPickerInteractions,
+    bool MeasureSwitchInteractions,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
     bool VerifyAddonStates,
@@ -23,8 +25,10 @@ internal sealed record PerfOptions(
     bool VerifyCarouselStates,
     bool VerifyCascaderStates,
     bool VerifyCheckBoxStates,
+    bool VerifyColorPickerStates,
     bool VerifyCollapseStates,
     bool VerifyComboBoxStates,
+    bool VerifyDataGridStates,
     bool VerifyDatePickerStates,
     bool VerifyTimePickerStates,
     bool VerifyDescriptionsStates,
@@ -78,6 +82,8 @@ internal sealed record PerfOptions(
         var count                  = Program.DefaultCount;
         var suite                  = "addon";
         string? markdownOutput     = null;
+        var measureColorPickerInteractions = false;
+        var measureSwitchInteractions = false;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
         var verifyAddonStates      = false;
@@ -97,8 +103,10 @@ internal sealed record PerfOptions(
         var verifyCarouselStates  = false;
         var verifyCascaderStates  = false;
         var verifyCheckBoxStates  = false;
+        var verifyColorPickerStates = false;
         var verifyCollapseStates  = false;
         var verifyComboBoxStates  = false;
+        var verifyDataGridStates = false;
         var verifyDatePickerStates = false;
         var verifyTimePickerStates = false;
         var verifyDescriptionsStates = false;
@@ -163,6 +171,12 @@ internal sealed record PerfOptions(
                     suite = args[i + 1];
                     i++;
                     break;
+                case "--measure-colorpicker-interactions":
+                    measureColorPickerInteractions = true;
+                    break;
+                case "--measure-switch-interactions":
+                    measureSwitchInteractions = true;
+                    break;
                 case "--verify-accessories":
                     verifyAccessories = true;
                     break;
@@ -220,11 +234,17 @@ internal sealed record PerfOptions(
                 case "--verify-checkbox-states":
                     verifyCheckBoxStates = true;
                     break;
+                case "--verify-colorpicker-states":
+                    verifyColorPickerStates = true;
+                    break;
                 case "--verify-collapse-states":
                     verifyCollapseStates = true;
                     break;
                 case "--verify-combobox-states":
                     verifyComboBoxStates = true;
+                    break;
+                case "--verify-datagrid-states":
+                    verifyDataGridStates = true;
                     break;
                 case "--verify-datepicker-states":
                     verifyDatePickerStates = true;
@@ -374,6 +394,8 @@ internal sealed record PerfOptions(
             Math.Max(1, count),
             suite,
             markdownOutput,
+            measureColorPickerInteractions,
+            measureSwitchInteractions,
             verifyAccessories,
             verifyEffectiveBrushes,
             verifyAddonStates,
@@ -393,8 +415,10 @@ internal sealed record PerfOptions(
             verifyCarouselStates,
             verifyCascaderStates,
             verifyCheckBoxStates,
+            verifyColorPickerStates,
             verifyCollapseStates,
             verifyComboBoxStates,
+            verifyDataGridStates,
             verifyDatePickerStates,
             verifyTimePickerStates,
             verifyDescriptionsStates,

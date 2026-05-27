@@ -47,25 +47,43 @@ internal static partial class Program
         };
 
         using var realized = RealizeControl(spin);
-        Expect(FindVisualByName<Panel>(spin, "MaskLayout") == null,
-            "Non-spinning Spin should not create MaskLayout.",
+        var maskLayout = FindVisualByName<Panel>(spin, "MaskLayout");
+        var indicator  = FindVisualByName<SpinIndicator>(spin, "Indicator");
+        Expect(maskLayout != null,
+            "Spin should keep its static MaskLayout template part materialized.",
             failures);
-        Expect(CountSpinIndicators(spin) == 0,
-            "Non-spinning Spin should not create SpinIndicator.",
+        Expect(maskLayout?.IsVisible == false,
+            "Non-spinning Spin should hide MaskLayout.",
+            failures);
+        Expect(indicator != null,
+            "Spin should keep its static SpinIndicator template part materialized.",
+            failures);
+        Expect(indicator?.IsVisible == false,
+            "Non-spinning Spin should hide SpinIndicator.",
+            failures);
+        Expect(indicator == null || GetSpinIndicatorAnimation(indicator) == null,
+            "Hidden static SpinIndicator should not build animation.",
             failures);
 
         spin.IsSpinning = true;
         RefreshLayout(realized.Window);
 
-        var indicator = FindVisualByName<SpinIndicator>(spin, "Indicator");
-        Expect(FindVisualByName<Panel>(spin, "MaskLayout") != null,
-            "Spinning Spin should create MaskLayout.",
+        maskLayout = FindVisualByName<Panel>(spin, "MaskLayout");
+        indicator  = FindVisualByName<SpinIndicator>(spin, "Indicator");
+        Expect(maskLayout?.IsVisible == true,
+            "Spinning Spin should show MaskLayout.",
             failures);
-        Expect(indicator != null,
-            "Spinning Spin should create SpinIndicator.",
+        Expect(indicator?.IsVisible == true,
+            "Spinning Spin should show SpinIndicator.",
+            failures);
+        Expect(indicator == null || GetSpinIndicatorAnimation(indicator) != null,
+            "Visible static SpinIndicator should lazily build animation.",
+            failures);
+        Expect(indicator == null || GetSpinIndicatorCancellationTokenSource(indicator) != null,
+            "Visible static SpinIndicator should start animation.",
             failures);
         Expect(FindVisualByName<AtomTextBlock>(spin, "Tip") != null,
-            "Spinning Spin should create Tip TextBlock.",
+            "Spin should keep Tip TextBlock available from the static template.",
             failures);
 
         var updatedIcon = new LoadingOutlined();
@@ -76,36 +94,42 @@ internal static partial class Program
         RefreshLayout(realized.Window);
 
         Expect(indicator?.SizeType == SizeType.Large,
-            "Lazy SpinIndicator should sync SizeType changes from Spin.",
+            "Static SpinIndicator should sync SizeType changes from Spin.",
             failures);
         Expect(ReferenceEquals(indicator?.CustomIndicator, updatedIcon),
-            "Lazy SpinIndicator should sync CustomIndicator changes from Spin.",
+            "Static SpinIndicator should sync CustomIndicator changes from Spin.",
             failures);
         var tip = FindVisualByName<AtomTextBlock>(spin, "Tip");
         Expect(tip?.Text == "Still loading...",
-            "Lazy Spin tip should sync Tip text changes from Spin.",
+            "Static Spin tip should sync Tip text changes from Spin.",
             failures);
         Expect(tip?.IsVisible == false,
-            "Lazy Spin tip should sync IsTipVisible changes from Spin.",
+            "Static Spin tip should sync IsTipVisible changes from Spin.",
             failures);
 
         spin.IsSpinning = false;
         RefreshLayout(realized.Window);
 
-        Expect(FindVisualByName<Panel>(spin, "MaskLayout") == null,
-            "Spin should remove MaskLayout when spinning stops.",
+        maskLayout = FindVisualByName<Panel>(spin, "MaskLayout");
+        indicator  = FindVisualByName<SpinIndicator>(spin, "Indicator");
+        Expect(maskLayout?.IsVisible == false,
+            "Spin should hide MaskLayout when spinning stops.",
             failures);
-        Expect(CountSpinIndicators(spin) == 0,
-            "Spin should remove SpinIndicator when spinning stops.",
+        Expect(indicator?.IsVisible == false,
+            "Spin should hide SpinIndicator when spinning stops.",
             failures);
-        Expect(indicator?.GetVisualParent() == null,
-            "Removed SpinIndicator should not keep a visual parent.",
+        Expect(indicator == null || GetSpinIndicatorCancellationTokenSource(indicator) == null,
+            "Hidden static SpinIndicator should stop animation when spinning stops.",
             failures);
 
         spin.IsSpinning = true;
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<SpinIndicator>(spin, "Indicator") != null,
-            "Spin should recreate SpinIndicator when spinning starts again.",
+        indicator = FindVisualByName<SpinIndicator>(spin, "Indicator");
+        Expect(indicator?.IsVisible == true,
+            "Spin should show SpinIndicator when spinning starts again.",
+            failures);
+        Expect(indicator == null || GetSpinIndicatorCancellationTokenSource(indicator) != null,
+            "Spin should restart SpinIndicator animation when spinning starts again.",
             failures);
     }
 
@@ -123,11 +147,25 @@ internal static partial class Program
 
         indicator.IsVisible = true;
         RefreshLayout(realized.Window);
-        Expect(GetSpinIndicatorAnimation(indicator) != null,
+        var firstAnimation = GetSpinIndicatorAnimation(indicator);
+        var firstToken     = GetSpinIndicatorCancellationTokenSource(indicator);
+        Expect(firstAnimation != null,
             "Visible SpinIndicator should lazily build animation.",
             failures);
-        Expect(GetSpinIndicatorCancellationTokenSource(indicator) != null,
+        Expect(firstToken != null,
             "Visible SpinIndicator should start animation.",
+            failures);
+
+        indicator.MotionDuration = TimeSpan.FromMilliseconds(1234);
+        RefreshLayout(realized.Window);
+        Expect(!ReferenceEquals(GetSpinIndicatorAnimation(indicator), firstAnimation),
+            "Materialized SpinIndicator animation should rebuild when MotionDuration changes.",
+            failures);
+        Expect(!ReferenceEquals(GetSpinIndicatorCancellationTokenSource(indicator), firstToken),
+            "Running SpinIndicator animation should restart when MotionDuration changes.",
+            failures);
+        Expect(GetSpinIndicatorCancellationTokenSource(indicator) != null,
+            "Running SpinIndicator animation should stay active after MotionDuration changes.",
             failures);
 
         indicator.IsVisible = false;
@@ -161,11 +199,6 @@ internal static partial class Program
         Expect(icon.Width < largeWidth && icon.Height < largeWidth,
             $"Custom SpinIndicator icon should shrink on SizeType change, large {largeWidth}, actual {icon.Width}x{icon.Height}.",
             failures);
-    }
-
-    private static int CountSpinIndicators(Control root)
-    {
-        return root.GetSelfAndVisualDescendants().OfType<SpinIndicator>().Count();
     }
 
     private static object? GetSpinIndicatorAnimation(SpinIndicator indicator)

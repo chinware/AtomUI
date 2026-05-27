@@ -55,9 +55,23 @@ public class DataGridRowHeader : ContentControl
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     private Control? _rootElement;
-    internal Control? Owner { get; set; }
+    private Control? _owner;
+
+    internal Control? Owner
+    {
+        get => _owner;
+        set
+        {
+            if (_owner != value)
+            {
+                _owner = value;
+                ConfigureOwnerDependentState();
+            }
+        }
+    }
+
     private DataGridRow? OwningRow => Owner as DataGridRow;
     private DataGridRowGroupHeader? OwningRowGroupHeader => Owner as DataGridRowGroupHeader;
     private Rectangle? _horizontalSeparator;
@@ -96,16 +110,11 @@ public class DataGridRowHeader : ContentControl
     
     #endregion
     
-    /// <summary>
-    /// Initializes a new instance of the <see cref="T:AtomUI.Desktop.Controls.DataGridRowHeader" /> class. 
-    /// </summary>
-    public DataGridRowHeader()
-    {
-        AddHandler(PointerPressedEvent, HandlePointerPressed, handledEventsToo: true);
-    }
-
     static DataGridRowHeader()
     {
+        PointerPressedEvent.AddClassHandler<DataGridRowHeader>(
+            (x, e) => x.HandlePointerPressed(e),
+            handledEventsToo: true);
         AutomationProperties.IsOffscreenBehaviorProperty.OverrideDefaultValue<DataGridRowHeader>(IsOffscreenBehavior.FromClip);
     }
     
@@ -116,24 +125,33 @@ public class DataGridRowHeader : ContentControl
     {
         _rootElement         = e.NameScope.Find<Control>(DataGridRowHeaderThemeConstants.RootLayoutPart);
         _horizontalSeparator = e.NameScope.Find<Rectangle>(DataGridRowHeaderThemeConstants.HorizontalSeparatorPart);
+        ConfigureOwnerDependentState();
+    }
+
+    private void ConfigureOwnerDependentState()
+    {
         if (_rootElement != null)
         {
             UpdatePseudoClasses();
         }
 
-        Debug.Assert(OwningGrid != null);
-        if (_horizontalSeparator != null)
+        var owningGrid = OwningGrid;
+        if (owningGrid == null)
         {
-            _horizontalSeparator.Height = OwningGrid.BorderThickness.Left;
+            return;
         }
 
-        ConfigureSeparatorVisible();
+        if (_horizontalSeparator != null)
+        {
+            _horizontalSeparator.Height = owningGrid.BorderThickness.Left;
+        }
+
+        ConfigureSeparatorVisible(owningGrid);
     }
 
-    private void ConfigureSeparatorVisible()
+    private void ConfigureSeparatorVisible(DataGrid owningGrid)
     {
-        Debug.Assert(OwningGrid != null);
-        bool newVisibility = OwningGrid.AreHorizontalGridLinesVisible;
+        bool newVisibility = owningGrid.AreHorizontalGridLinesVisible;
 
         if (newVisibility != IsSeparatorsVisible)
         {
@@ -210,7 +228,7 @@ public class DataGridRowHeader : ContentControl
         base.OnPointerExited(e);
     }
     
-    private void HandlePointerPressed(object? sender, PointerPressedEventArgs e)
+    private void HandlePointerPressed(PointerPressedEventArgs e)
     {
         if (OwningGrid == null)
         {
@@ -226,8 +244,6 @@ public class DataGridRowHeader : ContentControl
             }
             if (OwningRow != null)
             {
-                Debug.Assert(sender is DataGridRowHeader);
-                Debug.Assert(sender == this);
                 e.Handled = OwningGrid.UpdateStateOnMouseLeftButtonDown(e, -1, Slot, false);
             }
         }
@@ -239,8 +255,6 @@ public class DataGridRowHeader : ContentControl
             }
             if (OwningRow != null)
             {
-                Debug.Assert(sender is DataGridRowHeader);
-                Debug.Assert(sender == this);
                 e.Handled = OwningGrid.UpdateStateOnMouseRightButtonDown(e, -1, Slot, false);
             }
         }

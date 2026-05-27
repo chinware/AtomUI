@@ -13,7 +13,7 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
         GradientColorSlider.GradientValueProperty.AddOwner<GradientColorPickerTrack>();
 
     public static readonly StyledProperty<GradientColorSliderThumb?> ActivatedThumbProperty =
-        AvaloniaProperty.Register<GradientColorSlider, GradientColorSliderThumb?>(nameof(ActivatedThumb));
+        AvaloniaProperty.Register<GradientColorPickerTrack, GradientColorSliderThumb?>(nameof(ActivatedThumb));
 
     public LinearGradientBrush? GradientValue
     {

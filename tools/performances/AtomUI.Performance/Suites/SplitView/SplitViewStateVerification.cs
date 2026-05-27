@@ -171,12 +171,39 @@ internal static partial class Program
             "Constructed SplitView should not materialize PaneCloseTransitions before loading.",
             failures);
 
-        using var _ = RealizeControl(splitView);
-        Expect(GetTransitionPropertyName(GetPaneOpenTransitions(splitView)) == nameof(Control.Width),
-            "Loaded left SplitView should materialize a Width open transition.",
+        using var realized = RealizeControl(splitView);
+        Expect(GetPaneOpenTransitions(splitView) == null,
+            "Loaded closed SplitView should not materialize PaneOpenTransitions before the first open.",
             failures);
+        Expect(GetPaneCloseTransitions(splitView) == null,
+            "Loaded closed SplitView should not materialize PaneCloseTransitions before the first close.",
+            failures);
+
+        splitView.IsPaneOpen = true;
+        RefreshLayout(realized.Window);
+        Expect(GetTransitionPropertyName(GetPaneOpenTransitions(splitView)) == nameof(Control.Width),
+            "Opening left SplitView should materialize a Width open transition.",
+            failures);
+
+        splitView.IsPaneOpen = false;
+        RefreshLayout(realized.Window);
         Expect(GetTransitionPropertyName(GetPaneCloseTransitions(splitView)) == nameof(Control.Width),
-            "Loaded left SplitView should materialize a matching Width close transition.",
+            "Closing left SplitView should materialize a matching Width close transition.",
+            failures);
+
+        var initiallyOpenSplitView = CreateSplitView(isPaneOpen: true);
+        using var initiallyOpenRealized = RealizeControl(initiallyOpenSplitView);
+        Expect(GetPaneOpenTransitions(initiallyOpenSplitView) == null,
+            "Loaded initially-open SplitView should not materialize PaneOpenTransitions before a runtime open.",
+            failures);
+        Expect(GetPaneCloseTransitions(initiallyOpenSplitView) == null,
+            "Loaded initially-open SplitView should not materialize PaneCloseTransitions before the first close.",
+            failures);
+
+        initiallyOpenSplitView.IsPaneOpen = false;
+        RefreshLayout(initiallyOpenRealized.Window);
+        Expect(GetTransitionPropertyName(GetPaneCloseTransitions(initiallyOpenSplitView)) == nameof(Control.Width),
+            "Closing initially-open left SplitView should materialize a Width close transition.",
             failures);
     }
 

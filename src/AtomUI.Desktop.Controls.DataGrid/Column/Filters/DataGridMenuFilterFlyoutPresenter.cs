@@ -9,36 +9,50 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
     private Button? _resetButton;
     private Button? _okButton;
 
+    static DataGridMenuFilterFlyoutPresenter()
+    {
+        Button.ClickEvent.AddClassHandler<DataGridMenuFilterFlyoutPresenter>(
+            (presenter, args) => presenter.HandleButtonClick(args));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _resetButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.ResetButtonPart);
         _okButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.OkButtonPart);
-
-        if (_resetButton != null)
-        {
-            _resetButton.Click += HandleResetButtonClick;
-        }
-
-        if (_okButton != null)
-        {
-            _okButton.Click += HandleOkButtonClick;
-        }
     }
 
-    internal List<String> GetFilterValues()
+    internal List<string> GetFilterValues()
     {
-        var values =  new List<String>();
+        var selectedValueCount = CountSelectedFilterValueLeaves(this);
+        if (selectedValueCount == 0)
+        {
+            return new List<string>();
+        }
+
+        var values = new List<string>(selectedValueCount);
         CollectFilterValues(values, this);
         return values;
     }
 
-    private void HandleResetButtonClick(object? sender, RoutedEventArgs e)
+    private void HandleButtonClick(RoutedEventArgs e)
+    {
+        if (ReferenceEquals(e.Source, _resetButton))
+        {
+            ResetFilter();
+        }
+        else if (ReferenceEquals(e.Source, _okButton))
+        {
+            ConfirmFilter();
+        }
+    }
+
+    private void ResetFilter()
     {
         ClearCheckStateRecursive(this);
     }
 
-    private void HandleOkButtonClick(object? sender, RoutedEventArgs e)
+    private void ConfirmFilter()
     {
         if (MenuFlyout is DataGridMenuFilterFlyout dataGridMenuFlyout)
         {
@@ -52,7 +66,7 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)
         {
-            var item = itemsControl.ContainerFromIndex(i);
+            var item = GetFilterItem(itemsControl, i);
             if (item is MenuItem filterMenuItem)
             {
                 ClearCheckStateRecursive(filterMenuItem);
@@ -65,11 +79,13 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
         }
     }
 
-    private void CollectFilterValues(List<string> filterValues, SelectingItemsControl itemsControl)
+    private void CollectFilterValues(
+        List<string> filterValues,
+        SelectingItemsControl itemsControl)
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)
         {
-            var item = itemsControl.ContainerFromIndex(i);
+            var item = GetFilterItem(itemsControl, i);
             if (item is DataGridFilterMenuItem filterMenuItem)
             {
                 CollectFilterValues(filterValues, filterMenuItem);
@@ -83,6 +99,41 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
                 filterValues.Add(menuItem.FilterValue);
             }
         }
+    }
+
+    private int CountSelectedFilterValueLeaves(SelectingItemsControl itemsControl)
+    {
+        var count = 0;
+        for (var i = 0; i < itemsControl.ItemCount; i++)
+        {
+            var item = GetFilterItem(itemsControl, i);
+            if (item is DataGridFilterMenuItem filterMenuItem)
+            {
+                count += CountSelectedFilterValueLeaves(filterMenuItem);
+            }
+        }
+
+        if (itemsControl is DataGridFilterMenuItem menuItem &&
+            itemsControl.ItemCount == 0 &&
+            menuItem.IsChecked &&
+            menuItem.FilterValue != null)
+        {
+            count++;
+        }
+
+        return count;
+    }
+
+    internal static Control? GetFilterItem(SelectingItemsControl itemsControl, int index)
+    {
+        if (itemsControl.ContainerFromIndex(index) is Control container)
+        {
+            return container;
+        }
+
+        return index >= 0 && index < itemsControl.ItemsView.Count
+            ? itemsControl.ItemsView[index] as Control
+            : null;
     }
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)

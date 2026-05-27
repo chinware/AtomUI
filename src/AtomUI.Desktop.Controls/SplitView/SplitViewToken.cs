@@ -28,7 +28,7 @@ internal class SplitViewToken : AbstractControlDesignToken
         OpenPaneThemeLength     = 320;
         CompactPaneThemeLength  = 48;
         PaneOpenMotionDuration  = TimeSpan.FromMilliseconds(200);
-        PaneCloseMotionDuration = TimeSpan.FromSeconds(100);
+        PaneCloseMotionDuration = TimeSpan.FromMilliseconds(100);
         PaneMotionEasing        = Easing.Parse("0.1,0.9,0.2,1.0");
     }
     

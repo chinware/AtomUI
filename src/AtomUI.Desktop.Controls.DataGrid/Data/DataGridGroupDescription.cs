@@ -12,6 +12,9 @@ namespace AtomUI.Desktop.Controls.Data;
 
 public abstract class DataGridGroupDescription : INotifyPropertyChanged
 {
+    private static readonly PropertyChangedEventArgs GroupKeysPropertyChangedEventArgs =
+        new(nameof(GroupKeys));
+
     public AvaloniaList<object> GroupKeys { get; }
 
     public DataGridGroupDescription()
@@ -28,7 +31,7 @@ public abstract class DataGridGroupDescription : INotifyPropertyChanged
     }
     private void OnGroupKeysCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        OnPropertyChanged(new PropertyChangedEventArgs(nameof(GroupKeys)));
+        OnPropertyChanged(GroupKeysPropertyChangedEventArgs);
     }
     
     protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)

@@ -249,7 +249,7 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
                 continue; // skip children that are not groups
             }
 
-            if (group.GroupBy != null)
+            if (group.GroupBy != null && group.GroupBy.KeysMatch(subgroup.Key, key))
             {
                 group.LastIndex = index;
                 AddToSubgroups(item, subgroup, level + 1, loading);

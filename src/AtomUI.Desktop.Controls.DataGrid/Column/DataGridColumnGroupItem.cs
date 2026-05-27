@@ -162,9 +162,16 @@ public class DataGridColumnGroupItem : AvaloniaObject,
         result[!DataGridColumnGroupHeader.HorizontalContentAlignmentProperty] = this[!HorizontalAlignmentProperty];
         result[!DataGridColumnGroupHeader.VerticalContentAlignmentProperty]   = this[!VerticalAlignmentProperty];
         result[!DataGridColumnGroupHeader.SizeTypeProperty]                   = OwningGrid[!DataGrid.SizeTypeProperty];
-        
-        result.PointerPressed  += (s, e) => { HeaderPointerPressed?.Invoke(this, e); };
-        result.PointerReleased += (s, e) => { HeaderPointerReleased?.Invoke(this, e); };
         return result;
+    }
+
+    internal void NotifyHeaderPointerPressed(PointerPressedEventArgs e)
+    {
+        HeaderPointerPressed?.Invoke(this, e);
+    }
+
+    internal void NotifyHeaderPointerReleased(PointerReleasedEventArgs e)
+    {
+        HeaderPointerReleased?.Invoke(this, e);
     }
 }

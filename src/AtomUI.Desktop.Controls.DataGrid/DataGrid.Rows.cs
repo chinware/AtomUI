@@ -12,7 +12,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
-using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -159,8 +158,10 @@ public partial class DataGrid
 
             // Add the height of all the rows currently displayed, AvailableRowRoom
             // is not always up to date enough for this
-            foreach (Control element in DisplayData.GetScrollingElements())
+            int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+            for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
             {
+                Control element = DisplayData.GetScrollingElementAtDisplayIndex(displayIndex);
                 if (element is DataGridRow row)
                 {
                     totalRowsHeight += IsInvalidSlotElementHeight(row.TargetHeight)
@@ -281,7 +282,7 @@ public partial class DataGrid
                     }
                     else
                     {
-                        int currentlySelectedSlot = _selectedItems.GetIndexes().First();
+                        int currentlySelectedSlot = _selectedItems.GetFirstSlot();
                         if (currentlySelectedSlot != slotException)
                         {
                             SelectionHasChanged = true;
@@ -515,9 +516,13 @@ public partial class DataGrid
             // If the slot is displayed and we scrolled horizontally, column virtualization could cause the rows to grow.
             // As a result we need to force measure on the rows we're displaying and recalculate our First and Last slots
             // so they're accurate
-            foreach (var row in DisplayData.GetScrollingRows())
+            int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+            for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
             {
-                row.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
+                {
+                    row.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                }
             }
 
             UpdateDisplayedRows(DisplayData.FirstScrollingSlot, CellsEstimatedHeight);
@@ -642,7 +647,7 @@ public partial class DataGrid
                     Debug.Assert(_selectedItems.Count <= 1);
                     if (_selectedItems.Count > 0)
                     {
-                        int currentlySelectedSlot = _selectedItems.GetIndexes().First();
+                        int currentlySelectedSlot = _selectedItems.GetFirstSlot();
                         if (currentlySelectedSlot != slot)
                         {
                             SelectSlot(currentlySelectedSlot, false);
@@ -727,56 +732,36 @@ public partial class DataGrid
     {
         SlotCount        = 0;
         VisibleSlotCount = 0;
-        IEnumerator<int>? groupSlots    = null;
-        int               nextGroupSlot = -1;
-        try
+        var groupSlots    = RowGroupHeadersTable.EnumerateIndexes().GetEnumerator();
+        int nextGroupSlot = groupSlots.MoveNext() ? groupSlots.Current : -1;
+
+        int slot      = 0;
+        int addedRows = 0;
+        while (slot < totalSlots && AvailableSlotElementRoom > 0)
         {
-            if (RowGroupHeadersTable.RangeCount > 0)
+            if (slot == nextGroupSlot)
             {
-                groupSlots = RowGroupHeadersTable.GetIndexes().GetEnumerator();
-                if (groupSlots.MoveNext())
-                {
-                    nextGroupSlot = groupSlots.Current;
-                }
+                DataGridRowGroupInfo? groupRowInfo = RowGroupHeadersTable.GetValueAt(slot);
+                AddSlotElement(slot, GenerateRowGroupHeader(slot, groupRowInfo));
+                nextGroupSlot = groupSlots.MoveNext() ? groupSlots.Current : -1;
+            }
+            else
+            {
+                AddSlotElement(slot, GenerateRow(addedRows, slot));
+                addedRows++;
             }
 
-            int slot      = 0;
-            int addedRows = 0;
-            while (slot < totalSlots && AvailableSlotElementRoom > 0)
-            {
-                if (slot == nextGroupSlot)
-                {
-                    Debug.Assert(groupSlots != null);
-                    DataGridRowGroupInfo? groupRowInfo = RowGroupHeadersTable.GetValueAt(slot);
-                    AddSlotElement(slot, GenerateRowGroupHeader(slot, groupRowInfo));
-                    nextGroupSlot = groupSlots.MoveNext() ? groupSlots.Current : -1;
-                }
-                else
-                {
-                    AddSlotElement(slot, GenerateRow(addedRows, slot));
-                    addedRows++;
-                }
-
-                slot++;
-            }
-
-            if (slot < totalSlots)
-            {
-                SlotCount        += totalSlots - slot;
-                VisibleSlotCount += totalSlots - slot;
-                NotifyAddedElementPhase2(0,
-                    updateVerticalScrollBarOnly: _vScrollBar == null || _vScrollBar.IsVisible);
-                NotifyElementsChanged(grew: true);
-            }
+            slot++;
         }
-        finally
+
+        if (slot < totalSlots)
         {
-            if (groupSlots is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
+            SlotCount        += totalSlots - slot;
+            VisibleSlotCount += totalSlots - slot;
+            NotifyAddedElementPhase2(0,
+                updateVerticalScrollBarOnly: _vScrollBar == null || _vScrollBar.IsVisible);
+            NotifyElementsChanged(grew: true);
         }
-      
     }
 
     private void ApplyDisplayedRowsState(int startSlot, int endSlot)
@@ -926,9 +911,10 @@ public partial class DataGrid
         }
 
         // Take care of the visible rows
-        foreach (var control in DisplayData.GetScrollingRows())
+        int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
         {
-            if (control is DataGridRow row)
+            if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
             {
                 if (row.Slot > slotDeleted)
                 {
@@ -939,7 +925,7 @@ public partial class DataGrid
         }
 
         // Update the RowGroupHeaders
-        foreach (int slot in RowGroupHeadersTable.GetIndexes())
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
         {
             DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
             Debug.Assert(rowGroupInfo != null);
@@ -987,9 +973,10 @@ public partial class DataGrid
         }
 
         // Take care of the visible rows
-        foreach (var control in DisplayData.GetScrollingRows())
+        int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+        for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
         {
-            if (control is DataGridRow row)
+            if (DisplayData.GetScrollingElementAtDisplayIndex(displayIndex) is DataGridRow row)
             {
                 if (row.Slot >= slotInserted)
                 {
@@ -1007,7 +994,7 @@ public partial class DataGrid
         }
 
         // Update the RowGroupHeaders
-        foreach (int slot in RowGroupHeadersTable.GetIndexes(slotInserted))
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(slotInserted))
         {
             DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
             Debug.Assert(rowGroupInfo != null);
@@ -1031,16 +1018,58 @@ public partial class DataGrid
         }
     }
 
-    internal IEnumerable<DataGridRow> GetAllRows()
+    internal DataGridRowsEnumerable GetAllRows()
     {
-        if (_rowsPresenter != null)
+        return new DataGridRowsEnumerable(_rowsPresenter);
+    }
+
+    internal readonly struct DataGridRowsEnumerable
+    {
+        private readonly DataGridRowsPresenter? _rowsPresenter;
+
+        public DataGridRowsEnumerable(DataGridRowsPresenter? rowsPresenter)
         {
-            foreach (Control element in _rowsPresenter.Children)
+            _rowsPresenter = rowsPresenter;
+        }
+
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(_rowsPresenter?.Children);
+        }
+
+        internal struct Enumerator
+        {
+            private readonly IList<Control>? _children;
+            private int _index;
+            private DataGridRow? _current;
+
+            public Enumerator(IList<Control>? children)
             {
-                if (element is DataGridRow row)
+                _children = children;
+                _index    = -1;
+                _current  = null;
+            }
+
+            public DataGridRow Current => _current!;
+
+            public bool MoveNext()
+            {
+                if (_children == null)
                 {
-                    yield return row;
+                    return false;
                 }
+
+                while (++_index < _children.Count)
+                {
+                    if (_children[_index] is DataGridRow row)
+                    {
+                        _current = row;
+                        return true;
+                    }
+                }
+
+                _current = null;
+                return false;
             }
         }
     }
@@ -1130,8 +1159,15 @@ public partial class DataGrid
         {
             Debug.Assert(EditingRow.Cells.Count == ColumnsItemsInternal.Count);
             Debug.Assert(EditingRow.DataContext != null);
-            foreach (DataGridColumn column in ColumnsInternal.GetDisplayedColumns(c => c.IsVisible && !c.IsReadOnly))
+            int displayedColumnCount = ColumnsInternal.GetDisplayedColumnCount();
+            for (int displayIndex = 0; displayIndex < displayedColumnCount; displayIndex++)
             {
+                DataGridColumn column = ColumnsInternal.GetDisplayedColumnAtDisplayIndex(displayIndex);
+                if (!column.IsVisible || column.IsReadOnly)
+                {
+                    continue;
+                }
+
                 column.GenerateEditingElementInternal(EditingRow.Cells[column.Index], EditingRow.DataContext);
             }
         }
@@ -1375,7 +1411,7 @@ public partial class DataGrid
                 }
                 else
                 {
-                    element.Clip = null;
+                    row.ClearHiddenClipGeometry();
                     Debug.Assert(row.Index == RowIndexFromSlot(slot));
                 }
             }
@@ -1728,7 +1764,7 @@ public partial class DataGrid
             }
             else
             {
-                dataGridRow.Clip = new RectangleGeometry();
+                dataGridRow.ApplyHiddenClipGeometry();
             }
         }
         else if (element is DataGridRowGroupHeader groupHeader)
@@ -1813,8 +1849,10 @@ public partial class DataGrid
     {
         if (UnloadingRow != null || UnloadingRowGroup != null)
         {
-            foreach (Control element in DisplayData.GetScrollingElements())
+            int displayedElementCount = DisplayData.NumDisplayedScrollingElements;
+            for (int displayIndex = 0; displayIndex < displayedElementCount; displayIndex++)
             {
+                Control element = DisplayData.GetScrollingElementAtDisplayIndex(displayIndex);
                 // Raise Unloading Row for all the rows we're displaying
                 if (element is DataGridRow row)
                 {
@@ -2563,7 +2601,7 @@ public partial class DataGrid
     private void ClearRowGroupHeadersTable()
     {
         // Detach existing handlers on CollectionViewGroup.Items.CollectionChanged
-        foreach (int slot in RowGroupHeadersTable.GetIndexes())
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
         {
             DataGridRowGroupInfo? groupInfo = RowGroupHeadersTable.GetValueAt(slot);
             if (groupInfo?.CollectionViewGroup != null)
@@ -2816,7 +2854,7 @@ public partial class DataGrid
     {
         int count = 0;
         headersHeight = 0;
-        foreach (int slot in RowGroupHeadersTable.GetIndexes(startSlot))
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(startSlot))
         {
             if (slot > endSlot)
             {
@@ -2853,7 +2891,7 @@ public partial class DataGrid
         if (newIsVisible)
         {
             // Expand
-            foreach (int slot in RowGroupHeadersTable.GetIndexes(targetRowGroupInfo.Slot + 1))
+            foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(targetRowGroupInfo.Slot + 1))
             {
                 if (slot >= startSlot)
                 {
@@ -2889,7 +2927,7 @@ public partial class DataGrid
         {
             // Collapse
             endSlot = SlotCount - 1;
-            foreach (int slot in RowGroupHeadersTable.GetIndexes(targetRowGroupInfo.Slot + 1))
+            foreach (int slot in RowGroupHeadersTable.EnumerateIndexes(targetRowGroupInfo.Slot + 1))
             {
                 DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
                 Debug.Assert(rowGroupInfo != null);
@@ -3054,7 +3092,7 @@ public partial class DataGrid
             // If the new item is a root level element, it has no parent group, so create an empty RowGroupInfo
             return new DataGridRowGroupInfo(null, true, -1, -1, -1);
         }
-        foreach (int slot in RowGroupHeadersTable.GetIndexes())
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
         {
             DataGridRowGroupInfo? groupInfo = RowGroupHeadersTable.GetValueAt(slot);
             if (groupInfo?.CollectionViewGroup?.Items == collection)
@@ -3117,7 +3155,7 @@ public partial class DataGrid
 
     internal DataGridRowGroupInfo? RowGroupInfoFromCollectionViewGroup(DataGridCollectionViewGroup? collectionViewGroup)
     {
-        foreach (int slot in RowGroupHeadersTable.GetIndexes())
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
         {
             DataGridRowGroupInfo? rowGroupInfo = RowGroupHeadersTable.GetValueAt(slot);
             if (rowGroupInfo?.CollectionViewGroup == collectionViewGroup)
@@ -3305,7 +3343,7 @@ public partial class DataGrid
     internal void PrintRowGroupInfo()
     {
         Debug.WriteLine("-----------------------------------------------RowGroupHeaders");
-        foreach (int slot in RowGroupHeadersTable.GetIndexes())
+        foreach (int slot in RowGroupHeadersTable.EnumerateIndexes())
         {
             DataGridRowGroupInfo? info = RowGroupHeadersTable.GetValueAt(slot);
             Debug.WriteLine(String.Format(System.Globalization.CultureInfo.InvariantCulture,
