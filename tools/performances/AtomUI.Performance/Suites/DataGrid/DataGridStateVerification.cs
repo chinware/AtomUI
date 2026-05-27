@@ -87,6 +87,7 @@ internal static partial class Program
         VerifyDataGridDataConnectionCountsEnumerableWithoutLinqCast(failures);
         VerifyDataGridDataConnectionAnyUsesCollectionViewIsEmpty(failures);
         VerifyDataGridDataConnectionCachesDataProperties(failures);
+        VerifyDataGridDataConnectionItemTypeProbeDisposesEnumerator(failures);
         VerifyDataGridDataConnectionEditableAttributeLookupPreservesReadOnlySemantics(failures);
         VerifyDataGridValidationUtilsFiltersExceptionsWithoutLinq(failures);
         VerifyDataGridCollectionViewPreallocatesUnfilteredSourceLists(failures);
@@ -3448,6 +3449,47 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyDataGridDataConnectionItemTypeProbeDisposesEnumerator(ICollection<string> failures)
+    {
+        var type = typeof(DataGrid).Assembly.GetType("AtomUI.Desktop.Controls.Data.DataGridDataConnection");
+        Expect(type != null,
+            "DataGridDataConnection type should be available for item-type probe enumerator disposal verification.",
+            failures);
+        if (type == null)
+        {
+            return;
+        }
+
+        var enumerable = new InstrumentedEnumerable(3);
+        var grid = new DataGrid
+        {
+            ItemsSource = enumerable
+        };
+        var connection = Activator.CreateInstance(type, new object[] { grid });
+        var dataTypeProperty = type.GetProperty(
+            "DataType",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Expect(connection != null && dataTypeProperty != null,
+            "DataGridDataConnection should expose DataType for item-type probe disposal verification.",
+            failures);
+        if (connection == null || dataTypeProperty == null)
+        {
+            return;
+        }
+
+        enumerable.ResetCounters();
+        var itemType = dataTypeProperty.GetValue(connection) as Type;
+        Expect(itemType == typeof(int),
+            $"DataGridDataConnection should infer representative item type from a bare IEnumerable. Actual: {itemType}.",
+            failures);
+        Expect(enumerable.MoveNextCount == 1,
+            $"DataGridDataConnection item-type probe should stop after the first representative item. Actual MoveNext count: {enumerable.MoveNextCount}.",
+            failures);
+        Expect(enumerable.DisposeCount == 1,
+            $"DataGridDataConnection item-type probe should dispose the bare IEnumerable enumerator. Actual dispose count: {enumerable.DisposeCount}.",
+            failures);
+    }
+
     private static void VerifyDataGridDataConnectionEditableAttributeLookupPreservesReadOnlySemantics(
         ICollection<string> failures)
     {
@@ -5239,6 +5281,12 @@ internal static partial class Program
         public InstrumentedEnumerable(int count)
         {
             _count = count;
+        }
+
+        public void ResetCounters()
+        {
+            MoveNextCount = 0;
+            DisposeCount  = 0;
         }
 
         public IEnumerator GetEnumerator()

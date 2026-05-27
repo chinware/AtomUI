@@ -598,10 +598,20 @@ internal static class TypeHelper
             // We haven't located a type yet.. try a different approach.
             // Does the list have anything in it?
 
-            IEnumerator en = list.GetEnumerator();
-            if (en.MoveNext() && en.Current != null)
+            IEnumerator enumerator = list.GetEnumerator();
+            try
             {
-                return en.Current.GetType();
+                if (enumerator.MoveNext() && enumerator.Current != null)
+                {
+                    return enumerator.Current.GetType();
+                }
+            }
+            finally
+            {
+                if (enumerator is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
         }
 
