@@ -137,7 +137,7 @@
 
         <Style Selector="^[SizeType=Large]">
             <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
             </Style>
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
@@ -151,7 +151,7 @@
 
         <Style Selector="^[SizeType=Middle]">
             <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             </Style>
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
@@ -165,7 +165,7 @@
 
         <Style Selector="^[SizeType=Small]">
             <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+                <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
@@ -1026,54 +1026,6 @@
         <!-- 文字按钮样式结束 -->
 
         <!-- 虚线按钮样式开始 -->
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:Button">
-                <Panel>
-                    <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
-                                              CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                              WaveType="{TemplateBinding WaveSpiritType}" />
-                    <Border Name="ShadowsFrame"
-                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Background="{TemplateBinding Background}" />
-                    <atom:DashedBorder Name="Frame"
-                                       Padding="{TemplateBinding Padding}"
-                                       BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                                       BorderBrush="{TemplateBinding BorderBrush}"
-                                       BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                       CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                       Background="{TemplateBinding Background}"
-                                       StrokeDashArray="{x:Static atom:ButtonTheme.DashedStyle}">
-                        <DockPanel Name="PART_RootLayout"
-                                   LastChildFill="True"
-                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <atom:IconPresenter
-                                Name="PART_ButtonIcon"
-                                Icon="{TemplateBinding Icon}"
-                                DockPanel.Dock="Left">
-                                <atom:IconPresenter.IsVisible>
-                                    <MultiBinding
-                                        Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsIconVisible" />
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
-                                    </MultiBinding>
-                                </atom:IconPresenter.IsVisible>
-                            </atom:IconPresenter>
-                            <antdicons:LoadingOutlined
-                                Name="PART_LoadingIcon"
-                                LoadingAnimation="Spin"
-                                DockPanel.Dock="Left" />
-                            <ContentPresenter
-                                Name="PART_ContentPresenter"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </DockPanel>
-                    </atom:DashedBorder>
-                </Panel>
-            </ControlTemplate>
-        </Setter>
-
         <Style Selector="^[ButtonType=Dashed]">
             <Style Selector="^:not(:disabled)">
                 <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultColor}" />
@@ -1267,19 +1219,19 @@
 
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ atom|DashedBorder#Frame">
-                    <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+                    <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
                 </Style>
             </Style>
 
             <Style Selector="^[SizeType=Middle]">
                 <Style Selector="^ /template/ atom|DashedBorder#Frame">
-                    <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+                    <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
                 </Style>
             </Style>
 
             <Style Selector="^[SizeType=Small]">
                 <Style Selector="^ /template/ atom|DashedBorder#Frame">
-                    <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+                    <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
                 </Style>
             </Style>
         </Style>

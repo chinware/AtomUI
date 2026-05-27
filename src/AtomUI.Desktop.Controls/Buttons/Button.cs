@@ -258,17 +258,31 @@ public class Button : AvaloniaButton,
         var targetWidth  = size.Width;
         var targetHeight = size.Height;
 
-        targetWidth = Math.Max(targetWidth, targetHeight);
+        if (!double.IsNaN(Width))
+        {
+            targetWidth = Math.Max(targetWidth, Width);
+        }
+
+        if (!double.IsNaN(Height))
+        {
+            targetHeight = Math.Max(targetHeight, Height);
+        }
 
         if (Shape == ButtonShape.Circle)
         {
-            targetWidth  = targetHeight;
-            CornerRadius = new CornerRadius(targetHeight);
+            var targetSize = Math.Max(targetWidth, targetHeight);
+            targetWidth    = targetSize;
+            targetHeight   = targetSize;
+            CornerRadius   = new CornerRadius(targetSize);
         }
         else if (Shape == ButtonShape.Round)
         {
             CornerRadius = new CornerRadius(targetHeight);
             targetWidth  = Math.Max(targetWidth, targetHeight + targetHeight / 2);
+        }
+        else
+        {
+            targetWidth = Math.Max(targetWidth, targetHeight);
         }
 
         return new Size(targetWidth, targetHeight);
@@ -312,6 +326,10 @@ public class Button : AvaloniaButton,
         }
 
         if (change.Property == ButtonTypeProperty)
+        {
+            ConfigureWaveSpiritType();
+        }
+        else if (change.Property == ShapeProperty)
         {
             ConfigureWaveSpiritType();
         }
