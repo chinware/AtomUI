@@ -1,7 +1,7 @@
 # DataGrid 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
-> 状态：T4.1 cell header-state binding + row/row group header pointer handler + core input handler + plain column header template-apply sort/list cleanup + pagination re-template subscription cleanup + rows presenter scroll gesture / clip geometry + row gridline / row hidden clip / row group header child clip / row group header transform cleanup + GetAllRows struct enumerable cleanup + row group header slot struct enumeration cleanup + clipboard row content visible-column preallocation + clipboard content direct append formatting cleanup + auto-generated column order-list preallocation + star column width adjustment list lazy/preallocation partial done；T4.2 column filter flyout lifecycle + filter indicator binding + filter materialization allocation cleanup + filter presenter button class handler + filter passive close selected-values skip + filter close selected-values allocation cleanup + filter selected-values capacity preallocation + filter item children lazy allocation + column/group header pointer handler + column header click drag-over cleanup guard + column header resize/reorder drag state release + column header / group header view item clip cleanup、column/header/group header presenter visible-column iterator cleanup、column lifecycle / edit / copy / resize-hit-test iterator cleanup、column sort/filter description lookup cleanup、empty filter request object copy cleanup、column clipboard dead field cleanup、column group tree collection 临时 list cleanup + direct add/remove cleanup + indexed traversal cleanup partial done；T4.3 special column detach lifecycle + row expander details binding、operation buttons class handler cleanup partial done；T4.4 column reorder drag indicator render + reordering clip cleanup + column drag-over null-target notification dedup + row reorder duplicate check + row reorder click no-op drop cleanup + row reorder drag state release + selection changed delta-list preallocation + selected-items index rebuild cache preallocation + selected-items empty reset cache cleanup + selected-items index enumeration cleanup + selected-items public outer yield cleanup + selection-inclusive start-slot enumeration cleanup + selected-slots table copy preallocation + single-selection first-slot lookup cleanup + checkbox edit pointer bounds wait cleanup partial done；T4.5 row details presenter measure registration、data connection enumerable count cleanup / data connection remove old-items indexed loop / read-only collection count fast path / read-only list indexed item lookup / read-only list index lookup / IndexOf null equality fix / bare IEnumerable item-type probe disposal / read-only list item-type probe fast path / IList item-type probe fast path / collection-view `Any()` IsEmpty fast path / data-properties reflection cache / editable-attribute、read-only-attribute and display-attribute no-attribute lookup cleanup、simple property path split fast path、inherited interface property lookup fix、MergedComparer comparer array cleanup、unfiltered source list preallocation、read-only collection source copy/reset fast path、read-only list source copy/local-array/filtered refresh fast path、IList source copy/local-array/filtered refresh fast path、collection changed old-items indexed loop、representative item indexed lookup、edit currency duplicate index lookup cleanup、notifying source tracking enumerator lifecycle cleanup、PrepareLocalArray no-filter copy fast path、sorted list materialization preallocation、trivial sorted refresh sort-chain skip、empty sorted insert comparer skip、path sort default comparer cache、paged enumerator direct range cleanup、empty paged enumerator shared array、group key matching correctness、multi-key grouping IList key fast path、path group description owner-type cache、collection view property changed args cache / reset collection changed args cache / Reset ICollection empty-check fast path、group data property changed args cache、path sort comparer cache、filter description property type cache / no-property lookup skip / record value reuse / default conditions lazy allocation、validation exception filtering / contains member-name read-only list fast path / member-name comparison cleanup / validation-result indexed lookup partial done；DataGrid core / row / virtualization 仍待后续专项。
+> 状态：T4.1-T4.5 已完成。最后一轮审计确认 `Panel.Children` 遍历基于 AvaloniaList struct enumerator，不保留无收益的 foreach->indexer 改动；剩余 DataGridColumnCollection/DisplayData/GetSelectionInclusive helper 无当前生产调用热点，仅保留兼容/DEBUG 路径。
 
 ---
 
@@ -4775,6 +4775,40 @@ Smoke-only 对比上一轮同参数复测。本轮主要命中列组增删 / gro
 | DataGrid.GroupHeaders | 8.532 | 2571.9 | 266.0 | 1.0 | smoke 通过；timing 不作为本轮收益 |
 | DataGrid.RowGroups | 10.046 | 2936.6 | 315.0 | 1.0 | smoke 通过；timing 不作为本轮收益 |
 | DataGrid.GalleryShape | 40.925 | 12409.1 | 1260.0 | 5.0 | smoke 通过；timing 不作为本轮收益 |
+
+### 2.130 T4.1-T4.5 remaining DataGrid items closed
+
+本轮收尾点：T4.1-T4.5 最后一批候选项经源码核对后不保留无收益改动。`DataGrid` 里剩余 `_rowsPresenter.Children` / `DataGridDetailsPresenter.Children` 遍历基于 `Avalonia.Controls.Controls : AvaloniaList<Control>`；Avalonia 12 `AvaloniaList<T>.GetEnumerator()` 返回 struct enumerator，因此 `foreach` 本身不是 heap iterator 热点。把这些路径改成 Count/indexer 没有分配收益，且会让 page-load smoke 解释变得不清晰，所以已撤回。
+
+审计关闭项：`DataGridColumnCollection.GetDisplayedColumns()` / `GetVisibleColumns()` 系列当前没有生产调用点；`DataGridDisplayData.GetScrollingElements()` / `GetScrollingRows()` 仅剩 DEBUG 打印路径；`GetSelectionInclusive()` 的外层 yield 当前也没有生产调用点，内部 selected-slot traversal 已经是 struct enumerable。因此不继续为这些 helper 引入新抽象，T4.1-T4.5 按“无当前生产热点”关闭。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | --- | --- | --- | ---: | --- |
+| Rows/details `Children` heap iterator allocations / traversal | 0 known allocations | 0 allocations | source verified | 0.00% | 审计关闭；AvaloniaList concrete foreach 使用 struct enumerator，不是分配热点 |
+| Remaining `DataGridColumnCollection` displayed/visible helper production callsites | 0 callsites | 0 callsites | callsite audit | n/a | 审计关闭；helper 保留兼容路径，不做无调用点重构 |
+| Remaining `DataGridDisplayData` scrolling helper production callsites | 0 callsites | 0 callsites | callsite audit | n/a | 审计关闭；仅 DEBUG 打印路径保留 |
+| `GetSelectionInclusive()` production callsites | 0 callsites | 0 callsites | callsite audit | n/a | 审计关闭；内部 slot traversal 已是 struct enumerable，不引入更复杂外层 enumerable |
+| T4.1-T4.5 active remaining roadmap buckets | 5 partial buckets | 0 partial buckets | `(5 - 0) / 5` | 100.00% | 规划关闭；未发现新的生产热点，非生产 yield helpers 保留兼容路径 |
+
+Smoke-only 对比上一轮同参数复测。本轮没有保留会改变 `DataGrid.Basic` 首屏结构的代码改动；下表只记录发现异常的烟测结果，不作为收益证明：
+
+| Scenario | baseline ms/item | optimized ms/item | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| DataGrid.Basic | 14.423 | 16.776 | `(14.423 - 16.776) / 14.423` | -16.31% | smoke-only outlier；复测为 15.176ms，且同轮 GalleryShape 出现更大环境抖动 |
+| DataGrid.Filter.Menu.Closed | 8.734 | 9.409 | `(8.734 - 9.409) / 8.734` | -7.73% | smoke-only；不隔离本轮 traversal 路径 |
+| DataGrid.Filter.Tree.Closed | 8.558 | 8.051 | `(8.558 - 8.051) / 8.558` | 5.92% | smoke-only；不隔离本轮 traversal 路径 |
+| DataGrid.RowHeaders | 9.685 | 9.330 | `(9.685 - 9.330) / 9.685` | 3.67% | smoke-only；整页烟测 |
+| DataGrid.RowDetails.Collapsed | 9.875 | 9.926 | `(9.875 - 9.926) / 9.875` | -0.52% | smoke-only；整页烟测 |
+| DataGrid.GroupHeaders | 8.532 | 9.509 | `(8.532 - 9.509) / 8.532` | -11.45% | smoke-only；不隔离本轮 traversal 路径 |
+| DataGrid.RowGroups | 10.046 | 9.364 | `(10.046 - 9.364) / 10.046` | 6.79% | smoke-only；整页烟测 |
+| DataGrid.GalleryShape | 40.925 | 42.700 | `(40.925 - 42.700) / 40.925` | -4.34% | smoke-only；综合页面波动，不作为本轮速度证明 |
+
+异常后同参数复测：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root | 结论 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| DataGrid.Basic | 15.176 | 2948.2 | 305.0 | 1.0 | smoke 仍偏慢但低于 outlier；timing 不作为本轮收益 |
+| DataGrid.GalleryShape | 82.413 | 12409.4 | 1260.0 | 5.0 | 同轮异常翻倍，说明机器/进程环境抖动明显 |
 
 ---
 
