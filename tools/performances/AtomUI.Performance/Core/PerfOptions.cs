@@ -34,14 +34,18 @@ internal sealed record PerfOptions(
     bool VerifyTimePickerStates,
     bool VerifyDescriptionsStates,
     bool VerifyDialogStates,
+    bool VerifyDropdownButtonStates,
     bool VerifyDrawerStates,
     bool VerifyExpanderStates,
     bool VerifyEmptyStates,
     bool VerifyFloatButtonStates,
+    bool VerifyFlexPanelStates,
     bool VerifyFlyoutStates,
     bool VerifyFormStates,
+    bool VerifyGridStates,
     bool VerifyGroupBoxStates,
     bool VerifyImagePreviewerStates,
+    bool VerifyInfoFlyoutStates,
     bool VerifyInputStates,
     bool VerifyListBoxStates,
     bool VerifyListViewStates,
@@ -65,6 +69,7 @@ internal sealed record PerfOptions(
     bool VerifySkeletonStates,
     bool VerifySegmentedStates,
     bool VerifySpinStates,
+    bool VerifySplitButtonStates,
     bool VerifySwitchStates,
     bool VerifyTabControlStates,
     bool VerifyStepsStates,
@@ -114,14 +119,18 @@ internal sealed record PerfOptions(
         var verifyTimePickerStates = false;
         var verifyDescriptionsStates = false;
         var verifyDialogStates = false;
+        var verifyDropdownButtonStates = false;
         var verifyDrawerStates = false;
         var verifyExpanderStates = false;
         var verifyEmptyStates = false;
         var verifyFloatButtonStates = false;
+        var verifyFlexPanelStates = false;
         var verifyFlyoutStates = false;
         var verifyFormStates = false;
+        var verifyGridStates = false;
         var verifyGroupBoxStates = false;
         var verifyImagePreviewerStates = false;
+        var verifyInfoFlyoutStates = false;
         var verifyInputStates = false;
         var verifyListBoxStates = false;
         var verifyListViewStates = false;
@@ -145,6 +154,7 @@ internal sealed record PerfOptions(
         var verifySkeletonStates = false;
         var verifySegmentedStates = false;
         var verifySpinStates = false;
+        var verifySplitButtonStates = false;
         var verifySwitchStates = false;
         var verifyTabControlStates = false;
         var verifyStepsStates = false;
@@ -265,6 +275,9 @@ internal sealed record PerfOptions(
                 case "--verify-dialog-states":
                     verifyDialogStates = true;
                     break;
+                case "--verify-dropdownbutton-states":
+                    verifyDropdownButtonStates = true;
+                    break;
                 case "--verify-drawer-states":
                     verifyDrawerStates = true;
                     break;
@@ -277,17 +290,26 @@ internal sealed record PerfOptions(
                 case "--verify-floatbutton-states":
                     verifyFloatButtonStates = true;
                     break;
+                case "--verify-flexpanel-states":
+                    verifyFlexPanelStates = true;
+                    break;
                 case "--verify-flyout-states":
                     verifyFlyoutStates = true;
                     break;
                 case "--verify-form-states":
                     verifyFormStates = true;
                     break;
+                case "--verify-grid-states":
+                    verifyGridStates = true;
+                    break;
                 case "--verify-groupbox-states":
                     verifyGroupBoxStates = true;
                     break;
                 case "--verify-imagepreviewer-states":
                     verifyImagePreviewerStates = true;
+                    break;
+                case "--verify-infoflyout-states":
+                    verifyInfoFlyoutStates = true;
                     break;
                 case "--verify-input-states":
                     verifyInputStates = true;
@@ -357,6 +379,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--verify-spin-states":
                     verifySpinStates = true;
+                    break;
+                case "--verify-splitbutton-states":
+                    verifySplitButtonStates = true;
                     break;
                 case "--verify-switch-states":
                     verifySwitchStates = true;
@@ -434,14 +459,18 @@ internal sealed record PerfOptions(
             verifyTimePickerStates,
             verifyDescriptionsStates,
             verifyDialogStates,
+            verifyDropdownButtonStates,
             verifyDrawerStates,
             verifyExpanderStates,
             verifyEmptyStates,
             verifyFloatButtonStates,
+            verifyFlexPanelStates,
             verifyFlyoutStates,
             verifyFormStates,
+            verifyGridStates,
             verifyGroupBoxStates,
             verifyImagePreviewerStates,
+            verifyInfoFlyoutStates,
             verifyInputStates,
             verifyListBoxStates,
             verifyListViewStates,
@@ -465,6 +494,7 @@ internal sealed record PerfOptions(
             verifySkeletonStates,
             verifySegmentedStates,
             verifySpinStates,
+            verifySplitButtonStates,
             verifySwitchStates,
             verifyTabControlStates,
             verifyStepsStates,

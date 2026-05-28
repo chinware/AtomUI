@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -7,6 +8,7 @@ namespace AtomUI.Controls;
 public class Row : Panel
 {
     private const int GridColumns = 24;
+    private static readonly Comparison<RowChildInfo> s_compareRowChildInfo = CompareRowChildInfo;
 
     public static readonly StyledProperty<GridGutter> GutterProperty =
         AvaloniaProperty.Register<Row, GridGutter>(nameof(Gutter), new GridGutter());
@@ -48,6 +50,8 @@ public class Row : Panel
     private IMediaBreakAwareControl? _mediaOwner;
     private readonly List<RowChildInfo> _orderedChildrenCache = new();
     private bool _orderedChildrenDirty = true;
+    private LayoutResult? _measureLayoutResult;
+    private double _measureLayoutWidth;
 
     static Row()
     {
@@ -78,25 +82,45 @@ public class Row : Panel
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)
     {
         _breakPoint           = args.MediaBreakPoint;
-        _orderedChildrenDirty = true;
+        InvalidateOrderedChildrenCache();
         InvalidateMeasure();
     }
 
     protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         base.ChildrenChanged(sender, e);
+        InvalidateOrderedChildrenCache();
+    }
+
+    protected override void OnMeasureInvalidated()
+    {
+        base.OnMeasureInvalidated();
+        InvalidateOrderedChildrenCache();
+    }
+
+    internal void InvalidateChildLayout()
+    {
+        InvalidateOrderedChildrenCache();
+        InvalidateMeasure();
+    }
+
+    private void InvalidateOrderedChildrenCache()
+    {
         _orderedChildrenDirty = true;
+        _measureLayoutResult  = null;
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
         var result = BuildLayout(availableSize, measureChildren: true);
+        _measureLayoutResult = result;
+        _measureLayoutWidth  = availableSize.Width;
         return result.DesiredSize;
     }
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var result = BuildLayout(finalSize, measureChildren: false);
+        var result = GetArrangeLayout(finalSize);
         var y = 0.0;
 
         foreach (var line in result.Lines)
@@ -123,6 +147,18 @@ public class Row : Panel
         }
 
         return finalSize;
+    }
+
+    private LayoutResult GetArrangeLayout(Size finalSize)
+    {
+        if (!_orderedChildrenDirty &&
+            _measureLayoutResult is not null &&
+            MathUtils.AreClose(_measureLayoutWidth, finalSize.Width))
+        {
+            return _measureLayoutResult;
+        }
+
+        return BuildLayout(finalSize, measureChildren: false);
     }
 
     private LayoutResult BuildLayout(Size availableSize, bool measureChildren)
@@ -261,14 +297,16 @@ public class Row : Panel
             _orderedChildrenCache.Add(new RowChildInfo(child, layout, i));
         }
 
-        _orderedChildrenCache.Sort((a, b) =>
-        {
-            var orderCmp = a.Layout.Order.CompareTo(b.Layout.Order);
-            return orderCmp != 0 ? orderCmp : a.Index.CompareTo(b.Index);
-        });
+        _orderedChildrenCache.Sort(s_compareRowChildInfo);
 
         _orderedChildrenDirty = false;
         return _orderedChildrenCache;
+    }
+
+    private static int CompareRowChildInfo(RowChildInfo left, RowChildInfo right)
+    {
+        var orderCmp = left.Layout.Order.CompareTo(right.Layout.Order);
+        return orderCmp != 0 ? orderCmp : left.Index.CompareTo(right.Index);
     }
 
     private MediaBreakPoint GetBreakPoint()

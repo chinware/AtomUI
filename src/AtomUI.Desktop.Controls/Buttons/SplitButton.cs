@@ -15,6 +15,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -300,6 +301,7 @@ public class SplitButton : ContentControl,
     private readonly FlyoutStateHelper _flyoutStateHelper;
     
     private CompositeDisposable? _flyoutBindingDisposables;
+    private Flyout? _registeredFlyout;
 
     static SplitButton()
     {
@@ -388,27 +390,32 @@ public class SplitButton : ContentControl,
     /// <param name="flyout">The flyout to connect events to.</param>
     private void RegisterFlyoutEvents(Flyout? flyout)
     {
-        if (flyout != null)
+        if (flyout == null || ReferenceEquals(_registeredFlyout, flyout))
         {
-            flyout.Opened += HandleFlyoutOpened;
-            flyout.Closed += HandleFlyoutClosed;
-
-            _flyoutBindingDisposables?.Dispose();
-            _flyoutBindingDisposables = new CompositeDisposable(8);
-
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout, Flyout.RequestedPlacementProperty));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, GutterToFlyoutProperty, flyout, MenuFlyout.MarginToAnchorProperty));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout));
-            _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, flyout));
-
-            _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Popup
-                                                    .RequestedPlacementProperty)
-                                                .Subscribe(HandleFlyoutPlacementPropertyChanged));
+            return;
         }
+
+        UnregisterFlyoutEvents(_registeredFlyout);
+
+        _registeredFlyout = flyout;
+        flyout.Opened += HandleFlyoutOpened;
+        flyout.Closed += HandleFlyoutClosed;
+
+        _flyoutBindingDisposables?.Dispose();
+        _flyoutBindingDisposables = new CompositeDisposable(9);
+
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout, Flyout.RequestedPlacementProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, flyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, GutterToFlyoutProperty, flyout, MenuFlyout.MarginToAnchorProperty));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout));
+        _flyoutBindingDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, flyout));
+
+        _flyoutBindingDisposables.Add(flyout.GetPropertyChangedObservable(Popup
+                                                .RequestedPlacementProperty)
+                                            .Subscribe(HandleFlyoutPlacementPropertyChanged));
     }
 
     /// <summary>
@@ -417,22 +424,26 @@ public class SplitButton : ContentControl,
     /// <param name="flyout">The flyout to disconnect events from.</param>
     private void UnregisterFlyoutEvents(Flyout? flyout)
     {
-        if (flyout != null)
+        if (flyout == null || !ReferenceEquals(_registeredFlyout, flyout))
         {
-            flyout.Opened -= HandleFlyoutOpened;
-            flyout.Closed -= HandleFlyoutClosed;
-
-            // Close the flyout before disposing bindings to prevent
-            // InvalidOperationException when placement properties revert
-            // and the popup tries to update position with a detached target.
-            if (flyout.IsOpen)
-            {
-                flyout.Hide();
-            }
-
-            _flyoutBindingDisposables?.Dispose();
-            _flyoutBindingDisposables = null;
+            return;
         }
+
+        flyout.Opened -= HandleFlyoutOpened;
+        flyout.Closed -= HandleFlyoutClosed;
+
+        // Close the flyout before disposing bindings to prevent
+        // InvalidOperationException when placement properties revert
+        // and the popup tries to update position with a detached target.
+        if (flyout.IsOpen)
+        {
+            flyout.Hide();
+        }
+
+        _registeredFlyout = null;
+        _isFlyoutOpen     = false;
+        _flyoutBindingDisposables?.Dispose();
+        _flyoutBindingDisposables = null;
     }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -464,7 +475,7 @@ public class SplitButton : ContentControl,
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        UnregisterFlyoutEvents(Flyout);
+        UnregisterFlyoutEvents(_registeredFlyout);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
     }
 
@@ -536,7 +547,10 @@ public class SplitButton : ContentControl,
 
             // Must unregister events here while a reference to the old flyout still exists
             UnregisterFlyoutEvents(oldFlyout);
-            RegisterFlyoutEvents(newFlyout);
+            if (this.IsAttachedToVisualTree())
+            {
+                RegisterFlyoutEvents(newFlyout);
+            }
             UpdatePseudoClasses();
         }
         else if (change.Property == IsPrimaryButtonTypeProperty)
@@ -712,8 +726,8 @@ public class SplitButton : ContentControl,
         // the same Opened/Closed events at the same time.
         // For SplitButton that means they all would be updating their pseudoclasses accordingly.
         // In other words, all SplitButtons with a shared Flyout would have the backgrounds changed together.
-        // To fix this, only continue here if the Flyout target matches this SplitButton instance.
-        if (ReferenceEquals(flyout?.Target, this))
+        // To fix this, only continue here if the Flyout target belongs to this SplitButton.
+        if (IsOwnFlyoutTarget(flyout))
         {
             _isFlyoutOpen = true;
             UpdatePseudoClasses();
@@ -729,12 +743,19 @@ public class SplitButton : ContentControl,
         var flyout = sender as Flyout;
 
         // See comments in HandleFlyoutOpened
-        if (ReferenceEquals(flyout?.Target, this))
+        if (IsOwnFlyoutTarget(flyout))
         {
             _isFlyoutOpen = false;
             UpdatePseudoClasses();
             OnFlyoutClosed();
         }
+    }
+
+    private bool IsOwnFlyoutTarget(Flyout? flyout)
+    {
+        var target = flyout?.Target;
+        return ReferenceEquals(target, this) ||
+               ReferenceEquals(target, _secondaryButton);
     }
 
     private Rect? _originRect;

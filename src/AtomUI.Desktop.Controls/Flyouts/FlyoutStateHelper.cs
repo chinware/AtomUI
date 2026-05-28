@@ -294,7 +294,11 @@ internal class FlyoutStateHelper : AvaloniaObject
         }
         _subscriptions = new CompositeDisposable();
 
-        if (Flyout != null)
+        if (Flyout is Flyout atomFlyout)
+        {
+            atomFlyout.IsLightDismissEnabled = TriggerType == FlyoutTriggerType.Click;
+        }
+        else if (Flyout != null)
         {
             Flyout.Popup.IsLightDismissEnabled = TriggerType == FlyoutTriggerType.Click;
         }

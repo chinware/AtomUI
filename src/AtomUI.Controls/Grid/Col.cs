@@ -137,7 +137,11 @@ public class Col : ContentControl
             change.Property == XlProperty ||
             change.Property == XxlProperty)
         {
-            if (this.GetVisualParent() is Layoutable parent)
+            if (this.GetVisualParent() is Row row)
+            {
+                row.InvalidateChildLayout();
+            }
+            else if (this.GetVisualParent() is Layoutable parent)
             {
                 parent.InvalidateMeasure();
             }

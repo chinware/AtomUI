@@ -54,14 +54,18 @@ internal static partial class Program
             options.VerifyTimePickerStates ||
             options.VerifyDescriptionsStates ||
             options.VerifyDialogStates ||
+            options.VerifyDropdownButtonStates ||
             options.VerifyDrawerStates ||
             options.VerifyExpanderStates ||
             options.VerifyEmptyStates ||
             options.VerifyFloatButtonStates ||
+            options.VerifyFlexPanelStates ||
             options.VerifyFlyoutStates ||
             options.VerifyFormStates ||
+            options.VerifyGridStates ||
             options.VerifyGroupBoxStates ||
             options.VerifyImagePreviewerStates ||
+            options.VerifyInfoFlyoutStates ||
             options.VerifyInputStates ||
             options.VerifyListBoxStates ||
             options.VerifyListViewStates ||
@@ -85,6 +89,7 @@ internal static partial class Program
             options.VerifySkeletonStates ||
             options.VerifySegmentedStates ||
             options.VerifySpinStates ||
+            options.VerifySplitButtonStates ||
             options.VerifySwitchStates ||
             options.VerifyTabControlStates ||
             options.VerifyStepsStates ||
@@ -212,6 +217,10 @@ internal static partial class Program
             {
                 verified &= RunDialogStateVerification();
             }
+            if (options.VerifyDropdownButtonStates)
+            {
+                verified &= RunDropdownButtonStateVerification();
+            }
             if (options.VerifyDrawerStates)
             {
                 verified &= RunDrawerStateVerification();
@@ -228,6 +237,10 @@ internal static partial class Program
             {
                 verified &= RunFloatButtonStateVerification();
             }
+            if (options.VerifyFlexPanelStates)
+            {
+                verified &= RunFlexPanelStateVerification();
+            }
             if (options.VerifyFlyoutStates)
             {
                 verified &= RunFlyoutStateVerification();
@@ -236,6 +249,10 @@ internal static partial class Program
             {
                 verified &= RunFormStateVerification();
             }
+            if (options.VerifyGridStates)
+            {
+                verified &= RunGridStateVerification();
+            }
             if (options.VerifyGroupBoxStates)
             {
                 verified &= RunGroupBoxStateVerification();
@@ -243,6 +260,10 @@ internal static partial class Program
             if (options.VerifyImagePreviewerStates)
             {
                 verified &= RunImagePreviewerStateVerification();
+            }
+            if (options.VerifyInfoFlyoutStates)
+            {
+                verified &= RunInfoFlyoutStateVerification();
             }
             if (options.VerifyInputStates)
             {
@@ -335,6 +356,10 @@ internal static partial class Program
             if (options.VerifySpinStates)
             {
                 verified &= RunSpinStateVerification();
+            }
+            if (options.VerifySplitButtonStates)
+            {
+                verified &= RunSplitButtonStateVerification();
             }
             if (options.VerifySwitchStates)
             {
@@ -446,14 +471,18 @@ internal static partial class Program
             "datepicker" => CreateDatePickerScenarios(),
             "descriptions" => CreateDescriptionsScenarios(),
             "dialog" => CreateDialogScenarios(),
+            "dropdownbutton" => CreateDropdownButtonScenarios(),
             "drawer" => CreateDrawerScenarios(),
             "expander" => CreateExpanderScenarios(),
             "empty" => CreateEmptyScenarios(),
+            "flexpanel" => CreateFlexPanelScenarios(),
             "flyouts" => CreateFlyoutScenarios(),
             "floatbutton" => CreateFloatButtonScenarios(),
             "form" => CreateFormScenarios(),
+            "grid" => CreateGridScenarios(),
             "groupbox" => CreateGroupBoxScenarios(),
             "imagepreviewer" => CreateImagePreviewerScenarios(),
+            "infoflyout" => CreateInfoFlyoutScenarios(),
             "input" => CreateInputScenarios(),
             "listbox" => CreateListBoxScenarios(),
             "listview" => CreateListViewScenarios(),
@@ -476,6 +505,7 @@ internal static partial class Program
             "scrollviewer" => CreateScrollViewerScenarios(),
             "skeleton" => CreateSkeletonScenarios(),
             "segmented" => CreateSegmentedScenarios(),
+            "splitbutton" => CreateSplitButtonScenarios(),
             "slider" => CreateSliderScenarios(),
             "spin" => CreateSpinScenarios(),
             "switch" => CreateSwitchScenarios(),

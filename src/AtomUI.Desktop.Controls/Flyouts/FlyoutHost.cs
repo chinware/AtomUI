@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -184,6 +185,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     
     private readonly FlyoutStateHelper _flyoutStateHelper;
     private CompositeDisposable? _flyoutDisposables;
+    private Flyout? _registeredFlyout;
     
     static FlyoutHost()
     {
@@ -204,7 +206,7 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SetupFlyoutProperties();
+        RegisterFlyoutProperties(Flyout);
         _flyoutStateHelper.NotifyAttachedToVisualTree();
     }
 
@@ -212,31 +214,45 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     {
         base.OnDetachedFromVisualTree(e);
         _flyoutStateHelper.NotifyDetachedFromVisualTree();
-        _flyoutDisposables?.Dispose();
-        _flyoutDisposables = null;
+        UnregisterFlyoutProperties(_registeredFlyout);
     }
 
-    protected virtual void SetupFlyoutProperties()
+    protected virtual void RegisterFlyoutProperties(Flyout? flyout)
     {
-        if (Flyout is not null)
+        if (flyout is null || ReferenceEquals(_registeredFlyout, flyout))
         {
-            _flyoutDisposables?.Dispose();
-            _flyoutDisposables = new CompositeDisposable();
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, Flyout, FlyoutControl.RequestedPlacementProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, Flyout, FlyoutControl.PlacementAnchorProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, Flyout, FlyoutControl.PlacementGravityProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, Flyout, FlyoutControl.IsArrowVisibleProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, Flyout, FlyoutControl.IsPointAtCenterProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, Flyout, FlyoutControl.MarginToAnchorProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, Flyout, FlyoutControl.IsMotionEnabledProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, Flyout, FlyoutControl.MotionDurationProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, OpenMotionProperty, Flyout, FlyoutControl.OpenMotionProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, CloseMotionProperty, Flyout, FlyoutControl.CloseMotionProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, PopupRootShadowProperty, Flyout, FlyoutControl.PopupRootShadowProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, OverlayHostShadowProperty, Flyout, FlyoutControl.OverlayHostShadowProperty));
-            _flyoutDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, Flyout, FlyoutControl.ShouldUseOverlayPopupProperty));
-            ConfigureMotion(Placement);
+            return;
         }
+
+        UnregisterFlyoutProperties(_registeredFlyout);
+        _registeredFlyout  = flyout;
+        _flyoutDisposables = new CompositeDisposable(13);
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementProperty, flyout, FlyoutControl.RequestedPlacementProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementAnchorProperty, flyout, FlyoutControl.PlacementAnchorProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, PlacementGravityProperty, flyout, FlyoutControl.PlacementGravityProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, IsArrowVisibleProperty, flyout, FlyoutControl.IsArrowVisibleProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, IsPointAtCenterProperty, flyout, FlyoutControl.IsPointAtCenterProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, MarginToAnchorProperty, flyout, FlyoutControl.MarginToAnchorProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, flyout, FlyoutControl.IsMotionEnabledProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, flyout, FlyoutControl.MotionDurationProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, OpenMotionProperty, flyout, FlyoutControl.OpenMotionProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, CloseMotionProperty, flyout, FlyoutControl.CloseMotionProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, PopupRootShadowProperty, flyout, FlyoutControl.PopupRootShadowProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, OverlayHostShadowProperty, flyout, FlyoutControl.OverlayHostShadowProperty));
+        _flyoutDisposables.Add(BindUtils.RelayBind(this, ShouldUseOverlayPopupProperty, flyout, FlyoutControl.ShouldUseOverlayPopupProperty));
+        ConfigureMotion(Placement);
+    }
+
+    protected virtual void UnregisterFlyoutProperties(Flyout? flyout)
+    {
+        if (flyout is null || !ReferenceEquals(_registeredFlyout, flyout))
+        {
+            return;
+        }
+
+        _registeredFlyout = null;
+        _flyoutDisposables?.Dispose();
+        _flyoutDisposables = null;
     }
 
     private void ConfigureMotion(PlacementMode placement)
@@ -247,19 +263,18 @@ public class FlyoutHost : ContentControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToLogicalTree())
+        if (change.Property == FlyoutProperty)
         {
-            if (change.Property == FlyoutProperty)
+            var (oldFlyout, newFlyout) = change.GetOldAndNewValue<Flyout?>();
+            UnregisterFlyoutProperties(oldFlyout);
+            if (this.IsAttachedToVisualTree())
             {
-                if (Flyout is not null)
-                {
-                    SetupFlyoutProperties();
-                }
+                RegisterFlyoutProperties(newFlyout);
             }
-            else if (change.Property == PlacementProperty)
-            {
-                ConfigureMotion(Placement);
-            }
+        }
+        else if (change.Property == PlacementProperty && this.IsAttachedToVisualTree())
+        {
+            ConfigureMotion(Placement);
         }
     }
 
