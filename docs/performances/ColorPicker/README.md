@@ -1,7 +1,7 @@
 # ColorPicker 性能优化
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase E / Tier 3
-> 状态：closed-state `Window.Deactivated` lifecycle 已完成；本轮继续完成打开态 `GradientColorPickerView` binding 收敛和 `ColorSpectrum` brush 热路径复用。
+> 状态：closed-state `Window.Deactivated` lifecycle、打开态 `GradientColorPickerView` binding、`ColorSpectrum` brush 热路径复用、`ColorPickerPaletteGroup` 选择事件隔离、`HsvValue` 预览 / slider thumb brush 复用、透明棋盘背景 brush token 缓存均已完成。
 
 ---
 
@@ -32,7 +32,7 @@ T3.2/T3.3 继续处理打开态子控件：
 | Gradient view full TemplatedParent bindings | 3 | 0 | 100.00% replaced | 有效，结构性收益 |
 | ColorSpectrum `UpdateBitmapSources` base/overlay brush refs / 1000 updates | source-derived 1000 / 1000 | 1 / 1 | ~99.90% fewer refs | 有效，交互热路径收益 |
 | ColorSpectrum `UpdateBitmapSources` allocation | n/a | 0.3 bytes/update | n/a | 复测确认近零分配 |
-| ColorSpectrum full `HsvColor` update allocation | n/a | 24386.6 bytes/update | n/a | 更大路径仍需后续优化 |
+| ColorSpectrum full `HsvColor` update allocation | 24386.6 bytes/update | 21434.6 bytes/update | 12.11% fewer bytes | 有效，打开态交互热路径收益 |
 | ColorPickerView.Default materialization | 17.311 ms/item | 13.066-21.383 ms/item | +24.52% to -23.52% | 波动过大，不作为收益 |
 | ColorPickerView.NoAlpha materialization | 11.233 ms/item | 6.223-6.333 ms/item | +43.62% to +44.60% | 正向，仍需谨慎 |
 | GradientColorPickerView.Default materialization | 15.002 ms/item | 11.009-11.875 ms/item | +20.84% to +26.62% | 正向，仍需谨慎 |
@@ -40,6 +40,41 @@ T3.2/T3.3 继续处理打开态子控件：
 | Opened view visual/logical count | unchanged | unchanged | 0.00% | 符合预期 |
 
 本轮判断：优化有效，主收益是打开态 ColorPicker 面板在颜色拖动/滑条联动时不再反复创建 `ImageBrush`，以及 Gradient view 模板绑定走更轻的 TemplateBinding 路径。页面闭合态 Gallery 导航不是这轮主路径；最新顺序复测期间 load averages 仍约 `8.81` 到 `11.76`，物化 timing 只能作为参考，不作为唯一收益依据。
+
+T3.3 本轮补充处理 `ColorPickerPaletteGroup`：旧实现每个 palette group attach 时都注册一次 `PaletteColorItem.IsCheckedChangedEvent.AddClassHandler<ColorPickerPaletteGroup>`。这是类级订阅，不是实例级订阅；多个 palette group 同时存在时，后一个 group 的颜色选择可能被先 attach 的 group 截获，且会让每次路由事件多走全局 `Raised` subscriber。现在改为 palette group 自己的实例级 `AddDisposableHandler`，detach 时释放。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Global class handlers per attached `ColorPickerPaletteGroup` | 1 / group | 0 / group | `(1 - 0) / 1` | 100.00% removed | 有效，结构性收益 |
+| Correct owner notifications when selecting second palette group | 0 / selection | 1 / selection | `(1 - 0) / 1` | 100.00% restored | 正确性修复 |
+| Wrong first-group notifications when selecting second palette group | 1 / selection | 0 / selection | `(1 - 0) / 1` | 100.00% removed | 正确性修复 |
+| ColorPicker materialization timing | smoke-only | smoke-only | n/a | n/a | 单轮 smoke 只用于排查回退，不作为收益证明 |
+
+T3.3 本轮继续处理 `HsvValue` 预览 / slider thumb brush：旧模板里同一个 `HsvValue` 分别通过 converter 生成 `ColorPreview.Background`、第三分量 slider thumb brush、alpha slider thumb brush；拖动取色时这三处每次更新都会创建新的 `SolidColorBrush`。现在 `AbstractColorPickerView` 持有两个实例级 brush（带 alpha / 不带 alpha），模板通过 `TemplateBinding` 复用，`HsvValue` 变化只更新 brush color。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Preview/thumb `SolidColorBrush` allocations per `HsvValue` update / view | 3 | 0 | `(3 - 0) / 3` | 100.00% removed | 有效，结构性收益 |
+| `ColorSpectrum.HsvColorUpdate` allocation | 24386.6 bytes/update | 21434.6 bytes/update | `(24386.6 - 21434.6) / 24386.6` | 12.11% fewer bytes | 有效，交互热路径收益 |
+| `ColorSpectrum.HsvColorUpdate` time | 105.34 us/update | 62.82 us/update | `(105.34 - 62.82) / 105.34` | 40.36% faster | 单轮 microbench，辅助参考，不作为页面导航收益 |
+| Opened view visual/logical count | 162 / 1 | 162 / 1 | `(162 - 162) / 162` | 0.00% | 符合预期 |
+| ColorPicker materialization timing | smoke-only | smoke-only | n/a | n/a | 单轮 smoke 只用于排查回退，不作为收益证明 |
+
+T3.3 本轮收口 `ColorBlock` / `ColorSlider` 透明棋盘背景：旧实现每次 `TransparentBgBrushUtils.Build(size, fillColor)` 都重新创建完整 `DrawingBrush` 图（`DrawingBrush` + `GeometryDrawing` + `ConicGradientBrush` + `GradientStops` + `RectangleGeometry`）。同一个 token 在 `ColorPreview`、第三分量 slider、alpha slider、gradient slider 中重复出现，应该共享同一份 token 派生 brush。现在按 `(size, fillColor)` 做 32 项有上限缓存；自定义颜色/尺寸仍按 key 隔离，避免跨主题误复用。
+
+Avalonia source reference：
+
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/DrawingBrush.cs:15-43`：`DrawingBrush` 是持有 `Drawing` 的 brush 对象。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/GeometryDrawing.cs:10-53`：`GeometryDrawing` 持有 `Geometry` / `Brush` / `Pen`。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/ConicGradientBrush.cs:12-51`：`ConicGradientBrush` 持有 center / angle / gradient stops。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Same-token transparent background brush refs / 1000 builds | 1000 | 1 | `(1000 - 1) / 1000` | 99.90% fewer refs | 有效，结构性收益 |
+| `TransparentBgBrush.BuildSameToken` allocation | 10569.1 bytes/update | 0.2 bytes/update | `(10569.1 - 0.2) / 10569.1` | 99.998% fewer bytes | 有效，打开态背景热路径收益 |
+| `TransparentBgBrush.BuildSameToken` time | 14.33 us/update | 0.17 us/update | `(14.33 - 0.17) / 14.33` | 98.81% faster | 单轮 microbench，辅助参考，不作为页面导航收益 |
+| Realized `ColorPickerView` same-token transparent brush refs (`ColorPreview` + 2 visible sliders) | 3 | 1 | `(3 - 1) / 3` | 66.67% fewer refs | 状态验证覆盖 |
+| ColorPicker materialization timing | smoke-only | smoke-only | n/a | n/a | 单轮 smoke 只用于排查回退，不作为收益证明 |
 
 ---
 
@@ -58,6 +93,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/ColorPi
 
 - 页面导航：至少 1 次。
 - 打开 picker：示例页通常会逐项试用基础、hover、format、clear、gradient、palette group。
+- palette group 选择：打开 palette 示例后每次点击色块触发。
 - 窗口失活：低频，但必须保留打开态自动关闭语义。
 
 结论：实例数明显 > 5，页面加载默认关闭态占多数，满足 SKILL Tier 1 §13。优化重点是让 closed controls 不承担 popup-open-only 的全局/window 订阅。
@@ -86,6 +122,21 @@ Avalonia source reference：
 
 因此，这类订阅应按真实打开生命周期配对，而不是按 visual attach 生命周期配对。
 
+`ColorPickerPaletteGroup` 的旧逻辑在实例 `OnAttachedToVisualTree()` 内调用 `AddClassHandler`：
+
+```csharp
+PaletteColorItem.IsCheckedChangedEvent.AddClassHandler<ColorPickerPaletteGroup>(...);
+```
+
+Avalonia source reference：
+
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:78-94`：`AddClassHandler` 订阅 routed event 的全局 `Raised` observable。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/RoutedEvent.cs:121-134`：泛型 `AddClassHandler<TTarget>` 最终仍调用类级订阅。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/Interactive.cs:30-42`：`AddHandler` 写入当前实例事件表。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Interactivity/InteractiveExtensions.cs:21-30`：`AddDisposableHandler` 是实例 `AddHandler` + dispose/remove 的封装。
+
+因此 palette group 的色块选择应该用实例级 handler；类级 handler 只能放在 static constructor 这类每类型一次的注册点。
+
 ---
 
 ## 3. 改动
@@ -98,12 +149,26 @@ Avalonia source reference：
 - `NotifyPickerClosed()` 和 `OnDetachedFromVisualTree()` 释放订阅。
 - `RegisterWindowDeactivatedHandler(Window? window)` 先释放旧窗口再订阅新窗口，避免 reattach 或窗口变化时残留旧 handler。
 
+`ColorPickerPaletteGroup`：
+
+- `PaletteColorItem.IsCheckedChangedEvent.AddClassHandler<ColorPickerPaletteGroup>` 改为 `this.AddDisposableHandler(...)`。
+- handler 不再捕获 attach 时的 `this` 闭包，而是只处理当前 palette group 路由里的事件。
+- `OnDetachedFromVisualTree()` 释放实例 handler 并清空 disposable。
+
+`AbstractColorPickerView`：
+
+- 增加带 alpha / 不带 alpha 两个实例级 `SolidColorBrush`。
+- `ColorPickerViewTheme` / `GradientColorPickerViewTheme` 中 `ColorPreview.Background`、`ColorSpectrumThirdComponentSlider.ThumbColorValueBrush`、`ColorSpectrumAlphaSlider.ThumbColorValueBrush` 从 converter binding 改为 `TemplateBinding` 复用 brush。
+- `ColorPickerView` / `GradientColorPickerView` 在 `HsvValue` 变化时同步更新实例 brush 的 `Color`。
+
 状态验证：
 
 - closed ColorPicker 不持有 `_deactivatedWindow`。
 - open 路径会注册。
 - close 路径释放。
 - detach 路径释放。
+- 两个 palette-enabled `ColorPickerView` 同时存在时，第二个 group 的色块选择只更新第二个 view，不会触发第一个 view。
+- `HsvValue` 连续变化时，`ColorPreview`、第三分量 slider、alpha slider 复用原 brush 引用，同时颜色值更新正确。
 
 ---
 
@@ -133,6 +198,14 @@ dotnet run -c Release -f net10.0 --no-build \
 
 结果：`ColorPicker state verification passed.`
 
+本轮新增覆盖：
+
+- 第二个 palette group 的色块选择只触发第二个 `ColorPickerView.ValueChanged`。
+- 第一个 palette group 不收到跨 group 的错误通知。
+- 被选中的色值原样转发。
+- `HsvValue` 连续变化时，预览块和 slider thumb brush 引用复用且颜色值更新正确。
+- `ColorPreview` 和两个可见 `ColorSlider` 共享同 token 透明背景 brush；不同 size 使用不同 key，恢复 size 后复用原 brush。
+
 ### 4.3 控件级复测
 
 命令：
@@ -151,7 +224,34 @@ dotnet run -c Release -f net10.0 --no-build \
 
 说明：控件级 runner 使用 `Avalonia.Controls.Window`，而生产代码这里订阅的是 AtomUI `Window`，所以这组 ms/item 只能用于排查结构/分配回退，不能证明本轮订阅优化的速度收益。
 
-### 4.4 Gallery 复测
+### 4.4 本轮 smoke 复测
+
+单轮，只用于排查明显回退，不作为收益证明：
+
+| Scenario | ms/item | KB/item | Visual/root | Logical/root |
+| --- | ---: | ---: | ---: | ---: |
+| ColorPicker.Default | 0.929 | 139.8 | 11 | 1 |
+| ColorPickerView.Default | 15.073 | 4586.9 | 162 | 1 |
+| GradientColorPickerView.Default | 9.248 | 3787.8 | 173 | 1 |
+| ColorPicker.GalleryShape | 10.378 | 3464.9 | 274 | 37 |
+
+### 4.5 交互热路径复测
+
+命令：
+
+```bash
+dotnet run -c Release -f net10.0 --no-build \
+  --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- \
+  --measure-colorpicker-interactions --count 1000
+```
+
+| Scenario | baseline bytes/update | optimized bytes/update | baseline us/update | optimized us/update | baseline refs | optimized refs |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| ColorSpectrum.UpdateBitmapSources | 0.3 | 0.3 | 0.66 | 0.64 | 1000 / 1000 source-derived | 1 / 1 |
+| ColorSpectrum.HsvColorUpdate | 24386.6 | 21434.6 | 105.34 | 62.82 | 6 / 6 | 6 / 6 |
+| TransparentBgBrush.BuildSameToken | 10569.1 | 0.2 | 14.33 | 0.17 | 1000 | 1 |
+
+### 4.6 Gallery 复测
 
 命令：
 

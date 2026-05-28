@@ -5,7 +5,34 @@ namespace AtomUI.Desktop.Controls.Primitives;
 
 internal static class TransparentBgBrushUtils
 {
+    private const int MaxCachedBrushes = 32;
+    private static readonly object CacheLock = new();
+    private static readonly Dictionary<CacheKey, IBrush> BrushCache = [];
+    private static readonly Queue<CacheKey> BrushCacheOrder = [];
+
     public static IBrush Build(double size, Color fillColor)
+    {
+        var key = new CacheKey(size, fillColor);
+        lock (CacheLock)
+        {
+            if (BrushCache.TryGetValue(key, out var brush))
+            {
+                return brush;
+            }
+
+            brush = Create(size, fillColor);
+            BrushCache.Add(key, brush);
+            BrushCacheOrder.Enqueue(key);
+            if (BrushCache.Count > MaxCachedBrushes)
+            {
+                var oldestKey = BrushCacheOrder.Dequeue();
+                BrushCache.Remove(oldestKey);
+            }
+            return brush;
+        }
+    }
+
+    private static IBrush Create(double size, Color fillColor)
     {
         var destRect = new Rect(new Point(0, 0), new Size(size, size));
         return new DrawingBrush
@@ -39,4 +66,6 @@ internal static class TransparentBgBrushUtils
             }
         };
     }
+
+    private readonly record struct CacheKey(double Size, Color FillColor);
 }

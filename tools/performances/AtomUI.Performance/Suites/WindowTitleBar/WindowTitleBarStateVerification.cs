@@ -1,6 +1,7 @@
 using System.Collections;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using Avalonia.VisualTree;
 using AtomWindow = AtomUI.Desktop.Controls.Window;
 
 namespace AtomUI.Performance;
@@ -11,6 +12,7 @@ internal static partial class Program
     {
         var failures = new List<string>();
         VerifyCaptionButtonGroupVisibilityStates(failures);
+        VerifyCaptionButtonSingleIconPresenter(failures);
         VerifyCaptionButtonGroupDetachClearsTemplateHandlers(failures);
 
         if (failures.Count == 0)
@@ -74,6 +76,65 @@ internal static partial class Program
         Expect(GetPrivateField(group, "AtomUI.Desktop.Controls.CaptionButtonGroup", "_disposables") == null,
             "CaptionButtonGroup.Detach should dispose host bindings.",
             failures);
+    }
+
+    private static void VerifyCaptionButtonSingleIconPresenter(ICollection<string> failures)
+    {
+        VerifyCaptionButtonSingleIconPresenter(OsType.Windows, "Windows caption group", failures);
+        VerifyCaptionButtonSingleIconPresenter(OsType.Linux, "Linux caption group", failures);
+        VerifyCaptionButtonSingleIconPresenter(OsType.macOS, "macOS caption group", failures);
+    }
+
+    private static void VerifyCaptionButtonSingleIconPresenter(
+        OsType osType,
+        string label,
+        ICollection<string> failures)
+    {
+        var group = CreateCaptionButtonGroup(osType);
+
+        using var realized = RealizeControl(group);
+        var buttons = group.GetVisualDescendants()
+                           .OfType<CaptionButton>()
+                           .ToArray();
+        Expect(buttons.Length > 0,
+            $"{label}: caption buttons should be realized.",
+            failures);
+
+        foreach (var button in buttons)
+        {
+            var iconPresenters = button.GetVisualDescendants()
+                                       .OfType<IconPresenter>()
+                                       .ToArray();
+            Expect(iconPresenters.Length == 1,
+                $"{label}: {button.Name ?? button.GetType().Name} should use exactly one IconPresenter.",
+                failures);
+            if (iconPresenters.Length != 1)
+            {
+                continue;
+            }
+
+            var presenter = iconPresenters[0];
+            Expect(ReferenceEquals(presenter.Icon, button.NormalIcon),
+                $"{label}: {button.Name ?? button.GetType().Name} should start with its normal icon.",
+                failures);
+
+            if (button.CheckedIcon is null)
+            {
+                continue;
+            }
+
+            button.IsChecked = true;
+            RefreshLayout(realized.Window);
+            Expect(ReferenceEquals(presenter.Icon, button.CheckedIcon),
+                $"{label}: {button.Name ?? button.GetType().Name} should switch to checked icon.",
+                failures);
+
+            button.IsChecked = false;
+            RefreshLayout(realized.Window);
+            Expect(ReferenceEquals(presenter.Icon, button.NormalIcon),
+                $"{label}: {button.Name ?? button.GetType().Name} should switch back to normal icon.",
+                failures);
+        }
     }
 
     private static void ExpectCaptionButtonVisibility(

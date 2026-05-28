@@ -3,6 +3,7 @@ using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
 
@@ -20,7 +21,10 @@ internal static partial class Program
         VerifyColorPickerWindowDeactivatedSubscriptionLifecycle(failures);
         VerifyGradientColorPickerViewTemplateBindings(failures);
         VerifyColorSpectrumBrushReuse(failures);
+        VerifyColorPickerViewHsvBrushReuse(failures);
+        VerifyTransparentBgBrushReuse(failures);
         VerifyGradientColorPickerTrackPropertyOwner(failures);
+        VerifyPaletteGroupSelectionDoesNotLeakAcrossInstances(failures);
 
         if (failures.Count == 0)
         {
@@ -272,6 +276,205 @@ internal static partial class Program
         Expect(Math.Abs(spectrumOverlayRectangle.Opacity - redOpacity) > 0.001,
             "ColorSpectrum should keep updating opacity after a sextant switch.",
             failures);
+    }
+
+    private static void VerifyColorPickerViewHsvBrushReuse(ICollection<string> failures)
+    {
+        var view = CreateColorPickerView();
+
+        using var realized = RealizeControl(view);
+        var colorPreview = FindVisualByName<Control>(view, "ColorPreview");
+        var thirdComponentSlider = FindVisualByName<Control>(view, "ColorSpectrumThirdComponentSlider");
+        var alphaSlider = FindVisualByName<Control>(view, "ColorSpectrumAlphaSlider");
+
+        Expect(colorPreview != null,
+            "ColorPickerView should create ColorPreview.",
+            failures);
+        Expect(thirdComponentSlider != null,
+            "ColorPickerView should create ColorSpectrumThirdComponentSlider.",
+            failures);
+        Expect(alphaSlider != null,
+            "ColorPickerView should create ColorSpectrumAlphaSlider.",
+            failures);
+        if (colorPreview is null ||
+            thirdComponentSlider is null ||
+            alphaSlider is null)
+        {
+            return;
+        }
+
+        SetControlProperty(view, "HsvValue", new HsvColor(0.42, 140, 0.65, 0.76));
+        RefreshLayout(realized.Window);
+        var previewBrush = GetControlProperty<IBrush?>(colorPreview, "Background");
+        var thirdSliderBrush = GetControlProperty<IBrush?>(thirdComponentSlider, "ThumbColorValueBrush");
+        var alphaSliderBrush = GetControlProperty<IBrush?>(alphaSlider, "ThumbColorValueBrush");
+
+        SetControlProperty(view, "HsvValue", new HsvColor(0.64, 220, 0.71, 0.83));
+        RefreshLayout(realized.Window);
+        var expectedWithAlpha = new HsvColor(0.64, 220, 0.71, 0.83).ToRgb();
+        var expectedWithoutAlpha = HsvColor.ToRgb(220, 0.71, 0.83);
+
+        Expect(ReferenceEquals(GetControlProperty<IBrush?>(colorPreview, "Background"), previewBrush),
+            "ColorPreview should reuse its HsvValue brush across HsvValue changes.",
+            failures);
+        Expect(ReferenceEquals(GetControlProperty<IBrush?>(thirdComponentSlider, "ThumbColorValueBrush"), thirdSliderBrush),
+            "Third component slider should reuse its non-alpha thumb brush across HsvValue changes.",
+            failures);
+        Expect(ReferenceEquals(GetControlProperty<IBrush?>(alphaSlider, "ThumbColorValueBrush"), alphaSliderBrush),
+            "Alpha slider should reuse its alpha-aware thumb brush across HsvValue changes.",
+            failures);
+        Expect(GetSolidBrushColor(GetControlProperty<IBrush?>(colorPreview, "Background")) == expectedWithAlpha,
+            "ColorPreview reused brush should still update to the latest alpha-aware color.",
+            failures);
+        Expect(GetSolidBrushColor(alphaSliderBrush) == expectedWithAlpha,
+            "Alpha slider reused brush should still update to the latest alpha-aware color.",
+            failures);
+        Expect(GetSolidBrushColor(thirdSliderBrush) == expectedWithoutAlpha,
+            "Third component slider reused brush should ignore alpha.",
+            failures);
+    }
+
+    private static void VerifyTransparentBgBrushReuse(ICollection<string> failures)
+    {
+        var view = CreateColorPickerView();
+
+        using var realized = RealizeControl(view);
+        var colorPreview = FindVisualByName<Control>(view, "ColorPreview");
+        var thirdComponentSlider = FindVisualByName<Control>(view, "ColorSpectrumThirdComponentSlider");
+        var alphaSlider = FindVisualByName<Control>(view, "ColorSpectrumAlphaSlider");
+
+        Expect(colorPreview != null &&
+               thirdComponentSlider != null &&
+               alphaSlider != null,
+            "ColorPickerView should create transparent-background ColorBlock and visible sliders.",
+            failures);
+        if (colorPreview is null ||
+            thirdComponentSlider is null ||
+            alphaSlider is null)
+        {
+            return;
+        }
+
+        var previewBrush = GetControlProperty<IBrush?>(colorPreview, "TransparentBgBrush");
+        var thirdSliderBrush = GetControlProperty<IBrush?>(thirdComponentSlider, "TransparentBgBrush");
+        var alphaSliderBrush = GetControlProperty<IBrush?>(alphaSlider, "TransparentBgBrush");
+
+        Expect(previewBrush != null,
+            "ColorBlock should create a transparent-background brush.",
+            failures);
+        Expect(ReferenceEquals(thirdSliderBrush, previewBrush),
+            "Third component ColorSlider should share the token-derived transparent-background brush.",
+            failures);
+        Expect(ReferenceEquals(alphaSliderBrush, previewBrush),
+            "Alpha ColorSlider should share the token-derived transparent-background brush.",
+            failures);
+
+        var originalSize = GetControlProperty<double>(thirdComponentSlider, "TransparentBgSize");
+        var originalInterval = GetControlProperty<IBrush?>(thirdComponentSlider, "TransparentBgIntervalColor");
+        if (originalInterval is not ISolidColorBrush originalSolidBrush)
+        {
+            failures.Add("ColorSlider TransparentBgIntervalColor should be a solid brush.");
+            return;
+        }
+
+        var buildTransparentBgBrush = GetTransparentBgBrushBuildDelegate();
+        Expect(ReferenceEquals(buildTransparentBgBrush(originalSize, originalSolidBrush.Color), previewBrush),
+            "Direct transparent-background brush build should return the shared token brush.",
+            failures);
+
+        SetControlProperty(thirdComponentSlider, "TransparentBgSize", originalSize + 1);
+        RefreshLayout(realized.Window);
+        var resizedBrush = GetControlProperty<IBrush?>(thirdComponentSlider, "TransparentBgBrush");
+        Expect(!ReferenceEquals(resizedBrush, previewBrush),
+            "Different transparent-background size should use a different cached brush.",
+            failures);
+
+        SetControlProperty(thirdComponentSlider, "TransparentBgSize", originalSize);
+        RefreshLayout(realized.Window);
+        Expect(ReferenceEquals(GetControlProperty<IBrush?>(thirdComponentSlider, "TransparentBgBrush"), previewBrush),
+            "Restoring transparent-background size should reuse the original cached brush.",
+            failures);
+    }
+
+    private static void VerifyPaletteGroupSelectionDoesNotLeakAcrossInstances(ICollection<string> failures)
+    {
+        var firstView = new ColorPickerView
+        {
+            Value                 = ColorPickerDefaultColor,
+            IsPaletteGroupEnabled = true
+        };
+        var secondView = new ColorPickerView
+        {
+            Value                 = ColorPickerDefaultColor,
+            IsPaletteGroupEnabled = true
+        };
+        var root = CreateColorPickerVerticalPanel(firstView, secondView);
+
+        using var realized = RealizeControl(root);
+        RefreshLayout(realized.Window);
+
+        var firstGroup = FindVisualByName<Control>(firstView, "PART_PaletteGroup");
+        var secondGroup = FindVisualByName<Control>(secondView, "PART_PaletteGroup");
+        Expect(firstGroup != null && secondGroup != null,
+            "Two palette-enabled ColorPickerView instances should create two palette groups.",
+            failures);
+        if (firstGroup is null || secondGroup is null)
+        {
+            return;
+        }
+
+        var secondGroupItem = secondGroup
+            .GetVisualDescendants()
+            .OfType<Avalonia.Controls.RadioButton>()
+            .FirstOrDefault(item =>
+            {
+                var color = GetPaletteColorItemColor(item);
+                return color.HasValue && color.Value != ColorPickerDefaultColor;
+            });
+        Expect(secondGroupItem != null,
+            "The second palette group should create selectable color items.",
+            failures);
+        if (secondGroupItem is null)
+        {
+            return;
+        }
+
+        var selectedColor = GetPaletteColorItemColor(secondGroupItem);
+        var firstValueChangedCount = 0;
+        var secondValueChangedCount = 0;
+        firstView.ValueChanged += (_, _) => firstValueChangedCount++;
+        secondView.ValueChanged += (_, _) => secondValueChangedCount++;
+
+        secondGroupItem.IsChecked = true;
+        RefreshLayout(realized.Window);
+
+        Expect(firstValueChangedCount == 0 && firstView.Value == ColorPickerDefaultColor,
+            "Selecting a color in the second palette group should not notify the first group.",
+            failures);
+        Expect(secondValueChangedCount == 1,
+            "Selecting a color in the second palette group should notify that group exactly once.",
+            failures);
+        Expect(selectedColor.HasValue && secondView.Value == selectedColor.Value,
+            "The selected palette color should be forwarded unchanged.",
+            failures);
+    }
+
+    private static Color? GetPaletteColorItemColor(Avalonia.Controls.RadioButton item)
+    {
+        if (item.GetType().FullName != "AtomUI.Desktop.Controls.PaletteColorItem")
+        {
+            return null;
+        }
+
+        var property = item.GetType().GetProperty(
+            "Color",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        return property?.GetValue(item) as Color?;
+    }
+
+    private static Color? GetSolidBrushColor(IBrush? brush)
+    {
+        return brush is ISolidColorBrush solidColorBrush ? solidColorBrush.Color : null;
     }
 
     private static bool WaitForColorSpectrumBrushes(Avalonia.Controls.Window window,

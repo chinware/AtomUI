@@ -10,26 +10,14 @@
                         Background="{TemplateBinding Background}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding EffectiveCornerRadius}">
-                    <Panel Name="PART_RootLayout">
-                        <atom:IconPresenter
-                            Name="PART_NormalIconPresenter"
-                            Icon="{TemplateBinding NormalIcon}"
-                            Width="{TemplateBinding IconWidth}"
-                            Height="{TemplateBinding IconHeight}"
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
-                        <atom:IconPresenter
-                            Name="PART_CheckedIconPresenter"
-                            Icon="{TemplateBinding CheckedIcon}"
-                            IsVisible="{TemplateBinding IsChecked}"
-                            Width="{TemplateBinding IconWidth}"
-                            Height="{TemplateBinding IconHeight}"
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
-                    </Panel>
+                    <atom:IconPresenter
+                        Name="PART_IconPresenter"
+                        Icon="{TemplateBinding EffectiveIcon}"
+                        Width="{TemplateBinding IconWidth}"
+                        Height="{TemplateBinding IconHeight}"
+                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
                 </Border>
             </ControlTemplate>
         </Setter>

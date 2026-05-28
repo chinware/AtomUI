@@ -30,6 +30,11 @@ internal class CaptionButton : AvaloniaButton
     
     public static readonly StyledProperty<bool> IsCheckedProperty = 
         AvaloniaProperty.Register<CaptionButton, bool>(nameof(IsChecked), defaultBindingMode: BindingMode.TwoWay, defaultValue:false);
+
+    internal static readonly DirectProperty<CaptionButton, PathIcon?> EffectiveIconProperty =
+        AvaloniaProperty.RegisterDirect<CaptionButton, PathIcon?>(
+            nameof(EffectiveIcon),
+            o => o.EffectiveIcon);
     
     public PathIcon? NormalIcon
     {
@@ -59,6 +64,14 @@ internal class CaptionButton : AvaloniaButton
     {
         get => GetValue(IsCheckedProperty);
         set => SetValue(IsCheckedProperty, value);
+    }
+
+    private PathIcon? _effectiveIcon;
+
+    internal PathIcon? EffectiveIcon
+    {
+        get => _effectiveIcon;
+        private set => SetAndRaise(EffectiveIconProperty, ref _effectiveIcon, value);
     }
 
     #endregion
@@ -101,6 +114,9 @@ internal class CaptionButton : AvaloniaButton
     static CaptionButton()
     {
         AffectsRender<CaptionButton>(EffectiveCornerRadiusProperty);
+        NormalIconProperty.Changed.AddClassHandler<CaptionButton>((button, _) => button.UpdateEffectiveIcon());
+        CheckedIconProperty.Changed.AddClassHandler<CaptionButton>((button, _) => button.UpdateEffectiveIcon());
+        IsCheckedProperty.Changed.AddClassHandler<CaptionButton>((button, _) => button.UpdateEffectiveIcon());
     }
     
     public CaptionButton()
@@ -118,6 +134,13 @@ internal class CaptionButton : AvaloniaButton
     {
         var maxSize = Math.Max(size.Height, size.Width);
         EffectiveCornerRadius = new CornerRadius(maxSize / 2);
+    }
+
+    private void UpdateEffectiveIcon()
+    {
+        EffectiveIcon = IsChecked && CheckedIcon is not null
+            ? CheckedIcon
+            : NormalIcon;
     }
 
     protected override void OnPointerMoved(PointerEventArgs e)

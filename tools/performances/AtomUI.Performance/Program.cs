@@ -26,7 +26,8 @@ internal static partial class Program
             return RunSwitchInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
         }
 
-        if (options.VerifyAccessories ||
+        if (options.VerifyAdornerLayerStates ||
+            options.VerifyAccessories ||
             options.VerifyEffectiveBrushes ||
             options.VerifyAddonStates ||
             options.VerifyAntDesignMetadata ||
@@ -94,10 +95,15 @@ internal static partial class Program
             options.VerifySliderStates ||
             options.VerifyTreeViewStates ||
             options.VerifyTransferStates ||
+            options.VerifyWatermarkStates ||
             options.VerifyWindowTitleBarStates ||
             options.VerifyTextBlockStates)
         {
             var verified = true;
+            if (options.VerifyAdornerLayerStates)
+            {
+                verified &= RunAdornerLayerStateVerification();
+            }
             if (options.VerifyAccessories)
             {
                 Console.WriteLine("--verify-accessories is currently disabled (Avalonia 12 accessory architecture rewrite pending).");
@@ -370,6 +376,10 @@ internal static partial class Program
             {
                 verified &= RunTransferStateVerification();
             }
+            if (options.VerifyWatermarkStates)
+            {
+                verified &= RunWatermarkStateVerification();
+            }
             if (options.VerifyWindowTitleBarStates)
             {
                 verified &= RunWindowTitleBarStateVerification();
@@ -473,6 +483,7 @@ internal static partial class Program
             "steps" => CreateStepsScenarios(),
             "statistic" => CreateStatisticScenarios(),
             "timeline" => CreateTimelineScenarios(),
+            "watermark" => CreateWatermarkScenarios(),
             "windowtitlebar" => CreateWindowTitleBarScenarios(),
             "splitview" => CreateSplitViewScenarios(),
             "splitter" => CreateSplitterScenarios(),

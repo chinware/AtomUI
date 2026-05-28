@@ -6,6 +6,7 @@ internal sealed record PerfOptions(
     string? MarkdownOutputPath,
     bool MeasureColorPickerInteractions,
     bool MeasureSwitchInteractions,
+    bool VerifyAdornerLayerStates,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
     bool VerifyAddonStates,
@@ -74,6 +75,7 @@ internal sealed record PerfOptions(
     bool VerifySliderStates,
     bool VerifyTreeViewStates,
     bool VerifyTransferStates,
+    bool VerifyWatermarkStates,
     bool VerifyWindowTitleBarStates,
     bool VerifyTextBlockStates)
 {
@@ -84,6 +86,7 @@ internal sealed record PerfOptions(
         string? markdownOutput     = null;
         var measureColorPickerInteractions = false;
         var measureSwitchInteractions = false;
+        var verifyAdornerLayerStates = false;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
         var verifyAddonStates      = false;
@@ -152,6 +155,7 @@ internal sealed record PerfOptions(
         var verifySliderStates = false;
         var verifyTreeViewStates = false;
         var verifyTransferStates = false;
+        var verifyWatermarkStates = false;
         var verifyWindowTitleBarStates = false;
         var verifyTextBlockStates = false;
 
@@ -176,6 +180,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--measure-switch-interactions":
                     measureSwitchInteractions = true;
+                    break;
+                case "--verify-adornerlayer-states":
+                    verifyAdornerLayerStates = true;
                     break;
                 case "--verify-accessories":
                     verifyAccessories = true;
@@ -381,6 +388,9 @@ internal sealed record PerfOptions(
                 case "--verify-transfer-states":
                     verifyTransferStates = true;
                     break;
+                case "--verify-watermark-states":
+                    verifyWatermarkStates = true;
+                    break;
                 case "--verify-windowtitlebar-states":
                     verifyWindowTitleBarStates = true;
                     break;
@@ -396,6 +406,7 @@ internal sealed record PerfOptions(
             markdownOutput,
             measureColorPickerInteractions,
             measureSwitchInteractions,
+            verifyAdornerLayerStates,
             verifyAccessories,
             verifyEffectiveBrushes,
             verifyAddonStates,
@@ -464,6 +475,7 @@ internal sealed record PerfOptions(
             verifySliderStates,
             verifyTreeViewStates,
             verifyTransferStates,
+            verifyWatermarkStates,
             verifyWindowTitleBarStates,
             verifyTextBlockStates);
     }

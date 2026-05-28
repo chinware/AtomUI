@@ -78,10 +78,19 @@ public sealed class Watermark : Control
 
     private static void OnGlyphChanged(Layoutable target, AvaloniaPropertyChangedEventArgs arg)
     {
+        target.LayoutUpdated -= HandleTargetLayoutUpdated;
+        if (GetGlyph(target) is null)
+        {
+            UnInstallWatermark(target);
+            return;
+        }
+
         if (target.IsArrangeValid)
         {
             InstallWatermark(target);
+            return;
         }
+
         target.LayoutUpdated += HandleTargetLayoutUpdated;
     }
 
@@ -92,6 +101,12 @@ public sealed class Watermark : Control
             return;
         }
         target.LayoutUpdated -= HandleTargetLayoutUpdated;
+        if (GetGlyph(target) is null)
+        {
+            UnInstallWatermark(target);
+            return;
+        }
+
         InstallWatermark(target);
     }
 
@@ -102,39 +117,45 @@ public sealed class Watermark : Control
         {
             Glyph.PropertyChanged -= HandleGlyphPropertyChanged;
         }
-        UnInstallWatermark(this);
     }
 
     private static void InstallWatermark(Layoutable target)
     {
-        if (CheckLayer(target, out var layer) == false)
+        var glyph = GetGlyph(target);
+        if (glyph is null)
+        {
+            UnInstallWatermark(target);
+            return;
+        }
+
+        if (CheckLayer(target, out _) == false)
         {
             return;
         }
 
-        var watermark = ScopeAwareAdornerLayer.GetAdorner(target);
-        if (watermark != null)
+        var currentAdorner = ScopeAwareAdornerLayer.GetAdorner(target);
+        if (currentAdorner is Watermark watermark && ReferenceEquals(watermark.Glyph, glyph))
         {
             return;
         }
 
-        watermark = new Watermark(target, GetGlyph(target));
-        ScopeAwareAdornerLayer.SetAdornedElement(watermark, target);
-        layer.Children.Add(watermark);
+        if (currentAdorner is not null and not Watermark)
+        {
+            return;
+        }
+
+        ScopeAwareAdornerLayer.SetAdorner(target, new Watermark(target, glyph));
     }
 
-    private static void UnInstallWatermark(Visual target)
+    private static void UnInstallWatermark(Layoutable target)
     {
-        if (CheckLayer(target, out var layer) == false)
+        target.LayoutUpdated -= HandleTargetLayoutUpdated;
+        if (ScopeAwareAdornerLayer.GetAdorner(target) is not Watermark)
         {
             return;
         }
-        var watermark = ScopeAwareAdornerLayer.GetAdorner(target);
-        if (watermark == null)
-        {
-            return;
-        }
-        layer.Children.Remove(watermark);
+
+        ScopeAwareAdornerLayer.SetAdorner(target, null);
     }
 
     private static bool CheckLayer(Visual target, [NotNullWhen(true)] out ScopeAwareAdornerLayer? layer)

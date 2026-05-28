@@ -18,7 +18,8 @@ internal static partial class Program
         var results = new[]
         {
             MeasureColorSpectrumUpdateBitmapSources(updateCount),
-            MeasureColorSpectrumHsvUpdates(updateCount)
+            MeasureColorSpectrumHsvUpdates(updateCount),
+            MeasureTransparentBgBrushBuildSameToken(updateCount)
         };
         var text = RenderColorPickerInteractionTable(results);
 
@@ -156,6 +157,42 @@ internal static partial class Program
             TreeStats.Collect(realized.RootControls));
     }
 
+    private static ColorPickerInteractionResult MeasureTransparentBgBrushBuildSameToken(int updateCount)
+    {
+        var buildTransparentBgBrush = GetTransparentBgBrushBuildDelegate();
+        var fillColor = Color.FromArgb(0x26, 0x00, 0x00, 0x00);
+        var distinctBrushes = new HashSet<IBrush>(ReferenceEqualityComparer.Instance);
+
+        for (var i = 0; i < 20; i++)
+        {
+            buildTransparentBgBrush(4, fillColor);
+        }
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+        var stopwatch = Stopwatch.StartNew();
+
+        for (var i = 0; i < updateCount; i++)
+        {
+            distinctBrushes.Add(buildTransparentBgBrush(4, fillColor));
+        }
+
+        stopwatch.Stop();
+        var allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+
+        return new ColorPickerInteractionResult(
+            "TransparentBgBrush.BuildSameToken",
+            updateCount,
+            stopwatch.Elapsed,
+            allocatedBytes,
+            distinctBrushes.Count,
+            0,
+            TreeStats.Collect([]));
+    }
+
     private static StyledProperty<HsvColor> GetColorSpectrumHsvColorProperty(Control spectrum)
     {
         var field = spectrum.GetType().GetField("HsvColorProperty",
@@ -170,6 +207,20 @@ internal static partial class Program
             BindingFlags.Instance | BindingFlags.NonPublic);
         return method?.CreateDelegate<Action>(spectrum) ??
                throw new InvalidOperationException("ColorSpectrum.UpdateBitmapSources was not found.");
+    }
+
+    private static Func<double, Color, IBrush> GetTransparentBgBrushBuildDelegate()
+    {
+        var type = Type.GetType(
+            "AtomUI.Desktop.Controls.Primitives.TransparentBgBrushUtils, AtomUI.Desktop.Controls.ColorPicker");
+        var method = type?.GetMethod(
+            "Build",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(double), typeof(Color)],
+            modifiers: null);
+        return method?.CreateDelegate<Func<double, Color, IBrush>>() ??
+               throw new InvalidOperationException("TransparentBgBrushUtils.Build was not found.");
     }
 
     private static HsvColor CreateBenchmarkHsv(int index)

@@ -45,9 +45,10 @@ public class ColorPickerView : AbstractColorPickerView
             IgnorePropertyChanged = false;
         }
 
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == HsvValueProperty)
         {
-            if (change.Property == HsvValueProperty)
+            ConfigureHsvColorBrushes();
+            if (this.IsAttachedToVisualTree())
             {
                 NotifyColorChanged(new ColorChangedEventArgs(
                     change.GetOldValue<HsvColor>().ToRgb(),

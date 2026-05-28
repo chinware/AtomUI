@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
     xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
-    xmlns:converters="using:AtomUI.Desktop.Controls.Converters"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ColorPickerView}" TargetType="atom:ColorPickerView">
         <ControlTheme.BasedOn>
@@ -53,7 +52,7 @@
                                     MinValue="{TemplateBinding MinValue}" />
                                 <DockPanel LastChildFill="True" ClipToBounds="False">
                                     <atom:ColorBlock Name="ColorPreview"
-                                                     Background="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}"
+                                                     Background="{TemplateBinding HsvColorBrush}"
                                                      DockPanel.Dock="Right"
                                                      Margin="0, 2, 0, 2" />
                                     <Panel Name="SliderContainer" ClipToBounds="False">
@@ -62,7 +61,7 @@
                                                           VerticalAlignment="Top"
                                                           HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
                                                           IsVisible="{TemplateBinding IsColorSpectrumSliderVisible}"
-                                                          ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.WithoutAlpha}}" />
+                                                          ThumbColorValueBrush="{TemplateBinding HsvColorWithoutAlphaBrush}" />
                                         <atom:ColorSlider Name="ColorSpectrumAlphaSlider" DockPanel.Dock="Bottom"
                                                           ColorComponent="Alpha"
                                                           ColorModel="Hsva"
@@ -70,7 +69,7 @@
                                                           HsvColor="{TemplateBinding HsvValue, Mode=TwoWay}"
                                                           IsVisible="{TemplateBinding IsAlphaEffectiveVisible}"
                                                           IsRoundingEnabled="True"
-                                                          ThumbColorValueBrush="{TemplateBinding HsvValue, Converter={x:Static converters:HsvColorToBrushConverter.Default}}" />
+                                                          ThumbColorValueBrush="{TemplateBinding HsvColorBrush}" />
                                     </Panel>
                                 </DockPanel>
                                 <atom:ColorPickerInput ColorValue="{TemplateBinding HsvValue, Mode=TwoWay}"

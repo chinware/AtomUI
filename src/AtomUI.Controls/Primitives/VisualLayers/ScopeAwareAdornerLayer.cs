@@ -325,7 +325,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
     private static void AddVisualAdorner(Visual visual, Control? adorner, ScopeAwareAdornerLayer? layer)
     {
-        if (adorner is null || layer == null || layer.Children.Contains(adorner))
+        if (adorner is null || layer == null || ReferenceEquals(adorner.GetVisualParent(), layer))
         {
             return;
         }
@@ -338,9 +338,14 @@ public class ScopeAwareAdornerLayer : Canvas
 
     private static void RemoveVisualAdorner(Visual visual, Control? adorner, ScopeAwareAdornerLayer? layer)
     {
-        if (adorner is null || layer is null || !layer.Children.Contains(adorner))
+        if (adorner is null || layer is null || !ReferenceEquals(adorner.GetVisualParent(), layer))
         {
             return;
+        }
+
+        if (ReferenceEquals(GetAdornedElement(adorner), visual))
+        {
+            SetAdornedElement(adorner, null);
         }
 
         layer.Children.Remove(adorner);

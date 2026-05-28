@@ -70,6 +70,10 @@ public class GradientColorPickerView : AbstractColorPickerView
                 change.GetOldValue<LinearGradientBrush>(),
                 change.GetNewValue<LinearGradientBrush>()));
         }
+        else if (change.Property == HsvValueProperty)
+        {
+            ConfigureHsvColorBrushes();
+        }
 
         if (this.IsAttachedToVisualTree())
         {

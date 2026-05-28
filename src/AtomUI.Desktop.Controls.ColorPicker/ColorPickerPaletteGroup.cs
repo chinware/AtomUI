@@ -57,22 +57,26 @@ internal class ColorPickerPaletteGroup : TemplatedControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _colorSelectedDisposable = PaletteColorItem.IsCheckedChangedEvent.AddClassHandler<ColorPickerPaletteGroup>((group, args) =>
+        _colorSelectedDisposable?.Dispose();
+        _colorSelectedDisposable = this.AddDisposableHandler(
+            PaletteColorItem.IsCheckedChangedEvent,
+            HandlePaletteColorItemCheckedChanged,
+            RoutingStrategies.Bubble);
+    }
+
+    private void HandlePaletteColorItemCheckedChanged(object? sender, RoutedEventArgs args)
+    {
+        if (args.Source is PaletteColorItem { IsChecked: true, Color: { } selectedColor })
         {
-            if (args.Source is PaletteColorItem paletteColorItem)
-            {
-                if (paletteColorItem.IsChecked == true && paletteColorItem.Color != null)
-                {
-                    ColorSelected?.Invoke(this, new ColorPickerPaletteColorSelectedEventArgs(paletteColorItem.Color.Value));
-                }
-            }
-            args.Handled = true;
-        }, RoutingStrategies.Bubble);
+            ColorSelected?.Invoke(this, new ColorPickerPaletteColorSelectedEventArgs(selectedColor));
+        }
+        args.Handled = true;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         _colorSelectedDisposable?.Dispose();
+        _colorSelectedDisposable = null;
     }
 }

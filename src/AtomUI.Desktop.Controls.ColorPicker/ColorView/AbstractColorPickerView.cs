@@ -197,6 +197,16 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
             o => o.IsAlphaEffectiveVisible,
             (o, v) => o.IsAlphaEffectiveVisible = v);
 
+    internal static readonly DirectProperty<AbstractColorPickerView, IBrush> HsvColorBrushProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorPickerView, IBrush>(
+            nameof(HsvColorBrush),
+            o => o.HsvColorBrush);
+
+    internal static readonly DirectProperty<AbstractColorPickerView, IBrush> HsvColorWithoutAlphaBrushProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorPickerView, IBrush>(
+            nameof(HsvColorWithoutAlphaBrush),
+            o => o.HsvColorWithoutAlphaBrush);
+
     internal HsvColor HsvValue
     {
         get => GetValue(HsvValueProperty);
@@ -204,12 +214,18 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
     }
 
     private bool _isAlphaEffectiveVisible;
+    private readonly SolidColorBrush _hsvColorBrush = new(Colors.White);
+    private readonly SolidColorBrush _hsvColorWithoutAlphaBrush = new(Colors.White);
 
     internal bool IsAlphaEffectiveVisible
     {
         get => _isAlphaEffectiveVisible;
         set => SetAndRaise(IsAlphaEffectiveVisibleProperty, ref _isAlphaEffectiveVisible, value);
     }
+
+    internal IBrush HsvColorBrush => _hsvColorBrush;
+
+    internal IBrush HsvColorWithoutAlphaBrush => _hsvColorWithoutAlphaBrush;
     #endregion
 
     private ColorBlock? _clearColorButton;
@@ -219,6 +235,7 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
     public AbstractColorPickerView()
     {
         this.RegisterTokenResourceScope(ColorPickerToken.ScopeProvider);
+        ConfigureHsvColorBrushes();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -236,6 +253,10 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
                 SetCurrentValue(FormatProperty, Format == ColorFormat.Hex);
             }
         }
+        else if (change.Property == HsvValueProperty)
+        {
+            ConfigureHsvColorBrushes();
+        }
 
         if (change.Property == IsPaletteGroupEnabledProperty)
         {
@@ -244,6 +265,13 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
                 ConfigureDefaultPaletteGroup();
             }
         }
+    }
+
+    protected void ConfigureHsvColorBrushes()
+    {
+        var hsvValue = HsvValue;
+        _hsvColorBrush.Color = hsvValue.ToRgb();
+        _hsvColorWithoutAlphaBrush.Color = HsvColor.ToRgb(hsvValue.H, hsvValue.S, hsvValue.V);
     }
 
     private void ConfigureAlphaEffectiveVisible()
