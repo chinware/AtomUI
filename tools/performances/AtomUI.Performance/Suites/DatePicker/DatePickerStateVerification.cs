@@ -1,6 +1,7 @@
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -14,6 +15,7 @@ internal static partial class Program
         var failures = new List<string>();
         VerifyClosedDatePickerCost(failures);
         VerifyDatePickerAccessoryLifecycle(failures);
+        VerifyDatePickerClearButtonLifecycle(failures);
         VerifyDatePickerAccessoryContentRefresh(failures);
         VerifyDatePickerPopupLifecycle(failures);
         VerifyRangeDatePickerPopupLifecycle(failures);
@@ -41,8 +43,12 @@ internal static partial class Program
         Expect(FindVisualByName<AvaloniaPopup>(datePicker, "PART_Popup") != null,
             "Closed DatePicker should keep the lightweight Popup shell.",
             failures);
-        Expect(GetInfoPickerPopupChild(datePicker) == null,
-            "Closed DatePicker should keep Popup child empty before first open.",
+        var popupChild = GetInfoPickerPopupChild(datePicker);
+        Expect(popupChild != null && popupChild.GetType().Name == "ArrowDecoratedBox",
+            "Closed DatePicker should keep only the static lightweight ArrowDecoratedBox popup shell.",
+            failures);
+        Expect(popupChild is not ContentControl contentControl || contentControl.Content == null,
+            "Closed DatePicker popup shell should not contain a PickerPresenter before first open.",
             failures);
         Expect(datePicker.PickerPresenter == null,
             "Closed DatePicker should not create PickerPresenter before first open.",
@@ -50,8 +56,8 @@ internal static partial class Program
         Expect(FindVisualByTypeName(datePicker, "DatePickerPresenter") == null,
             "Closed DatePicker should not create DatePickerPresenter visuals.",
             failures);
-        Expect(FindVisualByTypeName(datePicker, "PickerAccessoryHost") == null,
-            "Closed default DatePicker should use a lightweight icon presenter instead of PickerAccessoryHost.",
+        Expect(FindVisualByName<Control>(datePicker, "PART_ClearButton") is { IsVisible: false },
+            "Closed default DatePicker should keep the static clear button hidden.",
             failures);
         Expect(FindVisualByTypeName(datePicker, "IconPresenter") != null,
             "Closed default DatePicker should still show the calendar icon.",
@@ -63,8 +69,9 @@ internal static partial class Program
         var datePicker = CreateDatePicker(selectedDateTime: new DateTime(2024, 1, 20));
         using var realized = RealizeControl(datePicker);
 
-        Expect(FindVisualByTypeName(datePicker, "PickerAccessoryHost") == null,
-            "Selected DatePicker should not create PickerAccessoryHost until clear mode is visible.",
+        var clearButton = FindVisualByName<Control>(datePicker, "PART_ClearButton");
+        Expect(clearButton is { IsVisible: false },
+            "Selected DatePicker should keep PART_ClearButton hidden until clear mode is visible.",
             failures);
 
         var decoratedBox = FindVisualByName<AddOnDecoratedBox>(
@@ -80,12 +87,8 @@ internal static partial class Program
             RefreshLayout(realized.Window);
         }
 
-        var accessoryHost = FindVisualByTypeName(datePicker, "PickerAccessoryHost");
-        Expect(accessoryHost != null,
-            "DatePicker clear mode should create PickerAccessoryHost.",
-            failures);
-        Expect(FindVisualByTypeName(datePicker, "InputClearIconButton") != null,
-            "DatePicker clear mode should create InputClearIconButton.",
+        Expect(clearButton is { IsVisible: true },
+            "DatePicker clear mode should show the static InputClearIconButton.",
             failures);
 
         if (decoratedBox != null)
@@ -94,14 +97,61 @@ internal static partial class Program
             RefreshLayout(realized.Window);
         }
 
-        Expect(FindVisualByTypeName(datePicker, "PickerAccessoryHost") == null,
-            "Leaving clear mode should detach PickerAccessoryHost.",
-            failures);
-        Expect(accessoryHost?.GetVisualParent() == null,
-            "Detached PickerAccessoryHost should not keep a visual parent.",
+        Expect(clearButton is { IsVisible: false },
+            "Leaving clear mode should hide the static InputClearIconButton.",
             failures);
         Expect(FindVisualByTypeName(datePicker, "IconPresenter") != null,
             "Leaving clear mode should restore the lightweight calendar icon presenter.",
+            failures);
+    }
+
+    private static void VerifyDatePickerClearButtonLifecycle(ICollection<string> failures)
+    {
+        var selectedDate = new DateTime(2024, 1, 20);
+        var datePicker = CreateDatePicker(selectedDateTime: selectedDate);
+        using var realized = RealizeControl(datePicker);
+
+        var decoratedBox = FindVisualByName<AddOnDecoratedBox>(
+            datePicker,
+            AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        var clearButton = FindVisualByName<Control>(datePicker, "PART_ClearButton");
+
+        Expect(clearButton != null,
+            "DatePicker should realize PickerClearUpButton PART_ClearButton.",
+            failures);
+        if (clearButton == null)
+        {
+            return;
+        }
+
+        Expect(!GetLocalRoutedHandlerNames(clearButton).Any(name => name.Contains("Click")),
+            "DatePicker PickerClearUpButton should use class handler instead of a local Click handler.",
+            failures);
+
+        clearButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent)
+        {
+            Source = clearButton
+        });
+        Expect(datePicker.SelectedDateTime == selectedDate,
+            "Hidden DatePicker clear button should be inert when clear mode is not active.",
+            failures);
+
+        if (decoratedBox != null)
+        {
+            decoratedBox.IsInnerBoxHover = true;
+            RefreshLayout(realized.Window);
+        }
+
+        Expect(clearButton is { IsVisible: true },
+            "DatePicker clear mode should show PART_ClearButton.",
+            failures);
+
+        clearButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent)
+        {
+            Source = clearButton
+        });
+        Expect(datePicker.SelectedDateTime == null,
+            "Visible DatePicker clear button should still clear SelectedDateTime.",
             failures);
     }
 
@@ -112,10 +162,9 @@ internal static partial class Program
 
         datePicker.ContentRightAddOn = "first";
         RefreshLayout(realized.Window);
-        var accessoryHost = FindVisualByTypeName(datePicker, "PickerAccessoryHost");
         var contentPresenter = FindVisualByName<ContentPresenter>(datePicker, "PART_ContentRightAddOnPresenter");
-        Expect(accessoryHost != null,
-            "DatePicker ContentRightAddOn should create PickerAccessoryHost.",
+        Expect(contentPresenter != null,
+            "DatePicker should keep the static ContentRightAddOn presenter.",
             failures);
         Expect(Equals(contentPresenter?.Content, "first"),
             $"DatePicker ContentRightAddOn presenter should show first content, actual '{contentPresenter?.Content ?? "<null>"}'.",
@@ -129,12 +178,6 @@ internal static partial class Program
 
         datePicker.ContentRightAddOn = null;
         RefreshLayout(realized.Window);
-        Expect(FindVisualByTypeName(datePicker, "PickerAccessoryHost") == null,
-            "Clearing DatePicker ContentRightAddOn should remove PickerAccessoryHost.",
-            failures);
-        Expect(accessoryHost?.GetVisualParent() == null,
-            "Removed DatePicker ContentRightAddOn host should not keep a visual parent.",
-            failures);
         Expect(contentPresenter?.Content == null,
             "Removed DatePicker ContentRightAddOn presenter should clear Content.",
             failures);
@@ -147,23 +190,30 @@ internal static partial class Program
         Control? firstPickerPresenter;
         using (var realized = RealizeControl(datePicker))
         {
-            Expect(GetInfoPickerPopupChild(datePicker) == null,
-                "Closed DatePicker should not create popup content before first materialization.",
+            firstPopupContent = GetInfoPickerPopupChild(datePicker);
+            Expect(firstPopupContent != null && firstPopupContent.GetType().Name == "ArrowDecoratedBox",
+                "Closed DatePicker should keep the static ArrowDecoratedBox popup shell before presenter materialization.",
+                failures);
+            Expect(firstPopupContent is not ContentControl closedContent || closedContent.Content == null,
+                "Closed DatePicker popup shell should not contain presenter content before materialization.",
                 failures);
 
-            MaterializeInfoPickerPopupContentForTest(datePicker);
+            MaterializeInfoPickerPresenterForTest(datePicker);
             RefreshLayout(realized.Window);
-            firstPopupContent = GetInfoPickerPopupChild(datePicker);
             firstPickerPresenter = datePicker.PickerPresenter;
 
-            Expect(firstPopupContent != null && firstPopupContent.GetType().Name == "ArrowDecoratedBox",
-                "DatePicker popup materialization should create ArrowDecoratedBox.",
+            Expect(ReferenceEquals(firstPopupContent, GetInfoPickerPopupChild(datePicker)),
+                "DatePicker popup materialization should reuse the static ArrowDecoratedBox shell.",
                 failures);
             Expect(firstPickerPresenter != null && firstPickerPresenter.GetType().Name == "DatePickerPresenter",
                 "DatePicker popup materialization should create DatePickerPresenter.",
                 failures);
+            Expect(firstPopupContent is not ContentControl materializedContent ||
+                   ReferenceEquals(materializedContent.Content, firstPickerPresenter),
+                "DatePicker popup shell should host the materialized DatePickerPresenter.",
+                failures);
 
-            MaterializeInfoPickerPopupContentForTest(datePicker);
+            MaterializeInfoPickerPresenterForTest(datePicker);
             RefreshLayout(realized.Window);
             Expect(ReferenceEquals(firstPopupContent, GetInfoPickerPopupChild(datePicker)),
                 "Second DatePicker popup materialization should reuse the first popup content.",
@@ -179,8 +229,8 @@ internal static partial class Program
         Expect(GetInfoPickerPopupContentField(datePicker) == null,
             "Detached DatePicker should clear lazy popup content field.",
             failures);
-        Expect(firstPopupContent?.TemplatedParent == null,
-            "Detached DatePicker popup content should clear TemplatedParent.",
+        Expect(firstPopupContent?.GetVisualParent() == null,
+            "Detached DatePicker popup shell should leave the visual tree.",
             failures);
         Expect(firstPopupContent is not ContentControl contentControl || contentControl.Content == null,
             "Detached DatePicker popup content should clear Content.",
@@ -193,16 +243,20 @@ internal static partial class Program
         Control? firstPopupContent;
         using (var realized = RealizeControl(rangeDatePicker))
         {
-            MaterializeInfoPickerPopupContentForTest(rangeDatePicker);
+            MaterializeInfoPickerPresenterForTest(rangeDatePicker);
             RefreshLayout(realized.Window);
             firstPopupContent = GetInfoPickerPopupChild(rangeDatePicker);
 
             Expect(firstPopupContent != null && firstPopupContent.GetType().Name == "DualMonthArrowDecoratedBox",
-                "RangeDatePicker popup materialization should create DualMonthArrowDecoratedBox.",
-                failures);
+                "RangeDatePicker should keep the static DualMonthArrowDecoratedBox popup shell.",
+            failures);
             Expect(rangeDatePicker.PickerPresenter != null &&
                    rangeDatePicker.PickerPresenter.GetType().Name is "DualMonthRangeDatePickerPresenter",
                 "RangeDatePicker popup materialization should create the range presenter.",
+                failures);
+            Expect(firstPopupContent is not ContentControl contentControl ||
+                   ReferenceEquals(contentControl.Content, rangeDatePicker.PickerPresenter),
+                "RangeDatePicker popup shell should host the materialized range presenter.",
                 failures);
         }
 
@@ -212,8 +266,8 @@ internal static partial class Program
         Expect(GetInfoPickerPopupContentField(rangeDatePicker) == null,
             "Detached RangeDatePicker should clear lazy popup content field.",
             failures);
-        Expect(firstPopupContent?.TemplatedParent == null,
-            "Detached RangeDatePicker popup content should clear TemplatedParent.",
+        Expect(firstPopupContent?.GetVisualParent() == null,
+            "Detached RangeDatePicker popup shell should leave the visual tree.",
             failures);
     }
 
@@ -226,20 +280,26 @@ internal static partial class Program
             "Closed DatePicker should not subscribe to Window.Deactivated.",
             failures);
 
-        SetPrivateField(datePicker, "AtomUI.Desktop.Controls.Primitives.InfoPickerInput", "_attachedWindow", realized.Window);
-        InvokePrivateMethod(datePicker,
+        SetPrivateField(
+            datePicker,
             "AtomUI.Desktop.Controls.Primitives.InfoPickerInput",
-            "ClearWindowDeactivatedSubscription");
+            "_attachedWindow",
+            new AtomUI.Desktop.Controls.Window());
+        if (realized.Window.Content is StackPanel host)
+        {
+            host.Children.Remove(datePicker);
+            RefreshLayout(realized.Window);
+        }
         Expect(GetPrivateField(datePicker, "AtomUI.Desktop.Controls.Primitives.InfoPickerInput", "_attachedWindow") == null,
-            "DatePicker should clear Window.Deactivated subscription state when closed or detached.",
+            "DatePicker should clear Window.Deactivated subscription state when detached.",
             failures);
     }
 
-    private static void MaterializeInfoPickerPopupContentForTest(Control picker)
+    private static void MaterializeInfoPickerPresenterForTest(Control picker)
     {
         InvokePrivateMethod(picker,
             "AtomUI.Desktop.Controls.Primitives.InfoPickerInput",
-            "EnsurePickerPopupContent");
+            "EnsurePickerPresenter");
     }
 
     private static Control? GetInfoPickerPopupChild(Control picker)

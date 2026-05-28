@@ -74,8 +74,8 @@
 | OptionButtonGroup | Done | 0 | 1 | Done |
 | Pagination | Done | 2 | 2 | Done |
 | Popup | Done (structural) | **19** | **0** | 4 条构造器 token binding 迁 ControlTheme（消除 ~76 订阅 + 修复 Tier 1 §7 同优先级碰撞），`ShadowsAwareContainer` 影子 Border 延迟到 `HasBoxShadow`；详见 [Popup](Popup/README.md) |
-| PopupConfirm | Done | 0 | 2 | Done |
-| Primitives | Mixed | 16 | 4 | 多类汇总目录：AddOnDecoratedBox / CandidateList / InfoPickerInput 等已部分 Done；目录整体未做一次性 audit |
+| PopupConfirm | Done (correctness + lifecycle) | 0 | 2 | 本地 Click handlers `2 -> 0`，隐藏 cancel direct-click side effects `2 -> 0`；静态 cancel/content slot 保留，不主张页面 timing 收益 |
+| Primitives | Mixed | 16 | 4 | 多类汇总目录：AddOnDecoratedBox / CandidateList / InfoPickerInput 等已部分 Done；`PickerClearUpButton` 本地 Click handlers `1 -> 0`，隐藏 clear direct-click side effects `1 -> 0`；`AddOnDecoratedBox` ContentFrame pointer handlers `4 -> 0` / instance，Select/TreeSelect/Cascader right-addon template 绑定已修复；详见 [Primitives](Primitives/README.md)；目录整体仍未做一次性 audit |
 | ProgressBar | Done | 1 | 0 | Done |
 | QRCode | Done | 0 | 3 | Done |
 | RadioButton | Done | 3 | 1 | Done |

@@ -103,6 +103,12 @@ internal class PopupConfirmContainer : TemplatedControl
     private Button? _okButton;
     private Button? _cancelButton;
 
+    static PopupConfirmContainer()
+    {
+        Button.ClickEvent.AddClassHandler<PopupConfirmContainer>(
+            (container, args) => container.HandleButtonClick(args));
+    }
+
     public PopupConfirmContainer(PopupConfirm popupConfirm)
     {
         this.RegisterTokenResourceScope(PopupConfirmToken.ScopeProvider);
@@ -117,36 +123,43 @@ internal class PopupConfirmContainer : TemplatedControl
         _cancelButton = e.NameScope.Find<Button>("PART_CancelButton");
         if (_okButton is not null)
         {
-            _okButton.Click  += HandleButtonClicked;
             _okButton.Width  =  double.NaN;
             _okButton.Height =  double.NaN;
         }
 
         if (_cancelButton is not null)
         {
-            _cancelButton.Click  += HandleButtonClicked;
             _cancelButton.Width  =  double.NaN;
             _cancelButton.Height =  double.NaN;
         }
         UpdatePseudoClasses();
     }
 
-    private void HandleButtonClicked(object? sender, RoutedEventArgs args)
+    private void HandleButtonClick(RoutedEventArgs args)
     {
+        var isConfirmed = false;
+        if (ReferenceEquals(args.Source, _okButton))
+        {
+            isConfirmed = true;
+        }
+        else if (ReferenceEquals(args.Source, _cancelButton))
+        {
+            if (!IsShowCancelButton)
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+
         if (PopupConfirmRef.TryGetTarget(out var popupConfirm))
         {
-            var isConfirmed = false;
-            if (sender == _okButton)
-            {
-                isConfirmed = true;
-                var eventArgs = new RoutedEventArgs(PopupConfirm.ConfirmedEvent);
-                popupConfirm.RaiseEvent(eventArgs);
-            }
-            else
-            {
-                var eventArgs = new RoutedEventArgs(PopupConfirm.CancelledEvent);
-                popupConfirm.RaiseEvent(eventArgs);
-            }
+            var eventArgs = new RoutedEventArgs(isConfirmed
+                ? PopupConfirm.ConfirmedEvent
+                : PopupConfirm.CancelledEvent);
+            popupConfirm.RaiseEvent(eventArgs);
 
             var popupEventArgs = new PopupConfirmClickEventArgs(PopupConfirm.PopupClickEvent, isConfirmed);
             popupConfirm.RaiseEvent(popupEventArgs);

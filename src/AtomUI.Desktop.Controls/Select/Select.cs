@@ -568,7 +568,7 @@ public partial class Select : AbstractSelect
             _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this }));
             _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(ContentLeftAddOnTemplate)) { Source = this }));
+                new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
             _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
                 new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
         }

@@ -596,49 +596,12 @@ internal class AddOnDecoratedBox : ContentControl,
             newRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
         }
         
-        if (ContentFrame != null)
-        {
-            ContentFrame.PointerEntered  -= HandleContentFramePointerEnter;
-            ContentFrame.PointerExited   -= HandleContentFramePointerExited;
-            ContentFrame.PointerPressed  -= HandleContentFramePointerPressed;
-            ContentFrame.PointerReleased -= HandleContentFramePointerReleased;
-        }
-        
         ContentFrame = e.NameScope.Find<Border>("PART_ContentFrame");
-        if (ContentFrame != null)
-        {
-            ContentFrame.PointerEntered  += HandleContentFramePointerEnter;
-            ContentFrame.PointerExited   += HandleContentFramePointerExited;
-            ContentFrame.PointerPressed  += HandleContentFramePointerPressed;
-            ContentFrame.PointerReleased += HandleContentFramePointerReleased;
-        }
 
         ConfigureInnerBoxCornerRadius();
         ConfigureAddOnBorderInfo();
         ConfigureInnerBoxBorderThickness();
         UpdateIconStatusColors();
-    }
-
-    private void HandleContentFramePointerEnter(object? sender, PointerEventArgs args)
-    {
-        IsInnerBoxHover = true;
-    }
-    
-    private void HandleContentFramePointerExited(object? sender, PointerEventArgs args)
-    {
-        IsInnerBoxHover = false;
-    }
-    
-    private void HandleContentFramePointerPressed(object? sender, PointerEventArgs args)
-    {
-        IsInnerBoxHover   = true;
-        IsInnerBoxPressed = true;
-    }
-    
-    private void HandleContentFramePointerReleased(object? sender, PointerEventArgs args)
-    {
-        IsInnerBoxPressed = false;
-        IsInnerBoxHover   = true;
     }
 
     private void HandleContentPresenterChildChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -829,5 +792,48 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+}
+
+internal class AddOnDecoratedBoxContentFrame : Border
+{
+    protected override System.Type StyleKeyOverride => typeof(Border);
+
+    protected override void OnPointerEntered(PointerEventArgs e)
+    {
+        base.OnPointerEntered(e);
+        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        {
+            decoratedBox.IsInnerBoxHover = true;
+        }
+    }
+
+    protected override void OnPointerExited(PointerEventArgs e)
+    {
+        base.OnPointerExited(e);
+        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        {
+            decoratedBox.IsInnerBoxHover = false;
+        }
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        {
+            decoratedBox.IsInnerBoxHover   = true;
+            decoratedBox.IsInnerBoxPressed = true;
+        }
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        if (TemplatedParent is AddOnDecoratedBox decoratedBox)
+        {
+            decoratedBox.IsInnerBoxPressed = false;
+            decoratedBox.IsInnerBoxHover   = true;
+        }
     }
 }

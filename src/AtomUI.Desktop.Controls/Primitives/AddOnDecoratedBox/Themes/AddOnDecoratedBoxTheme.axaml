@@ -32,7 +32,8 @@
                     CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
                     IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
-                <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                <atom:AddOnDecoratedBoxContentFrame
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
                         BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
                         CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -66,7 +67,7 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}" />
                     </atom:AdaptiveSpacingDockPanel>
-                </Border>
+                </atom:AddOnDecoratedBoxContentFrame>
             </DockPanel>
         </ControlTemplate>
     </Setter>

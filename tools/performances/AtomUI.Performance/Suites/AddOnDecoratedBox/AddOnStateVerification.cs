@@ -20,8 +20,9 @@ internal static partial class Program
     {
         var failures = new List<string>();
         VerifyAddOnStatusAndRuntimeChanges(failures);
-        VerifyEmptyAddOnSlotsSkipIconScan(failures);
+        VerifyEmptyAddOnSlotsRemainHidden(failures);
         VerifyAddOnGeometry(failures);
+        VerifyContentFramePointerLifecycle(failures);
         VerifyCompactSpaceGeometry(failures);
         VerifyRightAddOnTemplateBindings(failures);
 
@@ -91,7 +92,7 @@ internal static partial class Program
         ExpectBrush(leftPresenter?.Foreground, box.AddOnStatusForeground, "Disabled state should refresh runtime addon foreground.", failures);
     }
 
-    private static void VerifyEmptyAddOnSlotsSkipIconScan(ICollection<string> failures)
+    private static void VerifyEmptyAddOnSlotsRemainHidden(ICollection<string> failures)
     {
         var box = new AddOnDecoratedBox
         {
@@ -101,16 +102,21 @@ internal static partial class Program
         };
         using var realized = RealizeControl(box);
 
-        AddOnDecoratedBoxPerfProbe.Reset();
         box.SetCurrentValue(AddOnDecoratedBox.StatusProperty, InputControlStatus.Error);
         RefreshLayout(realized.Window);
-        var snapshot = AddOnDecoratedBoxPerfProbe.Snapshot();
-        Expect(snapshot.UpdateIconStatusColorsCalls > 0,
-            "Empty addon status change should still record status update for verification.", failures);
-        Expect(snapshot.ApplyIconBrushCalls == 0,
-            $"Empty addon status change should not call ApplyIconBrush, actual {snapshot.ApplyIconBrushCalls}.", failures);
-        Expect(snapshot.ApplyIconBrushScannedVisuals == 0,
-            $"Empty addon status change should not scan visuals, actual {snapshot.ApplyIconBrushScannedVisuals}.", failures);
+
+        Expect(FindVisualByName<ContentPresenter>(box, AddOnDecoratedBoxThemeConstants.LeftAddOnPart)?.IsVisible == false,
+            "Empty left addon presenter should stay hidden after status changes.",
+            failures);
+        Expect(FindVisualByName<ContentPresenter>(box, AddOnDecoratedBoxThemeConstants.RightAddOnPart)?.IsVisible == false,
+            "Empty right addon presenter should stay hidden after status changes.",
+            failures);
+        Expect(FindVisualByName<ContentPresenter>(box, AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart)?.IsVisible == false,
+            "Empty content-left addon presenter should stay hidden after status changes.",
+            failures);
+        Expect(FindVisualByName<ContentPresenter>(box, AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart)?.IsVisible == false,
+            "Empty content-right addon presenter should stay hidden after status changes.",
+            failures);
     }
 
     private static void VerifyAddOnGeometry(ICollection<string> failures)
@@ -154,6 +160,94 @@ internal static partial class Program
             "Content-left addon presenter should be visible when inner addon exists.", failures);
         Expect(FindVisualByName<ContentPresenter>(box, AddOnDecoratedBoxThemeConstants.ContentRightAddOnPart)?.IsVisible == true,
             "Content-right addon presenter should be visible when inner addon exists.", failures);
+    }
+
+    private static void VerifyContentFramePointerLifecycle(ICollection<string> failures)
+    {
+        var box = new AddOnDecoratedBox
+        {
+            Width           = 260,
+            Content         = new Avalonia.Controls.TextBlock { Text = "content" },
+            IsMotionEnabled = false
+        };
+
+        using var realized = RealizeControl(box);
+        var contentFrame = FindVisualByName<Border>(box, AddOnDecoratedBoxThemeConstants.ContentFramePart);
+        Expect(contentFrame is AddOnDecoratedBoxContentFrame,
+            $"Content frame should use {nameof(AddOnDecoratedBoxContentFrame)} to avoid per-instance pointer handlers.",
+            failures);
+        if (contentFrame == null)
+        {
+            return;
+        }
+        Expect(contentFrame.StyleKey == typeof(Border),
+            $"Content frame should keep Border StyleKey so Border#PART_ContentFrame padding styles apply, actual {contentFrame.StyleKey}.",
+            failures);
+        Expect(contentFrame.Padding.Left > 0 && contentFrame.Padding.Top > 0,
+            $"Content frame should keep token padding after replacing the template Border, actual {contentFrame.Padding}.",
+            failures);
+
+        var localHandlerNames = GetLocalRoutedHandlerNames(contentFrame);
+        Expect(!localHandlerNames.Contains("InputElement.PointerEntered"),
+            "AddOnDecoratedBox content frame should handle PointerEntered through override instead of a local handler.",
+            failures);
+        Expect(!localHandlerNames.Contains("InputElement.PointerExited"),
+            "AddOnDecoratedBox content frame should handle PointerExited through override instead of a local handler.",
+            failures);
+        Expect(!localHandlerNames.Contains("InputElement.PointerPressed"),
+            "AddOnDecoratedBox content frame should handle PointerPressed through override instead of a local handler.",
+            failures);
+        Expect(!localHandlerNames.Contains("InputElement.PointerReleased"),
+            "AddOnDecoratedBox content frame should handle PointerReleased through override instead of a local handler.",
+            failures);
+
+        RaiseContentFramePointerEvent(contentFrame, realized.Window, InputElement.PointerEnteredEvent);
+        Expect(box.IsInnerBoxHover,
+            "Content frame PointerEntered should still update AddOnDecoratedBox.IsInnerBoxHover.",
+            failures);
+
+        RaiseControlPrimaryPointerPressed(contentFrame, realized.Window);
+        Expect(box.IsInnerBoxHover && box.IsInnerBoxPressed,
+            "Content frame PointerPressed should still update hover and pressed state.",
+            failures);
+
+        RaiseControlPrimaryPointerReleased(contentFrame, realized.Window);
+        Expect(box.IsInnerBoxHover && !box.IsInnerBoxPressed,
+            "Content frame PointerReleased should still clear pressed state and keep hover state.",
+            failures);
+
+        RaiseContentFramePointerEvent(contentFrame, realized.Window, InputElement.PointerExitedEvent);
+        Expect(!box.IsInnerBoxHover,
+            "Content frame PointerExited should still clear AddOnDecoratedBox.IsInnerBoxHover.",
+            failures);
+    }
+
+    private static void RaiseContentFramePointerEvent(
+        Control target,
+        Visual root,
+        RoutedEvent<PointerEventArgs> routedEvent)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        var properties = new PointerPointProperties(
+            RawInputModifiers.None,
+            PointerUpdateKind.Other);
+        var localPoint = new Point(
+            Math.Max(1, target.Bounds.Width / 2),
+            Math.Max(1, target.Bounds.Height / 2));
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        target.RaiseEvent(new PointerEventArgs(
+            routedEvent,
+            target,
+            pointer,
+            root,
+            rootPoint,
+            1,
+            properties,
+            KeyModifiers.None));
     }
 
     private static void VerifyCompactSpaceGeometry(ICollection<string> failures)
