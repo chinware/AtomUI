@@ -105,19 +105,16 @@ public class DataGridFilterDescription
         {
             return null;
         }
-        var type = GetPropertyType(o);
-        if (HasPropertyPath)
-        {
-            Debug.Assert(PropertyPath != null);
-            if (type != null)
-            {
-                return InvokePath(o, PropertyPath, type);
-            }
-        }
-    
-        if (type == o.GetType())
+        if (!HasPropertyPath)
         {
             return o;
+        }
+
+        var type = GetPropertyType(o);
+        if (type != null)
+        {
+            Debug.Assert(PropertyPath != null);
+            return InvokePath(o, PropertyPath, type);
         }
                
         return null;

@@ -209,7 +209,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// Private accessor for the TrackingEnumerator
     /// </summary>
-    private IEnumerator _trackingEnumerator;
+    private IEnumerator? _trackingEnumerator;
 
     /// <summary>
     /// Helper constructor that sets default values for isDataSorted and isDataInGroupOrder.
@@ -239,7 +239,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         _group.GroupDescriptions.CollectionChanged += HandleGroupByChanged;
 
         CopySourceToInternalList();
-        _trackingEnumerator = source.GetEnumerator();
 
         Debug.Assert(_internalList != null);
         // set currency
@@ -265,6 +264,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             // If the source doesn't raise collection change events, try to
             // detect changes by polling the enumerator
             _pollForChanges = true;
+            ResetTrackingEnumerator();
         }
 
         _culture = CultureInfo.InvariantCulture;
@@ -279,6 +279,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         _collectionChangedForwarder?.Dispose();
         _collectionChangedForwarder = null;
+        DisposeTrackingEnumerator();
     }
 
     /// <summary>
@@ -1188,7 +1189,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         int addIndex;
         int removeIndex = -1;
@@ -1346,7 +1347,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         // fire the correct events
         if (CurrentAddItem != null)
@@ -1635,7 +1636,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         if (UsesLocalArray)
         {
@@ -2362,7 +2363,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         // Modify our _trackingEnumerator so that it shows that our collection is "up to date" 
         // and will not refresh for now.
-        _trackingEnumerator = _sourceCollection.GetEnumerator();
+        ResetTrackingEnumerator();
 
         Debug.Assert(index == IndexOf(item), "IndexOf returned unexpected value");
 
@@ -2505,11 +2506,15 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="index">Index of item involved in the collection change</param>
     private void AdjustCurrencyForEdit(object? newCurrentItem, int index)
     {
-        if (newCurrentItem != null && IndexOf(newCurrentItem) >= 0)
+        if (newCurrentItem != null)
         {
-            HandleCurrentChanging();
-            SetCurrent(newCurrentItem, IndexOf(newCurrentItem));
-            return;
+            int newItemIndex = IndexOf(newCurrentItem);
+            if (newItemIndex >= 0)
+            {
+                HandleCurrentChanging();
+                SetCurrent(newCurrentItem, newItemIndex);
+                return;
+            }
         }
 
         if (index <= CurrentPosition)
@@ -2655,13 +2660,46 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     private void CopySourceToInternalList()
     {
-        _internalList = CreateListForSource(SourceCollection);
-        var enumerator = SourceCollection.GetEnumerator();
+        _internalList = CopySourceToList(SourceCollection);
+    }
+
+    private static List<object> CopySourceToList(IEnumerable source)
+    {
+        if (source is System.Collections.Generic.IReadOnlyList<object> readOnlyList)
+        {
+            int count = readOnlyList.Count;
+            var indexedList = new List<object>(count);
+            for (int i = 0; i < count; i++)
+            {
+                indexedList.Add(readOnlyList[i]);
+            }
+            return indexedList;
+        }
+
+        if (source is IList indexableList)
+        {
+            int count = indexableList.Count;
+            var indexedList = new List<object>(count);
+            for (int i = 0; i < count; i++)
+            {
+                indexedList.Add(indexableList[i]!);
+            }
+            return indexedList;
+        }
+
+        var list = CreateListForSource(source);
+        CopyEnumerableToList(source, list);
+        return list;
+    }
+
+    private static void CopyEnumerableToList(IEnumerable source, List<object> list)
+    {
+        var enumerator = source.GetEnumerator();
         try
         {
             while (enumerator.MoveNext())
             {
-                _internalList.Add(enumerator.Current);
+                list.Add(enumerator.Current);
             }
         }
         finally
@@ -2675,9 +2713,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
     private static List<object> CreateListForSource(IEnumerable source)
     {
-        return source is ICollection collection
-            ? new List<object>(collection.Count)
-            : new List<object>();
+        return source switch
+        {
+            ICollection collection => new List<object>(collection.Count),
+            System.Collections.Generic.IReadOnlyCollection<object> collection => new List<object>(collection.Count),
+            _ => new List<object>()
+        };
     }
 
     private static bool IsSourceCollectionEmpty(IEnumerable source)
@@ -2685,6 +2726,11 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         if (source is ICollection collection)
         {
             return collection.Count == 0;
+        }
+
+        if (source is System.Collections.Generic.IReadOnlyCollection<object> readOnlyCollection)
+        {
+            return readOnlyCollection.Count == 0;
         }
 
         var enumerator = source.GetEnumerator();
@@ -2785,7 +2831,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             try
             {
-                _trackingEnumerator.MoveNext();
+                _trackingEnumerator?.MoveNext();
             }
             catch (InvalidOperationException)
             {
@@ -2793,10 +2839,32 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 // on the enumerator throws an InvalidOperationException, stating
                 // that the collection has been modified. Therefore, we know when
                 // to update our internal collection.
-                _trackingEnumerator = SourceCollection.GetEnumerator();
+                ResetTrackingEnumerator();
                 RefreshOrDefer();
             }
         }
+    }
+
+    private void ResetTrackingEnumerator()
+    {
+        if (!_pollForChanges)
+        {
+            return;
+        }
+
+        var newEnumerator = SourceCollection.GetEnumerator();
+        DisposeTrackingEnumerator();
+        _trackingEnumerator = newEnumerator;
+    }
+
+    private void DisposeTrackingEnumerator()
+    {
+        if (_trackingEnumerator is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+
+        _trackingEnumerator = null;
     }
 
     /// <summary>
@@ -2847,6 +2915,19 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <returns>An item that can represent the collection</returns>
     private object? GetRepresentativeItem()
     {
+        if (!IsGrouping && PageSize == 0 && !IsAddingNew)
+        {
+            for (int i = 0, count = Count; i < count; i++)
+            {
+                object? item = GetItemAt(i);
+                if (item != null)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         if (IsEmpty)
         {
             return null;
@@ -2873,7 +2954,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 disposable.Dispose();
             }
         }
-        
 
         return null;
     }
@@ -3291,22 +3371,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         List<object> localList;
         if (_filter == null)
         {
-            localList = CreateListForSource(enumerable);
-            foreach (object item in enumerable)
-            {
-                localList.Add(item);
-            }
+            localList = CopySourceToList(enumerable);
         }
         else
         {
             localList = new List<object>();
-            foreach (object item in enumerable)
-            {
-                if (PassesFilter(item))
-                {
-                    localList.Add(item);
-                }
-            }
+            CopyFilteredSourceToList(enumerable, localList);
         }
 
         // sort the local array
@@ -3316,6 +3386,45 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         }
 
         return localList;
+    }
+
+    private void CopyFilteredSourceToList(IEnumerable source, List<object> target)
+    {
+        if (source is System.Collections.Generic.IReadOnlyList<object> readOnlyList)
+        {
+            int count = readOnlyList.Count;
+            for (int i = 0; i < count; i++)
+            {
+                object item = readOnlyList[i];
+                if (PassesFilter(item))
+                {
+                    target.Add(item);
+                }
+            }
+            return;
+        }
+
+        if (source is IList indexableList)
+        {
+            int count = indexableList.Count;
+            for (int i = 0; i < count; i++)
+            {
+                object item = indexableList[i]!;
+                if (PassesFilter(item))
+                {
+                    target.Add(item);
+                }
+            }
+            return;
+        }
+
+        foreach (object item in source)
+        {
+            if (PassesFilter(item))
+            {
+                target.Add(item);
+            }
+        }
     }
 
     /// <summary>
@@ -3484,8 +3593,9 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             (args.Action == NotifyCollectionChangedAction.Remove ||
              args.Action == NotifyCollectionChangedAction.Replace))
         {
-            foreach (var removedItem in args.OldItems)
+            for (int i = 0, count = args.OldItems.Count; i < count; i++)
             {
+                var removedItem = args.OldItems[i]!;
                 ProcessRemoveEvent(removedItem, args.Action == NotifyCollectionChangedAction.Replace);
             }
         }
@@ -3623,20 +3733,23 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 foreach (var sort in SortDescriptions)
                     sort.Initialize(itemType);
 
-                // create the SortFieldComparer to use
-                var sortFieldComparer = new MergedComparer(this);
-
-                // check if the item would be in sorted order if inserted into the specified index
-                // otherwise, calculate the correct sorted index
-                if (index < 0 || /* if item was not originally part of list */
-                    (index > 0 &&
-                     (sortFieldComparer.Compare(item, InternalItemAt(index - 1)) <
-                      0)) || /* item has moved up in the list */
-                    ((index < InternalList.Count - 1) &&
-                     (sortFieldComparer.Compare(item, InternalItemAt(index)) >
-                      0))) /* item has moved down in the list */
+                if (InternalList.Count > 0)
                 {
-                    index = sortFieldComparer.FindInsertIndex(item, _internalList);
+                    // create the SortFieldComparer to use
+                    var sortFieldComparer = new MergedComparer(this);
+
+                    // check if the item would be in sorted order if inserted into the specified index
+                    // otherwise, calculate the correct sorted index
+                    if (index < 0 || /* if item was not originally part of list */
+                        (index > 0 &&
+                         (sortFieldComparer.Compare(item, InternalItemAt(index - 1)) <
+                          0)) || /* item has moved up in the list */
+                        ((index < InternalList.Count - 1) &&
+                         (sortFieldComparer.Compare(item, InternalItemAt(index)) >
+                          0))) /* item has moved down in the list */
+                    {
+                        index = sortFieldComparer.FindInsertIndex(item, _internalList);
+                    }
                 }
             }
 
@@ -4071,13 +4184,18 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         Debug.Assert(list != null, "Input list to sort should not be null");
 
-        IEnumerable<object> seq      = list;
-        var                 itemType = ItemType;
+        IEnumerable<object> seq       = list;
+        bool                shouldSort = list.Count > 1;
+        var                 itemType  = ItemType;
         Debug.Assert(itemType != null);
 
         foreach (var sort in SortDescriptions)
         {
             sort.Initialize(itemType);
+            if (!shouldSort)
+            {
+                continue;
+            }
 
             if (seq is IOrderedEnumerable<object> orderedEnum)
             {
@@ -4089,7 +4207,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             }
         }
 
-        return MaterializeSortedList(seq, list.Count);
+        return shouldSort ? MaterializeSortedList(seq, list.Count) : list;
     }
 
     private static List<object> MaterializeSortedList(IEnumerable<object> seq, int count)

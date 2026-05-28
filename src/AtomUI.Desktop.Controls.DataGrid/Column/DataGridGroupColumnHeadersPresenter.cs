@@ -261,8 +261,10 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
         
         double totalHeight = 0.0;
         // 递归求高度
-        foreach (IDataGridColumnGroupItem item in OwningGrid.ColumnGroups)
+        var columnGroups = OwningGrid.ColumnGroups;
+        for (var i = 0; i < columnGroups.Count; i++)
         {
+            IDataGridColumnGroupItem item = columnGroups[i];
             MeasureGroupRecursive(item, out var childTotalHeight);
             totalHeight =  Math.Max(totalHeight, childTotalHeight);
         }
@@ -282,8 +284,10 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
             {
                 var childHeight = 0.0;
                 var childWidth = 0.0;
-                foreach (var child in groupItem.GroupChildren)
+                var groupChildren = groupItem.GroupChildren;
+                for (var i = 0; i < groupChildren.Count; i++)
                 {
+                    var child = groupChildren[i];
                     var childSize = MeasureGroupRecursive(child, out var childTotalHeight);
                     childHeight =  Math.Max(childSize.Height, childHeight);
                     childWidth  += childSize.Width;
@@ -508,8 +512,10 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
     
         var offsetX     = 0.0d;
         var remainWidth = finalSize.Width;
-        foreach (IDataGridColumnGroupItem item in OwningGrid.ColumnGroups)
+        var columnGroups = OwningGrid.ColumnGroups;
+        for (var i = 0; i < columnGroups.Count; i++)
         {
+            IDataGridColumnGroupItem item = columnGroups[i];
             if (item is IDataGridColumnGroupItemInternal groupItem)
             {
                 if (groupItem.GroupHeaderViewItem != null)
@@ -614,8 +620,10 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
                 var offsetX     = rect.X;
                 var offsetY     = rect.Y + selfHeight;
                 var remainWidth = rect.Width;
-                foreach (var child in groupItem.GroupChildren)
+                var groupChildren = groupItem.GroupChildren;
+                for (var i = 0; i < groupChildren.Count; i++)
                 {
+                    var child = groupChildren[i];
                     if (child is IDataGridColumnGroupItemInternal childGroupItem)
                     {
                         if (childGroupItem.GroupHeaderViewItem != null)

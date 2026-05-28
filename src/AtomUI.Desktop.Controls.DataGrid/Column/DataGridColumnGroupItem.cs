@@ -115,8 +115,10 @@ public class DataGridColumnGroupItem : AvaloniaObject,
     {
         if (e.OldItems != null)
         {
-            foreach (var item in e.OldItems)
+            var oldItems = e.OldItems;
+            for (var i = 0; i < oldItems.Count; i++)
             {
+                var item = oldItems[i];
                 if (item is IDataGridColumnGroupItem groupItem)
                 {
                     HandleColumnGroupChanged(groupItem, NotifyColumnGroupChangedType.Remove);
@@ -127,8 +129,10 @@ public class DataGridColumnGroupItem : AvaloniaObject,
 
         if (e.NewItems != null)
         {
-            foreach (var item in e.NewItems)
+            var newItems = e.NewItems;
+            for (var i = 0; i < newItems.Count; i++)
             {
+                var item = newItems[i];
                 if (item is IDataGridColumnGroupItem groupItem)
                 {
                     groupItem.GroupParent = this;

@@ -186,6 +186,7 @@ internal class DataGridDataConnection
         (result, count) = DataSource switch
         {
             ICollection collection => (true, collection.Count),
+            System.Collections.Generic.IReadOnlyCollection<object> collection => (true, collection.Count),
             IEnumerable enumerable when allowSlow && !getAny => (true, CountEnumerable(enumerable)),
             IEnumerable enumerable when getAny => (true, EnumerableHasAny(enumerable) ? 1 : 0),
             _ => (false, 0)
@@ -398,6 +399,11 @@ internal class DataGridDataConnection
             return (index < list.Count) ? list[index] : null;
         }
 
+        if (DataSource is System.Collections.Generic.IReadOnlyList<object> readOnlyList)
+        {
+            return (index < readOnlyList.Count) ? readOnlyList[index] : null;
+        }
+
         IEnumerable? enumerable = DataSource;
         if (enumerable != null)
         {
@@ -482,13 +488,27 @@ internal class DataGridDataConnection
             return list.IndexOf(dataItem);
         }
 
+        if (DataSource is System.Collections.Generic.IReadOnlyList<object> readOnlyList)
+        {
+            int count = readOnlyList.Count;
+            for (int index = 0; index < count; index++)
+            {
+                var dataItemTmp = readOnlyList[index];
+                if (Equals(dataItemTmp, dataItem))
+                {
+                    return index;
+                }
+            }
+            return -1;
+        }
+
         IEnumerable? enumerable = DataSource;
-        if (enumerable != null && dataItem != null)
+        if (enumerable != null)
         {
             int index = 0;
             foreach (var dataItemTmp in enumerable)
             {
-                if (dataItemTmp == null || dataItem.Equals(dataItemTmp))
+                if (Equals(dataItemTmp, dataItem))
                 {
                     return index;
                 }
@@ -722,14 +742,12 @@ internal class DataGridDataConnection
                 if (!IsGrouping)
                 {
                     // If we're grouping then we handle this through the CollectionViewGroup notifications
-                    // According to WPF, Remove is a single item operation
-                    if (e.OldItems != null)
+                    // Reuse the original start index; after each deletion, the next old item moves into that slot.
+                    for (int i = 0, count = removedItems.Count; i < count; i++)
                     {
-                        foreach (object item in e.OldItems)
-                        {
-                            Debug.Assert(item != null);
-                            _owner.RemoveRowAt(e.OldStartingIndex, item);
-                        }
+                        object item = removedItems[i]!;
+                        Debug.Assert(item != null);
+                        _owner.RemoveRowAt(e.OldStartingIndex, item);
                     }
                 }
                 break;

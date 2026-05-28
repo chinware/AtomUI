@@ -309,6 +309,22 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
                 }
             }
         }
+        else if (key is IList keyItems)
+        {
+            // the item belongs to multiple subgroups
+            for (int i = 0, count = keyItems.Count; i < count; i++)
+            {
+                AddToSubgroup(item, group, level, keyItems[i]!, loading);
+            }
+        }
+        else if (key is IReadOnlyList<object> readOnlyKeyItems)
+        {
+            // the item belongs to multiple subgroups
+            for (int i = 0, count = readOnlyKeyItems.Count; i < count; i++)
+            {
+                AddToSubgroup(item, group, level, readOnlyKeyItems[i]!, loading);
+            }
+        }
         else if (key is ICollection keyList)
         {
             // the item belongs to multiple subgroups
@@ -471,6 +487,28 @@ internal class CollectionViewGroupRoot : DataGridCollectionViewGroupInternal, IN
         {
             // the item belongs to the group itself (not to any subgroups)
             itemIsMissing = RemoveFromGroupDirectly(group, item);
+        }
+        else if (key is IList keyItems)
+        {
+            // the item belongs to multiple subgroups
+            for (int i = 0, count = keyItems.Count; i < count; i++)
+            {
+                if (RemoveFromSubgroup(item, group, level, keyItems[i]!))
+                {
+                    itemIsMissing = true;
+                }
+            }
+        }
+        else if (key is IReadOnlyList<object> readOnlyKeyItems)
+        {
+            // the item belongs to multiple subgroups
+            for (int i = 0, count = readOnlyKeyItems.Count; i < count; i++)
+            {
+                if (RemoveFromSubgroup(item, group, level, readOnlyKeyItems[i]!))
+                {
+                    itemIsMissing = true;
+                }
+            }
         }
         else if (key is ICollection keyList)
         {

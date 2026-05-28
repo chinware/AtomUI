@@ -71,7 +71,7 @@ internal static class TypeHelper
 
             // Only a single parameter is supported and it must be a string or Int32 value.
             parameters = pi.GetIndexParameters();
-            if (parameters.Length > 1)
+            if (parameters.Length != 1)
             {
                 continue;
             }
@@ -79,7 +79,8 @@ internal static class TypeHelper
             if (parameters[0].ParameterType == typeof(int))
             {
                 int intIndex = -1;
-                if (Int32.TryParse(stringIndex.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out intIndex))
+                if (Int32.TryParse(stringIndex.AsSpan().Trim(), NumberStyles.None, CultureInfo.InvariantCulture,
+                                   out intIndex))
                 {
                     index = [intIndex];
                     return pi;
@@ -104,6 +105,11 @@ internal static class TypeHelper
     /// <returns>Default member name.</returns>
     private static string? GetDefaultMemberName(this Type type)
     {
+        if (!type.IsDefined(typeof(DefaultMemberAttribute), true))
+        {
+            return null;
+        }
+
         var attributes = type.GetCustomAttributes(typeof(DefaultMemberAttribute), true);
         if (attributes.Length == 1)
         {
@@ -374,7 +380,7 @@ internal static class TypeHelper
             {
                 foreach (var typeInterface in type.GetInterfaces())
                 {
-                    property = type.GetProperty(propertyPath);
+                    property = typeInterface.GetProperty(propertyPath);
                     if (property != null)
                     {
                         return property;
@@ -502,55 +508,76 @@ internal static class TypeHelper
     /// <returns>List of property substrings.</returns>
     internal static List<string> SplitPropertyPath(string? propertyPath)
     {
-        List<string> propertyPaths = new List<string>();
-        if (!string.IsNullOrEmpty(propertyPath))
+        if (string.IsNullOrEmpty(propertyPath))
         {
-            bool parenthesisOn = false;
-            int  startIndex    = 0;
-            for (int index = 0; index < propertyPath!.Length; index++)
+            return new List<string>();
+        }
+
+        if (IsSimplePropertyPath(propertyPath!))
+        {
+            return new List<string>(1) { propertyPath! };
+        }
+
+        List<string> propertyPaths = new List<string>();
+        bool         parenthesisOn = false;
+        int          startIndex    = 0;
+        for (int index = 0; index < propertyPath!.Length; index++)
+        {
+            if (parenthesisOn)
             {
-                if (parenthesisOn)
+                if (propertyPath[index] == RightParenthesisToken)
                 {
-                    if (propertyPath[index] == RightParenthesisToken)
-                    {
-                        parenthesisOn = false;
-                        startIndex    = index + 1;
-                    }
-
-                    continue;
+                    parenthesisOn = false;
+                    startIndex    = index + 1;
                 }
 
-                if (propertyPath[index] == LeftParenthesisToken)
-                {
-                    parenthesisOn = true;
-                    if (startIndex != index)
-                    {
-                        propertyPaths.Add(propertyPath.Substring(startIndex, index - startIndex));
-                        startIndex = index + 1;
-                    }
-                }
-                else if (propertyPath[index] == PropertyNameSeparator)
-                {
-                    if (startIndex != index)
-                    {
-                        propertyPaths.Add(propertyPath.Substring(startIndex, index - startIndex));
-                    }
+                continue;
+            }
 
-                    startIndex = index + 1;
-                }
-                else if (startIndex != index && propertyPath[index] == LeftIndexerToken)
+            if (propertyPath[index] == LeftParenthesisToken)
+            {
+                parenthesisOn = true;
+                if (startIndex != index)
                 {
                     propertyPaths.Add(propertyPath.Substring(startIndex, index - startIndex));
-                    startIndex = index;
+                    startIndex = index + 1;
                 }
-                else if (index == propertyPath.Length - 1)
+            }
+            else if (propertyPath[index] == PropertyNameSeparator)
+            {
+                if (startIndex != index)
                 {
-                    propertyPaths.Add(propertyPath.Substring(startIndex));
+                    propertyPaths.Add(propertyPath.Substring(startIndex, index - startIndex));
                 }
+
+                startIndex = index + 1;
+            }
+            else if (startIndex != index && propertyPath[index] == LeftIndexerToken)
+            {
+                propertyPaths.Add(propertyPath.Substring(startIndex, index - startIndex));
+                startIndex = index;
+            }
+            else if (index == propertyPath.Length - 1)
+            {
+                propertyPaths.Add(propertyPath.Substring(startIndex));
             }
         }
 
         return propertyPaths;
+    }
+
+    private static bool IsSimplePropertyPath(string propertyPath)
+    {
+        for (int i = 0; i < propertyPath.Length; i++)
+        {
+            char ch = propertyPath[i];
+            if (ch == PropertyNameSeparator || ch == LeftIndexerToken || ch == LeftParenthesisToken)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -597,6 +624,31 @@ internal static class TypeHelper
         {
             // We haven't located a type yet.. try a different approach.
             // Does the list have anything in it?
+            if (list is IList indexableList)
+            {
+                for (int i = 0, count = indexableList.Count; i < count; i++)
+                {
+                    object? item = indexableList[i];
+                    if (item != null)
+                    {
+                        return item.GetType();
+                    }
+                }
+                return itemType;
+            }
+
+            if (list is IReadOnlyList<object?> readOnlyList)
+            {
+                for (int i = 0, count = readOnlyList.Count; i < count; i++)
+                {
+                    object? item = readOnlyList[i];
+                    if (item != null)
+                    {
+                        return item.GetType();
+                    }
+                }
+                return itemType;
+            }
 
             IEnumerator enumerator = list.GetEnumerator();
             try

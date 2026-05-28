@@ -1899,8 +1899,9 @@ public partial class DataGrid
     {
         if (ColumnGroupsInternal.Count > 0)
         {
-            foreach (var item in ColumnGroupsInternal)
+            for (var i = 0; i < ColumnGroupsInternal.Count; i++)
             {
+                var item = ColumnGroupsInternal[i];
                 if (item is IDataGridColumnGroupItemInternal groupItem)
                 {
                     var headerViewItem = new DataGridHeaderViewItem(this);
@@ -1919,8 +1920,10 @@ public partial class DataGrid
                     if (groupItem.GroupChildren.Count > 0)
                     {
                         headerViewItem.IsLeaf = false;
-                        foreach (IDataGridColumnGroupItem child in groupItem.GroupChildren)
+                        var groupChildren = groupItem.GroupChildren;
+                        for (var childIndex = 0; childIndex < groupChildren.Count; childIndex++)
                         {
+                            IDataGridColumnGroupItem child = groupChildren[childIndex];
                             if (child is IDataGridColumnGroupItemInternal childGroup)
                             {
                                 BuildGroupViewItemRecursive(childGroup, 1);
@@ -1955,8 +1958,10 @@ public partial class DataGrid
         if (columnGroupItem.GroupChildren.Count > 0)
         {
             childHeaderViewItem.IsLeaf = false;
-            foreach (var child in columnGroupItem.GroupChildren)
+            var groupChildren = columnGroupItem.GroupChildren;
+            for (var childIndex = 0; childIndex < groupChildren.Count; childIndex++)
             {
+                var child = groupChildren[childIndex];
                 if (child is IDataGridColumnGroupItemInternal childGroup)
                 {
                     BuildGroupViewItemRecursive(childGroup, depth + 1);
@@ -2360,8 +2365,10 @@ public partial class DataGrid
         {
             if (e.OldItems != null)
             {
-                foreach (var item in e.OldItems)
+                var oldItems = e.OldItems;
+                for (var i = 0; i < oldItems.Count; i++)
                 {
+                    var item = oldItems[i];
                     if (item is DataGridColumn column)
                     {
                         ColumnsInternal.Remove(column);
@@ -2370,16 +2377,22 @@ public partial class DataGrid
                     {
                         RemoveColumnsFromGroupTree(gridColumn);
                     }
+
+                    if (item is IDataGridColumnGroupItem gridItem)
+                    {
+                        gridItem.GroupChanged -= HandleColumnGroupItemChanged;
+                    }
                 }
             }
         }
-
-        if (e.Action == NotifyCollectionChangedAction.Add)
+        else if (e.Action == NotifyCollectionChangedAction.Add)
         {
             if (e.NewItems != null)
             {
-                foreach (var item in e.NewItems)
+                var newItems = e.NewItems;
+                for (var i = 0; i < newItems.Count; i++)
                 {
+                    var item = newItems[i];
                     if (item is DataGridColumn column)
                     {
                         ColumnsInternal.Add(column);
@@ -2388,30 +2401,7 @@ public partial class DataGrid
                     {
                         AddColumnsFromGroupTree(gridColumn);
                     }
-                }
-            }
-        }
 
-        if (e.Action == NotifyCollectionChangedAction.Remove)
-        {
-            if (e.OldItems != null)
-            {
-                foreach (var item in e.OldItems)
-                {
-                    if (item is IDataGridColumnGroupItem gridItem)
-                    {
-                        gridItem.GroupChanged -= HandleColumnGroupItemChanged;
-                    }
-                }
-            }
-        }
-
-        if (e.Action == NotifyCollectionChangedAction.Add)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (var item in e.NewItems)
-                {
                     if (item is IDataGridColumnGroupItem gridItem)
                     {
                         gridItem.GroupChanged += HandleColumnGroupItemChanged;
@@ -2451,8 +2441,10 @@ public partial class DataGrid
             gridColumnGroup.OwningGrid = this;
         }
 
-        foreach (var child in groupItem.GroupChildren)
+        var groupChildren = groupItem.GroupChildren;
+        for (var i = 0; i < groupChildren.Count; i++)
         {
+            var child = groupChildren[i];
             AddColumnsFromGroupTree(child);
         }
     }
@@ -2470,8 +2462,10 @@ public partial class DataGrid
             gridColumnGroup.OwningGrid = null;
         }
 
-        foreach (var child in groupItem.GroupChildren)
+        var groupChildren = groupItem.GroupChildren;
+        for (var i = 0; i < groupChildren.Count; i++)
         {
+            var child = groupChildren[i];
             RemoveColumnsFromGroupTree(child);
         }
     }

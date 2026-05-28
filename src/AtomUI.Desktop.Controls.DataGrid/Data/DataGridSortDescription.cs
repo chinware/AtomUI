@@ -128,6 +128,9 @@ public abstract class DataGridSortDescription
 
     private class DataGridPathSortDescription : DataGridSortDescription
     {
+        private static readonly object NotStringComparerCacheLock = new();
+        private static readonly Dictionary<Type, IComparer?> NotStringComparerCache = new();
+
         private readonly ListSortDirection _direction;
         private readonly string _propertyPath;
         private readonly Lazy<CultureSensitiveComparer> _cultureSensitiveComparer;
@@ -222,6 +225,25 @@ public abstract class DataGridSortDescription
         }
 
         internal static IComparer? GetComparerForNotStringType(Type type)
+        {
+            lock (NotStringComparerCacheLock)
+            {
+                if (NotStringComparerCache.TryGetValue(type, out IComparer? comparer))
+                {
+                    return comparer;
+                }
+            }
+
+            IComparer? createdComparer = CreateComparerForNotStringType(type);
+            lock (NotStringComparerCacheLock)
+            {
+                NotStringComparerCache.TryAdd(type, createdComparer);
+            }
+
+            return createdComparer;
+        }
+
+        private static IComparer? CreateComparerForNotStringType(Type type)
         {
             if (System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported == false)
             {
