@@ -506,21 +506,32 @@ public class TextArea : AvaloniaTextBox,
     {
         if (status == FormValidateStatus.Error)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
+            SetStatusIfChanged(InputControlStatus.Error);
         }
         else if (status == FormValidateStatus.Warning)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
+            SetStatusIfChanged(InputControlStatus.Warning);
         }
         else
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetStatusIfChanged(InputControlStatus.Default);
         }
     }
     
     protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
     {
-        FormFeedback = value;
+        if (!ReferenceEquals(FormFeedback, value))
+        {
+            FormFeedback = value;
+        }
+    }
+
+    private void SetStatusIfChanged(InputControlStatus status)
+    {
+        if (Status != status)
+        {
+            SetCurrentValue(StatusProperty, status);
+        }
     }
     #endregion
 }

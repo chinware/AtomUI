@@ -748,15 +748,15 @@ public class FormItem : TemplatedControl, IFormItem
         var formItemAware     = Content as IFormItemAware;
         Debug.Assert(formItemAware != null);
         var value           = formItemAware.GetFormValue();
-        var warningMessages = new List<string>();
+        var warningMessages = new List<string>(Validators.Count);
         var hasWarning      = false;
         var hasError        = false;
         ValidateErrorMessages   = null;
         ValidateWarningMessages = null;
         if (ValidateStrategy == FormValidateStrategy.Parallel || ValidateStrategy == FormValidateStrategy.Sequential)
         {
-            var tasks         = new Dictionary<Task<FormValidateResult>, IFormValidator>();
-            var errorMessages = new List<string>();
+            var tasks         = new Dictionary<Task<FormValidateResult>, IFormValidator>(Validators.Count);
+            var errorMessages = new List<string>(Validators.Count);
             if (ValidateStrategy == FormValidateStrategy.Parallel)
             {
                 foreach (var validator in Validators)

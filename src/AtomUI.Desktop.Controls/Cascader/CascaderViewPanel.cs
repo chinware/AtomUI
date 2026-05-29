@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -16,6 +17,7 @@ internal class CascaderViewFrame : Decorator
     }
     
     private StackPanel? _itemsPanel;
+    private IPen? _borderPen;
 
     static CascaderViewFrame()
     {
@@ -53,7 +55,11 @@ internal class CascaderViewFrame : Decorator
                 {
                     var pointStart = new Point(offset.Value.X, 0);
                     var pointEnd   = new Point(offset.Value.X, height);
-                    context.DrawLine(new Pen(BorderBrush), pointStart, pointEnd);
+                    PenUtils.TryModifyOrCreate(ref _borderPen, BorderBrush, 1.0);
+                    if (_borderPen is not null)
+                    {
+                        context.DrawLine(_borderPen, pointStart, pointEnd);
+                    }
                 }
             }
         }

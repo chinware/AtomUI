@@ -8,6 +8,8 @@ namespace AtomUI.Controls;
 
 internal abstract class AbstractWavePainter : IWaveSpiritPainter
 {
+    protected static readonly Easing DefaultLinearEasing = new LinearEasing();
+
     public Point OriginPoint { get; set; }
     public IBrush? WaveBrush { get; set; }
     public WaveSpiritType WaveType { get; protected set; }
@@ -32,7 +34,7 @@ internal abstract class AbstractWavePainter : IWaveSpiritPainter
     public virtual void NotifyBuildOpacityAnimation(Animation animation, AvaloniaProperty targetProperty)
     {
         animation.Duration = OpacityMotionDuration;
-        animation.Easing   = OpacityEasingCurve ?? new LinearEasing();
+        animation.Easing   = OpacityEasingCurve ?? DefaultLinearEasing;
         animation.Children.Add(new KeyFrame
         {
             Setters =

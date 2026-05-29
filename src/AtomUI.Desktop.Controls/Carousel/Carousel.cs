@@ -284,10 +284,10 @@ public class Carousel : SelectingItemsControl, IMotionAwareControl
     
     private void HandleItemCountChanged(int count)
     {
-        var items = new List<object>();
+        var items = count == 0 ? Array.Empty<object>() : new object[count];
         for (var i = 0; i < count; i++)
         {
-            items.Add(new object());
+            items[i] = new object();
         }
         SetCurrentValue(IndicatorItemsProperty, items);
     }

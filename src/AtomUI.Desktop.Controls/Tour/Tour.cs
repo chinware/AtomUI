@@ -347,16 +347,25 @@ public class Tour : TemplatedControl, IMotionAwareControl
     {
         if (_stepsView != null)
         {
-            var actions = CustomActions.Cast<Control>().ToList();
-            foreach (var action in actions)
-            {
-                if (action is ITourAction tourAction)
-                {
-                    tourAction.NotifyAttached(this);
-                }
-            }
-            _stepsView.CustomActions = actions;
+            _stepsView.CustomActions = PrepareCustomActions();
         }
+    }
+
+    private Control[] PrepareCustomActions()
+    {
+        var actions = new Control[CustomActions.Count];
+        var index   = 0;
+        foreach (var item in CustomActions)
+        {
+            var action = (Control)item!;
+            if (action is ITourAction tourAction)
+            {
+                tourAction.NotifyAttached(this);
+            }
+            actions[index++] = action;
+        }
+
+        return actions;
     }
 
     private void ConfigureDefaultValues()
@@ -503,17 +512,7 @@ public class Tour : TemplatedControl, IMotionAwareControl
         {
             _stepsView.CloseRequest  += HandleCloseRequest;
             _stepsView.NavRequest    += HandleNavRequest;
-            var actions =  CustomActions.Cast<Control>().ToList();
-
-            foreach (var action in actions)
-            {
-                if (action is ITourAction tourAction)
-                {
-                    tourAction.NotifyAttached(this);
-                }
-            }
-
-            _stepsView.CustomActions = actions;
+            _stepsView.CustomActions = PrepareCustomActions();
         }
     }
 

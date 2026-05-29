@@ -33,24 +33,24 @@ public class TreeTransfer : AbstractTransfer
         var               targetPanelSourceChanged = false;
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
-        var               targetKeySet             = TargetKeys?.Count > 0 ? TargetKeys.ToHashSet() : null;
+        var               targetKeySet             = BuildTargetKeySet(TargetKeys);
         if (changeType.HasFlag(FilterChangeType.Source))
         {
             var sourcePanelSource = ItemsSource;
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
             SourceViewSource         = sourcePanelSource;
-            sourceItemKeys           = sourcePanelSource?.Select(item => item.ItemKey ?? default).ToList();
+            sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
             SourceView?.SetMaskedItems(TargetKeys);
         }
 
         if (changeType.HasFlag(FilterChangeType.Target))
         {
-            var targetPanelSource = targetKeySet == null
-                ? []
+            IEnumerable<IListItemData> targetPanelSource = targetKeySet == null
+                ? Array.Empty<IListItemData>()
                 : CalculateTargetItemsSource(ItemsSource?.Cast<ITreeItemNode>(), targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
             TargetViewSource         = targetPanelSource;
-            targetItemKeys           = targetPanelSource.Select(item => item.ItemKey ?? default).ToList();
+            targetItemKeys           = BuildItemKeyList(targetPanelSource);
         }
 
         if (sourcePanelSourceChanged || targetPanelSourceChanged)
@@ -61,7 +61,7 @@ public class TreeTransfer : AbstractTransfer
 
     private List<IListItemData> CalculateTargetItemsSource(IEnumerable<ITreeItemNode>? itemNodes, ISet<EntityKey> targetKeySet)
     {
-        var results = new List<IListItemData>();
+        var results = new List<IListItemData>(targetKeySet.Count);
         CollectTargetItemsSource(itemNodes, targetKeySet, results);
         return results;
     }

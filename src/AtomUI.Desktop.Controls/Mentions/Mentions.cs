@@ -602,7 +602,7 @@ public class Mentions : TemplatedControl,
         }
         
         // Store a local cached copy of the data
-        _items = newValue == null ? null : new List<IMentionOption>(newValue.Cast<IMentionOption>());
+        _items = newValue == null ? null : BuildItemsCache(newValue);
         
         // Clear and set the view on the selection adapter
         ClearView();
@@ -659,12 +659,24 @@ public class Mentions : TemplatedControl,
             ClearView();
             if (OptionsSource != null)
             {
-                _items = new List<IMentionOption>(OptionsSource);
+                _items = BuildItemsCache(OptionsSource);
             }
         }
 
         // Refresh the observable collection used in the selection adapter.
         RefreshView();
+    }
+
+    private static List<IMentionOption> BuildItemsCache(IEnumerable source)
+    {
+        var items = source is ICollection collection
+            ? new List<IMentionOption>(collection.Count)
+            : new List<IMentionOption>();
+        foreach (var item in source)
+        {
+            items.Add((IMentionOption)item!);
+        }
+        return items;
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

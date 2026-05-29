@@ -67,7 +67,7 @@ public class ListTransfer : AbstractTransfer
         var               targetPanelSourceChanged = false;
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
-        var               targetKeySet             = TargetKeys?.Count > 0 ? TargetKeys.ToHashSet() : null;
+        var               targetKeySet             = BuildTargetKeySet(TargetKeys);
         if (changeType.HasFlag(FilterChangeType.Source))
         {
             var sourcePanelSource = ItemsSource?
@@ -78,7 +78,7 @@ public class ListTransfer : AbstractTransfer
                                     .ToArray();
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
             SourceViewSource         = sourcePanelSource;
-            sourceItemKeys           = sourcePanelSource?.Select(item => item.ItemKey ?? default).ToList();
+            sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
         }
 
         if (changeType.HasFlag(FilterChangeType.Target))
@@ -97,7 +97,7 @@ public class ListTransfer : AbstractTransfer
             }
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
             TargetViewSource         = targetPanelSource;
-            targetItemKeys           = targetPanelSource?.Select(item => item.ItemKey ?? default).ToList();
+            targetItemKeys           = BuildItemKeyList(targetPanelSource);
         }
 
         if (sourcePanelSourceChanged || targetPanelSourceChanged)

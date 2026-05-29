@@ -275,3 +275,44 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 ## 6. 后续
 
 TreeView 仍有第二类热点：`TreeViewItemHeader.BuildFilterHighlightRuns()` 在搜索高亮中存在 per-character `Run` 模式。该问题只在 filter 交互触发，不属于本轮页面导航主因；下一轮应先建立 filter action 的专项基线，再考虑段级 Run 合并。
+
+---
+
+## 7. 追加结构优化：TreeView 过滤高亮无命中 fast path
+
+`TreeViewItemHeader.BuildFilterHighlightRuns()` 在 `HighlightedMatch` 模式下先检查首个命中；无命中时不再创建空 ranges list。同时补齐一个正确性短路：`FilterHighlightWords == ""` 时清空高亮 runs 并返回，避免旧逻辑在 `IndexOf("")` 上无法推进。`HighlightedWhole` 和 `BoldedMatch` 的现有行为保持不变：whole 仍整段着色，bold 仍按旧逻辑作用到所有字符。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| 无命中过滤高亮 ranges list / header rebuild | 1 list | 0 list | `(1 - 0) / 1` | 100.00% | TreeView filter 无命中路径少一次临时集合分配 |
+| 命中高亮首个命中查找 / header rebuild | 2 次 | 1 次 | `(2 - 1) / 2` | 50.00% | 首个匹配位置复用，不重复搜索 |
+| 空过滤词死循环风险 | 1 条 | 0 条 | `(1 - 0) / 1` | 100.00% | 正确性修复，不作为性能收益 |
+
+说明：这是 filter 交互路径的结构性收益；本轮不声称 `TreeViewShowCase` 页面导航 timing 因此提升。
+
+---
+
+## 8. 追加结构优化：filter 选择闭包启动列表
+
+`TreeView.HandleSelectionChanged()` 在 filter 模式下不再先把 selected containers 放进 `startupItems` 临时列表，而是在找到 container 时直接计算并合并闭包。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| filter selection startup list / selection changed | 1 list | 0 list | `(1 - 0) / 1` | 100.00% | 结构收益；filter 选择变化少一次临时集合分配 |
+| selected container second pass / selection changed | 1 pass | 0 pass | `(1 - 0) / 1` | 100.00% | 结构收益；闭包在发现 container 时直接合并 |
+
+说明：这是 filter 交互路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 9. 追加结构优化：TreeNodePath 路径列表容量
+
+`ExpandTreeViewPath()`、`CollapseTreeViewPath()`、`TraverTreeViewPath()` 的路径列表按 `TreeNodePath.Segments.Count` 预分配，临时展开状态列表也按同一长度预分配。路径内容、展开/恢复顺序不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TreeView pathNodes list growth / path traversal | dynamic capacity | exact capacity | structural | 分配更紧 | 路径节点数已知时避免 List 增长 |
+| TreeView path expand-status list growth / temporary traversal | dynamic capacity | exact capacity | structural | 分配更紧 | 展开状态数量与路径长度一致 |
+| TreeView checked reset added list growth / checked items reset | dynamic capacity | exact capacity | structural | 分配更紧 | reset 通知 added 列表按 `CheckedItems.Count` 预分配 |
+
+说明：这是默认展开/选中路径的结构性收益；不声明页面导航 timing 提升。

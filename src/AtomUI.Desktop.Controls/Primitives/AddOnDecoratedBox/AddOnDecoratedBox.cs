@@ -659,11 +659,17 @@ internal class AddOnDecoratedBox : ContentControl,
         if (presenter == null) return;
         if (brush != null)
         {
-            presenter.SetCurrentValue(ForegroundProperty, brush);
+            if (!ReferenceEquals(presenter.Foreground, brush))
+            {
+                presenter.SetCurrentValue(ForegroundProperty, brush);
+            }
         }
         else
         {
-            presenter.ClearValue(ForegroundProperty);
+            if (presenter.IsSet(ForegroundProperty))
+            {
+                presenter.ClearValue(ForegroundProperty);
+            }
         }
     }
 
@@ -678,15 +684,33 @@ internal class AddOnDecoratedBox : ContentControl,
             if (icon.Classes.Contains("skip-status")) continue;
             if (brush != null)
             {
-                icon.SetCurrentValue(Icon.FillBrushProperty, brush);
-                icon.SetCurrentValue(Icon.StrokeBrushProperty, brush);
-                icon.SetCurrentValue(Icon.ForegroundProperty, brush);
+                if (!ReferenceEquals(icon.FillBrush, brush))
+                {
+                    icon.SetCurrentValue(Icon.FillBrushProperty, brush);
+                }
+                if (!ReferenceEquals(icon.StrokeBrush, brush))
+                {
+                    icon.SetCurrentValue(Icon.StrokeBrushProperty, brush);
+                }
+                if (!ReferenceEquals(icon.Foreground, brush))
+                {
+                    icon.SetCurrentValue(Icon.ForegroundProperty, brush);
+                }
             }
             else
             {
-                icon.ClearValue(Icon.FillBrushProperty);
-                icon.ClearValue(Icon.StrokeBrushProperty);
-                icon.ClearValue(Icon.ForegroundProperty);
+                if (icon.IsSet(Icon.FillBrushProperty))
+                {
+                    icon.ClearValue(Icon.FillBrushProperty);
+                }
+                if (icon.IsSet(Icon.StrokeBrushProperty))
+                {
+                    icon.ClearValue(Icon.StrokeBrushProperty);
+                }
+                if (icon.IsSet(Icon.ForegroundProperty))
+                {
+                    icon.ClearValue(Icon.ForegroundProperty);
+                }
             }
         }
     }
@@ -754,30 +778,43 @@ internal class AddOnDecoratedBox : ContentControl,
                 }
             }
             
-            SetCurrentValue(InnerBoxCornerRadiusProperty, new CornerRadius(topLeftRadius,
+            var innerBoxCornerRadius = new CornerRadius(topLeftRadius,
                 topRightRadius,
                 bottomLeft: bottomLeftRadius,
-                bottomRight: bottomRightRadius));
+                bottomRight: bottomRightRadius);
+            if (InnerBoxCornerRadius != innerBoxCornerRadius)
+            {
+                SetCurrentValue(InnerBoxCornerRadiusProperty, innerBoxCornerRadius);
+            }
         }
         else
         {
-            SetCurrentValue(InnerBoxCornerRadiusProperty, new CornerRadius(0));
+            var innerBoxCornerRadius = new CornerRadius(0);
+            if (InnerBoxCornerRadius != innerBoxCornerRadius)
+            {
+                SetCurrentValue(InnerBoxCornerRadiusProperty, innerBoxCornerRadius);
+            }
         }
     }
 
     private void ConfigureInnerBoxBorderThickness()
     {
+        Thickness innerBoxBorderThickness;
         if (StyleVariant == InputControlStyleVariant.Borderless)
         {
-            SetCurrentValue(InnerBoxBorderThicknessProperty, new Thickness(0));
+            innerBoxBorderThickness = new Thickness(0);
         }
         else if (StyleVariant == InputControlStyleVariant.Underlined)
         {
-            SetCurrentValue(InnerBoxBorderThicknessProperty, new Thickness(0, 0, 0, BorderThickness.Bottom));
+            innerBoxBorderThickness = new Thickness(0, 0, 0, BorderThickness.Bottom);
         }
         else
         {
-            SetCurrentValue(InnerBoxBorderThicknessProperty, BorderThickness);
+            innerBoxBorderThickness = BorderThickness;
+        }
+        if (InnerBoxBorderThickness != innerBoxBorderThickness)
+        {
+            SetCurrentValue(InnerBoxBorderThicknessProperty, innerBoxBorderThickness);
         }
     }
     
@@ -804,7 +841,7 @@ internal class AddOnDecoratedBoxContentFrame : Border
         base.OnPointerEntered(e);
         if (TemplatedParent is AddOnDecoratedBox decoratedBox)
         {
-            decoratedBox.IsInnerBoxHover = true;
+            SetInnerBoxHoverIfChanged(decoratedBox, true);
         }
     }
 
@@ -813,7 +850,7 @@ internal class AddOnDecoratedBoxContentFrame : Border
         base.OnPointerExited(e);
         if (TemplatedParent is AddOnDecoratedBox decoratedBox)
         {
-            decoratedBox.IsInnerBoxHover = false;
+            SetInnerBoxHoverIfChanged(decoratedBox, false);
         }
     }
 
@@ -822,8 +859,8 @@ internal class AddOnDecoratedBoxContentFrame : Border
         base.OnPointerPressed(e);
         if (TemplatedParent is AddOnDecoratedBox decoratedBox)
         {
-            decoratedBox.IsInnerBoxHover   = true;
-            decoratedBox.IsInnerBoxPressed = true;
+            SetInnerBoxHoverIfChanged(decoratedBox, true);
+            SetInnerBoxPressedIfChanged(decoratedBox, true);
         }
     }
 
@@ -832,8 +869,24 @@ internal class AddOnDecoratedBoxContentFrame : Border
         base.OnPointerReleased(e);
         if (TemplatedParent is AddOnDecoratedBox decoratedBox)
         {
-            decoratedBox.IsInnerBoxPressed = false;
-            decoratedBox.IsInnerBoxHover   = true;
+            SetInnerBoxPressedIfChanged(decoratedBox, false);
+            SetInnerBoxHoverIfChanged(decoratedBox, true);
+        }
+    }
+
+    private static void SetInnerBoxHoverIfChanged(AddOnDecoratedBox decoratedBox, bool isHover)
+    {
+        if (decoratedBox.IsInnerBoxHover != isHover)
+        {
+            decoratedBox.IsInnerBoxHover = isHover;
+        }
+    }
+
+    private static void SetInnerBoxPressedIfChanged(AddOnDecoratedBox decoratedBox, bool isPressed)
+    {
+        if (decoratedBox.IsInnerBoxPressed != isPressed)
+        {
+            decoratedBox.IsInnerBoxPressed = isPressed;
         }
     }
 }

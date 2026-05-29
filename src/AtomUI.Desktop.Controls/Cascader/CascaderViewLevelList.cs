@@ -232,7 +232,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     {
         if (this is IListVirtualizingContextAware list && element is IListItemVirtualizingContextAware listItem)
         {
-            var context = new Dictionary<object, object?>();
+            var context = new Dictionary<object, object?>(5);
             list.SaveVirtualizingContext(element, context);
             _virtualRestoreContext.Add(listItem.VirtualIndex, context);
             list.ClearContainerValues(element);

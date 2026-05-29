@@ -98,7 +98,7 @@ public class UploadDefaultDropArea : TemplatedControl, IMotionAwareControl
 
     private void HandleDrop(DragEventArgs e)
     {
-        var files = new List<IStorageFile>();
+        var files = new List<IStorageFile>(e.DataTransfer.Items.Count);
         foreach (var item in e.DataTransfer.Items)
         {
             var raw = item.TryGetRaw(DataFormat.File);

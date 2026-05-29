@@ -119,8 +119,9 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         _cardExpiredTimer.Tick += HandleCardExpiredTimer;
         _cleanupTimer          =  new DispatcherTimer { Interval = CleanupPollingIntervalProperty.GetDefaultValue(typeof(WindowNotificationManager)), Tag = this };
         _cleanupTimer.Tick     += HandleCleanupTimerTick;
-        _cleanupQueue          =  new Queue<NotificationCard>();
-        _cleanupSet            =  new HashSet<NotificationCard>();
+        var maxItems = MaxItemsProperty.GetDefaultValue(typeof(WindowNotificationManager));
+        _cleanupQueue          =  new Queue<NotificationCard>(maxItems);
+        _cleanupSet            =  new HashSet<NotificationCard>(maxItems);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

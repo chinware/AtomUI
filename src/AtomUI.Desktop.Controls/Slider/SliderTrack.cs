@@ -285,6 +285,8 @@ public class SliderTrack : TemplatedControl
     private double Density { get; set; }
     private IDisposable? _focusProcessDisposable;
     private Size _markLabelSize;
+    private IPen? _markBorderPen;
+    private IPen? _markBorderActivePen;
 
     static SliderTrack()
     {
@@ -890,8 +892,8 @@ public class SliderTrack : TemplatedControl
             {
                 if (Marks?.Count > 0)
                 {
-                    _renderContextData.MarkRects     = new List<(Rect, int, bool)>();
-                    _renderContextData.MarkTextRects = new List<(Rect, int, bool, FormattedText)>();
+                    _renderContextData.MarkRects     = new List<(Rect, int, bool)>(Marks.Count);
+                    _renderContextData.MarkTextRects = new List<(Rect, int, bool, FormattedText)>(Marks.Count);
                     var railRect     = _renderContextData.RailRect;
                     var railCenterY  = railRect.Center.Y;
                     var markIncluded = false;
@@ -959,8 +961,8 @@ public class SliderTrack : TemplatedControl
             {
                 if (Marks?.Count > 0)
                 {
-                    _renderContextData.MarkRects     = new List<(Rect, int, bool)>();
-                    _renderContextData.MarkTextRects = new List<(Rect, int, bool, FormattedText)>();
+                    _renderContextData.MarkRects     = new List<(Rect, int, bool)>(Marks.Count);
+                    _renderContextData.MarkTextRects = new List<(Rect, int, bool, FormattedText)>(Marks.Count);
                     var railRect     = _renderContextData.RailRect;
                     var railCenterX  = railRect.Center.X;
                     var markIncluded = false;
@@ -1031,9 +1033,20 @@ public class SliderTrack : TemplatedControl
             {
                 var centerPos = markRectEntry.Item1.Center;
                 var radius    = SliderMarkSize / 2;
-                var circlePen = new Pen(markRectEntry.Item3 ? MarkBorderActiveBrush : MarkBorderBrush,
-                    MarkBorderThickness.Left);
-                context.DrawEllipse(MarkBackgroundBrush, circlePen, centerPos, radius, radius);
+                if (markRectEntry.Item3)
+                {
+                    PenUtils.TryModifyOrCreate(ref _markBorderActivePen,
+                        MarkBorderActiveBrush,
+                        MarkBorderThickness.Left);
+                    context.DrawEllipse(MarkBackgroundBrush, _markBorderActivePen, centerPos, radius, radius);
+                }
+                else
+                {
+                    PenUtils.TryModifyOrCreate(ref _markBorderPen,
+                        MarkBorderBrush,
+                        MarkBorderThickness.Left);
+                    context.DrawEllipse(MarkBackgroundBrush, _markBorderPen, centerPos, radius, radius);
+                }
             }
         }
 

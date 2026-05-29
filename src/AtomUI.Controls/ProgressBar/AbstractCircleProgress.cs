@@ -83,7 +83,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     public AbstractCircleProgress()
     {
-        _sizeTypeThresholdValue = new Dictionary<SizeType, double>();
+        _sizeTypeThresholdValue = new Dictionary<SizeType, double>(3);
     }
 
     protected override SizeType CalculateEffectiveSizeType(double size)

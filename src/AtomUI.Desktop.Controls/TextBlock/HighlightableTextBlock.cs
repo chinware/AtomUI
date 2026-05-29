@@ -96,15 +96,17 @@ public class HighlightableTextBlock : TextBlock
             return;
         }
 
-        var highlightRanges = CalculateHighlightRanges(HighlightWords, Text);
-        var runs            = new InlineCollection();
-
-        if (highlightRanges.Count == 0)
+        var firstHighlightIndex = Text.IndexOf(HighlightWords, StringComparison.OrdinalIgnoreCase);
+        if (firstHighlightIndex == -1)
         {
-            runs.Add(CreateRun(Text, isHighlighted: false, bold: false));
-            Inlines = runs;
+            var plainRuns = new InlineCollection();
+            plainRuns.Add(CreateRun(Text, isHighlighted: false, bold: false));
+            Inlines = plainRuns;
             return;
         }
+
+        var highlightRanges = CalculateHighlightRanges(HighlightWords, Text, firstHighlightIndex);
+        var runs            = new InlineCollection();
 
         var cursor = 0;
         foreach (var (start, end) in highlightRanges)
@@ -152,22 +154,22 @@ public class HighlightableTextBlock : TextBlock
         return false;
     }
     
-    protected List<(int, int)> CalculateHighlightRanges(string highlightWords, string text)
+    protected List<(int, int)> CalculateHighlightRanges(string highlightWords, string text, int firstIndex = 0)
     {
         var ranges          = new List<(int, int)>();
-        int currentIndex    = 0;
         var highlightLength = highlightWords.Length;
+        var foundIndex      = firstIndex;
         
         while (true)
         {
-            int foundIndex = text.IndexOf(highlightWords, currentIndex, StringComparison.OrdinalIgnoreCase);
             if (foundIndex == -1) // 如果没有找到，退出循环
             {
                 break;
             }
                 
-            currentIndex = foundIndex + highlightLength;
+            var currentIndex = foundIndex + highlightLength;
             ranges.Add((foundIndex, currentIndex));
+            foundIndex = text.IndexOf(highlightWords, currentIndex, StringComparison.OrdinalIgnoreCase);
         }
         return ranges;
     }

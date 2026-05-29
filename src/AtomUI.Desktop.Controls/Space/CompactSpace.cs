@@ -121,7 +121,7 @@ public class CompactSpace : TemplatedControl,
         {
             case NotifyCollectionChangedAction.Add:
             {
-                var compactSpaceItems = new List<CompactSpaceItem>();
+                var compactSpaceItems = new List<CompactSpaceItem>(e.NewItems!.Count);
                 foreach (var newItem in e.NewItems!.OfType<Control>())
                 {
                     EnsureCompactSpaceItem(newItem);
@@ -142,8 +142,12 @@ public class CompactSpace : TemplatedControl,
 
             case NotifyCollectionChangedAction.Remove:
             {
-                var oldItems             = new HashSet<Control>(e.OldItems!.OfType<Control>());
-                var oldCompactSpaceItems = new List<CompactSpaceItem>();
+                var oldItems             = new HashSet<Control>(e.OldItems!.Count);
+                foreach (var oldItem in e.OldItems.OfType<Control>())
+                {
+                    oldItems.Add(oldItem);
+                }
+                var oldCompactSpaceItems = new List<CompactSpaceItem>(e.OldItems.Count);
                 foreach (var oldItem in _contentLayout.Children)
                 {
                     if (oldItem is CompactSpaceItem compactSpaceItem)
@@ -330,7 +334,7 @@ public class CompactSpace : TemplatedControl,
         base.OnApplyTemplate(e);
         ClearChildClassesChangedHandlers();
         _contentLayout = e.NameScope.Get<Grid>("PART_ContentLayout");
-        var compactSpaceItems = new List<CompactSpaceItem>();
+        var compactSpaceItems = new List<CompactSpaceItem>(Children.Count);
         foreach (var child in Children)
         {
             EnsureCompactSpaceItem(child);
@@ -486,31 +490,37 @@ public class CompactSpace : TemplatedControl,
         }
         
         // 计算位置
-        var realChildren = children.Where(child => child is CompactSpaceItem compactSpaceItem && compactSpaceItem.Child is not CompactSpaceFiller).ToList();
-        if (realChildren.Count == 1)
+        var realChildrenCount = CountRealChildren(children);
+        if (realChildrenCount == 1)
         {
-            if (realChildren[0] is ICompactSpaceAware compactSpaceAware)
+            if (FindFirstRealChild(children) is ICompactSpaceAware compactSpaceAware)
             {
                 compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
             }
         }
         else
         {
-            for (var i = 0; i < realChildren.Count; i++)
+            var realChildIndex = 0;
+            for (var i = 0; i < children.Count; i++)
             {
-                var child = realChildren[i];
+                var child = children[i];
+                if (!IsRealChild(child))
+                {
+                    continue;
+                }
+
                 if (child is CompactSpaceItem compactSpaceItem)
                 {
-                    compactSpaceItem.PositionIndex = i;
+                    compactSpaceItem.PositionIndex = realChildIndex;
                 }
                 if (child is ICompactSpaceAware compactSpaceAware)
                 {
                     compactSpaceAware.NotifyOrientationChange(Orientation);
-                    if (i == 0)
+                    if (realChildIndex == 0)
                     {
                         compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First);
                     }
-                    else if (i == realChildren.Count - 1)
+                    else if (realChildIndex == realChildrenCount - 1)
                     {
                         compactSpaceAware.NotifyPositionChange(SpaceItemPosition.Last);
                     }
@@ -519,8 +529,43 @@ public class CompactSpace : TemplatedControl,
                         compactSpaceAware.NotifyPositionChange(SpaceItemPosition.Middle);
                     }
                 }
+
+                realChildIndex++;
             }
         }
+    }
+
+    private static int CountRealChildren(Avalonia.Controls.Controls children)
+    {
+        var count = 0;
+        for (var i = 0; i < children.Count; i++)
+        {
+            if (IsRealChild(children[i]))
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private static Control? FindFirstRealChild(Avalonia.Controls.Controls children)
+    {
+        for (var i = 0; i < children.Count; i++)
+        {
+            var child = children[i];
+            if (IsRealChild(child))
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool IsRealChild(Control child)
+    {
+        return child is CompactSpaceItem { Child: not CompactSpaceFiller };
     }
     
     private void HandleChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)

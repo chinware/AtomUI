@@ -144,7 +144,7 @@ public class GroupBox : ContentControl
             {
                 var headerOffset = _headerContentContainer.TranslatePoint(new Point(0, 0), this) ?? default;
                 var bounds       = new Rect(headerOffset, _headerContentContainer.DesiredSize);
-                context.FillRectangle(Background ?? new SolidColorBrush(Colors.Transparent), bounds);
+                context.FillRectangle(Background ?? Brushes.Transparent, bounds);
             }
         }
     }

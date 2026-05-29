@@ -91,7 +91,7 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     private void HandleItemCountChanged()
     {
-        var nodes      = Items.Cast<ITreeItemNode>().ToList();
+        var nodes      = BuildTreeNodeList(Items);
         var totalCount = 0;
         foreach (var node in nodes)
         {
@@ -108,7 +108,7 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
             _ignoreSyncSelection = false;
             return;
         }
-        var checkedItems = ItemsSource?.Cast<ITreeItemNode>().Where(item => SelectedKeys?.Contains(item.ItemKey ?? default) ?? false).ToList();
+        var checkedItems = BuildCheckedItemsList(ItemsSource, SelectedKeys);
         CheckedItems.Clear();
         if (checkedItems != null)
         {
@@ -134,7 +134,7 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
         }
         else
         {
-            var selectedKeys = new List<EntityKey>();
+            var selectedKeys = new List<EntityKey>(CheckedItems.Count);
             foreach (var item in CheckedItems)
             {
                 if (item is ITreeItemNode treeItemNode && treeItemNode.IsEnabled)
@@ -217,7 +217,7 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     private void MaskNodes()
     {
-        var nodes = Items.Cast<ITreeItemNode>().ToList();
+        var nodes = BuildTreeNodeList(Items);
         foreach (var node in nodes)
         {
             MaskNodeRecursively(node);
@@ -283,7 +283,7 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     void ITransferTreeView.SetMaskedItems(IList<EntityKey>? maskedItems)
     {
-        SetCurrentValue(MaskKeysProperty, maskedItems?.ToHashSet());
+        SetCurrentValue(MaskKeysProperty, BuildEntityKeySet(maskedItems));
     }
     
     void ITransferDecoratorProvider.ProvideTransferDecorator(TransferItemDecorator decorator)
@@ -308,5 +308,56 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
                 }
             }
         }
+    }
+
+    private static List<ITreeItemNode> BuildTreeNodeList(IEnumerable source)
+    {
+        var nodes = source is ICollection collection
+            ? new List<ITreeItemNode>(collection.Count)
+            : new List<ITreeItemNode>();
+        foreach (var item in source)
+        {
+            nodes.Add((ITreeItemNode)item!);
+        }
+        return nodes;
+    }
+
+    private static List<ITreeItemNode>? BuildCheckedItemsList(
+        IEnumerable? source,
+        ICollection<EntityKey>? selectedKeys)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var selectedKeySet = BuildEntityKeySet(selectedKeys);
+        var checkedItems = selectedKeys == null
+            ? new List<ITreeItemNode>(0)
+            : new List<ITreeItemNode>(selectedKeys.Count);
+        foreach (var item in source)
+        {
+            var treeItem = (ITreeItemNode)item!;
+            if (selectedKeySet?.Contains(treeItem.ItemKey ?? default) == true)
+            {
+                checkedItems.Add(treeItem);
+            }
+        }
+        return checkedItems;
+    }
+
+    private static HashSet<EntityKey>? BuildEntityKeySet(ICollection<EntityKey>? keys)
+    {
+        if (keys == null)
+        {
+            return null;
+        }
+
+        var keySet = new HashSet<EntityKey>(keys.Count);
+        foreach (var key in keys)
+        {
+            keySet.Add(key);
+        }
+        return keySet;
     }
 }

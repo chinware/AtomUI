@@ -43,16 +43,14 @@ internal static class DateTimeUtils
         var needWeekdaySweep = ContainsToken(format, 'd', minRepeat: 3);
         var needAmPmSweep    = ContainsToken(format, 't');
 
-        var months   = needMonthSweep ? Enumerable.Range(1, 12) : new[] { 1 };
-        var weekdayOffsets = needWeekdaySweep ? Enumerable.Range(0, 7) : new[] { 0 };
-        var hours    = needAmPmSweep ? new[] { 9, 22 } : new[] { 22 };
-
         var maxWidth  = 0d;
         var maxHeight = 0d;
         // 2028-01-02 是星期天,加 offset 可以扫过一周;日 28 保证两位数字,时分秒取宽数字概率更高.
-        foreach (var month in months)
+        var monthCount = needMonthSweep ? 12 : 1;
+        for (var month = 1; month <= monthCount; month++)
         {
-            foreach (var offset in weekdayOffsets)
+            var weekdayCount = needWeekdaySweep ? 7 : 1;
+            for (var offset = 0; offset < weekdayCount; offset++)
             {
                 DateTime date;
                 try
@@ -64,8 +62,10 @@ internal static class DateTimeUtils
                     continue;
                 }
 
-                foreach (var hour in hours)
+                var hourCount = needAmPmSweep ? 2 : 1;
+                for (var hourIndex = 0; hourIndex < hourCount; hourIndex++)
                 {
+                    var hour   = needAmPmSweep && hourIndex == 0 ? 9 : 22;
                     var sample = new DateTime(date.Year, date.Month, date.Day, hour, 58, 58);
                     var text   = formatInfo != null ? sample.ToString(format, formatInfo) : sample.ToString(format);
                     text = ReplaceDigits(text, widestDigit);

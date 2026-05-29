@@ -273,8 +273,9 @@ public class Upload : ContentControl,
                     var files = new List<UploadFileInfo>();
                     foreach (var directory in directories)
                     {
-                        foreach (var fileInfo in Directory.EnumerateFiles(directory.Path.LocalPath, "*", SearchOption.TopDirectoryOnly).Select(x => new FileInfo(x)))
+                        foreach (var filePath in Directory.EnumerateFiles(directory.Path.LocalPath, "*", SearchOption.TopDirectoryOnly))
                         {
+                            var fileInfo = new FileInfo(filePath);
                             files.Add(new UploadFileInfo(fileInfo.Name, new Uri(fileInfo.FullName), fileInfo.Length, fileInfo.CreationTime,  fileInfo.LastWriteTime));
                         }
                     }

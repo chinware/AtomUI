@@ -196,13 +196,24 @@ public class CompactSpaceAddOn : TemplatedControl,
     
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
-        IsUsedInCompactSpace     = position != null;
-        CompactSpaceItemPosition = position;
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
     }
     
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
-        CompactSpaceOrientation = orientation;
+        if (CompactSpaceOrientation != orientation)
+        {
+            CompactSpaceOrientation = orientation;
+        }
     }
 
     bool ICompactSpaceAware.IgnoreZIndexChange() => true;

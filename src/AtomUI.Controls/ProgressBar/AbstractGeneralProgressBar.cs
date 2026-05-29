@@ -625,7 +625,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
     {
         if (!PercentPosition.IsInner)
         {
-            SetCurrentValue(PercentageLabelColorProperty, Foreground);
+            SetPercentageLabelColorIfChanged(Foreground);
         }
         else
         {
@@ -635,31 +635,50 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
                 // 但是渐变笔刷就麻烦了，暂时不支持吧
                 var colorTextLabel      = (ColorTextLabel as ISolidColorBrush)!.Color;
                 var colorTextLightSolid = (ColorTextLightSolid as ISolidColorBrush)!.Color;
-                var colors              = new List<Color> { colorTextLabel, colorTextLightSolid };
                 if (MathUtils.AreClose(Value, 0))
                 {
                     if (GrooveBrush is ISolidColorBrush grooveBrush)
                     {
-                        var mostReadable = ColorUtils.MostReadable(grooveBrush.Color, colors);
-                        if (mostReadable.HasValue)
-                        {
-                            SetCurrentValue(PercentageLabelColorProperty, new SolidColorBrush(mostReadable.Value));
-                        }
+                        var mostReadable = SelectMostReadable(grooveBrush.Color, colorTextLabel, colorTextLightSolid);
+                        SetPercentageLabelColorIfChanged(mostReadable);
                     }
                 }
                 else
                 {
                     if (StrokeBrush is ISolidColorBrush solidColorBrush)
                     {
-                        var mostReadable = ColorUtils.MostReadable(solidColorBrush.Color, colors);
-                        if (mostReadable.HasValue)
-                        {
-                            SetCurrentValue(PercentageLabelColorProperty, new SolidColorBrush(mostReadable.Value));
-                        }
+                        var mostReadable = SelectMostReadable(solidColorBrush.Color, colorTextLabel, colorTextLightSolid);
+                        SetPercentageLabelColorIfChanged(mostReadable);
                     }
                 }
             }
         }
+    }
+
+    private static Color SelectMostReadable(Color baseColor, Color first, Color second)
+    {
+        return ColorUtils.Readability(baseColor, first) >= ColorUtils.Readability(baseColor, second)
+            ? first
+            : second;
+    }
+
+    private void SetPercentageLabelColorIfChanged(IBrush? brush)
+    {
+        if (!Equals(PercentageLabelColor, brush))
+        {
+            SetCurrentValue(PercentageLabelColorProperty, brush);
+        }
+    }
+
+    private void SetPercentageLabelColorIfChanged(Color color)
+    {
+        if (PercentageLabelColor is ISolidColorBrush solidColorBrush &&
+            solidColorBrush.Color == color)
+        {
+            return;
+        }
+
+        SetCurrentValue(PercentageLabelColorProperty, new SolidColorBrush(color));
     }
 
     private void UpdatePseudoClasses()

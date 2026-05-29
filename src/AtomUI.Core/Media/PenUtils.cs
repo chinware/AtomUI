@@ -34,6 +34,18 @@ public static class PenUtils
             return previousPen is not null;
         }
 
+        if (IsSamePen(previousPen,
+                brush,
+                thickness,
+                strokeDashArray,
+                strokeDaskOffset,
+                lineCap,
+                lineJoin,
+                miterLimit))
+        {
+            return false;
+        }
+
         IDashStyle? dashStyle = null;
         if (strokeDashArray is { Count: > 0 })
         {
@@ -67,5 +79,51 @@ public static class PenUtils
 
         pen = mutablePen;
         return !Equals(previousPen, pen);
+    }
+
+    private static bool IsSamePen(IPen? pen,
+                                  IBrush brush,
+                                  double thickness,
+                                  IReadOnlyList<double>? strokeDashArray,
+                                  double strokeDaskOffset,
+                                  PenLineCap lineCap,
+                                  PenLineJoin lineJoin,
+                                  double miterLimit)
+    {
+        return pen is not null &&
+               Equals(pen.Brush, brush) &&
+               pen.Thickness.Equals(thickness) &&
+               pen.LineCap == lineCap &&
+               pen.LineJoin == lineJoin &&
+               pen.MiterLimit.Equals(miterLimit) &&
+               IsSameDashStyle(pen.DashStyle, strokeDashArray, strokeDaskOffset);
+    }
+
+    private static bool IsSameDashStyle(IDashStyle? dashStyle,
+                                        IReadOnlyList<double>? strokeDashArray,
+                                        double strokeDaskOffset)
+    {
+        if (strokeDashArray is not { Count: > 0 })
+        {
+            return dashStyle is null || dashStyle.Dashes is not { Count: > 0 };
+        }
+
+        if (dashStyle is null ||
+            !dashStyle.Offset.Equals(strokeDaskOffset) ||
+            dashStyle.Dashes is not { } dashes ||
+            dashes.Count != strokeDashArray.Count)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < strokeDashArray.Count; i++)
+        {
+            if (!dashes[i].Equals(strokeDashArray[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

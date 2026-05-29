@@ -274,7 +274,7 @@ public class Cascader : AbstractSelect
     {
         if (_cascaderView != null)
         {
-            _cascaderView.OptionsSource = Options.Cast<ICascaderOption>().ToList();
+            _cascaderView.OptionsSource = BuildOptionsList(Options);
         }
     }
 
@@ -448,7 +448,7 @@ public class Cascader : AbstractSelect
             _cascaderView.ItemDoubleClicked      += HandleCascaderViewItemDoubleClicked;
             _cascaderView.ItemClicked            += HandleCascaderViewItemClicked;
             _cascaderView.OptionSelected         += HandleCascaderViewItemSelected;
-            _cascaderView.OptionsSource          =  Options.Cast<ICascaderOption>().ToList();
+            _cascaderView.OptionsSource          =  BuildOptionsList(Options);
         }
 
         ConfigurePlaceholderVisible();
@@ -552,8 +552,8 @@ public class Cascader : AbstractSelect
         }
         else
         {
-            var currentSet = _checkedOptions?.Cast<ICascaderOption>().ToHashSet() ?? new HashSet<ICascaderOption>();
-            cascaderViewSet = _cascaderView?.SelectedOptions?.Cast<ICascaderOption>().ToHashSet() ?? new HashSet<ICascaderOption>();
+            var currentSet = BuildOptionSet(_checkedOptions) ?? new HashSet<ICascaderOption>();
+            cascaderViewSet = BuildOptionSet(_cascaderView?.SelectedOptions) ?? new HashSet<ICascaderOption>();
             if (!currentSet.SetEquals(cascaderViewSet))
             {
                 needSync = true;
@@ -565,10 +565,10 @@ public class Cascader : AbstractSelect
             try
             {
                 _needSkipSyncSelectedOptions =   true;
-                cascaderViewSet              ??= _cascaderView?.SelectedOptions?.Cast<ICascaderOption>().ToHashSet();
+                cascaderViewSet              ??= BuildOptionSet(_cascaderView?.SelectedOptions);
                 if (cascaderViewSet != null)
                 {
-                    SelectedOptions = cascaderViewSet.ToList();
+                    SelectedOptions = BuildOptionList(cascaderViewSet);
                 }
            
             }
@@ -780,7 +780,7 @@ public class Cascader : AbstractSelect
         {
             if (SelectedOptions != null)
             {
-                var checkedOptions = new List<ICascaderOption>();
+                var checkedOptions = new List<ICascaderOption>(SelectedOptions.Count);
                 foreach (var option in SelectedOptions)
                 {
                     checkedOptions.Add(option);
@@ -811,28 +811,32 @@ public class Cascader : AbstractSelect
                 {
                     if (_cascaderView.SelectedOptions == null)
                     {
-                        var checkedOptions = new List<ICascaderOption>();
+                        var checkedOptions = new List<ICascaderOption>(SelectedOptions.Count);
                         checkedOptions.AddRange(SelectedOptions);
                         _cascaderView.SelectedOptions = checkedOptions;
                     }
                     else
                     {
-                        var cascaderViewSet = _cascaderView.SelectedOptions.ToHashSet();
-                        var currentSet      = SelectedOptions.ToHashSet();
-                        var deletedOptions  = cascaderViewSet.Except(currentSet);
-                        var addedOptions    = currentSet.Except(cascaderViewSet);
+                        var cascaderViewSet = BuildOptionSet(_cascaderView.SelectedOptions)!;
+                        var currentSet      = BuildOptionSet(SelectedOptions)!;
                         
-                        var currentSelectedOptions = new List<ICascaderOption>();
+                        var currentSelectedOptions = new List<ICascaderOption>(_cascaderView.SelectedOptions.Count);
                         currentSelectedOptions.AddRange(_cascaderView.SelectedOptions);
                         
-                        foreach (var option in deletedOptions)
+                        foreach (var option in cascaderViewSet)
                         {
-                            currentSelectedOptions.Remove(option);
+                            if (!currentSet.Contains(option))
+                            {
+                                currentSelectedOptions.Remove(option);
+                            }
                         }
         
-                        foreach (var option in addedOptions)
+                        foreach (var option in currentSet)
                         {
-                            currentSelectedOptions.Add(option);
+                            if (!cascaderViewSet.Contains(option))
+                            {
+                                currentSelectedOptions.Add(option);
+                            }
                         }
                         _cascaderView.SelectedOptions = currentSelectedOptions;
                     }
@@ -856,13 +860,18 @@ public class Cascader : AbstractSelect
             }
             else
             {
-                var effectiveSelectedOptions = new List<ICascaderOption>();
+                var effectiveSelectedOptions = new List<ICascaderOption>(SelectedOptions.Count);
                 if (ShowCheckedStrategy.HasFlag(TreeSelectCheckedStrategy.ShowParent))
                 {
-                    var selectedSet = SelectedOptions.Cast<object>().ToHashSet();
-                    var fullySelectedParents = SelectedOptions
-                                               .Where(node => node.Children.All(child => selectedSet.Contains(child)))
-                                               .ToHashSet();
+                    var selectedSet          = BuildOptionSet(SelectedOptions)!;
+                    var fullySelectedParents = new HashSet<ICascaderOption>(SelectedOptions.Count);
+                    foreach (var node in SelectedOptions)
+                    {
+                        if (node.Children.All(child => selectedSet.Contains(child)))
+                        {
+                            fullySelectedParents.Add(node);
+                        }
+                    }
                     foreach (var option in SelectedOptions)
                     {
                         bool isDescendantOfFullySelectedParent = fullySelectedParents
@@ -891,6 +900,43 @@ public class Cascader : AbstractSelect
         {
             EffectiveSelectedOptions = null;
         }
+    }
+
+    private static List<ICascaderOption> BuildOptionsList(IEnumerable source)
+    {
+        var options = source is ICollection collection
+            ? new List<ICascaderOption>(collection.Count)
+            : new List<ICascaderOption>();
+        foreach (var item in source)
+        {
+            options.Add((ICascaderOption)item!);
+        }
+        return options;
+    }
+
+    private static List<ICascaderOption> BuildOptionList(ICollection<ICascaderOption> source)
+    {
+        var options = new List<ICascaderOption>(source.Count);
+        foreach (var item in source)
+        {
+            options.Add(item);
+        }
+        return options;
+    }
+
+    private static HashSet<ICascaderOption>? BuildOptionSet(ICollection<ICascaderOption>? source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var options = new HashSet<ICascaderOption>(source.Count);
+        foreach (var item in source)
+        {
+            options.Add(item);
+        }
+        return options;
     }
         
     private bool IsDescendantOf(ICascaderOption node, ICascaderOption parent)

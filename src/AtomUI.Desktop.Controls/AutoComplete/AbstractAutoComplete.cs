@@ -1210,13 +1210,13 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         }
     
         // Fire the SelectionChanged event
-        var removed = new List<object>();
+        var removed = new List<object>(e.OldValue != null ? 1 : 0);
         if (e.OldValue != null)
         {
             removed.Add(e.OldValue);
         }
     
-        var added = new List<object>();
+        var added = new List<object>(e.NewValue != null ? 1 : 0);
         if (e.NewValue != null)
         {
             added.Add(e.NewValue);

@@ -13,6 +13,8 @@
 - `TargetKeys` 为空时，target panel 直接使用空集合，避免再扫描完整 `ItemsSource`。
 - 修正 target-only filter 刷新时的变更检测顺序：先比较旧 `TargetViewSource`，再写入新值。
 - 本次增量继续收敛 `TreeTransfer` 目标侧递归收集：去掉顶层 `ToList()` 源复制，并把每个节点递归返回一个临时结果 `List` 改为单个结果列表累积。
+- 本次追加收敛 `TransferListView` / `TransferTreeView` 的 selected keys/items 同步：去掉 `Cast/Select/Where/ToList/ToHashSet` materialization 链，改为按已知 Count 预分配并显式拷贝。
+- `AbstractTransfer` / `ListTransfer` / `TreeTransfer` 共享 key list/set 构造 helper，目标 key 集合、selection changed key 列表、transfer 后 `TargetKeys` 列表都按 Count 预分配。
 
 没有移动任何主题视觉到 C# 动态创建，没有新增 `_ignoreXxx` 标志位、disposable、事件订阅或模板结构。
 
@@ -38,6 +40,11 @@
 | `TreeTransfer` target 刷新顶层 source copy | 1 list / refresh | 0 list / refresh | `(1 - 0) / 1` | 100.00% | 去掉 `ItemsSource.Cast<ITreeItemNode>().ToList()` |
 | `TreeTransfer` target 递归结果列表 | N lists / N visited nodes | 1 list / refresh | `(N - 1) / N` | N 越大越接近 100% | 从每个递归层返回临时 `List` 改为单列表累积 |
 | `TreeTransfer` target filter 后数组 | 1 array / filtered refresh | 0 array / filtered refresh | `(1 - 0) / 1` | 100.00% | 过滤判断并入收集流程，目标列表直接作为 `TargetViewSource` |
+| Transfer key list `Select().ToList()` materialization | 6 iterator chains / refresh | 0 iterator chains / refresh | `(6 - 0) / 6` | 100.00% | `sourceItemKeys` / `targetItemKeys` 显式构造并预分配 |
+| Transfer target key `ToHashSet()` materialization | 3 LINQ materializations / refresh/sync | 0 LINQ materializations / refresh/sync | `(3 - 0) / 3` | 100.00% | `BuildTargetKeySet` / `BuildEntityKeySet` 保留 HashSet 但去掉 LINQ 链 |
+| `TransferListView` selected-items sync LINQ chain | 1 `Cast+Where+ToList` / sync | 0 LINQ chains / sync | `(1 - 0) / 1` | 100.00% | 保留类型转换 fail-fast，结果列表按 `SelectedKeys.Count` 预分配 |
+| `TransferTreeView` node snapshot list growth | dynamic growth / count+mask pass | exact capacity / count+mask pass | structural | 结构收益 | `Items.Count` 已知时直接预分配 |
+| transfer 后 `TargetKeys` 列表 | LINQ `ToList()` / transfer | explicit exact list / transfer | structural | 结构收益 | `HashSet.Count` 已知时直接构造结果列表 |
 
 > 说明：这是可由代码结构直接证明的分配次数下降；本次未新增 Gallery timing 对比，因此不把它写成页面耗时提升。
 
@@ -187,7 +194,7 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 | 新增订阅 / timer / reparented element | 0 |
 | axaml 节点搬到 C# 动态创建 | 否 |
 | Theme Static Rule | 未触发 |
-| 生产文件范围 | 2 个文件，均在 `Transfer` |
+| 生产文件范围 | 5 个文件，均在 `Transfer` |
 
 ---
 

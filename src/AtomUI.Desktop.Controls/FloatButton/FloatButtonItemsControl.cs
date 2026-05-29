@@ -135,16 +135,28 @@ internal class FloatButtonItemsControl : TemplatedControl
         var size     = base.ArrangeOverride(finalSize);
         if (Shape == FloatButtonShape.Square)
         {
-            var lines = new List<(Point, Point)>();
-            var children = Children.Where(c => c.IsVisible).ToList();
-            var count    = children.Count;
+            var count    = CountVisibleChildren();
+            if (count <= 1)
+            {
+                Lines = Array.Empty<(Point, Point)>();
+                return size;
+            }
+
+            var lines        = new (Point, Point)[count - 1];
+            var lineIndex    = 0;
+            var visibleIndex = 0;
             Point startPoint = default;
             Point endPoint   = default;
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < Children.Count; ++i)
             {
-                if (i != count - 1)
+                var child = Children[i];
+                if (!child.IsVisible)
                 {
-                    var child    = children[i];
+                    continue;
+                }
+
+                if (visibleIndex != count - 1)
+                {
                     var childPos = child.TranslatePoint(new Point(0, 0), this);
                     if (childPos != null)
                     {
@@ -159,13 +171,33 @@ internal class FloatButtonItemsControl : TemplatedControl
                             startPoint = new Point(0, childPos.Value.Y + childBounds.Height);
                             endPoint   = new Point(DesiredSize.Width, childPos.Value.Y + childBounds.Height);
                         }
-                        lines.Add((startPoint, endPoint));
+                        lines[lineIndex++] = (startPoint, endPoint);
                     }
                 }
+
+                visibleIndex++;
             }
 
+            if (lineIndex != lines.Length)
+            {
+                Array.Resize(ref lines, lineIndex);
+            }
             Lines = lines;
         }
         return size;
+    }
+
+    private int CountVisibleChildren()
+    {
+        var count = 0;
+        foreach (var child in Children)
+        {
+            if (child.IsVisible)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 }

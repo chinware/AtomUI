@@ -173,7 +173,7 @@ internal class MotionGhostControl : Control
         offsetY += MaskOffset.Y;
         
         // 不知道这里为啥不行
-        var renderers = new List<Control>();
+        var renderers = new List<Control>(shadows.Count);
         for (var i = 0; i < shadows.Count; ++i)
         {
             var renderer = new Border
@@ -242,18 +242,38 @@ internal class MotionGhostControl : Control
         {
             if (_layout.Children[i] is Border border)
             {
-                border.CornerRadius = MaskCornerRadius;
-                border.Width        = MaskSize.Width;
-                border.Height       = MaskSize.Height;
+                if (border.CornerRadius != MaskCornerRadius)
+                {
+                    border.CornerRadius = MaskCornerRadius;
+                }
+                if (!AreClose(border.Width, MaskSize.Width))
+                {
+                    border.Width = MaskSize.Width;
+                }
+                if (!AreClose(border.Height, MaskSize.Height))
+                {
+                    border.Height = MaskSize.Height;
+                }
             }
         }
+    }
+
+    private static bool AreClose(double value1, double value2)
+    {
+        return Math.Abs(value1 - value2) < 0.0001;
     }
 
     private void HandleContentSizeChanged(object? sender, SizeChangedEventArgs e)
     {
         Debug.Assert(_maskCenterFrame != null);
-        _maskCenterFrame.Width  = e.NewSize.Width;
-        _maskCenterFrame.Height = e.NewSize.Height;
+        if (!AreClose(_maskCenterFrame.Width, e.NewSize.Width))
+        {
+            _maskCenterFrame.Width = e.NewSize.Width;
+        }
+        if (!AreClose(_maskCenterFrame.Height, e.NewSize.Height))
+        {
+            _maskCenterFrame.Height = e.NewSize.Height;
+        }
     }
 }
 

@@ -52,7 +52,7 @@ internal class PillWavePainter : AbstractWavePainter
     public override void NotifyBuildSizeAnimation(Animation animation, AvaloniaProperty targetProperty)
     {
         animation.Duration = SizeMotionDuration;
-        animation.Easing   = SizeEasingCurve ?? new LinearEasing();
+        animation.Easing   = SizeEasingCurve ?? DefaultLinearEasing;
         animation.Children.Add(new KeyFrame
         {
             Setters =

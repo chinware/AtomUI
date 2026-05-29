@@ -87,7 +87,7 @@ public abstract class AbstractLineProgress : AbstractProgressBar
 
     public AbstractLineProgress()
     {
-        _sizeTypeThresholdValue = new Dictionary<SizeType, SizeTypeThresholdValue>();
+        _sizeTypeThresholdValue = new Dictionary<SizeType, SizeTypeThresholdValue>(3);
     }
 
     // 根据当前的状态进行计算

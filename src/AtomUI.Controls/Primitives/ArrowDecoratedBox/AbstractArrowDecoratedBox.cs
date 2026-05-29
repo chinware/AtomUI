@@ -229,7 +229,7 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
         base.OnPropertyChanged(change);
         if (change.Property == ArrowPositionProperty)
         {
-            ArrowDirection = GetDirection(ArrowPosition);
+            SetArrowDirectionIfChanged(GetDirection(ArrowPosition));
         }
         else if (change.Property == ArrowDirectionProperty)
         {
@@ -290,7 +290,7 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
         _contentDecorator    = e.NameScope.Get<Border>("PART_ContentDecorator");
         ArrowIndicatorLayout = e.NameScope.Get<Control>("PART_ArrowIndicatorLayout");
         ArrowIndicator       = e.NameScope.Get<ArrowIndicator>("PART_ArrowIndicator");
-        ArrowDirection       = GetDirection(ArrowPosition);
+        SetArrowDirectionIfChanged(GetDirection(ArrowPosition));
     }
 
     private (double, double) GetArrowVertexPoint()
@@ -452,11 +452,35 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
         ArrowIndicatorLayout.Arrange(new Rect(adjustedOffset, size));
         if (ArrowIndicator != null)
         {
-            ArrowIndicatorBounds = ArrowIndicator.Bounds;
+            SetArrowIndicatorBoundsIfChanged(ArrowIndicator.Bounds);
         }
 
-        ArrowIndicatorLayoutBounds = ArrowIndicatorLayout.Bounds;
+        SetArrowIndicatorLayoutBoundsIfChanged(ArrowIndicatorLayout.Bounds);
         ArrowPlacementFlipped     = false;
+    }
+
+    private void SetArrowDirectionIfChanged(Direction direction)
+    {
+        if (ArrowDirection != direction)
+        {
+            ArrowDirection = direction;
+        }
+    }
+
+    private void SetArrowIndicatorBoundsIfChanged(Rect bounds)
+    {
+        if (ArrowIndicatorBounds != bounds)
+        {
+            ArrowIndicatorBounds = bounds;
+        }
+    }
+
+    private void SetArrowIndicatorLayoutBoundsIfChanged(Rect bounds)
+    {
+        if (ArrowIndicatorLayoutBounds != bounds)
+        {
+            ArrowIndicatorLayoutBounds = bounds;
+        }
     }
 
     protected virtual Point AdjustArrowOffset(Point offset, Size finalSize, Size arrowSize)
@@ -476,7 +500,10 @@ public abstract class AbstractArrowDecoratedBox : ContentControl,
 
     void IArrowAwareShadowMaskInfoProvider.SetArrowOpacity(double opacity)
     {
-        ArrowOpacity = opacity;
+        if (Math.Abs(ArrowOpacity - opacity) > 0.0001)
+        {
+            ArrowOpacity = opacity;
+        }
     }
 
     Rect IArrowAwareShadowMaskInfoProvider.GetArrowIndicatorBounds()

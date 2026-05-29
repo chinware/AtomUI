@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -36,6 +37,8 @@ internal class FloatButtonSeparatorLayer : Control
         set => SetValue(SeparatorBrushProperty, value);
     }
     #endregion
+
+    private IPen? _separatorPen;
     
     static FloatButtonSeparatorLayer()
     {
@@ -46,10 +49,14 @@ internal class FloatButtonSeparatorLayer : Control
     {
         if (SeparatorBrush != null && Lines != null)
         {
-            var   pen        = new Pen(SeparatorBrush);
+            PenUtils.TryModifyOrCreate(ref _separatorPen, SeparatorBrush, 1.0);
+            if (_separatorPen is null)
+            {
+                return;
+            }
             foreach (var line in Lines)
             {
-                context.DrawLine(pen, line.Item1, line.Item2);
+                context.DrawLine(_separatorPen, line.Item1, line.Item2);
             }
         }
     }

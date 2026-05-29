@@ -173,3 +173,17 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 ```
 
 结果：`DatePickerPresenter=0`、`RangePickerPresenter=0`、`TimeView=0`、`DateTimePanel=0`，runtime visuals `1840`。
+
+---
+
+## 5. 追加结构优化：输入框 preferred-width 计算
+
+共享 `DateTimeUtils.CalculateWidestFormattedDateTimeSize()` 的月份、星期和 AM/PM 样本扫描改为 `for` loop / index 分支，不再为每次宽度计算创建 `Enumerable.Range` 或小时数组。该工具路径被 DatePicker / TimePicker preferred input width 复用。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| 月份扫描 enumerable / widest datetime width calculation | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；按需月份扫描不再分配 enumerable |
+| 星期扫描 enumerable / widest datetime width calculation | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；按需星期扫描不再分配 enumerable |
+| AM/PM 小时样本数组 / widest datetime width calculation | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；小时样本改为索引分支 |
+
+说明：这是 preferred-width 计算路径的结构性收益；本轮不声明 `TimePickerShowCase` 页面导航 timing 因此提升。

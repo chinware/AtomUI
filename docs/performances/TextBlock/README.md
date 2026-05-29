@@ -290,3 +290,16 @@ rg "new Cursor\(StandardCursorType.Ibeam\)" --type cs src/AtomUI.Desktop.Control
 | `src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj` | `InternalsVisibleTo` 添加 AtomUI.Performance |
 
 总计：3 个生产文件改动 + 1 个生产新主题 + 1 个 ResourceInclude；哈纳斯辅助改动列在表后段供哈纳斯恢复时一并处理。
+
+---
+
+## 7. 追加结构优化：无命中高亮 fast path
+
+`HighlightableTextBlock.NotifyBuildFilterHighlightRuns()` 在无命中时先用 `IndexOf` 判定，避免进入 `CalculateHighlightRanges()` 后创建空 ranges list；命中时把第一次查找结果传入 ranges 计算，避免重复查找首个命中。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| 无命中高亮 ranges list / rebuild | 1 list | 0 list | `(1 - 0) / 1` | 100.00% | 无命中搜索不再分配空 ranges list |
+| 命中高亮首个命中查找 / rebuild | 2 次 | 1 次 | `(2 - 1) / 2` | 50.00% | 首个命中不再重复搜索 |
+
+说明：这是结构性收益，只证明高亮 rebuild 路径分配和重复搜索下降；没有声明页面加载 timing 提升。

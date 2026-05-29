@@ -281,7 +281,7 @@ public abstract class AbstractTag : TemplatedControl
                 return;
             }
 
-            var dict = new Dictionary<PresetColorType, TagCalcColor>();
+            var dict = new Dictionary<PresetColorType, TagCalcColor>(14);
             foreach (var entry in PresetPrimaryColor.AllColorTypes())
             {
                 var colorMap  = sharedToken.GetColorPalette(entry)!;
@@ -308,7 +308,7 @@ public abstract class AbstractTag : TemplatedControl
                 return;
             }
 
-            StatusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>
+            StatusColorMap = new Dictionary<TagStatus, TagStatusCalcColor>(4)
             {
                 [TagStatus.Success] = new TagStatusCalcColor
                 {
@@ -342,13 +342,13 @@ public abstract class AbstractTag : TemplatedControl
     {
         IsPresetColorTag = false;
         IsColorSet       = false;
-        colorStr         = colorStr.Trim().ToLower();
+        colorStr         = colorStr.Trim();
 
         foreach (var entry in PresetColorMap)
         {
-            if (entry.Key.ToString().ToLower() == colorStr)
+            if (string.Equals(entry.Key.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
             {
-                var colorInfo = PresetColorMap[entry.Key];
+                var colorInfo = entry.Value;
                 Foreground       = new SolidColorBrush(colorInfo.TextColor);
                 BorderBrush      = new SolidColorBrush(colorInfo.LightBorderColor);
                 Background       = new SolidColorBrush(colorInfo.LightColor);
@@ -362,9 +362,9 @@ public abstract class AbstractTag : TemplatedControl
 
         foreach (var entry in StatusColorMap)
         {
-            if (entry.Key.ToString().ToLower() == colorStr)
+            if (string.Equals(entry.Key.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
             {
-                var colorInfo = StatusColorMap[entry.Key];
+                var colorInfo = entry.Value;
                 Foreground       = new SolidColorBrush(colorInfo.Color);
                 BorderBrush      = new SolidColorBrush(colorInfo.BorderColor);
                 Background       = new SolidColorBrush(colorInfo.Background);

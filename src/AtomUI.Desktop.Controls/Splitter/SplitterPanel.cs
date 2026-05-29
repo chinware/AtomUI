@@ -1517,7 +1517,7 @@ internal class SplitterPanel : Panel
         var handleSpace     = Math.Max(0, GetEffectiveHandleCount()) * GetHandleSpacing();
         var availableLength = Math.Max(0, totalLength - handleSpace);
         var sizes           = new List<double>(_panels.Count);
-        var flexibleIndices = new List<int>();
+        var flexibleCount   = 0;
         var minSizes        = new double[_panels.Count];
         var maxSizes        = new double[_panels.Count];
 
@@ -1558,17 +1558,20 @@ internal class SplitterPanel : Panel
             else
             {
                 sizes.Add(double.NaN);
-                flexibleIndices.Add(i);
+                flexibleCount++;
             }
         }
 
         var remaining = availableLength - sumExplicit;
-        if (flexibleIndices.Count > 0)
+        if (flexibleCount > 0)
         {
-            var each = remaining / flexibleIndices.Count;
-            foreach (var index in flexibleIndices)
+            var each = remaining / flexibleCount;
+            for (var i = 0; i < sizes.Count; i++)
             {
-                sizes[index] = each;
+                if (double.IsNaN(sizes[i]))
+                {
+                    sizes[i] = each;
+                }
             }
         }
         else if (_panels.Count > 0 && Math.Abs(remaining) > 0.001)
@@ -1598,7 +1601,7 @@ internal class SplitterPanel : Panel
         var guard = 0;
         while (Math.Abs(delta) > 0.5 && guard < 100)
         {
-            var indices = new List<int>();
+            var adjustableCount = 0;
             for (var i = 0; i < sizes.Count; i++)
             {
                 if (Splitter.GetIsCollapsed(_panels[i]))
@@ -1608,24 +1611,35 @@ internal class SplitterPanel : Panel
 
                 if (delta > 0 && sizes[i] < maxSizes[i])
                 {
-                    indices.Add(i);
+                    adjustableCount++;
                 }
                 else if (delta < 0 && sizes[i] > minSizes[i])
                 {
-                    indices.Add(i);
+                    adjustableCount++;
                 }
             }
 
-            if (indices.Count == 0)
+            if (adjustableCount == 0)
             {
                 break;
             }
 
-            var per      = delta / indices.Count;
+            var per      = delta / adjustableCount;
             var adjusted = 0d;
 
-            foreach (var index in indices)
+            for (var index = 0; index < sizes.Count; index++)
             {
+                if (Splitter.GetIsCollapsed(_panels[index]))
+                {
+                    continue;
+                }
+
+                if ((delta > 0 && sizes[index] >= maxSizes[index]) ||
+                    (delta < 0 && sizes[index] <= minSizes[index]))
+                {
+                    continue;
+                }
+
                 var target = sizes[index] + per;
                 var newSize = delta > 0
                     ? Math.Min(target, maxSizes[index])

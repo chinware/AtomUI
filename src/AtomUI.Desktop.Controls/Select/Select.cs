@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
 using AtomUI.Theme;
@@ -295,7 +296,7 @@ public partial class Select : AbstractSelect
         }
         if (_candidateList != null)
         {
-            _candidateList.SelectedItems = SelectedOptions?.ToList();
+            _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
         }
     }
 
@@ -343,7 +344,7 @@ public partial class Select : AbstractSelect
             return false;
         }
 
-        var newSelection = new List<ISelectOption>();
+        var newSelection = new List<ISelectOption>(SelectedOptions.Count);
         foreach (var selectedItem in SelectedOptions)
         {
             newSelection.Add(selectedItem);
@@ -618,7 +619,7 @@ public partial class Select : AbstractSelect
             }
             else
             {
-                SelectedOptions = _candidateList.SelectedItems?.Cast<ISelectOption>().ToList();
+                SelectedOptions = BuildSelectedOptionsList(_candidateList.SelectedItems);
             }
         }
         if (IsDropDownOpen)
@@ -640,8 +641,8 @@ public partial class Select : AbstractSelect
         }
         if (Mode != SelectMode.Single)
         {
-            var currentSelectedSet = SelectedOptions?.ToHashSet() ?? new HashSet<ISelectOption>();
-            var newSelectedSet     = new HashSet<ISelectOption>();
+            var currentSelectedSet = BuildSelectedOptionSet(SelectedOptions);
+            var newSelectedSet     = new HashSet<ISelectOption>(currentSelectedSet.Count + e.AddedItems.Count);
             foreach (var item in currentSelectedSet)
             {
                 newSelectedSet.Add(item);
@@ -664,7 +665,7 @@ public partial class Select : AbstractSelect
 
             if (!newSelectedSet.SetEquals(currentSelectedSet))
             {
-                SelectedOptions = newSelectedSet.ToList();
+                SelectedOptions = CopySelectedOptions(newSelectedSet);
             }
         }
     }
@@ -733,7 +734,7 @@ public partial class Select : AbstractSelect
             {
                 if (SelectedOptions != null && SelectedOptions.Count > 0)
                 {
-                    _candidateList.SelectedItems = SelectedOptions?.ToList();
+                    _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
                 }
             }
         }
@@ -755,7 +756,7 @@ public partial class Select : AbstractSelect
             }
             else
             {
-                _candidateList.SelectedItems = SelectedOptions?.ToList();
+                _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
             }
         }
     }
@@ -864,7 +865,7 @@ public partial class Select : AbstractSelect
         {
             if (SelectedOptions != null)
             {
-                var selectedOptions = new List<ISelectOption>();
+                var selectedOptions = new List<ISelectOption>(SelectedOptions.Count);
                 foreach (var selectedItem in SelectedOptions)
                 {
                     selectedOptions.Add(selectedItem);
@@ -923,7 +924,7 @@ public partial class Select : AbstractSelect
             {
                 if (DefaultValues?.Count > 0)
                 {
-                    var selectedOptions = new List<ISelectOption>();
+                    var selectedOptions = new List<ISelectOption>(DefaultValues.Count);
                     foreach (var defaultValue in DefaultValues)
                     {
                         foreach (var item in Options)
@@ -969,7 +970,7 @@ public partial class Select : AbstractSelect
             return;
         }
 
-        var selected = new HashSet<ISelectOption>();
+        var selected = new HashSet<ISelectOption>(SelectedOptions?.Count ?? 0);
         if (SelectedOptions != null)
         {
             foreach (var opt in SelectedOptions)
@@ -978,7 +979,7 @@ public partial class Select : AbstractSelect
             }
         }
 
-        var toRemove = new List<ISelectOption>();
+        var toRemove = new List<ISelectOption>(Options.Count);
         foreach (var item in Options)
         {
             if (item is ISelectOption option)
@@ -1035,4 +1036,51 @@ public partial class Select : AbstractSelect
         }
     }
     #endregion
+
+    private static List<ISelectOption>? BuildSelectedOptionsList(IEnumerable? source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var selectedOptions = source is ICollection collection
+            ? new List<ISelectOption>(collection.Count)
+            : new List<ISelectOption>();
+        foreach (var item in source)
+        {
+            selectedOptions.Add((ISelectOption)item!);
+        }
+        return selectedOptions;
+    }
+
+    private static List<ISelectOption>? CopySelectedOptions(ICollection<ISelectOption>? source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var selectedOptions = new List<ISelectOption>(source.Count);
+        foreach (var option in source)
+        {
+            selectedOptions.Add(option);
+        }
+        return selectedOptions;
+    }
+
+    private static HashSet<ISelectOption> BuildSelectedOptionSet(ICollection<ISelectOption>? source)
+    {
+        var selectedOptions = source == null
+            ? new HashSet<ISelectOption>()
+            : new HashSet<ISelectOption>(source.Count);
+        if (source != null)
+        {
+            foreach (var option in source)
+            {
+                selectedOptions.Add(option);
+            }
+        }
+        return selectedOptions;
+    }
 }

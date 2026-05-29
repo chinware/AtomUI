@@ -525,7 +525,7 @@ public class Form : ItemsControl,
     public async Task<FormValidateResult> ValidateAsync(CancellationToken cancellationToken)
     {
         AboutToValidate?.Invoke(this, EventArgs.Empty);
-        var tasks = new List<Task>();
+        var tasks = new List<Task>(Items.Count);
         foreach (var item in Items)
         {
             if (item is FormItem formItem && !formItem.IsSkipValidate())
@@ -534,8 +534,8 @@ public class Form : ItemsControl,
             }
         }
         await Task.WhenAll(tasks);
-        var results          = new List<FormValidateResult>();
-        var validateMessages = new List<FormValidateMessage>();
+        var results          = new List<FormValidateResult>(Items.Count);
+        var validateMessages = new List<FormValidateMessage>(Items.Count);
         foreach (var item in Items)
         {
             if (item is FormItem formItem && !formItem.IsSkipValidate())

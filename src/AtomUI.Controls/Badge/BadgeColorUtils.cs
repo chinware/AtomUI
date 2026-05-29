@@ -11,11 +11,11 @@ internal static class BadgeColorUtils
         {
             return null;
         }
-        colorStr = colorStr.Trim().ToLower();
+        colorStr = colorStr.Trim();
 
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
         {
-            if (presetColor.Type.ToString().ToLower() == colorStr)
+            if (string.Equals(presetColor.Type.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
             {
                 return new SolidColorBrush(presetColor.Color());
             }

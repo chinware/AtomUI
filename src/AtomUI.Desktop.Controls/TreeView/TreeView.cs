@@ -980,7 +980,7 @@ public partial class TreeView : AvaloniaTreeView,
 
                 if (e.NewItems?.Count > 0)
                 {
-                    added = new List<object>();
+                    added = new List<object>(CheckedItems.Count);
                     foreach (var item in CheckedItems)
                     {
                         added.Add(item);
@@ -1063,7 +1063,7 @@ public partial class TreeView : AvaloniaTreeView,
             SetCurrentValue(IsMotionEnabledProperty, false);
             var   segments  = treeNodePath.Segments;
             IList items     = Items;
-            var   pathNodes = new List<TreeViewItem>();
+            var   pathNodes = new List<TreeViewItem>(segments.Count);
             foreach (var segment in segments)
             {
                 bool childFound = false;
@@ -1121,7 +1121,7 @@ public partial class TreeView : AvaloniaTreeView,
         {
             var   segments  = treeNodePath.Segments;
             IList items     = Items;
-            var   pathNodes = new List<TreeViewItem>();
+            var   pathNodes = new List<TreeViewItem>(segments.Count);
             foreach (var segment in segments)
             {
                 bool childFound = false;
@@ -1185,8 +1185,8 @@ public partial class TreeView : AvaloniaTreeView,
             SetCurrentValue(IsMotionEnabledProperty, false);
             var   segments             = treeNodePath.Segments;
             IList items                = Items;
-            var   pathNodes            = new List<TreeViewItem>();
-            var   pathNodeExpandStatus = new List<bool>();
+            var   pathNodes            = new List<TreeViewItem>(segments.Count);
+            var   pathNodeExpandStatus = new List<bool>(segments.Count);
             try
             {
                 for (int i = 0; i < segments.Count; i++)

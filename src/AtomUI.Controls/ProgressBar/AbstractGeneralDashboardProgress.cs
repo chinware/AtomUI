@@ -38,6 +38,9 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
     
     private Rect _currentGrooveRect;
     private (double, double) _anglePair;
+    private IPen? _groovePen;
+    private IPen? _indicatorPen;
+    private IPen? _successPen;
 
     static AbstractGeneralDashboardProgress()
     {
@@ -63,24 +66,24 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
     private void DrawGrooveNormal(DrawingContext context)
     {
-        var pen = new Pen(GrooveBrush, StrokeThickness)
-        {
-            LineCap = StrokeLineCap
-        };
-        context.DrawArc(pen, _currentGrooveRect, _anglePair.Item1, _anglePair.Item2);
+        PenUtils.TryModifyOrCreate(ref _groovePen,
+            GrooveBrush,
+            StrokeThickness,
+            lineCap: StrokeLineCap);
+        context.DrawArc(_groovePen, _currentGrooveRect, _anglePair.Item1, _anglePair.Item2);
     }
 
     private void DrawGrooveStep(DrawingContext context)
     {
-        var pen = new Pen(GrooveBrush, StrokeThickness)
-        {
-            LineCap = PenLineCap.Flat
-        };
+        PenUtils.TryModifyOrCreate(ref _groovePen,
+            GrooveBrush,
+            StrokeThickness,
+            lineCap: PenLineCap.Flat);
         var spanAngle  = (360 - GapDegree - StepGap * StepCount) / StepCount;
         var startAngle = _anglePair.Item1;
         for (var i = 0; i < StepCount; ++i)
         {
-            context.DrawArc(pen, _currentGrooveRect, startAngle, spanAngle);
+            context.DrawArc(_groovePen, _currentGrooveRect, startAngle, spanAngle);
             startAngle += StepGap + spanAngle;
         }
     }
@@ -99,53 +102,52 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
     private void DrawIndicatorBarNormal(DrawingContext context)
     {
-        var pen = new Pen(StrokeBrush, StrokeThickness)
-        {
-            LineCap = StrokeLineCap
-        };
-        context.DrawArc(pen, _currentGrooveRect, _anglePair.Item1, IndicatorAngle);
+        PenUtils.TryModifyOrCreate(ref _indicatorPen,
+            StrokeBrush,
+            StrokeThickness,
+            lineCap: StrokeLineCap);
+        context.DrawArc(_indicatorPen, _currentGrooveRect, _anglePair.Item1, IndicatorAngle);
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            var successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
-            {
-                LineCap = StrokeLineCap
-            };
-            context.DrawArc(successPen, _currentGrooveRect, _anglePair.Item1, CalculateAngle(SuccessThreshold));
+            PenUtils.TryModifyOrCreate(ref _successPen,
+                SuccessStrokeBrush,
+                StrokeThickness,
+                lineCap: StrokeLineCap);
+            context.DrawArc(_successPen, _currentGrooveRect, _anglePair.Item1, CalculateAngle(SuccessThreshold));
         }
     }
 
     private void DrawIndicatorBarStep(DrawingContext context)
     {
-        var pen = new Pen(StrokeBrush, StrokeThickness)
-        {
-            LineCap = PenLineCap.Flat
-        };
+        PenUtils.TryModifyOrCreate(ref _indicatorPen,
+            StrokeBrush,
+            StrokeThickness,
+            lineCap: PenLineCap.Flat);
         var spanAngle  = (360 - GapDegree - StepGap * StepCount) / StepCount;
         var startAngle = _anglePair.Item1;
 
         var   filledSteps  = (int)Math.Round(StepCount * Percentage / 100);
         int?  successSteps = null;
-        IPen? successPen   = null;
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
-            {
-                LineCap = PenLineCap.Flat
-            };
+            PenUtils.TryModifyOrCreate(ref _successPen,
+                SuccessStrokeBrush,
+                StrokeThickness,
+                lineCap: PenLineCap.Flat);
             successSteps = (int)Math.Round(StepCount * SuccessThreshold / (Maximum - Minimum));
         }
 
         IPen? currentPen;
         for (var i = 0; i < filledSteps; ++i)
         {
-            currentPen = pen;
+            currentPen = _indicatorPen;
             if (successSteps.HasValue)
             {
                 if (i < successSteps)
                 {
-                    currentPen = successPen;
+                    currentPen = _successPen;
                 }
             }
 

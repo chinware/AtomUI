@@ -18,6 +18,7 @@ internal class BorderRenderHelper
     private Thickness _borderThickness;
     private CornerRadius _cornerRadius;
     private BackgroundSizing _backgroundSizing;
+    private bool _dashedEnabled;
     private bool _initialized;
     private IPen? _cachedPen;
 
@@ -29,6 +30,7 @@ internal class BorderRenderHelper
         _borderThickness  = borderThickness;
         _cornerRadius     = cornerRadius;
         _backgroundSizing = backgroundSizing;
+        _dashedEnabled    = dashedEnabled;
         _initialized      = true;
 
         if (dashedEnabled ||
@@ -119,9 +121,10 @@ internal class BorderRenderHelper
             || _borderThickness != borderThickness
             || _cornerRadius != cornerRadius
             || _backgroundSizing != backgroundSizing
+            || _dashedEnabled != (strokeDashArray is { Count: > 0 })
             || !_initialized)
         {
-            Update(finalSize, borderThickness, cornerRadius, backgroundSizing, strokeDashArray != null);
+            Update(finalSize, borderThickness, cornerRadius, backgroundSizing, strokeDashArray is { Count: > 0 });
         }
 
         if (_useComplexRendering)

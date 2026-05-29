@@ -1,5 +1,6 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -46,6 +47,7 @@ internal class ButtonSpinnerHandle : TemplatedControl
     public event EventHandler? ButtonsCreated;
     
     private BorderRenderHelper _borderRenderHelper;
+    private IPen? _handlePen;
 
     static ButtonSpinnerHandle()
     {
@@ -103,13 +105,21 @@ internal class ButtonSpinnerHandle : TemplatedControl
                 // 画竖线
                 var startPoint = new Point(lineWidth, lineWidth);
                 var endPoint   = new Point(lineWidth, Bounds.Height - lineWidth);
-                context.DrawLine(new Pen(BorderBrush, lineWidth), startPoint, endPoint);
+                PenUtils.TryModifyOrCreate(ref _handlePen, BorderBrush, lineWidth);
+                if (_handlePen is not null)
+                {
+                    context.DrawLine(_handlePen, startPoint, endPoint);
+                }
             }
             {
                 // 画横线
                 var startPoint = new Point(lineWidth, handleOffsetY); 
                 var endPoint   = new Point(Bounds.Width - lineWidth, handleOffsetY);
-                context.DrawLine(new Pen(BorderBrush, lineWidth), startPoint, endPoint);
+                PenUtils.TryModifyOrCreate(ref _handlePen, BorderBrush, lineWidth);
+                if (_handlePen is not null)
+                {
+                    context.DrawLine(_handlePen, startPoint, endPoint);
+                }
             }
         }
     }

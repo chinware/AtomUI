@@ -84,8 +84,16 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
     
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
-        IsUsedInCompactSpace     = position != null;
-        CompactSpaceItemPosition = position;
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
     }
 
     bool ICompactSpaceAware.IsAlwaysActiveZIndex()
@@ -116,24 +124,28 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
             CompactSpaceItemPosition == SpaceItemPosition.First ||
             (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) && CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
         {
+            ClearOffsetTransform();
             return size;
         }
         var borderThickness = (this as ICompactSpaceAware).GetBorderThickness();
         var delta           = borderThickness * PositionIndex;
         if (CompactSpaceOrientation == Orientation.Horizontal)
         {
-            RenderTransform = new TranslateTransform(-delta, 0);
+            SetOffsetTransform(-delta, 0);
         }
         else
         {
-            RenderTransform = new TranslateTransform(0, -delta);
+            SetOffsetTransform(0, -delta);
         }
         return size;
     }
 
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
-        CompactSpaceOrientation = orientation;
+        if (CompactSpaceOrientation != orientation)
+        {
+            CompactSpaceOrientation = orientation;
+        }
     }
 
     double ICompactSpaceAware.GetBorderThickness()
@@ -144,6 +156,26 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         }
 
         return 0.0;
+    }
+
+    private void SetOffsetTransform(double x, double y)
+    {
+        if (RenderTransform is TranslateTransform transform &&
+            Math.Abs(transform.X - x) < 0.001 &&
+            Math.Abs(transform.Y - y) < 0.001)
+        {
+            return;
+        }
+
+        RenderTransform = new TranslateTransform(x, y);
+    }
+
+    private void ClearOffsetTransform()
+    {
+        if (RenderTransform != null)
+        {
+            RenderTransform = null;
+        }
     }
     
     private void ConfigureItemSize(CompactSpaceSize size, bool isUsedInCompactSpace, Orientation compactSpaceOrientation) 

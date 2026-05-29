@@ -41,9 +41,7 @@ internal class UploadPicturePreviewContent : AbstractUploadPictureContent
         {
             if (FilePath != null)
             {
-                var sources = new List<string>();
-                sources.Add(FilePath.ToString());
-                SetCurrentValue(SourcesProperty, sources);
+                SetCurrentValue(SourcesProperty, new[] { FilePath.ToString() });
             }
             else
             {

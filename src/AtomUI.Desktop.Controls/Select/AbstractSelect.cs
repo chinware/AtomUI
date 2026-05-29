@@ -820,13 +820,24 @@ public abstract class AbstractSelect : TemplatedControl,
 
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
-        IsUsedInCompactSpace     = position != null;
-        CompactSpaceItemPosition = position;
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
     }
 
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
-        CompactSpaceOrientation = orientation;
+        if (CompactSpaceOrientation != orientation)
+        {
+            CompactSpaceOrientation = orientation;
+        }
     }
 
     double ICompactSpaceAware.GetBorderThickness()
@@ -888,21 +899,32 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         if (status == FormValidateStatus.Error)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
+            SetStatusIfChanged(InputControlStatus.Error);
         }
         else if (status == FormValidateStatus.Warning)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
+            SetStatusIfChanged(InputControlStatus.Warning);
         }
         else
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetStatusIfChanged(InputControlStatus.Default);
         }
     }
 
     protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
     {
-        FormFeedback = value;
+        if (!ReferenceEquals(FormFeedback, value))
+        {
+            FormFeedback = value;
+        }
+    }
+
+    private void SetStatusIfChanged(InputControlStatus status)
+    {
+        if (Status != status)
+        {
+            SetCurrentValue(StatusProperty, status);
+        }
     }
     #endregion
 }

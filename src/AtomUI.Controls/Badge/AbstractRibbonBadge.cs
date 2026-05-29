@@ -110,11 +110,11 @@ public abstract class AbstractRibbonBadge : Control
 
     private protected void SetupRibbonColor(string colorStr)
     {
-        colorStr = colorStr.Trim().ToLower();
+        colorStr = colorStr.Trim();
 
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
         {
-            if (presetColor.Type.ToString().ToLower() == colorStr)
+            if (string.Equals(presetColor.Type.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
             {
                 _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
                 return;

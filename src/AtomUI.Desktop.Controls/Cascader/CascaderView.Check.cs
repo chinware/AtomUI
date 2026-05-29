@@ -77,7 +77,7 @@ public partial class CascaderView
         }
 
         ISet<ICascaderOption> checkedOptions = DoCheckedSubTree(viewOption);
-        var originSelectedOptions = new HashSet<ICascaderOption>();
+        var originSelectedOptions = new HashSet<ICascaderOption>(SelectedOptions?.Count ?? 0);
         if (SelectedOptions != null)
         {
             foreach (var checkedItem in SelectedOptions)
@@ -85,7 +85,7 @@ public partial class CascaderView
                 originSelectedOptions.Add(checkedItem);
             }
         }
-        var newSelectedOptions = new HashSet<ICascaderOption>();
+        var newSelectedOptions = new HashSet<ICascaderOption>(originSelectedOptions.Count + checkedOptions.Count);
         foreach (var checkedItem in originSelectedOptions)
         {
             newSelectedOptions.Add(checkedItem);
@@ -98,7 +98,7 @@ public partial class CascaderView
         if (!newSelectedOptions.SetEquals(originSelectedOptions))
         {
             _ignoreSyncSelectedOptions = true;
-            SelectedOptions            = newSelectedOptions.ToList();
+            SelectedOptions            = BuildSelectedOptionsList(newSelectedOptions);
         }
     }
     
@@ -168,7 +168,7 @@ public partial class CascaderView
         
         ISet<ICascaderOption> unSelectedOptions = DoUnCheckedSubTree(viewOption);
             
-        var originSelectedOptions = new HashSet<ICascaderOption>();
+        var originSelectedOptions = new HashSet<ICascaderOption>(SelectedOptions?.Count ?? 0);
         if (SelectedOptions != null)
         {
             foreach (var checkedItem in SelectedOptions)
@@ -176,7 +176,7 @@ public partial class CascaderView
                 originSelectedOptions.Add(checkedItem);
             }
         }
-        var newSelectedOptions = new HashSet<ICascaderOption>();
+        var newSelectedOptions = new HashSet<ICascaderOption>(originSelectedOptions.Count);
         foreach (var checkedItem in originSelectedOptions)
         {
             newSelectedOptions.Add(checkedItem);
@@ -190,7 +190,7 @@ public partial class CascaderView
         if (!newSelectedOptions.SetEquals(originSelectedOptions))
         {
             _ignoreSyncSelectedOptions = true;
-            SelectedOptions            = newSelectedOptions.ToList();
+            SelectedOptions            = BuildSelectedOptionsList(newSelectedOptions);
         }
     }
     
@@ -306,7 +306,7 @@ public partial class CascaderView
                 {
                     if (e.OldItems != null)
                     {
-                        var removedItemsClosure = new HashSet<ICascaderOption>();
+                        var removedItemsClosure = new HashSet<ICascaderOption>(e.OldItems.Count);
                         foreach (var item in e.OldItems)
                         {
                             if (item is ICascaderOption viewOption)
@@ -314,7 +314,7 @@ public partial class CascaderView
                                 CollectSubTreeOptions(viewOption, removedItemsClosure);
                             }
                         }
-                        var tobeRemoved = new List<ICascaderOption>();
+                        var tobeRemoved = new List<ICascaderOption>(SelectedOptions.Count);
                         foreach (var checkedItem in SelectedOptions)
                         {
                             if (removedItemsClosure.Contains(checkedItem))
@@ -344,5 +344,15 @@ public partial class CascaderView
         {
             CollectSubTreeOptions(childItem, options);
         }
+    }
+
+    private static List<ICascaderOption> BuildSelectedOptionsList(ICollection<ICascaderOption> options)
+    {
+        var selectedOptions = new List<ICascaderOption>(options.Count);
+        foreach (var option in options)
+        {
+            selectedOptions.Add(option);
+        }
+        return selectedOptions;
     }
 }

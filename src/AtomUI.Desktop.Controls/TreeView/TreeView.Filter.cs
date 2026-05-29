@@ -33,12 +33,11 @@ public partial class TreeView
         if (IsFilterMode)
         {
             SelectedItemsClosure.Clear();
-            var startupItems = new List<TreeViewItem>();
             if (SelectionMode.HasFlag(SelectionMode.Single))
             {
                 if (SelectedItem != null && TreeContainerFromItem(SelectedItem) is TreeViewItem item)
                 {
-                    startupItems.Add(item);
+                    SelectedItemsClosure.UnionWith(CalculateSelectItemClosure(item));
                 }
             }
             else if (SelectionMode.HasFlag(SelectionMode.Multiple))
@@ -47,15 +46,9 @@ public partial class TreeView
                 {
                     if (entry != null && TreeContainerFromItem(entry) is TreeViewItem item)
                     {
-                        startupItems.Add(item);
+                        SelectedItemsClosure.UnionWith(CalculateSelectItemClosure(item));
                     }
                 }
-            }
-
-            foreach (var item in startupItems)
-            {
-                var closure = CalculateSelectItemClosure(item);
-                SelectedItemsClosure.UnionWith(closure);
             }
         }
     }

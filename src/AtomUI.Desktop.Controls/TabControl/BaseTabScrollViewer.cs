@@ -1,10 +1,9 @@
-﻿using System.Globalization;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Converters;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
+using AtomUI.Utils;
 using Colors = Avalonia.Media.Colors;
 using GradientStop = Avalonia.Media.GradientStop;
 
@@ -193,45 +192,27 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
 
     private void SetupIndicatorsVisibility()
     {
-        var args = new List<object?>();
-
-        object? scrollUpVisibility;
-        object? scrollDownVisibility;
+        bool scrollUpVisibility;
+        bool scrollDownVisibility;
         if (TabStripPlacement == Dock.Top || TabStripPlacement == Dock.Bottom)
         {
-            args.Add(ScrollBarVisibility.Auto);
-            args.Add(Offset.X);
-            args.Add(Extent.Width);
-            args.Add(Viewport.Width);
-            scrollUpVisibility =
-                MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 0d, CultureInfo.CurrentCulture);
-            scrollDownVisibility =
-                MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture);
+            scrollUpVisibility = CalculateEdgeIndicatorVisibility(Offset.X, Extent.Width, Viewport.Width, 0d);
+            scrollDownVisibility = CalculateEdgeIndicatorVisibility(Offset.X, Extent.Width, Viewport.Width, 100d);
         }
         else
         {
-            args.Add(ScrollBarVisibility.Auto);
-            args.Add(Offset.Y);
-            args.Add(Extent.Height);
-            args.Add(Viewport.Height);
-            scrollUpVisibility =
-                MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 0d, CultureInfo.CurrentCulture);
-            scrollDownVisibility =
-                MenuScrollingVisibilityConverter.Instance.Convert(args, typeof(bool), 100d, CultureInfo.CurrentCulture);
+            scrollUpVisibility = CalculateEdgeIndicatorVisibility(Offset.Y, Extent.Height, Viewport.Height, 0d);
+            scrollDownVisibility = CalculateEdgeIndicatorVisibility(Offset.Y, Extent.Height, Viewport.Height, 100d);
         }
 
-        if (StartEdgeIndicator is not null &&
-            scrollUpVisibility is not null &&
-            scrollUpVisibility != AvaloniaProperty.UnsetValue)
+        if (StartEdgeIndicator is not null)
         {
-            StartEdgeIndicator.IsVisible = (bool)scrollUpVisibility;
+            StartEdgeIndicator.IsVisible = scrollUpVisibility;
         }
 
-        if (EndEdgeIndicator is not null &&
-            scrollDownVisibility is not null &&
-            scrollDownVisibility != AvaloniaProperty.UnsetValue)
+        if (EndEdgeIndicator is not null)
         {
-            EndEdgeIndicator.IsVisible = (bool)scrollDownVisibility;
+            EndEdgeIndicator.IsVisible = scrollDownVisibility;
         }
 
         if (MenuIndicator is not null)
@@ -240,5 +221,16 @@ internal abstract class BaseTabScrollViewer : ScrollViewer
             var endEdgeVisible   = EndEdgeIndicator?.IsVisible ?? false;
             MenuIndicator.IsVisible = startEdgeVisible || endEdgeVisible;
         }
+    }
+
+    private static bool CalculateEdgeIndicatorVisibility(double offset, double extent, double viewport, double target)
+    {
+        if (MathUtils.AreClose(extent, viewport))
+        {
+            return false;
+        }
+
+        var percent = Math.Clamp(offset * 100.0 / (extent - viewport), 0, 100);
+        return !MathUtils.AreClose(percent, target);
     }
 }

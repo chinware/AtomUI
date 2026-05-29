@@ -141,6 +141,7 @@ internal class WaveSpiritDecorator : Control
     private AbstractWavePainter? _wavePainter;
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isPlaying;
+    private static readonly Easing DefaultEasingCurve = new CubicEaseOut();
 
     static WaveSpiritDecorator()
     {
@@ -207,8 +208,8 @@ internal class WaveSpiritDecorator : Control
             {
                 roundWavePainter.CornerRadius = CornerRadius;
             }
-            _wavePainter.SizeEasingCurve       = new CubicEaseOut();
-            _wavePainter.OpacityEasingCurve    = new CubicEaseOut();
+            _wavePainter.SizeEasingCurve       = DefaultEasingCurve;
+            _wavePainter.OpacityEasingCurve    = DefaultEasingCurve;
             _wavePainter.OriginOpacity         = Math.Clamp(OriginOpacity, 0.0, 1.0);
             _wavePainter.SizeMotionDuration    = SizeMotionDuration;
             _wavePainter.OpacityMotionDuration = OpacityMotionDuration.Add(TimeSpan.FromMilliseconds(50));

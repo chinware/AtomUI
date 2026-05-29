@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
+using System.Text;
 
 namespace AtomUI.Controls;
 
@@ -196,30 +197,42 @@ public class GridColSizeConverter : TypeConverter
                 return size.Span.Value.ToString(CultureInfo.InvariantCulture);
             }
 
-            var parts = new List<string>();
+            var builder = new StringBuilder();
             if (size.Span.HasValue)
             {
-                parts.Add(FormattableString.Invariant($"span:{size.Span.Value}"));
+                AppendPart(builder, "span", size.Span.Value);
             }
             if (size.Offset.HasValue)
             {
-                parts.Add(FormattableString.Invariant($"offset:{size.Offset.Value}"));
+                AppendPart(builder, "offset", size.Offset.Value);
             }
             if (size.Order.HasValue)
             {
-                parts.Add(FormattableString.Invariant($"order:{size.Order.Value}"));
+                AppendPart(builder, "order", size.Order.Value);
             }
             if (size.Push.HasValue)
             {
-                parts.Add(FormattableString.Invariant($"push:{size.Push.Value}"));
+                AppendPart(builder, "push", size.Push.Value);
             }
             if (size.Pull.HasValue)
             {
-                parts.Add(FormattableString.Invariant($"pull:{size.Pull.Value}"));
+                AppendPart(builder, "pull", size.Pull.Value);
             }
-            return string.Join(",", parts);
+            return builder.ToString();
         }
 
         return string.Empty;
+    }
+
+    private static void AppendPart(StringBuilder builder, string name, int value)
+    {
+        if (builder.Length > 0)
+        {
+            builder.Append(',');
+        }
+
+        builder.Append(name);
+        builder.Append(':');
+        builder.Append(value.ToString(CultureInfo.InvariantCulture));
     }
 }

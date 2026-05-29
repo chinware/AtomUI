@@ -208,7 +208,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     {
         if (ItemsSource != null && ItemsSource.Count > 0)
         {
-            var effectiveSources = new List<PreviewImageSource>();
+            var effectiveSources = new List<PreviewImageSource>(ItemsSource.Count);
             foreach (var source in ItemsSource)
             {
                 try
@@ -252,9 +252,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             {
                 try
                 {
-                    var sources = new List<PreviewImageSource>();
-                    sources.Add(LoadImageSource(FallbackImageSrc));
-                    SetCurrentValue(EffectiveSourcesProperty, sources);
+                    SetCurrentValue(EffectiveSourcesProperty, new[] { LoadImageSource(FallbackImageSrc) });
                 }
                 catch (Exception)
                 {

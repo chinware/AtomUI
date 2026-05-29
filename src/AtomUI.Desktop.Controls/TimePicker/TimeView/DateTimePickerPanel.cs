@@ -690,9 +690,19 @@ internal class DateTimePickerPanel : Panel,
 
         if (newValue % Increment != 0)
         {
-            var items   = Enumerable.Range(MinimumValue, MaximumValue + 1).Where(i => i % Increment == 0).ToList();
-            var nearest = items.Aggregate((x, y) => Math.Abs(x - newValue) > Math.Abs(y - newValue) ? y : x);
-            return items.IndexOf(nearest) * Increment;
+            var lower = newValue - newValue % Increment;
+            var upper = lower + Increment;
+            if (lower < MinimumValue)
+            {
+                return MinimumValue;
+            }
+
+            if (upper > MaximumValue)
+            {
+                return lower;
+            }
+
+            return newValue - lower <= upper - newValue ? lower : upper;
         }
 
         return newValue;

@@ -587,6 +587,12 @@ internal class TreeViewItemHeader : ContentControl
         }
         else if (FilterHighlightWords != null)
         { 
+            if (string.IsNullOrEmpty(FilterHighlightWords))
+            {
+                FilterHighlightRuns = null;
+                return;
+            }
+
             string? headerText   = null;
             if (Content is ITreeItemNode treeViewItemData)
             {
@@ -601,21 +607,25 @@ internal class TreeViewItemHeader : ContentControl
             {
                 return;
             }
-            var ranges          = new List<(int, int)>();
-            int currentIndex    = 0;
-            var highlightLength = FilterHighlightWords.Length;
-        
-            while (true)
+            var highlightedMatch = FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HighlightedMatch);
+            List<(int, int)>? ranges = null;
+            if (highlightedMatch)
             {
-                int foundIndex = headerText.IndexOf(FilterHighlightWords, currentIndex, StringComparison.Ordinal);
-                if (foundIndex == -1) // 如果没有找到，退出循环
+                var firstIndex = headerText.IndexOf(FilterHighlightWords, StringComparison.Ordinal);
+                if (firstIndex != -1)
                 {
-                    break;
+                    ranges = new List<(int, int)>();
+                    var currentIndex    = firstIndex;
+                    var highlightLength = FilterHighlightWords.Length;
+                    while (currentIndex != -1)
+                    {
+                        var highlightEnd = currentIndex + highlightLength;
+                        ranges.Add((currentIndex, highlightEnd));
+                        currentIndex = headerText.IndexOf(FilterHighlightWords, highlightEnd, StringComparison.Ordinal);
+                    }
                 }
-                
-                currentIndex = foundIndex + highlightLength;
-                ranges.Add((foundIndex, currentIndex));
             }
+
             Debug.Assert(headerText != null);
             var runs = new InlineCollection();
             for (var i = 0; i < headerText.Length; i++)
@@ -623,9 +633,9 @@ internal class TreeViewItemHeader : ContentControl
                 var c   =  headerText[i];
                 var run = new Run($"{c}");
                 
-                if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HighlightedMatch))
+                if (highlightedMatch)
                 {
-                    if (IsNeedHighlight(i, ranges))
+                    if (ranges is not null && IsNeedHighlight(i, ranges))
                     {
                         run.Foreground = FilterHighlightForeground;
                     }

@@ -482,13 +482,24 @@ public class ButtonSpinner : Spinner,
     
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
-        IsUsedInCompactSpace     = position != null;
-        CompactSpaceItemPosition = position;
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
     }
     
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
-        CompactSpaceOrientation = orientation;
+        if (CompactSpaceOrientation != orientation)
+        {
+            CompactSpaceOrientation = orientation;
+        }
     }
 
     double ICompactSpaceAware.GetBorderThickness() => GetBorderThicknessForCompactSpace();

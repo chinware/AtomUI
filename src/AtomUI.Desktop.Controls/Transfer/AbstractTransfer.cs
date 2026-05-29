@@ -466,7 +466,7 @@ public abstract class AbstractTransfer: TemplatedControl,
 
     private void HandleItemRemoved(object? sender, TransferItemsRemovedEventArgs args)
     {
-        var currentSet = new HashSet<EntityKey>();
+        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
         if (TargetKeys != null)
         {
             foreach (var targetKey in TargetKeys)
@@ -482,7 +482,7 @@ public abstract class AbstractTransfer: TemplatedControl,
                 currentSet.Remove(item.ItemKey ?? default);
             }
         }
-        SetCurrentValue(TargetKeysProperty, currentSet.ToList());
+        SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
         _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
     }
 
@@ -518,29 +518,36 @@ public abstract class AbstractTransfer: TemplatedControl,
         var               targetPanelSourceChanged = false;
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
+        var               targetKeySet             = BuildTargetKeySet(TargetKeys);
         if (changeType.HasFlag(FilterChangeType.Source))
         {
             var sourcePanelSource = ItemsSource?
-                                    .Where(item => !(TargetKeys?.Contains(item.ItemKey ?? default) ?? false))
+                                    .Where(item => !(targetKeySet?.Contains(item.ItemKey ?? default) ?? false))
                                     .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(SourceFilterValue) || 
                                                    (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
                                                        SourceFilterValue) ?? false))
                                     .ToArray();
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
             SourceViewSource        = sourcePanelSource;
-            sourceItemKeys           = sourcePanelSource?.Select(item => item.ItemKey ?? default).ToList();
+            sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
         }
 
         if (changeType.HasFlag(FilterChangeType.Target))
         {
-            var targetPanelSource = ItemsSource?
-                                    .Where(item => TargetKeys?.Contains(item.ItemKey ?? default) ?? false)
-                                    .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) || 
-                                                   (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
-                                    .ToArray();
-            TargetViewSource        = targetPanelSource;
+            IEnumerable<IItemKey>? targetPanelSource = null;
+            if (ItemsSource != null)
+            {
+                targetPanelSource = targetKeySet == null
+                    ? Array.Empty<IItemKey>()
+                    : ItemsSource
+                        .Where(item => targetKeySet.Contains(item.ItemKey ?? default))
+                        .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) ||
+                                       (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
+                        .ToArray();
+            }
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
-            targetItemKeys           = targetPanelSource?.Select(item => item.ItemKey ?? default).ToList();
+            TargetViewSource         = targetPanelSource;
+            targetItemKeys           = BuildItemKeyList(targetPanelSource);
         }
 
         if (sourcePanelSourceChanged || targetPanelSourceChanged)
@@ -565,7 +572,7 @@ public abstract class AbstractTransfer: TemplatedControl,
 
     protected virtual void TransferItems(TransferDirection transferDirection)
     {
-        var currentSet = new HashSet<EntityKey>();
+        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
         if (TargetKeys != null)
         {
             foreach (var targetKey in TargetKeys)
@@ -584,7 +591,7 @@ public abstract class AbstractTransfer: TemplatedControl,
                 {
                     currentSet.Add(key);
                 }
-                SetCurrentValue(TargetKeysProperty, currentSet.ToList());
+                SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
             }
         }
         else
@@ -596,7 +603,7 @@ public abstract class AbstractTransfer: TemplatedControl,
                 {
                     currentSet.Remove(key);
                 }
-                SetCurrentValue(TargetKeysProperty, currentSet.ToList());
+                SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
             }
         }
         _sourceViewDecorator?.NotifyTransferCompleted(transferDirection);
@@ -611,6 +618,48 @@ public abstract class AbstractTransfer: TemplatedControl,
             SetCurrentValue(TargetKeysProperty, null);
             _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
         }
+    }
+
+    protected static HashSet<EntityKey>? BuildTargetKeySet(ICollection<EntityKey>? keys)
+    {
+        if (keys == null || keys.Count == 0)
+        {
+            return null;
+        }
+
+        var keySet = new HashSet<EntityKey>(keys.Count);
+        foreach (var key in keys)
+        {
+            keySet.Add(key);
+        }
+        return keySet;
+    }
+
+    protected static List<EntityKey> BuildEntityKeyList(ICollection<EntityKey> keys)
+    {
+        var keyList = new List<EntityKey>(keys.Count);
+        foreach (var key in keys)
+        {
+            keyList.Add(key);
+        }
+        return keyList;
+    }
+
+    protected static List<EntityKey>? BuildItemKeyList(IEnumerable<IItemKey>? items)
+    {
+        if (items == null)
+        {
+            return null;
+        }
+
+        var keyList = items is ICollection<IItemKey> collection
+            ? new List<EntityKey>(collection.Count)
+            : new List<EntityKey>();
+        foreach (var item in items)
+        {
+            keyList.Add(item.ItemKey ?? default);
+        }
+        return keyList;
     }
 
     private void HandleTransferFilterChanged(TextChangedEventArgs args)

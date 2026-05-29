@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -30,6 +31,8 @@ public class MenuSeparator : AvaloniaSeparator
     }
     #endregion
 
+    private IPen? _linePen;
+
     static MenuSeparator()
     {
         AffectsRender<MenuSeparator>(LineWidthProperty);
@@ -43,8 +46,11 @@ public class MenuSeparator : AvaloniaSeparator
     public override void Render(DrawingContext context)
     {
         var renderScaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0d;
-        var linePen       = new Pen((IBrush?)BorderBrush, LineWidth / renderScaling);
+        PenUtils.TryModifyOrCreate(ref _linePen, (IBrush?)BorderBrush, LineWidth / renderScaling);
         var offsetY       = Bounds.Height / 2.0;
-        context.DrawLine(linePen, new Point(0, offsetY), new Point(Bounds.Right, offsetY));
+        if (_linePen is not null)
+        {
+            context.DrawLine(_linePen, new Point(0, offsetY), new Point(Bounds.Right, offsetY));
+        }
     }
 }

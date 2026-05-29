@@ -1,5 +1,6 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Media;
 using Avalonia.Threading;
 using Avalonia;
 using Avalonia.Automation.Peers;
@@ -50,6 +51,8 @@ public class SliderThumb : TemplatedControl
     #endregion
 
     private Point? _lastPoint;
+    private IPen? _circlePen;
+    private IPen? _outlinePen;
 
     static SliderThumb()
     {
@@ -200,12 +203,12 @@ public class SliderThumb : TemplatedControl
         // 绘制圆
         var centerPos         = new Point(Bounds.Width / 2, Bounds.Height / 2);
         var thumbCircleRadius = ThumbCircleSize / 2 + BorderThickness.Left / 2;
-        var circlePen         = new Pen(BorderBrush, BorderThickness.Left);
-        context.DrawEllipse(Background, circlePen, centerPos, thumbCircleRadius, thumbCircleRadius);
+        PenUtils.TryModifyOrCreate(ref _circlePen, BorderBrush, BorderThickness.Left);
+        context.DrawEllipse(Background, _circlePen, centerPos, thumbCircleRadius, thumbCircleRadius);
         // 绘制 outline
-        var outlinePen       = new Pen(OutlineBrush, OutlineThickness.Left);
         var outlinePenRadius = ThumbCircleSize / 2 + BorderThickness.Left / 2 + OutlineThickness.Left / 2;
-        context.DrawEllipse(null, outlinePen, centerPos, outlinePenRadius, outlinePenRadius);
+        PenUtils.TryModifyOrCreate(ref _outlinePen, OutlineBrush, OutlineThickness.Left);
+        context.DrawEllipse(null, _outlinePen, centerPos, outlinePenRadius, outlinePenRadius);
     }
 
     protected override void OnInitialized()

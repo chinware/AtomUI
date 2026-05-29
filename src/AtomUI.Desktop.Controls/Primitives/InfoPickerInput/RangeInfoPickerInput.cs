@@ -1,4 +1,5 @@
 ﻿using AtomUI.Animations;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -103,78 +104,43 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         }
     }
 
-    private bool IsPointerInInfoInputBox(Point position)
+    private bool IsPointerInTextBox(TextBox? textBox, Point position, double? contentStartOffsetX)
     {
-        if (InfoInputBox is null)
+        if (textBox is null)
         {
             return false;
         }
 
-        var pos = InfoInputBox.TranslatePoint(new Point(0, 0), this);
+        var pos = textBox.TranslatePoint(new Point(0, 0), this);
         if (!pos.HasValue)
         {
             return false;
         }
 
-        var targetWidth  = InfoInputBox.Bounds.Width;
-        var targetHeight = InfoInputBox.Bounds.Height;
-        var startOffsetX = pos.Value.X;
-        var endOffsetX   = startOffsetX + targetWidth;
+        var targetWidth  = textBox.Bounds.Width;
+        var targetHeight = textBox.Bounds.Height;
+        var originalStartOffsetX = pos.Value.X;
+        var startOffsetX         = contentStartOffsetX ?? originalStartOffsetX;
+        var endOffsetX           = originalStartOffsetX + targetWidth;
         var offsetY      = pos.Value.Y;
-        if (ContentLeftAddOn is Control leftContent)
-        {
-            var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), this);
-            if (leftContentPos.HasValue)
-            {
-                startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
-            }
-        }
 
         targetWidth = endOffsetX - startOffsetX;
         var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-        if (bounds.Contains(position))
-        {
-            return true;
-        }
-
-        return false;
+        return bounds.Contains(position);
     }
 
-    private bool IsPointerInSecondaryTextBox(Point position)
+    private double? GetContentStartOffsetX()
     {
-        if (SecondaryInfoInputBox is null)
-        {
-            return false;
-        }
-
-        var pos = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), this);
-        if (!pos.HasValue)
-        {
-            return false;
-        }
-
-        var targetWidth  = SecondaryInfoInputBox.Bounds.Width;
-        var targetHeight = SecondaryInfoInputBox.Bounds.Height;
-        var startOffsetX = pos.Value.X;
-        var endOffsetX   = startOffsetX + targetWidth;
-        var offsetY      = pos.Value.Y;
         if (ContentLeftAddOn is Control leftContent)
         {
             var leftContentPos = leftContent.TranslatePoint(new Point(0, 0), this);
             if (leftContentPos.HasValue)
             {
-                startOffsetX = leftContentPos.Value.X + leftContent.Bounds.Width;
+                return leftContentPos.Value.X + leftContent.Bounds.Width;
             }
         }
 
-        targetWidth = endOffsetX - startOffsetX;
-        var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-        if (bounds.Contains(position))
-        {
-            return true;
-        }
-
-        return false;
+        return null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -202,19 +168,22 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
             // Check if click is inside the input area (not in popup)
             if (PickerPopup?.IsInsidePopup(source) != true)
             {
-                if (IsPointerInInfoInputBox(args.GetPosition(this)))
+                var pointerPosition = args.GetPosition(this);
+                var contentStartOffsetX = GetContentStartOffsetX();
+                if (IsPointerInTextBox(InfoInputBox, pointerPosition, contentStartOffsetX))
                 {
-                    RangeActivatedPart = RangeActivatedPart.Start;
-                    SetCurrentValue(IsPickerOpenProperty, true);
+                    SetRangeActivatedPart(RangeActivatedPart.Start);
+                    SetPickerOpenIfChanged(true);
                 }
-                else if (IsPointerInSecondaryTextBox(args.GetPosition(this)) || !ClickInClearUpButtonWithClearMode(args))
+                else if (IsPointerInTextBox(SecondaryInfoInputBox, pointerPosition, contentStartOffsetX) ||
+                         !ClickInClearUpButtonWithClearMode(args))
                 {
-                    RangeActivatedPart = RangeActivatedPart.End;
-                    SetCurrentValue(IsPickerOpenProperty, true);
+                    SetRangeActivatedPart(RangeActivatedPart.End);
+                    SetPickerOpenIfChanged(true);
                 }
                 else
                 {
-                    SetCurrentValue(IsPickerOpenProperty, false);
+                    SetPickerOpenIfChanged(false);
                 }
                 args.Handled = true;
             }
@@ -227,8 +196,14 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         var size            = base.ArrangeOverride(finalSize).Inflate(borderThickness);
         if (RangePickerIndicator is not null)
         {
-            Canvas.SetLeft(RangePickerIndicator, PickerIndicatorOffsetX);
-            Canvas.SetTop(RangePickerIndicator, PickerIndicatorOffsetY);
+            if (!MathUtils.AreClose(Canvas.GetLeft(RangePickerIndicator), PickerIndicatorOffsetX))
+            {
+                Canvas.SetLeft(RangePickerIndicator, PickerIndicatorOffsetX);
+            }
+            if (!MathUtils.AreClose(Canvas.GetTop(RangePickerIndicator), PickerIndicatorOffsetY))
+            {
+                Canvas.SetTop(RangePickerIndicator, PickerIndicatorOffsetY);
+            }
         }
 
         return size;
@@ -237,9 +212,13 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
-        if (DecoratedBox is not null)
+        if (DecoratedBox is not null && RangePickerIndicator is not null)
         {
-            PickerIndicatorOffsetY = DecoratedBox.DesiredSize.Height - RangePickerIndicator!.Height;
+            var indicatorOffsetY = DecoratedBox.DesiredSize.Height - RangePickerIndicator.Height;
+            if (!MathUtils.AreClose(PickerIndicatorOffsetY, indicatorOffsetY))
+            {
+                PickerIndicatorOffsetY = indicatorOffsetY;
+            }
         }
     
         if (double.IsNaN(PickerIndicatorOffsetX))
@@ -256,26 +235,20 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     
     protected override void NotifyFlyoutAboutToClose(bool selectedIsValid)
     {
-        RangeActivatedPart = RangeActivatedPart.None;
+        SetRangeActivatedPart(RangeActivatedPart.None);
     }
     
     protected virtual void NotifyRangeActivatedPartChanged()
     {
         if (RangeActivatedPart == RangeActivatedPart.Start)
         {
-            PickerPlacement = PlacementMode.BottomEdgeAlignedLeft;
-            if (PickerPopup != null)
-            {
-                PickerPopup.PlacementTarget = InfoInputBox;
-            }
+            SetPickerPlacement(PlacementMode.BottomEdgeAlignedLeft);
+            SetPickerPopupPlacementTarget(InfoInputBox);
         }
         else if (RangeActivatedPart == RangeActivatedPart.End)
         {
-            PickerPlacement = PlacementMode.BottomEdgeAlignedRight;
-            if (PickerPopup != null)
-            {
-                PickerPopup.PlacementTarget = SecondaryInfoInputBox;
-            }
+            SetPickerPlacement(PlacementMode.BottomEdgeAlignedRight);
+            SetPickerPopupPlacementTarget(SecondaryInfoInputBox);
         }
 
         SetupPickerIndicatorPosition();
@@ -293,21 +266,69 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
         
         if (_rangeActivatedPart == RangeActivatedPart.None)
         {
-            RangePickerIndicatorOpacity = 0;
+            SetRangePickerIndicatorOpacity(0);
         }
         else if (_rangeActivatedPart == RangeActivatedPart.Start)
         {
-            RangePickerIndicatorOpacity = 1;
-            RangePickerIndicator.Width  = InfoInputBox.Bounds.Width;
+            SetRangePickerIndicatorOpacity(1);
+            SetRangePickerIndicatorWidth(InfoInputBox.Bounds.Width);
             var offset = InfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
-            PickerIndicatorOffsetX = offset.X;
+            SetPickerIndicatorOffsetX(offset.X);
         }
         else if (_rangeActivatedPart == RangeActivatedPart.End)
         {
-            RangePickerIndicatorOpacity = 1;
-            RangePickerIndicator.Width  = SecondaryInfoInputBox.Bounds.Width;
+            SetRangePickerIndicatorOpacity(1);
+            SetRangePickerIndicatorWidth(SecondaryInfoInputBox.Bounds.Width);
             var offset = SecondaryInfoInputBox.TranslatePoint(new Point(0, 0), this) ?? default;
-            PickerIndicatorOffsetX = offset.X;
+            SetPickerIndicatorOffsetX(offset.X);
+        }
+    }
+
+    private void SetRangePickerIndicatorOpacity(double opacity)
+    {
+        if (!MathUtils.AreClose(RangePickerIndicatorOpacity, opacity))
+        {
+            RangePickerIndicatorOpacity = opacity;
+        }
+    }
+
+    private void SetRangePickerIndicatorWidth(double width)
+    {
+        if (RangePickerIndicator is not null && !MathUtils.AreClose(RangePickerIndicator.Width, width))
+        {
+            RangePickerIndicator.Width = width;
+        }
+    }
+
+    private void SetPickerIndicatorOffsetX(double offsetX)
+    {
+        if (!MathUtils.AreClose(PickerIndicatorOffsetX, offsetX))
+        {
+            PickerIndicatorOffsetX = offsetX;
+        }
+    }
+
+    private void SetRangeActivatedPart(RangeActivatedPart rangeActivatedPart)
+    {
+        if (RangeActivatedPart != rangeActivatedPart)
+        {
+            RangeActivatedPart = rangeActivatedPart;
+        }
+    }
+
+    private void SetPickerPlacement(PlacementMode placement)
+    {
+        if (PickerPlacement != placement)
+        {
+            PickerPlacement = placement;
+        }
+    }
+
+    private void SetPickerPopupPlacementTarget(Control? placementTarget)
+    {
+        if (PickerPopup != null && !ReferenceEquals(PickerPopup.PlacementTarget, placementTarget))
+        {
+            PickerPopup.PlacementTarget = placementTarget;
         }
     }
     
@@ -315,11 +336,12 @@ public abstract class RangeInfoPickerInput : InfoPickerInput
     {
         if (DecoratedBox is not null)
         {
-            SetCurrentValue(IsClearButtonVisibleProperty, DecoratedBox.IsInnerBoxHover &&
-                                                          InfoInputBox?.IsReadOnly == false &&
-                                                          InfoInputBox.Text?.Length > 0 &&
-                                                          SecondaryInfoInputBox?.IsReadOnly == false &&
-                                                          SecondaryInfoInputBox?.Text?.Length > 0);
+            SetClearButtonVisibleIfChanged(
+                DecoratedBox.IsInnerBoxHover &&
+                InfoInputBox?.IsReadOnly == false &&
+                InfoInputBox.Text?.Length > 0 &&
+                SecondaryInfoInputBox?.IsReadOnly == false &&
+                SecondaryInfoInputBox?.Text?.Length > 0);
         }
     }
 

@@ -76,8 +76,20 @@ public class HorizontalNavMenuItemHeader : BaseNavMenuItemHeader
     {
         if (_activeIndicator != null)
         {
-            _activeIndicator.RenderTransform = new ScaleTransform(ActiveBarScaleX, 1.0);
-            _activeIndicator.RenderTransformOrigin = RelativePoint.Center;
+            if (_activeIndicator.RenderTransform is ScaleTransform scaleTransform)
+            {
+                scaleTransform.ScaleX = ActiveBarScaleX;
+                scaleTransform.ScaleY = 1.0;
+            }
+            else
+            {
+                _activeIndicator.RenderTransform = new ScaleTransform(ActiveBarScaleX, 1.0);
+            }
+
+            if (_activeIndicator.RenderTransformOrigin != RelativePoint.Center)
+            {
+                _activeIndicator.RenderTransformOrigin = RelativePoint.Center;
+            }
         }
     }
 

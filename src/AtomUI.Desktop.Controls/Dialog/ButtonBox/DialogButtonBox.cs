@@ -11,6 +11,8 @@ namespace AtomUI.Desktop.Controls;
 
 public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 {
+    private static readonly IReadOnlyList<DialogButton> EmptyButtonList = Array.Empty<DialogButton>();
+
     #region 公共属性定义
 
     public static readonly StyledProperty<DialogStandardButtons> StandardButtonsProperty =
@@ -676,10 +678,10 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         {
             return;
         }
-        var buttons            = new List<DialogButton>();
         var rightButtons       = SyncRightGroupButtons(_rightGroup);
         var centerGroupButtons = SyncCenterGroupButtons(_centerGroup);
         var leftGroupButtons   = SyncLeftGroupButtons(_leftGroup);
+        var buttons            = new List<DialogButton>(rightButtons.Count + centerGroupButtons.Count + leftGroupButtons.Count);
         buttons.AddRange(rightButtons);
         buttons.AddRange(centerGroupButtons);
         buttons.AddRange(leftGroupButtons);
@@ -688,12 +690,21 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     
     private List<DialogButton> SyncRightGroupButtons(DockPanel rightGroup)
     {
-        var rightGroupButtons = new List<DialogButton>();
-        
         // 后面可以定义各种操作系统的风格，现在先写死
         // 标准
-        var standardAcceptList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.AcceptRole) ?? new List<DialogButton>();
+        var standardAcceptList  = GetRoleButtons(_standardButtonGroup, DialogButtonRole.AcceptRole);
         var standardAcceptIndex = 0;
+        var acceptList          = GetRoleButtons(_buttonGroup, DialogButtonRole.AcceptRole);
+        var standardYesList     = GetRoleButtons(_standardButtonGroup, DialogButtonRole.YesRole);
+        var yesList             = GetRoleButtons(_buttonGroup, DialogButtonRole.YesRole);
+        var standardRejectList  = GetRoleButtons(_standardButtonGroup, DialogButtonRole.RejectRole);
+        var rejectList          = GetRoleButtons(_buttonGroup, DialogButtonRole.RejectRole);
+        var standardNoList      = GetRoleButtons(_standardButtonGroup, DialogButtonRole.NoRole);
+        var noList              = GetRoleButtons(_buttonGroup, DialogButtonRole.NoRole);
+        var rightGroupButtons   = new List<DialogButton>(standardAcceptList.Count + acceptList.Count +
+                                                          standardYesList.Count + yesList.Count +
+                                                          standardRejectList.Count + rejectList.Count +
+                                                          standardNoList.Count + noList.Count);
         
         if (standardAcceptList.Count > 0)
         {
@@ -702,7 +713,6 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         }
         
         // 自定义
-        var acceptList  = _buttonGroup.GetValueOrDefault(DialogButtonRole.AcceptRole) ?? new List<DialogButton>();
         var acceptIndex = 0;
         
         if (acceptList.Count > 0)
@@ -712,7 +722,6 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         }
         
         // 标准
-        var standardYesList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.YesRole) ?? new List<DialogButton>();
         var standardYesIndex = 0;
         
         if (standardYesList.Count > 0)
@@ -722,7 +731,6 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         }
         // 自定义
         
-        var yesList  = _buttonGroup.GetValueOrDefault(DialogButtonRole.YesRole) ?? new List<DialogButton>();
         var yesIndex = 0;
         
         if (yesList.Count > 0)
@@ -733,28 +741,24 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         
         // 输出 reject
         // 标准
-        var standardRejectList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.RejectRole) ?? new List<DialogButton>();
         foreach (var rejectButton in standardRejectList)
         {
             rightGroupButtons.Add(rejectButton);
         }
         
         // 自定义
-        var rejectList = _buttonGroup.GetValueOrDefault(DialogButtonRole.RejectRole) ?? new List<DialogButton>();
         foreach (var rejectButton in rejectList)
         {
             rightGroupButtons.Add(rejectButton);
         }
         
         // 输出 No
-        var standardNoList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.NoRole) ?? new List<DialogButton>();
         foreach (var button in standardNoList)
         {
             rightGroupButtons.Add(button);
         }
         
         // 自定义
-        var noList = _buttonGroup.GetValueOrDefault(DialogButtonRole.NoRole) ?? new List<DialogButton>();
         foreach (var button in noList)
         {
             rightGroupButtons.Add(button);
@@ -801,9 +805,10 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 
     private List<DialogButton> SyncCenterGroupButtons(DockPanel centerGroup)
     {
-        var centerGroupButtons = new List<DialogButton>();
         // 标准
-        var standardDestructiveList  = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.DestructiveRole) ?? new List<DialogButton>();
+        var standardDestructiveList  = GetRoleButtons(_standardButtonGroup, DialogButtonRole.DestructiveRole);
+        var destructiveList          = GetRoleButtons(_buttonGroup, DialogButtonRole.DestructiveRole);
+        var centerGroupButtons       = new List<DialogButton>(standardDestructiveList.Count + destructiveList.Count);
         
         foreach (var button in standardDestructiveList)
         {
@@ -811,7 +816,6 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         }
         
         // 自定义
-        var destructiveList = _buttonGroup.GetValueOrDefault(DialogButtonRole.DestructiveRole) ?? new List<DialogButton>();
         foreach (var button in destructiveList)
         {
             centerGroupButtons.Add(button);
@@ -828,58 +832,61 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 
     private List<DialogButton> SyncLeftGroupButtons(DockPanel leftGroup)
     {
-        var leftGroupButtons = new List<DialogButton>();
         // 标准
-        var standardHelpList = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.HelpRole) ?? new List<DialogButton>();
+        var standardHelpList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.HelpRole);
+        var helpList         = GetRoleButtons(_buttonGroup, DialogButtonRole.HelpRole);
+        var standardResetList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.ResetRole);
+        var resetList         = GetRoleButtons(_buttonGroup, DialogButtonRole.ResetRole);
+        var standardApplyList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.ApplyRole);
+        var applyList         = GetRoleButtons(_buttonGroup, DialogButtonRole.ApplyRole);
+        var standardActionList = GetRoleButtons(_standardButtonGroup, DialogButtonRole.ActionRole);
+        var actionList         = GetRoleButtons(_buttonGroup, DialogButtonRole.ActionRole);
+        var leftGroupButtons   = new List<DialogButton>(standardHelpList.Count + helpList.Count +
+                                                        standardResetList.Count + resetList.Count +
+                                                        standardApplyList.Count + applyList.Count +
+                                                        standardActionList.Count + actionList.Count);
         foreach (var button in standardHelpList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 自定义
-        var helpList = _buttonGroup.GetValueOrDefault(DialogButtonRole.HelpRole) ?? new List<DialogButton>();
         foreach (var button in helpList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 标准
-        var standardResetList = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.ResetRole) ?? new List<DialogButton>();
         foreach (var button in standardResetList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 自定义
-        var resetList = _buttonGroup.GetValueOrDefault(DialogButtonRole.ResetRole) ?? new List<DialogButton>();
         foreach (var button in resetList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 标准
-        var standardApplyList = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.ApplyRole) ?? new List<DialogButton>();
         foreach (var button in standardApplyList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 自定义
-        var applyList = _buttonGroup.GetValueOrDefault(DialogButtonRole.ApplyRole) ?? new List<DialogButton>();
         foreach (var button in applyList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 标准
-        var standardActionList = _standardButtonGroup.GetValueOrDefault(DialogButtonRole.ActionRole) ?? new List<DialogButton>();
         foreach (var button in standardActionList)
         {
             leftGroupButtons.Add(button);
         }
         
         // 自定义
-        var actionList = _buttonGroup.GetValueOrDefault(DialogButtonRole.ActionRole) ?? new List<DialogButton>();
         foreach (var button in actionList)
         {
             leftGroupButtons.Add(button);
@@ -894,6 +901,13 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         leftGroup.Children.AddRange(leftGroupButtons);
         leftGroup.Children.Add(new Control());
         return leftGroupButtons;
+    }
+
+    private static IReadOnlyList<DialogButton> GetRoleButtons(
+        Dictionary<DialogButtonRole, List<DialogButton>> group,
+        DialogButtonRole role)
+    {
+        return group.GetValueOrDefault(role) ?? EmptyButtonList;
     }
 
     private void ClearButtonPanel(Panel panel)

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls.Utils;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -103,6 +104,7 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
     #endregion
 
     private readonly BorderRenderHelper _borderRenderHelper = new();
+    private IPen? _separatorPen;
 
     static AbstractOptionButtonGroup()
     {
@@ -335,7 +337,11 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
                 {
                     EdgeMode = EdgeMode.Aliased
                 });
-                context.DrawLine(new Pen(BorderBrush, BorderThickness.Left), startPoint, endPoint);
+                PenUtils.TryModifyOrCreate(ref _separatorPen, BorderBrush, BorderThickness.Left);
+                if (_separatorPen is not null)
+                {
+                    context.DrawLine(_separatorPen, startPoint, endPoint);
+                }
             }
 
             if (ButtonStyle == OptionButtonStyle.Outline)

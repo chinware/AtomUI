@@ -102,3 +102,17 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 ## 4. 后续
 
 如需继续优化 Tour，下一步应补一个 Gallery interaction harness：导航到 `TourShowCase` 后触发第一个 `Begin Tour`，测首次打开、下一步切换、关闭。仅用页面导航数据不足以评估 popup 内容和 `TourLayer` 热路径。
+
+---
+
+## 5. 追加结构优化：CustomActions 快照
+
+`Tour.HandleCustomActionsChanged()` 和 `OnApplyTemplate()` 过去各自执行 `CustomActions.Cast<Control>().ToList()`，并重复一段 `ITourAction.NotifyAttached()` 逻辑。现在统一走 `PrepareCustomActions()`，用 `Control[]` 快照并复用 attach 通知逻辑。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| CustomActions LINQ iterator / sync | 1 | 0 | `(1 - 0) / 1` | 100.00% | 同步自定义按钮时不再创建 `Cast` iterator |
+| CustomActions list wrapper / sync | 1 list | 0 list | `(1 - 0) / 1` | 100.00% | 改为数组快照，避免 List 增长逻辑和 LINQ materialize |
+| 重复 attach 同步代码块 | 2 处 | 1 处 | `(2 - 1) / 2` | 50.00% | 降低后续行为漂移风险 |
+
+说明：这是 popup/template 同步路径的结构性收益；没有页面加载 timing 百分比声明。

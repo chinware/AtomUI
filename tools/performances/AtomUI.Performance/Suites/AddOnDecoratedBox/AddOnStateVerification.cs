@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using AtomUI.Media;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.Primitives.Themes;
 using Avalonia;
@@ -10,6 +11,7 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.VisualTree;
+using System.Reflection;
 using AtomTextBox = AtomUI.Desktop.Controls.TextBox;
 
 namespace AtomUI.Performance;
@@ -24,6 +26,10 @@ internal static partial class Program
         VerifyAddOnGeometry(failures);
         VerifyContentFramePointerLifecycle(failures);
         VerifyCompactSpaceGeometry(failures);
+        VerifyCompactSpacePrimitiveStateGuards(failures);
+        VerifySelectRepeatedCompactSpaceAndFeedbackNotificationsAreStable(failures);
+        VerifyInputShellRepeatedStateNotificationsAreStable(failures);
+        VerifyPenUtilsReusesEquivalentPen(failures);
         VerifyRightAddOnTemplateBindings(failures);
 
         if (failures.Count == 0)
@@ -254,6 +260,292 @@ internal static partial class Program
     {
         VerifyCompactSpaceGeometry(Orientation.Horizontal, failures);
         VerifyCompactSpaceGeometry(Orientation.Vertical, failures);
+    }
+
+    private static void VerifyCompactSpacePrimitiveStateGuards(ICollection<string> failures)
+    {
+        var item = new CompactSpaceItem
+        {
+            Child = new AtomUI.Desktop.Controls.Button { Content = "Item" }
+        };
+        var addon = new CompactSpaceAddOn
+        {
+            Content = "Addon"
+        };
+
+        VerifyRepeatedCompactSpaceAwareNotifications(item, "CompactSpaceItem", failures);
+        VerifyRepeatedCompactSpaceAwareNotifications(addon, "CompactSpaceAddOn", failures);
+        VerifyCompactSpaceItemTransformReuseAndClear(failures);
+    }
+
+    private static void VerifyRepeatedCompactSpaceAwareNotifications(Control control,
+                                                                     string label,
+                                                                     ICollection<string> failures)
+    {
+        var compactSpaceAware = (ICompactSpaceAware)control;
+        var changedProperties = new List<string>();
+        control.PropertyChanged += (_, e) =>
+        {
+            if (e.Property.Name is "IsUsedInCompactSpace" or
+                                   "CompactSpaceItemPosition" or
+                                   "CompactSpaceOrientation")
+            {
+                changedProperties.Add(e.Property.Name);
+            }
+        };
+
+        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
+        compactSpaceAware.NotifyOrientationChange(Orientation.Vertical);
+        changedProperties.Clear();
+        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
+        compactSpaceAware.NotifyOrientationChange(Orientation.Vertical);
+
+        Expect(changedProperties.Count == 0,
+            $"{label} repeated compact-space notifications should not rewrite unchanged state. Actual: {string.Join(", ", changedProperties)}.",
+            failures);
+    }
+
+    private static void VerifyCompactSpaceItemTransformReuseAndClear(ICollection<string> failures)
+    {
+        var first = new AtomUI.Desktop.Controls.Button { Content = "First" };
+        var middle = new AtomUI.Desktop.Controls.Button { Content = "Middle" };
+        var last = new AtomUI.Desktop.Controls.Button { Content = "Last" };
+        var compactSpace = new CompactSpace
+        {
+            Orientation = Orientation.Horizontal
+        };
+        compactSpace.Children.Add(first);
+        compactSpace.Children.Add(middle);
+        compactSpace.Children.Add(last);
+
+        using var realized = RealizeControl(compactSpace);
+        var items = compactSpace.GetSelfAndVisualDescendants()
+                                .OfType<Control>()
+                                .Where(control => control.GetType().FullName == "AtomUI.Desktop.Controls.CompactSpaceItem")
+                                .ToList();
+        Expect(items.Count == 3,
+            $"CompactSpace transform verification should create three wrappers, actual {items.Count}.",
+            failures);
+        if (items.Count != 3)
+        {
+            return;
+        }
+
+        RefreshLayout(realized.Window);
+        var middleTransform = items[1].RenderTransform;
+        Expect(middleTransform is TranslateTransform,
+            "Middle CompactSpaceItem should use a translate offset transform.",
+            failures);
+
+        RefreshLayout(realized.Window);
+        Expect(ReferenceEquals(middleTransform, items[1].RenderTransform),
+            "Repeated CompactSpaceItem measure should reuse the existing offset transform.",
+            failures);
+
+        ((ICompactSpaceAware)items[1]).NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
+        RefreshLayout(realized.Window);
+        Expect(items[1].RenderTransform == null,
+            "CompactSpaceItem should clear stale offset transform when it becomes a single item.",
+            failures);
+    }
+
+    private static void VerifySelectRepeatedCompactSpaceAndFeedbackNotificationsAreStable(ICollection<string> failures)
+    {
+        var select = new Select
+        {
+            OptionsSource = CreateSelectOptions()
+        };
+        using var realized = RealizeControl(select);
+
+        var changedProperties = new List<string>();
+        select.PropertyChanged += (_, e) =>
+        {
+            if (e.Property.Name is "IsUsedInCompactSpace" or
+                                   "CompactSpaceItemPosition" or
+                                   "CompactSpaceOrientation" or
+                                   "Status" or
+                                   "FormFeedback")
+            {
+                changedProperties.Add(e.Property.Name);
+            }
+        };
+
+        var compactSpaceAware = (ICompactSpaceAware)select;
+        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
+        compactSpaceAware.NotifyOrientationChange(Orientation.Vertical);
+        var feedback = new FormValidateFeedback();
+        ((IFormItemAware)select).NotifyValidateStatus(FormValidateStatus.Error);
+        ((IFormItemFeedbackAware)select).SetFeedbackControl(feedback);
+
+        changedProperties.Clear();
+        compactSpaceAware.NotifyPositionChange(SpaceItemPosition.First | SpaceItemPosition.Last);
+        compactSpaceAware.NotifyOrientationChange(Orientation.Vertical);
+        ((IFormItemAware)select).NotifyValidateStatus(FormValidateStatus.Error);
+        ((IFormItemFeedbackAware)select).SetFeedbackControl(feedback);
+
+        Expect(changedProperties.Count == 0,
+            $"Select repeated compact-space/form-feedback notifications should not rewrite unchanged state. Actual: {string.Join(", ", changedProperties)}.",
+            failures);
+    }
+
+    private static void VerifyInputShellRepeatedStateNotificationsAreStable(ICollection<string> failures)
+    {
+        VerifyTextBoxRepeatedStateNotificationsAreStable(failures);
+        VerifyTextAreaRepeatedStateNotificationsAreStable(failures);
+        VerifyButtonSpinnerRepeatedCompactSpaceNotificationsAreStable(failures);
+        VerifyNumericUpDownRepeatedStateNotificationsAreStable(failures);
+    }
+
+    private static void VerifyTextBoxRepeatedStateNotificationsAreStable(ICollection<string> failures)
+    {
+        var textBox = new AtomTextBox();
+        var feedback = new FormValidateFeedback();
+        VerifyRepeatedCompactSpaceAwareNotifications(textBox, "TextBox", failures);
+        VerifyRepeatedFeedbackNotification(textBox, "TextBox", feedback, failures);
+    }
+
+    private static void VerifyTextAreaRepeatedStateNotificationsAreStable(ICollection<string> failures)
+    {
+        var textArea = new TextArea();
+        var feedback = new FormValidateFeedback();
+        VerifyRepeatedStatusNotification(textArea, "TextArea", failures);
+        VerifyRepeatedFeedbackNotification(textArea, "TextArea", feedback, failures);
+    }
+
+    private static void VerifyButtonSpinnerRepeatedCompactSpaceNotificationsAreStable(ICollection<string> failures)
+    {
+        var buttonSpinner = new AtomUI.Desktop.Controls.ButtonSpinner();
+        VerifyRepeatedCompactSpaceAwareNotifications(buttonSpinner, "ButtonSpinner", failures);
+    }
+
+    private static void VerifyNumericUpDownRepeatedStateNotificationsAreStable(ICollection<string> failures)
+    {
+        var numericUpDown = new AtomUI.Desktop.Controls.NumericUpDown();
+        VerifyRepeatedCompactSpaceAwareNotifications(numericUpDown, "NumericUpDown", failures);
+        VerifyRepeatedStatusNotification(numericUpDown, "NumericUpDown", failures);
+    }
+
+    private static void VerifyRepeatedStatusNotification(Control control,
+                                                         string label,
+                                                         ICollection<string> failures)
+    {
+        var changedProperties = new List<string>();
+        control.PropertyChanged += (_, e) =>
+        {
+            if (e.Property.Name == "Status")
+            {
+                changedProperties.Add(e.Property.Name);
+            }
+        };
+
+        ((IFormItemAware)control).NotifyValidateStatus(FormValidateStatus.Error);
+        changedProperties.Clear();
+        ((IFormItemAware)control).NotifyValidateStatus(FormValidateStatus.Error);
+
+        Expect(changedProperties.Count == 0,
+            $"{label} repeated validation status notification should not rewrite unchanged state. Actual: {string.Join(", ", changedProperties)}.",
+            failures);
+    }
+
+    private static void VerifyRepeatedFeedbackNotification(Control control,
+                                                           string label,
+                                                           FormValidateFeedback feedback,
+                                                           ICollection<string> failures)
+    {
+        var changedProperties = new List<string>();
+        control.PropertyChanged += (_, e) =>
+        {
+            if (e.Property.Name == "FormFeedback")
+            {
+                changedProperties.Add(e.Property.Name);
+            }
+        };
+
+        ((IFormItemFeedbackAware)control).SetFeedbackControl(feedback);
+        changedProperties.Clear();
+        ((IFormItemFeedbackAware)control).SetFeedbackControl(feedback);
+
+        Expect(changedProperties.Count == 0,
+            $"{label} repeated form-feedback notification should not rewrite unchanged state. Actual: {string.Join(", ", changedProperties)}.",
+            failures);
+    }
+
+    private static void VerifyPenUtilsReusesEquivalentPen(ICollection<string> failures)
+    {
+        var pen = InvokePenUtilsTryModifyOrCreate(
+            null,
+            Brushes.Red,
+            1.0,
+            null,
+            0.0,
+            out var firstChanged);
+        var firstPen = pen;
+        pen = InvokePenUtilsTryModifyOrCreate(
+            pen,
+            Brushes.Red,
+            1.0,
+            null,
+            0.0,
+            out var secondChanged);
+        Expect(firstChanged,
+            "PenUtils first immutable brush call should create a pen.",
+            failures);
+        Expect(!secondChanged && ReferenceEquals(firstPen, pen),
+            "PenUtils repeated immutable brush call should reuse the existing equivalent pen.",
+            failures);
+
+        var dashes = new[] { 4.0, 2.0 };
+        pen = InvokePenUtilsTryModifyOrCreate(
+            pen,
+            Brushes.Red,
+            1.0,
+            dashes,
+            0.0,
+            out var dashedChanged);
+        var dashedPen = pen;
+        pen = InvokePenUtilsTryModifyOrCreate(
+            pen,
+            Brushes.Red,
+            1.0,
+            dashes,
+            0.0,
+            out var repeatedDashedChanged);
+        Expect(dashedChanged,
+            "PenUtils first dashed call should update the pen.",
+            failures);
+        Expect(!repeatedDashedChanged && ReferenceEquals(dashedPen, pen),
+            "PenUtils repeated dashed call should reuse the existing equivalent pen.",
+            failures);
+    }
+
+    private static IPen? InvokePenUtilsTryModifyOrCreate(IPen? pen,
+                                                         IBrush? brush,
+                                                         double thickness,
+                                                         IReadOnlyList<double>? strokeDashArray,
+                                                         double strokeDashOffset,
+                                                         out bool changed)
+    {
+        var method = typeof(PenUtils).GetMethod(
+            "TryModifyOrCreate",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        if (method == null)
+        {
+            throw new InvalidOperationException("PenUtils.TryModifyOrCreate should exist.");
+        }
+
+        object?[] args =
+        [
+            pen,
+            brush,
+            thickness,
+            strokeDashArray,
+            strokeDashOffset,
+            PenLineCap.Flat,
+            PenLineJoin.Miter,
+            10.0
+        ];
+        changed = method.Invoke(null, args) is true;
+        return args[0] as IPen;
     }
 
     private static void VerifyCompactSpaceGeometry(Orientation orientation, ICollection<string> failures)

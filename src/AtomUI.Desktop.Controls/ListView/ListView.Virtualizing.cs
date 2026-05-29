@@ -23,7 +23,7 @@ public partial class ListView : IListVirtualizingContextAware
         
             if (this is IListVirtualizingContextAware list && element is IListItemVirtualizingContextAware listItem)
             {
-                var context = new Dictionary<object, object?>();
+                var context = new Dictionary<object, object?>(2);
                 list.SaveVirtualizingContext(element, context);
                 _virtualRestoreContext.Add(listItem.VirtualIndex, context);
                 list.ClearContainerValues(element);

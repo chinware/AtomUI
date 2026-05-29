@@ -98,7 +98,7 @@ else if (change.Property == IsClosableProperty)
 
 ## 3. 不在本轮范围
 
-- `SetupTagColorInfo` 的 `foreach (var entry in PresetColorMap)` 线性查找（按 string 匹配 12 个 preset color 项）：每次 TagColor 变化做一次。Gallery 76 tags × 16 字符串比较 ≈ 1200 次 ToLower 比较；可改成预构建 `Dictionary<string, TagCalcColor>`，但单 tag 每次 < 0.05 ms，变异范围内难以验证收益。**留作 follow-up**，先看 Gallery 实测是否成为瓶颈。
+- `SetupTagColorInfo` 的 string match 已追加低风险结构优化：去掉输入和枚举名的 `ToLower()` 临时字符串，改为大小写忽略比较；保持只按枚举名称匹配，不接受数字枚举值。
 - `SetupPresetColorMap` / `SetupStatusColorMap` 已经是 static 全局 dict + `force` 参数，theme 切换时重建。结构 OK，未改。
 
 ---
@@ -160,4 +160,16 @@ dotnet build src/AtomUI.Controls/AtomUI.Controls.csproj -c Debug --framework net
 
 - 单 Tag 每实例 KB 收益（~2 KB）相对 Tier 0 的 TextBlock / Popup 较小。Tag 优化的真正杠杆在 **Gallery 累积量**：76 实例 × ~70 非 closable × 2 KB ≈ 140 KB。Select 多选场景按 SelectedItems 数量再乘倍。
 - ms/item 在 sub-millisecond 量级，单 scenario 测得的变异范围内 ±20%；KB/item 是更可靠的指标。
-- `SetupTagColorInfo` 字符串查找微优化属下一轮。
+
+---
+
+## 8. 追加结构优化：颜色名匹配临时字符串
+
+`SetupTagColorInfo()` 的 preset/status 颜色名匹配不再对输入和每个 enum name 做 `ToLower()`；改为 `StringComparison.OrdinalIgnoreCase`。同时命中后直接使用 `entry.Value`，避免命中项再查一次 dictionary。颜色解析优先级保持：preset → status → custom color。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Tag color name `ToLower()` allocations / worst-case color parse | 19 strings | 0 strings | `(19 - 0) / 19` | 100.00% | 结构收益；14 preset + 4 status + input 均不再 lower |
+| Matched preset/status dictionary lookup / color parse | 1 extra lookup | 0 extra lookups | `(1 - 0) / 1` | 100.00% | 结构收益；命中项直接用 enumerator value |
+
+说明：这是 TagColor 变化路径的结构性收益；不声明页面加载 timing 提升。

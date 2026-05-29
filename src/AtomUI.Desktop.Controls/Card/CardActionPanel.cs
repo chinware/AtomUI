@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -23,6 +24,7 @@ internal class CardActionPanel : TemplatedControl
     public Avalonia.Controls.Controls Actions { get; } = new ();
 
     private UniformGrid? _uniformGrid;
+    private IPen? _borderPen;
     
     static CardActionPanel()
     {
@@ -61,12 +63,10 @@ internal class CardActionPanel : TemplatedControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<Control>().ToList();
-                    _uniformGrid.Children.InsertRange(e.NewStartingIndex, newItems);
+                    _uniformGrid.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<Control>().ToList();
-                    _uniformGrid.Children.RemoveAll(oldItems);
+                    _uniformGrid.Children.RemoveAll(e.OldItems!.OfType<Control>());
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     for (int index1 = 0; index1 < e.OldItems!.Count; ++index1)
@@ -89,10 +89,15 @@ internal class CardActionPanel : TemplatedControl
     public override void Render(DrawingContext context)
     {
         var lineWidth = BorderThickness.Left;
+        PenUtils.TryModifyOrCreate(ref _borderPen, BorderBrush, lineWidth);
+        if (_borderPen is null)
+        {
+            return;
+        }
         {
             var startPoint = new Point(0, lineWidth / 2); 
             var endPoint   = new Point(Bounds.Width, lineWidth / 2);
-            context.DrawLine(new Pen(BorderBrush, lineWidth), startPoint, endPoint);
+            context.DrawLine(_borderPen, startPoint, endPoint);
         }
         for (var i = 0; i < Actions.Count - 1; i++)
         {
@@ -103,7 +108,7 @@ internal class CardActionPanel : TemplatedControl
             var startPoint = new Point(offsetX, offsetY + deltaY); 
             var endPoint   = new Point(offsetX, offsetY + action.Bounds.Height - deltaY);
             
-            context.DrawLine(new Pen(BorderBrush, lineWidth), startPoint, endPoint);
+            context.DrawLine(_borderPen, startPoint, endPoint);
         }
     }
 

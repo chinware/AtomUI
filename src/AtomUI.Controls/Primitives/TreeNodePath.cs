@@ -28,6 +28,12 @@ public sealed record TreeNodePath
         Segments = Array.AsReadOnly(_segmentsArray);
     }
 
+    private TreeNodePath(string[] trustedSegments, bool _)
+    {
+        _segmentsArray = trustedSegments;
+        Segments        = Array.AsReadOnly(_segmentsArray);
+    }
+
     private static string[] ValidateAndCopySegments(string[] segments)
     {
         ArgumentNullException.ThrowIfNull(segments);
@@ -63,6 +69,10 @@ public sealed record TreeNodePath
 
     public bool StartsWith(TreeNodePath other)
     {
+        if (ReferenceEquals(this, other) || other.Length == 0)
+        {
+            return true;
+        }
         if (other.Length > Length)
         {
             return false;
@@ -78,10 +88,21 @@ public sealed record TreeNodePath
         return true;
     }
     
-    public TreeNodePath? GetParent() =>
-        _segmentsArray.Length > 0 
-            ? new TreeNodePath(_segmentsArray[..^1]) 
-            : null;
+    public TreeNodePath? GetParent()
+    {
+        if (_segmentsArray.Length == 0)
+        {
+            return null;
+        }
+        if (_segmentsArray.Length == 1)
+        {
+            return Empty;
+        }
+
+        var newSegments = new string[_segmentsArray.Length - 1];
+        Array.Copy(_segmentsArray, newSegments, newSegments.Length);
+        return new TreeNodePath(newSegments, true);
+    }
     
     public TreeNodePath Append(string segment)
     {
@@ -95,7 +116,7 @@ public sealed record TreeNodePath
         var newSegments = new string[_segmentsArray.Length + 1];
         _segmentsArray.CopyTo(newSegments, 0);
         newSegments[^1] = segment;
-        return new TreeNodePath(newSegments);
+        return new TreeNodePath(newSegments, true);
     }
     
     public TreeNodePath Append(TreeNodePath other)
@@ -104,11 +125,16 @@ public sealed record TreeNodePath
         {
             return this;
         }
+        if (Length == 0)
+        {
+            return other;
+        }
+
         var newSegments = new string[_segmentsArray.Length + other.Length];
         _segmentsArray.CopyTo(newSegments, 0);
         other._segmentsArray.CopyTo(newSegments, _segmentsArray.Length);
         
-        return new TreeNodePath(newSegments);
+        return new TreeNodePath(newSegments, true);
     }
     
     public TreeNodePath WithSegment(int index, string newValue)
@@ -117,9 +143,19 @@ public sealed record TreeNodePath
         {
             throw new ArgumentOutOfRangeException(nameof(index));
         }
+        ArgumentException.ThrowIfNullOrEmpty(newValue);
+        if (newValue.Contains('/'))
+        {
+            throw new ArgumentException("Segments cannot contain '/'", nameof(newValue));
+        }
+        if (string.Equals(_segmentsArray[index], newValue, StringComparison.Ordinal))
+        {
+            return this;
+        }
+
         var newSegments = _segmentsArray.ToArray();
-        newSegments[index] = newValue ?? throw new ArgumentNullException(nameof(newValue));
+        newSegments[index] = newValue;
         
-        return new TreeNodePath(newSegments);
+        return new TreeNodePath(newSegments, true);
     }
 }

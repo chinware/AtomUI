@@ -1,3 +1,4 @@
+using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -104,6 +105,7 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
     internal ScrollViewer? ScrollViewer { get; set; }
     internal TextArea? Owner { get; set; }
     private Control? _rightContentAddOn;
+    private IPen? _resizeIndicatorPen;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
@@ -140,10 +142,14 @@ internal class TextAreaDecoratedBox : AddOnDecoratedBox
             var sideLength = 7d;
             var (line1Start, line1End) = CalculateResizeLine(bounds, sideLength);
             var (line2Start, line2End) = CalculateResizeLine(bounds, sideLength - 3);
-            var pen = new Pen(ResizeIndicatorLineBrush);
+            PenUtils.TryModifyOrCreate(ref _resizeIndicatorPen, ResizeIndicatorLineBrush, 1.0);
+            if (_resizeIndicatorPen is null)
+            {
+                return;
+            }
         
-            context.DrawLine(pen, line1Start, line1End);
-            context.DrawLine(pen, line2Start, line2End);
+            context.DrawLine(_resizeIndicatorPen, line1Start, line1End);
+            context.DrawLine(_resizeIndicatorPen, line2Start, line2End);
         }
     }
 

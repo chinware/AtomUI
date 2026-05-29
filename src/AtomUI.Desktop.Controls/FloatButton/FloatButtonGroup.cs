@@ -326,15 +326,14 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<Control>().ToList();
-                    foreach (var item in newItems)
+                    foreach (var item in e.NewItems!)
                     {
                         if (item is FloatButton floatButton)
                         {
                             NotifyAddItem(floatButton);
                         }
                     }
-                    _itemsControl.Children.InsertRange(e.NewStartingIndex, newItems);
+                    _itemsControl.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -342,15 +341,14 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<Control>().ToList();
-                    foreach (var item in oldItems)
+                    foreach (var item in e.OldItems!)
                     {
                         if (item is FloatButton floatButton)
                         {
                             floatButton.SetCurrentValue(FloatButton.IsEmbedModeProperty, false);
                         }
                     }
-                    _itemsControl.Children.RemoveAll(oldItems);
+                    _itemsControl.Children.RemoveAll(e.OldItems!.OfType<Control>());
                     break;
 
                 case NotifyCollectionChangedAction.Replace:

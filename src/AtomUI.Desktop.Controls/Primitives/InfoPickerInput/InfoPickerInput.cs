@@ -383,7 +383,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     public void ClosePickerFlyout()
     {
-        SetCurrentValue(IsPickerOpenProperty, false);
+        SetPickerOpenIfChanged(false);
     }
 
     private void HandleIsPickerOpenChanged(AvaloniaPropertyChangedEventArgs args)
@@ -510,11 +510,11 @@ public abstract class InfoPickerInput : TemplatedControl,
                 if (IsPointerInInfoInputBox(args.GetPosition(this)) &&
                     !ClickInClearUpButtonWithClearMode(args))
                 {
-                    SetCurrentValue(IsPickerOpenProperty, true);
+                    SetPickerOpenIfChanged(true);
                 }
                 else
                 {
-                    SetCurrentValue(IsPickerOpenProperty, false);
+                    SetPickerOpenIfChanged(false);
                 }
                 args.Handled = true;
             }
@@ -557,10 +557,7 @@ public abstract class InfoPickerInput : TemplatedControl,
             
             targetWidth = endOffsetX - startOffsetX;
             var bounds = new Rect(new Point(startOffsetX, offsetY), new Size(targetWidth, targetHeight));
-            if (bounds.Contains(position))
-            {
-                return true;
-            }
+            return bounds.Contains(position);
         }
     
         return false;
@@ -598,14 +595,17 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (DecoratedBox is not null)
         {
-            SetCurrentValue(IsClearButtonVisibleProperty, DecoratedBox.IsInnerBoxHover && InfoInputBox?.IsReadOnly == false && InfoInputBox.Text?.Length > 0);
+            SetClearButtonVisibleIfChanged(
+                DecoratedBox.IsInnerBoxHover &&
+                InfoInputBox?.IsReadOnly == false &&
+                InfoInputBox.Text?.Length > 0);
         }
     }
 
     protected virtual void NotifyClearButtonClicked()
     {
         Clear();
-        SetCurrentValue(IsClearButtonVisibleProperty, false);
+        SetClearButtonVisibleIfChanged(false);
     }
 
     protected virtual void NotifyPickerPresenterCreated(Control pickerPresenter)
@@ -649,7 +649,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
         if (IsPickerOpen)
         {
-            SetCurrentValue(IsPickerOpenProperty, false);
+            SetPickerOpenIfChanged(false);
         }
 
         NotifyPickerPresenterCleared(pickerPresenter);
@@ -670,6 +670,22 @@ public abstract class InfoPickerInput : TemplatedControl,
     }
 
     protected abstract Control CreatePickerPresenter();
+
+    protected void SetPickerOpenIfChanged(bool isOpen)
+    {
+        if (IsPickerOpen != isOpen)
+        {
+            SetCurrentValue(IsPickerOpenProperty, isOpen);
+        }
+    }
+
+    protected void SetClearButtonVisibleIfChanged(bool isVisible)
+    {
+        if (IsClearButtonVisible != isVisible)
+        {
+            SetCurrentValue(IsClearButtonVisibleProperty, isVisible);
+        }
+    }
 
     protected virtual Flyout CreatePickerFlyout()
     {
@@ -695,7 +711,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
     {
-        SetCurrentValue(IsPickerOpenProperty, false);
+        SetPickerOpenIfChanged(false);
     }
 
     private void HandleDecoratedBoxPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
@@ -755,13 +771,24 @@ public abstract class InfoPickerInput : TemplatedControl,
     
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
-        IsUsedInCompactSpace     = position != null;
-        CompactSpaceItemPosition = position;
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
     }
     
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
-        CompactSpaceOrientation = orientation;
+        if (CompactSpaceOrientation != orientation)
+        {
+            CompactSpaceOrientation = orientation;
+        }
     }
 
     double ICompactSpaceAware.GetBorderThickness()
@@ -804,13 +831,10 @@ public abstract class InfoPickerInput : TemplatedControl,
     
     protected void ConfigureShowArrowEffective()
     {
-        if (!IsArrowVisible)
+        var isArrowVisibleEffective = IsArrowVisible && PopupUtils.CanEnabledArrow(PickerPlacement);
+        if (IsArrowVisibleEffective != isArrowVisibleEffective)
         {
-            SetCurrentValue(IsArrowVisibleEffectiveProperty, false);
-        }
-        else
-        {
-            SetCurrentValue(IsArrowVisibleEffectiveProperty, PopupUtils.CanEnabledArrow(PickerPlacement));
+            SetCurrentValue(IsArrowVisibleEffectiveProperty, isArrowVisibleEffective);
         }
     }
 
@@ -820,7 +844,10 @@ public abstract class InfoPickerInput : TemplatedControl,
         if (arrowPosition.HasValue)
         {
             arrowPosition = ArrowPositionUtils.FlipArrowPosition(arrowPosition.Value, IsPopupHorizontalFlipped, IsPopupVerticalFlipped);
-            SetCurrentValue(ArrowPositionProperty, arrowPosition);
+            if (ArrowPosition != arrowPosition)
+            {
+                SetCurrentValue(ArrowPositionProperty, arrowPosition);
+            }
         }
     }
     
@@ -862,21 +889,32 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         if (status == FormValidateStatus.Error)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
+            SetStatusIfChanged(InputControlStatus.Error);
         }
         else if (status == FormValidateStatus.Warning)
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
+            SetStatusIfChanged(InputControlStatus.Warning);
         }
         else
         {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+            SetStatusIfChanged(InputControlStatus.Default);
+        }
+    }
+
+    private void SetStatusIfChanged(InputControlStatus status)
+    {
+        if (Status != status)
+        {
+            SetCurrentValue(StatusProperty, status);
         }
     }
     
     protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
     {
-        FormFeedback = value;
+        if (!ReferenceEquals(FormFeedback, value))
+        {
+            FormFeedback = value;
+        }
     }
     #endregion
 }

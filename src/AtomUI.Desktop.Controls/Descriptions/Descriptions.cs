@@ -157,14 +157,14 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
                 case NotifyCollectionChangedAction.Add:
                     if (e.NewItems != null)
                     {
-                        AddDescriptionItems(e.NewItems.OfType<DescriptionItem>().ToList());
+                        AddDescriptionItems(e.NewItems.OfType<DescriptionItem>());
                     }
 
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (e.OldItems != null)
                     {
-                        RemoveDescriptionItems(e.OldItems.OfType<DescriptionItem>().ToList());
+                        RemoveDescriptionItems(e.OldItems.OfType<DescriptionItem>());
                     }
 
                     break;
@@ -245,7 +245,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         base.OnApplyTemplate(e);
         _gridLayout = e.NameScope.Find<Grid>("PART_GridLayout");
-        AddDescriptionItems(Items.ToList());
+        AddDescriptionItems(Items);
         if (TopLevel.GetTopLevel(this) is Window window)
         {
             _breakPoint = window.MediaBreakPoint;
@@ -262,7 +262,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
             if (ItemsSource != null)
             {
                 Items.Clear();
-                Items.AddRange(ItemsSource.OfType<DescriptionItem>().ToList());
+                Items.AddRange(ItemsSource.OfType<DescriptionItem>());
             }
         }
         else if (change.Property == IsBorderedProperty)
@@ -284,7 +284,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         }
     }
 
-    private void AddDescriptionItems(List<DescriptionItem> items)
+    private void AddDescriptionItems(IEnumerable<DescriptionItem> items)
     {
         if (_gridLayout != null)
         {
@@ -329,7 +329,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         }
     }
 
-    private void RemoveDescriptionItems(List<DescriptionItem> items)
+    private void RemoveDescriptionItems(IEnumerable<DescriptionItem> items)
     {
         if (_gridLayout != null)
         {
@@ -588,8 +588,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
 
     private void HandleLayoutChanged()
     {
-        var items = Items.ToList();
-        RemoveDescriptionItems(items);
-        AddDescriptionItems(items);
+        RemoveDescriptionItems(Items);
+        AddDescriptionItems(Items);
     }
 }

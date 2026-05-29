@@ -1,7 +1,9 @@
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -19,6 +21,8 @@ internal static partial class Program
         VerifyDatePickerAccessoryContentRefresh(failures);
         VerifyDatePickerPopupLifecycle(failures);
         VerifyRangeDatePickerPopupLifecycle(failures);
+        VerifyRangeDatePickerIndicatorOffsetStaysStable(failures);
+        VerifyInfoPickerRepeatedStateNotificationsAreStable(failures);
         VerifyDatePickerWindowSubscriptionLifecycle(failures);
 
         if (failures.Count == 0)
@@ -271,6 +275,69 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyRangeDatePickerIndicatorOffsetStaysStable(ICollection<string> failures)
+    {
+        var rangeDatePicker = CreateRangeDatePicker();
+        using var realized = RealizeControl(rangeDatePicker);
+
+        var indicator = FindVisualByName<Control>(rangeDatePicker, "PART_RangePickerIndicator");
+        Expect(indicator != null,
+            "RangeDatePicker should realize PART_RangePickerIndicator.",
+            failures);
+        if (indicator == null)
+        {
+            return;
+        }
+
+        RefreshLayout(realized.Window);
+        var firstLeft = Canvas.GetLeft(indicator);
+        var firstTop  = Canvas.GetTop(indicator);
+        RefreshLayout(realized.Window);
+
+        Expect(Canvas.GetLeft(indicator).Equals(firstLeft),
+            "RangeDatePicker repeated layout should keep indicator Canvas.Left stable.",
+            failures);
+        Expect(Canvas.GetTop(indicator).Equals(firstTop),
+            "RangeDatePicker repeated layout should keep indicator Canvas.Top stable.",
+            failures);
+
+        SetRangeActivatedPartForTest(rangeDatePicker, "Start");
+        InvokePrivateMethod(
+            rangeDatePicker,
+            "AtomUI.Desktop.Controls.Primitives.RangeInfoPickerInput",
+            "SetupPickerIndicatorPosition");
+        var startWidth = indicator.Width;
+        var startLeft  = Canvas.GetLeft(indicator);
+        InvokePrivateMethod(
+            rangeDatePicker,
+            "AtomUI.Desktop.Controls.Primitives.RangeInfoPickerInput",
+            "SetupPickerIndicatorPosition");
+        Expect(indicator.Width.Equals(startWidth),
+            "RangeDatePicker repeated start indicator setup should keep Width stable.",
+            failures);
+        Expect(Canvas.GetLeft(indicator).Equals(startLeft),
+            "RangeDatePicker repeated start indicator setup should keep Canvas.Left stable.",
+            failures);
+
+        SetRangeActivatedPartForTest(rangeDatePicker, "End");
+        InvokePrivateMethod(
+            rangeDatePicker,
+            "AtomUI.Desktop.Controls.Primitives.RangeInfoPickerInput",
+            "SetupPickerIndicatorPosition");
+        var endWidth = indicator.Width;
+        var endLeft  = Canvas.GetLeft(indicator);
+        InvokePrivateMethod(
+            rangeDatePicker,
+            "AtomUI.Desktop.Controls.Primitives.RangeInfoPickerInput",
+            "SetupPickerIndicatorPosition");
+        Expect(indicator.Width.Equals(endWidth),
+            "RangeDatePicker repeated end indicator setup should keep Width stable.",
+            failures);
+        Expect(Canvas.GetLeft(indicator).Equals(endLeft),
+            "RangeDatePicker repeated end indicator setup should keep Canvas.Left stable.",
+            failures);
+    }
+
     private static void VerifyDatePickerWindowSubscriptionLifecycle(ICollection<string> failures)
     {
         var datePicker = CreateDatePicker();
@@ -295,11 +362,106 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyInfoPickerRepeatedStateNotificationsAreStable(ICollection<string> failures)
+    {
+        var datePicker = CreateDatePicker();
+        using var realized = RealizeControl(datePicker);
+
+        var changedProperties = new List<string>();
+        datePicker.PropertyChanged += (_, e) =>
+        {
+            if (e.Property.Name is "IsUsedInCompactSpace" or
+                                   "CompactSpaceItemPosition" or
+                                   "CompactSpaceOrientation" or
+                                   "FormFeedback")
+            {
+                changedProperties.Add(e.Property.Name);
+            }
+        };
+
+        var firstLastPosition = CreateSpaceItemPosition("First", "Last");
+        NotifyCompactSpacePosition(datePicker, firstLastPosition);
+        NotifyCompactSpaceOrientation(datePicker, Orientation.Vertical);
+        var feedback = new FormValidateFeedback();
+        InvokePrivateMethod(
+            datePicker,
+            "AtomUI.Desktop.Controls.Primitives.InfoPickerInput",
+            "NotifySetFeedBackControl",
+            feedback);
+
+        changedProperties.Clear();
+        NotifyCompactSpacePosition(datePicker, firstLastPosition);
+        NotifyCompactSpaceOrientation(datePicker, Orientation.Vertical);
+        InvokePrivateMethod(
+            datePicker,
+            "AtomUI.Desktop.Controls.Primitives.InfoPickerInput",
+            "NotifySetFeedBackControl",
+            feedback);
+
+        Expect(changedProperties.Count == 0,
+            $"DatePicker repeated compact-space/form-feedback notifications should not rewrite state. Actual: {string.Join(", ", changedProperties)}.",
+            failures);
+    }
+
     private static void MaterializeInfoPickerPresenterForTest(Control picker)
     {
         InvokePrivateMethod(picker,
             "AtomUI.Desktop.Controls.Primitives.InfoPickerInput",
             "EnsurePickerPresenter");
+    }
+
+    private static void SetRangeActivatedPartForTest(Control picker, string value)
+    {
+        var enumType = typeof(AtomUI.Desktop.Controls.DatePicker)
+            .Assembly
+            .GetType("AtomUI.Desktop.Controls.Primitives.RangeActivatedPart");
+        if (enumType == null)
+        {
+            return;
+        }
+
+        SetPrivateField(
+            picker,
+            "AtomUI.Desktop.Controls.Primitives.RangeInfoPickerInput",
+            "_rangeActivatedPart",
+            Enum.Parse(enumType, value));
+    }
+
+    private static object CreateSpaceItemPosition(params string[] names)
+    {
+        var enumType = typeof(AtomUI.Desktop.Controls.DatePicker)
+            .Assembly
+            .GetType("AtomUI.Desktop.Controls.SpaceItemPosition");
+        if (enumType == null)
+        {
+            throw new InvalidOperationException("SpaceItemPosition type should exist.");
+        }
+
+        var value = 0;
+        foreach (var name in names)
+        {
+            value |= (int)Enum.Parse(enumType, name);
+        }
+        return Enum.ToObject(enumType, value);
+    }
+
+    private static void NotifyCompactSpacePosition(Control target, object? position)
+    {
+        InvokeCompactSpaceAwareMethod(target, "NotifyPositionChange", position);
+    }
+
+    private static void NotifyCompactSpaceOrientation(Control target, Orientation orientation)
+    {
+        InvokeCompactSpaceAwareMethod(target, "NotifyOrientationChange", orientation);
+    }
+
+    private static void InvokeCompactSpaceAwareMethod(Control target, string methodName, params object?[] args)
+    {
+        var interfaceType = typeof(AtomUI.Desktop.Controls.DatePicker)
+            .Assembly
+            .GetType("AtomUI.Desktop.Controls.ICompactSpaceAware");
+        var method = interfaceType?.GetMethod(methodName);
+        method?.Invoke(target, args);
     }
 
     private static Control? GetInfoPickerPopupChild(Control picker)

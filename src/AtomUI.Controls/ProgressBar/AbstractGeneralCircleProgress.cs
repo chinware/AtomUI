@@ -7,6 +7,9 @@ namespace AtomUI.Controls.Commons;
 public abstract class AbstractGeneralCircleProgress : AbstractCircleProgress
 {
     private Rect _currentGrooveRect;
+    private IPen? _groovePen;
+    private IPen? _indicatorPen;
+    private IPen? _successPen;
 
     protected override void RenderGroove(DrawingContext context)
     {
@@ -27,21 +30,21 @@ public abstract class AbstractGeneralCircleProgress : AbstractCircleProgress
 
     private void DrawGrooveNormal(DrawingContext context)
     {
-        var pen = new Pen(GrooveBrush, StrokeThickness);
-        context.DrawEllipse(null, pen, _currentGrooveRect);
+        PenUtils.TryModifyOrCreate(ref _groovePen, GrooveBrush, StrokeThickness);
+        context.DrawEllipse(null, _groovePen, _currentGrooveRect);
     }
 
     private void DrawGrooveStep(DrawingContext context)
     {
-        var pen = new Pen(GrooveBrush, StrokeThickness)
-        {
-            LineCap = PenLineCap.Flat
-        };
+        PenUtils.TryModifyOrCreate(ref _groovePen,
+            GrooveBrush,
+            StrokeThickness,
+            lineCap: PenLineCap.Flat);
         var spanAngle  = (360 - StepGap * StepCount) / StepCount;
         var startAngle = -90d;
         for (var i = 0; i < StepCount; ++i)
         {
-            context.DrawArc(pen, _currentGrooveRect, startAngle, spanAngle);
+            context.DrawArc(_groovePen, _currentGrooveRect, startAngle, spanAngle);
             startAngle += StepGap + spanAngle;
         }
     }
@@ -60,41 +63,40 @@ public abstract class AbstractGeneralCircleProgress : AbstractCircleProgress
 
     private void DrawIndicatorBarNormal(DrawingContext context)
     {
-        var pen = new Pen(StrokeBrush, StrokeThickness)
-        {
-            LineCap = StrokeLineCap
-        };
+        PenUtils.TryModifyOrCreate(ref _indicatorPen,
+            StrokeBrush,
+            StrokeThickness,
+            lineCap: StrokeLineCap);
 
         double startAngle = -90;
-        context.DrawArc(pen, _currentGrooveRect, startAngle, IndicatorAngle);
+        context.DrawArc(_indicatorPen, _currentGrooveRect, startAngle, IndicatorAngle);
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            var successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
-            {
-                LineCap = StrokeLineCap
-            };
-            context.DrawArc(successPen, _currentGrooveRect, startAngle, CalculateAngle(SuccessThreshold));
+            PenUtils.TryModifyOrCreate(ref _successPen,
+                SuccessStrokeBrush,
+                StrokeThickness,
+                lineCap: StrokeLineCap);
+            context.DrawArc(_successPen, _currentGrooveRect, startAngle, CalculateAngle(SuccessThreshold));
         }
     }
 
     private void DrawIndicatorBarStep(DrawingContext context)
     {
-        var pen = new Pen(StrokeBrush, StrokeThickness)
-        {
-            LineCap = PenLineCap.Flat
-        };
+        PenUtils.TryModifyOrCreate(ref _indicatorPen,
+            StrokeBrush,
+            StrokeThickness,
+            lineCap: PenLineCap.Flat);
 
         var   filledSteps  = (int)Math.Round(StepCount * Percentage / 100);
         int?  successSteps = null;
-        IPen? successPen   = null;
 
         if (!double.IsNaN(SuccessThreshold))
         {
-            successPen = new Pen(SuccessStrokeBrush, StrokeThickness)
-            {
-                LineCap = PenLineCap.Flat
-            };
+            PenUtils.TryModifyOrCreate(ref _successPen,
+                SuccessStrokeBrush,
+                StrokeThickness,
+                lineCap: PenLineCap.Flat);
             successSteps = (int)Math.Round(StepCount * SuccessThreshold / (Maximum - Minimum));
         }
 
@@ -103,12 +105,12 @@ public abstract class AbstractGeneralCircleProgress : AbstractCircleProgress
         IPen? currentPen;
         for (var i = 0; i < filledSteps; ++i)
         {
-            currentPen = pen;
+            currentPen = _indicatorPen;
             if (successSteps.HasValue)
             {
                 if (i < successSteps)
                 {
-                    currentPen = successPen;
+                    currentPen = _successPen;
                 }
             }
 

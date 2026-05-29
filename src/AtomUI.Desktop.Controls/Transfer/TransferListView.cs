@@ -89,10 +89,10 @@ public class TransferListView : ListView, ITransferView
     {
         if (SelectedKeys != null)
         {
-            var newSelectedKeys = new List<EntityKey>();
+            var newSelectedKeys = new List<EntityKey>(SelectedKeys.Count);
             if (ItemsSource != null)
             {
-                var allItems = ItemsSource.Cast<IItemKey>().Select(item => item.ItemKey).ToHashSet();
+                var allItems = BuildItemKeySet(ItemsSource);
                 foreach (var selectedKey in SelectedKeys)
                 {
                     if (allItems.Contains(selectedKey))
@@ -133,7 +133,7 @@ public class TransferListView : ListView, ITransferView
         }
         else
         {
-            var selectedKeys = new List<EntityKey>();
+            var selectedKeys = new List<EntityKey>(SelectedItems.Count);
             foreach (var item in SelectedItems)
             {
                 if (item is IListItemData listItemData && listItemData.IsEnabled)
@@ -154,7 +154,7 @@ public class TransferListView : ListView, ITransferView
             _ignoreSyncSelection = false;
             return;
         }
-        var selectedItems = ItemsSource?.Cast<IItemKey>().Where(item => SelectedKeys?.Contains(item.ItemKey ?? default) ?? false).ToList();
+        var selectedItems = BuildSelectedItemsList(ItemsSource, SelectedKeys);
         SetCurrentValue(SelectedItemsProperty, selectedItems);
     }
     
@@ -304,7 +304,68 @@ public class TransferListView : ListView, ITransferView
         }
         else if (selectAction == TransferSelectAction.RemoveCurrentPage)
         {
-            ItemsRemoved?.Invoke(this, new TransferItemsRemovedEventArgs(Items.Cast<IItemKey>().ToList()));
+            ItemsRemoved?.Invoke(this, new TransferItemsRemovedEventArgs(BuildItemsList(Items)));
         }
+    }
+
+    private static HashSet<EntityKey?> BuildItemKeySet(IEnumerable source)
+    {
+        var keySet = source is ICollection collection
+            ? new HashSet<EntityKey?>(collection.Count)
+            : new HashSet<EntityKey?>();
+        foreach (var item in source)
+        {
+            keySet.Add(((IItemKey)item!).ItemKey);
+        }
+        return keySet;
+    }
+
+    private static List<IItemKey>? BuildSelectedItemsList(IEnumerable? source, ICollection<EntityKey>? selectedKeys)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var selectedKeySet = BuildEntityKeySet(selectedKeys);
+        var selectedItems = selectedKeys == null
+            ? new List<IItemKey>(0)
+            : new List<IItemKey>(selectedKeys.Count);
+        foreach (var item in source)
+        {
+            var itemKey = (IItemKey)item!;
+            if (selectedKeySet?.Contains(itemKey.ItemKey ?? default) == true)
+            {
+                selectedItems.Add(itemKey);
+            }
+        }
+        return selectedItems;
+    }
+
+    private static HashSet<EntityKey>? BuildEntityKeySet(ICollection<EntityKey>? keys)
+    {
+        if (keys == null || keys.Count == 0)
+        {
+            return null;
+        }
+
+        var keySet = new HashSet<EntityKey>(keys.Count);
+        foreach (var key in keys)
+        {
+            keySet.Add(key);
+        }
+        return keySet;
+    }
+
+    private static List<IItemKey> BuildItemsList(IEnumerable source)
+    {
+        var items = source is ICollection collection
+            ? new List<IItemKey>(collection.Count)
+            : new List<IItemKey>();
+        foreach (var item in source)
+        {
+            items.Add((IItemKey)item!);
+        }
+        return items;
     }
 }

@@ -162,14 +162,32 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     /// </summary>
     private void RemoveExcessMessages()
     {
-        var visibleMessages = _items!.OfType<MessageCard>().Where(m => !m.IsClosing).ToList();
-        var excessCount = visibleMessages.Count - MaxItems;
+        var visibleCount = 0;
+        foreach (var item in _items!)
+        {
+            if (item is MessageCard { IsClosing: false })
+            {
+                visibleCount++;
+            }
+        }
+
+        var excessCount = visibleCount - MaxItems;
 
         if (excessCount > 0)
         {
-            for (int i = 0; i < excessCount; i++)
+            foreach (var item in _items)
             {
-                visibleMessages[i].Close();
+                if (item is not MessageCard { IsClosing: false } messageCard)
+                {
+                    continue;
+                }
+
+                messageCard.Close();
+                excessCount--;
+                if (excessCount == 0)
+                {
+                    break;
+                }
             }
         }
     }

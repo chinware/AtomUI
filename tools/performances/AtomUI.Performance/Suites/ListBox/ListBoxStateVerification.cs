@@ -1,8 +1,11 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.Primitives;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -17,6 +20,9 @@ internal static partial class Program
         VerifyListBoxSelectedIndicatorLifecycle(failures);
         VerifyListBoxFilteringLifecycle(failures);
         VerifyCandidateListSelectionMovement(failures);
+        VerifyCandidateListEmptyNavigation(failures);
+        VerifyTreeNodePathDerivedOperations(failures);
+        VerifyMotionGhostGeometryUpdates(failures);
 
         if (failures.Count == 0)
         {
@@ -30,6 +36,134 @@ internal static partial class Program
             Console.Error.WriteLine($"- {failure}");
         }
         return false;
+    }
+
+    private static void VerifyTreeNodePathDerivedOperations(ICollection<string> failures)
+    {
+        var path = new TreeNodePath(["zhejiang", "hangzhou"]);
+        Expect(path.StartsWith(path),
+            "TreeNodePath.StartsWith() should return true for the same immutable instance.",
+            failures);
+        Expect(path.StartsWith(TreeNodePath.Empty),
+            "TreeNodePath.StartsWith() should return true for an empty prefix.",
+            failures);
+
+        var childPath = path.Append("xihu");
+        Expect(childPath.ToString() == "zhejiang/hangzhou/xihu",
+            $"TreeNodePath.Append(string) should preserve path segments, actual {childPath}.",
+            failures);
+
+        var appendedPath = path.Append(new TreeNodePath(["xihu", "longjing"]));
+        Expect(appendedPath.ToString() == "zhejiang/hangzhou/xihu/longjing",
+            $"TreeNodePath.Append(TreeNodePath) should append all segments, actual {appendedPath}.",
+            failures);
+        Expect(ReferenceEquals(TreeNodePath.Empty.Append(path), path),
+            "TreeNodePath.Empty.Append(TreeNodePath) should reuse the appended immutable path.",
+            failures);
+
+        var parentPath = childPath.GetParent();
+        Expect(parentPath?.ToString() == "zhejiang/hangzhou",
+            $"TreeNodePath.GetParent() should remove one segment, actual {parentPath}.",
+            failures);
+        Expect(ReferenceEquals(new TreeNodePath(["zhejiang"]).GetParent(), TreeNodePath.Empty),
+            "TreeNodePath.GetParent() for a single segment should reuse TreeNodePath.Empty.",
+            failures);
+
+        var replacedPath = childPath.WithSegment(2, "yuhang");
+        Expect(replacedPath.ToString() == "zhejiang/hangzhou/yuhang",
+            $"TreeNodePath.WithSegment() should replace the requested segment, actual {replacedPath}.",
+            failures);
+        Expect(ReferenceEquals(childPath.WithSegment(2, "xihu"), childPath),
+            "TreeNodePath.WithSegment() should return the same immutable path when the segment is unchanged.",
+            failures);
+
+        Expect(TreeNodePath.Empty.GetParent() == null,
+            "TreeNodePath.Empty.GetParent() should stay null.",
+            failures);
+    }
+
+    private static void VerifyMotionGhostGeometryUpdates(ICollection<string> failures)
+    {
+        var ghostType = typeof(TreeNodePath).Assembly.GetType("AtomUI.Controls.Primitives.MotionGhostControl");
+        Expect(ghostType != null,
+            "MotionGhostControl type should be available for geometry update verification.",
+            failures);
+        if (ghostType == null)
+        {
+            return;
+        }
+
+        var ghost = Activator.CreateInstance(ghostType, nonPublic: true) as Control;
+        Expect(ghost != null,
+            "MotionGhostControl should be constructible for geometry update verification.",
+            failures);
+        if (ghost == null)
+        {
+            return;
+        }
+
+        SetPropertyValue(ghostType, ghost, "Content", new Border
+        {
+            Width  = 24,
+            Height = 18
+        });
+        SetPropertyValue(ghostType, ghost, "MaskShadows", new BoxShadows(new BoxShadow
+        {
+            Blur    = 4,
+            OffsetX = 1,
+            OffsetY = 2
+        }));
+        SetPropertyValue(ghostType, ghost, "MaskCornerRadius", new CornerRadius(3));
+        SetPropertyValue(ghostType, ghost, "MaskSize", new Size(24, 18));
+
+        using var realized = RealizeControl(ghost);
+        var shadowRenderer = ghost.GetVisualDescendants().OfType<Border>().FirstOrDefault(border => border.BoxShadow.Count > 0);
+        Expect(shadowRenderer != null,
+            "MotionGhostControl should create a shadow renderer for geometry update verification.",
+            failures);
+        if (shadowRenderer == null)
+        {
+            return;
+        }
+
+        SetPropertyValue(ghostType, ghost, "MaskCornerRadius", new CornerRadius(6));
+        RefreshLayout(realized.Window);
+        Expect(shadowRenderer.CornerRadius == new CornerRadius(6) &&
+               Math.Abs(shadowRenderer.Width - 24) < 0.0001 &&
+               Math.Abs(shadowRenderer.Height - 18) < 0.0001,
+            $"MotionGhostControl should update radius without changing size, actual radius={shadowRenderer.CornerRadius}, size={shadowRenderer.Width}x{shadowRenderer.Height}.",
+            failures);
+
+        SetPropertyValue(ghostType, ghost, "MaskSize", new Size(32, 20));
+        RefreshLayout(realized.Window);
+        Expect(shadowRenderer.CornerRadius == new CornerRadius(6) &&
+               Math.Abs(shadowRenderer.Width - 32) < 0.0001 &&
+               Math.Abs(shadowRenderer.Height - 20) < 0.0001,
+            $"MotionGhostControl should update size without changing radius, actual radius={shadowRenderer.CornerRadius}, size={shadowRenderer.Width}x{shadowRenderer.Height}.",
+            failures);
+    }
+
+    private static void VerifyCandidateListEmptyNavigation(ICollection<string> failures)
+    {
+        var candidateList = CreateCandidateList([]);
+        using var realized = RealizeControl(candidateList);
+        var keyDown = new Avalonia.Input.KeyEventArgs
+        {
+            RoutedEvent  = Avalonia.Input.InputElement.KeyDownEvent,
+            Key          = Avalonia.Input.Key.Down,
+            KeyModifiers = Avalonia.Input.KeyModifiers.None
+        };
+
+        candidateList.HandleKeyDown(keyDown);
+        RefreshLayout(realized.Window);
+        Expect(keyDown.Handled && candidateList.CandidateSelectedIndex == -1 && candidateList.CandidateSelectedItem == null,
+            "Empty CandidateList Down navigation should be handled without selecting an invalid candidate.",
+            failures);
+    }
+
+    private static void SetPropertyValue(Type type, object target, string propertyName, object? value)
+    {
+        type.GetProperty(propertyName)?.SetValue(target, value);
     }
 
     private static void VerifyListBoxDefaultShape(ICollection<string> failures)
