@@ -458,6 +458,11 @@ internal static partial class Program
         Expect(unrealizedEmptyValues != null && unrealizedEmptyValues.Count == 0 && unrealizedEmptyValues.Capacity == 0,
             $"DataGrid {filterMode} unrealized filter presenter should keep empty selected-values list allocation-free. Actual count/capacity: {unrealizedEmptyValues?.Count}/{unrealizedEmptyValues?.Capacity}.",
             failures);
+        var repeatedUnrealizedEmptyValues = InvokeDataGridFilterPresenterGetValues(presenter, failures);
+        Expect(unrealizedEmptyValues != null &&
+               ReferenceEquals(unrealizedEmptyValues, repeatedUnrealizedEmptyValues),
+            $"DataGrid {filterMode} unrealized empty selected-values should reuse the shared empty list.",
+            failures);
 
         var unrealizedValueLeaves = GetDataGridFilterPresenterValueLeaves(itemsPresenter);
         Expect(unrealizedValueLeaves.Count == 6,
@@ -479,6 +484,10 @@ internal static partial class Program
             Expect(unrealizedResetValues != null && unrealizedResetValues.Count == 0,
                 $"DataGrid {filterMode} unrealized filter presenter reset should clear checked nested values through ItemsView fallback. Actual: {unrealizedResetValues?.Count}.",
                 failures);
+            Expect(unrealizedEmptyValues != null &&
+                   ReferenceEquals(unrealizedEmptyValues, unrealizedResetValues),
+                $"DataGrid {filterMode} unrealized reset empty selected-values should reuse the shared empty list.",
+                failures);
         }
 
         using var realizedPresenter = RealizeControl(presenter);
@@ -486,6 +495,11 @@ internal static partial class Program
         var emptyValues = InvokeDataGridFilterPresenterGetValues(presenter, failures);
         Expect(emptyValues != null && emptyValues.Count == 0 && emptyValues.Capacity == 0,
             $"DataGrid {filterMode} filter presenter should keep empty selected-values list allocation-free. Actual count/capacity: {emptyValues?.Count}/{emptyValues?.Capacity}.",
+            failures);
+        var repeatedEmptyValues = InvokeDataGridFilterPresenterGetValues(presenter, failures);
+        Expect(emptyValues != null &&
+               ReferenceEquals(emptyValues, repeatedEmptyValues),
+            $"DataGrid {filterMode} empty selected-values should reuse the shared empty list.",
             failures);
 
         var valueLeaves = GetDataGridFilterPresenterValueLeaves(itemsPresenter);

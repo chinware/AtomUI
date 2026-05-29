@@ -76,6 +76,9 @@ public partial class TreeView
     private TreeViewItem? _currentDragOver; // 这个不是目标节点，有可能是在父节点上拖动
     private TreeViewItem? _dropTargetNode; // 目标释放节点
     private DropTargetInfo? _dropTargetInfo;
+    private Pen? _dragIndicatorPen;
+    private IBrush? _dragIndicatorPenBrush;
+    private double _dragIndicatorPenLineWidth;
     
     private static void ConfigureDragAndDrop()
     {
@@ -590,15 +593,28 @@ public partial class TreeView
     {
         if (IsDragging && _dragIndicatorRenderInfo is not null)
         {
-            var pen = new Pen(DragIndicatorBrush, DragIndicatorLineWidth);
             {
                 using var state = context.PushRenderOptions(new RenderOptions
                 {
                     EdgeMode = EdgeMode.Aliased
                 });
-                context.DrawLine(pen, _dragIndicatorRenderInfo.StartPoint, _dragIndicatorRenderInfo.EndPoint);
+                context.DrawLine(GetDragIndicatorPen(), _dragIndicatorRenderInfo.StartPoint, _dragIndicatorRenderInfo.EndPoint);
             }
         }
+    }
+
+    private Pen GetDragIndicatorPen()
+    {
+        if (_dragIndicatorPen is null ||
+            !ReferenceEquals(_dragIndicatorPenBrush, DragIndicatorBrush) ||
+            !MathUtils.AreClose(_dragIndicatorPenLineWidth, DragIndicatorLineWidth))
+        {
+            _dragIndicatorPenBrush     = DragIndicatorBrush;
+            _dragIndicatorPenLineWidth = DragIndicatorLineWidth;
+            _dragIndicatorPen          = new Pen(DragIndicatorBrush, DragIndicatorLineWidth);
+        }
+
+        return _dragIndicatorPen;
     }
     
 }

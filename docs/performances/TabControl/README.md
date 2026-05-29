@@ -13,6 +13,7 @@
 - icon、closable、icon+closable 三种实际需要的结构仍保留在 axaml 模板分支中，没有把主题视觉搬到 C# 动态创建。
 - `TabControlScrollViewer` / `TabStripScrollViewer` 的 overflow `MenuFlyout` 关闭、detach、无 overflow items 时都会释放 binding、items 和事件订阅。
 - re-template 时释放旧 close button 事件，并从旧模板 `StackPanel` 中移除旧 part，避免测试保留旧引用时仍看到 visual parent。
+- `BaseTabControl` / `BaseTabStrip` 的 tab strip 边线渲染不再每次 `Render()` 创建 `Pen`，改为按 brush / thickness 缓存。
 
 | 指标 | baseline | optimized | 改善 |
 | --- | ---: | ---: | ---: |
@@ -29,6 +30,11 @@
 | Gallery `IconPresenter` | 130 | 55 | 75 |
 
 控件级 14 个 scenario 平均：`ms/item -14.8%`，`KB/item -12.9%`。收益主要来自无 icon / 非 closable 默认路径的模板树裁剪；真实 Gallery 页面也有稳定的分配与 visual 降幅。
+
+| 追加指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| BaseTabControl tab strip border `Pen` allocations / repeated render | 1 pen | 0 pens after first render | `(1 - 0) / 1` | 100.00% | structural-only；每个 TabControl 后续 render 不再为边线分配 `Pen` |
+| BaseTabStrip tab strip border `Pen` allocations / repeated render | 1 pen | 0 pens after first render | `(1 - 0) / 1` | 100.00% | structural-only；每个 TabStrip 后续 render 不再为边线分配 `Pen` |
 
 ---
 
@@ -114,6 +120,17 @@ Avalonia source reference：
 - 清理 menu item `Click` / `CloseTab` 事件、`Items` 和 `_flyoutBindingDisposable`。
 - re-template 前移除旧 `MenuIndicator.Click`，避免重复订阅。
 
+### 3.4 Tab strip border Pen 缓存
+
+`BaseTabControl.Render()` 和 `BaseTabStrip.Render()` 原先每次绘制 tab strip 边线都会执行 `new Pen(BorderBrush, borderThickness)`。
+
+现在各自缓存一支 `_tabStripBorderPen`，同一实例的后续 render 直接复用；当 `BorderBrush` 引用或 `BorderThickness.Left` 变化时重建。`AffectsRender` 同步补充 `BorderThicknessProperty`，确保厚度变化后仍会触发重绘。
+
+Avalonia source reference：
+
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`：`Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` 是 styled properties；render 热路径不应按帧创建。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Visual.cs:446-500`：`AffectsRender` 会在相关属性变化时 invalidate render。
+
 ---
 
 ## 4. 验证
@@ -135,6 +152,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 - close button 行为仍会触发 close event 和 item removal。
 - Card add button re-template 不重复订阅。
 - overflow flyout close / detach / reattach 后能清理并重新打开。
+
+追加 border pen 缓存验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-tabcontrol-states
+```
+
+说明：该追加项是 render-path structural-only；当前 harness 没有逐帧 render allocation 计数器，因此不使用单次 timing 证明速度收益。
 
 ### 4.2 控件级基准
 
@@ -207,4 +233,3 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 | 生产文件范围 | 8 个文件，均在 `TabControl` |
 
 模板分支有一定重复，但它把视觉结构留在 ControlTheme 内，避免了 C# 动态创建带来的生命周期和主题选择器风险。
-

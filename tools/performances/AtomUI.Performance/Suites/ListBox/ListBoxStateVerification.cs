@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Desktop.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
@@ -15,6 +16,7 @@ internal static partial class Program
         VerifyListBoxDefaultShape(failures);
         VerifyListBoxSelectedIndicatorLifecycle(failures);
         VerifyListBoxFilteringLifecycle(failures);
+        VerifyCandidateListSelectionMovement(failures);
 
         if (failures.Count == 0)
         {
@@ -35,11 +37,11 @@ internal static partial class Program
         var listBox = CreateListBox(CreateListItems(5));
         using var realized = RealizeControl(listBox);
 
-        Expect(FindSelectedIndicatorPresenter(listBox) == null,
-            "Default ListBox should not materialize selected indicator presenter.",
+        Expect(FindSelectedIndicatorPresenter(listBox) is { IsVisible: false },
+            "Default ListBox should keep the static selected indicator presenter hidden.",
             failures);
-        Expect(FindVisualByType<HighlightableTextBlock>(listBox) == null,
-            "Default ListBox should not materialize filtering HighlightableTextBlock.",
+        Expect(FindVisualByType<HighlightableTextBlock>(listBox) is { IsVisible: false },
+            "Default ListBox should keep the static filtering HighlightableTextBlock hidden.",
             failures);
     }
 
@@ -60,21 +62,21 @@ internal static partial class Program
             return;
         }
 
-        Expect(FindSelectedIndicatorPresenter(selectedItem) != null,
-            "Selected ListBox item should materialize selected indicator presenter.",
+        Expect(FindSelectedIndicatorPresenter(selectedItem) is { IsVisible: true },
+            "Selected ListBox item should show selected indicator presenter.",
             failures);
 
         listBox.SelectedIndex = -1;
         RefreshLayout(realized.Window);
-        Expect(FindSelectedIndicatorPresenter(selectedItem) == null,
-            "Unselected ListBox item should detach selected indicator presenter.",
+        Expect(FindSelectedIndicatorPresenter(selectedItem) is { IsVisible: false },
+            "Unselected ListBox item should hide selected indicator presenter.",
             failures);
 
         listBox.SelectedIndex = 1;
         RefreshLayout(realized.Window);
         var nextSelectedItem = listBox.ContainerFromIndex(1) as AtomUI.Desktop.Controls.ListBoxItem;
-        Expect(nextSelectedItem != null && FindSelectedIndicatorPresenter(nextSelectedItem) != null,
-            "Selecting another ListBox item should materialize selected indicator presenter again.",
+        Expect(nextSelectedItem != null && FindSelectedIndicatorPresenter(nextSelectedItem) is { IsVisible: true },
+            "Selecting another ListBox item should show selected indicator presenter again.",
             failures);
     }
 
@@ -83,20 +85,55 @@ internal static partial class Program
         var listBox = CreateListBox(CreateListBoxDemoItems());
         using var realized = RealizeControl(listBox);
 
-        Expect(FindVisualByType<HighlightableTextBlock>(listBox) == null,
-            "ListBox should not create filtering text block before filtering starts.",
+        Expect(FindVisualByType<HighlightableTextBlock>(listBox) is { IsVisible: false },
+            "ListBox should keep filtering text block hidden before filtering starts.",
             failures);
 
         listBox.FilterValue = "car";
         RefreshLayout(realized.Window);
-        Expect(FindVisualByType<HighlightableTextBlock>(listBox) != null,
-            "ListBox should create filtering text block while filtering.",
+        Expect(FindVisualByType<HighlightableTextBlock>(listBox) is { IsVisible: true },
+            "ListBox should show filtering text block while filtering.",
             failures);
 
         listBox.FilterValue = null;
         RefreshLayout(realized.Window);
-        Expect(FindVisualByType<HighlightableTextBlock>(listBox) == null,
-            "ListBox should detach filtering text block after filtering clears.",
+        Expect(FindVisualByType<HighlightableTextBlock>(listBox) is { IsVisible: false },
+            "ListBox should hide filtering text block after filtering clears.",
+            failures);
+    }
+
+    private static void VerifyCandidateListSelectionMovement(ICollection<string> failures)
+    {
+        var candidateList = CreateCandidateList(CreateListItems(4));
+        using var realized = RealizeControl(candidateList);
+
+        var first  = candidateList.ContainerFromIndex(0) as CandidateListItem;
+        var second = candidateList.ContainerFromIndex(1) as CandidateListItem;
+        var third  = candidateList.ContainerFromIndex(2) as CandidateListItem;
+        Expect(first != null && second != null && third != null,
+            "CandidateList should realize candidate item containers for selection movement verification.",
+            failures);
+        if (first == null || second == null || third == null)
+        {
+            return;
+        }
+
+        candidateList.CandidateSelectedIndex = 0;
+        RefreshLayout(realized.Window);
+        Expect(first.IsCandidateSelected && !second.IsCandidateSelected && !third.IsCandidateSelected,
+            "CandidateList should mark only the first candidate when index 0 is selected.",
+            failures);
+
+        candidateList.CandidateSelectedIndex = 1;
+        RefreshLayout(realized.Window);
+        Expect(!first.IsCandidateSelected && second.IsCandidateSelected && !third.IsCandidateSelected,
+            "CandidateList should clear the old candidate and mark only the second candidate when selection moves.",
+            failures);
+
+        candidateList.CandidateSelectedIndex = -1;
+        RefreshLayout(realized.Window);
+        Expect(!first.IsCandidateSelected && !second.IsCandidateSelected && !third.IsCandidateSelected,
+            "CandidateList should clear the active candidate when selected index resets.",
             failures);
     }
 

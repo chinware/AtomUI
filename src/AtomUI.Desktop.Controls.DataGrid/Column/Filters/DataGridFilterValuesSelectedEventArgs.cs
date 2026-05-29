@@ -2,10 +2,12 @@ namespace AtomUI.Desktop.Controls;
 
 internal class DataGridFilterValuesSelectedEventArgs
 {
-    public bool IsConfirmed { get; }
-    public List<String> Values { get; }
+    internal static readonly List<string> EmptyValues = new(0);
 
-    public DataGridFilterValuesSelectedEventArgs(bool isConfirmed, List<String> values)
+    public bool IsConfirmed { get; }
+    public List<string> Values { get; }
+
+    public DataGridFilterValuesSelectedEventArgs(bool isConfirmed, List<string> values)
     {
         IsConfirmed = isConfirmed;
         Values = values;

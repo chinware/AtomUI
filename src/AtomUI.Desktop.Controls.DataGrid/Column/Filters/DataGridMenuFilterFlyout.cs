@@ -62,7 +62,7 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
 
         var selectedItems = Popup.Child is DataGridMenuFilterFlyoutPresenter presenter
             ? presenter.GetFilterValues()
-            : new List<string>();
+            : DataGridFilterValuesSelectedEventArgs.EmptyValues;
         NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
     }
 

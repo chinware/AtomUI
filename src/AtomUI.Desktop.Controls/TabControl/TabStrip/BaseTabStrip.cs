@@ -172,11 +172,15 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
 
     #endregion
 
+    private Pen? _tabStripBorderPen;
+    private IBrush? _tabStripBorderPenBrush;
+    private double _tabStripBorderPenThickness;
+
     static BaseTabStrip()
     {
         ItemsPanelProperty.OverrideDefaultValue<BaseTabStrip>(DefaultPanel);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabStrip>(false);
-        AffectsRender<BaseTabStrip>(TabStripPlacementProperty, BorderBrushProperty);
+        AffectsRender<BaseTabStrip>(TabStripPlacementProperty, BorderBrushProperty, BorderThicknessProperty);
         AffectsMeasure<BaseTabStrip>(TabStripPlacementProperty);
     }
 
@@ -368,8 +372,22 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             {
                 EdgeMode = EdgeMode.Aliased
             });
-            context.DrawLine(new Pen(BorderBrush, borderThickness), startPoint, endPoint);
+            context.DrawLine(GetTabStripBorderPen(borderThickness), startPoint, endPoint);
         }
+    }
+
+    private Pen GetTabStripBorderPen(double borderThickness)
+    {
+        if (_tabStripBorderPen is null ||
+            !ReferenceEquals(_tabStripBorderPenBrush, BorderBrush) ||
+            !double.Equals(_tabStripBorderPenThickness, borderThickness))
+        {
+            _tabStripBorderPenBrush     = BorderBrush;
+            _tabStripBorderPenThickness = borderThickness;
+            _tabStripBorderPen          = new Pen(BorderBrush, borderThickness);
+        }
+
+        return _tabStripBorderPen!;
     }
     
     private void ConfigureEffectiveHeaderPadding()

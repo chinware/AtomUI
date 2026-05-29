@@ -43,7 +43,7 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
         var selectedValueCount = CountSelectedFilterValueLeaves(this);
         if (selectedValueCount == 0)
         {
-            return new List<string>();
+            return DataGridFilterValuesSelectedEventArgs.EmptyValues;
         }
 
         var values = new List<string>(selectedValueCount);

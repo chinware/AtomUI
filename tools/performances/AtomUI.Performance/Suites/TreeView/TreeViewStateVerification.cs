@@ -14,6 +14,7 @@ internal static partial class Program
         VerifyNodeSwitcherDefaultIcons(failures);
         VerifyNodeSwitcherRotationAndLoadingIcons(failures);
         VerifyNodeSwitcherLeafVisibility(failures);
+        VerifyTreeViewCheckboxParentStateAggregation(failures);
 
         if (failures.Count == 0)
         {
@@ -137,6 +138,87 @@ internal static partial class Program
         RefreshLayout(realized.Window);
         Expect(switcher.CurrentIcon is FileOutlined,
             "Leaf switcher should restore LeafIcon when IsLeafIconVisible returns true.",
+            failures);
+    }
+
+    private static void VerifyTreeViewCheckboxParentStateAggregation(ICollection<string> failures)
+    {
+        var firstChild = new TreeItemNode
+        {
+            Header = "First child"
+        };
+        var secondChild = new TreeItemNode
+        {
+            Header = "Second child"
+        };
+        var parent = new TreeItemNode
+        {
+            Header     = "Parent",
+            IsExpanded = true,
+            Children   = { firstChild, secondChild }
+        };
+        var tree = new TreeView
+        {
+            ToggleType       = ItemToggleType.CheckBox,
+            IsMotionEnabled  = false,
+            Width            = 240,
+            Height           = 160
+        };
+        tree.Items.Add(parent);
+
+        using var realized = RealizeControl(tree);
+        RefreshLayout(realized.Window);
+
+        var parentContainer = tree.TreeContainerFromItem(parent) as TreeViewItem;
+        if (parentContainer != null)
+        {
+            parentContainer.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
+            RefreshLayout(realized.Window);
+        }
+
+        var firstContainer  = tree.TreeContainerFromItem(firstChild) as TreeViewItem;
+        var secondContainer = tree.TreeContainerFromItem(secondChild) as TreeViewItem;
+
+        Expect(parentContainer != null,
+            "TreeView checkbox verification should realize the parent TreeViewItem.",
+            failures);
+        Expect(firstContainer != null && secondContainer != null,
+            "TreeView checkbox verification should realize both child TreeViewItems.",
+            failures);
+        if (parentContainer == null || firstContainer == null || secondContainer == null)
+        {
+            return;
+        }
+
+        firstContainer.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+        RefreshLayout(realized.Window);
+        Expect(parentContainer.IsChecked == null,
+            $"Parent TreeViewItem should become indeterminate after one child is checked. Actual: {parentContainer.IsChecked}.",
+            failures);
+        Expect(tree.CheckedItems.Contains(firstChild) && !tree.CheckedItems.Contains(parent),
+            "TreeView checked items should include the checked child but not the indeterminate parent.",
+            failures);
+
+        secondContainer.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+        RefreshLayout(realized.Window);
+        Expect(parentContainer.IsChecked == true,
+            $"Parent TreeViewItem should become checked after all children are checked. Actual: {parentContainer.IsChecked}.",
+            failures);
+        Expect(tree.CheckedItems.Contains(parent) &&
+               tree.CheckedItems.Contains(firstChild) &&
+               tree.CheckedItems.Contains(secondChild),
+            "TreeView checked items should include parent and both children when all children are checked.",
+            failures);
+
+        firstContainer.SetCurrentValue(TreeViewItem.IsCheckedProperty, false);
+        RefreshLayout(realized.Window);
+        Expect(parentContainer.IsChecked == null,
+            $"Parent TreeViewItem should return to indeterminate after one checked child is cleared. Actual: {parentContainer.IsChecked}.",
+            failures);
+        Expect(!tree.CheckedItems.Contains(parent) &&
+               !tree.CheckedItems.Contains(firstChild) &&
+               tree.CheckedItems.Contains(secondChild),
+            "TreeView checked items should remove the parent and cleared child while keeping the remaining checked child.",
             failures);
     }
 }

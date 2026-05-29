@@ -47,10 +47,7 @@ public class TreeTransfer : AbstractTransfer
         {
             var targetPanelSource = targetKeySet == null
                 ? []
-                : CalculateTargetItemsSource(ItemsSource?.Cast<ITreeItemNode>().ToList(), targetKeySet)
-                    .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) ||
-                                   (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
-                    .ToArray();
+                : CalculateTargetItemsSource(ItemsSource?.Cast<ITreeItemNode>(), targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
             TargetViewSource         = targetPanelSource;
             targetItemKeys           = targetPanelSource.Select(item => item.ItemKey ?? default).ToList();
@@ -65,23 +62,42 @@ public class TreeTransfer : AbstractTransfer
     private List<IListItemData> CalculateTargetItemsSource(IEnumerable<ITreeItemNode>? itemNodes, ISet<EntityKey> targetKeySet)
     {
         var results = new List<IListItemData>();
+        CollectTargetItemsSource(itemNodes, targetKeySet, results);
+        return results;
+    }
+
+    private void CollectTargetItemsSource(
+        IEnumerable<ITreeItemNode>? itemNodes,
+        ISet<EntityKey> targetKeySet,
+        IList<IListItemData> results)
+    {
         if (itemNodes != null)
         {
             foreach (var node in itemNodes)
             {
                 if (targetKeySet.Contains(node.ItemKey ?? default))
                 {
-                    results.Add(new ListItemData
+                    var item = new ListItemData
                     {
                         ItemKey = node.ItemKey ?? default,
                         Content = node.Header
-                    });
+                    };
+                    if (IsTargetFilterMatched(item))
+                    {
+                        results.Add(item);
+                    }
                 }
-                var children = CalculateTargetItemsSource(node.Children, targetKeySet);
-                results.AddRange(children);
+                CollectTargetItemsSource(node.Children, targetKeySet, results);
             }
         }
-        return results;
+    }
+
+    private bool IsTargetFilterMatched(IListItemData item)
+    {
+        return !IsFilterEnabled ||
+               string.IsNullOrEmpty(TargetFilterValue) ||
+               (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
+                   TargetFilterValue) ?? false);
     }
     
 }

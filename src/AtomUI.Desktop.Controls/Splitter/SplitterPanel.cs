@@ -109,10 +109,15 @@ internal class SplitterPanel : Panel
             }
             _handles.Clear();
 
-            var panels = Children.ToList();
-            SyncTrackedPanels(panels);
             _panels.Clear();
-            _panels.AddRange(panels);
+            foreach (var child in Children)
+            {
+                if (child is not SplitterHandle)
+                {
+                    _panels.Add(child);
+                }
+            }
+            SyncTrackedPanels();
             _partContexts.Clear();
 
             for (var i = 0; i < _panels.Count - 1; i++)
@@ -135,11 +140,11 @@ internal class SplitterPanel : Panel
         InvalidateMeasure();
     }
     
-    private void SyncTrackedPanels(IReadOnlyList<Control> panels)
+    private void SyncTrackedPanels()
     {
         _trackedPanels.RemoveWhere(panel =>
         {
-            if (!panels.Contains(panel))
+            if (!_panels.Contains(panel))
             {
                 panel.PropertyChanged -= HandlePanelPropertyChanged;
                 return true;
@@ -147,7 +152,7 @@ internal class SplitterPanel : Panel
             return false;
         });
 
-        foreach (var panel in panels)
+        foreach (var panel in _panels)
         {
             if (_trackedPanels.Add(panel))
             {
@@ -1914,7 +1919,7 @@ internal class SplitterPanel : Panel
 
     private IReadOnlyList<double> BuildSizesWithDelta(double previousSize, double nextSize, double delta)
     {
-        var sizes = GetCurrentSizes().ToArray();
+        var sizes = GetCurrentSizes();
         if (_dragContext == null)
         {
             return sizes;
@@ -1933,13 +1938,17 @@ internal class SplitterPanel : Panel
         return sizes;
     }
 
-    private IReadOnlyList<double> GetCurrentSizes()
+    private double[] GetCurrentSizes()
     {
-        return _panels.Select(p =>
+        var sizes = new double[_panels.Count];
+        for (var i = 0; i < _panels.Count; i++)
         {
-            var context = _partContexts[p];
-            return context.EffectiveSize;
-        }).ToArray();
+            var panel   = _panels[i];
+            var context = _partContexts[panel];
+            sizes[i] = context.EffectiveSize;
+        }
+
+        return sizes;
     }
     
     private DimensionUnitType GetPartPreferredSizeUnit(Control part)

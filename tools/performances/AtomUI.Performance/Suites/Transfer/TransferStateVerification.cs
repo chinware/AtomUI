@@ -12,6 +12,7 @@ internal static partial class Program
     {
         var failures = new List<string>();
         VerifyListTransferFilteringKeepsExpectedSides(failures);
+        VerifyTreeTransferTargetKeepsNestedOrder(failures);
         VerifyTransferListViewClearsRemovedPaginationState(failures);
 
         if (failures.Count == 0)
@@ -62,6 +63,59 @@ internal static partial class Program
             failures);
         Expect(targetKeys.Count == 0,
             "ListTransfer target side should be empty after TargetKeys is cleared.",
+            failures);
+    }
+
+    private static void VerifyTreeTransferTargetKeepsNestedOrder(ICollection<string> failures)
+    {
+        var root = new TreeItemNode
+        {
+            ItemKey    = "root",
+            Header     = "Root",
+            IsExpanded = true,
+            Children =
+            {
+                new TreeItemNode
+                {
+                    ItemKey = "child-1",
+                    Header  = "Child 1"
+                },
+                new TreeItemNode
+                {
+                    ItemKey    = "child-2",
+                    Header     = "Child 2",
+                    IsExpanded = true,
+                    Children =
+                    {
+                        new TreeItemNode
+                        {
+                            ItemKey = "leaf-1",
+                            Header  = "Leaf 1"
+                        }
+                    }
+                }
+            }
+        };
+        var transfer = new TreeTransfer
+        {
+            ItemsSource = [root],
+            TargetKeys  = ["child-2", "leaf-1"]
+        };
+
+        using var realized = RealizeControl(transfer);
+        var views      = GetTransferListViews(transfer);
+        var targetKeys = GetViewItemKeys(views.Single(view => view.ViewType == TransferViewType.Target));
+
+        Expect(targetKeys.SequenceEqual(["child-2", "leaf-1"]),
+            $"TreeTransfer target side should flatten selected nested nodes in tree order. Actual: {string.Join(", ", targetKeys)}.",
+            failures);
+
+        transfer.TargetKeys = null;
+        RefreshLayout(realized.Window);
+
+        targetKeys = GetViewItemKeys(views.Single(view => view.ViewType == TransferViewType.Target));
+        Expect(targetKeys.Count == 0,
+            "TreeTransfer target side should be empty after TargetKeys is cleared.",
             failures);
     }
 

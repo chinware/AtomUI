@@ -11,6 +11,10 @@
 
 这不是 axaml 节点搬到 C# 动态创建；功能视觉仍在 `ControlTheme` 中，C# 只维护运行态属性。
 
+本轮追加优化 `TreeViewItem` 的连接线渲染路径：显示树线时不再每次 `Render()` 都创建 `Pen`，改为按 item 缓存 line pen，并在 `BorderBrush` 或 `BorderThickness.Top` 变化时重建。随后继续收敛 TreeView 拖拽指示线：拖拽过程中不再每帧创建 indicator `Pen`，按 `DragIndicatorBrush` / `DragIndicatorLineWidth` 复用缓存。
+
+后续追加优化 checkbox 父节点三态聚合：子节点 checked 状态变化后，父链原先分别用 `All(...)` 和 `Any(...)` 两次 LINQ 扫描子项，并最多调用两轮 `TreeContainerFromItem`。现在改为一次手写扫描，同时得出 `isAllChecked` / `isAnyChecked`，在已确定混合态时提前退出。该项是交互路径 structural-only 收益，不声明页面导航 timing 提升。
+
 | 指标 | baseline | optimized | 改善 |
 | --- | ---: | ---: | ---: |
 | Cold first navigation mean | 1049.62 ms | 776.51 ms | 26.0% |
@@ -22,6 +26,15 @@
 | Runtime visuals | 2108 | 1646 | 21.9% |
 | `IconPresenter` | 332 | 112 | 66.3% |
 | `Icon` / `PathIcon` | 302 | 60 | 80.1% |
+
+| 追加指标 | baseline | optimized | 改善 |
+| --- | ---: | ---: | ---: |
+| TreeViewItem leaf line `Pen` allocations / repeated render | 2 pens | 0 pens after first render | 100.00% |
+| TreeViewItem branch line `Pen` allocations / repeated render | 1 pen | 0 pens after first render | 100.00% |
+| TreeView drag indicator `Pen` allocations / dragging render frame | 1 pen | 0 pens after first render | 100.00% |
+| TreeView checkbox parent aggregation child scans / parent update | 2 passes | 1 pass | 50.00% |
+| TreeView checkbox parent aggregation container lookups / parent update with N children | up to `2N` | up to `N` | 50.00% |
+| TreeView checkbox parent aggregation LINQ pipelines / parent update | 2 | 0 | 100.00% |
 
 ---
 
@@ -115,6 +128,46 @@ Avalonia source reference：
 - checked + Rotation：`RotationIconRenderTransform=rotate(90deg)`。
 - motion：`Background` 与 `RotationIconRenderTransform` transition 不变。
 
+### 3.3 TreeViewItem 连接线 Pen 缓存
+
+`TreeViewItem.RenderTreeNodeLine()` 原先在每条连接线绘制处直接 `new Pen(BorderBrush, penWidth)`：
+
+- 非最后一个展开分支节点：1 条竖线，1 个 `Pen`。
+- 叶子节点：竖线 + 横线，2 个 `Pen`。
+
+现在每个 `TreeViewItem` 缓存一个 `_treeNodeLinePen`，同一个 item 在后续 render 中复用；当 `BorderBrush` 引用或 `BorderThickness.Top` 变化时重建。`BorderBrushProperty` / `BorderThicknessProperty` 已在 `AffectsRender<TreeViewItem>` 中注册，因此 token / theme 变化仍会触发重绘。
+
+Avalonia source reference：
+
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/Pen.cs:17-40`：`Pen` 是 mutable `AvaloniaObject`，`Brush` / `Thickness` 是 styled properties；render 热路径不应按帧创建。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Visual.cs:446-500`：`AffectsRender` 会在相关属性变化时 invalidate render。
+
+### 3.4 TreeView 拖拽指示线 Pen 缓存
+
+`TreeView.Render()` 在拖拽期间会绘制 drop indicator。原实现每个 dragging render frame 都执行：
+
+```csharp
+new Pen(DragIndicatorBrush, DragIndicatorLineWidth)
+```
+
+现在 TreeView 实例缓存 `_dragIndicatorPen`，当 `DragIndicatorBrush` 引用或 `DragIndicatorLineWidth` 变化时重建。`DragIndicatorRenderInfoProperty`、`DragIndicatorBrushProperty`、`DragIndicatorLineWidthProperty` 已在 `ConfigureDragAndDrop()` 中注册 `AffectsRender<TreeView>`，因此拖拽位置和主题 token 变化仍按原路径触发重绘。
+
+### 3.5 Checkbox 父节点状态聚合一次扫描
+
+`SetupParentNodeCheckedStatus()` 原先在每个父节点上分别执行：
+
+```csharp
+parentTreeItem.Items.All(...)
+parentTreeItem.Items.Any(...)
+```
+
+两次 LINQ 扫描都需要把 child item 映射到 realized `TreeViewItem`。现在 `GetChildCheckStatus()` 在一次循环内同时计算：
+
+- `isAllChecked`：所有可勾选子项均为 checked，非可勾选子项按原语义不阻止 all checked。
+- `isAnyChecked`：存在 checked 或 indeterminate 的可勾选子项。
+
+当 `!isAllChecked && isAnyChecked` 已成立时提前退出，因为父节点最终一定是 indeterminate。验证覆盖单子项 checked -> parent indeterminate、全 checked -> parent checked、再取消一个子项 -> parent indeterminate，并检查 `CheckedItems` 同步。
+
 ---
 
 ## 4. 验证
@@ -132,6 +185,15 @@ dotnet build tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerforma
 ```
 
 结果：构建通过；保留既有 warning `DataGridColumn._clipboardContentBinding is never used`，非本轮新增。
+
+后续追加复测：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-treeview-states
+```
+
+结果：构建 `0 Warning(s), 0 Error(s)`；`TreeView state verification passed.`
 
 ### 4.2 Gallery 基线与优化后对比
 
@@ -182,6 +244,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 - leaf icon visible / hidden。
 - search/filter page load path。
 - context menu page load path。
+
+追加 TreeView render pen 缓存验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-treeview-states
+```
+
+说明：该追加项是结构性 render 分配优化；当前 headless harness 没有逐帧 render allocation 计数器，因此只用 build / state verifier 做正确性回归，不使用单次 timing 证明速度收益。
 
 ---
 

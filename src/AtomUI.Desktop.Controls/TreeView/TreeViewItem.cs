@@ -2,6 +2,7 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.MotionScene;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
@@ -394,6 +395,9 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     private TreeViewItemHeader? _header;
     internal bool AsyncLoaded;
     private FilterContextBackup? _filterContextBackup;
+    private Pen? _treeNodeLinePen;
+    private IBrush? _treeNodeLinePenBrush;
+    private double _treeNodeLinePenWidth;
 
     static TreeViewItem()
     {
@@ -643,6 +647,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         }
 
         var penWidth = BorderThickness.Top;
+        var linePen  = GetTreeNodeLinePen(penWidth);
         using var state = context.PushRenderOptions(new RenderOptions
         {
             EdgeMode = EdgeMode.Aliased
@@ -664,7 +669,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             var switcherMiddleBottom = new Point(switcherButtonRect.X + switcherButtonRect.Width / 2, switcherButtonRect.Bottom);
             var blockStartPoint = new Point(switcherMiddleBottom.X, switcherMiddleBottom.Y);
             var blockEndPoint   = new Point(blockStartPoint.X, DesiredSize.Height);
-            context.DrawLine(new Pen(BorderBrush, penWidth), blockStartPoint, blockEndPoint);
+            context.DrawLine(linePen, blockStartPoint, blockEndPoint);
         }
 
         // 画孩子线条
@@ -679,7 +684,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
                     childEndPoint = childEndPoint.WithY(childEndPoint.Y / 2);
                 }
 
-                context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint.WithY(0), childEndPoint);
+                context.DrawLine(linePen, childStartPoint.WithY(0), childEndPoint);
             }
 
             {
@@ -687,9 +692,23 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
                 var childStartPoint =  new Point(switcherButtonRect.X + switcherButtonRect.Width / 2 - penWidth / 2, switcherButtonRect.Top +  switcherButtonRect.Height / 2 - penWidth / 2);
                 var childEndPoint = new Point(switcherButtonRect.Right, switcherButtonRect.Top +  switcherButtonRect.Height / 2 - penWidth / 2);
 
-                context.DrawLine(new Pen(BorderBrush, penWidth), childStartPoint, childEndPoint);
+                context.DrawLine(linePen, childStartPoint, childEndPoint);
             }
         }
+    }
+
+    private Pen GetTreeNodeLinePen(double penWidth)
+    {
+        if (_treeNodeLinePen is null ||
+            !ReferenceEquals(_treeNodeLinePenBrush, BorderBrush) ||
+            !MathUtils.AreClose(_treeNodeLinePenWidth, penWidth))
+        {
+            _treeNodeLinePenBrush = BorderBrush;
+            _treeNodeLinePenWidth = penWidth;
+            _treeNodeLinePen      = new Pen(BorderBrush, penWidth);
+        }
+
+        return _treeNodeLinePen!;
     }
 
     internal Rect GetDragBounds(bool includeChildren = false)

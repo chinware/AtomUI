@@ -182,7 +182,7 @@ public class Splitter : TemplatedControl
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                _splitterPanel?.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>().ToList());
+                _splitterPanel?.Children.InsertRange(e.NewStartingIndex, CopyControls(e.NewItems!));
                 break;
 
             case NotifyCollectionChangedAction.Move:
@@ -190,7 +190,7 @@ public class Splitter : TemplatedControl
                 break;
 
             case NotifyCollectionChangedAction.Remove:
-                _splitterPanel?.Children.RemoveAll(e.OldItems!.OfType<Control>().ToList());
+                _splitterPanel?.Children.RemoveAll(CopyControls(e.OldItems!));
                 break;
 
             case NotifyCollectionChangedAction.Replace:
@@ -205,6 +205,17 @@ public class Splitter : TemplatedControl
             case NotifyCollectionChangedAction.Reset:
                 throw new NotSupportedException();
         }
+    }
+
+    private static Control[] CopyControls(System.Collections.IList items)
+    {
+        var controls = new Control[items.Count];
+        for (var i = 0; i < items.Count; i++)
+        {
+            controls[i] = (Control)items[i]!;
+        }
+
+        return controls;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

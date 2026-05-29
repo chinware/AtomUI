@@ -72,7 +72,7 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
 
         var selectedItems = Popup.Child is DataGridTreeFilterFlyoutPresenter presenter
             ? presenter.GetFilterValues()
-            : new List<string>();
+            : DataGridFilterValuesSelectedEventArgs.EmptyValues;
         
         NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
     }

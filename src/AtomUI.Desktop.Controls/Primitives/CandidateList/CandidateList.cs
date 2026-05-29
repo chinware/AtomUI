@@ -17,7 +17,7 @@ public class CandidateList : ListBox, ICandidateList
 
     public static readonly StyledProperty<bool> IsCandidateItemNavigationEnabledProperty =
         AvaloniaProperty.Register<CandidateList, bool>(nameof(IsCandidateItemNavigationEnabled), true);
-    
+
     public static readonly DirectProperty<CandidateList, object?> CandidateSelectedItemProperty =
         AvaloniaProperty.RegisterDirect<CandidateList, object?>(
             nameof(CandidateSelectedItem),
@@ -148,14 +148,11 @@ public class CandidateList : ListBox, ICandidateList
         var newIndex = e.GetNewValue<int>();
         if (newIndex == -1)
         {
-            if (ContainerFromIndex(oldIndex) is CandidateListItem listItem)
-            {
-                listItem.SetCurrentValue(CandidateListItem.IsCandidateSelectedProperty, false);
-            }
+            ClearCandidateItemSelection(oldIndex);
         }
         else
         {
-            TrySetCandidateItemSelected(newIndex);
+            TrySetCandidateItemSelected(newIndex, oldIndex);
         }
     }
     
@@ -187,33 +184,46 @@ public class CandidateList : ListBox, ICandidateList
     
     public bool TrySetCandidateItemSelected(int index)
     {
+        return TrySetCandidateItemSelected(index, CandidateSelectedIndex);
+    }
+
+    private bool TrySetCandidateItemSelected(int index, int oldIndex)
+    {
         if (index < 0 || index > ItemCount - 1)
         {
             return false;
         }
         
-        if (ItemsPanelRoot is CandidateVirtualizingStackPanel virtualizingStackPanel)
+        if (oldIndex != -1 && oldIndex != index)
         {
-            virtualizingStackPanel.ScrollCandidateItemIntoView(index);
+            ClearCandidateItemSelection(oldIndex);
         }
 
-        for (var i = 0; i < ItemCount; i++)
+        Control? candidateContainer = null;
+        if (ItemsPanelRoot is CandidateVirtualizingStackPanel virtualizingStackPanel)
         {
-            if (ContainerFromIndex(i) is CandidateListItem childContainer)
-            {
-                if (i == index)
-                {
-                    childContainer.SetCurrentValue(CandidateListItem.IsCandidateSelectedProperty, true);
-                    SetCurrentValue(CandidateSelectedItemProperty, Items[i]);
-                    SetCurrentValue(CandidateSelectedIndexProperty, i);
-                }
-                else
-                {
-                    childContainer.SetCurrentValue(CandidateListItem.IsCandidateSelectedProperty, false);
-                }
-            }
+            candidateContainer = virtualizingStackPanel.ScrollCandidateItemIntoView(index);
         }
+
+        candidateContainer ??= ContainerFromIndex(index);
+        if (candidateContainer is CandidateListItem childContainer)
+        {
+            childContainer.SetCurrentValue(CandidateListItem.IsCandidateSelectedProperty, true);
+        }
+
+        SetCurrentValue(CandidateSelectedItemProperty, Items[index]);
+        SetCurrentValue(CandidateSelectedIndexProperty, index);
         return true;
+    }
+
+    private void ClearCandidateItemSelection(int index)
+    {
+        if (index >= 0 &&
+            index < ItemCount &&
+            ContainerFromIndex(index) is CandidateListItem listItem)
+        {
+            listItem.SetCurrentValue(CandidateListItem.IsCandidateSelectedProperty, false);
+        }
     }
     
     private void ResetScrollViewer()

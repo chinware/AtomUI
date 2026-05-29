@@ -1257,38 +1257,7 @@ public partial class TreeView : AvaloniaTreeView,
         var unCheckedParents =  new HashSet<object>();
         while (parent is TreeViewItem parentTreeItem && parentTreeItem.IsEnabled)
         {
-            var isAllChecked = false;
-            var isAnyChecked = false;
-
-            if (parentTreeItem.Items.Count > 0)
-            {
-                isAllChecked = parentTreeItem.Items.All(childItem =>
-                {
-                    if (childItem != null)
-                    {
-                        var container = TreeContainerFromItem(childItem);
-                        if (container is TreeViewItem treeViewItem)
-                        {
-                            return !treeViewItem.IsEffectiveCheckable() || treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value;
-                        }
-                    }
-                    
-                    return false;
-                });
-
-                isAnyChecked = parentTreeItem.Items.Any(childItem =>
-                {
-                    if (childItem != null)
-                    {
-                        var container = TreeContainerFromItem(childItem);
-                        if (container is TreeViewItem treeViewItem)
-                        {
-                            return treeViewItem.IsEffectiveCheckable() && (!treeViewItem.IsChecked.HasValue || treeViewItem.IsChecked.HasValue && treeViewItem.IsChecked.Value);
-                        }
-                    }
-                    return false;
-                });
-            }
+            GetChildCheckStatus(parentTreeItem, out var isAllChecked, out var isAnyChecked);
 
             if (parentTreeItem.IsChecked == true && !isAllChecked)
             {
@@ -1329,6 +1298,46 @@ public partial class TreeView : AvaloniaTreeView,
         }
 
         return (checkedParents, unCheckedParents);
+    }
+
+    private void GetChildCheckStatus(TreeViewItem parentTreeItem, out bool isAllChecked, out bool isAnyChecked)
+    {
+        isAllChecked = false;
+        isAnyChecked = false;
+
+        if (parentTreeItem.Items.Count == 0)
+        {
+            return;
+        }
+
+        isAllChecked = true;
+        foreach (var childItem in parentTreeItem.Items)
+        {
+            var childSatisfiesAllChecked = false;
+            if (childItem != null)
+            {
+                var container = TreeContainerFromItem(childItem);
+                if (container is TreeViewItem treeViewItem)
+                {
+                    var isCheckable = treeViewItem.IsEffectiveCheckable();
+                    childSatisfiesAllChecked = !isCheckable || treeViewItem.IsChecked == true;
+                    if (isCheckable && treeViewItem.IsChecked != false)
+                    {
+                        isAnyChecked = true;
+                    }
+                }
+            }
+
+            if (!childSatisfiesAllChecked)
+            {
+                isAllChecked = false;
+            }
+
+            if (!isAllChecked && isAnyChecked)
+            {
+                break;
+            }
+        }
     }
 
     private void ConfigureDefaultCheckedPaths()

@@ -12,6 +12,7 @@
 - 每次刷新先把非空 `TargetKeys` 转成 `HashSet<EntityKey>`，source / target 两侧复用同一份 membership lookup。
 - `TargetKeys` 为空时，target panel 直接使用空集合，避免再扫描完整 `ItemsSource`。
 - 修正 target-only filter 刷新时的变更检测顺序：先比较旧 `TargetViewSource`，再写入新值。
+- 本次增量继续收敛 `TreeTransfer` 目标侧递归收集：去掉顶层 `ToList()` 源复制，并把每个节点递归返回一个临时结果 `List` 改为单个结果列表累积。
 
 没有移动任何主题视觉到 C# 动态创建，没有新增 `_ignoreXxx` 标志位、disposable、事件订阅或模板结构。
 
@@ -29,6 +30,16 @@
 | Runtime logical | 25 | 25 | 0 |
 
 优化收益主要体现在页面导航时间；分配和视觉树规模基本不变，说明这是数据准备路径优化，不是结构裁剪。
+
+本次增量为 structural-only，不声明新的页面加载耗时提升：
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| `TreeTransfer` target 刷新顶层 source copy | 1 list / refresh | 0 list / refresh | `(1 - 0) / 1` | 100.00% | 去掉 `ItemsSource.Cast<ITreeItemNode>().ToList()` |
+| `TreeTransfer` target 递归结果列表 | N lists / N visited nodes | 1 list / refresh | `(N - 1) / N` | N 越大越接近 100% | 从每个递归层返回临时 `List` 改为单列表累积 |
+| `TreeTransfer` target filter 后数组 | 1 array / filtered refresh | 0 array / filtered refresh | `(1 - 0) / 1` | 100.00% | 过滤判断并入收集流程，目标列表直接作为 `TargetViewSource` |
+
+> 说明：这是可由代码结构直接证明的分配次数下降；本次未新增 Gallery timing 对比，因此不把它写成页面耗时提升。
 
 ---
 
@@ -87,6 +98,7 @@ Gallery source：`controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/Transfe
 - `CalculateTargetItemsSource` 改为接收 `ISet<EntityKey>`，递归中不再反复访问 `TargetKeys.Contains(...)`。
 - `targetKeySet == null` 时 target panel 直接为空。
 - target panel 先计算 changed，再写入 `TargetViewSource`。
+- 本次增量去掉 target 分支的顶层 `ToList()`，递归改为 `CollectTargetItemsSource(...)` 单列表累积，并把 target filter 判断并入收集流程，避免递归层级临时列表和最终 filter 数组。
 
 ---
 
@@ -149,7 +161,7 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 
 ```bash
 dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
-  -c Debug --framework net10.0 --no-build -- \
+  -c Release --framework net10.0 --no-build -- \
   --verify-transfer-states
 ```
 
@@ -160,6 +172,7 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 - `ListTransfer` source side 排除 target keys。
 - `ListTransfer` target side 只包含 target keys。
 - `TargetKeys = null` 后 source side 恢复完整 items，target side 为空。
+- `TreeTransfer` target side 会按树遍历顺序 flatten 嵌套选中节点，`TargetKeys = null` 后 target side 为空。
 - `TransferListView.BottomPagination = null` 后不会保留旧 visual parent，也不会被 items 变化复活。
 
 ---

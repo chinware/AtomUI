@@ -6,6 +6,7 @@
 
 - `InfoPickerInput` 体系里的 `PickerClearUpButton`。它被 `DatePicker`、`RangeDatePicker`、`TimePicker`、`RangeTimePicker` 等 picker 输入控件复用。
 - `AddOnDecoratedBox` 的 `PART_ContentFrame` pointer 状态路径。它被 LineEdit / Select / TreeSelect / Cascader / DatePicker / TimePicker / ButtonSpinner 等输入类控件复用。
+- `CandidateList` 的键盘候选高亮路径。它被 AutoComplete / Mentions 等 popup 候选列表复用。
 
 ## InfoPickerInput Root Cause
 
@@ -21,6 +22,12 @@
 - Avalonia 12 里 `PointerEntered` / `PointerExited` 是 Direct routed event，`PointerPressed` / `PointerReleased` 是 Tunnel + Bubble routed event；事件 CLR add/remove 会落入本地 `_eventHandlers`。参考 `.referenceprojects/Avalonia/src/Avalonia.Base/Input/InputElement.cs:144-177`、`:355-392`。
 - Select / TreeSelect / Cascader 的 `PART_ContentRightAddOnPresenter.ContentTemplate` 还错误绑定到了 `ContentLeftAddOnTemplate`，导致 right addon template 不生效。
 
+## CandidateList Root Cause
+
+- `CandidateList.TrySetCandidateItemSelected(index)` 原先每次候选高亮移动都会从 `0..ItemCount-1` 扫描全部容器，并对每个已实现 `CandidateListItem` 重写 `IsCandidateSelected`。
+- 键盘上下导航只需要清理旧候选项并设置新候选项；全量扫描在 AutoComplete / Mentions popup 打开后会按按键次数线性放大。
+- `CandidateVirtualizingStackPanel.ScrollCandidateItemIntoView(index)` 已经能把目标项滚入视图，本轮只复用目标容器，不改变虚拟化、过滤、提交 / 取消语义。
+
 ## Changes
 
 - `PickerClearUpButton` 改为 `Button.ClickEvent.AddClassHandler<PickerClearUpButton>()`。
@@ -30,10 +37,12 @@
 - `AddOnDecoratedBoxContentFrame` 保持 `StyleKeyOverride => typeof(Border)`，确保原有 `Border#PART_ContentFrame` size/padding selector 继续命中。
 - 移除 `AddOnDecoratedBox.OnApplyTemplate()` 对 `ContentFrame` 的 4 条本地 pointer handler 注册 / 退订。
 - 修复 Select / TreeSelect / Cascader 的 right addon presenter template binding：`ContentLeftAddOnTemplate` -> `ContentRightAddOnTemplate`。
+- `CandidateList.TrySetCandidateItemSelected(index)` 改为只清旧 index、设置新 index，不再每次移动扫描全部 `ItemCount`。
 - `--verify-datepicker-states` 改为验证静态 popup shell / accessory slot：模板 shell 保留，但 presenter/content 在关闭态为空；detach 后 presenter/content 释放。
 - `--verify-datepicker-states` 新增 clear button lifecycle 覆盖：隐藏 direct click 惰性、本地 Click handler 为 0、clear mode 下仍能清空 `SelectedDateTime`。
 - `--verify-addon-states` 新增 ContentFrame pointer lifecycle 覆盖：本地 pointer routed handler 为 0，直接事件仍正确更新 hover / pressed 状态；同时覆盖 Select / TreeSelect / Cascader right-addon template。
 - `--verify-addon-states` 覆盖 `PART_ContentFrame` 的 `StyleKey == Border` 和 token padding 非零，避免 DatePicker / TimePicker / LineEdit 输入框内边距回归。
+- `--verify-listbox-states` 新增 CandidateList 候选高亮移动覆盖：index 0 -> 1 -> -1 时只保留当前候选态；同时修正 ListBox 静态 slot 校验口径。
 
 ## Benefit
 
@@ -47,6 +56,7 @@
 | Local pointer handlers / `CompactSpace.LineEdit` root | 12 / root | 0 / root | `(12 - 0) / 12` | 100.00% | 有效；3 个 AddOnDecoratedBox × 4 条 handler |
 | Wrong right-addon template bindings / Select family | 3 controls | 0 controls | `(3 - 0) / 3` | 100.00% | 正确性修复；Select / TreeSelect / Cascader 均已验证 |
 | Lost input content padding after ContentFrame subclassing | 1 shared path | 0 shared paths | `(1 - 0) / 1` | 100.00% | 正确性修复；`PART_ContentFrame` 继续命中 `Border#PART_ContentFrame` padding selector |
+| CandidateList candidate container checks / keyboard move (`Items20`) | 20 checks | <= 2 checks | `(20 - 2) / 20` | 90.00% | 结构收益；AutoComplete / Mentions 候选 popup 键盘上下移动少扫容器，不声明页面加载 speedup |
 | `DatePicker.Selected.Closed` KB/item | 627.9 KB | 627.5 KB | `(627.9 - 627.5) / 627.9` | 0.06% | smoke-only；分配小幅下降，不作为页面收益证明 |
 | `DatePicker.Default.PresenterOnly` ms/item | 17.582 ms | 16.919 ms | `(17.582 - 16.919) / 17.582` | 3.77% | smoke-only；单次 timing 只作异常检查 |
 | `DatePicker.Default.Closed` ms/item | 3.841 ms | 4.299 ms | `(3.841 - 4.299) / 3.841` | -11.92% | smoke-only；单次 timing 回退，不作为本轮收益证明 |
@@ -61,8 +71,10 @@
 dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-addon-states
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-datepicker-states --verify-timepicker-states
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-listbox-states
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --suite datepicker --count 80
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --suite addon --count 80
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --suite listbox --count 80
 ```
 
 Notes:
@@ -71,5 +83,6 @@ Notes:
 - `PART_ClearButton` 是静态模板节点，隐藏态通过 `IsVisible=false` 退出布局/渲染；本轮没有把模板元素迁到 C# 动态创建。
 - `PART_ContentFrame` 仍是静态模板节点；本轮没有按需创建 / 销毁 ContentFrame，只把 pointer 状态逻辑移到该静态节点自己的 override。
 - `PART_ContentFrame` 的行为子类必须继续以 `Border` 作为 StyleKey；普通 `Border#PART_ContentFrame` selector 是精确 StyleKey 匹配，丢失 StyleKey 会导致 size token padding 不生效。
+- `CandidateList` 本轮是交互结构优化，不改变 closed popup / page-load visual tree；`CandidateList.Default.Items20` 单次 smoke 为 `2.097 ms/item`、`473.0 KB/item`，只作异常检查，不作为速度收益证明。
 - `DatePicker` verifier 的旧动态 slot 断言已修正为当前静态模板口径。
 - `Select` / `Cascader` 全量 state verifier 仍含若干旧动态 slot 断言，本轮只以 `--verify-addon-states` 覆盖 right-addon template 正确性。

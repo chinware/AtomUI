@@ -258,6 +258,9 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     private Panel? _alignWrapper;
     private Point _tabStripBorderStartPoint;
     private Point _tabStripBorderEndPoint;
+    private Pen? _tabStripBorderPen;
+    private IBrush? _tabStripBorderPenBrush;
+    private double _tabStripBorderPenThickness;
     private const int UnselectedIndex = -1;
     private const int FirstItemIndex  = 0;
     private const int SingleItemCount = 1;
@@ -267,7 +270,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         SelectionModeProperty.OverrideDefaultValue<BaseTabControl>(SelectionMode.AlwaysSelected);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
-        AffectsRender<BaseTabControl>(BorderBrushProperty);
+        AffectsRender<BaseTabControl>(BorderBrushProperty, BorderThicknessProperty);
         AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty, TabStripPlacementProperty);
         SelectedItemProperty.Changed.AddClassHandler<BaseTabControl>((x, e) => x.UpdateSelectedContent());
     }
@@ -707,8 +710,22 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             {
                 EdgeMode = EdgeMode.Aliased
             });
-            context.DrawLine(new Pen(BorderBrush, borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
+            context.DrawLine(GetTabStripBorderPen(borderThickness), _tabStripBorderStartPoint, _tabStripBorderEndPoint);
         }
+    }
+
+    private Pen GetTabStripBorderPen(double borderThickness)
+    {
+        if (_tabStripBorderPen is null ||
+            !ReferenceEquals(_tabStripBorderPenBrush, BorderBrush) ||
+            !double.Equals(_tabStripBorderPenThickness, borderThickness))
+        {
+            _tabStripBorderPenBrush     = BorderBrush;
+            _tabStripBorderPenThickness = borderThickness;
+            _tabStripBorderPen          = new Pen(BorderBrush, borderThickness);
+        }
+
+        return _tabStripBorderPen!;
     }
     
     private void ConfigureTabItem(TabItem tabItem)
