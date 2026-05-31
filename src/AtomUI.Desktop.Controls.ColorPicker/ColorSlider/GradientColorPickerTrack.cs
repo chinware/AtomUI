@@ -92,7 +92,7 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
                 {
                     // 减少
                     var delta = Thumbs.Count - stops.Count;
-                    var tobeRemoved = new List<GradientColorSliderThumb>();
+                    var tobeRemoved = new List<GradientColorSliderThumb>(delta);
                     for (var i = 0; i < delta; i++)
                     {
                         var thumb = Thumbs[i];
@@ -109,7 +109,7 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
                     if (ActivatedThumb != null && !Thumbs.Contains(ActivatedThumb))
                     {
                         Debug.Assert(Thumbs.Count > 0);
-                        SetCurrentValue(ActivatedThumbProperty, Thumbs.First());
+                        SetCurrentValue(ActivatedThumbProperty, Thumbs[0]);
                     }
                 }
             }

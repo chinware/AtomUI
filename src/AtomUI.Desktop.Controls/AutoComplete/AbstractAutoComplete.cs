@@ -1529,7 +1529,10 @@ public abstract class AbstractAutoComplete : TemplatedControl,
                 
                         // Only replace partially when the two words being the same
                         int minLength = Math.Min(topString?.Length ?? 0, Value?.Length ?? 0);
-                        if (string.Equals(Value?.Substring(0, minLength), topString?.Substring(0, minLength),  StringComparison.CurrentCultureIgnoreCase))
+                        var isPrefixMatch = Value == null || topString == null
+                            ? Value == topString
+                            : string.Compare(Value, 0, topString, 0, minLength, StringComparison.CurrentCultureIgnoreCase) == 0;
+                        if (isPrefixMatch)
                         {
                             // Update the text
                             UpdateValue(topString);

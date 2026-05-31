@@ -36,7 +36,7 @@ public record DescriptionsMediaBreakInfo
     
     public static DescriptionsMediaBreakInfo Parse(string input)
     {
-        if (int.TryParse(input.Trim(), out int singleColumn))
+        if (int.TryParse(input.AsSpan().Trim(), out int singleColumn))
         {
             if (singleColumn <= 0)
             {

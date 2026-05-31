@@ -1009,9 +1009,12 @@ public class TreeSelect : AbstractSelect
 
     private static List<object?> BuildItemsSourceList(IEnumerable source)
     {
-        var items = source is ICollection collection
-            ? new List<object?>(collection.Count)
-            : new List<object?>();
+        var items = source switch
+        {
+            ICollection collection => new List<object?>(collection.Count),
+            IReadOnlyCollection<object?> collection => new List<object?>(collection.Count),
+            _ => new List<object?>()
+        };
         foreach (var item in source)
         {
             items.Add(item);
@@ -1021,9 +1024,12 @@ public class TreeSelect : AbstractSelect
 
     private static List<ITreeItemNode> BuildTreeNodeList(IEnumerable source)
     {
-        var items = source is ICollection collection
-            ? new List<ITreeItemNode>(collection.Count)
-            : new List<ITreeItemNode>();
+        var items = source switch
+        {
+            ICollection collection => new List<ITreeItemNode>(collection.Count),
+            IReadOnlyCollection<ITreeItemNode> collection => new List<ITreeItemNode>(collection.Count),
+            _ => new List<ITreeItemNode>()
+        };
         foreach (var item in source)
         {
             items.Add((ITreeItemNode)item!);
@@ -1033,9 +1039,12 @@ public class TreeSelect : AbstractSelect
 
     private static HashSet<ITreeItemNode> BuildTreeNodeSet(IEnumerable source)
     {
-        var items = source is ICollection collection
-            ? new HashSet<ITreeItemNode>(collection.Count)
-            : new HashSet<ITreeItemNode>();
+        var items = source switch
+        {
+            ICollection collection => new HashSet<ITreeItemNode>(collection.Count),
+            IReadOnlyCollection<ITreeItemNode> collection => new HashSet<ITreeItemNode>(collection.Count),
+            _ => new HashSet<ITreeItemNode>()
+        };
         foreach (var item in source)
         {
             items.Add((ITreeItemNode)item!);

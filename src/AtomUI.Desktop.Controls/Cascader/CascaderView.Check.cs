@@ -105,6 +105,12 @@ public partial class CascaderView
     private ISet<ICascaderOption> DoCheckedSubTree(ICascaderOption viewOption)
     {
         var checkedOptions = new HashSet<ICascaderOption>();
+        DoCheckedSubTreeCore(viewOption, checkedOptions);
+        return checkedOptions;
+    }
+
+    private void DoCheckedSubTreeCore(ICascaderOption viewOption, HashSet<ICascaderOption> checkedOptions)
+    {
         MarkViewOptionChecked(viewOption, true);
         checkedOptions.Add(viewOption);
         foreach (var childItem in viewOption.Children)
@@ -113,14 +119,12 @@ public partial class CascaderView
             if ((container != null && container.IsEffectiveCheckable()) || 
                 (childItem.IsEnabled && childItem.IsCheckBoxEnabled))
             {
-                var childSelectedOptions = DoCheckedSubTree(childItem);
-                checkedOptions.UnionWith(childSelectedOptions);
+                DoCheckedSubTreeCore(childItem, checkedOptions);
             }
         }
         
         var (checkedParentItems, _) = SetupParentNodeCheckedStatus(viewOption);
         checkedOptions.UnionWith(checkedParentItems);
-        return checkedOptions;
     }
 
     private void MarkViewOptionChecked(ICascaderOption option, bool? value)
@@ -197,7 +201,12 @@ public partial class CascaderView
     public ISet<ICascaderOption> DoUnCheckedSubTree(ICascaderOption viewOption)
     {
         var unSelectedOptions = new HashSet<ICascaderOption>();
-        
+        DoUnCheckedSubTreeCore(viewOption, unSelectedOptions);
+        return unSelectedOptions;
+    }
+
+    private void DoUnCheckedSubTreeCore(ICascaderOption viewOption, HashSet<ICascaderOption> unSelectedOptions)
+    {
         MarkViewOptionChecked(viewOption, false);
         unSelectedOptions.Add(viewOption);
     
@@ -207,20 +216,19 @@ public partial class CascaderView
             if ((container != null && container.IsEffectiveCheckable()) || 
                 (childItem.IsEnabled && childItem.IsCheckBoxEnabled))
             {
-                var childSelectedOptions = DoUnCheckedSubTree(childItem);
-                unSelectedOptions.UnionWith(childSelectedOptions);
+                DoUnCheckedSubTreeCore(childItem, unSelectedOptions);
             }
         }
         var (_, unCheckedParentItems) = SetupParentNodeCheckedStatus(viewOption);
         unSelectedOptions.UnionWith(unCheckedParentItems);
-        return unSelectedOptions;
     }
     
     private (ISet<ICascaderOption>, ISet<ICascaderOption>) SetupParentNodeCheckedStatus(ICascaderOption viewOption)
     {
         var parent           = viewOption.ParentNode;
-        var checkedParents   =  new HashSet<ICascaderOption>();
-        var unCheckedParents =  new HashSet<ICascaderOption>();
+        var parentDepth      = Math.Max(0, CountPathDepth(viewOption) - 1);
+        var checkedParents   =  new HashSet<ICascaderOption>(parentDepth);
+        var unCheckedParents =  new HashSet<ICascaderOption>(parentDepth);
         while (parent is ICascaderOption parentViewOption)
         {
             var parentContainer = GetCascaderViewItem(parentViewOption);

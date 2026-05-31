@@ -267,7 +267,7 @@ internal class RateItem : TemplatedControl
         {
             charControl = new RateCharacter()
             {
-                Character  = str.First(),
+                Character  = str[0],
                 Foreground = brush,
                 FontSize   = double.IsNaN(Height) ? FontSize : Height,
             };

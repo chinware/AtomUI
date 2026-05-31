@@ -106,25 +106,26 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             // 判断当前选中的是不是自己
             if (!ReferenceEquals(_latestSelectedItem, menuItem))
             {
-                ISet<NavMenuItem> oldSelectedPaths = new HashSet<NavMenuItem>();
+                HashSet<NavMenuItem>? oldSelectedPaths = null;
                 if (_latestSelectedItem != null)
                 {
                     var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-                    foreach (var oldItem in oldItems)
-                    {
-                        oldSelectedPaths.Add(oldItem);
-                    }
+                    oldSelectedPaths = NavMenu.BuildSelectPathSet(oldItems);
                 }
                 
                 var newItems         = NavMenu.CollectSelectPathItems(menuItem);
-                var newSelectedPaths = newItems.ToHashSet();
-                
-                var delta = oldSelectedPaths.Except(newSelectedPaths);
+                var newSelectedPaths = NavMenu.BuildSelectPathSet(newItems);
 
                 var navMenu = Menu as NavMenu;
-                foreach (var oldInSelectPathItem in delta)
+                if (oldSelectedPaths != null)
                 {
-                    oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
+                    foreach (var oldInSelectPathItem in oldSelectedPaths)
+                    {
+                        if (!newSelectedPaths.Contains(oldInSelectPathItem))
+                        {
+                            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
+                        }
+                    }
                 }
 
                 if (_latestSelectedItem != null)

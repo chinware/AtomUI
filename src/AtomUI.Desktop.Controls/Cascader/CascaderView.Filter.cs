@@ -42,7 +42,7 @@ public partial class CascaderView
         {
             if (_allPathInfos == null)
             {
-                var result = new List<CascaderViewFilterListItemData>();
+                var result = new List<CascaderViewFilterListItemData>(_options.Count);
                 foreach (var item in _options)
                 {
                     if (item is ICascaderOption viewOption)
@@ -80,9 +80,10 @@ public partial class CascaderView
 
     private CascaderViewFilterListItemData GetFullPath(ICascaderOption option)
     {
-        var pathHeaders = new List<string>();
+        var pathDepth   = CountPathDepth(option);
+        var pathHeaders = new List<string>(pathDepth);
         var current     = option;
-        var pathNodes   = new  List<ICascaderOption>();
+        var pathNodes   = new List<ICascaderOption>(pathDepth);
         while (current != null)
         {
             pathNodes.Add(current);
@@ -98,6 +99,19 @@ public partial class CascaderView
             ExpandItems = pathNodes,
             IsEnabled   = option.IsEnabled
         };
+    }
+
+    private static int CountPathDepth(ICascaderOption option)
+    {
+        var count   = 0;
+        var current = option;
+        while (current != null)
+        {
+            count++;
+            current = current.ParentNode as ICascaderOption;
+        }
+
+        return count;
     }
     
     private void CollectionPaths(ICascaderOption option, List<CascaderViewFilterListItemData> result)

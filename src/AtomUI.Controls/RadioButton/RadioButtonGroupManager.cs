@@ -42,7 +42,7 @@ internal class RadioButtonGroupManager
         {
             if (!_registeredGroups.TryGetValue(groupName, out var group))
             {
-                group = new List<WeakReference<IRadioButton>>();
+                group = new List<WeakReference<IRadioButton>>(1);
                 _registeredGroups.Add(groupName, group);
             }
 

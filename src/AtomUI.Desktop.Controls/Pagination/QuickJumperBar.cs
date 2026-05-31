@@ -89,7 +89,7 @@ internal class QuickJumperBar : TemplatedControl
         {
             if (e.Key == Key.Enter)
             {
-                if (int.TryParse(lineEdit.Text?.Trim(), out var pageNumber))
+                if (lineEdit.Text is { } text && int.TryParse(text.AsSpan().Trim(), out var pageNumber))
                 {
                     JumpRequest?.Invoke(this, new QuickJumpArgs(pageNumber));
                 }

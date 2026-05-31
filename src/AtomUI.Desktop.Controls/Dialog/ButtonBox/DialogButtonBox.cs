@@ -12,6 +12,7 @@ namespace AtomUI.Desktop.Controls;
 public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 {
     private static readonly IReadOnlyList<DialogButton> EmptyButtonList = Array.Empty<DialogButton>();
+    private const int DialogButtonRoleCapacity = (int)DialogButtonRole.CustomRole + 1;
 
     #region 公共属性定义
 
@@ -258,8 +259,8 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     {
         this.RegisterTokenResourceScope(DialogToken.ScopeProvider);
         CustomButtons.CollectionChanged += new (HandleCustomButtonsChanged);
-        _standardButtonGroup            = new Dictionary<DialogButtonRole, List<DialogButton>>();
-        _buttonGroup                    = new Dictionary<DialogButtonRole, List<DialogButton>>();
+        _standardButtonGroup            = new Dictionary<DialogButtonRole, List<DialogButton>>(DialogButtonRoleCapacity);
+        _buttonGroup                    = new Dictionary<DialogButtonRole, List<DialogButton>>(DialogButtonRoleCapacity);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -327,7 +328,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         var targetGroup = isStandard ? _standardButtonGroup : _buttonGroup;
         if (!targetGroup.TryGetValue(buttonRole, out var buttons))
         {
-            buttons = new List<DialogButton>();
+            buttons = new List<DialogButton>(1);
             targetGroup.Add(buttonRole, buttons);
         }
 

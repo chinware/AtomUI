@@ -156,18 +156,18 @@ public abstract class AbstractRibbonBadge : Control
 
     private protected void SetupRibbonColor(string colorStr)
     {
-        colorStr = colorStr.Trim();
+        var colorSpan = colorStr.AsSpan().Trim();
 
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
         {
-            if (string.Equals(presetColor.Type.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
+            if (presetColor.Type.ToString().AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase))
             {
                 _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
                 return;
             }
         }
 
-        if (Color.TryParse(colorStr, out var color))
+        if (Color.TryParse(colorSpan, out var color))
         {
             _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(color);
         }

@@ -39,17 +39,34 @@ public class RowJustifyConverter : TypeConverter
     {
         if (value is string text)
         {
-            var normalized = text.Trim().ToLowerInvariant();
-            return normalized switch
+            var normalized = text.AsSpan().Trim();
+            if (normalized.Equals("start".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                normalized.Equals("flex-start".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
-                "start" or "flex-start" => RowJustify.Start,
-                "center" => RowJustify.Center,
-                "end" or "flex-end" => RowJustify.End,
-                "space-between" => RowJustify.SpaceBetween,
-                "space-around" => RowJustify.SpaceAround,
-                "space-evenly" => RowJustify.SpaceEvenly,
-                _ => Enum.Parse(typeof(RowJustify), text, ignoreCase: true)
-            };
+                return RowJustify.Start;
+            }
+            if (normalized.Equals("center".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowJustify.Center;
+            }
+            if (normalized.Equals("end".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                normalized.Equals("flex-end".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowJustify.End;
+            }
+            if (normalized.Equals("space-between".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowJustify.SpaceBetween;
+            }
+            if (normalized.Equals("space-around".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowJustify.SpaceAround;
+            }
+            if (normalized.Equals("space-evenly".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowJustify.SpaceEvenly;
+            }
+            return Enum.Parse(typeof(RowJustify), text, ignoreCase: true);
         }
 
         throw new NotSupportedException($"Cannot convert value '{value}' to RowJustify.");
@@ -96,15 +113,25 @@ public class RowAlignConverter : TypeConverter
     {
         if (value is string text)
         {
-            var normalized = text.Trim().ToLowerInvariant();
-            return normalized switch
+            var normalized = text.AsSpan().Trim();
+            if (normalized.Equals("top".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
-                "top" => RowAlign.Top,
-                "middle" or "center" => RowAlign.Middle,
-                "bottom" => RowAlign.Bottom,
-                "stretch" => RowAlign.Stretch,
-                _ => Enum.Parse(typeof(RowAlign), text, ignoreCase: true)
-            };
+                return RowAlign.Top;
+            }
+            if (normalized.Equals("middle".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                normalized.Equals("center".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowAlign.Middle;
+            }
+            if (normalized.Equals("bottom".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowAlign.Bottom;
+            }
+            if (normalized.Equals("stretch".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RowAlign.Stretch;
+            }
+            return Enum.Parse(typeof(RowAlign), text, ignoreCase: true);
         }
 
         throw new NotSupportedException($"Cannot convert value '{value}' to RowAlign.");

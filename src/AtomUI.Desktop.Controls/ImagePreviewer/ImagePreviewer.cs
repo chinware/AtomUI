@@ -89,7 +89,7 @@ public class ImagePreviewer : AbstractImagePreviewer
             {
                 if (EffectiveCoverImage == null)
                 {
-                    SetCurrentValue(EffectiveCoverImageProperty, EffectiveSources.First());
+                    SetCurrentValue(EffectiveCoverImageProperty, EffectiveSources[0]);
                 }
             }
         }
@@ -100,7 +100,7 @@ public class ImagePreviewer : AbstractImagePreviewer
         base.OnLoaded(args);
         if (EffectiveCoverImage == null && EffectiveSources?.Count > 0)
         {
-            SetCurrentValue(EffectiveCoverImageProperty, EffectiveSources.First());
+            SetCurrentValue(EffectiveCoverImageProperty, EffectiveSources[0]);
         }
     }
 }

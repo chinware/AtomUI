@@ -1191,7 +1191,7 @@ public class Mentions : TemplatedControl,
             }
             if (_candidateList != null && _view?.Count > 0)
             {
-                _candidateList.SelectedItem = _view.First();
+                _candidateList.SelectedItem = _view[0];
             }
         }
         finally

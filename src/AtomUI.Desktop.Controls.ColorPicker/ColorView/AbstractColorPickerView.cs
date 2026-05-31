@@ -363,7 +363,7 @@ public abstract class AbstractColorPickerView : TemplatedControl, IMotionAwareCo
 
     private void ConfigureDefaultPaletteGroup()
     {
-        PaletteGroup = new List<ColorPickerPalette>();
+        PaletteGroup = new List<ColorPickerPalette>(4);
         {
             var paletteInfo = PresetPalettes.GetPresetPalette(PresetPrimaryColor.Blue);
             PaletteGroup.Add(new ColorPickerPalette("primary", true, paletteInfo.ColorSequence));

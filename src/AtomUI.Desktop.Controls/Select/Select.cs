@@ -903,7 +903,7 @@ public partial class Select : AbstractSelect
             {
                 if (DefaultValues?.Count > 0)
                 {
-                    var defaultValue = DefaultValues.First();
+                    var defaultValue = DefaultValues[0];
                     foreach (var item in Options)
                     {
                         if (item is ISelectOption option)
@@ -1044,9 +1044,12 @@ public partial class Select : AbstractSelect
             return null;
         }
 
-        var selectedOptions = source is ICollection collection
-            ? new List<ISelectOption>(collection.Count)
-            : new List<ISelectOption>();
+        var selectedOptions = source switch
+        {
+            ICollection collection => new List<ISelectOption>(collection.Count),
+            IReadOnlyCollection<ISelectOption> collection => new List<ISelectOption>(collection.Count),
+            _ => new List<ISelectOption>()
+        };
         foreach (var item in source)
         {
             selectedOptions.Add((ISelectOption)item!);

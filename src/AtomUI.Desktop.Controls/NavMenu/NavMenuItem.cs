@@ -165,8 +165,19 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     INavMenuNode? INavMenuItem.Node => DataContext as INavMenuNode;
     
     INavMenuElement? INavMenuItem.Parent => Parent as INavMenuElement;
-    IEnumerable<INavMenuItem> INavMenuElement.SubItems => LogicalChildren.OfType<INavMenuItem>();
+    IEnumerable<INavMenuItem> INavMenuElement.SubItems => EnumerateSubItems();
     #endregion
+
+    private IEnumerable<INavMenuItem> EnumerateSubItems()
+    {
+        foreach (var child in LogicalChildren)
+        {
+            if (child is INavMenuItem item)
+            {
+                yield return item;
+            }
+        }
+    }
     
     #region 公共事件定义
     

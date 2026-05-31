@@ -47,8 +47,7 @@ internal class QuickJumpEdit : LineEdit
     
     protected override void OnTextInput(TextInputEventArgs e)
     {
-        var inputText = e.Text?.Trim();
-        if (!string.IsNullOrEmpty(inputText) && inputText.All(char.IsDigit))
+        if (e.Text is { } text && IsDigitSpan(text.AsSpan().Trim()))
         {
             base.OnTextInput(e);
         }
@@ -56,5 +55,21 @@ internal class QuickJumpEdit : LineEdit
         {
             e.Handled = true;
         }
+    }
+
+    private static bool IsDigitSpan(ReadOnlySpan<char> text)
+    {
+        if (text.IsEmpty)
+        {
+            return false;
+        }
+        foreach (var c in text)
+        {
+            if (!char.IsDigit(c))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

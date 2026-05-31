@@ -367,10 +367,9 @@ internal class ColorPickerInput : TemplatedControl
     {
         if (Format == ColorFormat.Hex)
         {
-            var colorValue = _hexValueInput?.Text?.Trim();
-            if (colorValue != null)
+            if (_hexValueInput?.Text is { } colorText)
             {
-                if (Color.TryParse(colorValue, out var value))
+                if (Color.TryParse(colorText.AsSpan().Trim(), out var value))
                 {
                     var percentage = _alphaInput?.Value ?? 100m;
                     byte alphaValue = (byte)(percentage * 2.55m);

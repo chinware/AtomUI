@@ -121,7 +121,7 @@ public class SimplePagination : AbstractPagination
         {
             if (e.Key == Key.Enter)
             {
-                if (int.TryParse(lineEdit.Text?.Trim(), out var pageNumber))
+                if (lineEdit.Text is { } text && int.TryParse(text.AsSpan().Trim(), out var pageNumber))
                 {
                     var pageCount   = (int)Math.Ceiling(Total / (double)PageSize);
                     CurrentPage = Math.Max(1, Math.Min(pageNumber, pageCount));

@@ -15,7 +15,7 @@ public record GridColSize
 
     public static GridColSize Parse(string input)
     {
-        var trimmed = input.Trim();
+        var trimmed = input.AsSpan().Trim();
         if (trimmed.Length == 0)
         {
             throw new FormatException("Grid column size cannot be empty.");
@@ -28,10 +28,11 @@ public record GridColSize
         }
 
         var result = new GridColSize();
-        var segments = trimmed.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        foreach (var rawSegment in segments)
+        while (!trimmed.IsEmpty)
         {
-            var segment = rawSegment.Trim();
+            var commaIndex = trimmed.IndexOf(',');
+            var segment    = commaIndex >= 0 ? trimmed[..commaIndex].Trim() : trimmed.Trim();
+            trimmed = commaIndex >= 0 ? trimmed[(commaIndex + 1)..] : ReadOnlySpan<char>.Empty;
             if (segment.Length == 0)
             {
                 continue;
@@ -100,11 +101,11 @@ public record GridColSize
         };
     }
 
-    private static int ParseInt(string input, string name, bool allowNegative)
+    private static int ParseInt(ReadOnlySpan<char> input, string name, bool allowNegative)
     {
         if (!int.TryParse(input, out var value))
         {
-            throw new FormatException($"Invalid {name} value '{input}'.");
+            throw new FormatException($"Invalid {name} value '{input.ToString()}'.");
         }
 
         if (!allowNegative && value < 0)

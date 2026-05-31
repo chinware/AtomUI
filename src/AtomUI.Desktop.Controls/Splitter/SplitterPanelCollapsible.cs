@@ -22,7 +22,7 @@ public class SplitterPanelCollapsible
 
     public static SplitterPanelCollapsible Parse(string input)
     {
-        var trimmed = input.Trim();
+        var trimmed = input.AsSpan().Trim();
         if (trimmed.Length == 0)
         {
             throw new FormatException("Splitter panel collapsible value cannot be empty.");
@@ -33,7 +33,7 @@ public class SplitterPanelCollapsible
             return new SplitterPanelCollapsible { IsEnabled = boolValue };
         }
 
-        if (trimmed.Equals("none", StringComparison.OrdinalIgnoreCase))
+        if (trimmed.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
             return new SplitterPanelCollapsible
             {

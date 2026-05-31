@@ -38,6 +38,11 @@ public record GridGutterInfo
 
     public static GridGutterInfo Parse(string input)
     {
+        return Parse(input.AsSpan());
+    }
+
+    internal static GridGutterInfo Parse(ReadOnlySpan<char> input)
+    {
         var trimmed = input.Trim();
         if (double.TryParse(trimmed, NumberStyles.Float, CultureInfo.InvariantCulture, out var single))
         {
@@ -45,26 +50,13 @@ public record GridGutterInfo
             return new GridGutterInfo(single);
         }
 
-        return ParseKeyValueFormat(input);
+        return ParseKeyValueFormat(trimmed);
     }
 
-    internal double GetValue(MediaBreakPoint breakPoint)
-    {
-        return breakPoint switch
-        {
-            MediaBreakPoint.ExtraSmall => ExtraSmall,
-            MediaBreakPoint.Small => Small,
-            MediaBreakPoint.Medium => Medium,
-            MediaBreakPoint.Large => Large,
-            MediaBreakPoint.ExtraLarge => ExtraLarge,
-            _ => ExtraExtraLarge
-        };
-    }
-
-    private static GridGutterInfo ParseKeyValueFormat(string input)
+    private static GridGutterInfo ParseKeyValueFormat(ReadOnlySpan<char> input)
     {
         var result       = new GridGutterInfo();
-        var span         = input.AsSpan();
+        var span         = input;
         int segmentIndex = 0;
 
         while (!span.IsEmpty)
@@ -79,6 +71,19 @@ public record GridGutterInfo
         }
 
         return result;
+    }
+
+    internal double GetValue(MediaBreakPoint breakPoint)
+    {
+        return breakPoint switch
+        {
+            MediaBreakPoint.ExtraSmall => ExtraSmall,
+            MediaBreakPoint.Small => Small,
+            MediaBreakPoint.Medium => Medium,
+            MediaBreakPoint.Large => Large,
+            MediaBreakPoint.ExtraLarge => ExtraLarge,
+            _ => ExtraExtraLarge
+        };
     }
 
     private static void ProcessSegment(ReadOnlySpan<char> segment, int segmentIndex, ref GridGutterInfo result)

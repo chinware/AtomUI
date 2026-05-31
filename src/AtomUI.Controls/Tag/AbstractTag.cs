@@ -342,11 +342,11 @@ public abstract class AbstractTag : TemplatedControl
     {
         IsPresetColorTag = false;
         IsColorSet       = false;
-        colorStr         = colorStr.Trim();
+        var colorSpan    = colorStr.AsSpan().Trim();
 
         foreach (var entry in PresetColorMap)
         {
-            if (string.Equals(entry.Key.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
+            if (entry.Key.ToString().AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase))
             {
                 var colorInfo = entry.Value;
                 Foreground       = new SolidColorBrush(colorInfo.TextColor);
@@ -362,7 +362,7 @@ public abstract class AbstractTag : TemplatedControl
 
         foreach (var entry in StatusColorMap)
         {
-            if (string.Equals(entry.Key.ToString(), colorStr, StringComparison.OrdinalIgnoreCase))
+            if (entry.Key.ToString().AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase))
             {
                 var colorInfo = entry.Value;
                 Foreground       = new SolidColorBrush(colorInfo.Color);
@@ -376,7 +376,7 @@ public abstract class AbstractTag : TemplatedControl
             }
         }
 
-        if (Color.TryParse(colorStr, out var color))
+        if (Color.TryParse(colorSpan, out var color))
         {
             IsBordered = false;
             IsColorSet = true;

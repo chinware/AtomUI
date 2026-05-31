@@ -157,25 +157,25 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             if (!ReferenceEquals(_latestSelectedItem, menuItem))
             {
                 var newItems = NavMenu.CollectSelectPathItems(menuItem);
-                var newSelectedPaths = newItems.ToHashSet();
+                var newSelectedPaths = NavMenu.BuildSelectPathSet(newItems);
 
-                ISet<NavMenuItem> oldSelectedPaths;
+                HashSet<NavMenuItem>? oldSelectedPaths = null;
                 if (_latestSelectedItem != null)
                 {
                     var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-                    oldSelectedPaths = oldItems.ToHashSet();
+                    oldSelectedPaths = NavMenu.BuildSelectPathSet(oldItems);
                 }
-                else
-                {
-                    oldSelectedPaths = new HashSet<NavMenuItem>();
-                }
-
-                var delta = oldSelectedPaths.Except(newSelectedPaths);
 
                 var navMenu = Menu as NavMenu;
-                foreach (var oldInSelectPathItem in delta)
+                if (oldSelectedPaths != null)
                 {
-                    oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
+                    foreach (var oldInSelectPathItem in oldSelectedPaths)
+                    {
+                        if (!newSelectedPaths.Contains(oldInSelectPathItem))
+                        {
+                            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
+                        }
+                    }
                 }
 
                 if (_latestSelectedItem != null)

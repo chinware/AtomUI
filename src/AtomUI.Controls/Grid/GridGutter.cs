@@ -22,26 +22,25 @@ public record GridGutter
 
     public static GridGutter Parse(string input)
     {
-        var trimmed = input.Trim();
+        var trimmed = input.AsSpan().Trim();
         if (trimmed.Length == 0)
         {
             throw new FormatException("Gutter value cannot be empty.");
         }
 
-        if (trimmed.Contains(';', StringComparison.Ordinal))
+        if (trimmed.IndexOf(';') >= 0)
         {
-            var parts = trimmed.Split(';', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length != 2)
+            if (!TrySplitTwoNonEmptySegments(trimmed, ';', out var horizontalSegment, out var verticalSegment))
             {
                 throw new FormatException("Gutter must have exactly two segments when using ';' separator.");
             }
 
-            var horizontal = GridGutterInfo.Parse(parts[0].Trim());
-            var vertical   = GridGutterInfo.Parse(parts[1].Trim());
+            var horizontal = GridGutterInfo.Parse(horizontalSegment.Trim());
+            var vertical   = GridGutterInfo.Parse(verticalSegment.Trim());
             return new GridGutter(horizontal, vertical);
         }
 
-        if (trimmed.Contains(':', StringComparison.Ordinal))
+        if (trimmed.IndexOf(':') >= 0)
         {
             var horizontal = GridGutterInfo.Parse(trimmed);
             return new GridGutter(horizontal, new GridGutterInfo());
@@ -65,23 +64,22 @@ public record GridGutter
         return (Horizontal.GetValue(breakPoint), Vertical.GetValue(breakPoint));
     }
 
-    private static bool TryParsePair(string input, out double horizontal, out double vertical)
+    private static bool TryParsePair(ReadOnlySpan<char> input, out double horizontal, out double vertical)
     {
         horizontal = 0;
         vertical   = 0;
 
-        var parts = input.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length != 2)
+        if (!TrySplitTwoNonEmptySegments(input, ',', out var horizontalSegment, out var verticalSegment))
         {
             return false;
         }
 
-        if (!double.TryParse(parts[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out horizontal))
+        if (!double.TryParse(horizontalSegment.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out horizontal))
         {
             return false;
         }
 
-        if (!double.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out vertical))
+        if (!double.TryParse(verticalSegment.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out vertical))
         {
             return false;
         }
@@ -92,6 +90,44 @@ public record GridGutter
         }
 
         return true;
+    }
+
+    private static bool TrySplitTwoNonEmptySegments(ReadOnlySpan<char> input,
+                                                    char separator,
+                                                    out ReadOnlySpan<char> first,
+                                                    out ReadOnlySpan<char> second)
+    {
+        first  = default;
+        second = default;
+        var foundCount = 0;
+
+        while (!input.IsEmpty)
+        {
+            var separatorIndex = input.IndexOf(separator);
+            var segment        = separatorIndex >= 0 ? input[..separatorIndex] : input;
+            input              = separatorIndex >= 0 ? input[(separatorIndex + 1)..] : ReadOnlySpan<char>.Empty;
+
+            if (segment.IsEmpty)
+            {
+                continue;
+            }
+
+            foundCount++;
+            if (foundCount == 1)
+            {
+                first = segment;
+            }
+            else if (foundCount == 2)
+            {
+                second = segment;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return foundCount == 2;
     }
 }
 

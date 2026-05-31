@@ -144,9 +144,20 @@ public class NavMenu : ItemsControl,
     
     #region 内部属性定义
 
-    IEnumerable<INavMenuItem> INavMenuElement.SubItems => LogicalChildren.OfType<INavMenuItem>();
+    IEnumerable<INavMenuItem> INavMenuElement.SubItems => EnumerateSubItems();
 
     #endregion
+
+    private IEnumerable<INavMenuItem> EnumerateSubItems()
+    {
+        foreach (var child in LogicalChildren)
+        {
+            if (child is INavMenuItem item)
+            {
+                yield return item;
+            }
+        }
+    }
     
     internal INavMenuInteractionHandler? InteractionHandler { get; private set; }
     
@@ -456,7 +467,7 @@ public class NavMenu : ItemsControl,
 
     internal static List<NavMenuItem> CollectSelectPathItems(NavMenuItem menuItem)
     {
-        var          items   = new List<NavMenuItem>();
+        var          items   = new List<NavMenuItem>(CountSelectPathItems(menuItem));
         NavMenuItem? current = menuItem;
         while (current != null)
         {
@@ -469,6 +480,30 @@ public class NavMenu : ItemsControl,
 
         items.Reverse();
         return items;
+    }
+
+    internal static HashSet<NavMenuItem> BuildSelectPathSet(IReadOnlyCollection<NavMenuItem> items)
+    {
+        var itemSet = new HashSet<NavMenuItem>(items.Count);
+        foreach (var item in items)
+        {
+            itemSet.Add(item);
+        }
+
+        return itemSet;
+    }
+
+    private static int CountSelectPathItems(NavMenuItem menuItem)
+    {
+        var          count   = 0;
+        NavMenuItem? current = menuItem.GetLogicalParent<NavMenuItem>();
+        while (current != null)
+        {
+            count++;
+            current = current.GetLogicalParent<NavMenuItem>();
+        }
+
+        return count;
     }
     
     void IMenuChildSelectable.SelectChildItem(NavMenuItem child, bool isSelected)
@@ -612,7 +647,7 @@ public class NavMenu : ItemsControl,
 
     private List<INavMenuNode> CollectPathNodes(INavMenuNode node)
     {
-        var pathNodes  = new List<INavMenuNode>();
+        var pathNodes  = new List<INavMenuNode>(CountPathNodes(node));
 
         if (Items.Count > 0)
         {
@@ -626,7 +661,7 @@ public class NavMenu : ItemsControl,
         
             Debug.Assert(pathNodes.Count > 0);
             // 检查是否是野数据
-            var rootNode  = pathNodes.First();
+            var rootNode  = pathNodes[0];
             var foundRoot = false;
             foreach (var root in Items)
             {
@@ -643,6 +678,19 @@ public class NavMenu : ItemsControl,
         }
         
         return pathNodes;
+    }
+
+    private static int CountPathNodes(INavMenuNode node)
+    {
+        var count   = 0;
+        var current = node;
+        while (current != null)
+        {
+            count++;
+            current = current.ParentNode as INavMenuNode;
+        }
+
+        return count;
     }
     
     private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(INavMenuNode childNode, ItemsControl current)

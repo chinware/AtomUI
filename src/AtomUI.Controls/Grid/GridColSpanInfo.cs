@@ -43,7 +43,7 @@ public readonly record struct GridColSpanInfo
 
     public static GridColSpanInfo Parse(string input)
     {
-        if (int.TryParse(input.Trim(), out var singleSpan))
+        if (int.TryParse(input.AsSpan().Trim(), out var singleSpan))
         {
             ValidateSpan(singleSpan);
             return new GridColSpanInfo(singleSpan);

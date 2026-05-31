@@ -546,14 +546,15 @@ public class Cascader : AbstractSelect
 
         var                       needSync        = false;
         HashSet<ICascaderOption>? cascaderViewSet = null;
-        if (_checkedOptions == null || _checkedOptions?.Count != _cascaderView.SelectedOptions?.Count)
+        var                       selectedOptions = _cascaderView.SelectedOptions;
+        if (_checkedOptions == null || selectedOptions == null || _checkedOptions.Count != selectedOptions.Count)
         {
             needSync = true;
         }
         else
         {
-            var currentSet = BuildOptionSet(_checkedOptions) ?? new HashSet<ICascaderOption>();
-            cascaderViewSet = BuildOptionSet(_cascaderView?.SelectedOptions) ?? new HashSet<ICascaderOption>();
+            var currentSet = BuildOptionSet(_checkedOptions)!;
+            cascaderViewSet = BuildOptionSet(selectedOptions)!;
             if (!currentSet.SetEquals(cascaderViewSet))
             {
                 needSync = true;
@@ -904,9 +905,12 @@ public class Cascader : AbstractSelect
 
     private static List<ICascaderOption> BuildOptionsList(IEnumerable source)
     {
-        var options = source is ICollection collection
-            ? new List<ICascaderOption>(collection.Count)
-            : new List<ICascaderOption>();
+        var options = source switch
+        {
+            ICollection collection => new List<ICascaderOption>(collection.Count),
+            IReadOnlyCollection<ICascaderOption> collection => new List<ICascaderOption>(collection.Count),
+            _ => new List<ICascaderOption>()
+        };
         foreach (var item in source)
         {
             options.Add((ICascaderOption)item!);
@@ -994,7 +998,7 @@ public class Cascader : AbstractSelect
             else
             {
                 var current = SelectedOption;
-                var parts   = new List<string>();
+                var parts   = new List<string>(CountOptionPathDepth(current));
                 while (current != null)
                 {
                     parts.Add(current.Header?.ToString() ?? string.Empty);
@@ -1012,6 +1016,19 @@ public class Cascader : AbstractSelect
         }
     }
 
+    private static int CountOptionPathDepth(ICascaderOption option)
+    {
+        var count   = 0;
+        var current = option;
+        while (current != null)
+        {
+            count++;
+            current = current.ParentNode as ICascaderOption;
+        }
+
+        return count;
+    }
+
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
@@ -1021,7 +1038,7 @@ public class Cascader : AbstractSelect
             {
                 if (_cascaderView.TryParseSelectPath(DefaultSelectOptionPath, out var options))
                 {
-                    var parts = new List<string>();
+                    var parts = new List<string>(options.Count);
                     foreach (var option in options)
                     {
                         parts.Add(option.Header?.ToString() ?? string.Empty);

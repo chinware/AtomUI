@@ -239,8 +239,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             return false;
         }
 
-        var extension = Path.GetExtension(filePath).ToLowerInvariant();
-        return extension == ".svg";
+        return string.Equals(Path.GetExtension(filePath), ".svg", StringComparison.OrdinalIgnoreCase);
     }
 
     protected override void OnLoaded(RoutedEventArgs args)

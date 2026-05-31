@@ -245,6 +245,9 @@ public class Window : AvaloniaWindow,
     
     internal static readonly StyledProperty<Thickness> FrameShadowThicknessProperty =
         AvaloniaProperty.Register<Window, Thickness>(nameof(FrameShadowThickness));
+
+    private static readonly ISet<AvaloniaProperty> s_clickThroughShadowExtraAffectsProperties =
+        new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty };
     
     private Thickness _titleBarOffsetMargin;
     internal Thickness TitleBarOffsetMargin
@@ -326,7 +329,7 @@ public class Window : AvaloniaWindow,
         if (OperatingSystem.IsLinux())
         {
             this.AttachClickThroughShadow(
-                new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty },
+                s_clickThroughShadowExtraAffectsProperties,
                 () => FrameShadowThickness);
         }
     }

@@ -176,15 +176,18 @@ public struct CompactSpaceSize : IEquatable<CompactSpaceSize>
     /// <returns>The <see cref="CompactSpaceSize"/>.</returns>
     public static CompactSpaceSize Parse(string s)
     {
-        s = s.ToUpperInvariant();
+        return Parse(s.AsSpan());
+    }
 
-        if (s == "AUTO")
+    private static CompactSpaceSize Parse(ReadOnlySpan<char> s)
+    {
+        if (s.Equals("AUTO".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
             return Auto;
         }
-        else if (s.EndsWith("*"))
+        else if (s.EndsWith("*".AsSpan(), StringComparison.Ordinal))
         {
-            var valueString = s.Substring(0, s.Length - 1).Trim();
+            var valueString = s.Slice(0, s.Length - 1).Trim();
             var value       = valueString.Length > 0 ? double.Parse(valueString, CultureInfo.InvariantCulture) : 1;
             return new CompactSpaceSize(value, CompactSpaceUnitType.Star);
         }
@@ -206,7 +209,7 @@ public struct CompactSpaceSize : IEquatable<CompactSpaceSize>
 
         using (var tokenizer = new SpanStringTokenizer(s, CultureInfo.InvariantCulture))
         {
-            while (tokenizer.TryReadString(out var item))
+            while (tokenizer.TryReadSpan(out var item))
             {
                 result.Add(Parse(item));
             }

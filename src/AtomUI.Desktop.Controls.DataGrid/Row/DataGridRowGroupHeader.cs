@@ -266,7 +266,7 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     private TranslateTransform UpdateChildTranslateTransform(Visual child, double x)
     {
-        _childTranslateTransforms ??= new Dictionary<Visual, TranslateTransform>();
+        _childTranslateTransforms ??= new Dictionary<Visual, TranslateTransform>(_rootElement?.Children.Count ?? 0);
         if (!_childTranslateTransforms.TryGetValue(child, out var transform))
         {
             transform = new TranslateTransform();
@@ -361,7 +361,7 @@ public class DataGridRowGroupHeader : TemplatedControl
 
     private void UpdateChildClipGeometry(Visual child, Rect clipRect)
     {
-        _childClipGeometries ??= new Dictionary<Visual, RectangleGeometry>();
+        _childClipGeometries ??= new Dictionary<Visual, RectangleGeometry>(_rootElement?.Children.Count ?? 0);
         if (!_childClipGeometries.TryGetValue(child, out var clipGeometry))
         {
             clipGeometry = new RectangleGeometry

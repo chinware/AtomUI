@@ -62,13 +62,17 @@ public readonly struct FlexBasis : IEquatable<FlexBasis>
 
     public static FlexBasis Parse(string str)
     {
-        return str.ToUpperInvariant() switch
+        if (str.Equals("AUTO", StringComparison.OrdinalIgnoreCase))
         {
-            "AUTO" => Auto,
-            var s when s.EndsWith("%") => new FlexBasis(ParseDouble(s.TrimEnd('%').TrimEnd()) / 100,
-                FlexBasisKind.Relative),
-            _ => new FlexBasis(ParseDouble(str), FlexBasisKind.Absolute),
-        };
-        double ParseDouble(string s) => double.Parse(s, CultureInfo.InvariantCulture);
+            return Auto;
+        }
+        if (str.EndsWith("%", StringComparison.Ordinal))
+        {
+            return new FlexBasis(ParseDouble(str.AsSpan(0, str.Length - 1).TrimEnd()) / 100,
+                FlexBasisKind.Relative);
+        }
+        return new FlexBasis(ParseDouble(str.AsSpan()), FlexBasisKind.Absolute);
+
+        double ParseDouble(ReadOnlySpan<char> s) => double.Parse(s, CultureInfo.InvariantCulture);
     }
 }

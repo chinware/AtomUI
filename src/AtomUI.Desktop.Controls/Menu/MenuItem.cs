@@ -46,9 +46,20 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     #endregion
 
-    IEnumerable<IMenuItemData> ITreeNode<IMenuItemData>.Children => Items.OfType<IMenuItemData>();
+    IEnumerable<IMenuItemData> ITreeNode<IMenuItemData>.Children => EnumerateChildren();
     public ITreeNode<IMenuItemData>? ParentNode => Parent as ITreeNode<IMenuItemData>;
     public EntityKey? ItemKey { get; set; }
+
+    private IEnumerable<IMenuItemData> EnumerateChildren()
+    {
+        foreach (var item in Items)
+        {
+            if (item is IMenuItemData menuItem)
+            {
+                yield return menuItem;
+            }
+        }
+    }
 
     #region 公共事件定义
 

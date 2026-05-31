@@ -283,7 +283,7 @@ public class Upload : ContentControl,
                     {
                         AllowMultiple = IsMultipleEnabled
                     });
-                    var files = new List<UploadFileInfo>();
+                    var files = new List<UploadFileInfo>(directories.Count);
                     foreach (var directory in directories)
                     {
                         foreach (var filePath in Directory.EnumerateFiles(directory.Path.LocalPath, "*", SearchOption.TopDirectoryOnly))

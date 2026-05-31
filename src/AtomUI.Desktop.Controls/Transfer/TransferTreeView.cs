@@ -312,9 +312,12 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     private static List<ITreeItemNode> BuildTreeNodeList(IEnumerable source)
     {
-        var nodes = source is ICollection collection
-            ? new List<ITreeItemNode>(collection.Count)
-            : new List<ITreeItemNode>();
+        var nodes = source switch
+        {
+            ICollection collection => new List<ITreeItemNode>(collection.Count),
+            IReadOnlyCollection<ITreeItemNode> collection => new List<ITreeItemNode>(collection.Count),
+            _ => new List<ITreeItemNode>()
+        };
         foreach (var item in source)
         {
             nodes.Add((ITreeItemNode)item!);

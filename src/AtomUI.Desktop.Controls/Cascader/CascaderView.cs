@@ -429,9 +429,12 @@ public partial class CascaderView : TemplatedControl,
 
     private static List<ICascaderOption> BuildOptionList(IEnumerable source)
     {
-        var options = source is ICollection collection
-            ? new List<ICascaderOption>(collection.Count)
-            : new List<ICascaderOption>();
+        var options = source switch
+        {
+            ICollection collection => new List<ICascaderOption>(collection.Count),
+            IReadOnlyCollection<ICascaderOption> collection => new List<ICascaderOption>(collection.Count),
+            _ => new List<ICascaderOption>()
+        };
         foreach (var item in source)
         {
             options.Add((ICascaderOption)item!);

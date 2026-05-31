@@ -156,7 +156,7 @@ public class HighlightableTextBlock : TextBlock
     
     protected List<(int, int)> CalculateHighlightRanges(string highlightWords, string text, int firstIndex = 0)
     {
-        var ranges          = new List<(int, int)>();
+        var ranges          = new List<(int, int)>(1);
         var highlightLength = highlightWords.Length;
         var foundIndex      = firstIndex;
         

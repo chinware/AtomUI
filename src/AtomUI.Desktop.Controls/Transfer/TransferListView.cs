@@ -310,9 +310,12 @@ public class TransferListView : ListView, ITransferView
 
     private static HashSet<EntityKey?> BuildItemKeySet(IEnumerable source)
     {
-        var keySet = source is ICollection collection
-            ? new HashSet<EntityKey?>(collection.Count)
-            : new HashSet<EntityKey?>();
+        var keySet = source switch
+        {
+            ICollection collection => new HashSet<EntityKey?>(collection.Count),
+            IReadOnlyCollection<IItemKey> collection => new HashSet<EntityKey?>(collection.Count),
+            _ => new HashSet<EntityKey?>()
+        };
         foreach (var item in source)
         {
             keySet.Add(((IItemKey)item!).ItemKey);
@@ -359,9 +362,12 @@ public class TransferListView : ListView, ITransferView
 
     private static List<IItemKey> BuildItemsList(IEnumerable source)
     {
-        var items = source is ICollection collection
-            ? new List<IItemKey>(collection.Count)
-            : new List<IItemKey>();
+        var items = source switch
+        {
+            ICollection collection => new List<IItemKey>(collection.Count),
+            IReadOnlyCollection<IItemKey> collection => new List<IItemKey>(collection.Count),
+            _ => new List<IItemKey>()
+        };
         foreach (var item in source)
         {
             items.Add((IItemKey)item!);

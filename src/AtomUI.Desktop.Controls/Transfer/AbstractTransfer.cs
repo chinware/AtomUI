@@ -549,9 +549,12 @@ public abstract class AbstractTransfer: TemplatedControl,
         }
 
         var source = ItemsSource;
-        var items = source is ICollection<IItemKey> collection
-            ? new List<IItemKey>(collection.Count)
-            : new List<IItemKey>();
+        var items = source switch
+        {
+            ICollection<IItemKey> collection => new List<IItemKey>(collection.Count),
+            IReadOnlyCollection<IItemKey> collection => new List<IItemKey>(collection.Count),
+            _ => new List<IItemKey>()
+        };
         foreach (var item in source)
         {
             if ((targetKeySet?.Contains(item.ItemKey ?? default) ?? false) ||
@@ -695,9 +698,12 @@ public abstract class AbstractTransfer: TemplatedControl,
             return null;
         }
 
-        var keyList = items is ICollection<IItemKey> collection
-            ? new List<EntityKey>(collection.Count)
-            : new List<EntityKey>();
+        var keyList = items switch
+        {
+            ICollection<IItemKey> collection => new List<EntityKey>(collection.Count),
+            IReadOnlyCollection<IItemKey> collection => new List<EntityKey>(collection.Count),
+            _ => new List<EntityKey>()
+        };
         foreach (var item in items)
         {
             keyList.Add(item.ItemKey ?? default);

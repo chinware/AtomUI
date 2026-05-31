@@ -55,7 +55,7 @@ public partial class TreeView
 
     private ISet<TreeViewItem> CalculateSelectItemClosure(TreeViewItem treeViewItem)
     {
-        var closure = new HashSet<TreeViewItem>(); 
+        var closure = new HashSet<TreeViewItem>(CountTreeViewItemPathDepth(treeViewItem));
         StyledElement? current = treeViewItem;
         while (current != null && current is TreeViewItem currentTreeViewItem)
         {
@@ -64,6 +64,19 @@ public partial class TreeView
         }
 
         return closure;
+    }
+
+    private static int CountTreeViewItemPathDepth(TreeViewItem treeViewItem)
+    {
+        var count = 0;
+        StyledElement? current = treeViewItem;
+        while (current != null && current is TreeViewItem)
+        {
+            count++;
+            current = current.Parent;
+        }
+
+        return count;
     }
     
     public void FilterTreeNode()

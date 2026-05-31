@@ -60,7 +60,7 @@ public partial class CascaderView
         try
         {
             ++_ignoreExpandAndCollapseLevel;
-            var pathNodes  = new List<object>();
+            var pathNodes  = new List<object>(CountPathDepth(cascaderViewOption));
             
             var current  = cascaderViewOption;
             while (current != null)
@@ -72,7 +72,7 @@ public partial class CascaderView
             
             Debug.Assert(pathNodes.Count > 0);
             // 检查是否是野数据
-            var rootNode  = pathNodes.First();
+            var rootNode  = pathNodes[0];
             var foundRoot = false;
             foreach (var root in _options)
             {

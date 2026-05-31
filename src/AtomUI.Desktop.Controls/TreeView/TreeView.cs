@@ -631,11 +631,11 @@ public partial class TreeView : AvaloniaTreeView,
 
     private ISet<object> DoCheckedSubTree(TreeViewItem treeViewItem)
     {
-        var checkedItems    = new HashSet<object>();
         var expandedStates  = new Dictionary<TreeViewItem, bool>();
 
         // Phase 1: Expand entire subtree to realize all containers
         ExpandSubTreeForCheck(treeViewItem, expandedStates);
+        var checkedItems = new HashSet<object>(GetSubTreeCheckResultCapacity(treeViewItem, expandedStates.Count));
 
         try
         {
@@ -718,11 +718,11 @@ public partial class TreeView : AvaloniaTreeView,
 
     public ISet<object> DoUnCheckedSubTree(TreeViewItem treeViewItem)
     {
-        var unCheckedItems = new HashSet<object>();
         var expandedStates = new Dictionary<TreeViewItem, bool>();
 
         // Phase 1: Expand entire subtree to realize all containers
         ExpandSubTreeForCheck(treeViewItem, expandedStates);
+        var unCheckedItems = new HashSet<object>(GetSubTreeCheckResultCapacity(treeViewItem, expandedStates.Count));
 
         try
         {
@@ -743,6 +743,16 @@ public partial class TreeView : AvaloniaTreeView,
         }
 
         return unCheckedItems;
+    }
+
+    private int GetSubTreeCheckResultCapacity(TreeViewItem treeViewItem, int realizedSubTreeCount)
+    {
+        if (IsCheckStrictly)
+        {
+            return realizedSubTreeCount;
+        }
+
+        return realizedSubTreeCount + Math.Max(0, CountTreeViewItemPathDepth(treeViewItem) - 1);
     }
 
     private void DoUnCheckedSubTreeCore(TreeViewItem treeViewItem, HashSet<object> unCheckedItems)
@@ -1256,8 +1266,9 @@ public partial class TreeView : AvaloniaTreeView,
     private (ISet<object>, ISet<object>) SetupParentNodeCheckedStatus(TreeViewItem viewItem)
     {
         var parent           = viewItem.Parent;
-        var checkedParents   =  new HashSet<object>();
-        var unCheckedParents =  new HashSet<object>();
+        var parentDepth      = Math.Max(0, CountTreeViewItemPathDepth(viewItem) - 1);
+        var checkedParents   =  new HashSet<object>(parentDepth);
+        var unCheckedParents =  new HashSet<object>(parentDepth);
         while (parent is TreeViewItem parentTreeItem && parentTreeItem.IsEnabled)
         {
             GetChildCheckStatus(parentTreeItem, out var isAllChecked, out var isAnyChecked);
@@ -1641,9 +1652,10 @@ public partial class TreeView : AvaloniaTreeView,
 
     private List<object> GetTreePathFromItem(object item)
     {
-        var paths = new List<object>();
+        List<object> paths;
         if (item is ITreeItemNode itemData)
         {
+            paths = new List<object>(CountTreeItemPathDepth(itemData));
             var current = itemData;
             while (current != null)
             {
@@ -1653,6 +1665,7 @@ public partial class TreeView : AvaloniaTreeView,
         }
         else if (item is TreeViewItem treeViewItem)
         {
+            paths = new List<object>(CountTreeViewItemPathDepth(treeViewItem));
             var current = treeViewItem;
             while (current != null)
             {
@@ -1667,6 +1680,19 @@ public partial class TreeView : AvaloniaTreeView,
 
         paths.Reverse();
         return paths;
+    }
+
+    private static int CountTreeItemPathDepth(ITreeItemNode itemData)
+    {
+        var count   = 0;
+        var current = itemData;
+        while (current != null)
+        {
+            count++;
+            current = current.ParentNode as ITreeItemNode;
+        }
+
+        return count;
     }
 
     private void SelectTreeItemByPath(IList paths)
