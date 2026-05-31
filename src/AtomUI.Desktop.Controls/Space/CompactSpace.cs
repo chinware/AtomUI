@@ -122,8 +122,9 @@ public class CompactSpace : TemplatedControl,
             case NotifyCollectionChangedAction.Add:
             {
                 var compactSpaceItems = new List<CompactSpaceItem>(e.NewItems!.Count);
-                foreach (var newItem in e.NewItems!.OfType<Control>())
+                for (var i = 0; i < e.NewItems.Count; i++)
                 {
+                    var newItem = (Control)e.NewItems[i]!;
                     EnsureCompactSpaceItem(newItem);
                     var compactSpaceItem = new CompactSpaceItem()
                     {
@@ -143,8 +144,9 @@ public class CompactSpace : TemplatedControl,
             case NotifyCollectionChangedAction.Remove:
             {
                 var oldItems             = new HashSet<Control>(e.OldItems!.Count);
-                foreach (var oldItem in e.OldItems.OfType<Control>())
+                for (var i = 0; i < e.OldItems.Count; i++)
                 {
+                    var oldItem = (Control)e.OldItems[i]!;
                     oldItems.Add(oldItem);
                 }
                 var oldCompactSpaceItems = new List<CompactSpaceItem>(e.OldItems.Count);

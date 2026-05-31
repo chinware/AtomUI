@@ -330,10 +330,10 @@ internal class DialogHost : Window,
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                _dialogContent.CustomButtons.AddRange(e.NewItems!.OfType<DialogButton>());
+                DialogButtonCollectionUtils.AddRange(_dialogContent.CustomButtons, e.NewItems!);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                _dialogContent.CustomButtons.RemoveAll(e.OldItems!.OfType<DialogButton>());
+                DialogButtonCollectionUtils.RemoveAll(_dialogContent.CustomButtons, e.OldItems!);
                 break;
             case NotifyCollectionChangedAction.Replace:
             case NotifyCollectionChangedAction.Move:

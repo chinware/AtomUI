@@ -210,9 +210,9 @@ public class Space : Control,
                 case NotifyCollectionChangedAction.Add:
                     if (!IsItemsHost)
                     {
-                        LogicalChildren.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
+                        ControlCollectionChangedUtils.InsertLogicalControls(LogicalChildren, e.NewStartingIndex, e.NewItems!);
                     }
-                    VisualChildren.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Visual>());
+                    ControlCollectionChangedUtils.InsertVisuals(VisualChildren, e.NewStartingIndex, e.NewItems!);
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -226,9 +226,9 @@ public class Space : Control,
                 case NotifyCollectionChangedAction.Remove:
                     if (!IsItemsHost)
                     {
-                        LogicalChildren.RemoveAll(e.OldItems!.OfType<Control>());
+                        LogicalChildren.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     }
-                    VisualChildren.RemoveAll(e.OldItems!.OfType<Visual>());
+                    VisualChildren.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:

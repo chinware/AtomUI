@@ -111,7 +111,31 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         set => SetValue(ItemsSourceProperty, value);
     }
 
-    [Content] public DescriptionItems Items { get; set; } = new();
+    private DescriptionItems _items = new();
+
+    [Content]
+    public DescriptionItems Items
+    {
+        get => _items;
+        set
+        {
+            if (ReferenceEquals(_items, value))
+            {
+                return;
+            }
+
+            _items.CollectionChanged -= HandleCollectionChanged;
+            _items = value ?? new DescriptionItems();
+            _items.CollectionChanged += HandleCollectionChanged;
+            if (_gridLayout != null && this.IsAttachedToVisualTree())
+            {
+                _gridLayout.Children.Clear();
+                AddDescriptionItems((IEnumerable<DescriptionItem>)_items);
+                DoLayoutChildren();
+                InvalidateMeasure();
+            }
+        }
+    }
 
     #endregion
 
@@ -145,7 +169,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     public Descriptions()
     {
         this.RegisterTokenResourceScope(DescriptionsToken.ScopeProvider);
-        Items.CollectionChanged += HandleCollectionChanged;
+        _items.CollectionChanged += HandleCollectionChanged;
     }
     
     protected virtual void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -157,21 +181,23 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
                 case NotifyCollectionChangedAction.Add:
                     if (e.NewItems != null)
                     {
-                        AddDescriptionItems(e.NewItems.OfType<DescriptionItem>());
+                        AddDescriptionItems(e.NewItems, e.NewStartingIndex);
                     }
 
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     if (e.OldItems != null)
                     {
-                        RemoveDescriptionItems(e.OldItems.OfType<DescriptionItem>());
+                        RemoveDescriptionItems(e.OldItems, e.OldStartingIndex);
                     }
 
                     break;
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Reset:
                     throw new NotSupportedException();
+                case NotifyCollectionChangedAction.Reset:
+                    _gridLayout.Children.Clear();
+                    break;
             }
 
             DoLayoutChildren();
@@ -245,7 +271,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         base.OnApplyTemplate(e);
         _gridLayout = e.NameScope.Find<Grid>("PART_GridLayout");
-        AddDescriptionItems(Items);
+        AddDescriptionItems((IEnumerable<DescriptionItem>)Items);
         if (TopLevel.GetTopLevel(this) is Window window)
         {
             _breakPoint = window.MediaBreakPoint;
@@ -262,7 +288,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
             if (ItemsSource != null)
             {
                 Items.Clear();
-                Items.AddRange(ItemsSource.OfType<DescriptionItem>());
+                AddItemsSourceItems(ItemsSource);
             }
         }
         else if (change.Property == IsBorderedProperty)
@@ -290,86 +316,142 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         {
             foreach (DescriptionItem item in items)
             {
-                if (Layout == Orientation.Horizontal)
-                {
-                    if (IsBordered)
-                    {
-                        var itemLabel   = new DescriptionBorderedItemLabel();
-                        var itemContent = new DescriptionBorderedItemContent();
-                        itemLabel[!SizeTypeProperty] = this[!SizeTypeProperty];
-                        itemContent[!SizeTypeProperty] = this[!SizeTypeProperty];
-                        itemLabel.Content   = item.Label;
-                        itemContent.Content = item.Content;
-                        _gridLayout.Children.Add(itemLabel);
-                        _gridLayout.Children.Add(itemContent);
-                    }
-                    else
-                    {
-                        var disposables           = new CompositeDisposable(2);
-                        var descriptionDefaultItem = new DescriptionDefaultItem();
-                        descriptionDefaultItem.Layout = Orientation.Horizontal;
-                        disposables.Add(BindUtils.RelayBind(this, IsShowColonProperty, descriptionDefaultItem,
-                            DescriptionDefaultItem.IsColonVisibleProperty));
-                        descriptionDefaultItem.Header  = item.Label;
-                        descriptionDefaultItem.Content = item.Content;
-                        _gridLayout.Children.Add(descriptionDefaultItem);
-                    }
-                }
-                else
-                {
-                    var descriptionDefaultItem = new DescriptionDefaultItem();
-                    descriptionDefaultItem.Layout                                          = Orientation.Vertical;
-                    descriptionDefaultItem[!DescriptionDefaultItem.IsColonVisibleProperty] = this[!IsShowColonProperty];
-                    descriptionDefaultItem[!DescriptionDefaultItem.IsBorderedProperty]     = this[!IsBorderedProperty];
-                    descriptionDefaultItem.Header                                          = item.Label;
-                    descriptionDefaultItem.Content                                         = item.Content;
-                    _gridLayout.Children.Add(descriptionDefaultItem);
-                }
+                AddDescriptionItem(item);
             }
         }
     }
 
-    private void RemoveDescriptionItems(IEnumerable<DescriptionItem> items)
+    private void AddDescriptionItems(IList items, int startingIndex)
     {
         if (_gridLayout != null)
         {
-            foreach (DescriptionItem item in items)
+            for (var i = 0; i < items.Count; i++)
             {
-                var index = Items.IndexOf(item);
-                if (index != -1)
-                {
-                    if (Layout == Orientation.Horizontal)
-                    {
-                        if (IsBordered)
-                        {
-                            if (_gridLayout.Children[index] is DescriptionBorderedItemLabel itemLabel)
-                            {
-                                _gridLayout.Children.Remove(itemLabel);
-                            }
-
-                            if (_gridLayout.Children[index + 1] is DescriptionBorderedItemContent itemContent)
-                            {
-                                _gridLayout.Children.Remove(itemContent);
-                            }
-                        }
-                        else
-                        {
-                            if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
-                            {
-                                _gridLayout.Children.Remove(defaultItem);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (_gridLayout.Children[index] is DescriptionDefaultItem defaultItem)
-                        {
-                            _gridLayout.Children.Remove(defaultItem);
-                        }
-                    }
-                }
+                AddDescriptionItem((DescriptionItem)items[i]!, GetGridChildIndex(startingIndex + i));
             }
         }
+    }
+
+    private void AddItemsSourceItems(IEnumerable source)
+    {
+        var items = CollectItemsSourceItems(source);
+        if (items is not null)
+        {
+            Items.AddRange(items);
+        }
+    }
+
+    private static List<DescriptionItem>? CollectItemsSourceItems(IEnumerable source)
+    {
+        List<DescriptionItem>? items = null;
+        if (source is IList list)
+        {
+            for (var i = 0; i < list.Count; ++i)
+            {
+                if (list[i] is DescriptionItem item)
+                {
+                    items ??= new List<DescriptionItem>(list.Count - i);
+                    items.Add(item);
+                }
+            }
+
+            return items;
+        }
+
+        foreach (var value in source)
+        {
+            if (value is DescriptionItem item)
+            {
+                items ??= new List<DescriptionItem>();
+                items.Add(item);
+            }
+        }
+
+        return items;
+    }
+
+    private void RemoveDescriptionItems(IList items, int startingIndex)
+    {
+        if (_gridLayout != null)
+        {
+            var removeIndex = GetGridChildIndex(startingIndex);
+            var removeCount = GetGridChildCount(items.Count);
+            for (var i = 0; i < removeCount && removeIndex < _gridLayout.Children.Count; i++)
+            {
+                _gridLayout.Children.RemoveAt(removeIndex);
+            }
+        }
+    }
+
+    private void AddDescriptionItem(DescriptionItem item, int? gridChildIndex = null)
+    {
+        if (_gridLayout == null)
+        {
+            return;
+        }
+
+        if (Layout == Orientation.Horizontal)
+        {
+            if (IsBordered)
+            {
+                var itemLabel   = new DescriptionBorderedItemLabel();
+                var itemContent = new DescriptionBorderedItemContent();
+                itemLabel[!SizeTypeProperty] = this[!SizeTypeProperty];
+                itemContent[!SizeTypeProperty] = this[!SizeTypeProperty];
+                itemLabel.Content   = item.Label;
+                itemContent.Content = item.Content;
+                AddGridChild(itemLabel, gridChildIndex);
+                AddGridChild(itemContent, gridChildIndex.HasValue ? gridChildIndex.Value + 1 : null);
+            }
+            else
+            {
+                var disposables            = new CompositeDisposable(2);
+                var descriptionDefaultItem = new DescriptionDefaultItem();
+                descriptionDefaultItem.Layout = Orientation.Horizontal;
+                disposables.Add(BindUtils.RelayBind(this, IsShowColonProperty, descriptionDefaultItem,
+                    DescriptionDefaultItem.IsColonVisibleProperty));
+                descriptionDefaultItem.Header  = item.Label;
+                descriptionDefaultItem.Content = item.Content;
+                AddGridChild(descriptionDefaultItem, gridChildIndex);
+            }
+        }
+        else
+        {
+            var descriptionDefaultItem = new DescriptionDefaultItem();
+            descriptionDefaultItem.Layout                                          = Orientation.Vertical;
+            descriptionDefaultItem[!DescriptionDefaultItem.IsColonVisibleProperty] = this[!IsShowColonProperty];
+            descriptionDefaultItem[!DescriptionDefaultItem.IsBorderedProperty]     = this[!IsBorderedProperty];
+            descriptionDefaultItem.Header                                          = item.Label;
+            descriptionDefaultItem.Content                                         = item.Content;
+            AddGridChild(descriptionDefaultItem, gridChildIndex);
+        }
+    }
+
+    private void AddGridChild(Control child, int? gridChildIndex)
+    {
+        if (_gridLayout == null)
+        {
+            return;
+        }
+
+        if (gridChildIndex.HasValue && gridChildIndex.Value <= _gridLayout.Children.Count)
+        {
+            _gridLayout.Children.Insert(gridChildIndex.Value, child);
+        }
+        else
+        {
+            _gridLayout.Children.Add(child);
+        }
+    }
+
+    private int GetGridChildIndex(int itemIndex)
+    {
+        return Layout == Orientation.Horizontal && IsBordered ? itemIndex * 2 : itemIndex;
+    }
+
+    private int GetGridChildCount(int itemCount)
+    {
+        return Layout == Orientation.Horizontal && IsBordered ? itemCount * 2 : itemCount;
     }
 
     private void UpdateGridColumns(int columnCount)
@@ -422,6 +504,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         if (_gridLayout != null)
         {
+            EnsureEffectiveColumns();
             var row    = 0;
             var column = 0;
             for (var i = 0; i < Items.Count; i++)
@@ -572,6 +655,36 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         }
     }
 
+    private void EnsureEffectiveColumns()
+    {
+        if (_effectiveColumns > 0)
+        {
+            return;
+        }
+
+        var breakPoint = _breakPoint;
+        if (breakPoint == null && _attachedWindow != null)
+        {
+            breakPoint = _attachedWindow.MediaBreakPoint;
+        }
+        if (breakPoint == null && TopLevel.GetTopLevel(this) is Window window)
+        {
+            breakPoint = window.MediaBreakPoint;
+        }
+
+        breakPoint   ??= MediaBreakPoint.ExtraExtraLarge;
+        _breakPoint   = breakPoint;
+        var columnCount = GetColumnsForMediaBreak(breakPoint.Value);
+        if (Layout == Orientation.Horizontal)
+        {
+            _effectiveColumns = IsBordered ? columnCount * 2 : columnCount;
+        }
+        else
+        {
+            _effectiveColumns = columnCount;
+        }
+    }
+
     private int GetItemSpan(DescriptionsMediaBreakInfo breakInfo)
     {
         Debug.Assert(_breakPoint != null);
@@ -588,7 +701,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
 
     private void HandleLayoutChanged()
     {
-        RemoveDescriptionItems(Items);
-        AddDescriptionItems(Items);
+        _gridLayout?.Children.Clear();
+        AddDescriptionItems((IEnumerable<DescriptionItem>)Items);
     }
 }

@@ -63,10 +63,10 @@ internal class CardActionPanel : TemplatedControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    _uniformGrid.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
+                    ControlCollectionChangedUtils.InsertControls(_uniformGrid.Children, e.NewStartingIndex, e.NewItems!);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    _uniformGrid.Children.RemoveAll(e.OldItems!.OfType<Control>());
+                    _uniformGrid.Children.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     for (int index1 = 0; index1 < e.OldItems!.Count; ++index1)

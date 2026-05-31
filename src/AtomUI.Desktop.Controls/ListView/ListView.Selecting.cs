@@ -213,7 +213,9 @@ public partial class ListView
                         "collection is different to the Items on the control.");
                 }
 
-                var oldSelection = _selection?.SelectedItems.ToArray();
+                var oldSelection = _selection is null
+                    ? null
+                    : ListViewSelectionUtils.CopySelectionItems(_selection.SelectedItems);
                 DeinitializeSelectionModel(_selection);
                 _selection = value;
 
@@ -934,8 +936,8 @@ public partial class ListView
         {
             var ev = new SelectionChangedEventArgs(
                 SelectionChangedEvent,
-                e.DeselectedItems.ToArray(),
-                e.SelectedItems.ToArray());
+                ListViewSelectionUtils.CopySelectionItems(e.DeselectedItems),
+                ListViewSelectionUtils.CopySelectionItems(e.SelectedItems));
             RaiseEvent(ev);
         }
     }
@@ -1176,7 +1178,7 @@ public partial class ListView
             RaiseEvent(new SelectionChangedEventArgs(
                 SelectionChangedEvent,
                 Array.Empty<object>(),
-                Selection.SelectedItems.ToArray()));
+                ListViewSelectionUtils.CopySelectionItems(Selection.SelectedItems)));
         }
     }
 

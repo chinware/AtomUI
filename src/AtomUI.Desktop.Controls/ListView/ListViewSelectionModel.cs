@@ -236,8 +236,8 @@ internal class ListViewSelectionModel : SelectionModel<object?>, ISelectionModel
         try
         {
             var items      = WritableSelectedItems;
-            var deselected = e.DeselectedItems.ToArray();
-            var selected   = e.SelectedItems.ToArray();
+            var deselected = ListViewSelectionUtils.CopySelectionItems(e.DeselectedItems);
+            var selected   = ListViewSelectionUtils.CopySelectionItems(e.SelectedItems);
 
             _ignoreSelectedItemsChanges = true;
 

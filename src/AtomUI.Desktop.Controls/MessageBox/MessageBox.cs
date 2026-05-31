@@ -755,12 +755,10 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<DialogButton>();
-                    _dialog.CustomButtons.AddRange(newItems);
+                    DialogButtonCollectionUtils.AddRange(_dialog.CustomButtons, e.NewItems!);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    var oldItems = e.OldItems!.OfType<DialogButton>();
-                    _dialog.CustomButtons.RemoveAll(oldItems);
+                    DialogButtonCollectionUtils.RemoveAll(_dialog.CustomButtons, e.OldItems!);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:

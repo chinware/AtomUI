@@ -258,8 +258,8 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     {
         this.RegisterTokenResourceScope(DialogToken.ScopeProvider);
         CustomButtons.CollectionChanged += new (HandleCustomButtonsChanged);
-        _standardButtonGroup            =  new Dictionary<DialogButtonRole, List<DialogButton>>();
-        _buttonGroup                    =  new Dictionary<DialogButtonRole, List<DialogButton>>();
+        _standardButtonGroup            = new Dictionary<DialogButtonRole, List<DialogButton>>();
+        _buttonGroup                    = new Dictionary<DialogButtonRole, List<DialogButton>>();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -290,16 +290,26 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                var newItems = e.NewItems!.OfType<DialogButton>();
-                foreach (var button in newItems)
+                var newItems = e.NewItems!;
+                for (var i = 0; i < newItems.Count; i++)
                 {
+                    if (newItems[i] is not DialogButton button)
+                    {
+                        continue;
+                    }
+
                     AddButtonToGroup(button.Role, button, false);
                 }
                 break;
             case NotifyCollectionChangedAction.Remove:
-                var oldItems = e.OldItems!.OfType<DialogButton>();
-                foreach (var button in oldItems)
+                var oldItems = e.OldItems!;
+                for (var i = 0; i < oldItems.Count; i++)
                 {
+                    if (oldItems[i] is not DialogButton button)
+                    {
+                        continue;
+                    }
+
                     RemoveButtonFromGroup(button.Role, button, false);
                 }
                 break;
@@ -314,16 +324,11 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 
     private void AddButtonToGroup(DialogButtonRole buttonRole, DialogButton button, bool isStandard)
     {
-        List<DialogButton>? buttons;
         var targetGroup = isStandard ? _standardButtonGroup : _buttonGroup;
-        if (!targetGroup.ContainsKey(buttonRole))
+        if (!targetGroup.TryGetValue(buttonRole, out var buttons))
         {
             buttons = new List<DialogButton>();
             targetGroup.Add(buttonRole, buttons);
-        }
-        else
-        {
-            buttons = targetGroup[buttonRole];
         }
 
         button.Click += HandleButtonClicked;
@@ -332,19 +337,12 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
     
     private void RemoveButtonFromGroup(DialogButtonRole buttonRole, DialogButton button, bool isStandard)
     {
-        var                    targetGroup = isStandard ? _standardButtonGroup : _buttonGroup;
-        List<DialogButton>? buttons;
-        if (!targetGroup.ContainsKey(buttonRole))
+        var targetGroup = isStandard ? _standardButtonGroup : _buttonGroup;
+        if (targetGroup.TryGetValue(buttonRole, out var buttons))
         {
-            buttons = new List<DialogButton>();
-            targetGroup.Add(buttonRole, buttons);
+            button.Click -= HandleButtonClicked;
+            buttons.Remove(button);
         }
-        else
-        {
-            buttons = targetGroup[buttonRole];
-        }
-        button.Click -= HandleButtonClicked;
-        buttons.Remove(button);
     }
 
     private void BuildStandardButtons()
@@ -363,7 +361,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             return;
         }
         
-        _standardButtons = new List<DialogButton>();
+        _standardButtons = new List<DialogButton>(StandardButtons.Count);
         
         if (StandardButtons.HasFlag(DialogStandardButton.Ok))
         {

@@ -110,18 +110,20 @@ public class CardTabsContent : TemplatedControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var newItems = e.NewItems!.OfType<Control>();
                     var newStartingIndex = e.NewStartingIndex;
-                    foreach (var control in newItems)
+                    for (var i = 0; i < e.NewItems!.Count; i++)
                     {
-                        _tabControl.Items.Insert(newStartingIndex++, control);
+                        if (e.NewItems[i] is Control control)
+                        {
+                            _tabControl.Items.Insert(newStartingIndex++, control);
+                        }
                     }
                
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var control in e.OldItems!.OfType<Control>())
+                    for (var i = 0; i < e.OldItems!.Count; i++)
                     {
-                        _tabControl.Items.Remove(control);
+                        _tabControl.Items.RemoveAt(e.OldStartingIndex);
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
@@ -133,33 +135,26 @@ public class CardTabsContent : TemplatedControl
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    var           oldIndex = e.OldStartingIndex;
-                    var           count            = e.OldItems!.Count;
-                    List<Control> oldItems         = new List<Control>();
-                    for (int i = oldIndex; i < count; ++i)
+                    var moveItems = ControlCollectionChangedUtils.CollectControls(e.OldItems!);
+                    if (moveItems is null)
                     {
-                        var oldItem = e.OldItems![i];
-                        if (oldItem is Control control)
-                        {
-                            oldItems.Add(control);
-                        }
+                        break;
                     }
 
-                    var newIndex = e.NewStartingIndex;
-                    int index    = newIndex;
-                    for (int i = oldIndex; i < count; ++i)
+                    for (var i = 0; i < moveItems.Count; ++i)
                     {
-                        _tabControl.Items.RemoveAt(index);
+                        _tabControl.Items.RemoveAt(e.OldStartingIndex);
                     }
 
-                    if (newIndex > oldIndex)
+                    var insertIndex = e.NewStartingIndex;
+                    if (insertIndex > e.OldStartingIndex)
                     {
-                        index -= count - 1;
+                        insertIndex -= moveItems.Count - 1;
                     }
-                    
-                    foreach (var control in oldItems)
+
+                    foreach (var control in moveItems)
                     {
-                        _tabControl.Items.Insert(index++, control);
+                        _tabControl.Items.Insert(insertIndex++, control);
                     }
                     
                     break;

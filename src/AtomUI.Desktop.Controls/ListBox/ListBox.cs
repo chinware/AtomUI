@@ -564,7 +564,7 @@ public class ListBox : AvaloniaListBox,
                     e.KeyModifiers.HasAllFlags(KeyModifiers.Shift));
             }
             else if (SelectionMode.HasAllFlags(SelectionMode.Multiple) &&
-                     hotkeys is not null && hotkeys.SelectAll.Any(x => x.Matches(e)))
+                     hotkeys is not null && MatchesAnyGesture(hotkeys.SelectAll, e))
             {
                 Selection.SelectAll();
                 e.Handled = true;
@@ -572,6 +572,18 @@ public class ListBox : AvaloniaListBox,
         }
 
         base.OnKeyDown(e);
+    }
+
+    private static bool MatchesAnyGesture(IEnumerable<KeyGesture> gestures, KeyEventArgs e)
+    {
+        foreach (var gesture in gestures)
+        {
+            if (gesture.Matches(e))
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     private void HandleItemCountChanged()

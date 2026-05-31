@@ -968,10 +968,10 @@ internal class OverlayDialogHost : ContentControl,
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    _buttonBox.CustomButtons.AddRange(e.NewItems!.OfType<DialogButton>());
+                    DialogButtonCollectionUtils.AddRange(_buttonBox.CustomButtons, e.NewItems!);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    _buttonBox.CustomButtons.RemoveAll(e.OldItems!.OfType<DialogButton>());
+                    DialogButtonCollectionUtils.RemoveAll(_buttonBox.CustomButtons, e.OldItems!);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:

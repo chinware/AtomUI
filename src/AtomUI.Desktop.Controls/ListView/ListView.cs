@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
@@ -768,7 +769,7 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
                     e.KeyModifiers.HasAllFlags(KeyModifiers.Shift));
             }
             else if (SelectionMode.HasAllFlags(SelectionMode.Multiple) &&
-                     hotkeys is not null && hotkeys.SelectAll.Any(x => x.Matches(e)))
+                     hotkeys is not null && MatchesSelectAllHotkey(hotkeys.SelectAll, e))
             {
                 Selection.SelectAll();
                 e.Handled = true;
@@ -783,8 +784,21 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
             }
 
         }
-        
+
         base.OnKeyDown(e);
+    }
+
+    private static bool MatchesSelectAllHotkey(IEnumerable<KeyGesture> hotkeys, KeyEventArgs args)
+    {
+        foreach (var hotkey in hotkeys)
+        {
+            if (hotkey.Matches(args))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     private void HandleItemCountChanged()

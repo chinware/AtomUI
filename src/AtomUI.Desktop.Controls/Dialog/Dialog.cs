@@ -841,10 +841,10 @@ public partial class Dialog : TemplatedControl,
         switch (e.Action)
         {
             case NotifyCollectionChangedAction.Add:
-                targetButtons.AddRange(e.NewItems!.OfType<DialogButton>());
+                DialogButtonCollectionUtils.AddRange(targetButtons, e.NewItems!);
                 break;
             case NotifyCollectionChangedAction.Remove:
-                targetButtons.RemoveAll(e.OldItems!.OfType<DialogButton>());
+                DialogButtonCollectionUtils.RemoveAll(targetButtons, e.OldItems!);
                 break;
             case NotifyCollectionChangedAction.Replace:
             case NotifyCollectionChangedAction.Move:

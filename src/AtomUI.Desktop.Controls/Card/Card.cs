@@ -344,10 +344,10 @@ public class Card : HeaderedContentControl,
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    _cardActionPanel.Actions.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
+                    ControlCollectionChangedUtils.InsertControls(_cardActionPanel.Actions, e.NewStartingIndex, e.NewItems!);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    _cardActionPanel.Actions.RemoveAll(e.OldItems!.OfType<Control>());
+                    _cardActionPanel.Actions.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     for (int index1 = 0; index1 < e.OldItems!.Count; ++index1)

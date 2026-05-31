@@ -126,8 +126,7 @@ internal class CarouselPagination : SelectingItemsControl
         {
             var container = GetContainerFromEventSource(e.Source);
             if (container != null
-                && container.GetVisualsAt(e.GetPosition(container))
-                            .Any(c => container == c || container.IsVisualAncestorOf(c)))
+                && container.ContainsSelfOrDescendantAt(e.GetPosition(container)))
             {
                 e.Handled = UpdateSelectionFromEvent(container, e);
             }

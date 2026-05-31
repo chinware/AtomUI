@@ -223,7 +223,7 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    FloatButtonGroup.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
+                    ControlCollectionChangedUtils.InsertControls(FloatButtonGroup.Children, e.NewStartingIndex, e.NewItems!);
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -231,7 +231,7 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    FloatButtonGroup.Children.RemoveAll(e.OldItems!.OfType<Control>());
+                    FloatButtonGroup.Children.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:

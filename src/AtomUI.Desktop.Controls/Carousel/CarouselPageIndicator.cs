@@ -89,6 +89,8 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         get => _effectiveProgressWidth;
         set => SetAndRaise(EffectiveProgressWidthProperty, ref _effectiveProgressWidth, value);
     }
+
+    private static readonly Easing DefaultProgressEasing = new LinearEasing();
     
     private Animation? _animation;
     private CancellationTokenSource? _cancellationTokenSource;
@@ -144,9 +146,11 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
         if (force || _animation is null)
         {
             _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
             _animation = new Animation
             {
-                Easing         = new LinearEasing(),
+                Easing         = DefaultProgressEasing,
                 Duration       = AutoPlaySpeed,
                 Children =
                 {
@@ -163,7 +167,6 @@ internal class CarouselPageIndicator : ContentControl, ISelectable
                 }
             };
             ConfigureProgressAnimation();
-            _cancellationTokenSource = null;
         }
     }
 

@@ -160,10 +160,16 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
 
     private void SetOffsetTransform(double x, double y)
     {
-        if (RenderTransform is TranslateTransform transform &&
-            Math.Abs(transform.X - x) < 0.001 &&
-            Math.Abs(transform.Y - y) < 0.001)
+        if (RenderTransform is TranslateTransform transform)
         {
+            if (Math.Abs(transform.X - x) < 0.001 &&
+                Math.Abs(transform.Y - y) < 0.001)
+            {
+                return;
+            }
+
+            transform.X = x;
+            transform.Y = y;
             return;
         }
 

@@ -133,8 +133,16 @@ public class Pagination : AbstractPagination
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_paginationNav is not null)
+        {
+            _paginationNav.ContainerPrepared   -= HandleContainerPrepared;
+            _paginationNav.PageNavigateRequest -= HandlePageNavRequest;
+        }
+
         _paginationNav = e.NameScope.Find<PaginationNav>("PART_Nav");
         Debug.Assert(_paginationNav is not null);
+        _paginationNav.ContainerPrepared   -= HandleContainerPrepared;
+        _paginationNav.PageNavigateRequest -= HandlePageNavRequest;
         _paginationNav.ContainerPrepared   += HandleContainerPrepared;
         _paginationNav.PageNavigateRequest += HandlePageNavRequest;
         if (IsShowQuickJumper)
@@ -172,10 +180,25 @@ public class Pagination : AbstractPagination
             }
         }
         TemplateConfigured = true;
-        if (_paginationNav.GetRealizedContainers().Count() == count)
+        if (HasRealizedContainerCount(_paginationNav, count))
         {
             HandlePageConditionChanged();
         }
+    }
+
+    private static bool HasRealizedContainerCount(ItemsControl itemsControl, int expectedCount)
+    {
+        var realizedCount = 0;
+        foreach (var _ in itemsControl.GetRealizedContainers())
+        {
+            ++realizedCount;
+            if (realizedCount > expectedCount)
+            {
+                return false;
+            }
+        }
+
+        return realizedCount == expectedCount;
     }
 
     protected override void NotifyPageConditionChanged(int currentPage, int pageCount, int pageSize, long total)
@@ -362,6 +385,12 @@ public class Pagination : AbstractPagination
 
     private void SetupSizeChanger()
     {
+        if (!IsShowSizeChanger)
+        {
+            ClearSizeChanger();
+            return;
+        }
+
         if (SizeChanger == null)
         {
             var sizeChanger = new ComboBox();
@@ -379,21 +408,53 @@ public class Pagination : AbstractPagination
         }
     }
 
+    private void ClearSizeChanger()
+    {
+        if (SizeChanger is not null)
+        {
+            SizeChanger.SelectionChanged -= HandlePageSizeChanged;
+            SizeChanger = null;
+        }
+
+        _sizeChangerDisposable?.Dispose();
+        _sizeChangerDisposable = null;
+    }
+
     private void SetupQuickJumper()
     {
+        if (!IsShowQuickJumper)
+        {
+            ClearQuickJumper();
+            return;
+        }
+
         if (QuickJumperBar == null)
         {
             QuickJumperBar = new QuickJumperBar();
-            QuickJumperBar.JumpRequest += (sender, args) =>
-            {
-                var total     = Math.Max(0, Total);
-                var pageSize  = PageSize <= 0 ? DefaultPageSize : PageSize;
-                var pageCount = (int)Math.Ceiling(total / (double)pageSize);
-                CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
-            };
+            QuickJumperBar.JumpRequest += HandleQuickJumpRequested;
             _quickJumperDisposable?.Dispose();
             _quickJumperDisposable = BindUtils.RelayBind(this, SizeTypeProperty, QuickJumperBar, QuickJumperBar.SizeTypeProperty);
         }
+    }
+
+    private void ClearQuickJumper()
+    {
+        if (QuickJumperBar is not null)
+        {
+            QuickJumperBar.JumpRequest -= HandleQuickJumpRequested;
+            QuickJumperBar = null;
+        }
+
+        _quickJumperDisposable?.Dispose();
+        _quickJumperDisposable = null;
+    }
+
+    private void HandleQuickJumpRequested(object? sender, QuickJumpArgs args)
+    {
+        var total     = Math.Max(0, Total);
+        var pageSize  = PageSize <= 0 ? DefaultPageSize : PageSize;
+        var pageCount = (int)Math.Ceiling(total / (double)pageSize);
+        CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
     }
 
     private void HandlePageSizeChanged(object? sender, SelectionChangedEventArgs? args)

@@ -2,6 +2,7 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -77,13 +78,26 @@ internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
         {
             navItem[!PaginationNavItem.SizeTypeProperty]        = this[!SizeTypeProperty];
             navItem[!PaginationNavItem.IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            navItem.Click += (sender, args) =>
-            {
-                if (sender is PaginationNavItem navItemSender)
-                {
-                    PageNavigateRequest?.Invoke(this, new PageNavRequestArgs(navItemSender, IndexFromContainer(navItemSender), navItemSender.PageNumber));
-                }
-            };
+            navItem.Click -= HandleNavItemClicked;
+            navItem.Click += HandleNavItemClicked;
+        }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is PaginationNavItem navItem)
+        {
+            navItem.Click -= HandleNavItemClicked;
+        }
+
+        base.ClearContainerForItemOverride(container);
+    }
+
+    private void HandleNavItemClicked(object? sender, RoutedEventArgs args)
+    {
+        if (sender is PaginationNavItem navItem)
+        {
+            PageNavigateRequest?.Invoke(this, new PageNavRequestArgs(navItem, IndexFromContainer(navItem), navItem.PageNumber));
         }
     }
 }

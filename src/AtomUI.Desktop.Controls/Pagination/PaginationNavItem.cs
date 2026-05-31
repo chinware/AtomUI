@@ -130,7 +130,7 @@ internal class PaginationNavItem : ContentControl, ISelectable
         {
             IsPressed = false;
             e.Handled = true;
-            if (this.GetVisualsAt(e.GetPosition(this)).Any(c => this == c || this.IsVisualAncestorOf(c)))
+            if (this.ContainsSelfOrDescendantAt(e.GetPosition(this)))
             {
                 if (PaginationItemType != PaginationItemType.Ellipses)
                 {

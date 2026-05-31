@@ -39,6 +39,9 @@ public enum FloatButtonGroupTrigger
 
 public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
 {
+    private static readonly CubicEaseOut DefaultShowMotionEasing = new();
+    private static readonly CubicEaseIn DefaultHideMotionEasing = new();
+
     #region 公共属性定义
     public static readonly StyledProperty<FloatButtonPlacement> PlacementProperty =
         AbstractFloatButton.PlacementProperty.AddOwner<FloatButtonGroup>();
@@ -326,14 +329,19 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems!)
+                    var newChildren = ControlCollectionChangedUtils.CollectControls(e.NewItems!);
+                    if (newChildren is not null)
                     {
-                        if (item is FloatButton floatButton)
+                        foreach (var child in newChildren)
                         {
-                            NotifyAddItem(floatButton);
+                            if (child is FloatButton floatButton)
+                            {
+                                NotifyAddItem(floatButton);
+                            }
                         }
+
+                        _itemsControl.Children.InsertRange(e.NewStartingIndex, newChildren);
                     }
-                    _itemsControl.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -341,14 +349,14 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems!)
+                    for (var i = 0; i < e.OldItems!.Count; ++i)
                     {
-                        if (item is FloatButton floatButton)
+                        if (e.OldItems[i] is FloatButton floatButton)
                         {
                             floatButton.SetCurrentValue(FloatButton.IsEmbedModeProperty, false);
                         }
                     }
-                    _itemsControl.Children.RemoveAll(e.OldItems!.OfType<Control>());
+                    _itemsControl.Children.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -583,19 +591,19 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 AbstractMotion? motion = null;
                 if (MenuPlacement == FloatButtonGroupMenuPlacement.Top)
                 {
-                    motion = new MoveDownInMotion(DesiredSize.Height, MenuMotionDuration, new CubicEaseOut());
+                    motion = new MoveDownInMotion(DesiredSize.Height, MenuMotionDuration, DefaultShowMotionEasing);
                 }
                 else if (MenuPlacement == FloatButtonGroupMenuPlacement.Bottom)
                 {
-                    motion = new MoveUpInMotion(DesiredSize.Height, MenuMotionDuration, new CubicEaseOut());
+                    motion = new MoveUpInMotion(DesiredSize.Height, MenuMotionDuration, DefaultShowMotionEasing);
                 }
                 else if (MenuPlacement == FloatButtonGroupMenuPlacement.Left)
                 {
-                    motion = new MoveRightInMotion(DesiredSize.Width, MenuMotionDuration, new CubicEaseOut());
+                    motion = new MoveRightInMotion(DesiredSize.Width, MenuMotionDuration, DefaultShowMotionEasing);
                 }
                 else if (MenuPlacement == FloatButtonGroupMenuPlacement.Right)
                 {
-                    motion = new MoveLeftInMotion(DesiredSize.Width, MenuMotionDuration, new CubicEaseOut());
+                    motion = new MoveLeftInMotion(DesiredSize.Width, MenuMotionDuration, DefaultShowMotionEasing);
                 }
                 if (motion != null)
                 {
@@ -637,22 +645,22 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 if (MenuPlacement == FloatButtonGroupMenuPlacement.Top)
                 {
                     motion =
-                        new MoveDownOutMotion(DesiredSize.Height, MenuMotionDuration, new CubicEaseIn());
+                        new MoveDownOutMotion(DesiredSize.Height, MenuMotionDuration, DefaultHideMotionEasing);
                 }
                 else if (MenuPlacement == FloatButtonGroupMenuPlacement.Bottom)
                 {
                     motion =
-                        new MoveUpOutMotion(DesiredSize.Height, MenuMotionDuration, new CubicEaseIn());
+                        new MoveUpOutMotion(DesiredSize.Height, MenuMotionDuration, DefaultHideMotionEasing);
                 }
                 else if (MenuPlacement == FloatButtonGroupMenuPlacement.Left)
                 {
                     motion =
-                        new MoveRightOutMotion(DesiredSize.Width, MenuMotionDuration, new CubicEaseIn());
+                        new MoveRightOutMotion(DesiredSize.Width, MenuMotionDuration, DefaultHideMotionEasing);
                 }
                 else if (MenuPlacement == FloatButtonGroupMenuPlacement.Right)
                 {
                     motion =
-                        new MoveLeftOutMotion(DesiredSize.Width, MenuMotionDuration, new CubicEaseIn());
+                        new MoveLeftOutMotion(DesiredSize.Width, MenuMotionDuration, DefaultHideMotionEasing);
                 }
                 if (motion != null)
                 {

@@ -104,7 +104,7 @@ internal class FloatButtonItemsControl : TemplatedControl
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    _itemsLayout.Children.InsertRange(e.NewStartingIndex, e.NewItems!.OfType<Control>());
+                    ControlCollectionChangedUtils.InsertControls(_itemsLayout.Children, e.NewStartingIndex, e.NewItems!);
                     break;
 
                 case NotifyCollectionChangedAction.Move:
@@ -112,7 +112,7 @@ internal class FloatButtonItemsControl : TemplatedControl
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    _itemsLayout.Children.RemoveAll(e.OldItems!.OfType<Control>());
+                    _itemsLayout.Children.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
