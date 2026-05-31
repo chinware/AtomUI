@@ -116,3 +116,33 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 | 重复 attach 同步代码块 | 2 处 | 1 处 | `(2 - 1) / 2` | 50.00% | 降低后续行为漂移风险 |
 
 说明：这是 popup/template 同步路径的结构性收益；没有页面加载 timing 百分比声明。
+
+---
+
+## 6. 追加结构优化：TourLayer 查找 VisualLayerManager
+
+`TourLayer.GetTourLayer()` 在传入 `TopLevel` 时需要从 template descendants 里找到 `VisualLayerManager`。本轮保持 first-match 语义，但将 `GetTemplateDescendants().OfType<VisualLayerManager>().FirstOrDefault()` 改为显式循环。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TourLayer template manager lookup LINQ operators / first open | 2 operators | 0 operators | `(2 - 0) / 2` | 100.00% | 结构收益；Tour 首次准备遮罩层时少一条 `OfType().FirstOrDefault()` 链 |
+
+说明：这是首次打开 Tour 的 layer 查找路径收敛；popup 打开专项 harness 仍待补，不声明 Gallery 页面加载 timing 提升。
+
+---
+
+## 7. 追加结构优化：TourLayer render geometry 复用
+
+`TourLayer.Render()` 打开 Tour 遮罩后每次 render 都要画一个“全屏矩形减去 target 区域”的 combined geometry。旧路径每次 render 创建 1 个 `CombinedGeometry` 和 2 个 `RectangleGeometry`。本轮缓存两个 rectangle geometry，并按 layer rect / target region / corner radius 变化重建 combined geometry；这些输入不变的重复 render 不再分配 geometry。
+
+Avalonia 依据：
+
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/RectangleGeometry.cs:25-33`：`Rect` / `RadiusX` / `RadiusY` 变化会 invalidate geometry。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/CombinedGeometry.cs:39-84`：`CombinedGeometry` 组合两个 geometry；本轮只在输入变化时重建 combined，避免复用 combined 后子 geometry dirty 状态不传播的风险。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TourLayer repeated render geometry objects / render after first | 3 | 0 | `(3 - 0) / 3` | 100.00% | 结构收益；输入不变时复用 combined geometry |
+| TourLayer rectangle geometry allocations / render | 2 | 0 | `(2 - 0) / 2` | 100.00% | 结构收益；遮罩区域和目标区域复用 |
+
+说明：这是 Tour 打开后的 render 路径 structural-only 收益；没有新增 Tour popup interaction timing，不声明页面加载速度提升。

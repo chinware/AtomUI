@@ -129,3 +129,17 @@ dotnet run -c Release -f net10.0 --no-build \
 | 生产文件范围 | `ScopeAwareAdornerLayer.cs` |
 
 结论：本轮是 attach/detach 路径收敛和引用释放修复，复杂度低，行为由状态验证覆盖。
+
+---
+
+## 7. 追加结构优化：Layer 查找路径去 LINQ
+
+本轮补充优化 `ScopeAwareAdornerLayer.GetLayer()` 的 layer 查找路径。`TopLevel` fallback 和已有 layer 查找保持 first-match 语义，但不再通过 `OfType().FirstOrDefault()` / `FirstOrDefault(predicate)` 构造 LINQ 链；首次注入时也不再在 `InjectLayer()` 里重复执行一次同类查找。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TopLevel fallback manager lookup LINQ operators / lookup | 2 operators | 0 operators | `(2 - 0) / 2` | 100.00% | 结构收益；查找 `VisualLayerManager` 时改为显式 first-match |
+| existing adorner layer lookup LINQ predicate / lookup | 1 predicate callsite | 0 predicate callsites | `(1 - 0) / 1` | 100.00% | 结构收益；复用 `FindAdornerLayer()` 的显式扫描 |
+| first inject adorner-layer scans / lookup miss | 2 scans | 1 scan | `(2 - 1) / 2` | 50.00% | 结构收益；`GetLayer()` 已查过，私有 `InjectLayer()` 不再复查 |
+
+说明：这是 `Drawer` / `Watermark` 等 scope-aware adorner 首次挂载路径的结构性收益；未新增页面 timing 对比，不声明页面加载速度提升。

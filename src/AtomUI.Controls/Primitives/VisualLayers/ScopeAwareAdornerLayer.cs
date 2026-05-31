@@ -83,9 +83,7 @@ public class ScopeAwareAdornerLayer : Canvas
         layerHost ??= visual.FindAncestorOfType<VisualLayerManager>();
         if (layerHost == null && TopLevel.GetTopLevel(visual) is { } topLevel)
         {
-            layerHost = topLevel.GetVisualDescendants()
-                                .OfType<VisualLayerManager>()
-                                .FirstOrDefault();
+            layerHost = FindFirstDescendantLayerManager(topLevel);
             layerHost ??= topLevel;
         }
 
@@ -100,8 +98,7 @@ public class ScopeAwareAdornerLayer : Canvas
             return cachedLayer;
         }
 
-        var layer =
-            layerHost.GetVisualChildren().FirstOrDefault(c => c is ScopeAwareAdornerLayer) as ScopeAwareAdornerLayer;
+        var layer = FindAdornerLayer(layerHost);
         layer ??= InjectLayer(layerHost);
         if (layer != null)
         {
@@ -378,13 +375,7 @@ public class ScopeAwareAdornerLayer : Canvas
 
     private static ScopeAwareAdornerLayer? InjectLayer(Layoutable layerHost)
     {
-        var layer = FindAdornerLayer(layerHost);
-        if (layer != null)
-        {
-            return layer;
-        }
-
-        layer = new ScopeAwareAdornerLayer
+        var layer = new ScopeAwareAdornerLayer
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment   = VerticalAlignment.Stretch,
@@ -468,6 +459,19 @@ public class ScopeAwareAdornerLayer : Canvas
         }
 
         return layer.GetVisualParent() == null ? null : layer;
+    }
+
+    private static VisualLayerManager? FindFirstDescendantLayerManager(Visual visual)
+    {
+        foreach (var descendant in visual.GetVisualDescendants())
+        {
+            if (descendant is VisualLayerManager manager)
+            {
+                return manager;
+            }
+        }
+
+        return null;
     }
 
     private static ScopeAwareAdornerLayer? FindAdornerLayer(Layoutable layerHost)

@@ -60,10 +60,21 @@ internal static class VisualLayerManagerReflectionExtensions
 
         if (TopLevel.GetTopLevel(visual) is { } topLevel)
         {
-            var visualLayerManager = topLevel.GetVisualDescendants()
-                                             .OfType<AvaloniaVisualLayerManager>()
-                                             .FirstOrDefault();
+            var visualLayerManager = FindFirstDescendantVisualLayerManager(topLevel);
             return visualLayerManager?.GetPopupOverlayLayer();
+        }
+
+        return null;
+    }
+
+    private static AvaloniaVisualLayerManager? FindFirstDescendantVisualLayerManager(Visual visual)
+    {
+        foreach (var descendant in visual.GetVisualDescendants())
+        {
+            if (descendant is AvaloniaVisualLayerManager visualLayerManager)
+            {
+                return visualLayerManager;
+            }
         }
 
         return null;

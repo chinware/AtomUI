@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.LogicalTree;
+using Avalonia.Platform;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -376,7 +377,7 @@ internal static class PopupUtils
         var screen = screens.ScreenFromBounds(anchorPixelRect)
                   ?? screens.ScreenFromTopLevel(topLevel)
                   ?? screens.Primary
-                  ?? screens.All.FirstOrDefault();
+                  ?? GetFirstScreen(screens);
         if (screen == null)
         {
             return (false, false);
@@ -388,6 +389,12 @@ internal static class PopupUtils
             : workingAreaPx.ToRect(1.0);
 
         return CalculateFlipInfoCore(placement, anchorRectPx, bounds, popupSizePx, offsetPx);
+    }
+
+    private static Screen? GetFirstScreen(Screens screens)
+    {
+        var allScreens = screens.All;
+        return allScreens.Count > 0 ? allScreens[0] : null;
     }
 
     /// <summary>

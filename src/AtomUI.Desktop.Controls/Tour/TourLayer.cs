@@ -12,6 +12,12 @@ namespace AtomUI.Desktop.Controls;
 internal class TourLayer : Control
 {
     private const int TourLayerZIndex = int.MaxValue - 98;
+    private readonly RectangleGeometry _layerGeometry = new();
+    private readonly RectangleGeometry _targetRegionGeometry = new();
+    private CombinedGeometry? _combinedGeometry;
+    private Rect _combinedLayerRect;
+    private Rect _combinedTargetRegion;
+    private double _combinedTargetRegionCornerRadius = double.NaN;
     
     #region 公共属性定义
     public static readonly StyledProperty<Rect> TargetRegionProperty = 
@@ -49,14 +55,34 @@ internal class TourLayer : Control
 
     public sealed override void Render(DrawingContext context)
     {
-        var combinedGeometry = new CombinedGeometry
+        context.DrawGeometry(Background, null, GetCombinedGeometry());
+    }
+
+    private Geometry GetCombinedGeometry()
+    {
+        var layerRect                = new Rect(Bounds.Size);
+        var targetRegion            = TargetRegion;
+        var targetRegionCornerRadius = TargetRegionCornerRadius;
+
+        if (_combinedGeometry is not null &&
+            _combinedLayerRect == layerRect &&
+            _combinedTargetRegion == targetRegion &&
+            _combinedTargetRegionCornerRadius == targetRegionCornerRadius)
         {
-            GeometryCombineMode = GeometryCombineMode.Exclude,
-            Geometry1           = new RectangleGeometry(new Rect(Bounds.Size)),
-            Geometry2           = new RectangleGeometry(TargetRegion, TargetRegionCornerRadius, TargetRegionCornerRadius),
-        };
-        
-        context.DrawGeometry(Background, null, combinedGeometry);
+            return _combinedGeometry;
+        }
+
+        _combinedLayerRect                = layerRect;
+        _combinedTargetRegion            = targetRegion;
+        _combinedTargetRegionCornerRadius = targetRegionCornerRadius;
+        _layerGeometry.Rect               = layerRect;
+        _targetRegionGeometry.Rect        = targetRegion;
+        _targetRegionGeometry.RadiusX     = targetRegionCornerRadius;
+        _targetRegionGeometry.RadiusY     = targetRegionCornerRadius;
+        _combinedGeometry                 = new CombinedGeometry(GeometryCombineMode.Exclude,
+            _layerGeometry,
+            _targetRegionGeometry);
+        return _combinedGeometry;
     }
 
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
@@ -70,9 +96,7 @@ internal class TourLayer : Control
         VisualLayerManager? manager;
         if (visual is TopLevel topLevel)
         {
-            manager = topLevel.GetTemplateDescendants()
-                              .OfType<VisualLayerManager>()
-                              .FirstOrDefault();
+            manager = FindFirstTemplateLayerManager(topLevel);
         }
         else
         {
@@ -95,5 +119,18 @@ internal class TourLayer : Control
             manager.AddLayer(tourLayer, TourLayerZIndex);
         }
         return tourLayer;
+    }
+
+    private static VisualLayerManager? FindFirstTemplateLayerManager(TopLevel topLevel)
+    {
+        foreach (var descendant in topLevel.GetTemplateDescendants())
+        {
+            if (descendant is VisualLayerManager manager)
+            {
+                return manager;
+            }
+        }
+
+        return null;
     }
 }

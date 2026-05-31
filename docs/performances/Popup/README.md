@@ -234,3 +234,13 @@ rg "ConfigureMotionBindingStyle\(\)" --type cs src/AtomUI.Desktop.Controls/Popup
 - 微基准未跑（perf 哈纳斯失同步）。等 harness 修复后回填 cold/repeated mean、KB/instance、visual count 数据。
 - Popup 仍存在 ignore-flag 反模式（`_isPlayingCloseMotion` / `_ignoreRequestedPlacementChange` / 以及 Cascader 关联的 `_ignoreSelectedPropertyChanged`），登记为独立 correctness debt（Task #23），不混入 perf 提交。
 - `ShadowsAwareContainer.OnAttachedToLogicalTree` 用 `BindUtils.RelayBind` 跨 popup 边界，是 SKILL 允许的"跨生命周期"用法（popup 与内容分别管理），未改。
+
+---
+
+## 8. 追加结构优化：screen fallback 空间判断
+
+`PopupUtils.CalculatePopupRootFlipInfo()` 的选屏 fallback 保持原优先级：anchor 所在屏 -> TopLevel 所在屏 -> Primary -> 第一块屏幕。最后一步从 `screens.All.FirstOrDefault()` 改为 `IReadOnlyList` 的 `Count` + indexer，避免进入 LINQ extension 路径。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| PopupRoot flip fallback LINQ calls / placement calculation | 1 call | 0 calls | `(1 - 0) / 1` | 100.00% | 结构收益；仅影响主屏 fallback 后的兜底路径，不声明页面 timing 提升 |

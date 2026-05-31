@@ -33,11 +33,23 @@ public class ScopeAwareOverlayLayer : Canvas
             return null;
         }
 
-        var layer =
-            layerHost.GetVisualChildren().FirstOrDefault(c => c is ScopeAwareOverlayLayer) as ScopeAwareOverlayLayer;
+        var layer = FindLayerInVisualChildren(layerHost);
         layer ??= InjectLayer(layerHost);
 
         return layer;
+    }
+
+    private static ScopeAwareOverlayLayer? FindLayerInVisualChildren(Visual visual)
+    {
+        foreach (var child in visual.GetVisualChildren())
+        {
+            if (child is ScopeAwareOverlayLayer layer)
+            {
+                return layer;
+            }
+        }
+
+        return null;
     }
     
     private static ScopeAwareOverlayLayer InjectLayer(Layoutable layerHost)
