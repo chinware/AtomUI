@@ -31,6 +31,24 @@
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationMid}" />
 
         <Style Selector="^[IsAdornerMode=True]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <DockPanel
+                        Name="RootLayout"
+                        LastChildFill="True"
+                        ClipToBounds="False">
+                        <atom:MotionActor
+                            Name="PART_MotionActor"
+                            ClipToBounds="False"
+                            DockPanel.Dock="Left">
+                            <atomcommons:DotBadgeIndicator
+                                Name="Indicator"
+                                BadgeDotColor="{TemplateBinding BadgeDotColor}" />
+                        </atom:MotionActor>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter>
+
             <Style Selector="^ /template/ DockPanel#RootLayout">
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="VerticalAlignment" Value="Top" />

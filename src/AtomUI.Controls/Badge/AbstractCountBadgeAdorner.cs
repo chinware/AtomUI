@@ -293,14 +293,14 @@ internal abstract class AbstractCountBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource = new CancellationTokenSource();
             if (_indicatorMotionActor != null)
             {
-                _indicatorMotionActor.MotionTransform = new ScaleTransform(0.01, 0.01);
+                _indicatorMotionActor.MotionTransform = BadgeMotionTransforms.ScaleNearZero;
                 Dispatcher.InvokeAsync(() => ApplyShowMotionAsync(onShowReady));
             }
             else
             {
                 _pendingTemplateAction = () =>
                 {
-                    _indicatorMotionActor!.MotionTransform = new ScaleTransform(0.01, 0.01);
+                    _indicatorMotionActor!.MotionTransform = BadgeMotionTransforms.ScaleNearZero;
                     _motionCancellationTokenSource?.Cancel();
                     _motionCancellationTokenSource?.Dispose();
                     _motionCancellationTokenSource = new CancellationTokenSource();

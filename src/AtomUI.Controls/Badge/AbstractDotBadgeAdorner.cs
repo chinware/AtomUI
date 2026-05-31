@@ -189,7 +189,7 @@ internal abstract class AbstractDotBadgeAdorner : TemplatedControl
             _motionCancellationTokenSource = new CancellationTokenSource();
             if (_indicatorMotionActor is not null)
             {
-                _indicatorMotionActor.MotionTransform = new ScaleTransform(0.01, 0.01);
+                _indicatorMotionActor.MotionTransform = BadgeMotionTransforms.ScaleNearZero;
             }
             Dispatcher.InvokeAsync(ApplyShowMotionAsync);
         }

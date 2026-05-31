@@ -103,13 +103,17 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
     
     private TextBlock? _labelText;
     private Geometry? _cornerGeometry;
+    private Color? _cornerBrushSourceColor;
+    private int _cornerBrushDarkenAmount;
+    private IBrush? _cornerBrush;
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static AbstractRibbonBadgeAdorner()
     {
         AffectsMeasure<AbstractRibbonBadgeAdorner>(TextProperty, IsAdornerModeProperty);
         AffectsMeasure<AbstractRibbonBadgeAdorner>(PlacementProperty);
-        AffectsRender<AbstractRibbonBadgeAdorner>(RibbonColorProperty, OffsetProperty);
+        AffectsRender<AbstractRibbonBadgeAdorner>(RibbonColorProperty, OffsetProperty,
+            BadgeRibbonCornerDarkenAmountProperty);
     }
 
     public AbstractRibbonBadgeAdorner()
@@ -187,11 +191,32 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
             var       cornerRect      = GetCornerRect();
             using var state           = context.PushTransform(Matrix.CreateTranslation(cornerRect.X, cornerRect.Y));
             var       backgroundColor = backgroundBrush?.Color;
-            var cornerBrush = backgroundColor.HasValue
-                ? new SolidColorBrush(backgroundColor.Value.Darken(BadgeRibbonCornerDarkenAmount))
-                : default;
+            var       cornerBrush     = GetCornerBrush(backgroundColor);
             context.DrawGeometry(cornerBrush, null, _cornerGeometry!);
         }
+    }
+
+    private IBrush? GetCornerBrush(Color? backgroundColor)
+    {
+        if (backgroundColor is null)
+        {
+            _cornerBrushSourceColor = null;
+            _cornerBrush            = null;
+            return null;
+        }
+
+        var sourceColor  = backgroundColor.Value;
+        var darkenAmount = BadgeRibbonCornerDarkenAmount;
+        if (_cornerBrushSourceColor == sourceColor &&
+            _cornerBrushDarkenAmount == darkenAmount)
+        {
+            return _cornerBrush;
+        }
+
+        _cornerBrushSourceColor = sourceColor;
+        _cornerBrushDarkenAmount = darkenAmount;
+        _cornerBrush             = new SolidColorBrush(sourceColor.Darken(darkenAmount));
+        return _cornerBrush;
     }
 
     private Rect GetTextRect()

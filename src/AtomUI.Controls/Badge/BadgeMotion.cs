@@ -2,8 +2,23 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
+using Avalonia.Media;
+using Avalonia.Media.Transformation;
 
 namespace AtomUI.Controls.Commons;
+
+internal static class BadgeMotionTransforms
+{
+    internal static readonly ITransform ScaleNearZero = BuildScaleTransform(0.01);
+    internal static readonly ITransform ScaleFull     = BuildScaleTransform(1.0);
+
+    private static ITransform BuildScaleTransform(double scale)
+    {
+        var builder = TransformOperations.CreateBuilder(1);
+        builder.AppendScale(scale, scale);
+        return builder.Build();
+    }
+}
 
 internal class BadgeZoomBadgeInMotion : AbstractMotion
 {
@@ -23,13 +38,13 @@ internal class BadgeZoomBadgeInMotion : AbstractMotion
     protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildScaleTransform(0.01);
+        actor.MotionTransform = BadgeMotionTransforms.ScaleNearZero;
     }
 
     protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildScaleTransform(1.0);
+        actor.MotionTransform = BadgeMotionTransforms.ScaleFull;
     }
 }
 
@@ -51,12 +66,12 @@ internal class BadgeZoomBadgeOutMotion : AbstractMotion
     protected override void ConfigureMotionStartValue(BaseMotionActor actor)
     {
         actor.Opacity         = 1.0;
-        actor.MotionTransform = BuildScaleTransform(1.0);
+        actor.MotionTransform = BadgeMotionTransforms.ScaleFull;
     }
 
     protected override void ConfigureMotionEndValue(BaseMotionActor actor)
     {
         actor.Opacity         = 0.0;
-        actor.MotionTransform = BuildScaleTransform(0.01);
+        actor.MotionTransform = BadgeMotionTransforms.ScaleNearZero;
     }
 }

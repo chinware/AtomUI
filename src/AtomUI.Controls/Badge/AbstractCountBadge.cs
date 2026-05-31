@@ -128,6 +128,9 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         var badgeAdorner = CreateBadgeAdorner();
         if (DecoratedTarget is not null)
         {
+            DetachChild(badgeAdorner);
+            AttachChild(DecoratedTarget);
+            badgeAdorner.IsAdornerMode = true;
             _adornerLayer = AdornerLayer.GetAdornerLayer(this);
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
@@ -139,6 +142,9 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         }
         else
         {
+            DetachLayerAdorner();
+            badgeAdorner.IsAdornerMode = false;
+            AttachChild(badgeAdorner);
             badgeAdorner.ApplyToTarget(null, this, () => IsVisible = true);
         }
     }
@@ -151,7 +157,16 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             return;
         }
 
-        _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
+        if (DecoratedTarget is null)
+        {
+            DetachChild(_badgeAdorner);
+        }
+        else
+        {
+            _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
+            _adornerLayer = null;
+        }
+
         if (!enableMotion)
         {
             if (DecoratedTarget is null)
@@ -164,16 +179,11 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        SetupShowZero();
         if (BadgeIsVisible)
         {
             PrepareAdorner();
         }
-        if (DecoratedTarget is null)
-        {
-            CreateBadgeAdorner();
-        }
-
-        SetupShowZero();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -194,23 +204,68 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         }
     }
 
-    private protected virtual void NotifyDecoratedTargetChanged()
+    private void AttachChild(Control child)
+    {
+        if (child.GetVisualParent() == this)
+        {
+            return;
+        }
+
+        child.SetLogicalParent(this);
+        VisualChildren.Add(child);
+        LogicalChildren.Add(child);
+    }
+
+    private void DetachChild(Control? child)
+    {
+        if (child is null)
+        {
+            return;
+        }
+
+        if (child.GetVisualParent() == this)
+        {
+            VisualChildren.Remove(child);
+        }
+
+        if (LogicalChildren.Contains(child))
+        {
+            LogicalChildren.Remove(child);
+        }
+
+        child.SetLogicalParent(null);
+    }
+
+    private void DetachLayerAdorner()
+    {
+        if (_badgeAdorner is null)
+        {
+            return;
+        }
+
+        _badgeAdorner.DetachFromTarget(_adornerLayer, false);
+        _adornerLayer = null;
+    }
+
+    private protected virtual void NotifyDecoratedTargetChanged(Control? oldDecoratedTarget = null)
     {
         if (_badgeAdorner is not null)
         {
+            DetachChild(oldDecoratedTarget);
             if (DecoratedTarget is null)
             {
-                _badgeAdorner.SetLogicalParent(this);
-                VisualChildren.Add(_badgeAdorner);
-                LogicalChildren.Add(_badgeAdorner);
+                DetachLayerAdorner();
                 _badgeAdorner.IsAdornerMode = false;
+                if (BadgeIsVisible)
+                {
+                    AttachChild(_badgeAdorner);
+                }
             }
             else if (DecoratedTarget is not null)
             {
+                DetachChild(_badgeAdorner);
                 _badgeAdorner.IsAdornerMode = true;
-                DecoratedTarget.SetLogicalParent(this);
-                VisualChildren.Add(DecoratedTarget);
-                LogicalChildren.Add(DecoratedTarget);
+                AttachChild(DecoratedTarget);
             }
         }
     }
@@ -235,7 +290,11 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         {
             if (change.Property == DecoratedTargetProperty)
             {
-                NotifyDecoratedTargetChanged();
+                NotifyDecoratedTargetChanged(change.GetOldValue<Control?>());
+                if (BadgeIsVisible)
+                {
+                    PrepareAdorner();
+                }
             }
 
             if (change.Property == BadgeColorProperty)
@@ -257,7 +316,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         {
             BadgeIsVisible = false;
         }
-        else if (Count > 0)
+        else if (Count > 0 || IsZeroVisible)
         {
             BadgeIsVisible = true;
         }
