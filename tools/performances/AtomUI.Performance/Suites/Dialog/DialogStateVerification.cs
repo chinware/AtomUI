@@ -148,6 +148,23 @@ internal static partial class Program
         Expect(CountVisualsByTypeName(buttonBox, "DialogButton") == 2,
             "DialogButtonBox should recreate standard buttons without duplicates.",
             failures);
+
+        var customButton = new DialogButton
+        {
+            Content = "Custom",
+            Role    = DialogButtonRole.ActionRole
+        };
+        buttonBox.CustomButtons.Add(customButton);
+        RefreshLayout(realized.Window);
+        Expect(CountVisualsByTypeName(buttonBox, "DialogButton") == 3,
+            "DialogButtonBox should add custom buttons through indexed collection changed sync.",
+            failures);
+
+        buttonBox.CustomButtons.Remove(customButton);
+        RefreshLayout(realized.Window);
+        Expect(CountVisualsByTypeName(buttonBox, "DialogButton") == 2,
+            "DialogButtonBox should remove custom buttons through indexed collection changed sync.",
+            failures);
     }
 
     private static void VerifyOverlayHostLazyPartsLifecycle(ICollection<string> failures)
