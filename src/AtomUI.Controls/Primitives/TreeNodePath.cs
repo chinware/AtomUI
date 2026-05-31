@@ -23,8 +23,7 @@ public sealed record TreeNodePath
             return;
         }
         
-        _segmentsArray = ValidateAndCopySegments(
-            pathString.Split('/', StringSplitOptions.RemoveEmptyEntries));
+        _segmentsArray = ParsePathString(pathString);
         Segments = Array.AsReadOnly(_segmentsArray);
     }
 
@@ -37,6 +36,11 @@ public sealed record TreeNodePath
     private static string[] ValidateAndCopySegments(string[] segments)
     {
         ArgumentNullException.ThrowIfNull(segments);
+
+        if (segments.Length == 0)
+        {
+            return [];
+        }
         
         var result = new string[segments.Length];
         
@@ -58,6 +62,59 @@ public sealed record TreeNodePath
         }
         
         return result;
+    }
+
+    private static string[] ParsePathString(string pathString)
+    {
+        var segmentCount = CountPathSegments(pathString);
+        if (segmentCount == 0)
+        {
+            return [];
+        }
+
+        var result       = new string[segmentCount];
+        var segmentStart = -1;
+        var segmentIndex = 0;
+
+        for (var i = 0; i <= pathString.Length; i++)
+        {
+            if (i < pathString.Length && pathString[i] != '/')
+            {
+                if (segmentStart < 0)
+                {
+                    segmentStart = i;
+                }
+                continue;
+            }
+
+            if (segmentStart >= 0)
+            {
+                result[segmentIndex++] = pathString.Substring(segmentStart, i - segmentStart);
+                segmentStart           = -1;
+            }
+        }
+
+        return result;
+    }
+
+    private static int CountPathSegments(string pathString)
+    {
+        var count     = 0;
+        var inSegment = false;
+        foreach (var c in pathString)
+        {
+            if (c == '/')
+            {
+                inSegment = false;
+            }
+            else if (!inSegment)
+            {
+                count++;
+                inSegment = true;
+            }
+        }
+
+        return count;
     }
     
     public string this[int index] => _segmentsArray[index];

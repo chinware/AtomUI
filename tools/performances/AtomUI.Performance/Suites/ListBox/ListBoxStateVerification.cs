@@ -40,6 +40,14 @@ internal static partial class Program
 
     private static void VerifyTreeNodePathDerivedOperations(ICollection<string> failures)
     {
+        var parsedPath = new TreeNodePath("/zhejiang//hangzhou/xihu/");
+        Expect(parsedPath.ToString() == "zhejiang/hangzhou/xihu",
+            $"TreeNodePath(string) should ignore empty slash segments, actual {parsedPath}.",
+            failures);
+        Expect(new TreeNodePath("///").Length == 0,
+            "TreeNodePath(string) should keep slash-only paths empty.",
+            failures);
+
         var path = new TreeNodePath(["zhejiang", "hangzhou"]);
         Expect(path.StartsWith(path),
             "TreeNodePath.StartsWith() should return true for the same immutable instance.",
