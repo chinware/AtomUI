@@ -216,11 +216,11 @@ public class GradientColorPicker : AbstractColorPicker
         }
         if (Value == null)
         {
-            SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Colors.Transparent));
+            SetColorBlockBackgroundBrushIfChanged(Brushes.Transparent);
         }
         else
         {
-            SetCurrentValue(ColorBlockBackgroundProperty, Value);
+            SetColorBlockBackgroundBrushIfChanged(Value);
         }
     }
 

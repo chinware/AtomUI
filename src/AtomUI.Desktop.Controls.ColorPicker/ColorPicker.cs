@@ -147,7 +147,7 @@ public class ColorPicker : AbstractColorPicker
     {
         if (Value == null)
         {
-            SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Colors.Transparent));
+            SetColorBlockBackgroundBrushIfChanged(Brushes.Transparent);
             ClearColor();
         }
         else
@@ -156,7 +156,7 @@ public class ColorPicker : AbstractColorPicker
             {
                 _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, false);
             }
-            SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(Value.Value));
+            SetColorBlockBackgroundColorIfChanged(Value.Value);
         }
     }
 

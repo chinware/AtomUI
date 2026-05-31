@@ -161,7 +161,7 @@ internal class GradientColorSlider : AbstractColorSlider
     {
         if (Track is GradientColorPickerTrack track && track.ActivatedThumb != null)
         {
-            var stops = track.Thumbs.OrderBy(thumb => thumb.Value).ToList();
+            var stops = GradientColorPickerTrack.CopyThumbsByValue(track.Thumbs);
             for (int i = 0; i < stops.Count; i++)
             {
                 if (MathUtils.AreClose(stops[i].Value, track.ActivatedThumb.Value))

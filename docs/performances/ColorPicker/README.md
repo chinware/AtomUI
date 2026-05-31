@@ -76,6 +76,31 @@ Avalonia source reference：
 | Realized `ColorPickerView` same-token transparent brush refs (`ColorPreview` + 2 visible sliders) | 3 | 1 | `(3 - 1) / 3` | 66.67% fewer refs | 状态验证覆盖 |
 | ColorPicker materialization timing | smoke-only | smoke-only | n/a | n/a | 单轮 smoke 只用于排查回退，不作为收益证明 |
 
+T3.3 本轮补充处理 Gradient stop/thumb 排序：旧实现用 `OrderBy(...).ToList()` 在取色、thumb 同步、active stop index 计算三条路径上创建 LINQ iterator 和 materialized list。现在保留稳定排序语义，改为 Count/indexer 复制 + 稳定插入排序，避免 LINQ 链。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Gradient stop sort LINQ chains / color lookup | 1 `OrderBy().ToList()` | 0 LINQ chains | `(1 - 0) / 1` | 100.00% | 结构收益；相同 offset 保持原顺序 |
+| Gradient thumb sort LINQ chains / sync + active index | 2 `OrderBy().ToList()` | 0 LINQ chains | `(2 - 0) / 2` | 100.00% | 结构收益；相同 value 保持原顺序 |
+| Stable equal-key order behavior | stable | stable | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+T3.3 本轮补充处理 ColorBlock preview 背景：`ColorPicker` 空值背景从每次 `new SolidColorBrush(Colors.Transparent)` 改为 Avalonia 已缓存的 `Brushes.Transparent`，普通颜色在颜色没变时不再重建 `SolidColorBrush` / 写入 `ColorBlockBackgroundProperty`；`GradientColorPicker` 的空值/同一 brush 引用也做短路。
+
+Avalonia source reference：
+
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/Brushes.cs:674-676`：`Brushes.Transparent` 返回 known-color immutable brush。
+- `.referenceprojects/Avalonia/src/Avalonia.Base/Media/KnownColors.cs:118-136`：known-color brush 会缓存复用。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| ColorPicker empty ColorBlock background brush allocations / update | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；空值使用 cached `Brushes.Transparent` |
+| ColorPicker same-color ColorBlock brush allocations / update | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；颜色没变不再创建新 brush |
+| ColorPicker same-color ColorBlock property writes / update | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；避免重复 DirectProperty 写入和 AffectsMeasure |
+| GradientColorPicker same-reference background writes / update | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；同一 gradient brush 引用不重复写入 |
+
+说明：这是 preview 背景更新路径 structural-only 收益；没有新增 Gallery timing 对比，不声明页面加载速度提升。
+
 ---
 
 ## 1. 资格门槛

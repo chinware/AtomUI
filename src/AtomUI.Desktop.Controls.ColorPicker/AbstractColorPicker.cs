@@ -371,6 +371,27 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         private set => SetAndRaise(IsLightDismissEnabledProperty, ref _isLightDismissEnabled, value);
     }
 
+    protected void SetColorBlockBackgroundBrushIfChanged(IBrush? brush)
+    {
+        if (ReferenceEquals(ColorBlockBackground, brush))
+        {
+            return;
+        }
+
+        SetCurrentValue(ColorBlockBackgroundProperty, brush);
+    }
+
+    protected void SetColorBlockBackgroundColorIfChanged(Color color)
+    {
+        if (ColorBlockBackground is ISolidColorBrush { Opacity: 1.0 } solidColorBrush &&
+            solidColorBrush.Color == color)
+        {
+            return;
+        }
+
+        SetCurrentValue(ColorBlockBackgroundProperty, new SolidColorBrush(color));
+    }
+
     #endregion
 
     private Window? _deactivatedWindow;

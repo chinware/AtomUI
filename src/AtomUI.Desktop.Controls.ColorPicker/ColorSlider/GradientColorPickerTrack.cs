@@ -254,7 +254,7 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
             return Colors.Black;
         }
 
-        var colorStops = GradientValue.GradientStops.OrderBy(x => x.Offset).ToList();
+        var colorStops = CopyGradientStopsByOffset(GradientValue.GradientStops);
 
         if (colorStops.Count == 1)
         {
@@ -318,7 +318,7 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
 
     private void SyncGradientValueFromThumbs()
     {
-        var thumbs = Thumbs.OrderBy(thumb => thumb.Value).ToList();
+        var thumbs = CopyThumbsByValue(Thumbs);
         var newLinearGradients = new LinearGradientBrush
         {
             StartPoint = GradientValue?.StartPoint ?? new RelativePoint(new Point(0, 0.5), RelativeUnit.Relative),
@@ -331,6 +331,62 @@ internal class GradientColorPickerTrack : AbstractColorPickerSliderTrack
 
         using var scope = BeginIgnoringPropertyChanged();
         SetCurrentValue(GradientValueProperty, newLinearGradients);
+    }
+
+    private static List<GradientStop> CopyGradientStopsByOffset(IReadOnlyList<GradientStop> stops)
+    {
+        var colorStops = new List<GradientStop>(stops.Count);
+        for (var i = 0; i < stops.Count; ++i)
+        {
+            colorStops.Add(stops[i]);
+        }
+
+        StableSortGradientStopsByOffset(colorStops);
+        return colorStops;
+    }
+
+    internal static List<GradientColorSliderThumb> CopyThumbsByValue(IReadOnlyList<GradientColorSliderThumb> thumbs)
+    {
+        var sortedThumbs = new List<GradientColorSliderThumb>(thumbs.Count);
+        for (var i = 0; i < thumbs.Count; ++i)
+        {
+            sortedThumbs.Add(thumbs[i]);
+        }
+
+        StableSortThumbsByValue(sortedThumbs);
+        return sortedThumbs;
+    }
+
+    private static void StableSortGradientStopsByOffset(List<GradientStop> stops)
+    {
+        for (var i = 1; i < stops.Count; ++i)
+        {
+            var item = stops[i];
+            var j    = i - 1;
+            while (j >= 0 && stops[j].Offset > item.Offset)
+            {
+                stops[j + 1] = stops[j];
+                --j;
+            }
+
+            stops[j + 1] = item;
+        }
+    }
+
+    private static void StableSortThumbsByValue(List<GradientColorSliderThumb> thumbs)
+    {
+        for (var i = 1; i < thumbs.Count; ++i)
+        {
+            var item = thumbs[i];
+            var j    = i - 1;
+            while (j >= 0 && thumbs[j].Value > item.Value)
+            {
+                thumbs[j + 1] = thumbs[j];
+                --j;
+            }
+
+            thumbs[j + 1] = item;
+        }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
