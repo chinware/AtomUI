@@ -165,7 +165,7 @@ public partial class CascaderView
         Debug.Assert(_itemsPanel != null);
         var attachedOption = cascaderViewItem.AttachedOption;
         Debug.Assert(attachedOption != null);
-        if (!attachedOption.Children.Any() && !cascaderViewItem.AsyncLoaded && !attachedOption.IsLeaf)
+        if (!attachedOption.HasChildren() && !cascaderViewItem.AsyncLoaded && !attachedOption.IsLeaf)
         {
             if (DataLoader != null)
             {
@@ -186,7 +186,7 @@ public partial class CascaderView
             }
         }
 
-        if (attachedOption.Children.Any())
+        if (attachedOption.HasChildren())
         {
             var childLevelList = new CascaderViewLevelList()
             {

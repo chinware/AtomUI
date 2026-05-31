@@ -246,19 +246,19 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
         try
         {
             var items      = WritableSelectedItems;
-            var deselected = e.DeselectedItems.ToArray();
-            var selected   = e.SelectedItems.ToArray();
+            var deselected = e.DeselectedItems;
+            var selected   = e.SelectedItems;
 
             _ignoreSelectedItemsChanges = true;
 
-            foreach (var i in deselected)
+            for (var i = 0; i < deselected.Count; i++)
             {
-                items.Remove(i);
+                items.Remove(deselected[i]);
             }
 
-            foreach (var i in selected)
+            for (var i = 0; i < selected.Count; i++)
             {
-                items.Add(i);
+                items.Add(selected[i]);
             }
         }
         finally
@@ -305,9 +305,10 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
 
         void Remove()
         {
-            foreach (var i in e.OldItems!)
+            var oldItems = e.OldItems!;
+            for (var i = 0; i < oldItems.Count; i++)
             {
-                var index = IndexOf(Source, i);
+                var index = IndexOf(Source, oldItems[i]);
 
                 if (index != -1)
                 {
@@ -348,9 +349,9 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
 
     private void Add(IList newItems)
     {
-        foreach (var i in newItems)
+        for (var i = 0; i < newItems.Count; i++)
         {
-            var index = IndexOf(Source, i);
+            var index = IndexOf(Source, newItems[i]);
 
             if (index != -1)
             {

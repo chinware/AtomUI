@@ -1,7 +1,9 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
+using Avalonia.Controls.Documents;
 using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 
 namespace AtomUI.Performance;
 
@@ -15,6 +17,7 @@ internal static partial class Program
         VerifyNodeSwitcherRotationAndLoadingIcons(failures);
         VerifyNodeSwitcherLeafVisibility(failures);
         VerifyTreeViewCheckboxParentStateAggregation(failures);
+        VerifyTreeViewFilterHighlightRuns(failures);
 
         if (failures.Count == 0)
         {
@@ -219,6 +222,70 @@ internal static partial class Program
                !tree.CheckedItems.Contains(firstChild) &&
                tree.CheckedItems.Contains(secondChild),
             "TreeView checked items should remove the parent and cleared child while keeping the remaining checked child.",
+            failures);
+    }
+
+    private static void VerifyTreeViewFilterHighlightRuns(ICollection<string> failures)
+    {
+        var highlightBrush = Brushes.Orange;
+        var header = new TreeViewItemHeader
+        {
+            Content                   = "alpha beta alpha",
+            FilterHighlightForeground = highlightBrush,
+            FilterHighlightStrategy   = TreeFilterHighlightStrategy.HighlightedMatch |
+                                        TreeFilterHighlightStrategy.BoldedMatch,
+            IsFilterMatch             = true,
+            FilterHighlightWords      = "alpha"
+        };
+
+        var runs = header.FilterHighlightRuns?.OfType<Run>().ToArray();
+        Expect(runs?.Length == 3,
+            $"TreeView filter highlighted-match should emit segment-level runs (got {runs?.Length ?? 0}).",
+            failures);
+        if (runs is { Length: 3 })
+        {
+            Expect(runs[0].Text == "alpha" && runs[1].Text == " beta " && runs[2].Text == "alpha",
+                $"TreeView filter highlighted-match run text should preserve source segments. Actual: '{runs[0].Text}'/'{runs[1].Text}'/'{runs[2].Text}'.",
+                failures);
+            Expect(ReferenceEquals(runs[0].Foreground, highlightBrush) &&
+                   runs[1].Foreground is null &&
+                   ReferenceEquals(runs[2].Foreground, highlightBrush),
+                "TreeView filter highlighted-match should apply foreground only to matched segments.",
+                failures);
+            Expect(runs.All(run => run.FontWeight == FontWeight.Bold),
+                "TreeView filter BoldedMatch should preserve existing all-run bold behavior.",
+                failures);
+        }
+
+        header.FilterHighlightStrategy = TreeFilterHighlightStrategy.HighlightedWhole |
+                                         TreeFilterHighlightStrategy.BoldedMatch;
+        header.FilterHighlightWords = "missing";
+        runs = header.FilterHighlightRuns?.OfType<Run>().ToArray();
+        Expect(runs?.Length == 1 && runs[0].Text == "alpha beta alpha",
+            $"TreeView filter highlighted-whole should emit one whole-text run (got {runs?.Length ?? 0}).",
+            failures);
+        if (runs is { Length: 1 })
+        {
+            Expect(ReferenceEquals(runs[0].Foreground, highlightBrush) &&
+                   runs[0].FontWeight == FontWeight.Bold,
+                "TreeView filter highlighted-whole should preserve foreground and bold style.",
+                failures);
+        }
+
+        var replacementBrush = Brushes.Red;
+        header.FilterHighlightStrategy   = TreeFilterHighlightStrategy.HighlightedMatch;
+        header.FilterHighlightWords      = "alpha";
+        header.FilterHighlightForeground = replacementBrush;
+        runs = header.FilterHighlightRuns?.OfType<Run>().ToArray();
+        Expect(runs is { Length: 3 } &&
+               ReferenceEquals(runs[0].Foreground, replacementBrush) &&
+               ReferenceEquals(runs[2].Foreground, replacementBrush),
+            "TreeView filter highlight foreground changes should rebuild existing highlight runs.",
+            failures);
+
+        header.FilterHighlightWords = string.Empty;
+        Expect(header.FilterHighlightRuns is null,
+            "TreeView filter empty highlight words should clear highlight runs.",
             failures);
     }
 }

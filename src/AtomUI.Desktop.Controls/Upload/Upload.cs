@@ -196,8 +196,9 @@ public class Upload : ContentControl,
     #endregion
     
     private FileUploadScheduler _uploadScheduler;
-    private static readonly Regex ImageExtensionRegex = 
-        new (@"\.(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico|heic|heif)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex ImageExtensionRegex =
+        new(@"\.(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico|heic|heif)$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
     private bool _defaultTaskListApplied;
     private CancellationTokenSource? _uploadCts;
@@ -246,8 +247,20 @@ public class Upload : ContentControl,
         }
         else
         {
-            CurrentTaskList = TaskInfoList.ToArray();
+            CurrentTaskList = CopyTaskInfoList();
         }
+    }
+
+    private UploadTaskInfo[] CopyTaskInfoList()
+    {
+        var count = TaskInfoList.Count;
+        var tasks = new UploadTaskInfo[count];
+        for (var i = 0; i < count; ++i)
+        {
+            tasks[i] = TaskInfoList[i];
+        }
+
+        return tasks;
     }
 
     protected virtual void OpenFileDialog()
@@ -395,10 +408,13 @@ public class Upload : ContentControl,
 
     private void HandleUploadProgressChanged(Guid taskId, UploadFileInfo fileInfo, double progress)
     {
-        var taskInfo = _allTaskList.FirstOrDefault(x => x.TaskId == taskId);
+        var taskInfo = FindTaskInfo(taskId);
         if (taskInfo != null)
         {
-            SetCurrentValue(IsTaskRunningProperty, true);
+            if (!IsTaskRunning)
+            {
+                SetCurrentValue(IsTaskRunningProperty, true);
+            }
             if (taskInfo.Status == FileUploadStatus.Pending)
             {
                 taskInfo.Status = FileUploadStatus.Uploading;
@@ -410,7 +426,7 @@ public class Upload : ContentControl,
     
     private void HandleUploadCompleted(Guid taskId, UploadFileInfo uploadFileInfo, FileUploadResult result)
     {
-        var taskInfo = _allTaskList.FirstOrDefault(x => x.TaskId == taskId);
+        var taskInfo = FindTaskInfo(taskId);
         if (taskInfo != null)
         {
             taskInfo.Status = FileUploadStatus.Success;
@@ -421,7 +437,7 @@ public class Upload : ContentControl,
     
     private void HandleUploadFailed(Guid taskId, UploadFileInfo uploadFileInfo, FileUploadResult result)
     {
-        var taskInfo = _allTaskList.FirstOrDefault(x => x.TaskId == taskId);
+        var taskInfo = FindTaskInfo(taskId);
         if (taskInfo != null)
         {
             taskInfo.Status       = FileUploadStatus.Failed;
@@ -433,7 +449,7 @@ public class Upload : ContentControl,
     
     private void HandleUploadCancelled(Guid taskId, UploadFileInfo uploadFileInfo, FileUploadResult result)
     {
-        var taskInfo = _allTaskList.FirstOrDefault(x => x.TaskId == taskId);
+        var taskInfo = FindTaskInfo(taskId);
         if (taskInfo != null)
         {
             taskInfo.Status       = FileUploadStatus.Cancelled;
@@ -451,9 +467,26 @@ public class Upload : ContentControl,
             if (uploadTaskInfo.Status == FileUploadStatus.Uploading)
             {
                 isTaskRunning = true;
+                break;
             }
         }
-        SetCurrentValue(IsTaskRunningProperty, isTaskRunning);
+
+        if (IsTaskRunning != isTaskRunning)
+        {
+            SetCurrentValue(IsTaskRunningProperty, isTaskRunning);
+        }
+    }
+
+    private UploadTaskInfo? FindTaskInfo(Guid taskId)
+    {
+        foreach (var taskInfo in _allTaskList)
+        {
+            if (taskInfo.TaskId == taskId)
+            {
+                return taskInfo;
+            }
+        }
+        return null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -494,7 +527,7 @@ public class Upload : ContentControl,
         {
             return IsImageFilePredicate.Invoke(uploadFileInfo);
         }
-        var extension = Path.GetExtension(uploadFileInfo.FilePath.LocalPath).ToLowerInvariant();
+        var extension = Path.GetExtension(uploadFileInfo.FilePath.LocalPath);
         if (string.IsNullOrEmpty(extension))
         {
             return false;
@@ -504,7 +537,7 @@ public class Upload : ContentControl,
 
     private async Task HandleUploadTaskRemoveRequestAsync(Guid taskId)
     {
-        var taskInfo = _allTaskList.FirstOrDefault(x => x.TaskId == taskId);
+        var taskInfo = FindTaskInfo(taskId);
         if (taskInfo != null)
         {
             if (taskInfo.Status != FileUploadStatus.Uploading || taskInfo.UploadTask == null)
@@ -589,7 +622,7 @@ public class Upload : ContentControl,
                 if (ListType == UploadListType.PictureCircle || ListType == UploadListType.PictureCard)
                 {
                     // 检查是否有 trigger
-                    var trigger = TaskInfoList.FirstOrDefault(x => x.IsPictureTriggerTask);
+                    var trigger = FindPictureTriggerTask();
                     if (trigger != null)
                     {
                         TaskInfoList.InsertRange(0, DefaultTaskList);
@@ -612,7 +645,7 @@ public class Upload : ContentControl,
 
     private void ConfigurePictureTriggerTask()
     {
-        var taskInfo = TaskInfoList.FirstOrDefault(x => x.IsPictureTriggerTask);
+        var taskInfo = FindPictureTriggerTask();
         if (ListType == UploadListType.PictureCircle || ListType == UploadListType.PictureCard)
         {
             if (taskInfo == null)
@@ -630,6 +663,18 @@ public class Upload : ContentControl,
                 TaskInfoList.Remove(taskInfo);
             }
         }
+    }
+
+    private UploadTaskInfo? FindPictureTriggerTask()
+    {
+        foreach (var taskInfo in TaskInfoList)
+        {
+            if (taskInfo.IsPictureTriggerTask)
+            {
+                return taskInfo;
+            }
+        }
+        return null;
     }
     
     #region 实现 FormItem 接口

@@ -47,7 +47,7 @@ public class TreeTransfer : AbstractTransfer
         {
             IEnumerable<IListItemData> targetPanelSource = targetKeySet == null
                 ? Array.Empty<IListItemData>()
-                : CalculateTargetItemsSource(ItemsSource?.Cast<ITreeItemNode>(), targetKeySet);
+                : CalculateTargetItemsSource(ItemsSource, targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
             TargetViewSource         = targetPanelSource;
             targetItemKeys           = BuildItemKeyList(targetPanelSource);
@@ -59,7 +59,7 @@ public class TreeTransfer : AbstractTransfer
         }
     }
 
-    private List<IListItemData> CalculateTargetItemsSource(IEnumerable<ITreeItemNode>? itemNodes, ISet<EntityKey> targetKeySet)
+    private List<IListItemData> CalculateTargetItemsSource(IEnumerable<IItemKey>? itemNodes, ISet<EntityKey> targetKeySet)
     {
         var results = new List<IListItemData>(targetKeySet.Count);
         CollectTargetItemsSource(itemNodes, targetKeySet, results);
@@ -67,14 +67,15 @@ public class TreeTransfer : AbstractTransfer
     }
 
     private void CollectTargetItemsSource(
-        IEnumerable<ITreeItemNode>? itemNodes,
+        IEnumerable<IItemKey>? itemNodes,
         ISet<EntityKey> targetKeySet,
         IList<IListItemData> results)
     {
         if (itemNodes != null)
         {
-            foreach (var node in itemNodes)
+            foreach (var itemNode in itemNodes)
             {
+                var node = (ITreeItemNode)itemNode;
                 if (targetKeySet.Contains(node.ItemKey ?? default))
                 {
                     var item = new ListItemData

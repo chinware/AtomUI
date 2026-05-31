@@ -228,32 +228,7 @@ public partial class CascaderView
             {
                 break;
             }
-            var isAllChecked    = false;
-            var isAnyChecked    = false;
-    
-            if (parentViewOption.Children.Any())
-            {
-                isAllChecked = parentViewOption.Children.All(childItem =>
-                {
-                    var childContainer = GetCascaderViewItem(childItem);
-                    if (childContainer != null)
-                    {
-                        return !childContainer.IsEnabled || !childContainer.IsCheckBoxEnabled || childContainer.IsChecked.HasValue && childContainer.IsChecked.Value;
-                    }
-                    return !childItem.IsEnabled || !childItem.IsCheckBoxEnabled || childItem.IsChecked.HasValue && childItem.IsChecked.Value;
-                });
-    
-                isAnyChecked = parentViewOption.Children.Any(childItem =>
-                {
-                    var childContainer = GetCascaderViewItem(childItem);
-                    if (childContainer != null)
-                    {
-                        return childContainer.IsEnabled && childContainer.IsCheckBoxEnabled &&
-                               (!childContainer.IsChecked.HasValue || childContainer.IsChecked.HasValue && childContainer.IsChecked.Value);
-                    }
-                    return childItem.IsEnabled && childItem.IsCheckBoxEnabled && (!childItem.IsChecked.HasValue || childItem.IsChecked.HasValue && childItem.IsChecked.Value);
-                });
-            }
+            var (isAllChecked, isAnyChecked) = GetChildCheckedStatus(parentViewOption);
     
             if (parentContainer?.IsChecked ?? parentViewOption.IsChecked == true && !isAllChecked)
             {
@@ -293,6 +268,41 @@ public partial class CascaderView
         }
     
         return (checkedParents, unCheckedParents);
+    }
+
+    private (bool IsAllChecked, bool IsAnyChecked) GetChildCheckedStatus(ICascaderOption parentViewOption)
+    {
+        var hasChildren  = false;
+        var isAllChecked = true;
+        var isAnyChecked = false;
+
+        foreach (var childItem in parentViewOption.Children)
+        {
+            hasChildren = true;
+            var childContainer       = GetCascaderViewItem(childItem);
+            var childIsEnabled       = childContainer?.IsEnabled ?? childItem.IsEnabled;
+            var childIsCheckable     = childContainer?.IsCheckBoxEnabled ?? childItem.IsCheckBoxEnabled;
+            var childIsChecked       = childContainer?.IsChecked ?? childItem.IsChecked;
+            var isEffectiveCheckable = childIsEnabled && childIsCheckable;
+            if (!isEffectiveCheckable)
+            {
+                continue;
+            }
+
+            if (childIsChecked != true)
+            {
+                isAllChecked = false;
+            }
+
+            if (childIsChecked != false)
+            {
+                isAnyChecked = true;
+            }
+        }
+
+        return hasChildren
+            ? (isAllChecked, isAnyChecked)
+            : (false, false);
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

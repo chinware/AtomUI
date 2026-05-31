@@ -867,15 +867,15 @@ public class Cascader : AbstractSelect
                     var fullySelectedParents = new HashSet<ICascaderOption>(SelectedOptions.Count);
                     foreach (var node in SelectedOptions)
                     {
-                        if (node.Children.All(child => selectedSet.Contains(child)))
+                        if (AreAllChildrenSelected(node.Children, selectedSet))
                         {
                             fullySelectedParents.Add(node);
                         }
                     }
                     foreach (var option in SelectedOptions)
                     {
-                        bool isDescendantOfFullySelectedParent = fullySelectedParents
-                            .Any(parent => IsDescendantOf(option, parent));
+                        var isDescendantOfFullySelectedParent =
+                            HasDescendantParent(option, fullySelectedParents);
             
                         if (!isDescendantOfFullySelectedParent)
                         {
@@ -887,7 +887,7 @@ public class Cascader : AbstractSelect
                 {
                     foreach (var option in SelectedOptions)
                     {
-                        if (!option.Children.Any())
+                        if (!option.HasChildren())
                         {
                             effectiveSelectedOptions.Add(option);
                         }
@@ -937,6 +937,32 @@ public class Cascader : AbstractSelect
             options.Add(item);
         }
         return options;
+    }
+
+    private static bool AreAllChildrenSelected(
+        IEnumerable<ICascaderOption> children,
+        ISet<ICascaderOption> selected)
+    {
+        foreach (var child in children)
+        {
+            if (!selected.Contains(child))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private bool HasDescendantParent(ICascaderOption option, IEnumerable<ICascaderOption> parents)
+    {
+        foreach (var parent in parents)
+        {
+            if (IsDescendantOf(option, parent))
+            {
+                return true;
+            }
+        }
+        return false;
     }
         
     private bool IsDescendantOf(ICascaderOption node, ICascaderOption parent)

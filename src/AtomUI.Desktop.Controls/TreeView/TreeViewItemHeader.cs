@@ -420,7 +420,9 @@ internal class TreeViewItemHeader : ContentControl
             HandleToggleTypeChanged(change);
         }
         else if (change.Property == FilterHighlightWordsProperty ||
-                 change.Property == IsFilterMatchProperty)
+                 change.Property == IsFilterMatchProperty ||
+                 change.Property == FilterHighlightStrategyProperty ||
+                 change.Property == FilterHighlightForegroundProperty)
         {
             BuildFilterHighlightRuns();
         }
@@ -581,92 +583,103 @@ internal class TreeViewItemHeader : ContentControl
     
     private void BuildFilterHighlightRuns()
     {
-        if (!IsFilterMatch)
+        var highlightWords = FilterHighlightWords;
+        if (!IsFilterMatch || string.IsNullOrEmpty(highlightWords))
         {
             FilterHighlightRuns = null;
+            return;
         }
-        else if (FilterHighlightWords != null)
-        { 
-            if (string.IsNullOrEmpty(FilterHighlightWords))
-            {
-                FilterHighlightRuns = null;
-                return;
-            }
 
-            string? headerText   = null;
-            if (Content is ITreeItemNode treeViewItemData)
-            {
-                headerText = treeViewItemData.Header as string;
-            }
-            else if (Content is string strContent)
-            {
-                headerText = strContent;
-            }
-
-            if (string.IsNullOrWhiteSpace(headerText))
-            {
-                return;
-            }
-            var highlightedMatch = FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HighlightedMatch);
-            List<(int, int)>? ranges = null;
-            if (highlightedMatch)
-            {
-                var firstIndex = headerText.IndexOf(FilterHighlightWords, StringComparison.Ordinal);
-                if (firstIndex != -1)
-                {
-                    ranges = new List<(int, int)>();
-                    var currentIndex    = firstIndex;
-                    var highlightLength = FilterHighlightWords.Length;
-                    while (currentIndex != -1)
-                    {
-                        var highlightEnd = currentIndex + highlightLength;
-                        ranges.Add((currentIndex, highlightEnd));
-                        currentIndex = headerText.IndexOf(FilterHighlightWords, highlightEnd, StringComparison.Ordinal);
-                    }
-                }
-            }
-
-            Debug.Assert(headerText != null);
-            var runs = new InlineCollection();
-            for (var i = 0; i < headerText.Length; i++)
-            {
-                var c   =  headerText[i];
-                var run = new Run($"{c}");
-                
-                if (highlightedMatch)
-                {
-                    if (ranges is not null && IsNeedHighlight(i, ranges))
-                    {
-                        run.Foreground = FilterHighlightForeground;
-                    }
-                }
-                else if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HighlightedWhole))
-                {
-                    run.Foreground = FilterHighlightForeground;
-                }
-         
-                if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.BoldedMatch))
-                {
-                    run.FontWeight = FontWeight.Bold;
-                }
-                runs.Add(run);
-            }
-
-            FilterHighlightRuns = runs;
+        string? headerText = null;
+        if (Content is ITreeItemNode treeViewItemData)
+        {
+            headerText = treeViewItemData.Header as string;
         }
+        else if (Content is string strContent)
+        {
+            headerText = strContent;
+        }
+
+        if (string.IsNullOrWhiteSpace(headerText))
+        {
+            FilterHighlightRuns = null;
+            return;
+        }
+
+        var strategy         = FilterHighlightStrategy;
+        var highlightedMatch = strategy.HasFlag(TreeFilterHighlightStrategy.HighlightedMatch);
+        var highlightedWhole = !highlightedMatch && strategy.HasFlag(TreeFilterHighlightStrategy.HighlightedWhole);
+        var bold             = strategy.HasFlag(TreeFilterHighlightStrategy.BoldedMatch);
+
+        if (highlightedWhole)
+        {
+            FilterHighlightRuns = new InlineCollection
+            {
+                CreateFilterHighlightRun(headerText, highlighted: true, bold: bold)
+            };
+            return;
+        }
+
+        if (!highlightedMatch)
+        {
+            FilterHighlightRuns = new InlineCollection
+            {
+                CreateFilterHighlightRun(headerText, highlighted: false, bold: bold)
+            };
+            return;
+        }
+
+        var firstIndex = headerText.IndexOf(highlightWords, StringComparison.Ordinal);
+        if (firstIndex == -1)
+        {
+            FilterHighlightRuns = new InlineCollection
+            {
+                CreateFilterHighlightRun(headerText, highlighted: false, bold: bold)
+            };
+            return;
+        }
+
+        var runs            = new InlineCollection();
+        var highlightLength = highlightWords.Length;
+        var cursor          = 0;
+        var currentIndex    = firstIndex;
+        while (currentIndex != -1)
+        {
+            if (currentIndex > cursor)
+            {
+                runs.Add(CreateFilterHighlightRun(headerText.Substring(cursor, currentIndex - cursor),
+                    highlighted: false,
+                    bold: bold));
+            }
+
+            var highlightEnd = currentIndex + highlightLength;
+            runs.Add(CreateFilterHighlightRun(headerText.Substring(currentIndex, highlightLength),
+                highlighted: true,
+                bold: bold));
+            cursor       = highlightEnd;
+            currentIndex = headerText.IndexOf(highlightWords, highlightEnd, StringComparison.Ordinal);
+        }
+
+        if (cursor < headerText.Length)
+        {
+            runs.Add(CreateFilterHighlightRun(headerText.Substring(cursor), highlighted: false, bold: bold));
+        }
+
+        FilterHighlightRuns = runs;
     }
 
-    private bool IsNeedHighlight(int pos, in List<(int, int)> ranges)
+    private Run CreateFilterHighlightRun(string text, bool highlighted, bool bold)
     {
-        foreach (var range in ranges)
+        var run = new Run(text);
+        if (highlighted)
         {
-            if (pos >= range.Item1 && pos < range.Item2)
-            {
-                return true;
-            }
+            run.Foreground = FilterHighlightForeground;
         }
-
-        return false;
+        if (bold)
+        {
+            run.FontWeight = FontWeight.Bold;
+        }
+        return run;
     }
 
     protected override void OnInitialized()

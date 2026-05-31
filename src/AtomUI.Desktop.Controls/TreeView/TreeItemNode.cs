@@ -49,9 +49,9 @@ public record TreeItemNode : ITreeItemNode, ISelectTagTextProvider
         {
             if (e.NewItems != null)
             {
-                foreach (var child in e.NewItems)
+                for (var i = 0; i < e.NewItems.Count; i++)
                 {
-                    if (child is ITreeItemNode treeNode)
+                    if (e.NewItems[i] is ITreeItemNode treeNode)
                     {
                         treeNode.UpdateParentNode(this);
                     }
@@ -62,9 +62,9 @@ public record TreeItemNode : ITreeItemNode, ISelectTagTextProvider
         {
             if (e.OldItems != null)
             {
-                foreach (var child in e.OldItems)
+                for (var i = 0; i < e.OldItems.Count; i++)
                 {
-                    if (child is ITreeItemNode treeNode)
+                    if (e.OldItems[i] is ITreeItemNode treeNode)
                     {
                         treeNode.UpdateParentNode(null);
                     }

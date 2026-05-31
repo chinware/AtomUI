@@ -274,7 +274,7 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 
 ## 6. 后续
 
-TreeView 仍有第二类热点：`TreeViewItemHeader.BuildFilterHighlightRuns()` 在搜索高亮中存在 per-character `Run` 模式。该问题只在 filter 交互触发，不属于本轮页面导航主因；下一轮应先建立 filter action 的专项基线，再考虑段级 Run 合并。
+TreeView filter 高亮的 per-character `Run` 模式已在 §12 追加结构优化中处理。后续如果继续深入 TreeView，应优先建立 filter action 专项基线，而不是用页面导航 timing 证明 filter 交互收益。
 
 ---
 
@@ -316,3 +316,50 @@ TreeView 仍有第二类热点：`TreeViewItemHeader.BuildFilterHighlightRuns()`
 | TreeView checked reset added list growth / checked items reset | dynamic capacity | exact capacity | structural | 分配更紧 | reset 通知 added 列表按 `CheckedItems.Count` 预分配 |
 
 说明：这是默认展开/选中路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 10. 追加结构优化：TreeViewItem 子节点枚举去 LINQ
+
+`TreeViewItem` 通过 `ITreeNode<ITreeItemNode>.Children` 暴露子节点时，旧实现返回 `Items.OfType<ITreeItemNode>()`。本轮改为本地显式枚举，保持只返回 `ITreeItemNode` 的语义。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TreeViewItem child node filter LINQ operators / child enumeration | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；树路径 / 递归访问子节点时不再走 `OfType` LINQ operator |
+
+说明：这是 tree data traversal 路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 11. 追加结构优化：collection changed items indexed traversal
+
+`TreeView` / `TreeViewItem` / `TreeItemNode` 在处理 `NotifyCollectionChangedEventArgs.NewItems/OldItems` 时，旧路径使用 `foreach` 遍历 collection changed item 列表。本轮改为直接读取 `IList.Count` 并按 index 访问，保持 remove / replace / parent-node update 顺序不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TreeView checked-items remove old-items enumerators / remove or replace | 1 enumerator | 0 enumerators | `(1 - 0) / 1` | 100.00% | 有效；checked item 同步按 `OldItems.Count/indexer` 处理 |
+| TreeView checked-items replace old/new items enumerators / replace | 2 enumerators | 0 enumerators | `(2 - 0) / 2` | 100.00% | 有效；replace 的 old/new item 标记都不再创建 enumerator |
+| TreeItemNode parent update item enumerators / add or remove | 1 enumerator | 0 enumerators | `(1 - 0) / 1` | 100.00% | 有效；新增 / 移除 child parent 更新按 index 处理 |
+
+说明：这是树节点集合变化路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 12. 追加结构优化：filter 高亮段级 Run
+
+`TreeViewItemHeader.BuildFilterHighlightRuns()` 原先在 filter match 时按 header 每个字符创建一个 `Run`，再逐字符判断是否需要高亮。此前已先做无命中 fast path；本轮继续把命中 / 整段高亮 / 无匹配样式都改为段级 `Run`：
+
+- `HighlightedMatch`：按匹配段和普通段切分，例如 `alpha beta alpha` + `alpha` 从 16 个字符 Run 降为 3 个段 Run。
+- `HighlightedWhole`：整段文本只创建 1 个 Run。
+- 只有 `BoldedMatch` 或无高亮样式时，也只创建 1 个普通段 Run，同时保留旧行为：`BoldedMatch` 仍作用到所有输出 Run。
+- `FilterHighlightStrategy` / `FilterHighlightForeground` 变化后会重建 runs，避免已有 runs 保留旧样式。
+- `FilterHighlightWords = null / ""` 或 header 文本为空时清空 runs，避免 stale 高亮残留。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| HighlightedMatch Run objects / `alpha beta alpha` header | 16 | 3 | `(16 - 3) / 16` | 81.25% | 有效；按匹配段创建 Run，不再逐字符创建 |
+| HighlightedWhole Run objects / 16-char header | 16 | 1 | `(16 - 1) / 16` | 93.75% | 有效；整段高亮合并为单 Run |
+| No-match styled Run objects / 16-char header | 16 | 1 | `(16 - 1) / 16` | 93.75% | 有效；无命中但仍需要 Inlines 时使用单 Run |
+| Stale highlight runs on words/style/foreground change | possible | cleared/rebuilt | structural | 100.00% stale risk removed | 正确性收益；状态验证覆盖 |
+
+说明：这是 TreeView / TreeSelect filter 交互路径 structural-only 收益；没有新增页面导航 timing 对比，不声明页面加载速度提升。

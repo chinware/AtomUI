@@ -512,8 +512,11 @@ public partial class TreeView : AvaloniaTreeView,
         {
             case NotifyCollectionChangedAction.Remove:
             case NotifyCollectionChangedAction.Replace:
-                foreach (var i in e.OldItems!)
-                    CheckedItems.Remove(i);
+                var oldItems = e.OldItems!;
+                for (var i = 0; i < oldItems.Count; i++)
+                {
+                    CheckedItems.Remove(oldItems[i]);
+                }
                 break;
             case NotifyCollectionChangedAction.Reset:
                 CheckedItems.Clear();
@@ -955,9 +958,9 @@ public partial class TreeView : AvaloniaTreeView,
                 {
                     if (e.OldItems != null)
                     {
-                        foreach (var item in e.OldItems)
+                        for (var i = 0; i < e.OldItems.Count; i++)
                         {
-                            MarkItemChecked(item, false);
+                            MarkItemChecked(e.OldItems[i]!, false);
                         }
                     }
                 }
@@ -994,17 +997,17 @@ public partial class TreeView : AvaloniaTreeView,
                 {
                     if (e.OldItems != null)
                     {
-                        foreach (var item in e.OldItems)
+                        for (var i = 0; i < e.OldItems.Count; i++)
                         {
-                            MarkItemChecked(item, false);
+                            MarkItemChecked(e.OldItems[i]!, false);
                         }
                     }
 
                     if (e.NewItems != null)
                     {
-                        foreach (var item in e.NewItems)
+                        for (var i = 0; i < e.NewItems.Count; i++)
                         {
-                            MarkItemChecked(item, true);
+                            MarkItemChecked(e.NewItems[i]!, true);
                         }
                     }
                 }

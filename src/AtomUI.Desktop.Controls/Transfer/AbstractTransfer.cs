@@ -521,12 +521,7 @@ public abstract class AbstractTransfer: TemplatedControl,
         var               targetKeySet             = BuildTargetKeySet(TargetKeys);
         if (changeType.HasFlag(FilterChangeType.Source))
         {
-            var sourcePanelSource = ItemsSource?
-                                    .Where(item => !(targetKeySet?.Contains(item.ItemKey ?? default) ?? false))
-                                    .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(SourceFilterValue) || 
-                                                   (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
-                                                       SourceFilterValue) ?? false))
-                                    .ToArray();
+            var sourcePanelSource = BuildSourcePanelSource(targetKeySet);
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
             SourceViewSource        = sourcePanelSource;
             sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
@@ -534,17 +529,7 @@ public abstract class AbstractTransfer: TemplatedControl,
 
         if (changeType.HasFlag(FilterChangeType.Target))
         {
-            IEnumerable<IItemKey>? targetPanelSource = null;
-            if (ItemsSource != null)
-            {
-                targetPanelSource = targetKeySet == null
-                    ? Array.Empty<IItemKey>()
-                    : ItemsSource
-                        .Where(item => targetKeySet.Contains(item.ItemKey ?? default))
-                        .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) ||
-                                       (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item, TargetFilterValue) ?? false))
-                        .ToArray();
-            }
+            var targetPanelSource = BuildTargetPanelSource(targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
             TargetViewSource         = targetPanelSource;
             targetItemKeys           = BuildItemKeyList(targetPanelSource);
@@ -554,6 +539,64 @@ public abstract class AbstractTransfer: TemplatedControl,
         {
             NotifySelectionChanged(sourceItemKeys, targetItemKeys);
         }
+    }
+
+    protected List<IItemKey>? BuildSourcePanelSource(ISet<EntityKey>? targetKeySet)
+    {
+        if (ItemsSource == null)
+        {
+            return null;
+        }
+
+        var source = ItemsSource;
+        var items = source is ICollection<IItemKey> collection
+            ? new List<IItemKey>(collection.Count)
+            : new List<IItemKey>();
+        foreach (var item in source)
+        {
+            if ((targetKeySet?.Contains(item.ItemKey ?? default) ?? false) ||
+                !IsFilterMatched(item, SourceFilterValue))
+            {
+                continue;
+            }
+
+            items.Add(item);
+        }
+        return items;
+    }
+
+    protected IEnumerable<IItemKey>? BuildTargetPanelSource(ISet<EntityKey>? targetKeySet)
+    {
+        if (ItemsSource == null)
+        {
+            return null;
+        }
+
+        if (targetKeySet == null)
+        {
+            return Array.Empty<IItemKey>();
+        }
+
+        var items = new List<IItemKey>(targetKeySet.Count);
+        foreach (var item in ItemsSource)
+        {
+            if (!targetKeySet.Contains(item.ItemKey ?? default) ||
+                !IsFilterMatched(item, TargetFilterValue))
+            {
+                continue;
+            }
+
+            items.Add(item);
+        }
+        return items;
+    }
+
+    private bool IsFilterMatched(IItemKey item, string? filterValue)
+    {
+        return !IsFilterEnabled ||
+               string.IsNullOrEmpty(filterValue) ||
+               (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
+                   filterValue) ?? false);
     }
 
     protected void NotifySelectionChanged(IList<EntityKey>? sourceItemKeys, IList<EntityKey>? targetItemKeys)

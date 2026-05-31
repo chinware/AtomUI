@@ -60,7 +60,15 @@ public partial class CascaderView
             }
             
             var selector = FilterValueSelector ?? DefaultCascaderFilterValueSelector;
-            FilteredPathInfos = _allPathInfos.Where(data => Filter.Filter(selector(data), FilterValue)).ToList();
+            var filteredPathInfos = new List<CascaderViewFilterListItemData>(_allPathInfos.Count);
+            foreach (var pathInfo in _allPathInfos)
+            {
+                if (Filter.Filter(selector(pathInfo), FilterValue))
+                {
+                    filteredPathInfos.Add(pathInfo);
+                }
+            }
+            FilteredPathInfos = filteredPathInfos;
             IsFiltering       = true;
             FilterResultCount = FilteredPathInfos.Count;
         }
@@ -100,7 +108,7 @@ public partial class CascaderView
             CollectionPaths(childItem, result);
         }
 
-        if (!option.Children.Any())
+        if (!option.HasChildren())
         {
             result.Add(GetFullPath(option));
         }

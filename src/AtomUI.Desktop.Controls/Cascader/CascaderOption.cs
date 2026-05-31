@@ -25,7 +25,31 @@ public static class ICascaderOptionExtensions
 {
     public static bool IsEffectiveLeaf(this ICascaderOption option)
     {
-        return option.IsLeaf || !option.Children.Any();
+        return option.IsLeaf || !option.HasChildren();
+    }
+
+    internal static bool HasChildren(this ICascaderOption option)
+    {
+        return option.Children.HasChildren();
+    }
+
+    internal static bool HasChildren(this IEnumerable<ICascaderOption> children)
+    {
+        if (children is ICollection<ICascaderOption> collection)
+        {
+            return collection.Count > 0;
+        }
+
+        if (children is IReadOnlyCollection<ICascaderOption> readOnlyCollection)
+        {
+            return readOnlyCollection.Count > 0;
+        }
+
+        foreach (var _ in children)
+        {
+            return true;
+        }
+        return false;
     }
 }
 

@@ -241,6 +241,31 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 
 ---
 
-## 7. 后续
+## 7. 本次增量：选择同步集合构造收敛
+
+本次增量只处理 `TreeSelect` 运行期选择同步和有效标签计算中的 LINQ materialization；不改模板、padding、视觉层级、popup 生命周期或绑定优先级。因此本节只声明结构性收益，不声明新的页面导航耗时提升。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| ItemsSource copy LINQ chain / reset | 2 chains | 0 chains | `(2 - 0) / 2` | 100.00% | `Items.Cast<object?>().ToList()` 改为显式列表构造 |
+| selected/checked comparison hashset materialization / sync | 4 chains | 0 chains | `(4 - 0) / 4` | 100.00% | `ToHashSet()` / `Cast().ToHashSet()` 改为按 Count 构造 |
+| TreeView selected/checked snapshot list / sync from view | 2 chains | 0 chains | `(2 - 0) / 2` | 100.00% | `Cast<ITreeItemNode>().ToList()` 改为显式列表构造 |
+| selected/checked diff LINQ chain / sync to view | 8 chains | 0 chains | `(8 - 0) / 8` | 100.00% | 两条路径的 `Cast().ToList()`、`SelectedItems.ToList()`、`Except()` 全部改为 set lookup |
+| effective selected item LINQ calls / tag rebuild | 4 calls | 0 calls | `(4 - 0) / 4` | 100.00% | `ToHashSet()`、`Where().ToHashSet()`、祖先 `Any()`、children `Any()` 全部改为显式循环 |
+| tag close selected list capacity / close | dynamic growth | exact `SelectedItems.Count` | structural | 结构收益 | 关闭 tag 时的临时列表按已知选中数预分配 |
+
+验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-addon-states --verify-datepicker-states --verify-listbox-states
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-timepicker-states
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-transfer-states
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-treeview-states
+```
+
+结果：上述构建和状态验证通过。`--verify-select-states` 仍有既有 closed lazy-slot / dropdown event count 断言失败，本节不把它作为通过项。
+
+## 8. 后续
 
 TreeSelect 当前独立热点更可能在 popup 打开后的 `TreeSelectTreeView`、filter 交互和 checkable tree item 路径。下一轮需要先建立交互动作级基线，而不是继续改页面首次导航的 handle 结构。

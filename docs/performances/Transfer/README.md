@@ -15,6 +15,7 @@
 - 本次增量继续收敛 `TreeTransfer` 目标侧递归收集：去掉顶层 `ToList()` 源复制，并把每个节点递归返回一个临时结果 `List` 改为单个结果列表累积。
 - 本次追加收敛 `TransferListView` / `TransferTreeView` 的 selected keys/items 同步：去掉 `Cast/Select/Where/ToList/ToHashSet` materialization 链，改为按已知 Count 预分配并显式拷贝。
 - `AbstractTransfer` / `ListTransfer` / `TreeTransfer` 共享 key list/set 构造 helper，目标 key 集合、selection changed key 列表、transfer 后 `TargetKeys` 列表都按 Count 预分配。
+- 本次继续补齐 `AbstractTransfer` / `ListTransfer` source/target filter 刷新：去掉剩余 `Where().Where().ToArray()` 链，改成一次显式扫描；`TreeTransfer` target 刷新去掉剩余 `Cast<ITreeItemNode>()` 枚举器。
 
 没有移动任何主题视觉到 C# 动态创建，没有新增 `_ignoreXxx` 标志位、disposable、事件订阅或模板结构。
 
@@ -45,6 +46,9 @@
 | `TransferListView` selected-items sync LINQ chain | 1 `Cast+Where+ToList` / sync | 0 LINQ chains / sync | `(1 - 0) / 1` | 100.00% | 保留类型转换 fail-fast，结果列表按 `SelectedKeys.Count` 预分配 |
 | `TransferTreeView` node snapshot list growth | dynamic growth / count+mask pass | exact capacity / count+mask pass | structural | 结构收益 | `Items.Count` 已知时直接预分配 |
 | transfer 后 `TargetKeys` 列表 | LINQ `ToList()` / transfer | explicit exact list / transfer | structural | 结构收益 | `HashSet.Count` 已知时直接构造结果列表 |
+| Transfer source/target filter LINQ operators / refresh | 12 operators | 0 operators | `(12 - 0) / 12` | 100.00% | `AbstractTransfer` / `ListTransfer` 的 4 条 source/target 路径都改为显式扫描 |
+| Transfer source/target filter output copy / refresh | 4 `ToArray()` calls | 0 `ToArray()` calls | `(4 - 0) / 4` | 100.00% | 面板数据源直接使用预分配 `List<IItemKey>`，不再二次拷贝成数组 |
+| `TreeTransfer` target root cast iterator / target refresh | 1 `Cast<ITreeItemNode>()` | 0 cast iterators | `(1 - 0) / 1` | 100.00% | 保留强制类型转换语义，但不再创建 LINQ cast enumerable |
 
 > 说明：这是可由代码结构直接证明的分配次数下降；本次未新增 Gallery timing 对比，因此不把它写成页面耗时提升。
 
@@ -174,6 +178,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 
 结果：`Transfer state verification passed.`
 
+本次追加验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-transfer-states
+```
+
+结果：0 warning / 0 error；`Transfer state verification passed.`
+
 覆盖：
 
 - `ListTransfer` source side 排除 target keys。
@@ -202,3 +215,29 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 
 - `TransferItemDecorator` 中 `SelectionsIconTemplateProperty` 分支存在重复判断，应独立走 correctness-first 修复，不和本轮 perf 改动混在一起。
 - lazy pagination 曾有结构收益但改变默认 `BottomPagination` 存在语义风险；需要更强状态验证后才能重新评估。
+
+---
+
+## 7. 追加结构优化：TransferListView 选中同步去数组快照
+
+`TransferListViewSelectionModel.OnSelectionChanged()` 过去会把 `SelectionModelSelectionChangedEventArgs` 的 `DeselectedItems` / `SelectedItems` 都 `.ToArray()` 后再同步到 `WritableSelectedItems`。Avalonia 12 的 selection changed args 暴露的是 `IReadOnlyList`（`.referenceprojects/Avalonia/src/Avalonia.Controls/Selection/SelectionModelSelectionChangedEventArgs.cs:23-26`），本轮改为保存只读列表引用并按索引遍历。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DeselectedItems array allocations / selection change | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；取消选中同步不再创建快照数组 |
+| SelectedItems array allocations / selection change | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；选中同步不再创建快照数组 |
+
+说明：这是 Transfer 列表选择变化路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 8. 追加结构优化：SelectedItems collection changed indexed traversal
+
+`TransferListViewSelectionModel.OnSelectedItemsCollectionChanged()` 在外部 `SelectedItems` 集合增删替换时需要把 item 反查到 selection index。`NotifyCollectionChangedEventArgs.NewItems/OldItems` 已经是 `IList`，本轮把 add/remove helper 从 `foreach` 改为 Count/indexer，避免 collection changed item 列表枚举器。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| SelectedItems add new-items enumerators / add or replace | 1 enumerator | 0 enumerators | `(1 - 0) / 1` | 100.00% | 有效；新增 selected items 按 `NewItems.Count/indexer` 同步 |
+| SelectedItems remove old-items enumerators / remove or replace | 1 enumerator | 0 enumerators | `(1 - 0) / 1` | 100.00% | 有效；移除 selected items 按 `OldItems.Count/indexer` 同步 |
+
+说明：这是外部 selected-items 同步路径的结构性收益；不声明页面导航 timing 提升。

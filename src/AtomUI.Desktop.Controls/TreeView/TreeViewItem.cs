@@ -90,8 +90,19 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         set => SetValue(IsIndicatorEnabledProperty, value);
     }
     
-    IEnumerable<ITreeItemNode> ITreeNode<ITreeItemNode>.Children => Items.OfType<ITreeItemNode>();
+    IEnumerable<ITreeItemNode> ITreeNode<ITreeItemNode>.Children => GetTreeItemChildren();
     ITreeNode<ITreeItemNode>? ITreeNode<ITreeItemNode>.ParentNode => Parent as ITreeNode<ITreeItemNode>;
+
+    private IEnumerable<ITreeItemNode> GetTreeItemChildren()
+    {
+        foreach (var item in Items)
+        {
+            if (item is ITreeItemNode treeItemNode)
+            {
+                yield return treeItemNode;
+            }
+        }
+    }
 
     // Explicit interface implementation for IRadioButton
     bool IRadioButton.IsChecked
@@ -429,9 +440,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         {
             case NotifyCollectionChangedAction.Remove:
             case NotifyCollectionChangedAction.Replace:
-                foreach (var i in e.OldItems!)
+                var oldItems = e.OldItems!;
+                for (var i = 0; i < oldItems.Count; i++)
                 {
-                    OwnerTreeView.CheckedItems.Remove(i);
+                    OwnerTreeView.CheckedItems.Remove(oldItems[i]);
                 }
                 break;
             case NotifyCollectionChangedAction.Reset:

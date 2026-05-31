@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Diagnostics;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
@@ -398,9 +399,9 @@ public partial class CascaderView : TemplatedControl,
         var                    segments     = path.Segments;
         var                    count        = path.Segments.Count;
         var                    isPathValid  = true;
-        IEnumerable<ICascaderOption> currentItems = _options.Cast<ICascaderOption>().ToList();
+        IEnumerable<ICascaderOption> currentItems = BuildOptionList(_options);
         
-        var                          options    = new List<ICascaderOption>();
+        var                          options    = new List<ICascaderOption>(count);
         for (var i = 0; i < count; i++)
         {
             var segment = segments[i];
@@ -424,6 +425,18 @@ public partial class CascaderView : TemplatedControl,
         pathNodes = options;
     
         return isPathValid;
+    }
+
+    private static List<ICascaderOption> BuildOptionList(IEnumerable source)
+    {
+        var options = source is ICollection collection
+            ? new List<ICascaderOption>(collection.Count)
+            : new List<ICascaderOption>();
+        foreach (var item in source)
+        {
+            options.Add((ICascaderOption)item!);
+        }
+        return options;
     }
     
     private void ApplyDefaultExpandPath()
@@ -495,7 +508,7 @@ public partial class CascaderView : TemplatedControl,
     
     private void SelectTargetOption(ICascaderOption option)
     {
-        var isLeaf = option.IsLeaf || !option.Children.Any();
+        var isLeaf = option.IsLeaf || !option.HasChildren();
     
         if (!isLeaf && !IsAllowSelectParent)
         {

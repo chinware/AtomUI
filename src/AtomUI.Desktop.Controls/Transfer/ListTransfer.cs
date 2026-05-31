@@ -70,12 +70,7 @@ public class ListTransfer : AbstractTransfer
         var               targetKeySet             = BuildTargetKeySet(TargetKeys);
         if (changeType.HasFlag(FilterChangeType.Source))
         {
-            var sourcePanelSource = ItemsSource?
-                                    .Where(item => !(targetKeySet?.Contains(item.ItemKey ?? default) ?? false))
-                                    .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(SourceFilterValue) || 
-                                                   (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
-                                                       SourceFilterValue) ?? false))
-                                    .ToArray();
+            var sourcePanelSource = BuildSourcePanelSource(targetKeySet);
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
             SourceViewSource         = sourcePanelSource;
             sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
@@ -83,18 +78,7 @@ public class ListTransfer : AbstractTransfer
 
         if (changeType.HasFlag(FilterChangeType.Target))
         {
-            IEnumerable<IItemKey>? targetPanelSource = null;
-            if (ItemsSource != null)
-            {
-                targetPanelSource = targetKeySet == null
-                    ? Array.Empty<IItemKey>()
-                    : ItemsSource
-                        .Where(item => targetKeySet.Contains(item.ItemKey ?? default))
-                        .Where(item => !IsFilterEnabled || string.IsNullOrEmpty(TargetFilterValue) ||
-                                       (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
-                                           TargetFilterValue) ?? false))
-                        .ToArray();
-            }
+            var targetPanelSource = BuildTargetPanelSource(targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;
             TargetViewSource         = targetPanelSource;
             targetItemKeys           = BuildItemKeyList(targetPanelSource);

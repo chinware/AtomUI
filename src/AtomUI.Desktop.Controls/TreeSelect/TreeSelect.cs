@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
@@ -358,7 +359,7 @@ public class TreeSelect : AbstractSelect
     {
         if (_treeView != null)
         {
-            _treeView.ItemsSource = Items.Cast<object?>().ToList();
+            _treeView.ItemsSource = BuildItemsSourceList(Items);
         }
     }
 
@@ -470,7 +471,7 @@ public class TreeSelect : AbstractSelect
         {
             _treeView.SelectionChanged    += HandleTreeViewSelectionChanged;
             _treeView.CheckedItemsChanged += HandleTreeViewItemsCheckedChanged;
-            _treeView.ItemsSource         =  Items.Cast<object?>().ToList();
+            _treeView.ItemsSource         =  BuildItemsSourceList(Items);
         }
 
         ConfigureSelectionIsEmpty();
@@ -578,8 +579,8 @@ public class TreeSelect : AbstractSelect
             }
             else
             {
-                var currentSet  = _selectedItems.ToHashSet();
-                var treeViewSet = _treeView.SelectedItems.Cast<ITreeItemNode>().ToHashSet();
+                var currentSet  = BuildTreeNodeSet(_selectedItems);
+                var treeViewSet = BuildTreeNodeSet(_treeView.SelectedItems);
                 if (!currentSet.SetEquals(treeViewSet))
                 {
                     needSync = true;
@@ -591,7 +592,7 @@ public class TreeSelect : AbstractSelect
                 try
                 {
                     _needSkipSyncSelection = true;
-                    SelectedItems          = _treeView.SelectedItems.Cast<ITreeItemNode>().ToList();
+                    SelectedItems          = BuildTreeNodeList(_treeView.SelectedItems);
                 }
                 finally
                 {
@@ -628,8 +629,8 @@ public class TreeSelect : AbstractSelect
         }
         else
         {
-            var currentSet  = _selectedItems.ToHashSet();
-            var treeViewSet = _treeView.CheckedItems.Cast<ITreeItemNode>().ToHashSet();
+            var currentSet  = BuildTreeNodeSet(_selectedItems);
+            var treeViewSet = BuildTreeNodeSet(_treeView.CheckedItems);
             if (!currentSet.SetEquals(treeViewSet))
             {
                 needSync = true;
@@ -641,7 +642,7 @@ public class TreeSelect : AbstractSelect
             try
             {
                 _needSkipSyncSelection = true;
-                SelectedItems          = _treeView.CheckedItems.Cast<ITreeItemNode>().ToList();
+                SelectedItems          = BuildTreeNodeList(_treeView.CheckedItems);
             }
             finally
             {
@@ -829,7 +830,7 @@ public class TreeSelect : AbstractSelect
         {
             if (SelectedItems != null)
             {
-                var selectedItems = new List<ITreeItemNode>();
+                var selectedItems = new List<ITreeItemNode>(SelectedItems.Count);
                 foreach (var item in SelectedItems)
                 {
                     selectedItems.Add(item);
@@ -887,19 +888,24 @@ public class TreeSelect : AbstractSelect
                             }
                             else
                             {
-                                var treeViewSet  = _treeView.SelectedItems.Cast<ITreeItemNode>().ToList();
-                                var currentSet   = SelectedItems.ToList();
-                                var deletedItems = treeViewSet.Except(currentSet);
-                                var addedItems   = currentSet.Except(treeViewSet);
+                                var treeViewItems = BuildTreeNodeList(_treeView.SelectedItems);
+                                var treeViewSet   = BuildTreeNodeSet(treeViewItems);
+                                var currentSet    = BuildTreeNodeSet(SelectedItems);
                        
-                                foreach (var item in deletedItems)
+                                foreach (var item in treeViewItems)
                                 {
-                                    _treeView.SelectedItems.Remove(item);
+                                    if (!currentSet.Contains(item))
+                                    {
+                                        _treeView.SelectedItems.Remove(item);
+                                    }
                                 }
 
-                                foreach (var item in addedItems)
+                                foreach (var item in SelectedItems)
                                 {
-                                    _treeView.SelectedItems.Add(item);
+                                    if (!treeViewSet.Contains(item))
+                                    {
+                                        _treeView.SelectedItems.Add(item);
+                                    }
                                 }
                             }
                         }
@@ -919,18 +925,23 @@ public class TreeSelect : AbstractSelect
                         }
                         else
                         {
-                            var treeViewSet  = _treeView.CheckedItems.Cast<ITreeItemNode>().ToList();
-                            var currentSet   = SelectedItems.ToList();
-                            var deletedItems = treeViewSet.Except(currentSet);
-                            var addedItems   = currentSet.Except(treeViewSet);
-                            foreach (var item in deletedItems)
+                            var treeViewItems = BuildTreeNodeList(_treeView.CheckedItems);
+                            var treeViewSet   = BuildTreeNodeSet(treeViewItems);
+                            var currentSet    = BuildTreeNodeSet(SelectedItems);
+                            foreach (var item in treeViewItems)
                             {
-                                _treeView.CheckedItems.Remove(item);
+                                if (!currentSet.Contains(item))
+                                {
+                                    _treeView.CheckedItems.Remove(item);
+                                }
                             }
 
-                            foreach (var item in addedItems)
+                            foreach (var item in SelectedItems)
                             {
-                                _treeView.CheckedItems.Add(item);
+                                if (!treeViewSet.Contains(item))
+                                {
+                                    _treeView.CheckedItems.Add(item);
+                                }
                             }
                         }
                     }
@@ -954,16 +965,22 @@ public class TreeSelect : AbstractSelect
             }
             else
             {
-                var effectiveSelectedItems = new List<ITreeItemNode>();
+                var effectiveSelectedItems = new List<ITreeItemNode>(SelectedItems.Count);
                 if (ShowCheckedStrategy.HasFlag(TreeSelectCheckedStrategy.ShowParent))
                 {
-                    var selectedSet = SelectedItems.ToHashSet();
-                    var fullySelectedParents = SelectedItems.Where(node => node.Children.All(child => selectedSet.Contains(child)))
-                                                            .ToHashSet();
+                    var selectedSet          = BuildTreeNodeSet(SelectedItems);
+                    var fullySelectedParents = new HashSet<ITreeItemNode>(SelectedItems.Count);
                     foreach (var node in SelectedItems)
                     {
-                        bool isDescendantOfFullySelectedParent = fullySelectedParents
-                            .Any(parent => IsDescendantOf(node, parent));
+                        if (AreAllChildrenSelected(node.Children, selectedSet))
+                        {
+                            fullySelectedParents.Add(node);
+                        }
+                    }
+                    foreach (var node in SelectedItems)
+                    {
+                        var isDescendantOfFullySelectedParent =
+                            HasDescendantParent(node, fullySelectedParents);
             
                         if (!isDescendantOfFullySelectedParent)
                         {
@@ -975,7 +992,7 @@ public class TreeSelect : AbstractSelect
                 {
                     foreach (var node in SelectedItems)
                     {
-                        if (!node.Children.Any())
+                        if (!HasChildren(node.Children))
                         {
                             effectiveSelectedItems.Add(node);
                         }
@@ -988,6 +1005,97 @@ public class TreeSelect : AbstractSelect
         {
             EffectiveSelectedItems = null;
         }
+    }
+
+    private static List<object?> BuildItemsSourceList(IEnumerable source)
+    {
+        var items = source is ICollection collection
+            ? new List<object?>(collection.Count)
+            : new List<object?>();
+        foreach (var item in source)
+        {
+            items.Add(item);
+        }
+        return items;
+    }
+
+    private static List<ITreeItemNode> BuildTreeNodeList(IEnumerable source)
+    {
+        var items = source is ICollection collection
+            ? new List<ITreeItemNode>(collection.Count)
+            : new List<ITreeItemNode>();
+        foreach (var item in source)
+        {
+            items.Add((ITreeItemNode)item!);
+        }
+        return items;
+    }
+
+    private static HashSet<ITreeItemNode> BuildTreeNodeSet(IEnumerable source)
+    {
+        var items = source is ICollection collection
+            ? new HashSet<ITreeItemNode>(collection.Count)
+            : new HashSet<ITreeItemNode>();
+        foreach (var item in source)
+        {
+            items.Add((ITreeItemNode)item!);
+        }
+        return items;
+    }
+
+    private static HashSet<ITreeItemNode> BuildTreeNodeSet(ICollection<ITreeItemNode> source)
+    {
+        var items = new HashSet<ITreeItemNode>(source.Count);
+        foreach (var item in source)
+        {
+            items.Add(item);
+        }
+        return items;
+    }
+
+    private static bool AreAllChildrenSelected(
+        IEnumerable<ITreeItemNode> children,
+        ISet<ITreeItemNode> selected)
+    {
+        foreach (var child in children)
+        {
+            if (!selected.Contains(child))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool HasChildren(IEnumerable<ITreeItemNode> children)
+    {
+        if (children is ICollection<ITreeItemNode> collection)
+        {
+            return collection.Count > 0;
+        }
+
+        if (children is IReadOnlyCollection<ITreeItemNode> readOnlyCollection)
+        {
+            return readOnlyCollection.Count > 0;
+        }
+
+        foreach (var _ in children)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool HasDescendantParent(ITreeItemNode node, IEnumerable<ITreeItemNode> parents)
+    {
+        foreach (var parent in parents)
+        {
+            if (IsDescendantOf(node, parent))
+            {
+                return true;
+            }
+        }
+        return false;
     }
         
     private bool IsDescendantOf(ITreeItemNode node, ITreeItemNode parent)

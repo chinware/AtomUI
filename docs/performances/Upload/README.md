@@ -1,13 +1,13 @@
 # Upload 性能评估
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 1 #5
-> 状态：已建立 Gallery baseline；本轮 3 个页面级候选均未通过收益门槛；后续仅保留单图预览路径的 structural-only 分配收敛。
+> 状态：已建立 Gallery baseline；本轮 3 个页面级候选均未通过收益门槛；后续仅保留单图预览和运行期任务路径的 structural-only 分配收敛。
 
 ---
 
 ## 0. 结论
 
-本轮页面级候选只保留 `AtomUI.GalleryPerformance` 的 `upload` showcase 映射，方便后续复测。后续追加的单图预览路径只减少临时集合，不声明页面级 timing 收益。
+本轮页面级候选只保留 `AtomUI.GalleryPerformance` 的 `upload` showcase 映射，方便后续复测。后续追加的单图预览和运行期任务路径只减少临时集合 / 重复扫描 / 重复写入，不声明页面级 timing 收益。
 
 | 指标 | baseline |
 | --- | ---: |
@@ -59,8 +59,38 @@
 | PictureShapeList 单图预览 Sources wrapper / FilePath change | 1 list | 1 fixed array | 结构替换 | 分配更紧 | 单元素 sources 不再创建可增长 List |
 | Directory upload file enumeration LINQ iterator / selected directory | 1 iterator | 0 iterators | `(1 - 0) / 1` | 100.00% | 结构收益；目录上传枚举文件时不再经 `.Select(...)` 包装 |
 | Drop files list capacity / drop event | dynamic growth | exact capacity | structural | 分配更紧 | 按 `DataTransfer.Items.Count` 预分配 drop 文件列表 |
+| Upload task lookup LINQ calls / progress-complete-fail-cancel-remove | 5 `FirstOrDefault(predicate)` | 0 LINQ calls | `(5 - 0) / 5` | 100.00% | 上传回调按 `TaskId` 查任务改为显式扫描，避免每次回调创建 predicate |
+| Picture trigger lookup LINQ calls / load-listtype change | 2 `FirstOrDefault(predicate)` | 0 LINQ calls | `(2 - 0) / 2` | 100.00% | PictureCard / PictureCircle trigger 查找改为显式扫描 |
+| CurrentTaskList snapshot `ToArray()` callsites / task list change | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；任务列表快照改为 Count/indexer 复制，数组快照语义不变 |
 
 说明：这是单图预览路径的结构性收益；不作为 `UploadShowCase` 页面导航收益证明。
+
+### 2.1 追加结构优化：运行期任务路径
+
+本轮继续收敛 Upload 实际上传中的小热路径，不改上传调度、列表显示、默认任务导入或 trigger 逻辑：
+
+- 图片扩展名判断保留 `RegexOptions.IgnoreCase`，去掉每个文件的 `ToLowerInvariant()` 临时字符串，并补上 `RegexOptions.CultureInvariant` 维持 invariant 口径。
+- `CurrentTaskList` 数组快照保留原语义，但复制前缓存 `TaskInfoList.Count`，避免 N 项快照过程中反复读取 Count。
+- 上传进度回调只有第一次从非运行态进入运行态时写 `IsTaskRunning=true`；后续 progress 不再重复写同一个 direct property。
+- 完成 / 失败 / 取消后检查是否仍有任务运行时，找到第一个 uploading 后立即结束扫描，并且状态不变时不再重复写 `IsTaskRunning`。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Image extension lowercase temp strings / uploaded file | 1 string | 0 strings | `(1 - 0) / 1` | 100.00% | 有效；大小写匹配交给 compiled regex |
+| CurrentTaskList Count reads / 10-task snapshot | 12 reads | 1 read | `(12 - 1) / 12` | 91.67% | 结构收益；N 项通式为 `N + 2 -> 1` |
+| Repeated IsTaskRunning writes / progress callback after first progress | 1 write | 0 writes | `(1 - 0) / 1` | 100.00% | 有效；运行态不变时跳过 property write |
+| Task-running scan items / completion with 10 tasks and first task still uploading | 10 items | 1 item | `(10 - 1) / 10` | 90.00% | 数据相关收益；找到 uploading 后提前结束 |
+| Unchanged IsTaskRunning writes / completion-fail-cancel check | 1 write | 0 writes | `(1 - 0) / 1` | 100.00% | 有效；状态不变时不触发 direct property write |
+
+说明：这是运行期上传交互 structural-only 收益；没有新增 UploadShowCase 页面 timing 对比，不声明页面加载速度提升。
+
+本次追加验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+```
+
+结果：0 warning / 0 error。当前 performance harness 没有独立 `--verify-upload-states`。
 
 ---
 

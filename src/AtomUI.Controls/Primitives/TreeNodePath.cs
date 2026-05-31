@@ -114,7 +114,7 @@ public sealed record TreeNodePath
         }
         
         var newSegments = new string[_segmentsArray.Length + 1];
-        _segmentsArray.CopyTo(newSegments, 0);
+        Array.Copy(_segmentsArray, newSegments, _segmentsArray.Length);
         newSegments[^1] = segment;
         return new TreeNodePath(newSegments, true);
     }
@@ -131,8 +131,8 @@ public sealed record TreeNodePath
         }
 
         var newSegments = new string[_segmentsArray.Length + other.Length];
-        _segmentsArray.CopyTo(newSegments, 0);
-        other._segmentsArray.CopyTo(newSegments, _segmentsArray.Length);
+        Array.Copy(_segmentsArray, newSegments, _segmentsArray.Length);
+        Array.Copy(other._segmentsArray, 0, newSegments, _segmentsArray.Length, other.Length);
         
         return new TreeNodePath(newSegments, true);
     }
@@ -153,7 +153,8 @@ public sealed record TreeNodePath
             return this;
         }
 
-        var newSegments = _segmentsArray.ToArray();
+        var newSegments = new string[_segmentsArray.Length];
+        Array.Copy(_segmentsArray, newSegments, _segmentsArray.Length);
         newSegments[index] = newValue;
         
         return new TreeNodePath(newSegments, true);
