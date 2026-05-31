@@ -12,7 +12,7 @@
 - collapse `IconButton` 保留在 ControlTheme 中，符合 Theme Static Rule；隐藏或不可折叠时不再构造和保留 `PathIcon`。
 - lazy 拖拽预览复用已有 `TranslateTransform`，避免每个 drag delta 重新分配 transform。
 - `SplitterHandle` 转发拖拽事件时复用原始 `VectorEventArgs`，不再为每个 started/delta/completed 事件复制参数对象。
-- `Splitter.Children` 动态 add/remove 同步到 `SplitterPanel.Children` 时不再通过 `OfType<Control>().ToList()` 创建 LINQ iterator + `List<T>`，改为一次 exact-size `Control[]` 拷贝。
+- `Splitter.Children` 动态 add 同步到 `SplitterPanel.Children` 时不再通过 `OfType<Control>().ToList()` 创建 LINQ iterator + `List<T>`，改为一次 exact-size `Control[]` 拷贝；动态 remove 进一步改为 indexed `RemoveRange`，不再为 remove 构造数组和 `RemoveAll` 内部 `HashSet`。
 - `SplitterPanel` 刷新内部 panel 缓存时复用 `_panels`，不再通过 `Children.ToList()` 创建临时 `List<T>` 和 backing array。
 - resize 事件上报 sizes 时改为一次 exact-size `double[]`，去掉 `Select(...).ToArray()` 后外层再 `.ToArray()` 的双重数组分配。
 
@@ -61,13 +61,17 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 
 ### 1.1 动态 Children 同步结构收益
 
-本轮追加优化点：`Splitter.Children` 运行时 add/remove 时，旧路径会对 `NotifyCollectionChangedEventArgs.NewItems/OldItems` 执行 `OfType<Control>().ToList()`，每次至少创建 1 个 LINQ iterator、1 个 `List<Control>` 和其 backing array。现在直接按 `items.Count` 拷贝到 `Control[]` 后传给 `SplitterPanel.Children.InsertRange/RemoveAll`，保持批量同步语义，但少一个 iterator 和一个 List 对象。
+本轮追加优化点：`Splitter.Children` 运行时 add/remove 时，旧路径会对 `NotifyCollectionChangedEventArgs.NewItems/OldItems` 执行 `OfType<Control>().ToList()`，每次至少创建 1 个 LINQ iterator、1 个 `List<Control>` 和其 backing array。add 路径直接按 `items.Count` 拷贝到 `Control[]` 后传给 `SplitterPanel.Children.InsertRange`，保持批量同步语义，但少一个 iterator 和一个 List 对象。
+
+后续追加优化点：remove 路径从 `RemoveAll(CopyControls(e.OldItems))` 改为 `RemoveRange(OldStartingIndex, OldItems.Count)`。动态 children 是镜像集合，collection changed args 已提供删除范围；直接 range 删除可以避免 remove 专用数组、`RemoveAll` 内部 `HashSet` 和目标集合扫描。
 
 后续追加优化点：`SplitterPanel.RefreshPanelsAndHandles` 不再用 `Children.ToList()` 建临时列表；拖拽 resize 的 started/delta/completed 事件不再先 `Select(...).ToArray()` 再外层 `.ToArray()`，改为一次手写 exact-size `double[]` 填充。该收益是运行时结构性分配下降，不声明页面加载 timing 提升。
 
 | metric | baseline | optimized | formula | improvement | conclusion |
 | --- | ---: | ---: | --- | ---: | --- |
 | Splitter child add/remove temp objects / collection change | 3 objects | 1 array | `(3 - 1) / 3` | 66.67% | 结构性分配下降；只声明动态 children 变更路径收益 |
+| Splitter child remove temp objects / remove change | 2 objects | 0 objects | `(2 - 0) / 2` | 100.00% | 结构性分配下降；remove 不再构造 `Control[]` 和 `HashSet` |
+| Splitter child remove target scans / remove change | 1 scan | 0 scans | `(1 - 0) / 1` | 100.00% | 有效；按 `OldStartingIndex` 直接删除镜像 children |
 | SplitterPanel refresh temp objects / refresh | 2 objects | 0 objects | `(2 - 0) / 2` | 100.00% | 结构性分配下降；只声明内部 panel 缓存刷新路径收益 |
 | Splitter resize event sizes temp objects / resize event | 3 objects | 1 array | `(3 - 1) / 3` | 66.67% | 结构性分配下降；只声明拖拽事件上报 sizes 路径收益 |
 

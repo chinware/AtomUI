@@ -44,6 +44,17 @@ _grid.ColumnDefinitions.Clear();
 | --- | --- | --- |
 | `StepsItemIndicator` progress `Pen` cache | 首轮看似改善，但 rerun repeated timing 不稳定/退化 | 已回滚 |
 
+## 1.1 追加结构优化：pointer release hit-test 去 LINQ
+
+`Steps.OnPointerReleased()` 触控路径原先在 `GetVisualsAt()` 后使用 `.Any(c => container == c || container.IsVisualAncestorOf(c))` 判断 release 是否仍落在当前 item 内。本轮改为共享 `VisualHitTestUtils.ContainsSelfOrDescendantAt()`，内部显式 `foreach`，不再创建 LINQ predicate/iterator。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Steps pointer-release hit-test LINQ operators / release | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；触控 release 命中判断不再走 `.Any(predicate)` |
+| Hit-test behavior | self/descendant match | self/descendant match | n/a | 0.00% | 行为保持 |
+
+说明：这是交互路径结构收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
+
 ---
 
 ## 2. 复现命令

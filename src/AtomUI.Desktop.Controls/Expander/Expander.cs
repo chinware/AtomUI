@@ -11,6 +11,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
@@ -37,6 +38,9 @@ public enum ExpanderIconPosition
     ExpanderPseudoClass.ExpandRight)]
 public class Expander : AvaloniaExpander, IMotionAwareControl
 {
+    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
+    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
+
     #region 公共属性定义
 
     public static readonly StyledProperty<SizeType> SizeTypeProperty =
@@ -202,6 +206,11 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_expandButton is not null)
+        {
+            _expandButton.Click -= HandleExpandButtonClicked;
+        }
+
         _motionActor     = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
         _headerDecorator = e.NameScope.Find<Border>("PART_HeaderDecorator");
         _expandButton    = e.NameScope.Find<IconButton>("PART_ExpandButton");
@@ -211,20 +220,23 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         _tempAnimationDisabled = false;
         if (_expandButton is not null)
         {
-            _expandButton.Click += (sender, args) =>
-            {
-                if (_animating)
-                {
-                    return;
-                }
-
-                IsExpanded = !IsExpanded;
-            };
+            _expandButton.Click -= HandleExpandButtonClicked;
+            _expandButton.Click += HandleExpandButtonClicked;
         }
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
         SetupDefaultIcon();
         UpdatePseudoClasses();
+    }
+
+    private void HandleExpandButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        if (_animating)
+        {
+            return;
+        }
+
+        IsExpanded = !IsExpanded;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -339,7 +351,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         _animating = true;
         var motion = new ExpandMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
-            new CubicEaseOut());
+            DefaultExpandMotionEasing);
         await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
         _animating = false;
     }
@@ -360,7 +372,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         _animating = true;
         var motion = new CollapseMotion(DirectionFromExpandDirection(ExpandDirection),
             MotionDuration,
-            new CubicEaseIn());
+            DefaultCollapseMotionEasing);
         await motion.RunAsync(_motionActor);
         _motionActor.SetCurrentValue(IsVisibleProperty, false);
         _animating = false;

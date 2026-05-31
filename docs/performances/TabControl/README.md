@@ -35,6 +35,8 @@
 | --- | ---: | ---: | --- | ---: | --- |
 | BaseTabControl tab strip border `Pen` allocations / repeated render | 1 pen | 0 pens after first render | `(1 - 0) / 1` | 100.00% | structural-only；每个 TabControl 后续 render 不再为边线分配 `Pen` |
 | BaseTabStrip tab strip border `Pen` allocations / repeated render | 1 pen | 0 pens after first render | `(1 - 0) / 1` | 100.00% | structural-only；每个 TabStrip 后续 render 不再为边线分配 `Pen` |
+| Overflow menu item close anonymous handler callsites / apply template | 1 anonymous handler | 0 anonymous handlers | `(1 - 0) / 1` | 100.00% | structural-only；close button 改为可解绑方法组 |
+| Overflow menu item close handler retained risk / re-template | 1 handler risk | 0 handler risk | `(1 - 0) / 1` | 100.00% | 正确性收益；旧 close button 先解绑 |
 
 ---
 
@@ -233,3 +235,16 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 | 生产文件范围 | 8 个文件，均在 `TabControl` |
 
 模板分支有一定重复，但它把视觉结构留在 ControlTheme 内，避免了 C# 动态创建带来的生命周期和主题选择器风险。
+
+---
+
+## 6. 追加结构优化：Overflow 菜单关闭清理去 LINQ
+
+`TabControlScrollViewer` 和 `TabStripScrollViewer` 在 overflow 菜单关闭时，需要从 flyout items 上解绑 `Click` / `CloseTab`。本轮保持只处理对应 overflow menu item 类型的语义，但将 `flyout.Items.OfType<...>()` 改为显式循环。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TabControl overflow cleanup LINQ operators / flyout close | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；关闭 overflow 菜单时不再创建 `OfType` iterator |
+| TabStrip overflow cleanup LINQ operators / flyout close | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；关闭 overflow 菜单时不再创建 `OfType` iterator |
+
+说明：这是 runtime cleanup 路径的结构性收益；不声明页面导航 timing 提升。

@@ -317,8 +317,7 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         {
             var container = GetContainerFromEventSource(e.Source);
             if (container != null
-                && container.GetVisualsAt(e.GetPosition(container))
-                            .Any(c => container == c || container.IsVisualAncestorOf(c)))
+                && container.ContainsSelfOrDescendantAt(e.GetPosition(container)))
             {
                 var containerFromEventSource = GetContainerFromEventSource(e.Source);
                 if (containerFromEventSource is CollapseItem collapseItem)

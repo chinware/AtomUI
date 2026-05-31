@@ -38,11 +38,22 @@ internal class BaseOverflowMenuItem : MenuItem
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_iconButton is not null)
+        {
+            _iconButton.Click -= HandleCloseButtonClicked;
+        }
+
         _iconButton = e.NameScope.Find<IconButton>("PART_ItemCloseButton");
         if (_iconButton is not null)
         {
-            _iconButton.Click += (sender, args) => { NotifyCloseRequest(); };
+            _iconButton.Click -= HandleCloseButtonClicked;
+            _iconButton.Click += HandleCloseButtonClicked;
         }
+    }
+
+    private void HandleCloseButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        NotifyCloseRequest();
     }
 
     protected virtual void NotifyCloseRequest()

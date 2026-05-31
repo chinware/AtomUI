@@ -221,9 +221,12 @@ public class NavMenu : ItemsControl,
         {
             if (change.GetNewValue<bool>())
             {
-                foreach (var child in LogicalChildren.OfType<NavMenuItem>())
+                for (var i = 0; i < LogicalChildren.Count; i++)
                 {
-                    child.IsSubMenuOpen = false;
+                    if (LogicalChildren[i] is NavMenuItem child)
+                    {
+                        child.IsSubMenuOpen = false;
+                    }
                 }
             }
         }
@@ -355,9 +358,11 @@ public class NavMenu : ItemsControl,
         {
             if (e.Source is INavMenuItem menuItem && menuItem.Parent == this)
             {
-                foreach (var child in this.GetLogicalChildren().OfType<INavMenuItem>())
+                for (var i = 0; i < LogicalChildren.Count; i++)
                 {
-                    if (child != menuItem && child.IsSubMenuOpen)
+                    if (LogicalChildren[i] is INavMenuItem child &&
+                        child != menuItem &&
+                        child.IsSubMenuOpen)
                     {
                         child.IsSubMenuOpen = false;
                     }
@@ -424,9 +429,13 @@ public class NavMenu : ItemsControl,
 
     public void Close()
     {
-        foreach (var i in ((INavMenu)this).SubItems)
+        var children = LogicalChildren;
+        for (var i = 0; i < children.Count; i++)
         {
-            i.Close();
+            if (children[i] is INavMenuItem menuItem)
+            {
+                menuItem.Close();
+            }
         }
         
         SelectedItem = null;

@@ -385,15 +385,15 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     public async Task CloseItemAsync(INavMenuItem menuItem)
     {
+        var children = menuItem.LogicalChildren;
+        for (var i = 0; i < children.Count; i++)
         {
-            foreach (var child in menuItem.SubItems)
+            if (children[i] is NavMenuItem childNavMenuItem)
             {
-                if (child is NavMenuItem childNavMenuItem)
-                {
-                    await CloseItemAsync(childNavMenuItem);
-                }
+                await CloseItemAsync(childNavMenuItem);
             }
         }
+
         if (menuItem is NavMenuItem navMenuItem)
         {
             if (navMenuItem._popup != null && navMenuItem._popup.IsOpen)
@@ -407,13 +407,15 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
     private void ClearStateRecursively(INavMenuItem menuItem)
     {
-        foreach (var child in menuItem.SubItems)
+        var children = menuItem.LogicalChildren;
+        for (var i = 0; i < children.Count; i++)
         {
-            if (child is NavMenuItem childNavMenuItem)
+            if (children[i] is NavMenuItem childNavMenuItem)
             {
                 ClearStateRecursively(childNavMenuItem);
             }
         }
+
         if (menuItem is NavMenuItem navMenuItem)
         {
             navMenuItem.IsSubMenuOpen    = false;
@@ -430,9 +432,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
                 // TODO 我们在这里对模式做一个区分, Inline 暂时不互斥关闭，后面有时间看是否加一个互斥的标记
                 if (Mode != NavMenuMode.Inline)
                 {
-                    foreach (var child in ((INavMenuItem)this).SubItems)
+                    var children = LogicalChildren;
+                    for (var i = 0; i < children.Count; i++)
                     {
-                        if (child != menuItem && child.IsSubMenuOpen)
+                        if (children[i] is INavMenuItem child &&
+                            child != menuItem &&
+                            child.IsSubMenuOpen)
                         {
                             child.IsSubMenuOpen = false;
                         }
@@ -630,9 +635,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
                     RaiseEvent(new RoutedEventArgs(SubmenuClosedEvent));
                 }
               
-                foreach (var item in ItemsView.OfType<NavMenuItem>())
+                for (var i = 0; i < ItemsView.Count; i++)
                 {
-                    item.TryUpdateCanExecute();
+                    if (ItemsView[i] is NavMenuItem item)
+                    {
+                        item.TryUpdateCanExecute();
+                    }
                 }
             });
         }
@@ -640,9 +648,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (value)
             {
-                foreach (var item in ItemsView.OfType<NavMenuItem>())
+                for (var i = 0; i < ItemsView.Count; i++)
                 {
-                    item.TryUpdateCanExecute();
+                    if (ItemsView[i] is NavMenuItem item)
+                    {
+                        item.TryUpdateCanExecute();
+                    }
                 }
                 RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
             }
@@ -705,9 +716,13 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     private void CloseSubmenus()
     {
-        foreach (var child in ((INavMenuItem)this).SubItems)
+        var children = LogicalChildren;
+        for (var i = 0; i < children.Count; i++)
         {
-            child.IsSubMenuOpen = false;
+            if (children[i] is INavMenuItem child)
+            {
+                child.IsSubMenuOpen = false;
+            }
         }
     }
     

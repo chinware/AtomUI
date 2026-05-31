@@ -190,7 +190,7 @@ public class Splitter : TemplatedControl
                 break;
 
             case NotifyCollectionChangedAction.Remove:
-                _splitterPanel?.Children.RemoveAll(CopyControls(e.OldItems!));
+                _splitterPanel?.Children.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
                 break;
 
             case NotifyCollectionChangedAction.Replace:

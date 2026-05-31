@@ -532,8 +532,7 @@ public class Steps : SelectingItemsControl,
         if (IsItemClickable && e.InitialPressMouseButton == MouseButton.Left && e.Pointer.Type != PointerType.Mouse)
         {
             var container = GetContainerFromEventSource(e.Source);
-            if (container != null && container.GetVisualsAt(e.GetPosition(container))
-                                              .Any(c => container == c || container.IsVisualAncestorOf(c)))
+            if (container != null && container.ContainsSelfOrDescendantAt(e.GetPosition(container)))
             {
                 e.Handled = UpdateSelectionFromEvent(container, e);
             }

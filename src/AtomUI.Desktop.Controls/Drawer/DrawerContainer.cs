@@ -20,6 +20,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class DrawerContainer : ContentControl
 {
+    private static readonly CubicEaseOut DefaultMotionEasing = new();
+
     #region 内部属性定义
 
     internal static readonly DirectProperty<DrawerContainer, DrawerPlacement> PlacementProperty =
@@ -429,38 +431,38 @@ internal class DrawerContainer : ContentControl
         {
             if (placement == DrawerPlacement.Left)
             {
-                motion = new MoveLeftInMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+                motion = new MoveLeftInMotion(_motionActor.DesiredSize.Width, duration, DefaultMotionEasing);
             }
             else if (placement == DrawerPlacement.Right)
             {
-                motion = new MoveRightInMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+                motion = new MoveRightInMotion(_motionActor.DesiredSize.Width, duration, DefaultMotionEasing);
             }
             else if (placement == DrawerPlacement.Top)
             {
-                motion = new MoveUpInMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
+                motion = new MoveUpInMotion(_motionActor.DesiredSize.Height, duration, DefaultMotionEasing);
             }
             else
             {
-                motion = new MoveDownInMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
+                motion = new MoveDownInMotion(_motionActor.DesiredSize.Height, duration, DefaultMotionEasing);
             }
         }
         else
         {
             if (placement == DrawerPlacement.Left)
             {
-                motion = new MoveLeftOutMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+                motion = new MoveLeftOutMotion(_motionActor.DesiredSize.Width, duration, DefaultMotionEasing);
             }
             else if (placement == DrawerPlacement.Right)
             {
-                motion = new MoveRightOutMotion(_motionActor.DesiredSize.Width, duration, new CubicEaseOut());
+                motion = new MoveRightOutMotion(_motionActor.DesiredSize.Width, duration, DefaultMotionEasing);
             }
             else if (placement == DrawerPlacement.Top)
             {
-                motion = new MoveUpOutMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
+                motion = new MoveUpOutMotion(_motionActor.DesiredSize.Height, duration, DefaultMotionEasing);
             }
             else
             {
-                motion = new MoveDownOutMotion(_motionActor.DesiredSize.Height, duration, new CubicEaseOut());
+                motion = new MoveDownOutMotion(_motionActor.DesiredSize.Height, duration, DefaultMotionEasing);
             }
         }
 

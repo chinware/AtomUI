@@ -69,9 +69,11 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
         else if (menuItem.Parent != null)
         {
-            foreach (var sibling in menuItem.Parent.SubItems)
+            var siblings = menuItem.Parent.LogicalChildren;
+            for (var i = 0; i < siblings.Count; i++)
             {
-                if (sibling.IsSubMenuOpen)
+                if (siblings[i] is INavMenuItem sibling &&
+                    sibling.IsSubMenuOpen)
                 {
                     sibling.Close();
                 }
@@ -243,9 +245,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     {
         if (Menu != null)
         {
-            foreach (var i in Menu.SubItems)
+            var children = Menu.LogicalChildren;
+            for (var i = 0; i < children.Count; i++)
             {
-                i.Close();
+                if (children[i] is INavMenuItem menuItem)
+                {
+                    menuItem.Close();
+                }
             }
         }
     }

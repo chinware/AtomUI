@@ -148,8 +148,13 @@ internal class TabStripScrollViewer : BaseTabScrollViewer
         }
 
         flyout.Closed -= HandleMenuFlyoutClosed;
-        foreach (var item in flyout.Items.OfType<TabStripOverflowMenuItem>())
+        foreach (var flyoutItem in flyout.Items)
         {
+            if (flyoutItem is not TabStripOverflowMenuItem item)
+            {
+                continue;
+            }
+
             item.Click    -= HandleMenuItemClicked;
             item.CloseTab -= HandleCloseTabRequest;
         }

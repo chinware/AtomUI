@@ -20,6 +20,9 @@ namespace AtomUI.Desktop.Controls;
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
 public class CollapseItem : HeaderedContentControl, ISelectable
 {
+    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
+    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
+
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
@@ -331,7 +334,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
 
         InAnimating = true;
-        var motion = new SlideUpInMotion(MotionDuration, new CubicEaseOut());
+        var motion = new SlideUpInMotion(MotionDuration, DefaultExpandMotionEasing);
         Dispatcher.InvokeAsync(async () =>
         {
             await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
@@ -353,7 +356,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
 
         InAnimating = true;
-        var motion = new SlideUpOutMotion(MotionDuration, new CubicEaseIn());
+        var motion = new SlideUpOutMotion(MotionDuration, DefaultCollapseMotionEasing);
         Dispatcher.InvokeAsync(async () =>
         {
             await motion.RunAsync(_motionActor);
