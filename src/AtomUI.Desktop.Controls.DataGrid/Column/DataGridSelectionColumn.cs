@@ -117,12 +117,9 @@ public class DataGridSelectionColumn : DataGridColumn
     
     private void HandleColumnsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.OldItems != null)
+        if (_owningGrid != null && RemovedItemsContain(e, this))
         {
-            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems.Contains(this) && _owningGrid != null)
-            {
-                ReleaseOwningGrid();
-            }
+            ReleaseOwningGrid();
         }
     }
 

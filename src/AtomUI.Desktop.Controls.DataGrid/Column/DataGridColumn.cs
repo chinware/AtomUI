@@ -5,6 +5,7 @@
 
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using AtomUI.Utils;
 using Avalonia;
@@ -90,6 +91,25 @@ public abstract partial class DataGridColumn : AvaloniaObject
     {
         get => GetValue(WidthProperty);
         set => SetValue(WidthProperty, value);
+    }
+
+    protected static bool RemovedItemsContain(NotifyCollectionChangedEventArgs e, object item)
+    {
+        if (e.Action != NotifyCollectionChangedAction.Remove ||
+            e.OldItems is not { Count: > 0 } oldItems)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < oldItems.Count; i++)
+        {
+            if (Equals(oldItems[i], item))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     /// <summary>

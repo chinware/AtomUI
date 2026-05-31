@@ -4813,6 +4813,20 @@ Smoke-only 对比上一轮同参数复测。本轮没有保留会改变 `DataGri
 | DataGrid.Basic | 15.176 | 2948.2 | 305.0 | 1.0 | smoke 仍偏慢但低于 outlier；timing 不作为本轮收益 |
 | DataGrid.GalleryShape | 82.413 | 12409.4 | 1260.0 | 5.0 | 同轮异常翻倍，说明机器/进程环境抖动明显 |
 
+### 2.131 Special column remove detection indexed loop
+
+本轮优化点：`DataGridSelectionColumn`、`DataGridRowReorderColumn`、`DataGridCheckBoxColumn`、`DataGridOperationColumn`、`DataGridDetailExpanderColumn` 在监听 `Columns.CollectionChanged` 时，旧路径通过 `e.OldItems.Contains(this)` 判断自身是否被移除。本轮抽到 `DataGridColumn.RemovedItemsContain()`，只在 Remove action 下读取 `OldItems.Count` 并按 index 扫描，5 个 special column 复用同一实现。
+
+正确性边界：仍只处理 `NotifyCollectionChangedAction.Remove`；匹配语义保持 `Equals(oldItems[i], item)`；命中后仍走原来的 `ReleaseOwningGrid()`，未命中仍保持订阅。`--verify-datagrid-states` 覆盖 special columns 在 `Columns.Clear()` 后释放 cached owning grid，以及 reorder duplicate check 等相关行为。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Special-column removed-self detection `IList.Contains` callsites | 5 callsites | 0 callsites | `(5 - 0) / 5` | 100.00% | 有效；5 个 special column remove handler 改走共享 indexed scan |
+| OldItems action/null checks per special column handler | 2 nested checks | 1 shared helper check | structural | 更集中 | 结构收益；Remove/null/empty 判断统一在 helper 内 |
+| Special-column release behavior | existing release path | same release path | behavior preserved | n/a | 正确性保持；状态验证覆盖 `Columns.Clear()` 释放 |
+
+说明：这是动态列移除路径的结构性收益；不声明页面导航 timing 提升。
+
 ---
 
 ## 3. 验证
