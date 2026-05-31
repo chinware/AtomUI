@@ -12,6 +12,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Metadata;
 
@@ -264,15 +265,26 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_clearButton is not null)
+        {
+            _clearButton.Click -= HandleClearButtonClicked;
+        }
+
         _clearButton      = e.NameScope.Find<IconButton>("PART_ClearButton");
         if (_clearButton is not null)
         {
-            _clearButton.Click += (sender, args) => { NotifyClearButtonClicked(); };
+            _clearButton.Click -= HandleClearButtonClicked;
+            _clearButton.Click += HandleClearButtonClicked;
         }
         SetTextBoxPart(e.NameScope.Find<TextBox>("PART_TextBox"));
         ConfigureEffectiveShowClearButton();
         _buttonSpinner =  e.NameScope.Find<ButtonSpinner>("PART_Spinner");
         SetupContentRightAddOnBindings(e);
+    }
+
+    private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        NotifyClearButtonClicked();
     }
 
     private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)

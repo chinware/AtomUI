@@ -4,8 +4,10 @@ using AtomUI.Desktop.Controls.CalendarView;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.VisualTree;
 using PickerCalendar = AtomUI.Desktop.Controls.CalendarView.Calendar;
 
 namespace AtomUI.Desktop.Controls;
@@ -130,15 +132,22 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        RefreshPointerSubscriptions();
+    }
+
+    private void RefreshPointerSubscriptions()
+    {
         _pointerDisposables?.Dispose();
-        _pointerDisposables = new CompositeDisposable(2);
+        _pointerDisposables = null;
         if (CalendarView is not null)
         {
+            _pointerDisposables ??= new CompositeDisposable(2);
             _pointerDisposables.Add(CalendarView.GetObservable(PickerCalendar.IsPointerInMonthViewProperty)
                 .Subscribe(EmitChoosingStatusChanged));
         }
         if (TimeView is not null)
         {
+            _pointerDisposables ??= new CompositeDisposable(2);
             _pointerDisposables.Add(TimeView.GetObservable(TimeView.IsPointerInSelectorProperty)
                 .Subscribe(EmitChoosingStatusChanged));
         }
@@ -177,6 +186,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachTemplateEventHandlers();
         base.OnApplyTemplate(e);
         NowButton     = e.NameScope.Get<Button>("PART_NowButton");
         TodayButton   = e.NameScope.Get<Button>("PART_TodayButton");
@@ -205,26 +215,67 @@ internal class DatePickerPresenter : PickerPresenterBase
         if (TodayButton is not null)
         {
             TodayButton.Click          += HandleTodayButtonClicked;
-            TodayButton.PointerEntered += (sender, args) => { NotifyPointerEnterTodayButton(); };
-            TodayButton.PointerExited  += (sender, args) => { NotifyPointerExitTodayButton(); };
+            TodayButton.PointerEntered += HandleTodayButtonPointerEntered;
+            TodayButton.PointerExited  += HandleTodayButtonPointerExited;
         }
 
         if (NowButton is not null)
         {
             NowButton.Click          += HandleNowButtonClicked;
-            NowButton.PointerEntered += (sender, args) => { NotifyPointerEnterNowButton(); };
-            NowButton.PointerExited  += (sender, args) => { NotifyPointerExitNowButton(); };
+            NowButton.PointerEntered += HandleNowButtonPointerEntered;
+            NowButton.PointerExited  += HandleNowButtonPointerExited;
         }
 
         if (ConfirmButton is not null)
         {
             ConfirmButton.Click          += HandleConfirmButtonClicked;
             ConfirmButton.IsEnabled      =  SelectedDateTime is not null;
-            ConfirmButton.PointerEntered += (sender, args) => { NotifyPointerEnterConfirmButton(); };
-            ConfirmButton.PointerExited  += (sender, args) => { NotifyPointerExitConfirmButton(); };
+            ConfirmButton.PointerEntered += HandleConfirmButtonPointerEntered;
+            ConfirmButton.PointerExited  += HandleConfirmButtonPointerExited;
         }
 
         SetupConfirmButtonEnableStatus();
+        if (this.IsAttachedToVisualTree())
+        {
+            RefreshPointerSubscriptions();
+        }
+    }
+
+    private void DetachTemplateEventHandlers()
+    {
+        if (CalendarView is not null)
+        {
+            CalendarView.HoverDateChanged -= HandleCalendarViewDateHoverChanged;
+            CalendarView.DateSelected     -= HandleCalendarViewDateSelected;
+        }
+
+        if (TimeView is not null)
+        {
+            TimeView.HoverTimeChanged -= HandleTimeViewHoverChanged;
+            TimeView.TimeSelected     -= HandleTimeViewTimeSelected;
+            TimeView.TempTimeSelected -= HandleTimeViewTempTimeSelected;
+        }
+
+        if (TodayButton is not null)
+        {
+            TodayButton.Click          -= HandleTodayButtonClicked;
+            TodayButton.PointerEntered -= HandleTodayButtonPointerEntered;
+            TodayButton.PointerExited  -= HandleTodayButtonPointerExited;
+        }
+
+        if (NowButton is not null)
+        {
+            NowButton.Click          -= HandleNowButtonClicked;
+            NowButton.PointerEntered -= HandleNowButtonPointerEntered;
+            NowButton.PointerExited  -= HandleNowButtonPointerExited;
+        }
+
+        if (ConfirmButton is not null)
+        {
+            ConfirmButton.Click          -= HandleConfirmButtonClicked;
+            ConfirmButton.PointerEntered -= HandleConfirmButtonPointerEntered;
+            ConfirmButton.PointerExited  -= HandleConfirmButtonPointerExited;
+        }
     }
 
     protected virtual void NotifyPointerEnterConfirmButton()
@@ -271,6 +322,16 @@ internal class DatePickerPresenter : PickerPresenterBase
         NotifyTodayButtonClicked();
     }
 
+    private void HandleTodayButtonPointerEntered(object? sender, PointerEventArgs args)
+    {
+        NotifyPointerEnterTodayButton();
+    }
+
+    private void HandleTodayButtonPointerExited(object? sender, PointerEventArgs args)
+    {
+        NotifyPointerExitTodayButton();
+    }
+
     protected virtual void NotifyTodayButtonClicked()
     {
         SetCurrentValue(SelectedDateTimeProperty, DateTime.Today);
@@ -286,6 +347,16 @@ internal class DatePickerPresenter : PickerPresenterBase
     private void HandleNowButtonClicked(object? sender, RoutedEventArgs args)
     {
         NotifyNowButtonClicked();
+    }
+
+    private void HandleNowButtonPointerEntered(object? sender, PointerEventArgs args)
+    {
+        NotifyPointerEnterNowButton();
+    }
+
+    private void HandleNowButtonPointerExited(object? sender, PointerEventArgs args)
+    {
+        NotifyPointerExitNowButton();
     }
 
     protected virtual void NotifyNowButtonClicked()
@@ -309,6 +380,16 @@ internal class DatePickerPresenter : PickerPresenterBase
     private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
     {
         NotifyConfirmButtonClicked();
+    }
+
+    private void HandleConfirmButtonPointerEntered(object? sender, PointerEventArgs args)
+    {
+        NotifyPointerEnterConfirmButton();
+    }
+
+    private void HandleConfirmButtonPointerExited(object? sender, PointerEventArgs args)
+    {
+        NotifyPointerExitConfirmButton();
     }
 
     protected virtual void NotifyConfirmButtonClicked()

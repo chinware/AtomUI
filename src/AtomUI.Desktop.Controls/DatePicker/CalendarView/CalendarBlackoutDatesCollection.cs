@@ -106,7 +106,14 @@ internal sealed class CalendarBlackoutDatesCollection : ObservableCollection<Cal
    /// </returns>
    public bool ContainsAny(CalendarDateRange range)
     {
-        return this.Any(r => r.ContainsAny(range));
+        foreach (var dateRange in this)
+        {
+            if (dateRange.ContainsAny(range))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
    /// <summary>

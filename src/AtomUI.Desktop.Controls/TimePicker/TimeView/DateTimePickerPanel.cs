@@ -156,10 +156,12 @@ internal class DateTimePickerPanel : Panel,
     private bool _hasInit;
     private bool _suppressUpdateOffset;
     private ScrollContentPresenter? _parentScroller;
+    private readonly EventHandler<PointerEventArgs> _timeViewCellPointerEnteredHandler;
 
     public DateTimePickerPanel()
     {
         FormatDate = DateTime.Now;
+        _timeViewCellPointerEnteredHandler = HandleTimeViewCellPointerEntered;
         AddHandler(TappedEvent, HandleItemTapped, RoutingStrategies.Bubble);
         AddHandler(DoubleTappedEvent, HandleItemDoubleTapped, RoutingStrategies.Bubble);
     }
@@ -581,14 +583,7 @@ internal class DateTimePickerPanel : Panel,
                 Cursor                     = new Cursor(StandardCursorType.Hand),
                 IsMotionEnabled            = false
             };
-            item.PointerEntered += (sender, args) =>
-            {
-                if (sender is TimeViewCell target)
-                {
-                    var cellValue = (int)target.Tag!;
-                    CellHovered?.Invoke(this, new CellHoverEventArgs(new CellHoverInfo(PanelType, cellValue)));
-                }
-            };
+            item.PointerEntered += _timeViewCellPointerEnteredHandler;
             children.Add(item);
         }
 
@@ -596,6 +591,15 @@ internal class DateTimePickerPanel : Panel,
         {
             var numToRemove = children.Count - totalItemsInViewport;
             children.RemoveRange(children.Count - numToRemove, numToRemove);
+        }
+    }
+
+    private void HandleTimeViewCellPointerEntered(object? sender, PointerEventArgs args)
+    {
+        if (sender is TimeViewCell target)
+        {
+            var cellValue = (int)target.Tag!;
+            CellHovered?.Invoke(this, new CellHoverEventArgs(new CellHoverInfo(PanelType, cellValue)));
         }
     }
 

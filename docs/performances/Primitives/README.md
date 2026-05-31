@@ -147,6 +147,8 @@
 | TreeNodePath allocations / `Append(TreeNodePath)` | 2 arrays | 1 array | `(2 - 1) / 2` | 50.00% | 结构收益；两个来源路径均已校验，避免二次复制 |
 | TreeNodePath allocations / `GetParent()` non-empty path | 2 arrays | 1 array | `(2 - 1) / 2` | 50.00% | 结构收益；去掉 range slice + 构造函数复制的双数组 |
 | TreeNodePath allocations / `WithSegment(index, value)` | 2 arrays | 1 array | `(2 - 1) / 2` | 50.00% | 结构收益；替换值入口校验后复用 trusted 构造 |
+| TreeNodePath `WithSegment(index, value)` LINQ copy callsites | 1 `ToArray()` | 0 `ToArray()` | `(1 - 0) / 1` | 100.00% | 结构收益；仍保留 1 个目标数组，复制改为直接 `Array.Copy` |
+| TreeNodePath append copy helper dispatches | 2 `Array.CopyTo()` | 0 `Array.CopyTo()` | `(2 - 0) / 2` | 100.00% | 结构收益；append 路径统一直接 `Array.Copy` |
 | TreeNodePath allocations / `TreeNodePath.Empty.Append(path)` | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；空路径 append 直接复用已有不可变 path |
 | TreeNodePath allocations / single-segment `GetParent()` | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；直接复用 `TreeNodePath.Empty` |
 | TreeNodePath allocations / same-value `WithSegment(index, value)` | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；segment 未变时返回当前不可变 path |
@@ -196,6 +198,7 @@
 | DashboardProgress render pen allocations / normal repeated frame after first | 3 objects | 0 objects | `(3 - 0) / 3` | 100.00% | 结构收益；dashboard groove / indicator / success 三类 pen 复用，不声明页面加载 speedup |
 | DashboardProgress render pen allocations / step repeated frame after first | 3 objects | 0 objects | `(3 - 0) / 3` | 100.00% | 结构收益；dashboard step groove / indicator / success 三类 pen 复用，不声明页面加载 speedup |
 | BorderRenderHelper dashed mode cache correctness / dash enabled toggle | stale mode risk | refreshed mode | `1 -> 0 stale cache risk` | 100.00% | 正确性收敛；dash 状态切换纳入 cache key |
+| AddOnDecoratedBox icon brush descendant filter LINQ operators / container brush sync | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；addon icon 刷色扫描改为显式 `Icon` first-class 分支，不声明页面加载 speedup |
 | AbstractSelect compact-space usage writes / repeated same position notification | 1 write | 0 writes | `(1 - 0) / 1` | 100.00% | 结构收益；Select compact 状态未变时不写 |
 | AbstractSelect compact-space position writes / repeated same position notification | 1 write | 0 writes | `(1 - 0) / 1` | 100.00% | 结构收益；Select position 未变时不写 |
 | AbstractSelect compact-space orientation writes / repeated same orientation notification | 1 write | 0 writes | `(1 - 0) / 1` | 100.00% | 结构收益；Select orientation 未变时不写 |
@@ -229,6 +232,8 @@
 | MotionGhostControl shadow renderer list growth / build shadow renderers | dynamic capacity | exact capacity | structural | 分配更紧 | 阴影 renderer 数量已知时按 `BoxShadows.Count` 预分配 |
 | CompactSpace add wrapper list growth / children add | dynamic capacity | exact capacity | structural | 分配更紧 | 按 `NewItems.Count` 预分配 wrapper 列表 |
 | CompactSpace remove lookup set growth / children remove | dynamic capacity | exact capacity | structural | 分配更紧 | 按 `OldItems.Count` 预分配 lookup set |
+| CompactSpace add item filter LINQ operators / children add | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；wrapper 构造直接按 `NewItems.Count/indexer` 读取 |
+| CompactSpace remove item filter LINQ operators / children remove | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；lookup set 构造直接按 `OldItems.Count/indexer` 读取 |
 | CompactSpace template wrapper list growth / apply template | dynamic capacity | exact capacity | structural | 分配更紧 | 按 `Children.Count` 预分配初始 wrapper 列表 |
 | SliderTrack mark rect list growth / render with marks | dynamic capacity | exact capacity | structural | 分配更紧 | horizontal / vertical marks 列表按 `Marks.Count` 预分配 |
 | SliderTrack mark text rect list growth / render with marks | dynamic capacity | exact capacity | structural | 分配更紧 | mark 文本命中区域列表按 `Marks.Count` 预分配 |
@@ -238,6 +243,8 @@
 | ProgressBar size threshold dictionary growth / progress instance | dynamic capacity | exact capacity 3 | structural | 分配更紧 | line / circle progress 尺寸阈值表按 `SizeType` 三档预分配 |
 | Tag preset color map growth / theme color map build | dynamic capacity | exact capacity 14 | structural | 分配更紧 | preset 颜色表按 `PresetColorType` 已知数量预分配 |
 | Tag status color map growth / theme color map build | dynamic capacity | exact capacity 4 | structural | 分配更紧 | status 颜色表按 `TagStatus` 已知数量预分配 |
+| Popup overlay layer manager fallback LINQ operators / lookup | 2 operators | 0 operators | `(2 - 0) / 2` | 100.00% | 结构收益；`GetPopupOverlayLayer()` TopLevel fallback 改为显式 first-match，不声明页面加载 speedup |
+| ScopeAwareOverlayLayer direct child lookup LINQ operators / lookup | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；已有 overlay layer first-match 查找改为显式遍历 |
 | `DatePicker.Selected.Closed` KB/item | 627.9 KB | 627.5 KB | `(627.9 - 627.5) / 627.9` | 0.06% | smoke-only；分配小幅下降，不作为页面收益证明 |
 | `DatePicker.Default.PresenterOnly` ms/item | 17.582 ms | 16.919 ms | `(17.582 - 16.919) / 17.582` | 3.77% | smoke-only；单次 timing 只作异常检查 |
 | `DatePicker.Default.Closed` ms/item | 3.841 ms | 4.299 ms | `(3.841 - 4.299) / 3.841` | -11.92% | smoke-only；单次 timing 回退，不作为本轮收益证明 |

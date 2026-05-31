@@ -187,3 +187,19 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 | AM/PM 小时样本数组 / widest datetime width calculation | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；小时样本改为索引分支 |
 
 说明：这是 preferred-width 计算路径的结构性收益；本轮不声明 `TimePickerShowCase` 页面导航 timing 因此提升。
+
+---
+
+## 6. 追加结构优化：presenter 事件生命周期
+
+本轮只收敛打开态 `TimePickerPresenter` / `DateTimePickerPanel` 的事件注册方式，不改变模板视觉、padding、popup shell 或选择语义。
+
+| 指标 | baseline | optimized | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| `TimePickerPresenter` re-template retained handlers / presenter | 7 | 0 | `(7 - 0) / 7` | 100.00% | 旧 `TimeView` / Now / Confirm 事件在重新套模板前可完整解绑 |
+| `TimePickerPresenter` anonymous pointer handler callsites | 2 | 0 | `(2 - 0) / 2` | 100.00% | Confirm enter/exit 改为 method-group handler |
+| `TimePickerPresenter` choosing-state subscription lambda callsites | 1 | 0 | `(1 - 0) / 1` | 100.00% | `TimeView.IsPointerInSelector` 订阅改为 method-group handler |
+| `DateTimePickerPanel` pointer-enter delegate allocations / new cell | 1 | 0 | `(1 - 0) / 1` | 100.00% | 每个 panel 复用一个 cached handler，新建 `TimeViewCell` 不再各自创建 delegate |
+| attached presenter choosing-state stale subscription risk | 1 | 0 | `(1 - 0) / 1` | 100.00% | `OnApplyTemplate()` 后如果已经 attached，会刷新当前 `TimeView` observable 订阅 |
+
+说明：这是结构与生命周期收益。`DatePicker` suite 中的 presenter-only 场景覆盖了 shared `DateTimePickerPanel`，但本轮不声明新的页面 timing 百分比。

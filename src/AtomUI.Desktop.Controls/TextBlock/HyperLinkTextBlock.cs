@@ -200,8 +200,7 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
             IsPressed = false;
             e.Handled = true;
 
-            if (ClickMode == ClickMode.Release &&
-                this.GetVisualsAt(e.GetPosition(this)).Any(c => this == c || this.IsVisualAncestorOf(c)))
+            if (ClickMode == ClickMode.Release && IsPointerOverSelf(e))
             {
                 OnClick();
             }
@@ -251,6 +250,18 @@ public class HyperLinkTextBlock : TemplatedControl, IMotionAwareControl
     {
         base.OnPointerCaptureLost(e);
         IsPressed = false;
+    }
+
+    private bool IsPointerOverSelf(PointerReleasedEventArgs e)
+    {
+        foreach (var visual in this.GetVisualsAt(e.GetPosition(this)))
+        {
+            if (this == visual || this.IsVisualAncestorOf(visual))
+            {
+                return true;
+            }
+        }
+        return false;
     }
     
     protected override void OnLostFocus(FocusChangedEventArgs e)

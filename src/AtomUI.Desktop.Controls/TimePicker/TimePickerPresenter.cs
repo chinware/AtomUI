@@ -5,6 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -171,6 +172,7 @@ internal class TimePickerPresenter : PickerPresenterBase
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        DetachTemplateEventHandlers();
         base.OnApplyTemplate(e);
         _nowButton     = e.NameScope.Get<Button>("PART_NowButton");
         _confirmButton = e.NameScope.Get<Button>("PART_ConfirmButton");
@@ -190,19 +192,37 @@ internal class TimePickerPresenter : PickerPresenterBase
 
         if (_confirmButton is not null)
         {
-            _confirmButton.Click     += HandleConfirmButtonClicked;
-            _confirmButton.IsEnabled =  (SelectedTime is not null || TempSelectedTime is not null);
-            _confirmButton.PointerEntered += (sender, args) =>
-            {
-                if (TempSelectedTime is not null)
-                {
-                    HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(TempSelectedTime));
-                }
-            };
-            _confirmButton.PointerExited += (sender, args) =>
-            {
-                ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(false));
-            };
+            _confirmButton.Click          += HandleConfirmButtonClicked;
+            _confirmButton.IsEnabled      =  (SelectedTime is not null || TempSelectedTime is not null);
+            _confirmButton.PointerEntered += HandleConfirmButtonPointerEntered;
+            _confirmButton.PointerExited  += HandleConfirmButtonPointerExited;
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            RefreshChoosingStateSubscription();
+        }
+    }
+
+    private void DetachTemplateEventHandlers()
+    {
+        if (_timeView is not null)
+        {
+            _timeView.HoverTimeChanged -= HandleTimeViewHoverChanged;
+            _timeView.TimeSelected     -= HandleTimeViewTimeSelected;
+            _timeView.TempTimeSelected -= HandleTimeViewTempTimeSelected;
+        }
+
+        if (_nowButton is not null)
+        {
+            _nowButton.Click -= HandleNowButtonClicked;
+        }
+
+        if (_confirmButton is not null)
+        {
+            _confirmButton.Click          -= HandleConfirmButtonClicked;
+            _confirmButton.PointerEntered -= HandleConfirmButtonPointerEntered;
+            _confirmButton.PointerExited  -= HandleConfirmButtonPointerExited;
         }
     }
 
@@ -253,6 +273,19 @@ internal class TimePickerPresenter : PickerPresenterBase
         }
     }
 
+    private void HandleConfirmButtonPointerEntered(object? sender, PointerEventArgs args)
+    {
+        if (TempSelectedTime is not null)
+        {
+            HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(TempSelectedTime));
+        }
+    }
+
+    private void HandleConfirmButtonPointerExited(object? sender, PointerEventArgs args)
+    {
+        EmitChoosingStatusChanged(false);
+    }
+
     private void HandleTimeViewHoverChanged(object? sender, TimeSelectedEventArgs args)
     {
         HoverTimeChanged?.Invoke(this, new TimeSelectedEventArgs(args.Time));
@@ -285,15 +318,23 @@ internal class TimePickerPresenter : PickerPresenterBase
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        RefreshChoosingStateSubscription();
+    }
+
+    private void RefreshChoosingStateSubscription()
+    {
         _choosingStateDisposable?.Dispose();
+        _choosingStateDisposable = null;
         if (_timeView is not null)
         {
             _choosingStateDisposable = _timeView.GetObservable(TimeView.IsPointerInSelectorProperty)
-                .Subscribe(isPointer =>
-                {
-                    ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(isPointer));
-                });
+                .Subscribe(EmitChoosingStatusChanged);
         }
+    }
+
+    private void EmitChoosingStatusChanged(bool isChoosing)
+    {
+        ChoosingStatusChanged?.Invoke(this, new ChoosingStatusEventArgs(isChoosing));
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)

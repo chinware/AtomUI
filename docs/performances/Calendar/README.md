@@ -40,6 +40,22 @@
 
 `repeated mean` 的 0.22ms 差异低于这类单控件页面导航测量噪声；P95、alloc、visual tree 均下降。结论按控件级为主：Calendar 独立实例化和 Year/Decade 初始模式收益显著，Gallery 仅确认真实页面结构下降。
 
+本次追加为 structural-only，不声明新的页面 timing 收益：
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Calendar blackout-date range predicate / `ContainsAny` | 1 LINQ `Any(predicate)` | 0 LINQ calls | `(1 - 0) / 1` | 100.00% | 改为显式循环，避免 predicate delegate / LINQ enumerator |
+| DatePicker CalendarView blackout-date range predicate / `ContainsAny` | 1 LINQ `Any(predicate)` | 0 LINQ calls | `(1 - 0) / 1` | 100.00% | DatePicker 内部 CalendarView 同步收敛 |
+
+追加验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-calendar-states --verify-datepicker-states
+```
+
+结果：0 warning / 0 error；Calendar / DatePicker 状态验证通过。
+
 ---
 
 ## 1. 资格门槛

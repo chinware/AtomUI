@@ -100,7 +100,7 @@ public partial class Select
         var optionsLoaded = new SelectOptionsLoadedEventArgs(context, loadResult);
         NotifyOptionsLoaded(optionsLoaded);
 
-        bool isDropDownOpen = loadResult?.Data?.Any() == true;
+        bool isDropDownOpen = loadResult?.Data?.Count > 0;
         if (isDropDownOpen != IsDropDownOpen)
         {
             IgnorePropertyChange = true;

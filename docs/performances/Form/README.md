@@ -15,3 +15,25 @@
 | FormItem warning/error message lists / validate | dynamic growth | exact upper-bound capacity | structural | 分配更紧 | 按 `Validators.Count` 预分配 |
 
 说明：这是交互验证路径的结构性收益；不声明页面加载 timing 提升。
+
+## 追加结构优化：ValidateAsync error result fast path
+
+`Form.ValidateAsync()` 旧路径会把每个 `FormItem.ValidateResult` 收集进临时 `List<FormValidateResult>`，再用 `Any(predicate)` 判断是否存在错误。本轮改为在收集验证消息的同一轮扫描中维护 `hasError`，错误 / 警告消息内容和 `Validated` 事件语义保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Form validate results list allocations / validate | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | 有效；不再为结果归并创建临时 list |
+| Form validate error check LINQ operators / validate | 1 `Any(predicate)` | 0 LINQ operators | `(1 - 0) / 1` | 100.00% | 有效；错误判断并入消息收集循环 |
+
+说明：这是表单验证交互路径的结构性收益；不声明页面导航 timing 提升。
+
+## 追加结构优化：Items collection handler
+
+`Form` 构造器里 `Items.CollectionChanged` 原先使用匿名 lambda 调用 `InvalidateMeasure()`。本轮改为命名 method-group handler，行为不变，但每个 `Form` 实例不再创建匿名 handler，后续排查订阅链也更清晰。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Form `Items.CollectionChanged` anonymous handler / instance | 1 | 0 | `(1 - 0) / 1` | 100.00% | 有效；改为 `HandleItemsCollectionChanged` method group |
+| Items change measure invalidation behavior | `InvalidateMeasure()` | `InvalidateMeasure()` | n/a | 0.00% | 行为保持不变 |
+
+验证说明：`AtomUI.Performance` 构建通过。当前 `--verify-form-states` 仍有历史断言/期望失败，本轮不把该 suite 作为收益证明。

@@ -583,14 +583,24 @@ public class ToolTip : ContentControl,
             if (presetColorType is not null)
             {
                 var presetColor = PresetPrimaryColor.GetColor(presetColorType.Value);
-                Background = new SolidColorBrush(presetColor.Color());
-                InvalidateVisual();
+                SetBackgroundColorIfChanged(presetColor.Color());
             }
             else if (color is not null)
             {
-                Background = new SolidColorBrush(color.Value);
-                InvalidateVisual();
+                SetBackgroundColorIfChanged(color.Value);
             }
         }
+    }
+
+    private void SetBackgroundColorIfChanged(Color color)
+    {
+        if (Background is ISolidColorBrush { Opacity: 1.0 } solidColorBrush &&
+            solidColorBrush.Color == color)
+        {
+            return;
+        }
+
+        Background = new SolidColorBrush(color);
+        InvalidateVisual();
     }
 }

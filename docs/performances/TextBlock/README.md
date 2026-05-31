@@ -34,6 +34,22 @@ State verification（`--verify-textblock-states`）全过：
 - HighlightWords 清空 → `Inlines == null`。
 - 两个 SelectableTextBlock 实例 `ReferenceEquals(first.Cursor, second.Cursor)` 为真（Theme Setter 共享 Cursor 验证）。
 
+本次追加为 structural-only，不声明新的页面 timing 收益：
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| `SelectableTextBlock` hotkey match LINQ predicates / key down | 2 local `Any(predicate)` checks | 0 LINQ calls | `(2 - 0) / 2` | 100.00% | Copy / SelectAll 热键匹配改为显式循环 |
+| `HyperLinkTextBlock` pointer-release hit-test LINQ predicate | 1 `Any(predicate)` | 0 LINQ calls | `(1 - 0) / 1` | 100.00% | release click 命中判断保留同语义，去掉 predicate delegate |
+
+追加验证：
+
+```bash
+dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj
+dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-textblock-states
+```
+
+结果：0 warning / 0 error；TextBlock 状态验证通过。
+
 ---
 
 ## 1. 范围

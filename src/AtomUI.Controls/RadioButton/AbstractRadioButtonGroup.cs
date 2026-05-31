@@ -63,8 +63,6 @@ public abstract class AbstractRadioButtonGroup : ItemsControl,
 
     #endregion
     
-    private bool _ignoreSyncChecked;
-
     static AbstractRadioButtonGroup()
     {
         OrientationProperty.OverrideDefaultValue<AbstractRadioButtonGroup>(Orientation.Horizontal);
@@ -128,7 +126,6 @@ public abstract class AbstractRadioButtonGroup : ItemsControl,
     {
         if (args.Source is AbstractRadioButton radioButton && radioButton.IsChecked == true)
         {
-            _ignoreSyncChecked = true;
             if (ItemsSource != null)
             {
                 SetCurrentValue(CheckedItemProperty, radioButton.DataContext);
@@ -144,21 +141,19 @@ public abstract class AbstractRadioButtonGroup : ItemsControl,
     private void SyncCheckedState()
     {
         var isSourceMode = ItemsSource != null;
-        foreach (var radioButton in LogicalChildren.OfType<AbstractRadioButton>())
+        for (var i = 0; i < Items.Count; i++)
         {
-            if (isSourceMode)
+            if (ContainerFromIndex(i) is not AbstractRadioButton radioButton)
             {
-                if (radioButton.DataContext == CheckedItem)
-                {
-                    radioButton.SetCurrentValue(AbstractRadioButton.IsCheckedProperty, true);
-                }
+                continue;
             }
-            else
+
+            var shouldBeChecked = isSourceMode
+                ? radioButton.DataContext == CheckedItem
+                : radioButton == CheckedItem;
+            if (radioButton.IsChecked != shouldBeChecked)
             {
-                if (radioButton == CheckedItem)
-                {
-                    radioButton.SetCurrentValue(AbstractRadioButton.IsCheckedProperty, true);
-                }
+                radioButton.SetCurrentValue(AbstractRadioButton.IsCheckedProperty, shouldBeChecked);
             }
         }
     }
@@ -167,11 +162,6 @@ public abstract class AbstractRadioButtonGroup : ItemsControl,
     {
         CheckedChanged?.Invoke(this, new RadioButtonGroupCheckedChangedEventArgs(args.OldValue, args.NewValue));
         _formValueChanged?.Invoke(this, EventArgs.Empty);
-        if (_ignoreSyncChecked)
-        {
-            _ignoreSyncChecked = false;
-            return;
-        }
         SyncCheckedState();
     }
     

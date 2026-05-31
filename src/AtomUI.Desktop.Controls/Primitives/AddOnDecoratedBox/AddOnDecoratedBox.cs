@@ -679,8 +679,13 @@ internal class AddOnDecoratedBox : ContentControl,
         {
             return;
         }
-        foreach (var icon in container.GetVisualDescendants().OfType<Icon>())
+        foreach (var descendant in container.GetVisualDescendants())
         {
+            if (descendant is not Icon icon)
+            {
+                continue;
+            }
+
             if (icon.Classes.Contains("skip-status")) continue;
             if (brush != null)
             {

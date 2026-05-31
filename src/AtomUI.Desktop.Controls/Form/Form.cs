@@ -453,12 +453,17 @@ public class Form : ItemsControl,
     {
         this.RegisterTokenResourceScope(FormToken.ScopeProvider);
         LogicalChildren.CollectionChanged += HandleCollectionChanged;
-        Items.CollectionChanged           += (_, _) => InvalidateMeasure();
+        Items.CollectionChanged           += HandleItemsCollectionChanged;
     }
 
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         ConfigureShowItemDeleteButton();
+    }
+
+    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        InvalidateMeasure();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -534,13 +539,16 @@ public class Form : ItemsControl,
             }
         }
         await Task.WhenAll(tasks);
-        var results          = new List<FormValidateResult>(Items.Count);
         var validateMessages = new List<FormValidateMessage>(Items.Count);
+        var hasError         = false;
         foreach (var item in Items)
         {
             if (item is FormItem formItem && !formItem.IsSkipValidate())
             {
-                results.Add(formItem.ValidateResult);
+                if (formItem.ValidateResult == FormValidateResult.Error)
+                {
+                    hasError = true;
+                }
                 if (formItem.ValidateResult != FormValidateResult.Success)
                 {
                     if (formItem.ValidateErrorMessages != null)
@@ -561,15 +569,7 @@ public class Form : ItemsControl,
             }
         }
 
-        var validateResult = FormValidateResult.Success;
-        if (results.Any(item => item == FormValidateResult.Error))
-        {
-            validateResult = FormValidateResult.Error;
-        }
-        else
-        {
-            validateResult = FormValidateResult.Success;
-        }
+        var validateResult = hasError ? FormValidateResult.Error : FormValidateResult.Success;
 
         if (validateResult == FormValidateResult.Error)
         {

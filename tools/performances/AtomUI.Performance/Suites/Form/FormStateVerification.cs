@@ -113,7 +113,8 @@ internal static partial class Program
     private static void VerifyFormTooltipIconLifecycle(ICollection<string> failures)
     {
         var item = CreateProbeFormItem(new ProbeFormInput());
-        using var realized = RealizeControl(item);
+        var form = CreateVerificationForm(item);
+        using var realized = RealizeControl(form);
 
         Expect(item.TooltipIcon == null,
             "FormItem without Tooltip should not create the default tooltip icon.",
@@ -174,7 +175,8 @@ internal static partial class Program
     private static void VerifyFormItemWindowSubscriptionLifecycle(ICollection<string> failures)
     {
         var item = CreateProbeFormItem(new ProbeFormInput());
-        using (RealizeControl(item))
+        var form = CreateVerificationForm(item);
+        using (RealizeControl(form))
         {
             // Attach once so the subscription path runs.
         }

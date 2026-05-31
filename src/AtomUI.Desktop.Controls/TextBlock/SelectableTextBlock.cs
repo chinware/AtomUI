@@ -280,20 +280,30 @@ public class SelectableTextBlock : TextBlock
         var handled   = false;
         var keymap    = Application.Current!.PlatformSettings!.HotkeyConfiguration;
 
-        bool Match(List<KeyGesture> gestures) => gestures.Any(g => g.Matches(e));
-
-        if (Match(keymap.Copy))
+        if (MatchesAnyGesture(keymap.Copy, e))
         {
             _ = CopyAsync();
             handled = true;
         }
-        else if (Match(keymap.SelectAll))
+        else if (MatchesAnyGesture(keymap.SelectAll, e))
         {
             SelectAll();
             handled = true;
         }
 
         e.Handled = handled;
+    }
+
+    private static bool MatchesAnyGesture(IEnumerable<KeyGesture> gestures, KeyEventArgs e)
+    {
+        foreach (var gesture in gestures)
+        {
+            if (gesture.Matches(e))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

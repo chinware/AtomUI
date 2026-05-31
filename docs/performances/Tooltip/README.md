@@ -8,7 +8,7 @@
 ## 1. 范围
 
 - `src/AtomUI.Desktop.Controls/Tooltip/ToolTipService.cs` — 全局 ToolTip 服务（singleton via AvaloniaLocator），处理所有 ToolTip.Tip 控件的 hover-触发。
-- `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.cs` — 596 行，附加属性 + Show/Close 状态机。本轮未改。
+- `src/AtomUI.Desktop.Controls/Tooltip/ToolTip.cs` — 附加属性 + Show/Close 状态机；本轮追加同色背景写入短路。
 
 ---
 
@@ -92,6 +92,17 @@ private void StopTimer()
 | `_timer != null` 状态切换 | new/null 反复 | 持久存在，仅 Stop/Start |
 
 Form/Slider/Steps/DataGrid 30+ tooltipped 字段 hover 一遍：~30 timer allocations 消除 + ~30 closure allocations 消除。
+
+### `ToolTip.SetToolTipColor` 同色背景短路
+
+preset/custom color tooltip 每次打开都会把 `Background` 写成新的 `SolidColorBrush` 并 `InvalidateVisual()`。本轮在颜色与当前 solid background 完全一致时直接返回，避免重复 brush 分配和重复 render invalidation；颜色不同或当前 background 不是默认 opacity solid brush 时仍按旧路径写入。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Tooltip same-color background brush allocations / open | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；重复 hover 同色 tooltip 不再分配新 brush |
+| Tooltip same-color explicit invalidations / open | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；颜色没变不再主动 invalidation |
+
+说明：这是 hover-show 路径的 structural-only 收益；未声明页面加载 timing 提升。
 
 ---
 
