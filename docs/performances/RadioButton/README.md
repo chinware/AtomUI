@@ -1,6 +1,6 @@
 # RadioButton 性能优化
 
-> 状态：已完成 Gallery 实测；本轮追加 RadioButtonGroup checked 同步结构优化。
+> 状态：已完成 Gallery 实测；本轮追加 RadioButtonGroup checked 同步和 group 注册结构优化。
 
 ## 追加结构优化：checked sync 去 OfType
 
@@ -15,3 +15,16 @@
 | RadioButtonGroup external CheckedItem sync skip | first external change may be ignored | every change syncs containers | correctness | 已修复 | 不再用 `_ignoreSyncChecked` 跳过同步 |
 
 说明：这是 checked 状态同步路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 追加结构优化：group 首项列表容量
+
+`RadioButtonGroupManager.Add()` 在首次遇到某个 `GroupName` 时会创建弱引用列表并立即加入当前 radio。本轮把新建列表容量从默认动态增长改为 `1`，避免第一个 `Add()` 的列表增长；group key、弱引用、移除清理和互斥 checked 逻辑不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| RadioButton group first add list growth / new group | dynamic growth | capacity 1 | structural | 结构收益 | 新 group 第一个 radio 避免列表首次增长 |
+| RadioButton group registration semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 RadioButton group 注册路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。

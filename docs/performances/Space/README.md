@@ -30,7 +30,7 @@
 ## Verification
 
 - `dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj` passed.
-- `--verify-space-states` 当前仍受旧 CompactSpace filler / token spacing 断言影响，不能作为本轮普通 Space 集合同步路径的通过证明。
+- `--verify-space-states` 当前仍受旧 CompactSpace filler / token spacing 断言影响；同一失败列表也出现在 clean HEAD `d35b21a1a`，不能作为本轮普通 Space 集合同步路径的通过证明。
 
 ---
 
@@ -49,3 +49,16 @@ Avalonia 依据：
 | CompactSpaceItem same-offset transform writes / arrange | 0 | 0 | n/a | 0.00% | 既有短路保留 |
 
 说明：这是 compact layout arrange 路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+---
+
+## CompactSpaceSize Parser Case Compare
+
+`CompactSpaceSize.Parse()` 原先先 `ToUpperInvariant()` 再判断 `AUTO` 和 `*`。本轮改为 `StringComparison.OrdinalIgnoreCase` 判断 `AUTO`，`*` 继续按 ordinal 后缀判断；数值解析仍使用 `CultureInfo.InvariantCulture`，异常路径保持。本轮继续把 `*` 数值截取和 `ParseLengths()` token 读取改为 span 路径，避免每个 token / star 值创建临时字符串。
+
+| Metric | Baseline | Optimized | Formula | Improvement | Conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| CompactSpaceSize.Parse uppercase temp strings / parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；大小写不敏感 `Auto` 语义保持 |
+| CompactSpaceSize.Parse star value substring/trim temp strings / star parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span slice/trim 后解析 |
+| CompactSpaceSize.ParseLengths token strings / token | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；`TryReadSpan` 直接解析 token |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

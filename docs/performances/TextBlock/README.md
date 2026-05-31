@@ -319,3 +319,16 @@ rg "new Cursor\(StandardCursorType.Ibeam\)" --type cs src/AtomUI.Desktop.Control
 | 命中高亮首个命中查找 / rebuild | 2 次 | 1 次 | `(2 - 1) / 2` | 50.00% | 首个命中不再重复搜索 |
 
 说明：这是结构性收益，只证明高亮 rebuild 路径分配和重复搜索下降；没有声明页面加载 timing 提升。
+
+---
+
+## 8. 追加结构优化：命中 ranges 初始容量
+
+`HighlightableTextBlock.CalculateHighlightRanges()` 常见路径只有 1 个命中段。临时 ranges 列表现在以容量 1 初始化，避免首个命中时从空列表增长；多命中路径继续按原顺序追加，分段输出不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| highlight ranges list first growth / rebuild with match | dynamic first growth | capacity 1 | structural | 分配更紧 | 常见单命中路径避免首次增长 |
+| highlight segment output | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是高亮 rebuild 路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。

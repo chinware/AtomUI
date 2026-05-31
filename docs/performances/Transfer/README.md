@@ -241,3 +241,19 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 | SelectedItems remove old-items enumerators / remove or replace | 1 enumerator | 0 enumerators | `(1 - 0) / 1` | 100.00% | 有效；移除 selected items 按 `OldItems.Count/indexer` 同步 |
 
 说明：这是外部 selected-items 同步路径的结构性收益；不声明页面导航 timing 提升。
+
+---
+
+## 9. 追加结构优化：只读集合容量快路径
+
+Transfer 的 source panel、selection key、list view / tree view 快照 helper 原先只识别 `ICollection`。当 ItemsSource 或 ItemsView 形态只暴露 `IReadOnlyCollection<IItemKey>` / `IReadOnlyCollection<ITreeItemNode>` 时，临时 List / HashSet 会从默认容量动态增长。本轮补上只读集合 Count 快路径；过滤、树遍历顺序、key 提取和 selection 语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Transfer source panel list growth / read-only ItemsSource refresh | dynamic growth | exact read-only count | structural | 结构收益 | 只读 ItemsSource 刷新时按 Count 预分配 |
+| Transfer item-key list growth / read-only panel source | dynamic growth | exact read-only count | structural | 结构收益 | selection key list 按只读 panel count 预分配 |
+| Transfer list-view key HashSet growth / read-only ItemsView | dynamic growth | exact read-only count | structural | 结构收益 | list view key set 按 Count 预分配 |
+| Transfer tree/list snapshot growth / read-only selection source | dynamic growth | exact read-only count | structural | 结构收益 | tree/list 快照按 Count 预分配 |
+| Transfer filtering / selection semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 Transfer 数据同步路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。

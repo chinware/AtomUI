@@ -52,6 +52,21 @@
 
 ---
 
+## Preset Color Span Parse
+
+`BadgeColorUtils.CalculateColor()` 和 `AbstractRibbonBadge.SetupRibbonColor()` 的颜色字符串解析旧路径会先 `Trim()` 生成临时字符串；此前已去掉 `ToLower()` 临时字符串，本轮继续改为 span trim，并直接调用 Avalonia `Color.TryParse(ReadOnlySpan<char>)`。preset 颜色和自定义颜色优先级保持不变。
+
+Avalonia source reference：`.referenceprojects/Avalonia/src/Avalonia.Base/Media/Color.cs:208` 暴露 `Color.TryParse(ReadOnlySpan<char>, out Color)`。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Badge preset/custom color trim temp strings / color parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
+| Ribbon preset/custom color trim temp strings / color parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
+| Custom color parse string wrappers / color parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；直接调用 span overload |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
 ## Verification
 
 - `dotnet build tools/performances/AtomUI.Performance/AtomUI.Performance.csproj --framework net10.0 --no-restore` passed.

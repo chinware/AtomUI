@@ -151,6 +151,18 @@ dotnet build tools/performances/AtomUI.GalleryPerformance/AtomUI.GalleryPerforma
 
 ---
 
+## 4.1 追加结构优化：Collapsible parser span trim
+
+`SplitterPanelCollapsible.Parse()` 旧路径先 `input.Trim()`，再执行 bool / `none` / enum 解析。本轮改为 `ReadOnlySpan<char>.Trim()`，并使用 bool / enum 的 span overload；解析优先级和异常行为保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Splitter collapsible trim temp strings / parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
+| Splitter collapsible parser priority | bool → none → enum | bool → none → enum | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
 ## 5. 复杂度自评
 
 | 指标 | 数值 |

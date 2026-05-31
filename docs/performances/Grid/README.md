@@ -87,3 +87,29 @@ dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Perfor
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-grid-states
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --suite grid --count 80
 ```
+
+---
+
+## 6. Converter Parse Structural Pass
+
+本轮补充 Grid parser 字符串解析路径：
+
+- `RowJustifyConverter` / `RowAlignConverter` 旧实现 `Trim().ToLowerInvariant()` 后再匹配别名；第一步去掉 lowercase 临时字符串，本轮继续把 `Trim()` 改为 `ReadOnlySpan<char>.Trim()`，fallback 仍交给 `Enum.Parse(..., ignoreCase: true)`。
+- `GridColSize.Parse` 旧实现先 `Trim()`，再 `Split(',')`，每个 segment 继续 `Trim()` / range substring；本轮改为 span 逐段扫描，保留空 segment 跳过、key/value 校验和异常语义。
+- `GridColSpanInfo.Parse` / `GridGutterInfo.Parse` 单值 fast path 改为 span trim 后直接解析。
+- `GridGutter.Parse` 的 `;` 双段和 `,` 数值 pair 解析改为 span 扫描，不再为 `Split(..., RemoveEmptyEntries)` 创建临时数组；`GridGutterInfo.Parse` 增加 span overload，避免双段解析时重新构造 trimmed string。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| RowJustify alias parse lowercase temp strings / conversion | 1 | 0 | `(1 - 0) / 1` | 100.00% | 有效；别名大小写不敏感语义保持 |
+| RowAlign alias parse lowercase temp strings / conversion | 1 | 0 | `(1 - 0) / 1` | 100.00% | 有效；别名大小写不敏感语义保持 |
+| RowJustify alias parse trim temp strings / conversion with surrounding whitespace | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
+| RowAlign alias parse trim temp strings / conversion with surrounding whitespace | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
+| GridColSize comma split arrays / key-value parse | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；span 逐段扫描 |
+| GridColSize segment/key/value trim temp strings / segment | 3 | 0 | `(3 - 0) / 3` | 100.00% | 结构收益；span trim 保持解析语义 |
+| GridColSpanInfo single-value trim temp strings / parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim fast path |
+| GridGutterInfo single-value trim temp strings / parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim fast path |
+| GridGutter semicolon split arrays / responsive gutter parse | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；span 双段扫描保持 `RemoveEmptyEntries` 语义 |
+| GridGutter pair split arrays / numeric pair parse | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；span 双段扫描保持 pair 校验 |
+| GridGutterInfo segment trim temp strings / responsive gutter segment | 1 string risk | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；双段路径直接传 span |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

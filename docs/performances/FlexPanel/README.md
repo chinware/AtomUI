@@ -1,19 +1,21 @@
 # FlexPanel 性能评估
 
 > 路线图位置：[`../README.md`](../README.md) Layout / FlexPanel
-> 状态：已建立控件级基线和状态校验；本轮生产优化候选因 timing 回归已撤回，未保留运行时代码改动。
+> 状态：已建立控件级基线和状态校验；此前生产布局候选因 timing 回归已撤回，本轮仅保留 `FlexBasis.Parse` parser 结构优化。
 
 ---
 
 ## 0. 结论
 
-本轮只保留 `AtomUI.Performance` 的 FlexPanel 独立场景和状态校验。生产代码恢复到 baseline 状态，不声明运行时速度提升。
+此前只保留 `AtomUI.Performance` 的 FlexPanel 独立场景和状态校验，布局生产候选已恢复到 baseline 状态。本轮补充 `FlexBasis.Parse` 字符串解析结构优化，不声明运行时页面速度提升。
 
 | 指标 | baseline | optimized | formula | improvement | 结论 |
 | --- | ---: | ---: | --- | ---: | --- |
 | 控件级性能场景覆盖 | 0 | 5 | `(5 - 0) / 5` | 100.00% | 新增 Row / Wrap / Ordered / GrowShrink / ColumnWrap 五类场景 |
 | 状态正确性校验覆盖 | 0 | 4 | `(4 - 0) / 4` | 100.00% | 新增 order 稳定、隐藏子项、wrap、grow 分配校验 |
-| 保留的生产运行时代码改动 | 0 | 0 | `0 - 0` | 0.00% | 候选有回归，已撤回，避免把风险带入产品 |
+| 保留的布局运行时代码改动 | 0 | 0 | `0 - 0` | 0.00% | 布局候选有回归，已撤回，避免把风险带入产品 |
+| FlexBasis.Parse uppercase temp strings / parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；`Auto` 和 `%` 解析语义保持 |
+| FlexBasis.Parse percent trim temp strings / percent parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；`ReadOnlySpan<char>` 解析，语义保持 |
 | 可证明页面级速度提升 | 无 | 无 | n/a | 不声明 | 当前没有 Gallery 级 before/after 证据 |
 
 ---

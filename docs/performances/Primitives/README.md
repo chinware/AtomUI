@@ -2,7 +2,7 @@
 
 ## Scope
 
-本轮处理两个 Primitives 共享路径：
+本轮处理并完成审计以下 Primitives 共享路径：
 
 - `InfoPickerInput` 体系里的 `PickerClearUpButton`。它被 `DatePicker`、`RangeDatePicker`、`TimePicker`、`RangeTimePicker` 等 picker 输入控件复用。
 - `AddOnDecoratedBox` 的 `PART_ContentFrame` pointer 状态路径。它被 LineEdit / Select / TreeSelect / Cascader / DatePicker / TimePicker / ButtonSpinner 等输入类控件复用。
@@ -15,6 +15,8 @@
 - `WaveSpiritDecorator` 的 wave painter 配置路径。它被 Button / Switch / Radio / CheckBox 等点击波纹控件复用。
 - `CompactSpaceItem` / `CompactSpaceAddOn` 的 compact-space 状态通知路径，以及 `TextBox` / `TextArea` / `ButtonSpinner` / `NumericUpDown` / `AbstractSelect` 的 compact-space / form feedback / validation 状态同步路径。
 - `PenUtils` / `BorderRenderHelper` 的 render-loop pen 复用路径。它被 DashedBorder / OptionButton / TreeView / ButtonSpinner / RadioIndicator 等自绘边框控件复用。
+
+本轮收口 audit 结论：Primitives 目录剩余扫描项为 false positive、已验证结构路径或此前已回滚候选；没有继续排队的开放优化项。
 
 ## InfoPickerInput Root Cause
 
@@ -45,6 +47,7 @@
 - 这些派生操作的来源路径已经是已校验的 `TreeNodePath`，新增 segment 也在方法入口单独校验；因此可以使用私有 trusted 构造，保留公开构造函数的外部输入校验语义，同时避免二次数组分配。
 - 空路径 append 已有路径、单段路径取 parent、同值 `WithSegment()` 原先仍会创建新数组 / 新 wrapper；这些场景都可以复用已有不可变对象。
 - `TreeNodePath.StartsWith(path)` 对同一不可变实例原先仍按 segment 数量逐项比较。
+- `TreeNodePath(string)` 原先 `Split('/', RemoveEmptyEntries)` 后再进入公开构造的二次复制；本轮改为先数段、再按段构造结果数组，保留前导、连续、尾随 `/` 的空段跳过语义。
 
 ## MotionGhostControl Root Cause
 
@@ -153,6 +156,9 @@
 | TreeNodePath allocations / single-segment `GetParent()` | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；直接复用 `TreeNodePath.Empty` |
 | TreeNodePath allocations / same-value `WithSegment(index, value)` | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；segment 未变时返回当前不可变 path |
 | TreeNodePath segment comparisons / `StartsWith(sameInstance)` length N | N comparisons | 0 comparisons | `(N - 0) / N` | 100.00% | 结构收益；同一不可变 path 直接返回 true |
+| TreeNodePath path-string split arrays / `new TreeNodePath(\"a/b\")` | 1 split array | 0 split arrays | `(1 - 0) / 1` | 100.00% | 结构收益；手写扫描保留 `RemoveEmptyEntries` 语义 |
+| TreeNodePath path-string segment array copies / `new TreeNodePath(\"a/b\")` | 1 copy array | 0 copy arrays | `(1 - 0) / 1` | 100.00% | 结构收益；直接填充最终 segments 数组 |
+| TreeNodePath empty array allocations / empty public segments | 1 zero-length array risk | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；空输入复用 `[]` |
 | MotionGhostControl shadow renderer writes / `MaskCornerRadius` only changes, per shadow | 3 writes | 1 write | `(3 - 1) / 3` | 66.67% | 结构收益；width / height 未变时不写 |
 | MotionGhostControl shadow renderer writes / `MaskSize` only changes, per shadow | 3 writes | 2 writes | `(3 - 2) / 3` | 33.33% | 结构收益；corner radius 未变时不写 |
 | MotionGhostControl mask center size writes / repeated same size callback | 2 writes | 0 writes | `(2 - 0) / 2` | 100.00% | 结构收益；center frame width / height 未变时不写 |

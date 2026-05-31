@@ -1,13 +1,13 @@
 # Upload 性能评估
 
 > 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 1 #5
-> 状态：已建立 Gallery baseline；本轮 3 个页面级候选均未通过收益门槛；后续仅保留单图预览和运行期任务路径的 structural-only 分配收敛。
+> 状态：已完成 structural-only 收口；3 个页面级候选均未通过收益门槛并已按 3-round budget 关闭；保留单图预览和运行期任务路径的分配 / 扫描收敛。
 
 ---
 
 ## 0. 结论
 
-本轮页面级候选只保留 `AtomUI.GalleryPerformance` 的 `upload` showcase 映射，方便后续复测。后续追加的单图预览和运行期任务路径只减少临时集合 / 重复扫描 / 重复写入，不声明页面级 timing 收益。
+本轮页面级候选只保留 `AtomUI.GalleryPerformance` 的 `upload` showcase 映射，方便后续复测。后续追加的单图预览和运行期任务路径只减少临时集合 / 重复扫描 / 重复写入，不声明页面级 timing 收益；该项按 structural-only Done 收口。
 
 | 指标 | baseline |
 | --- | ---: |
@@ -58,6 +58,7 @@
 | PictureList 单图预览 Sources wrapper / FilePath change | 1 list | 1 fixed array | 结构替换 | 分配更紧 | 单元素 sources 不再创建可增长 List |
 | PictureShapeList 单图预览 Sources wrapper / FilePath change | 1 list | 1 fixed array | 结构替换 | 分配更紧 | 单元素 sources 不再创建可增长 List |
 | Directory upload file enumeration LINQ iterator / selected directory | 1 iterator | 0 iterators | `(1 - 0) / 1` | 100.00% | 结构收益；目录上传枚举文件时不再经 `.Select(...)` 包装 |
+| Directory upload file list initial capacity / folder picker result | dynamic growth | selected directory count | structural | 结构收益 | 目录上传临时文件列表按已选目录数预留下限容量 |
 | Drop files list capacity / drop event | dynamic growth | exact capacity | structural | 分配更紧 | 按 `DataTransfer.Items.Count` 预分配 drop 文件列表 |
 | Upload task lookup LINQ calls / progress-complete-fail-cancel-remove | 5 `FirstOrDefault(predicate)` | 0 LINQ calls | `(5 - 0) / 5` | 100.00% | 上传回调按 `TaskId` 查任务改为显式扫描，避免每次回调创建 predicate |
 | Picture trigger lookup LINQ calls / load-listtype change | 2 `FirstOrDefault(predicate)` | 0 LINQ calls | `(2 - 0) / 2` | 100.00% | PictureCard / PictureCircle trigger 查找改为显式扫描 |
@@ -108,4 +109,4 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 
 ## 4. 后续
 
-`Upload` 暂不标记为性能 Done。下一轮只有在发现更明确的高频路径时再回来，例如实际上传进度刷新、预览弹窗首次打开、或大列表上传任务渲染。
+`Upload` 标记为 structural-only Done。后续只有在出现新的真实高频路径证据时再重开，例如实际上传进度刷新、预览弹窗首次打开、或大列表上传任务渲染。

@@ -266,6 +266,19 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 
 结果：上述构建和状态验证通过。`--verify-select-states` 仍有既有 closed lazy-slot / dropdown event count 断言失败，本节不把它作为通过项。
 
-## 8. 后续
+## 8. 追加结构优化：只读集合容量快路径
+
+`TreeSelect` 的 ItemsSource / selected / checked 同步 helper 原先只识别非泛型 `ICollection`。当调用方传入只实现 `IReadOnlyCollection<object?>` 或 `IReadOnlyCollection<ITreeItemNode>` 的集合时，列表 / HashSet 会从默认容量动态增长。本轮补上只读集合 Count 快路径；复制顺序、类型转换、diff 语义不变。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TreeSelect ItemsSource copy growth / read-only source reset | dynamic growth | exact read-only count | structural | 结构收益 | 只读 ItemsSource 复制时按 Count 预分配 |
+| TreeSelect tree node list growth / read-only selection sync | dynamic growth | exact read-only count | structural | 结构收益 | 只读 selected/checked snapshot 列表按 Count 预分配 |
+| TreeSelect tree node HashSet growth / read-only selection sync | dynamic growth | exact read-only count | structural | 结构收益 | 只读 selected/checked set 按 Count 预分配 |
+| TreeSelect selection semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 TreeSelect 数据同步路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+## 9. 后续
 
 TreeSelect 当前独立热点更可能在 popup 打开后的 `TreeSelectTreeView`、filter 交互和 checkable tree item 路径。下一轮需要先建立交互动作级基线，而不是继续改页面首次导航的 handle 结构。

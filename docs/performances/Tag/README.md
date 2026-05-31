@@ -170,6 +170,8 @@ dotnet build src/AtomUI.Controls/AtomUI.Controls.csproj -c Debug --framework net
 | 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
 | --- | ---: | ---: | --- | ---: | --- |
 | Tag color name `ToLower()` allocations / worst-case color parse | 19 strings | 0 strings | `(19 - 0) / 19` | 100.00% | 结构收益；14 preset + 4 status + input 均不再 lower |
+| Tag color trim temp strings / color parse | 1 string | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
+| Tag custom color parse string wrappers / custom color parse | 1 string | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；直接调用 span overload |
 | Matched preset/status dictionary lookup / color parse | 1 extra lookup | 0 extra lookups | `(1 - 0) / 1` | 100.00% | 结构收益；命中项直接用 enumerator value |
 
 说明：这是 TagColor 变化路径的结构性收益；不声明页面加载 timing 提升。

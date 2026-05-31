@@ -51,3 +51,25 @@
 | Custom button filter semantics | preserved | preserved | n/a | 0.00% | 行为保持；仍只同步 `DialogButton` |
 
 说明：这是 MessageBox 运行时自定义按钮增删路径的结构性收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
+
+## 5. 追加结构优化：DialogButtonBox role group 首项容量
+
+`DialogButtonBox.AddButtonToGroup()` 在首次遇到某个 `DialogButtonRole` 时会创建按钮列表。绝大多数 role group 至少会立即添加当前按钮，本轮将新建列表容量从默认动态增长改为 `1`，避免首个 `Add()` 时扩容；按钮分组 key、Click handler 订阅和同步顺序不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DialogButtonBox role group first add list growth / new role | dynamic growth | capacity 1 | structural | 结构收益 | 新 role 第一个按钮避免列表首次增长 |
+| button role grouping semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 DialogButtonBox runtime 按钮分组路径 structural-only 收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
+
+## 6. 追加结构优化：DialogButtonBox role dictionary 初始容量
+
+`DialogButtonBox` 内部维护标准按钮和全部按钮两张 role group 字典，key 空间由 `DialogButtonRole` 枚举限定。本轮按枚举最大 role 数预分配两张字典，避免按钮分组逐步填充时字典从默认容量增长；role key、按钮列表和点击订阅语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DialogButtonBox role dictionary initial capacity / instance | dynamic growth | 10 roles | structural | 结构收益 | 字典 key 空间已知，实例初始化时直接预留 |
+| button role grouping semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 DialogButtonBox role group 字典的 structural-only 收益；未新增 Gallery timing 对比，不声明页面加载速度提升。

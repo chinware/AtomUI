@@ -101,6 +101,24 @@ Avalonia source reference：
 
 说明：这是 preview 背景更新路径 structural-only 收益；没有新增 Gallery timing 对比，不声明页面加载速度提升。
 
+T3.3 本轮最后补齐 `GradientColorPickerTrack` active thumb 兜底路径：缩减 gradient stop 后，如果当前 `ActivatedThumb` 已不在 `Thumbs` 中，旧实现用 `Thumbs.First()` 取第一个 thumb。`Thumbs` 是 `List<GradientColorSliderThumb>`，且已有 `Thumbs.Count > 0` 保护；现在直接用 `Thumbs[0]`，语义不变，去掉一次 LINQ enumerator。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Active thumb fallback LINQ enumerators / gradient stop shrink | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；直接走 `List<T>` indexer |
+| Removed thumb temp list growth reallocations / gradient stop shrink | dynamic | exact `delta` capacity | structural | 结构收益 | 缩减数量已知，按 `delta` 预分配 |
+| Default palette group list growth reallocations / picker view default palette setup | dynamic | exact 4 capacity | structural | 结构收益 | 默认 palette 数固定为 4 |
+| Active thumb fallback semantics | first thumb | first thumb | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+T3.4 本轮补齐 HEX 输入解析路径：`ColorPickerInput` 原先在确认输入时对 `_hexValueInput.Text` 创建 trimmed string 后再 `Color.TryParse`；现在使用 span trim + span `Color.TryParse`，保持 HEX 解析和 alpha 合成语义。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| HEX input trim temp strings / confirm input | 1 string risk | 0 strings | `(1 - 0) / 1` | 100.00% | structural-only；span trim 后直接 parse |
+| HEX parse behavior | `Color.TryParse(string)` | `Color.TryParse(ReadOnlySpan<char>)` | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
 ---
 
 ## 1. 资格门槛

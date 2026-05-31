@@ -4829,7 +4829,23 @@ Smoke-only 对比上一轮同参数复测。本轮没有保留会改变 `DataGri
 
 ---
 
+### 2.132 RowGroupHeader frozen-state dictionaries capacity
+
+`DataGridRowGroupHeader` 在 frozen row group header 布局中会为 child `RenderTransform` 和 clip geometry 建字典。可缓存的 child 数量不超过模板 root children 数，本轮在首次创建字典时用 `_rootElement.Children.Count` 预分配；transform / clip 复用、清理和 frozen 语义不变。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| RowGroupHeader frozen transform dictionary growth / first frozen arrange | dynamic growth | root child count capacity | structural | 结构收益 | transform cache 按模板子节点数预分配 |
+| RowGroupHeader frozen clip dictionary growth / first frozen arrange | dynamic growth | root child count capacity | structural | 结构收益 | clip geometry cache 按模板子节点数预分配 |
+| Frozen row group visual semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 DataGrid row group frozen layout 路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+---
+
 ## 3. 验证
+
+包级收口：路线图 T4.1-T4.5 已全部完成，`DataGridRow` / `DataGridCell` / `DataGridColumnHeader` 等内部子控件不再作为独立 Pending 项排队；它们分别由 core、columns、details、reorder-selection、collection-view-filter 五个 T4 子模块覆盖。
 
 ```bash
 dotnet build -c Release -f net10.0 tools/performances/AtomUI.Performance/AtomUI.Performance.csproj

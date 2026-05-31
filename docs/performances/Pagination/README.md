@@ -35,7 +35,19 @@
 | QuickJumperBar LineEdit `KeyUp` handler retained / detach | 1 handler | 0 handlers | `(1 - 0) / 1` | 100.00% | 正确性收益；detach 清理 `_lineEdit` |
 | Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
 
+## Quick Jump Input Parsing
+
+`QuickJumpEdit.OnTextInput()` 原先对输入文本先 `Trim()`，再用 LINQ `All(char.IsDigit)` 检查数字；`QuickJumperBar` / `SimplePagination` 的 Enter 跳页也先创建 trimmed string 再 parse。本轮改为 span trim + 显式数字扫描 / span `int.TryParse`，输入接受规则保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| QuickJumpEdit input trim temp strings / text input | 1 string risk | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持首尾空白处理 |
+| QuickJumpEdit digit-check LINQ operators / text input | 1 `All()` | 0 LINQ operators | `(1 - 0) / 1` | 100.00% | 结构收益；显式循环保持 `char.IsDigit` 语义 |
+| QuickJumperBar Enter parse trim temp strings / jump | 1 string risk | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；span `int.TryParse` 保持解析语义 |
+| SimplePagination Enter parse trim temp strings / jump | 1 string risk | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；span `int.TryParse` 保持解析语义 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
 ## Verification
 
 - `dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj` passed.
-- `dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -c Release --framework net10.0 --no-build -- --verify-pagination-states` still fails existing assertions around `SimplePagination` quick jumper and page item slots; the feature release and `QuickJumperBar` detach cleanup failures are no longer present.
+- `dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -c Release --framework net10.0 --no-build -- --verify-pagination-states` still fails existing assertions around `SimplePagination` quick jumper and page item slots; this parser-only pass did not touch that lifecycle/template path.

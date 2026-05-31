@@ -31,3 +31,14 @@
 | 非 DescriptionItem 过滤语义 | preserved | preserved | n/a | 0.00% | 行为保持；仍只接受 `DescriptionItem` |
 
 说明：这是 ItemsSource 变更路径的结构性收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
+
+## 追加结构优化：MediaBreakInfo 单值解析 span trim
+
+`DescriptionsMediaBreakInfo.Parse()` 的单值 fast path 旧实现先 `input.Trim()` 再 `int.TryParse()`。本轮改为 `input.AsSpan().Trim()` 后直接解析，key-value 复杂格式仍走原有 span parser。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Descriptions media break single-value trim temp strings / parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；单值解析语义保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+验证补充：`--verify-descriptions-states` 当前在本轮改动和 clean HEAD `d35b21a1a` 上均失败于相同的 HeaderLayout / horizontal bordered item visual 断言，因此不是本轮 parser 优化引入的问题。

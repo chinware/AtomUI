@@ -158,3 +158,16 @@ dotnet run -c Release -f net10.0 --no-build \
 | 生产文件范围 | `CaptionButton.cs` + 2 个 caption button theme |
 
 结论：这是模板结构收敛，不改变 public API，不引入生命周期释放点。
+
+---
+
+## 7. 追加结构优化：Linux Window click-through shadow property set 复用
+
+`Window` 在 Linux 下调用 `AttachClickThroughShadow()` 时只需要传入固定的 `FrameShadowThicknessProperty` 额外影响属性集合。旧路径每个 Window 实例都会新建一个单元素 `HashSet<AvaloniaProperty>`；本轮改为静态集合复用。点击穿透、阴影厚度读取和 Linux-only 分支语义不变。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Linux Window click-through extra property set allocations / Window instance | 1 HashSet | 0 after type init | `(1 - 0) / 1` | 100.00% | 结构收益；固定属性集合静态复用 |
+| Click-through shadow semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+说明：这是 Linux Window 构造路径 structural-only 收益；Window 本身实例数低，不声明页面级 timing 提升。
