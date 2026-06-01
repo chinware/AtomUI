@@ -55,11 +55,13 @@ internal static partial class Program
         Expect(FindVisualByName<SelectCandidateList>(select, "PART_CandidateList") == null,
             "Closed default Select should not create SelectCandidateList.",
             failures);
-        Expect(FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput") == null,
-            "Closed default Select without filter should not create SelectFilterTextBox.",
+        var filterInput = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
+        Expect(filterInput?.IsVisible == false,
+            "Closed default Select should keep the static SelectFilterTextBox hidden.",
             failures);
-        Expect(FindVisualByName<SelectResultOptionsBox>(select, "SelectedOptionsBox") == null,
-            "Closed default single Select should not create SelectResultOptionsBox.",
+        var selectedOptionsBox = FindVisualByName<SelectResultOptionsBox>(select, "SelectedOptionsBox");
+        Expect(selectedOptionsBox?.IsVisible == false,
+            "Closed default single Select should keep the static SelectResultOptionsBox hidden.",
             failures);
         Expect(FindVisualByTypeName(select, "SelectAccessoryHost") == null,
             "Closed default Select should use lightweight SelectHandle instead of SelectAccessoryHost.",
@@ -185,8 +187,8 @@ internal static partial class Program
             OptionsSource   = CreateSelectOptions()
         };
         using var filterRealized = RealizeControl(filterSelect);
-        Expect(FindVisualByName<SelectFilterTextBox>(filterSelect, "PART_SingleFilterInput") != null,
-            "Single filter Select should create SelectFilterTextBox.",
+        Expect(FindVisualByName<SelectFilterTextBox>(filterSelect, "PART_SingleFilterInput")?.IsVisible == true,
+            "Single filter Select should show SelectFilterTextBox.",
             failures);
         Expect(GetPopupContent<SelectCandidateList>(filterSelect) == null,
             "Closed single filter Select should still defer SelectCandidateList.",
@@ -198,17 +200,17 @@ internal static partial class Program
             OptionsSource = CreateSelectOptions()
         };
         using var multiRealized = RealizeControl(multiSelect);
-        Expect(FindVisualByName<SelectResultOptionsBox>(multiSelect, "SelectedOptionsBox") != null,
-            "Multiple Select should create SelectResultOptionsBox.",
+        Expect(FindVisualByName<SelectResultOptionsBox>(multiSelect, "SelectedOptionsBox")?.IsVisible == true,
+            "Multiple Select should show SelectResultOptionsBox.",
             failures);
-        Expect(FindVisualByName<SelectFilterTextBox>(multiSelect, "PART_SingleFilterInput") == null,
-            "Multiple Select should not create the single-mode filter text box.",
+        Expect(FindVisualByName<SelectFilterTextBox>(multiSelect, "PART_SingleFilterInput")?.IsVisible == false,
+            "Multiple Select should keep the single-mode filter text box hidden.",
             failures);
 
         multiSelect.SetCurrentValue(Select.ModeProperty, SelectMode.Single);
         RefreshLayout(multiRealized.Window);
-        Expect(FindVisualByName<SelectResultOptionsBox>(multiSelect, "SelectedOptionsBox") == null,
-            "Switching Multiple Select to Single should detach SelectResultOptionsBox.",
+        Expect(FindVisualByName<SelectResultOptionsBox>(multiSelect, "SelectedOptionsBox")?.IsVisible == false,
+            "Switching Multiple Select to Single should hide SelectResultOptionsBox.",
             failures);
     }
 
@@ -222,6 +224,9 @@ internal static partial class Program
         Expect(FindVisualByTypeName(defaultSelect, "SelectAccessoryHost") == null,
             "Default Select should not create SelectAccessoryHost.",
             failures);
+        Expect(FindVisualByName<SelectMaxCountIndicator>(defaultSelect, "PART_SelectMaxCountIndicator")?.IsVisible == false,
+            "Default Select should keep the static max-count indicator hidden.",
+            failures);
 
         var maxCountSelect = new Select
         {
@@ -230,14 +235,14 @@ internal static partial class Program
             OptionsSource           = CreateSelectOptions()
         };
         using var maxCountRealized = RealizeControl(maxCountSelect);
-        Expect(FindVisualByTypeName(maxCountSelect, "SelectAccessoryHost") != null,
-            "Select with max count indicator should create SelectAccessoryHost.",
+        Expect(FindVisualByName<SelectMaxCountIndicator>(maxCountSelect, "PART_SelectMaxCountIndicator")?.IsVisible == true,
+            "Select with max count indicator should show the static max-count indicator.",
             failures);
 
         maxCountSelect.SetCurrentValue(AbstractSelect.IsShowMaxCountIndicatorProperty, false);
         RefreshLayout(maxCountRealized.Window);
-        Expect(FindVisualByTypeName(maxCountSelect, "SelectAccessoryHost") == null,
-            "Turning max count indicator off should detach SelectAccessoryHost.",
+        Expect(FindVisualByName<SelectMaxCountIndicator>(maxCountSelect, "PART_SelectMaxCountIndicator")?.IsVisible == false,
+            "Turning max count indicator off should hide the static max-count indicator.",
             failures);
         Expect(FindVisualByTypeName(maxCountSelect, "SelectHandle") != null,
             "Turning max count indicator off should fall back to lightweight SelectHandle.",

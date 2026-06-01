@@ -90,7 +90,7 @@ public class TransferListView : ListView, ITransferView
         if (SelectedKeys != null)
         {
             var newSelectedKeys = new List<EntityKey>(SelectedKeys.Count);
-            if (ItemsSource != null)
+            if (SelectedKeys.Count > 0 && ItemsSource != null)
             {
                 var allItems = BuildItemKeySet(ItemsSource);
                 foreach (var selectedKey in SelectedKeys)
@@ -330,14 +330,17 @@ public class TransferListView : ListView, ITransferView
             return null;
         }
 
+        if (selectedKeys == null || selectedKeys.Count == 0)
+        {
+            return new List<IItemKey>(0);
+        }
+
         var selectedKeySet = BuildEntityKeySet(selectedKeys);
-        var selectedItems = selectedKeys == null
-            ? new List<IItemKey>(0)
-            : new List<IItemKey>(selectedKeys.Count);
+        var selectedItems  = new List<IItemKey>(selectedKeys.Count);
         foreach (var item in source)
         {
             var itemKey = (IItemKey)item!;
-            if (selectedKeySet?.Contains(itemKey.ItemKey ?? default) == true)
+            if (selectedKeySet!.Contains(itemKey.ItemKey ?? default))
             {
                 selectedItems.Add(itemKey);
             }

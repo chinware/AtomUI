@@ -855,7 +855,7 @@ public class Cascader : AbstractSelect
     {
         if (SelectedOptions != null)
         {
-            if (ShowCheckedStrategy == TreeSelectCheckedStrategy.All)
+            if (SelectedOptions.Count == 0 || ShowCheckedStrategy == TreeSelectCheckedStrategy.All)
             {
                 EffectiveSelectedOptions = SelectedOptions;
             }
@@ -875,10 +875,7 @@ public class Cascader : AbstractSelect
                     }
                     foreach (var option in SelectedOptions)
                     {
-                        var isDescendantOfFullySelectedParent =
-                            HasDescendantParent(option, fullySelectedParents);
-            
-                        if (!isDescendantOfFullySelectedParent)
+                        if (!HasSelectedAncestor(option, fullySelectedParents))
                         {
                             effectiveSelectedOptions.Add(option);
                         }
@@ -957,28 +954,12 @@ public class Cascader : AbstractSelect
         return true;
     }
 
-    private bool HasDescendantParent(ICascaderOption option, IEnumerable<ICascaderOption> parents)
+    private static bool HasSelectedAncestor(ICascaderOption option, ISet<ICascaderOption> selectedAncestors)
     {
-        foreach (var parent in parents)
-        {
-            if (IsDescendantOf(option, parent))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-        
-    private bool IsDescendantOf(ICascaderOption node, ICascaderOption parent)
-    {
-        if (node == parent)
-        {
-            return false;
-        }
-        ICascaderOption? current = node;
+        var current = option.ParentNode as ICascaderOption;
         while (current != null)
         {
-            if (current == parent)
+            if (selectedAncestors.Contains(current))
             {
                 return true;
             }
@@ -998,14 +979,13 @@ public class Cascader : AbstractSelect
             else
             {
                 var current = SelectedOption;
-                var parts   = new List<string>(CountOptionPathDepth(current));
-                while (current != null)
+                var parts   = new string[CountOptionPathDepth(current)];
+                for (var i = parts.Length - 1; current != null; i--)
                 {
-                    parts.Add(current.Header?.ToString() ?? string.Empty);
+                    parts[i] = current.Header?.ToString() ?? string.Empty;
                     current = current.ParentNode as ICascaderOption;
                 }
 
-                parts.Reverse();
                 SelectedOptionPath = string.Join('/', parts);
             }
 
@@ -1038,10 +1018,10 @@ public class Cascader : AbstractSelect
             {
                 if (_cascaderView.TryParseSelectPath(DefaultSelectOptionPath, out var options))
                 {
-                    var parts = new List<string>(options.Count);
-                    foreach (var option in options)
+                    var parts = new string[options.Count];
+                    for (var i = 0; i < options.Count; i++)
                     {
-                        parts.Add(option.Header?.ToString() ?? string.Empty);
+                        parts[i] = options[i].Header?.ToString() ?? string.Empty;
                     }
                     SetCurrentValue(SelectedOptionPathProperty, string.Join("/", parts));
                 }

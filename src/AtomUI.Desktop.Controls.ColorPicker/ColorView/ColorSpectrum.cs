@@ -248,7 +248,7 @@ internal class ColorSpectrum : TemplatedControl
     private bool _updatingHsvColor;
     private bool _isPointerPressed;
     private bool _shouldShowLargeSelection;
-    private List<Hsv> _hsvValues = new List<Hsv>();
+    private IReadOnlyList<Hsv> _hsvValues = Array.Empty<Hsv>();
     private ColorComponent _thirdComponent = ColorComponent.Component3; // HsvComponent.Value
 
     private IDisposable? _layoutRootDisposable;
@@ -433,7 +433,7 @@ internal class ColorSpectrum : TemplatedControl
             return;
         }
 
-        bool isControlDown = e.KeyModifiers.HasFlag(KeyModifiers.Control);
+        bool isControlDown = (e.KeyModifiers & KeyModifiers.Control) == KeyModifiers.Control;
 
         HsvComponent incrementComponent = HsvComponent.Hue;
 

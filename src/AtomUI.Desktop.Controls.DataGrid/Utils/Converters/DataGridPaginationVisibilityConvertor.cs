@@ -18,10 +18,10 @@ public class DataGridPaginationVisibilityConvertor : IValueConverter
 
             if (IsTop)
             {
-                return paginationVisibility.HasFlag(DataGridPaginationVisibility.Top);
+                return (paginationVisibility & DataGridPaginationVisibility.Top) == DataGridPaginationVisibility.Top;
             }
             
-            return paginationVisibility.HasFlag(DataGridPaginationVisibility.Bottom);
+            return (paginationVisibility & DataGridPaginationVisibility.Bottom) == DataGridPaginationVisibility.Bottom;
         }
         return false;
     }

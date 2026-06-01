@@ -32,6 +32,16 @@
 
 说明：这是 ItemsSource 变更路径的结构性收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
 
+## 追加结构优化：只读 ItemsSource 预分配
+
+`Descriptions.ItemsSource` 支持 `IEnumerable`。上一轮已让 `IList` 来源走 Count/indexer，本轮补齐 `IReadOnlyList<DescriptionItem>` 快路径：只读类型化列表按剩余 Count 作为上界预分配并通过 indexer 复制，避免 fallback `foreach` 路径从默认容量动态增长。空只读列表和全 null 列表仍返回 `null`，保持不触发 `Items.AddRange()` 的旧语义。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Descriptions ItemsSource list growth / read-only typed source import | dynamic growth | remaining-count upper-bound capacity | structural | 结构收益 | 只读类型化 source 按剩余 Count 预分配并保留 null 跳过语义 |
+| Empty read-only ItemsSource import behavior | no AddRange | no AddRange | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
 ## 追加结构优化：MediaBreakInfo 单值解析 span trim
 
 `DescriptionsMediaBreakInfo.Parse()` 的单值 fast path 旧实现先 `input.Trim()` 再 `int.TryParse()`。本轮改为 `input.AsSpan().Trim()` 后直接解析，key-value 复杂格式仍走原有 span parser。

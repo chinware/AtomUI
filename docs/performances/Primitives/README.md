@@ -282,3 +282,13 @@ Notes:
 - `RangeInfoPickerInput` 本轮是 repeated layout 写入路径优化；未新增 Gallery timing 对比，不声明页面加载速度提升。
 - `DatePicker` verifier 的旧动态 slot 断言已修正为当前静态模板口径。
 - `Select` / `Cascader` 全量 state verifier 仍含若干旧动态 slot 断言，本轮只以 `--verify-addon-states` 覆盖 right-addon template 正确性。
+
+## CandidateList 单选判断补充
+
+通用 `CandidateList.IsSingleMode()` 原先用 `SelectionMode.HasFlag(Single) && !HasFlag(Multiple)`。由于 Avalonia `SelectionMode.Single = 0`，本轮改为直接判断“不包含 Multiple”，保持原单选语义并去掉 zero-value flag 的 `HasFlag()` 调用。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| CandidateList single-mode `HasFlag` callsites / selection check | 2 | 0 | `(2 - 0) / 2` | 100.00% | structural-only；单选判断直接检查 Multiple bit |
+| Candidate single/multiple semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

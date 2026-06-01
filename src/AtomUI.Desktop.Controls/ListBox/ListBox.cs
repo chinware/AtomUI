@@ -462,7 +462,9 @@ public class ListBox : AvaloniaListBox,
     {
         if (Filter != null && FilterValue != null && IsLoaded)
         {
-            if (FilterHighlightStrategy.HasFlag(TextBlockHighlightStrategy.HideUnMatched))
+            var hideUnmatched =
+                (FilterHighlightStrategy & TextBlockHighlightStrategy.HideUnMatched) == TextBlockHighlightStrategy.HideUnMatched;
+            if (hideUnmatched)
             {
                 if (_filterContext.Count == 0)
                 {
@@ -494,7 +496,7 @@ public class ListBox : AvaloniaListBox,
                             ++count;
                         }
 
-                        if (FilterHighlightStrategy.HasFlag(TextBlockHighlightStrategy.HideUnMatched))
+                        if (hideUnmatched)
                         {
                             listBoxItem.SetCurrentValue(ListBoxItem.IsVisibleProperty, filterResult);
                         }

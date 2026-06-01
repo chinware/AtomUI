@@ -14,15 +14,15 @@ internal static class KeyboardHelper
 {
     public static void GetMetaKeyState(Control target, KeyModifiers modifiers, out bool ctrlOrCmd, out bool shift)
     {
-        ctrlOrCmd = modifiers.HasFlag(GetPlatformCtrlOrCmdKeyModifier(target));
-        shift     = modifiers.HasFlag(KeyModifiers.Shift);
+        ctrlOrCmd = HasModifier(modifiers, GetPlatformCtrlOrCmdKeyModifier(target));
+        shift     = HasModifier(modifiers, KeyModifiers.Shift);
     }
 
     public static void GetMetaKeyState(Control target, KeyModifiers modifiers, out bool ctrlOrCmd, out bool shift, out bool alt)
     {
-        ctrlOrCmd = modifiers.HasFlag(GetPlatformCtrlOrCmdKeyModifier(target));
-        shift     = modifiers.HasFlag(KeyModifiers.Shift);
-        alt       = modifiers.HasFlag(KeyModifiers.Alt);
+        ctrlOrCmd = HasModifier(modifiers, GetPlatformCtrlOrCmdKeyModifier(target));
+        shift     = HasModifier(modifiers, KeyModifiers.Shift);
+        alt       = HasModifier(modifiers, KeyModifiers.Alt);
     }
 
     public static KeyModifiers GetPlatformCtrlOrCmdKeyModifier(Control? target)
@@ -30,5 +30,10 @@ internal static class KeyboardHelper
         var keymap = target?.GetPlatformSettings()?.HotkeyConfiguration ??
                      Application.Current!.PlatformSettings!.HotkeyConfiguration;
         return keymap.CommandModifiers;
+    }
+
+    private static bool HasModifier(KeyModifiers modifiers, KeyModifiers modifier)
+    {
+        return (modifiers & modifier) == modifier;
     }
 }

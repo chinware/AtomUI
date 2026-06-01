@@ -933,11 +933,11 @@ internal class OverlayDialogHost : ContentControl,
         var newWidth  = Bounds.Width;
         var newHeight = Bounds.Height;
 
-        if (location.HasFlag(ResizeHandleLocation.East))
+        if ((location & ResizeHandleLocation.East) == ResizeHandleLocation.East)
         {
             newWidth = Math.Max(MinWidth, Bounds.Width + deltaX);
         }
-        else if (location.HasFlag(ResizeHandleLocation.West))
+        else if ((location & ResizeHandleLocation.West) == ResizeHandleLocation.West)
         {
             var candidate   = Math.Max(MinWidth, Bounds.Width - deltaX);
             var actualDelta = candidate - Bounds.Width;
@@ -945,11 +945,11 @@ internal class OverlayDialogHost : ContentControl,
             _dialog.SetCurrentValue(Dialog.OffsetXProperty, _dialog.OffsetX - actualDelta);
         }
 
-        if (location.HasFlag(ResizeHandleLocation.South))
+        if ((location & ResizeHandleLocation.South) == ResizeHandleLocation.South)
         {
             newHeight = Math.Max(MinHeight, Bounds.Height + deltaY);
         }
-        else if (location.HasFlag(ResizeHandleLocation.North))
+        else if ((location & ResizeHandleLocation.North) == ResizeHandleLocation.North)
         {
             var candidate   = Math.Max(MinHeight, Bounds.Height - deltaY);
             var actualDelta = candidate - Bounds.Height;

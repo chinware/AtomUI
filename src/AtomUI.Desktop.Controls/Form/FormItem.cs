@@ -924,7 +924,7 @@ public class FormItem : TemplatedControl, IFormItem
             {
                 for (int i = 0; i < ValidateWarningMessages.Count; i++)
                 {
-                    if (inlines.Count > 0 && inlines.Last() is not LineBreak)
+                    if (inlines.Count > 0 && inlines[inlines.Count - 1] is not LineBreak)
                     {
                         inlines.Add(new LineBreak());
                     }

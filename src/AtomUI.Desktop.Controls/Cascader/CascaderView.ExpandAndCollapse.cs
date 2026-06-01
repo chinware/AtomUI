@@ -60,15 +60,19 @@ public partial class CascaderView
         try
         {
             ++_ignoreExpandAndCollapseLevel;
-            var pathNodes  = new List<object>(CountPathDepth(cascaderViewOption));
-            
-            var current  = cascaderViewOption;
-            while (current != null)
+            var pathCount  = CountPathDepth(cascaderViewOption);
+            var pathNodes  = new List<object>(pathCount);
+            for (var i = 0; i < pathCount; i++)
             {
-                pathNodes.Add(current);
-                current = current.ParentNode as ICascaderOption;
+                pathNodes.Add(null!);
             }
-            pathNodes.Reverse();
+
+            var current = cascaderViewOption;
+            for (var i = pathCount - 1; current != null; i--)
+            {
+                pathNodes[i] = current;
+                current      = current.ParentNode as ICascaderOption;
+            }
             
             Debug.Assert(pathNodes.Count > 0);
             // 检查是否是野数据

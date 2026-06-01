@@ -670,6 +670,7 @@ public abstract class AbstractSelect : TemplatedControl,
     protected virtual void PopupClosed(object? sender, EventArgs e)
     {
         SubscriptionsOnOpen.Clear();
+        PopupHasOpened = false;
         NotifyPopupClosed();
     }
 
@@ -754,18 +755,21 @@ public abstract class AbstractSelect : TemplatedControl,
             {
                 Popup.IsOpen = false;
             }
-            NotifyDropDownClosed(EventArgs.Empty);
         }
     }
 
     protected void OpenDropDown()
     {
+        EnsurePopupContent();
         if (Popup != null)
         {
             Popup.IsOpen = true;
         }
         PopupHasOpened = true;
-        NotifyDropDownOpened(EventArgs.Empty);
+    }
+
+    protected virtual void EnsurePopupContent()
+    {
     }
 
     protected void OpeningDropDown(bool oldValue)

@@ -779,7 +779,7 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
                 UpdateSelectionFromEventSource(
                     e.Source,
                     true,
-                    e.KeyModifiers.HasFlag(KeyModifiers.Shift),
+                    (e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift,
                     ctrl);
             }
 

@@ -25,3 +25,15 @@
 | SelectionChanged snapshot behavior | array snapshot | array snapshot | n/a | 0.00% | 行为保持 |
 
 说明：这是选择事件路径的结构性收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
+
+## Filter / Key Modifier Flag Checks
+
+本轮补充两个交互路径的 flag 判断收敛：`ListBox.FilterItems()` 的 `HideUnMatched` 判断和 `ListView.OnKeyDown()` 的 Shift 扩展选择判断都改为 bitwise check。过滤显示、快捷键和选择语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| ListBox filter `HideUnMatched` `HasFlag` callsites / filter pass | 2 | 0 | `(2 - 0) / 2` | 100.00% | structural-only；filter pass 复用一次 bitwise 结果 |
+| ListView Shift key `HasFlag` callsites / keydown selection | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；键盘选择判断直接读 bit |
+| Filter / key selection semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+验证：`--verify-listbox-states` 通过。

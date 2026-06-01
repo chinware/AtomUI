@@ -353,20 +353,22 @@ public class DataGridLengthConverter : TypeConverter
 
         if (value is string stringValue)
         {
-            stringValue = stringValue.Trim();
+            var trimmedValue = stringValue.AsSpan().Trim();
 
-            if (stringValue.EndsWith(StarSuffix, StringComparison.Ordinal))
+            if (trimmedValue.EndsWith(StarSuffix.AsSpan(), StringComparison.Ordinal))
             {
-                string stringValueWithoutSuffix = stringValue.Substring(0, stringValue.Length - StarSuffix.Length);
+                var stringValueWithoutSuffix = trimmedValue[..^StarSuffix.Length];
 
                 double starWeight;
-                if (string.IsNullOrEmpty(stringValueWithoutSuffix))
+                if (stringValueWithoutSuffix.IsEmpty)
                 {
                     starWeight = 1;
                 }
                 else
                 {
-                    starWeight = Convert.ToDouble(stringValueWithoutSuffix, culture ?? CultureInfo.CurrentCulture);
+                    starWeight = double.Parse(stringValueWithoutSuffix,
+                        NumberStyles.Float | NumberStyles.AllowThousands,
+                        culture ?? CultureInfo.CurrentCulture);
                 }
 
                 return new DataGridLength(starWeight, DataGridLengthUnitType.Star);
@@ -374,7 +376,7 @@ public class DataGridLengthConverter : TypeConverter
 
             for (int index = 0; index < ValueInvariantUnitStrings.Length; index++)
             {
-                if (stringValue.Equals(ValueInvariantUnitStrings[index], StringComparison.OrdinalIgnoreCase))
+                if (trimmedValue.Equals(ValueInvariantUnitStrings[index].AsSpan(), StringComparison.OrdinalIgnoreCase))
                 {
                     return ValueInvariantDataGridLengths[index];
                 }

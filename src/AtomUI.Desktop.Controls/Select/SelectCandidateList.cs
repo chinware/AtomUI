@@ -372,7 +372,7 @@ internal class SelectCandidateList : ListView, ICandidateList
 
     private bool IsSingleMode()
     {
-        return SelectionMode.HasFlag(SelectionMode.Single) && !SelectionMode.HasFlag(SelectionMode.Multiple);
+        return (SelectionMode & SelectionMode.Multiple) != SelectionMode.Multiple;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

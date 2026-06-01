@@ -4,6 +4,7 @@ using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,6 +15,7 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
@@ -21,6 +23,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 using ItemCollection = AtomUI.Collections.ItemCollection;
+using AvaloniaTreeView = Avalonia.Controls.TreeView;
 
 public class TreeSelect : AbstractSelect
 {
@@ -318,6 +321,7 @@ public class TreeSelect : AbstractSelect
     #endregion
     
     private SelectFilterTextBox? _singleFilterInput;
+    private Border? _popupFrame;
     private TreeView? _treeView;
     private CompositeDisposable? _contentRightAddOnBindings;
     private bool _needSkipSyncSelection;
@@ -371,6 +375,12 @@ public class TreeSelect : AbstractSelect
             SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
         }
         ConfigureMaxSelectReached();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ClearPopupContent();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleClearRequest()
@@ -455,24 +465,10 @@ public class TreeSelect : AbstractSelect
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearPopupContent();
         base.OnApplyTemplate(e);
 
-        if (_treeView != null)
-        {
-            _treeView.SelectionChanged    -= HandleTreeViewSelectionChanged;
-            _treeView.CheckedItemsChanged -= HandleTreeViewItemsCheckedChanged;
-            _treeView.ItemsSource         =  null;
-        }
-
         _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
-        _treeView          = e.NameScope.Find<TreeView>("PART_TreeView");
-
-        if (_treeView != null)
-        {
-            _treeView.SelectionChanged    += HandleTreeViewSelectionChanged;
-            _treeView.CheckedItemsChanged += HandleTreeViewItemsCheckedChanged;
-            _treeView.ItemsSource         =  BuildItemsSourceList(Items);
-        }
 
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
@@ -480,6 +476,99 @@ public class TreeSelect : AbstractSelect
         ConfigurePlaceholderVisible();
         UpdatePseudoClasses();
         SetupContentRightAddOnBindings(e);
+    }
+
+    protected override void EnsurePopupContent()
+    {
+        if (Popup == null)
+        {
+            return;
+        }
+
+        if (_popupFrame == null)
+        {
+            _popupFrame = new Border
+            {
+                Name = "PopupFrame"
+            };
+            _popupFrame.SetTemplatedParent(this);
+            _popupFrame[!Layoutable.MaxHeightProperty] = this[!MaxPopupHeightProperty];
+            _popupFrame[!Layoutable.MinWidthProperty]  = this[!EffectivePopupWidthProperty];
+            _popupFrame[!Border.PaddingProperty]       = this[!PopupContentPaddingProperty];
+        }
+
+        if (_treeView == null)
+        {
+            var treeView = new TreeSelectTreeView
+            {
+                Name                = "PART_TreeView",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment   = VerticalAlignment.Stretch,
+                NodeHoverMode       = TreeItemHoverMode.Block,
+                ItemsSource         = BuildItemsSourceList(Items)
+            };
+            treeView.SetTemplatedParent(this);
+            treeView[!SelectingItemsControl.AutoScrollToSelectedItemProperty] = this[!AutoScrollToSelectedItemProperty];
+            treeView[!TreeView.ToggleTypeProperty]                            = this[!TreeViewToggleTypeProperty];
+            treeView[!TreeView.IsDefaultExpandAllProperty]                    = this[!IsDefaultExpandAllProperty];
+            treeView[!TreeView.FilterValueProperty]                           = this[!FilterValueProperty];
+            treeView[!TreeView.FilterProperty]                                = this[!FilterProperty];
+            treeView[!TreeView.FilterHighlightStrategyProperty]               = this[!FilterHighlightStrategyProperty];
+            treeView[!ItemsControl.ItemTemplateProperty]                      = this[!ItemTemplateProperty];
+            treeView[!TreeView.DataLoaderProperty]                            = this[!DataLoaderProperty];
+            treeView[!TreeView.FilterHighlightForegroundProperty]             = this[!FilterHighlightForegroundProperty];
+            treeView[!AvaloniaTreeView.SelectionModeProperty]                 = this[!TreeViewSelectionModeProperty];
+            treeView[!TreeView.IsSelectableProperty]                          = this[!IsTreeViewSelectableProperty];
+            treeView[!TreeView.IsCheckStrictlyProperty]                       = this[!IsTreeCheckStrictlyProperty];
+            treeView[!TreeView.IsShowIconProperty]                            = this[!IsShowIconProperty];
+            treeView[!TreeView.IsShowLeafIconProperty]                        = this[!IsShowLeafIconProperty];
+            treeView[!TreeView.IsShowLineProperty]                            = this[!IsShowLineProperty];
+            treeView[!TreeView.IsShowEmptyIndicatorProperty]                  = this[!IsShowEmptyIndicatorProperty];
+            treeView[!TreeView.IsSwitcherRotationProperty]                    = this[!IsSwitcherRotationProperty];
+            treeView[!TreeSelectTreeView.IsMaxSelectReachedProperty]          = this[!IsMaxSelectReachedProperty];
+            treeView.SelectionChanged    += HandleTreeViewSelectionChanged;
+            treeView.CheckedItemsChanged += HandleTreeViewItemsCheckedChanged;
+            _treeView = treeView;
+            SyncSelectedItemToTreeView();
+            SyncSelectedItemsToTreeView();
+        }
+
+        if (!ReferenceEquals(_popupFrame.Child, _treeView))
+        {
+            _popupFrame.Child = _treeView;
+        }
+        if (!ReferenceEquals(Popup.Child, _popupFrame))
+        {
+            Popup.Child = _popupFrame;
+        }
+    }
+
+    private void ClearPopupContent()
+    {
+        if (_treeView != null)
+        {
+            _treeView.SelectionChanged    -= HandleTreeViewSelectionChanged;
+            _treeView.CheckedItemsChanged -= HandleTreeViewItemsCheckedChanged;
+            _treeView.ItemsSource         =  null;
+            _treeView.SetTemplatedParent(null);
+        }
+
+        if (_popupFrame != null)
+        {
+            if (ReferenceEquals(_popupFrame.Child, _treeView))
+            {
+                _popupFrame.Child = null;
+            }
+            _popupFrame.SetTemplatedParent(null);
+        }
+
+        if (Popup != null && ReferenceEquals(Popup.Child, _popupFrame))
+        {
+            Popup.Child = null;
+        }
+
+        _treeView   = null;
+        _popupFrame = null;
     }
 
     private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
@@ -959,14 +1048,15 @@ public class TreeSelect : AbstractSelect
     {
         if (SelectedItems != null)
         {
-            if (ShowCheckedStrategy == TreeSelectCheckedStrategy.All)
+            if (SelectedItems.Count == 0 || ShowCheckedStrategy == TreeSelectCheckedStrategy.All)
             {
                 EffectiveSelectedItems = SelectedItems;
             }
             else
             {
                 var effectiveSelectedItems = new List<ITreeItemNode>(SelectedItems.Count);
-                if (ShowCheckedStrategy.HasFlag(TreeSelectCheckedStrategy.ShowParent))
+                var showCheckedStrategy    = ShowCheckedStrategy;
+                if ((showCheckedStrategy & TreeSelectCheckedStrategy.ShowParent) == TreeSelectCheckedStrategy.ShowParent)
                 {
                     var selectedSet          = BuildTreeNodeSet(SelectedItems);
                     var fullySelectedParents = new HashSet<ITreeItemNode>(SelectedItems.Count);
@@ -979,16 +1069,13 @@ public class TreeSelect : AbstractSelect
                     }
                     foreach (var node in SelectedItems)
                     {
-                        var isDescendantOfFullySelectedParent =
-                            HasDescendantParent(node, fullySelectedParents);
-            
-                        if (!isDescendantOfFullySelectedParent)
+                        if (!HasSelectedAncestor(node, fullySelectedParents))
                         {
                             effectiveSelectedItems.Add(node);
                         }
                     }
                 }
-                if (ShowCheckedStrategy.HasFlag(TreeSelectCheckedStrategy.ShowChild))
+                if ((showCheckedStrategy & TreeSelectCheckedStrategy.ShowChild) == TreeSelectCheckedStrategy.ShowChild)
                 {
                     foreach (var node in SelectedItems)
                     {
@@ -1095,32 +1182,16 @@ public class TreeSelect : AbstractSelect
         return false;
     }
 
-    private bool HasDescendantParent(ITreeItemNode node, IEnumerable<ITreeItemNode> parents)
+    private static bool HasSelectedAncestor(ITreeItemNode node, ISet<ITreeItemNode> selectedAncestors)
     {
-        foreach (var parent in parents)
-        {
-            if (IsDescendantOf(node, parent))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-        
-    private bool IsDescendantOf(ITreeItemNode node, ITreeItemNode parent)
-    {
-        if (node == parent)
-        {
-            return false;
-        }
-        ITreeNode<ITreeItemNode>? current = node;
+        var current = node.ParentNode as ITreeItemNode;
         while (current != null)
         {
-            if (current == parent)
+            if (selectedAncestors.Contains(current))
             {
                 return true;
             }
-            current = current.ParentNode;
+            current = current.ParentNode as ITreeItemNode;
         }
         return false;
     }

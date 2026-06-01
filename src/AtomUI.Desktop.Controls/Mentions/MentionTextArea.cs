@@ -110,9 +110,9 @@ internal class MentionTextArea : TextArea
                 {
                     break;
                 }
-                if (TriggerPrefix != null && TriggerPrefix.Contains(ch.ToString()))
+                if (TryGetTriggerPrefix(ch, out var triggerText))
                 {
-                    _currentTriggerText = ch.ToString();
+                    _currentTriggerText = triggerText;
                     triggerFound        = true;
                     break;
                 }
@@ -178,7 +178,7 @@ internal class MentionTextArea : TextArea
             {
                 break;
             }
-            if (TriggerPrefix != null && TriggerPrefix.Contains(ch.ToString()))
+            if (TryGetTriggerPrefix(ch, out _))
             {
                 triggerFound = true;
                 triggerIndex = index - 1;
@@ -211,7 +211,27 @@ internal class MentionTextArea : TextArea
         }
         return default;
     }
-    
+
+    private bool TryGetTriggerPrefix(char ch, out string triggerText)
+    {
+        var triggerPrefix = TriggerPrefix;
+        if (triggerPrefix != null)
+        {
+            for (var i = 0; i < triggerPrefix.Count; i++)
+            {
+                var prefix = triggerPrefix[i];
+                if (prefix?.Length == 1 && prefix[0] == ch)
+                {
+                    triggerText = prefix;
+                    return true;
+                }
+            }
+        }
+
+        triggerText = string.Empty;
+        return false;
+    }
+
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -242,7 +262,7 @@ internal class MentionTextArea : TextArea
                 {
                     break;
                 }
-                if (TriggerPrefix != null && TriggerPrefix.Contains(ch.ToString()))
+                if (TryGetTriggerPrefix(ch, out _))
                 {
                     triggerCh    = ch;
                     triggerIndex = currentIndex - 1;
@@ -250,13 +270,14 @@ internal class MentionTextArea : TextArea
                 }
                 currentIndex--;
             }
-            if (triggerIndex != 0)
+            if (triggerIndex > 0)
             {
-                if ($"{Text[triggerIndex - 1]}" == split)
+                var previousCh = Text[triggerIndex - 1];
+                if (split is { Length: 1 } && previousCh == split[0])
                 {
                     foundSplit = true;
                 }
-                else if ($"{Text[triggerIndex - 1]}" == " ")
+                else if (previousCh == ' ')
                 {
                     foundSpace = true;
                 }

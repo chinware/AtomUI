@@ -79,35 +79,7 @@
                                 OverlayDismissEventPassThrough="True"
                                 RequestedPlacement="{TemplateBinding PopupPlacement}"
                                 ShouldUseOverlayLayer="{TemplateBinding ShouldUseOverlayPopup}"
-                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
-                        <Border Name="PopupFrame"
-                                MaxHeight="{TemplateBinding MaxPopupHeight}"
-                                MinWidth="{TemplateBinding EffectivePopupWidth}"
-                                Padding="{TemplateBinding PopupContentPadding}">
-                            <atom:TreeSelectTreeView Name="PART_TreeView"
-                                                     AutoScrollToSelectedItem="{TemplateBinding AutoScrollToSelectedItem}"
-                                                     HorizontalAlignment="Stretch"
-                                                     VerticalAlignment="Stretch"
-                                                     NodeHoverMode="Block"
-                                                     ToggleType="{TemplateBinding TreeViewToggleType}"
-                                                     IsDefaultExpandAll="{TemplateBinding IsDefaultExpandAll}"
-                                                     FilterValue="{TemplateBinding FilterValue}"
-                                                     Filter="{TemplateBinding Filter}"
-                                                     FilterHighlightStrategy="{TemplateBinding FilterHighlightStrategy}"
-                                                     ItemTemplate="{TemplateBinding ItemTemplate}"
-                                                     DataLoader="{TemplateBinding DataLoader}"
-                                                     FilterHighlightForeground="{TemplateBinding FilterHighlightForeground}"
-                                                     SelectionMode="{TemplateBinding TreeViewSelectionMode}"
-                                                     IsSelectable="{TemplateBinding IsTreeViewSelectable}"
-                                                     IsCheckStrictly="{TemplateBinding IsTreeCheckStrictly}"
-                                                     IsShowIcon="{TemplateBinding IsShowIcon}"
-                                                     IsShowLeafIcon="{TemplateBinding IsShowLeafIcon}"
-                                                     IsShowLine="{TemplateBinding IsShowLine}"
-                                                     IsShowEmptyIndicator="{TemplateBinding IsShowEmptyIndicator}"
-                                                     IsSwitcherRotation="{TemplateBinding IsSwitcherRotation}"
-                                                     IsMaxSelectReached="{TemplateBinding IsMaxSelectReached}" />
-                        </Border>
-                    </atom:Popup>
+                                IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}" />
                 </Panel>
             </ControlTemplate>
         </Setter>

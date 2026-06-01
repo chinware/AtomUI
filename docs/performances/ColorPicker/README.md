@@ -119,6 +119,16 @@ T3.4 本轮补齐 HEX 输入解析路径：`ColorPickerInput` 原先在确认输
 | HEX parse behavior | `Color.TryParse(string)` | `Color.TryParse(ReadOnlySpan<char>)` | n/a | 0.00% | 行为保持 |
 | Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
 
+T3.4 本轮追加 `ColorSpectrum` 默认 HSV 缓存空集合收敛：实例创建时 `_hsvValues` 只需要支持 `Count` 和 indexer，真正 bitmap 生成后会替换为有容量的 `List<Hsv>`。因此默认空态改用 `Array.Empty<Hsv>()`，避免每个 `ColorSpectrum` 初始化时分配空 `List<Hsv>`，颜色取样和键盘移动语义不变。
+
+| metric | baseline | optimized | formula | improvement | conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| ColorSpectrum empty HSV cache list allocations / instance | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；默认空态复用 `Array.Empty<Hsv>()` |
+| Generated HSV map capacity / bitmap rebuild | exact pixel count | exact pixel count | n/a | 0.00% | 行为保持；生成后仍使用 `new List<Hsv>(pixelCount)` |
+| ColorSpectrum arrow-key modifier enum `HasFlag` calls / keydown | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；Control modifier 改为 bitwise check |
+| GradientColorPicker excess text-run removal LINQ calls / sync | 1 per removed run | 0 | `(1 - 0) / 1` | 100.00% | structural-only；直接 `RemoveAt(lastIndex)` |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
 ---
 
 ## 1. 资格门槛

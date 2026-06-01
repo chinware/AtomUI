@@ -84,9 +84,9 @@ public class HighlightableTextBlock : TextBlock
         Debug.Assert(Text != null);
 
         var strategy        = HighlightStrategy;
-        var highlightMatch  = strategy.HasFlag(TextBlockHighlightStrategy.HighlightedMatch);
-        var highlightWhole  = !highlightMatch && strategy.HasFlag(TextBlockHighlightStrategy.HighlightedWhole);
-        var bold            = strategy.HasFlag(TextBlockHighlightStrategy.BoldedMatch);
+        var highlightMatch  = (strategy & TextBlockHighlightStrategy.HighlightedMatch) == TextBlockHighlightStrategy.HighlightedMatch;
+        var highlightWhole  = !highlightMatch && (strategy & TextBlockHighlightStrategy.HighlightedWhole) == TextBlockHighlightStrategy.HighlightedWhole;
+        var bold            = (strategy & TextBlockHighlightStrategy.BoldedMatch) == TextBlockHighlightStrategy.BoldedMatch;
 
         // 注意:HideUnMatched flag 在原实现里就未读取,本轮保留该行为不变(SKILL Tier 1 §1)。
         if (highlightWhole)

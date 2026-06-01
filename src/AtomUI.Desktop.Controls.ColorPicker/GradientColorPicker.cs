@@ -156,7 +156,7 @@ public class GradientColorPicker : AbstractColorPicker
                 var delta = textRunCount - stopsCount;
                 for (var i = 0; i < delta; i++)
                 {
-                    _textPanel.Children.Remove(_textPanel.Children.Last());
+                    _textPanel.Children.RemoveAt(_textPanel.Children.Count - 1);
                 }
             }
             else if (stopsCount > textRunCount)

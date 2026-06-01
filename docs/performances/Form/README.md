@@ -37,3 +37,15 @@
 | Items change measure invalidation behavior | `InvalidateMeasure()` | `InvalidateMeasure()` | n/a | 0.00% | 行为保持不变 |
 
 验证说明：`AtomUI.Performance` 构建通过。当前 `--verify-form-states` 仍有历史断言/期望失败，本轮不把该 suite 作为收益证明。
+
+## 追加结构优化：error message inline last lookup
+
+`FormItem.BuildErrorMessageInlines()` 在 warning message 拼接前需要判断当前最后一个 inline 是否已经是 `LineBreak`。旧实现使用 `inlines.Last()`；本轮在 `inlines.Count > 0` 保护下改为 `inlines[inlines.Count - 1]`，错误/警告消息顺序和换行规则保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| FormItem warning inline LINQ `Last()` calls / warning message | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；最后一个 inline 直接按 index 读取 |
+| Error/warning line-break semantics | unchanged | unchanged | n/a | 0.00% | 行为保持；只在需要时插入分隔换行 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+验证补充：复跑 `--verify-form-states` 仍失败在既有 feedback control、tooltip icon、debounce timer 和 detach token source 断言；本轮只改错误/警告消息 inline 集合的最后一项读取方式，不改变这些生命周期路径，因此该失败不作为本轮结构优化引入的新回归。

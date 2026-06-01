@@ -607,9 +607,9 @@ internal class TreeViewItemHeader : ContentControl
         }
 
         var strategy         = FilterHighlightStrategy;
-        var highlightedMatch = strategy.HasFlag(TreeFilterHighlightStrategy.HighlightedMatch);
-        var highlightedWhole = !highlightedMatch && strategy.HasFlag(TreeFilterHighlightStrategy.HighlightedWhole);
-        var bold             = strategy.HasFlag(TreeFilterHighlightStrategy.BoldedMatch);
+        var highlightedMatch = (strategy & TreeFilterHighlightStrategy.HighlightedMatch) == TreeFilterHighlightStrategy.HighlightedMatch;
+        var highlightedWhole = !highlightedMatch && (strategy & TreeFilterHighlightStrategy.HighlightedWhole) == TreeFilterHighlightStrategy.HighlightedWhole;
+        var bold             = (strategy & TreeFilterHighlightStrategy.BoldedMatch) == TreeFilterHighlightStrategy.BoldedMatch;
 
         if (highlightedWhole)
         {

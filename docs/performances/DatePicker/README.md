@@ -31,3 +31,15 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 - `DatePicker state verification passed.`
 - `TimePicker state verification passed.`
 - `DatePicker` suite smoke 通过，visual/logical 形态保持稳定。
+
+## 追加结构优化：RangeDatePicker pick-state flag 判断
+
+`RangeDatePickerPresenter.OnConfirmed()` 需要判断当前选择是否已有 start / end 两段。本轮把 3 个 `PickState.HasFlag()` 改为一次 state 快照 + bitwise check；确认、半段确认和下一段选择状态推进语义不变。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| RangeDatePicker pick-state `HasFlag` callsites / confirm | 3 | 0 | `(3 - 0) / 3` | 100.00% | structural-only；确认路径不再走 enum helper |
+| Pick-state reads / confirm | up to 3 repeated reads | 1 snapshot | structural | 结构收益 | start/end 判断复用同一个 `PickState` 快照 |
+| Range confirm semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+
+验证：`--verify-datepicker-states` 通过。

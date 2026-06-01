@@ -332,3 +332,29 @@ rg "new Cursor\(StandardCursorType.Ibeam\)" --type cs src/AtomUI.Desktop.Control
 | highlight segment output | unchanged | unchanged | n/a | 0.00% | 行为保持 |
 
 说明：这是高亮 rebuild 路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+---
+
+## 9. 追加结构优化：highlight strategy flag check
+
+`HighlightableTextBlock.NotifyBuildFilterHighlightRuns()` 每次 rebuild 都要判断 `HighlightedMatch`、`HighlightedWhole` 和 `BoldedMatch`。旧实现使用 enum `HasFlag()`；本轮改为 bitwise check，短路顺序和 `HideUnMatched` 既有未读取行为保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| HighlightableTextBlock strategy enum `HasFlag` callsites / rebuild | 3 | 0 | `(3 - 0) / 3` | 100.00% | structural-only；高亮策略判断不再走 enum helper |
+| HighlightedMatch / HighlightedWhole / BoldedMatch semantics | unchanged | unchanged | n/a | 0.00% | 行为保持；高亮分段输出不变 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 10. 追加结构优化：SelectableTextBlock Shift 判断
+
+`SelectableTextBlock` pointer selection 路径需要判断 Shift 是否按下。本轮把 `KeyModifiers.HasFlag(Shift)` 改为 bitwise check，点击选择 / Shift 扩展选择语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| SelectableTextBlock Shift `HasFlag` callsites / pointer press | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；按键 modifier 判断直接读 bit |
+| Pointer selection semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+验证：`--verify-textblock-states` 通过。

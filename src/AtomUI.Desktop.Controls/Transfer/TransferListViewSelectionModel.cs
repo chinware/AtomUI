@@ -130,12 +130,10 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
             }
         }
 
-        object?[]? oldSelection = null;
-
-        if (Source is object && value is object)
+        var shouldSyncFromSelectedItems = Source is object && value is object;
+        if (shouldSyncFromSelectedItems)
         {
-            oldSelection = new object?[WritableSelectedItems.Count];
-            WritableSelectedItems.CopyTo(oldSelection, 0);
+            _ = WritableSelectedItems;
         }
 
         try
@@ -151,7 +149,7 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
             _ignoreSelectedItemsChanges = false;
         }
 
-        if (oldSelection is null)
+        if (!shouldSyncFromSelectedItems)
         {
             SyncToSelectedItems();
         }
@@ -171,9 +169,10 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
                 _ignoreSelectedItemsChanges = true;
                 _writableSelectedItems.Clear();
 
-                foreach (var i in base.SelectedItems)
+                var selectedItems = base.SelectedItems;
+                for (var i = 0; i < selectedItems.Count; i++)
                 {
-                    _writableSelectedItems.Add(i);
+                    _writableSelectedItems.Add(selectedItems[i]);
                 }
             }
             finally
@@ -376,24 +375,21 @@ internal class TransferListViewSelectionModel : SelectionModel<object?>, ISelect
 
     private static bool SequenceEqual(IList first, IReadOnlyList<object?> second)
     {
-        if (first is IEnumerable<object?> e)
+        if (first.Count != second.Count)
         {
-            return e.SequenceEqual(second);
+            return false;
         }
 
-        var       comparer = EqualityComparer<object?>.Default;
-        var       e1       = first.GetEnumerator();
-        using var e2       = second.GetEnumerator();
-
-        while (e1.MoveNext())
+        var comparer = EqualityComparer<object?>.Default;
+        for (var i = 0; i < first.Count; i++)
         {
-            if (!(e2.MoveNext() && comparer.Equals(e1.Current, e2.Current)))
+            if (!comparer.Equals(first[i], second[i]))
             {
                 return false;
             }
         }
 
-        return !e2.MoveNext();
+        return true;
     }
     
 }

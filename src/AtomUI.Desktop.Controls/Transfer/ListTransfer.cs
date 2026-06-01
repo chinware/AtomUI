@@ -68,7 +68,9 @@ public class ListTransfer : AbstractTransfer
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
         var               targetKeySet             = BuildTargetKeySet(TargetKeys);
-        if (changeType.HasFlag(FilterChangeType.Source))
+        var               sourceChanged            = (changeType & FilterChangeType.Source) == FilterChangeType.Source;
+        var               targetChanged            = (changeType & FilterChangeType.Target) == FilterChangeType.Target;
+        if (sourceChanged)
         {
             var sourcePanelSource = BuildSourcePanelSource(targetKeySet);
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
@@ -76,7 +78,7 @@ public class ListTransfer : AbstractTransfer
             sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
         }
 
-        if (changeType.HasFlag(FilterChangeType.Target))
+        if (targetChanged)
         {
             var targetPanelSource = BuildTargetPanelSource(targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;

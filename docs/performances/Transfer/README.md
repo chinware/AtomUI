@@ -257,3 +257,63 @@ Transfer 的 source panel、selection key、list view / tree view 快照 helper 
 | Transfer filtering / selection semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
 
 说明：这是 Transfer 数据同步路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+---
+
+## 10. 追加结构优化：空 selected keys 同步短路
+
+`TransferListView.BuildSelectedItemsList()` 和 `TransferTreeView.BuildCheckedItemsList()` 在 `SelectedKeys == null` 或 Count 为 0 时，旧实现仍然扫描完整 `ItemsSource`，最后得到空 selected/checked items。现在空 selected keys 直接返回空列表，避免无意义的数据源扫描；`ItemsSource == null` 仍返回 null，保持原语义。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TransferListView empty selected-keys source scans / sync | `N` item scans | 0 item scans | `(N - 0) / N` | 100.00% | structural-only；空选中不再遍历列表数据源 |
+| TransferTreeView empty selected-keys root scans / sync | `N` root item scans | 0 root item scans | `(N - 0) / N` | 100.00% | structural-only；空选中不再遍历树根数据源 |
+| Empty selected result shape | empty mutable `List` | empty mutable `List` | n/a | 0.00% | 行为保持；不改 SelectedItems/CheckedItems 写入形态 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 11. 追加结构优化：Transfer 树根遍历去临时快照
+
+`TransferTreeView.HandleItemCountChanged()` 和 `MaskNodes()` 原先都会先把 `Items` 复制成 `List<ITreeItemNode>`，再遍历这份快照递归统计 / mask。两条路径都不修改根集合，本轮改为直接遍历 `Items` 并保持原来的强制类型转换语义。
+
+另外，`TransferListView.HandleItemsSourceChange()` 在 `SelectedKeys.Count == 0` 时不再构造完整 `ItemsSource` key set；`TreeTransfer` target 刷新在 `ItemsSource == null` 时直接复用空数组，不再创建空结果列表。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TransferTreeView item-count root snapshot lists / refresh | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | structural-only；直接遍历根 Items |
+| TransferTreeView mask root snapshot lists / mask refresh | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | structural-only；不再复制根节点快照 |
+| TransferListView ItemsSource change scans with empty selected keys | `N` item-key scans | 0 scans | `(N - 0) / N` | 100.00% | structural-only；空 selected keys 不需要构造 all-items set |
+| TreeTransfer null ItemsSource target result list allocations / refresh | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | structural-only；复用 `Array.Empty` |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 12. 追加结构优化：TransferListView selection model 同步收敛
+
+`TransferListViewSelectionModel.SyncToSelectedItems()` 原先用 LINQ `SequenceEqual()` 比较 `WritableSelectedItems` 和 `base.SelectedItems`，随后用 `foreach` 回填。两边都有 Count/indexer，本轮改为 Count 先判等、索引逐项比较和索引回填。
+
+`SetListSource()` 原先创建 `oldSelection` 数组并 `CopyTo()`，但后续只判断它是否为 null，不读取数组内容。本轮保留 `WritableSelectedItems` 的懒初始化边界，只去掉数组分配和复制。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| SelectedItems equality LINQ chains / sync-to-selected-items | 1 chain | 0 chains | `(1 - 0) / 1` | 100.00% | structural-only；Count + indexer 比较 |
+| SelectedItems equality full scans on count mismatch | up to `N` comparisons | 0 comparisons | `(N - 0) / N` | 100.00% | structural-only；Count 不同直接返回 false |
+| SelectedItems refill enumerators / sync-to-selected-items | 1 enumerator | 0 enumerators | `(1 - 0) / 1` | 100.00% | structural-only；索引回填 |
+| Source change old-selection snapshot arrays / source change | 1 array | 0 arrays | `(1 - 0) / 1` | 100.00% | structural-only；保留 lazy selected-items 初始化但不复制内容 |
+| Source change old-selection CopyTo calls / source change | 1 copy | 0 copies | `(1 - 0) / 1` | 100.00% | structural-only；原数组内容未被读取 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 13. 追加结构优化：filter source/target flag 判断
+
+`AbstractTransfer` / `ListTransfer` / `TreeTransfer` 在 filter 刷新时都会判断 `FilterChangeType.Source` 和 `FilterChangeType.Target`。本轮把 6 个 `HasFlag()` 改为 bitwise check，并在每次刷新内复用 source/target 两个布尔结果。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Transfer filter change `HasFlag` callsites / refresh | 6 | 0 | `(6 - 0) / 6` | 100.00% | structural-only；source/target 判断不再走 enum helper |
+| Source/target refresh semantics | unchanged | unchanged | n/a | 0.00% | Source / Target / Both 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+验证：`--verify-transfer-states` 通过。

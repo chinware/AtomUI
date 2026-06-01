@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
+using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
@@ -13,6 +14,7 @@ using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Metadata;
 using Avalonia.VisualTree;
 
@@ -251,6 +253,7 @@ public partial class Select : AbstractSelect
         new(() => new VirtualizingStackPanel());
 
     private SelectCandidateList? _candidateList;
+    private Border? _popupFrame;
     private SelectFilterTextBox? _singleFilterInput;
     private CompositeDisposable? _contentRightAddOnBindings;
     private bool _ignoreSyncSelection;
@@ -283,6 +286,12 @@ public partial class Select : AbstractSelect
         {
             SetCurrentValue(FilterValueSelectorProperty, HeaderFilterPropertySelector);
         }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ClearPopupContent();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleSelectedOptionsChanged(AvaloniaPropertyChangedEventArgs args)
@@ -344,20 +353,14 @@ public partial class Select : AbstractSelect
             return false;
         }
 
-        var newSelection = new List<ISelectOption>(SelectedOptions.Count);
-        foreach (var selectedItem in SelectedOptions)
+        var lastIndex   = SelectedOptions.Count - 1;
+        var removedItem = SelectedOptions[lastIndex];
+        var newSelection = new List<ISelectOption>(lastIndex);
+        for (var i = 0; i < lastIndex; i++)
         {
-            newSelection.Add(selectedItem);
+            newSelection.Add(SelectedOptions[i]);
         }
 
-        if (newSelection.Count == 0)
-        {
-            return false;
-        }
-
-        var lastIndex   = newSelection.Count - 1;
-        var removedItem = newSelection[lastIndex];
-        newSelection.RemoveAt(lastIndex);
         SelectedOptions = newSelection;
 
         if (Mode == SelectMode.Tags && removedItem.IsDynamicAdded)
@@ -517,29 +520,10 @@ public partial class Select : AbstractSelect
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearPopupContent();
         base.OnApplyTemplate(e);
 
-        if (_candidateList != null)
-        {
-            _candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
-            _candidateList.Commit           -= HandleCandidateListComplete;
-            _candidateList.Cancel           -= HandleCandidateListCanceled;
-        }
-
-        _candidateList = e.NameScope.Get<SelectCandidateList>("PART_CandidateList");
-
-        if (_candidateList != null)
-        {
-            _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
-            _candidateList.Commit           += HandleCandidateListComplete;
-            _candidateList.Cancel           += HandleCandidateListCanceled;
-        }
-
         _singleFilterInput = e.NameScope.Get<SelectFilterTextBox>("PART_SingleFilterInput");
-        if (_candidateList != null)
-        {
-            ConfigureOptionsBoxSelectionMode();
-        }
 
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
@@ -547,6 +531,92 @@ public partial class Select : AbstractSelect
         ConfigureSingleFilterTextBox();
         ConfigureEffectiveSearchEnabled();
         SetupContentRightAddOnBindings(e);
+    }
+
+    protected override void EnsurePopupContent()
+    {
+        if (Popup == null)
+        {
+            return;
+        }
+
+        if (_popupFrame == null)
+        {
+            _popupFrame = new Border
+            {
+                Name = "PopupFrame"
+            };
+            _popupFrame.SetTemplatedParent(this);
+            _popupFrame[!Layoutable.MaxHeightProperty] = this[!MaxPopupHeightProperty];
+            _popupFrame[!Layoutable.MinWidthProperty]  = this[!EffectivePopupWidthProperty];
+            _popupFrame[!Border.PaddingProperty]       = this[!PopupContentPaddingProperty];
+        }
+
+        if (_candidateList == null)
+        {
+            _candidateList = new SelectCandidateList
+            {
+                Name                 = "PART_CandidateList",
+                BorderThickness      = new Thickness(0),
+                IsShowEmptyIndicator = true,
+                ItemsSource          = Options
+            };
+            _candidateList.SetTemplatedParent(this);
+            _candidateList[!ListView.FilterProperty]                    = this[!FilterProperty];
+            _candidateList[!ListView.FilterValueProperty]               = this[!FilterValueProperty];
+            _candidateList[!ListView.FilterValueSelectorProperty]       = this[!FilterValueSelectorProperty];
+            _candidateList[!ListView.IsGroupEnabledProperty]            = this[!IsGroupEnabledProperty];
+            _candidateList[!ListView.GroupPropertySelectorProperty]     = this[!GroupPropertySelectorProperty];
+            _candidateList[!ListView.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
+            _candidateList[!SelectCandidateList.IsHideSelectedOptionsProperty] = this[!IsHideSelectedOptionsProperty];
+            _candidateList[!SelectCandidateList.MaxCountProperty]       = this[!MaxCountProperty];
+            _candidateList[!ListView.AutoScrollToSelectedItemProperty]  = this[!AutoScrollToSelectedOptionsProperty];
+            _candidateList[!ItemsControl.ItemTemplateProperty]          = this[!OptionTemplateProperty];
+            _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
+            _candidateList.Commit           += HandleCandidateListComplete;
+            _candidateList.Cancel           += HandleCandidateListCanceled;
+            ConfigureOptionsBoxSelectionMode();
+            SyncSelectionToCandidateList();
+        }
+
+        if (!ReferenceEquals(_popupFrame.Child, _candidateList))
+        {
+            _popupFrame.Child = _candidateList;
+        }
+        if (!ReferenceEquals(Popup.Child, _popupFrame))
+        {
+            Popup.Child = _popupFrame;
+        }
+    }
+
+    private void ClearPopupContent()
+    {
+        if (_candidateList != null)
+        {
+            _candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
+            _candidateList.Commit           -= HandleCandidateListComplete;
+            _candidateList.Cancel           -= HandleCandidateListCanceled;
+            _candidateList.ItemsSource      =  null;
+            _candidateList.SetTemplatedParent(null);
+        }
+
+        if (_popupFrame != null)
+        {
+            if (ReferenceEquals(_popupFrame.Child, _candidateList))
+            {
+                _popupFrame.Child = null;
+            }
+            _popupFrame.SetTemplatedParent(null);
+        }
+
+        if (Popup != null && ReferenceEquals(Popup.Child, _popupFrame))
+        {
+            Popup.Child = null;
+        }
+
+        _candidateList          = null;
+        _popupFrame             = null;
+        _candidateListActivated = false;
     }
 
     private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
@@ -641,6 +711,29 @@ public partial class Select : AbstractSelect
         }
         if (Mode != SelectMode.Single)
         {
+            if ((SelectedOptions == null || SelectedOptions.Count == 0) && e.AddedItems.Count == 0)
+            {
+                return;
+            }
+
+            if (SelectedOptions == null || SelectedOptions.Count == 0)
+            {
+                var addedSelectedSet = new HashSet<ISelectOption>(e.AddedItems.Count);
+                foreach (var item in e.AddedItems)
+                {
+                    if (item is ISelectOption selectOption)
+                    {
+                        addedSelectedSet.Add(selectOption);
+                    }
+                }
+
+                if (addedSelectedSet.Count > 0)
+                {
+                    SelectedOptions = CopySelectedOptions(addedSelectedSet);
+                }
+                return;
+            }
+
             var currentSelectedSet = BuildSelectedOptionSet(SelectedOptions);
             var newSelectedSet     = new HashSet<ISelectOption>(currentSelectedSet.Count + e.AddedItems.Count);
             foreach (var item in currentSelectedSet)
@@ -865,12 +958,17 @@ public partial class Select : AbstractSelect
         {
             if (SelectedOptions != null)
             {
-                var selectedOptions = new List<ISelectOption>(SelectedOptions.Count);
+                var selectedOptions = new List<ISelectOption>(SelectedOptions.Count > 0 ? SelectedOptions.Count - 1 : 0);
+                var removed         = false;
                 foreach (var selectedItem in SelectedOptions)
                 {
+                    if (!removed && EqualityComparer<ISelectOption>.Default.Equals(selectedItem, tagOption))
+                    {
+                        removed = true;
+                        continue;
+                    }
                     selectedOptions.Add(selectedItem);
                 }
-                selectedOptions.Remove(tagOption);
                 SelectedOptions = selectedOptions;
             }
 
@@ -970,25 +1068,32 @@ public partial class Select : AbstractSelect
             return;
         }
 
-        var selected = new HashSet<ISelectOption>(SelectedOptions?.Count ?? 0);
-        if (SelectedOptions != null)
+        HashSet<ISelectOption>? selected = null;
+        if (SelectedOptions is { Count: > 0 })
         {
+            selected = new HashSet<ISelectOption>(SelectedOptions.Count);
             foreach (var opt in SelectedOptions)
             {
                 selected.Add(opt);
             }
         }
 
-        var toRemove = new List<ISelectOption>(Options.Count);
+        List<ISelectOption>? toRemove = null;
         foreach (var item in Options)
         {
             if (item is ISelectOption option)
             {
-                if (option.IsDynamicAdded && !selected.Contains(option))
+                if (option.IsDynamicAdded && selected?.Contains(option) != true)
                 {
+                    toRemove ??= new List<ISelectOption>(Options.Count);
                     toRemove.Add(option);
                 }
             }
+        }
+
+        if (toRemove == null)
+        {
+            return;
         }
 
         foreach (var option in toRemove)

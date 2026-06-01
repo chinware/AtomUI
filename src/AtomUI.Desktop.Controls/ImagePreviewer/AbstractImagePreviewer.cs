@@ -204,30 +204,79 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         return PreviewImageSource.CreateBitmap(stream);
     }
 
-    private void HandleSourceChanged()
+    private protected virtual void HandleSourceChanged()
     {
-        if (ItemsSource != null && ItemsSource.Count > 0)
+        MaterializeEffectiveSourcesFromItemsSource();
+    }
+
+    private protected void MaterializeEffectiveSourcesFromItemsSource()
+    {
+        var itemsSource = ItemsSource;
+        if (itemsSource == null || itemsSource.Count == 0)
         {
-            var effectiveSources = new List<PreviewImageSource>(ItemsSource.Count);
-            foreach (var source in ItemsSource)
+            ClearEffectiveSources();
+            return;
+        }
+
+        var effectiveSources = new List<PreviewImageSource>(itemsSource.Count);
+        foreach (var source in itemsSource)
+        {
+            try
             {
-                try
-                {
-                    effectiveSources.Add(LoadImageSource(source));
-                }
-                catch (Exception)
-                {
-                    // TODO 这个错误直接抛出还是忽略
-                }
+                effectiveSources.Add(LoadImageSource(source));
             }
-            var oldSources = EffectiveSources;
-            SetCurrentValue(EffectiveSourcesProperty, effectiveSources);
-            if (oldSources != null)
+            catch (Exception)
             {
-                foreach (var source in oldSources)
-                {
-                    source.Dispose();
-                }
+                // TODO 这个错误直接抛出还是忽略
+            }
+        }
+
+        SetEffectiveSources(effectiveSources);
+    }
+
+    private protected void MaterializeFallbackEffectiveSource()
+    {
+        if (FallbackImageSrc != null)
+        {
+            try
+            {
+                SetEffectiveSources(new[] { LoadImageSource(FallbackImageSrc) });
+            }
+            catch (Exception)
+            {
+                ClearEffectiveSources();
+            }
+        }
+        else
+        {
+            ClearEffectiveSources();
+        }
+    }
+
+    private protected void ClearEffectiveSources()
+    {
+        SetEffectiveSources(Array.Empty<PreviewImageSource>());
+    }
+
+    private void SetEffectiveSources(IList<PreviewImageSource> effectiveSources)
+    {
+        var oldSources = EffectiveSources;
+        if (ReferenceEquals(oldSources, effectiveSources))
+        {
+            return;
+        }
+
+        SetCurrentValue(EffectiveSourcesProperty, effectiveSources);
+        DisposeSources(oldSources);
+    }
+
+    private static void DisposeSources(IList<PreviewImageSource>? sources)
+    {
+        if (sources != null)
+        {
+            foreach (var source in sources)
+            {
+                source.Dispose();
             }
         }
     }
@@ -245,19 +294,14 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     protected override void OnLoaded(RoutedEventArgs args)
     {
         base.OnLoaded(args);
+        HandleLoadedFallbackSource();
+    }
+
+    private protected virtual void HandleLoadedFallbackSource()
+    {
         if (EffectiveSources == null || EffectiveSources?.Count == 0)
         {
-            if (FallbackImageSrc != null)
-            {
-                try
-                {
-                    SetCurrentValue(EffectiveSourcesProperty, new[] { LoadImageSource(FallbackImageSrc) });
-                }
-                catch (Exception)
-                {
-                    // TODO 这个错误直接抛出还是忽略
-                }
-            }
+            MaterializeFallbackEffectiveSource();
         }
     }
 
@@ -291,6 +335,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             return;
         }
 
+        PrepareDialogOpen();
         _dialogOpening = true;
         var placementTarget = this;
         Debug.Assert(placementTarget != null);
@@ -386,6 +431,10 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         }
         DialogOpened?.Invoke(this, EventArgs.Empty);
         _dialogOpening = false;
+    }
+
+    private protected virtual void PrepareDialogOpen()
+    {
     }
 
     protected virtual void CloseDialog()

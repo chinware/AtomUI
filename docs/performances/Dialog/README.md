@@ -73,3 +73,24 @@
 | button role grouping semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
 
 说明：这是 DialogButtonBox role group 字典的 structural-only 收益；未新增 Gallery timing 对比，不声明页面加载速度提升。
+
+## 7. 追加结构优化：DialogStandardButtons parser converter 复用
+
+`DialogStandardButtons.Parse()` 原先每次解析都创建一个 `EnumConverter`，随后用它解析 `DialogStandardButton`。本轮把 converter 提升为静态只读实例，解析语义和异常路径保持由原 converter 负责，但每次 parse 不再重复分配 converter。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DialogStandardButtons parser `EnumConverter` allocations / parse | 1 | 0 after type init | `(1 - 0) / 1` | 100.00% | structural-only；converter 静态复用 |
+| DialogStandardButtons flag checks / `HasFlag` call | enum `HasFlag` | bitwise check | structural | 结构收益 | 避免 19 个标准按钮构建分支重复走 enum helper |
+| DialogStandardButton parse semantics | converter parse | same converter parse | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+## 8. 追加结构优化：resize handle flag check
+
+`OverlayDialogHost` 拖拽调整大小时只需要判断当前 handle 是否包含 East / West / South / North。旧实现通过 `ResizeHandleLocation.HasFlag()` 判断四个方向；本轮改为 bitwise check，宽高计算、最小尺寸限制和 OffsetX / OffsetY 修正逻辑保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Dialog resize handle enum `HasFlag` callsites / drag update path | 4 | 0 | `(4 - 0) / 4` | 100.00% | structural-only；拖拽 resize 方向判断不再走 enum helper |
+| Resize width/height/offset semantics | unchanged | unchanged | n/a | 0.00% | 行为保持；East/West/South/North 分支不变 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

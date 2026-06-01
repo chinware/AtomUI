@@ -123,7 +123,7 @@ public class SkeletonParagraph : AbstractSkeleton
     {
         if (_linesLayout != null && _linesLayout.Children.Count > 0)
         {
-            if (_linesLayout.Children.Last() is SkeletonLine lastLine)
+            if (_linesLayout.Children[_linesLayout.Children.Count - 1] is SkeletonLine lastLine)
             {
                 if (LineWidths != null && LineWidths.Count >= _linesLayout.Children.Count)
                 {

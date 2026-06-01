@@ -669,9 +669,12 @@ public class Mentions : TemplatedControl,
 
     private static List<IMentionOption> BuildItemsCache(IEnumerable source)
     {
-        var items = source is ICollection collection
-            ? new List<IMentionOption>(collection.Count)
-            : new List<IMentionOption>();
+        var items = source switch
+        {
+            ICollection collection => new List<IMentionOption>(collection.Count),
+            IReadOnlyCollection<IMentionOption> collection => new List<IMentionOption>(collection.Count),
+            _ => new List<IMentionOption>()
+        };
         foreach (var item in source)
         {
             items.Add((IMentionOption)item!);

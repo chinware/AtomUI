@@ -89,6 +89,8 @@ public enum DialogStandardButton
 
 public readonly struct DialogStandardButtons : IEquatable<DialogStandardButtons>
 {
+    private static readonly EnumConverter DialogStandardButtonConverter = new(typeof(DialogStandardButton));
+
     private const int ValidButtonMask =
         (int)(DialogStandardButton.Ok |
               DialogStandardButton.Open |
@@ -122,7 +124,7 @@ public readonly struct DialogStandardButtons : IEquatable<DialogStandardButtons>
 
     public bool HasFlag(DialogStandardButton flag)
     {
-        return ButtonFlags.HasFlag(flag);
+        return (ButtonFlags & flag) == flag;
     }
     
     public bool Equals(DialogStandardButtons other)
@@ -135,8 +137,7 @@ public readonly struct DialogStandardButtons : IEquatable<DialogStandardButtons>
     
     public static DialogStandardButtons Parse(string s)
     {
-        var converter = new EnumConverter(typeof(DialogStandardButton));
-        var dialogButton = converter.ConvertFromInvariantString(s) as DialogStandardButton?;
+        var dialogButton = DialogStandardButtonConverter.ConvertFromInvariantString(s) as DialogStandardButton?;
         if (dialogButton == null)
         {
             throw new InvalidOperationException("Invalid DialogStandardButton format.");

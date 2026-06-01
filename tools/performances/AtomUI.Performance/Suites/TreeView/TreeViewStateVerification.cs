@@ -248,9 +248,9 @@ internal static partial class Program
                 $"TreeView filter highlighted-match run text should preserve source segments. Actual: '{runs[0].Text}'/'{runs[1].Text}'/'{runs[2].Text}'.",
                 failures);
             Expect(ReferenceEquals(runs[0].Foreground, highlightBrush) &&
-                   runs[1].Foreground is null &&
+                   !runs[1].IsSet(TextElement.ForegroundProperty) &&
                    ReferenceEquals(runs[2].Foreground, highlightBrush),
-                "TreeView filter highlighted-match should apply foreground only to matched segments.",
+                "TreeView filter highlighted-match should set foreground only on matched segments.",
                 failures);
             Expect(runs.All(run => run.FontWeight == FontWeight.Bold),
                 "TreeView filter BoldedMatch should preserve existing all-run bold behavior.",

@@ -337,7 +337,7 @@ public class SelectableTextBlock : TextBlock
 
             var point = e.GetPosition(this) - new Point(padding.Left, padding.Top);
 
-            var clickToSelect = e.KeyModifiers.HasFlag(KeyModifiers.Shift);
+            var clickToSelect = (e.KeyModifiers & KeyModifiers.Shift) == KeyModifiers.Shift;
 
             var oldIndex = SelectionStart;
 

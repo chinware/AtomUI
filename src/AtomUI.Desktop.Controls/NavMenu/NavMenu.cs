@@ -467,18 +467,19 @@ public class NavMenu : ItemsControl,
 
     internal static List<NavMenuItem> CollectSelectPathItems(NavMenuItem menuItem)
     {
-        var          items   = new List<NavMenuItem>(CountSelectPathItems(menuItem));
-        NavMenuItem? current = menuItem;
-        while (current != null)
+        var itemCount = CountSelectPathItems(menuItem);
+        var items     = new List<NavMenuItem>(itemCount);
+        for (var i = 0; i < itemCount; i++)
         {
-            if (current != menuItem)
-            {
-                items.Add(current);
-            }
-            current = current.GetLogicalParent<NavMenuItem>();
+            items.Add(null!);
         }
 
-        items.Reverse();
+        var current = menuItem.GetLogicalParent<NavMenuItem>();
+        for (var i = itemCount - 1; current != null; i--)
+        {
+            items[i] = current;
+            current  = current.GetLogicalParent<NavMenuItem>();
+        }
         return items;
     }
 
@@ -647,17 +648,22 @@ public class NavMenu : ItemsControl,
 
     private List<INavMenuNode> CollectPathNodes(INavMenuNode node)
     {
-        var pathNodes  = new List<INavMenuNode>(CountPathNodes(node));
+        var pathCount = CountPathNodes(node);
+        var pathNodes = new List<INavMenuNode>(pathCount);
 
         if (Items.Count > 0)
         {
-            var current  = node;
-            while (current != null)
+            for (var i = 0; i < pathCount; i++)
             {
-                pathNodes.Add(current);
-                current = current.ParentNode as INavMenuNode;
+                pathNodes.Add(null!);
             }
-            pathNodes.Reverse();
+
+            var current = node;
+            for (var i = pathCount - 1; current != null; i--)
+            {
+                pathNodes[i] = current;
+                current      = current.ParentNode as INavMenuNode;
+            }
         
             Debug.Assert(pathNodes.Count > 0);
             // 检查是否是野数据

@@ -91,10 +91,10 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     private void HandleItemCountChanged()
     {
-        var nodes      = BuildTreeNodeList(Items);
         var totalCount = 0;
-        foreach (var node in nodes)
+        foreach (var item in Items)
         {
+            var node = (ITreeItemNode)item!;
             totalCount += CalculateAllNodesCount(node);
         }
         ItemCountChanged?.Invoke(this, new ItemCountChangedEventArgs(totalCount));
@@ -217,9 +217,9 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     private void MaskNodes()
     {
-        var nodes = BuildTreeNodeList(Items);
-        foreach (var node in nodes)
+        foreach (var item in Items)
         {
+            var node = (ITreeItemNode)item!;
             MaskNodeRecursively(node);
         }
     }
@@ -334,14 +334,17 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
             return null;
         }
 
+        if (selectedKeys == null || selectedKeys.Count == 0)
+        {
+            return new List<ITreeItemNode>(0);
+        }
+
         var selectedKeySet = BuildEntityKeySet(selectedKeys);
-        var checkedItems = selectedKeys == null
-            ? new List<ITreeItemNode>(0)
-            : new List<ITreeItemNode>(selectedKeys.Count);
+        var checkedItems   = new List<ITreeItemNode>(selectedKeys.Count);
         foreach (var item in source)
         {
             var treeItem = (ITreeItemNode)item!;
-            if (selectedKeySet?.Contains(treeItem.ItemKey ?? default) == true)
+            if (selectedKeySet!.Contains(treeItem.ItemKey ?? default))
             {
                 checkedItems.Add(treeItem);
             }

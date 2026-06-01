@@ -138,18 +138,21 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     {
         EmitChoosingStatusChanged(false);
 
-        if (PickState.HasFlag(RangeDatePickState.PartStart) && PickState.HasFlag(RangeDatePickState.PartEnd))
+        var pickState    = PickState;
+        var hasPartStart = (pickState & RangeDatePickState.PartStart) == RangeDatePickState.PartStart;
+        var hasPartEnd   = (pickState & RangeDatePickState.PartEnd) == RangeDatePickState.PartEnd;
+        if (hasPartStart && hasPartEnd)
         {
             EmitConfirmed();
         }
         else
         {
             EmitRangePartConfirmed();
-            if (PickState.HasFlag(RangeDatePickState.PartEnd))
+            if (hasPartEnd)
             {
                 PickState |= RangeDatePickState.PartStart;
             }
-            else if (PickState.HasFlag(RangeDatePickState.PartStart))
+            else if (hasPartStart)
             {
                 PickState |= RangeDatePickState.PartEnd;
             }

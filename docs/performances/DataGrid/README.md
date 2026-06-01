@@ -4843,6 +4843,19 @@ Smoke-only 对比上一轮同参数复测。本轮没有保留会改变 `DataGri
 
 ---
 
+### 2.133 Pagination visibility flag check
+
+`DataGridPaginationVisibilityConvertor` 在 top/bottom pagination 可见性转换时只需要判断 flag 是否包含 `Top` 或 `Bottom`。本轮把 enum `HasFlag()` 改为直接 bitwise check，返回语义不变，避免 converter 运行时重复走 enum helper。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DataGrid pagination visibility enum `HasFlag` calls / convert | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；top/bottom 判断改为 bitwise check |
+| Pagination visibility semantics | unchanged | unchanged | n/a | 0.00% | `None` / `Top` / `Bottom` 语义保持 |
+
+说明：这是 DataGrid pagination converter 路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+---
+
 ## 3. 验证
 
 包级收口：路线图 T4.1-T4.5 已全部完成，`DataGridRow` / `DataGridCell` / `DataGridColumnHeader` 等内部子控件不再作为独立 Pending 项排队；它们分别由 core、columns、details、reorder-selection、collection-view-filter 五个 T4 子模块覆盖。
@@ -4917,3 +4930,26 @@ dotnet run -c Release -f net10.0 --no-build \
 | DataGrid.GroupHeaders | 8.532 | 2571.9 | 266.0 | 1.0 |
 | DataGrid.RowGroups | 10.046 | 2936.6 | 315.0 | 1.0 |
 | DataGrid.GalleryShape | 40.925 | 12409.1 | 1260.0 | 5.0 |
+
+## 追加结构优化：keyboard modifier flag check
+
+`KeyboardHelper.GetMetaKeyState()` 是 DataGrid 键盘选择、范围选择和快捷键处理的共享入口。旧实现用 `KeyModifiers.HasFlag()` 判断 Ctrl/Cmd、Shift、Alt；本轮改为直接 bitwise check，平台 Ctrl/Cmd 映射仍由 `GetPlatformCtrlOrCmdKeyModifier()` 决定，返回语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DataGrid 2-state keyboard modifier `HasFlag` calls / meta-key query | 2 | 0 | `(2 - 0) / 2` | 100.00% | structural-only；Ctrl/Cmd + Shift 判断不再走 enum helper |
+| DataGrid 3-state keyboard modifier `HasFlag` calls / meta-key query | 3 | 0 | `(3 - 0) / 3` | 100.00% | structural-only；Ctrl/Cmd + Shift + Alt 判断不再走 enum helper |
+| Platform Ctrl/Cmd mapping | unchanged | unchanged | n/a | 0.00% | 行为保持；仍使用 Avalonia hotkey configuration |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+## 追加结构优化：DataGridLength string parse span fast path
+
+`DataGridLengthConverter.ConvertFrom()` 解析字符串宽度时，旧实现先 `Trim()` 得到新字符串；star 宽度还会再 `Substring()` 去掉 `*`。本轮改为 `ReadOnlySpan<char>.Trim()`、span suffix 判断和 span parse，`Auto` / `SizeToCells` / `SizeToHeader` 匹配也直接比较 span。数值宽度 fallback 仍保留原 `Convert.ToDouble(value, culture)` 路径。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DataGridLength string trim temp strings / string parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；整体 trim 走 span |
+| DataGridLength star suffix temp substrings / star parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；star 权重切片走 span |
+| Unit keyword comparison temp strings / string parse | 0 extra after trim | 0 | n/a | 结构保持 | `Auto` / `SizeToCells` / `SizeToHeader` 直接和 trimmed span 比较 |
+| Numeric fallback behavior | `Convert.ToDouble(value, culture)` | same fallback | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

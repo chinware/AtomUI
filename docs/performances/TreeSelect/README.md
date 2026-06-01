@@ -205,7 +205,7 @@ dotnet run --project tools/performances/AtomUI.GalleryPerformance/AtomUI.Gallery
 
 已更新 `VerifySelectHandleIndicatorSlots` 和 `VerifySelectLoadingLifecycle` 的期望：`SelectHandle` 现在验证共享 presenter，而不是旧的 `LoadingIndicator` / `SearchIndicator` 独立 visual。
 
-两条历史宽验证仍失败，但失败项不在本轮 SelectHandle：
+历史宽验证中的 icon hidden-slot 断言仍有非本轮失败：
 
 ```bash
 dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
@@ -215,13 +215,7 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
 
 剩余失败：MenuItem、ToggleIconButton、NavMenu indicator、Button loading icon 等既有 hidden-slot 断言。
 
-```bash
-dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
-  -c Debug --framework net10.0 --no-build -- \
-  --verify-select-states
-```
-
-剩余失败：Select / TreeSelect closed popup lazy 断言与 DropDown event count 等既有断言。
+`--verify-select-states` 中的 Select / TreeSelect closed popup lazy 和 DropDown event count 断言已在第 10 节修复并通过。
 
 ---
 
@@ -264,7 +258,7 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -- --verify-treeview-states
 ```
 
-结果：上述构建和状态验证通过。`--verify-select-states` 仍有既有 closed lazy-slot / dropdown event count 断言失败，本节不把它作为通过项。
+结果：上述构建和状态验证通过。`--verify-select-states` 的 closed lazy-slot / dropdown event count 已在第 10 节修复并通过。
 
 ## 8. 追加结构优化：只读集合容量快路径
 
@@ -279,6 +273,42 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 
 说明：这是 TreeSelect 数据同步路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
 
-## 9. 后续
+## 9. 追加结构优化：effective tag 祖先判断
+
+`ShowCheckedStrategy.ShowParent` 构建多选有效标签时，旧实现对每个 selected item 遍历所有 `fullySelectedParents`，再从当前节点向上判断是否属于该 parent。现在改为沿当前 node 的父链直接查 `HashSet`，语义仍然跳过自身，只判断祖先。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TreeSelect effective tag ancestor candidate scans / selected item | `P` parent candidates | 0 parent-candidate loop | `(P - 0) / P` | P>0 时 100.00% | structural-only；改为父链 HashSet lookup |
+| TreeSelect effective tag ancestor path walks / selected item | up to `P * depth` | up to `depth` | `(P*D - D) / (P*D)` | P>1 时随 P 增大 | 行为保持；自身不算祖先 |
+| TreeSelect empty selected effective tag list allocations / rebuild | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | structural-only；空多选直接复用当前空 selected list |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+## 10. 追加结构优化：关闭态 TreeView 延迟创建
+
+`TreeSelect` 的 `Popup` shell 继续留在 theme 中；只把 `PopupFrame + TreeSelectTreeView` 延迟到首次打开前创建，并在 re-template / detach 时清理事件、`ItemsSource` 和 visual parent。输入区的 `SelectFilterTextBox` / `SelectTagAwareTextBox` 继续保持 theme 静态隐藏，避免把普通模板元素改成 C# 动态创建。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Closed TreeSelect popup frame visuals / instance | 1 | 0 | `(1 - 0) / 1` | 100.00% | 关闭态不再创建 popup frame |
+| Closed TreeSelect tree view visuals / instance | 1 | 0 | `(1 - 0) / 1` | 100.00% | 关闭态不再创建 `TreeSelectTreeView` |
+| Detached lazy TreeView visual parent risk | possible | cleared | structural | 100.00% risk removed | detach 后清理 child / template parent / ItemsSource |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+验证：`dotnet build tools/performances/AtomUI.Performance/AtomUI.Performance.csproj -c Release --framework net10.0 --no-restore` 通过；`--verify-select-states` 通过，覆盖 TreeSelect popup 首次 materialize、复用和 detach 清理。
+
+## 11. 后续
 
 TreeSelect 当前独立热点更可能在 popup 打开后的 `TreeSelectTreeView`、filter 交互和 checkable tree item 路径。下一轮需要先建立交互动作级基线，而不是继续改页面首次导航的 handle 结构。
+
+## 12. 追加结构优化：checked strategy flag 判断
+
+`BuildEffectiveSelectedItems()` 需要判断 `ShowParent` / `ShowChild` 两个 flag。本轮把 `HasFlag()` 改为等价 bitwise check，并在一次 rebuild 内复用 `ShowCheckedStrategy` 快照。ShowParent / ShowChild / All 的 effective tags 语义不变。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| TreeSelect checked strategy `HasFlag` callsites / effective tag rebuild | 2 | 0 | `(2 - 0) / 2` | 100.00% | structural-only；flag 判断不再走 enum helper |
+| Effective tag semantics | unchanged | unchanged | n/a | 0.00% | ShowParent / ShowChild / All 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+验证：`--verify-select-states` 通过。

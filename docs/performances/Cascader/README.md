@@ -83,3 +83,48 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 | `src/AtomUI.Desktop.Controls/Cascader/CascaderView.Filter.cs` | filter 结果预分配并显式筛选；首次 full-path cache 按根 option 数预留容量 |
 | `src/AtomUI.Desktop.Controls/Cascader/CascaderView.cs` | path parse 列表构造预分配；只读 options source 复制按 Count 预分配 |
 | `src/AtomUI.Desktop.Controls/Cascader/CascaderViewItem.cs` | leaf 状态子节点判断走 helper |
+
+---
+
+## 4. 追加结构优化：path 构造去 Reverse 和 list wrapper
+
+`CascaderView.GetFullPath()` 和 `Cascader.ConfigureSelectedOptionPath()` 都已经先计算父链深度。旧实现仍然从叶子到根 `List.Add()`，再 `Reverse()`，最后 `string.Join()`；本轮改为按已知深度创建数组，并从后往前填充。路径文本、节点顺序和 selected path 语义保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Filter full-path header container objects / leaf path build | 1 `List<string>` + 1 backing array | 1 `string[]` | `(2 - 1) / 2` | 50.00% | structural-only；去掉 list wrapper |
+| Filter full-path node container objects / leaf path build | 1 `List<ICascaderOption>` + 1 backing array | 1 `ICascaderOption[]` | `(2 - 1) / 2` | 50.00% | structural-only；`ExpandItems` 仍按 index/count 使用 |
+| Filter full-path reverse passes / leaf path build | 2 `Reverse()` | 0 | `(2 - 0) / 2` | 100.00% | structural-only；数组倒序填充直接得到根到叶顺序 |
+| SelectedOptionPath header container objects / selected option rebuild | 1 `List<string>` + 1 backing array | 1 `string[]` | `(2 - 1) / 2` | 50.00% | structural-only；去掉 selected path list wrapper |
+| SelectedOptionPath reverse passes / selected option rebuild | 1 `Reverse()` | 0 | `(1 - 0) / 1` | 100.00% | structural-only；数组倒序填充直接得到根到叶顺序 |
+| Path text / expand node order | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 5. 追加结构优化：expand path 去 Reverse
+
+`CascaderView.ExpandItemAsync()` 原先按 leaf-to-root 追加待展开路径，再 `Reverse()` 得到 root-to-leaf 顺序。本轮保留 exact depth 的 `List<object>`，先填充占位，再从后往前按 index 写入；根节点检查、wild data 检查和逐级展开顺序保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Cascader expand path reverse passes / expand | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；按父链深度倒序填充 |
+| Cascader expand path list capacity / expand | exact path depth | exact path depth | n/a | 0.00% | 已有容量收益保持 |
+| Expand path order / target node semantics | root-to-leaf after Reverse | root-to-leaf direct fill | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 6. 追加结构优化：effective tag 祖先判断和默认路径容器收敛
+
+`ShowCheckedStrategy.ShowParent` 需要在构建多选有效标签时排除“已经有完整选中父级”的后代。旧实现对每个 selected option 都遍历一遍 `fullySelectedParents`，再从当前节点向上判断是否属于该 parent；本轮改为直接沿当前 option 的父链向上查 `HashSet`，语义仍然跳过自身，只判断祖先。
+
+同时，`DefaultSelectOptionPath` 解析成功后的 header 文本原先创建 `List<string>` 再 `string.Join()`；`TryParseSelectPath()` 返回的是 `IList<ICascaderOption>`，Count 已知，因此改为 `string[]`，去掉 list wrapper。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Effective tag ancestor candidate scans / selected option | `P` parent candidates | 0 parent-candidate loop | `(P - 0) / P` | P>0 时 100.00% | structural-only；改为父链 HashSet lookup |
+| Effective tag ancestor path walks / selected option | up to `P * depth` | up to `depth` | `(P*D - D) / (P*D)` | P>1 时随 P 增大 | 行为保持；自身不算祖先 |
+| Empty selected effective tag list allocations / rebuild | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | structural-only；空多选直接复用当前空 selected list |
+| Default path header container objects / loaded default path | 1 `List<string>` + 1 backing array | 1 `string[]` | `(2 - 1) / 2` | 50.00% | structural-only；去掉 list wrapper |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

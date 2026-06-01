@@ -358,6 +358,20 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
             return items;
         }
 
+        if (source is IReadOnlyList<DescriptionItem> readOnlyList)
+        {
+            for (var i = 0; i < readOnlyList.Count; ++i)
+            {
+                if (readOnlyList[i] is DescriptionItem item)
+                {
+                    items ??= new List<DescriptionItem>(readOnlyList.Count - i);
+                    items.Add(item);
+                }
+            }
+
+            return items;
+        }
+
         foreach (var value in source)
         {
             if (value is DescriptionItem item)

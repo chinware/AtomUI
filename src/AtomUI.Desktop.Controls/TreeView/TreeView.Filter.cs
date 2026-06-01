@@ -33,14 +33,15 @@ public partial class TreeView
         if (IsFilterMode)
         {
             SelectedItemsClosure.Clear();
-            if (SelectionMode.HasFlag(SelectionMode.Single))
+            var isMultiple = (SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple;
+            if (!isMultiple)
             {
                 if (SelectedItem != null && TreeContainerFromItem(SelectedItem) is TreeViewItem item)
                 {
                     SelectedItemsClosure.UnionWith(CalculateSelectItemClosure(item));
                 }
             }
-            else if (SelectionMode.HasFlag(SelectionMode.Multiple))
+            else
             {
                 foreach (var entry in SelectedItems)
                 {
@@ -96,7 +97,10 @@ public partial class TreeView
             IsFilterMode      = true;
             FilterResultCount = 0;
             HashSet<TreeViewItem>? originExpandedItems = null;
-            if (!FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.ExpandPath))
+            var filterHighlightStrategy = FilterHighlightStrategy;
+            var shouldExpandPath =
+                (filterHighlightStrategy & TreeFilterHighlightStrategy.ExpandPath) == TreeFilterHighlightStrategy.ExpandPath;
+            if (!shouldExpandPath)
             {
                 originExpandedItems = new HashSet<TreeViewItem>();
                 for (int i = 0; i < ItemCount; i++)
@@ -110,7 +114,7 @@ public partial class TreeView
 
             ExpandAll(false);
             using var state = BeginTurnOffMotion();
-            if (!FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.ExpandPath) && originExpandedItems != null)
+            if (!shouldExpandPath && originExpandedItems != null)
             {
                 RestoreItemExpandedStates(originExpandedItems);
             }
@@ -164,11 +168,12 @@ public partial class TreeView
         var selector     = FilterValueSelector ?? DefaultTreeFilterValueSelector;
         var filterResult = Filter.Filter(selector(treeViewItem), FilterValue);
         treeViewItem.IsFilterMatch = filterResult;
+        var filterHighlightStrategy = FilterHighlightStrategy;
         if (filterResult)
         {
             ++FilterResultCount;
-            if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HighlightedMatch) ||
-                FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HighlightedWhole))
+            if ((filterHighlightStrategy & TreeFilterHighlightStrategy.HighlightedMatch) == TreeFilterHighlightStrategy.HighlightedMatch ||
+                (filterHighlightStrategy & TreeFilterHighlightStrategy.HighlightedWhole) == TreeFilterHighlightStrategy.HighlightedWhole)
             {
                 treeViewItem.FilterHighlightWords = FilterValue?.ToString();
             }
@@ -179,7 +184,7 @@ public partial class TreeView
             _descendantsMatchCache!.Add(treeViewItem);
         }
 
-        if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.HideUnMatched))
+        if ((filterHighlightStrategy & TreeFilterHighlightStrategy.HideUnMatched) == TreeFilterHighlightStrategy.HideUnMatched)
         {
             if (treeViewItem.IsFilterMatch)
             {
@@ -200,7 +205,7 @@ public partial class TreeView
             }
         }
 
-        if (FilterHighlightStrategy.HasFlag(TreeFilterHighlightStrategy.ExpandPath))
+        if ((filterHighlightStrategy & TreeFilterHighlightStrategy.ExpandPath) == TreeFilterHighlightStrategy.ExpandPath)
         {
             SetupExpandForFilter(treeViewItem, anyDescendantMatched);
         }

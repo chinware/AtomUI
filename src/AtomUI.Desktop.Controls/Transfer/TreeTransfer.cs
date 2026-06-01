@@ -34,7 +34,9 @@ public class TreeTransfer : AbstractTransfer
         IList<EntityKey>? sourceItemKeys           = null;
         IList<EntityKey>? targetItemKeys           = null;
         var               targetKeySet             = BuildTargetKeySet(TargetKeys);
-        if (changeType.HasFlag(FilterChangeType.Source))
+        var               sourceChanged            = (changeType & FilterChangeType.Source) == FilterChangeType.Source;
+        var               targetChanged            = (changeType & FilterChangeType.Target) == FilterChangeType.Target;
+        if (sourceChanged)
         {
             var sourcePanelSource = ItemsSource;
             sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
@@ -43,9 +45,9 @@ public class TreeTransfer : AbstractTransfer
             SourceView?.SetMaskedItems(TargetKeys);
         }
 
-        if (changeType.HasFlag(FilterChangeType.Target))
+        if (targetChanged)
         {
-            IEnumerable<IListItemData> targetPanelSource = targetKeySet == null
+            IEnumerable<IListItemData> targetPanelSource = targetKeySet == null || ItemsSource == null
                 ? Array.Empty<IListItemData>()
                 : CalculateTargetItemsSource(ItemsSource, targetKeySet);
             targetPanelSourceChanged = TargetViewSource != targetPanelSource;

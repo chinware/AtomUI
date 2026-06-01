@@ -137,3 +137,15 @@ dotnet run -c Release -f net10.0 --no-build \
 | 正确性修复 | logical child 重复、line width 更新、old line follow 泄漏、motion animation 重建 |
 
 本轮是正确性优先的结构优化：消除重复 class handler 和 inactive animation materialization，同时修复动态行的生命周期释放。
+
+---
+
+## 6. 追加结构优化：paragraph last line indexer lookup
+
+`SkeletonParagraph.ConfigureLastLineWidth()` 在已有 `Children.Count > 0` 保护后，只需要读取最后一个 child。旧实现使用 LINQ `Last()`；本轮改为直接读取 `Children[Count - 1]`，保留最后一行宽度更新语义。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| SkeletonParagraph last-line LINQ calls / width update | 1 `Last()` | 0 | `(1 - 0) / 1` | 100.00% | structural-only；最后一行直接按 index 读取 |
+| Last line width semantics | unchanged | unchanged | n/a | 0.00% | 行为保持；仍按 `LineWidths` 或 `LastLineWidth` 更新 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

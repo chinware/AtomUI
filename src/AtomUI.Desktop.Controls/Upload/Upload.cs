@@ -283,16 +283,20 @@ public class Upload : ContentControl,
                     {
                         AllowMultiple = IsMultipleEnabled
                     });
-                    var files = new List<UploadFileInfo>(directories.Count);
+                    List<UploadFileInfo>? files = null;
                     foreach (var directory in directories)
                     {
                         foreach (var filePath in Directory.EnumerateFiles(directory.Path.LocalPath, "*", SearchOption.TopDirectoryOnly))
                         {
                             var fileInfo = new FileInfo(filePath);
+                            files ??= new List<UploadFileInfo>(directories.Count);
                             files.Add(new UploadFileInfo(fileInfo.Name, new Uri(fileInfo.FullName), fileInfo.Length, fileInfo.CreationTime,  fileInfo.LastWriteTime));
                         }
                     }
-                    await EnqueueUploadFiles(files);
+                    if (files != null)
+                    {
+                        await EnqueueUploadFiles(files);
+                    }
                 }
                 else
                 {

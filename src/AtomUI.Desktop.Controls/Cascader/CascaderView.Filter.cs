@@ -81,18 +81,16 @@ public partial class CascaderView
     private CascaderViewFilterListItemData GetFullPath(ICascaderOption option)
     {
         var pathDepth   = CountPathDepth(option);
-        var pathHeaders = new List<string>(pathDepth);
+        var pathHeaders = new string[pathDepth];
         var current     = option;
-        var pathNodes   = new List<ICascaderOption>(pathDepth);
-        while (current != null)
+        var pathNodes   = new ICascaderOption[pathDepth];
+        for (var i = pathDepth - 1; current != null; i--)
         {
-            pathNodes.Add(current);
-            pathHeaders.Add(current.Header?.ToString() ?? string.Empty);
+            pathNodes[i]   = current;
+            pathHeaders[i] = current.Header?.ToString() ?? string.Empty;
             current = current.ParentNode as ICascaderOption;
         }
 
-        pathNodes.Reverse();
-        pathHeaders.Reverse();
         return new CascaderViewFilterListItemData()
         {
             Content       = string.Join('/', pathHeaders),

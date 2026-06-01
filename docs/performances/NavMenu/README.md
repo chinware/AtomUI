@@ -55,6 +55,18 @@
 
 说明：这是 NavMenu 选中交互路径 structural-only 收益；没有新增页面导航 timing 对比，不声明页面加载速度提升。
 
+## Path Reverse Elimination
+
+`NavMenu.CollectSelectPathItems()` 和 `CollectPathNodes()` 原先都按 leaf-to-root 追加路径，然后调用 `Reverse()`。本轮继续保留已知深度的 `List` 预分配，但先填充占位，再从后往前按 index 写入，直接得到 root-to-leaf 顺序；选中路径和默认路径语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| NavMenu selected path reverse passes / leaf select | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；按父链深度倒序填充 |
+| NavMenu default path reverse passes / default path apply | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；按 node depth 倒序填充 |
+| Path list capacity | exact parent/node depth | exact parent/node depth | n/a | 0.00% | 已有容量收益保持 |
+| Selected/default path semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
 ## Verification
 
 - `dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj` passed.

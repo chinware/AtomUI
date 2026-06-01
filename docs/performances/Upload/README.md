@@ -93,6 +93,33 @@ dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Perfor
 
 结果：0 warning / 0 error。当前 performance harness 没有独立 `--verify-upload-states`。
 
+### 2.2 追加结构优化：无文件 drop 路径
+
+`UploadDefaultDropArea.HandleDrop()` 旧实现进入 drop 事件后会立即创建 `List<IStorageFile>`，即使拖入的数据里没有文件也会分配一个空列表。本轮改成发现第一个 `IStorageFile` 时再创建列表；无文件 drop 使用 `Array.Empty<IStorageFile>()` 作为事件参数，保持 `Files` 为非 null 只读列表。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Empty drop file-list allocations / drop event | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | 结构收益；无文件 drop 不再分配可增长 List |
+| File drop list capacity / drop event | exact DataTransfer item count | exact DataTransfer item count | n/a | 0.00% | 有文件路径保留原容量策略和事件语义 |
+
+说明：这是拖拽交互路径 structural-only 收益；没有新增 UploadShowCase 页面 timing 对比，不声明页面加载速度提升。
+
+本轮追加验证：`git diff --check` passed；Debug net10、Release net10、Release net8 的 `AtomUI.Performance` build 均 0 warning / 0 error。当前 performance harness 没有独立 `--verify-upload-states`。
+
+### 2.3 追加结构优化：空目录上传路径
+
+目录上传旧实现会在 folder picker 返回后立即创建 `List<UploadFileInfo>`，即使用户取消选择、选择空目录，或所有目录顶层没有文件，也会分配一个空列表并调用空 enqueue。本轮改成发现第一个文件时再创建列表；没有实际文件时直接结束，保留有文件路径的预分配容量和上传顺序。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Empty directory upload list allocations / folder picker result | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | 结构收益；取消/空目录不再创建临时上传列表 |
+| Empty directory upload enqueue calls / folder picker result | 1 no-op call | 0 calls | `(1 - 0) / 1` | 100.00% | 结构收益；无文件时不再进入空 enqueue |
+| Non-empty directory upload order | directory/file enumeration order | unchanged | n/a | 0.00% | 有文件路径保持原上传顺序 |
+
+说明：这是目录上传交互路径 structural-only 收益；没有新增 UploadShowCase 页面 timing 对比，不声明页面加载速度提升。
+
+本轮追加验证同上：`git diff --check` passed；Debug net10、Release net10、Release net8 的 `AtomUI.Performance` build 均 0 warning / 0 error。
+
 ---
 
 ## 3. 复现命令

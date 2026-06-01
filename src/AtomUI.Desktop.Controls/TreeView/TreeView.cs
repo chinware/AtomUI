@@ -1655,22 +1655,34 @@ public partial class TreeView : AvaloniaTreeView,
         List<object> paths;
         if (item is ITreeItemNode itemData)
         {
-            paths = new List<object>(CountTreeItemPathDepth(itemData));
-            var current = itemData;
-            while (current != null)
+            var pathDepth = CountTreeItemPathDepth(itemData);
+            paths = new List<object>(pathDepth);
+            for (var i = 0; i < pathDepth; i++)
             {
-                paths.Add(current);
-                current = current.ParentNode as ITreeItemNode;
+                paths.Add(null!);
+            }
+
+            var current = itemData;
+            for (var i = pathDepth - 1; current != null; i--)
+            {
+                paths[i] = current;
+                current  = current.ParentNode as ITreeItemNode;
             }
         }
         else if (item is TreeViewItem treeViewItem)
         {
-            paths = new List<object>(CountTreeViewItemPathDepth(treeViewItem));
-            var current = treeViewItem;
-            while (current != null)
+            var pathDepth = CountTreeViewItemPathDepth(treeViewItem);
+            paths = new List<object>(pathDepth);
+            for (var i = 0; i < pathDepth; i++)
             {
-                paths.Add(current);
-                current = current.Parent as TreeViewItem;
+                paths.Add(null!);
+            }
+
+            var current = treeViewItem;
+            for (var i = pathDepth - 1; current != null; i--)
+            {
+                paths[i] = current;
+                current  = current.Parent as TreeViewItem;
             }
         }
         else
@@ -1678,7 +1690,6 @@ public partial class TreeView : AvaloniaTreeView,
             throw new ArgumentException("Invalid item type, Must ITreeItemNode or TreeItem.");
         }
 
-        paths.Reverse();
         return paths;
     }
 
@@ -1779,7 +1790,7 @@ public partial class TreeView : AvaloniaTreeView,
 
     protected virtual void NotifySetFormValue(object? value)
     {
-        if (SelectionMode.HasFlag(SelectionMode.Multiple))
+        if ((SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple)
         {
             SelectedItems = value as IList;
         }
@@ -1791,7 +1802,7 @@ public partial class TreeView : AvaloniaTreeView,
 
     protected virtual object? NotifyGetFormValue()
     {
-        if (SelectionMode.HasFlag(SelectionMode.Multiple))
+        if ((SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple)
         {
             return SelectedItems;
         }
@@ -1800,7 +1811,7 @@ public partial class TreeView : AvaloniaTreeView,
 
     protected virtual void NotifyClearFormValue()
     {
-        if (SelectionMode.HasFlag(SelectionMode.Multiple))
+        if ((SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple)
         {
             SelectedItems = null;
         }
