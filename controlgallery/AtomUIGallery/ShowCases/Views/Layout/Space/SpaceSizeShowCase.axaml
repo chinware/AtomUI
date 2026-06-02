@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Views.SpaceSizeShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.ViewModels"
+             x:DataType="viewModels:SpaceViewModel">
+    <gallery:ShowCasePanel>
+        
+        <gallery:ShowCaseItem Title="Space Size"
+                              IsOccupyEntireRow="True"
+                              Description="Use size to set the spacing, Three sizes are preset: small, middle, large. You can also customize the spacing. If size is not set, the spacing is small." >
+            <StackPanel Orientation="Vertical" Spacing="15">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Small}"
+                                      IsCheckedChanged="HandleSizeTypeChanged"
+                                      IsChecked="True">
+                        Small
+                    </atom:RadioButton>
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Middle}"
+                                      IsCheckedChanged="HandleSizeTypeChanged">
+                        Middle
+                    </atom:RadioButton>
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Large}"
+                                      IsCheckedChanged="HandleSizeTypeChanged">
+                        Large
+                    </atom:RadioButton>
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Custom}"
+                                      IsCheckedChanged="HandleSizeTypeChanged">
+                        Custom
+                    </atom:RadioButton>
+                </StackPanel>
+                <atom:Slider Name="CustomSizeSlider"
+                             Minimum="0" Maximum="100"
+                             Value="{Binding CustomSpacingValue, Mode=TwoWay}"
+                             IsVisible="False"/>
+                <atom:Space Orientation="Horizontal" SizeType="{Binding SizeType}"
+                            LineSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}"
+                            ItemSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}">
+                    <atom:Button ButtonType="Primary">Primary</atom:Button>
+                    <atom:Button>Default</atom:Button>
+                    <atom:Button ButtonType="Dashed">Dashed</atom:Button>
+                    <atom:Button ButtonType="Link">Link</atom:Button>
+                </atom:Space>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
