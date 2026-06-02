@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.DataGrid.DataGridShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid"
+             x:DataType="vm:DataGridViewModel">
+    <atom:TabControl Name="ScenarioTabs"
+                     SizeType="Large"
+                     SelectedIndex="0">
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Basic}" Tag="Basic" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Interaction}" Tag="Interaction" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Filtering}" Tag="Filtering" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Structure}" Tag="Structure" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Fixed}" Tag="Fixed" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Drag}" Tag="Drag" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Editing}" Tag="Editing" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Paging}" Tag="Paging" />
+    </atom:TabControl>
+</UserControl>

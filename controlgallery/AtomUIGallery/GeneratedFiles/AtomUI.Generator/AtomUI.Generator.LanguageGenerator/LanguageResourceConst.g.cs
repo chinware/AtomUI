@@ -3,6 +3,32 @@ using AtomUI.Theme.Language;
 
 namespace AtomUIGallery.Localization
 {
+    public enum AboutUsPageLangResourceKind
+    {
+        HomePage,
+        MissionLabel,
+        MissionText,
+        QQGroup,
+        VisionLabel,
+        VisionText,
+        WeChatGroup,
+        WeChatOfficial
+    }
+
+    public class AboutUsPageLangResourceExtension : LanguageResourceExtension<AboutUsPageLangResourceKind>
+    {
+        public AboutUsPageLangResourceExtension()
+        {
+        }
+
+        public AboutUsPageLangResourceExtension(AboutUsPageLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
     public enum CaseNavigationLangResourceKind
     {
         DataDisplay,
@@ -91,6 +117,42 @@ namespace AtomUIGallery.Localization
         }
 
         public CaseNavigationLangResourceExtension(CaseNavigationLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
+    public enum ShowCaseScenarioLangResourceKind
+    {
+        Align,
+        Basic,
+        CompactButton,
+        CompactForm,
+        Controls,
+        Drag,
+        Dynamic,
+        Editing,
+        Filtering,
+        Fixed,
+        Interaction,
+        Layout,
+        Paging,
+        Presets,
+        Size,
+        States,
+        Structure,
+        Validation
+    }
+
+    public class ShowCaseScenarioLangResourceExtension : LanguageResourceExtension<ShowCaseScenarioLangResourceKind>
+    {
+        public ShowCaseScenarioLangResourceExtension()
+        {
+        }
+
+        public ShowCaseScenarioLangResourceExtension(ShowCaseScenarioLangResourceKind kind) : base(kind)
         {
         }
     }

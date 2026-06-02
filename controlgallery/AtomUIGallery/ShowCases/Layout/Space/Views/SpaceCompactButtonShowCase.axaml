@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Space.SpaceCompactButtonShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Space"
+             x:DataType="viewModels:SpaceViewModel">
+    <gallery:ShowCasePanel>
+
+        <gallery:ShowCaseItem Title="Button Compact Mode"
+                              Description="Button component compact example."
+                              IsOccupyEntireRow="True">
+            <StackPanel Spacing="10">
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider LikeOutlined}" atom:ToolTip.Tip="Like"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider CommentOutlined}" atom:ToolTip.Tip="Comment"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider StarOutlined}" atom:ToolTip.Tip="Star"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider HeartOutlined}" atom:ToolTip.Tip="Heart"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider ShareAltOutlined}" atom:ToolTip.Tip="Share"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="Download"/>
+                    <atom:DropdownButton TriggerType="Click"
+                                         Placement="BottomEdgeAlignedRight"
+                                         IsShowOpenIndicator="False"
+                                         Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}">
+                        <atom:DropdownButton.DropdownFlyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="Report"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=WarningOutlined}" />
+                                <atom:MenuItem Header="Mail"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                                <atom:MenuItem Header="Mobile"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=MobileOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:DropdownButton.DropdownFlyout>
+                    </atom:DropdownButton>
+                </atom:CompactSpace>
+        
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button ButtonType="Primary">Button 1</atom:Button>
+                    <atom:Button ButtonType="Primary">Button 2</atom:Button>
+                    <atom:Button ButtonType="Primary">Button 3</atom:Button>
+                    <atom:Button ButtonType="Primary">Button 4</atom:Button>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="Tooltip"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="Tooltip"/>
+                </atom:CompactSpace>
+        
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button ButtonType="Default">Button 1</atom:Button>
+                    <atom:Button ButtonType="Default">Button 2</atom:Button>
+                    <atom:Button ButtonType="Default">Button 3</atom:Button>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="Tooltip"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="Tooltip"/>
+                    <atom:Button ButtonType="Primary">Button 4</atom:Button>
+                    <atom:DropdownButton TriggerType="Click"
+                                         Placement="BottomEdgeAlignedRight"
+                                         IsShowOpenIndicator="False"
+                                         ButtonType="Primary"
+                                         Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}">
+                        <atom:DropdownButton.DropdownFlyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="1st item"/>
+                                <atom:MenuItem Header="2nd item"/>
+                                <atom:MenuItem Header="3rd item"/>
+                            </atom:MenuFlyout>
+                        </atom:DropdownButton.DropdownFlyout>
+                    </atom:DropdownButton>
+                </atom:CompactSpace>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="Vertical Compact Mode"
+                              Description="Vertical Mode for Space.Compact, support Button only."
+                              IsOccupyEntireRow="True">
+            <StackPanel Spacing="10" Orientation="Horizontal">
+                <atom:CompactSpace Orientation="Vertical">
+                    <atom:Button ButtonType="Default">Button 1</atom:Button>
+                    <atom:Button ButtonType="Default">Button 2</atom:Button>
+                    <atom:Button ButtonType="Default">Button 3</atom:Button>
+                </atom:CompactSpace>
+                
+                <atom:CompactSpace Orientation="Vertical">
+                    <atom:Button ButtonType="Dashed">Button 1</atom:Button>
+                    <atom:Button ButtonType="Dashed">Button 2</atom:Button>
+                    <atom:Button ButtonType="Dashed">Button 3</atom:Button>
+                </atom:CompactSpace>
+                
+                <atom:CompactSpace Orientation="Vertical">
+                    <atom:Button ButtonType="Primary">Button 1</atom:Button>
+                    <atom:Button ButtonType="Primary">Button 2</atom:Button>
+                    <atom:Button ButtonType="Primary">Button 3</atom:Button>
+                </atom:CompactSpace>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

@@ -1,0 +1,18 @@
+using AtomUI.Controls;
+using ReactiveUI;
+
+namespace AtomUIGallery.ShowCases.LineEdit;
+
+public class LineEditViewModel : ReactiveObject, IRoutableViewModel
+{
+    public static EntityKey ID = "LineEdit";
+
+    public IScreen HostScreen { get; }
+
+    public string? UrlPathSegment => ID.ToString();
+
+    public LineEditViewModel(IScreen screen)
+    {
+        HostScreen = screen;
+    }
+}

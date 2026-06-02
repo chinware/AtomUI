@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Space.SpaceShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Space"
+             x:DataType="viewModels:SpaceViewModel">
+    <atom:TabControl Name="ScenarioTabs"
+                     SizeType="Large"
+                     SelectedIndex="0">
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Basic}" Tag="Basic" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Size}" Tag="Size" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Align}" Tag="Align" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource CompactForm}" Tag="CompactForm" />
+        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource CompactButton}" Tag="CompactButton" />
+    </atom:TabControl>
+</UserControl>

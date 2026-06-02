@@ -1,0 +1,17 @@
+global using AtomUIButton = AtomUI.Desktop.Controls.Button;
+global using AtomUIButtonSpinner = AtomUI.Desktop.Controls.ButtonSpinner;
+global using AtomUICheckBox = AtomUI.Desktop.Controls.CheckBox;
+global using AtomUIColorPicker = AtomUI.Desktop.Controls.ColorPicker;
+global using AtomUIForm = AtomUI.Desktop.Controls.Form;
+global using AtomUILineEdit = AtomUI.Desktop.Controls.LineEdit;
+global using AtomUIMentions = AtomUI.Desktop.Controls.Mentions;
+global using AtomUIMessage = AtomUI.Desktop.Controls.Message;
+global using AtomUINotification = AtomUI.Desktop.Controls.Notification;
+global using AtomUIPopupConfirm = AtomUI.Desktop.Controls.PopupConfirm;
+global using AtomUIRadioButton = AtomUI.Desktop.Controls.RadioButton;
+global using AtomUISegmented = AtomUI.Desktop.Controls.Segmented;
+global using AtomUISelect = AtomUI.Desktop.Controls.Select;
+global using AtomUISplitter = AtomUI.Desktop.Controls.Splitter;
+global using AtomUIToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
+global using AtomUITour = AtomUI.Desktop.Controls.Tour;
+global using AtomUITreeView = AtomUI.Desktop.Controls.TreeView;

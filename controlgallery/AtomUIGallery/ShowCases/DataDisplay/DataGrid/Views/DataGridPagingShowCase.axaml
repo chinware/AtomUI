@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.DataGrid.DataGridPagingShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
+    <gallery:ShowCasePanel>
+
+        <gallery:ShowCaseItem Title="Basic Paging" Description="Basic pagination table." IsOccupyEntireRow="True">
+            <StackPanel Spacing="20">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:TextBlock Width="180" VerticalAlignment="Center">PaginationVisibility:</atom:TextBlock>
+                        <atom:CheckBox Name="ShowTopPaginationCheckBox">Top Pagination</atom:CheckBox>
+                        <atom:CheckBox Name="ShowBottomPaginationCheckBox" IsChecked="True">Bottom Pagination</atom:CheckBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:TextBlock Width="180" VerticalAlignment="Center">Top Pagination Align:</atom:TextBlock>
+                        <atom:OptionButtonGroup ButtonStyle="Solid" Name="TopPaginationOptionGroup">
+                            <atom:OptionButton>Start</atom:OptionButton>
+                            <atom:OptionButton>Center</atom:OptionButton>
+                            <atom:OptionButton IsChecked="True">End</atom:OptionButton>
+                        </atom:OptionButtonGroup>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:TextBlock Width="180" VerticalAlignment="Center">Bottom Pagination Align:</atom:TextBlock>
+                        <atom:OptionButtonGroup ButtonStyle="Solid" Name="BottomPaginationOptionGroup">
+                            <atom:OptionButton>Start</atom:OptionButton>
+                            <atom:OptionButton>Center</atom:OptionButton>
+                            <atom:OptionButton IsChecked="True">End</atom:OptionButton>
+                        </atom:OptionButtonGroup>
+                    </StackPanel>
+
+                </StackPanel>
+                <atom:DataGrid x:Name="BasicPagingCaseGrid" Height="400" PaginationVisibility="Bottom"
+                               PageSize="10"
+                               x:DataType="vm:DataGridBaseInfo">
+                    <atom:DataGrid.Columns>
+                        <atom:DataGridTemplateColumn Header="Name">
+                            <atom:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                                    <atom:HyperLinkTextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </atom:DataGridTemplateColumn.CellTemplate>
+                        </atom:DataGridTemplateColumn>
+                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="Address" Binding="{Binding Address}" />
+                        <atom:DataGridTemplateColumn Header="Tags">
+                            <atom:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="vm:DataGridBaseInfo">
+                                    <ItemsControl ItemsSource="{Binding Tags}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="5" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:TagInfo">
+                                                <atom:Tag Text="{Binding Name}" TagColor="{Binding Color}"></atom:Tag>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </atom:DataGridTemplateColumn.CellTemplate>
+                        </atom:DataGridTemplateColumn>
+                        <atom:DataGridTemplateColumn Header="Action">
+                            <atom:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="15">
+                                        <atom:HyperLinkTextBlock Text="Invite" />
+                                        <atom:HyperLinkTextBlock Text="Modify" />
+                                        <atom:HyperLinkTextBlock Text="Delete" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </atom:DataGridTemplateColumn.CellTemplate>
+                        </atom:DataGridTemplateColumn>
+                    </atom:DataGrid.Columns>
+                </atom:DataGrid>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
