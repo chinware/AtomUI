@@ -65,6 +65,11 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     private bool _isDisposed;
     private AdornerLayer? _adornerLayer;
     private IDisposable? _safeAreaMarginSubscription;
+    private readonly Queue<PendingMessage> _pendingMessages = new();
+    private readonly Dictionary<MessageCard, IDisposable> _messageCloseTimers = new();
+    private const int MaxAdornerLayerRetryCount = 30;
+    private bool _adornerLayerRetryScheduled;
+    private int _adornerLayerRetryCount;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
@@ -93,6 +98,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
         var itemsControl = e.NameScope.Find<Panel>("PART_Items");
         _items = itemsControl?.Children;
+        FlushPendingMessages();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -108,13 +114,25 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     /// <param name="classes">style classes to apply</param>
     public void Show(IMessage message, string[]? classes = null)
     {
-        if (_isDisposed || _items is null)
+        Dispatcher.VerifyAccess();
+
+        if (_isDisposed)
         {
             return;
         }
 
-        Dispatcher.VerifyAccess();
+        if (_items is null)
+        {
+            _pendingMessages.Enqueue(new PendingMessage(message, classes));
+            ApplyTemplate();
+            return;
+        }
 
+        ShowCore(message, classes);
+    }
+
+    private void ShowCore(IMessage message, string[]? classes)
+    {
         var messageControl = new MessageCard
         {
             Icon        = message.Icon,
@@ -137,6 +155,11 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
         Dispatcher.Post(() =>
         {
+            if (_items is null || _isDisposed)
+            {
+                return;
+            }
+
             _items.Add(messageControl);
             RemoveExcessMessages();
         });
@@ -144,7 +167,21 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         // Auto-close after expiration time
         if (message.Expiration != TimeSpan.Zero)
         {
-            DispatcherTimer.RunOnce(messageControl.Close, message.Expiration);
+            _messageCloseTimers[messageControl] = DispatcherTimer.RunOnce(messageControl.Close, message.Expiration);
+        }
+    }
+
+    private void FlushPendingMessages()
+    {
+        if (_items is null || _isDisposed)
+        {
+            return;
+        }
+
+        while (_pendingMessages.Count > 0)
+        {
+            var pendingMessage = _pendingMessages.Dequeue();
+            ShowCore(pendingMessage.Message, pendingMessage.Classes);
         }
     }
 
@@ -152,6 +189,10 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     {
         if (sender is MessageCard card)
         {
+            if (_messageCloseTimers.Remove(card, out var closeTimer))
+            {
+                closeTimer.Dispose();
+            }
             card.OnClose?.Invoke();
             _items?.Remove(card);
         }
@@ -194,13 +235,9 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     
     private void InstallFromTopLevel(TopLevel topLevel)
     {
+        topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
-        _adornerLayer = AdornerLayer.GetAdornerLayer(topLevel);
-        if (_adornerLayer is not null)
-        {
-            _adornerLayer.Children.Add(this);
-            AdornerLayer.SetAdornedElement(this, _adornerLayer);
-        }
+        TryInstallAdornerLayer(topLevel);
 
         // AdornerLayer 覆盖整个 TopLevel（含 CSD 装饰阴影 / 非 CSD 自绘阴影那一圈）不会跟着
         // VisualLayerManager.Margin 内缩。给 manager 自己加 Margin 把内容收到可见客户区，
@@ -217,9 +254,66 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         }
     }
 
+    private void TryInstallAdornerLayer(TopLevel topLevel)
+    {
+        _adornerLayer = AdornerLayer.GetAdornerLayer(topLevel);
+        if (_adornerLayer is null)
+        {
+            ScheduleAdornerLayerRetry(topLevel);
+            return;
+        }
+
+        _adornerLayerRetryCount     = 0;
+        _adornerLayerRetryScheduled = false;
+        if (!_adornerLayer.Children.Contains(this))
+        {
+            _adornerLayer.Children.Add(this);
+        }
+        AdornerLayer.SetAdornedElement(this, _adornerLayer);
+    }
+
+    private void ScheduleAdornerLayerRetry(TopLevel topLevel)
+    {
+        if (_adornerLayerRetryScheduled ||
+            _isDisposed ||
+            _adornerLayerRetryCount >= MaxAdornerLayerRetryCount)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = true;
+        if (_adornerLayerRetryCount == 0)
+        {
+            Dispatcher.UIThread.Post(() => RetryInstallFromTopLevel(topLevel), DispatcherPriority.Loaded);
+        }
+        else
+        {
+            DispatcherTimer.RunOnce(() => RetryInstallFromTopLevel(topLevel), TimeSpan.FromMilliseconds(16));
+        }
+    }
+
+    private void RetryInstallFromTopLevel(TopLevel topLevel)
+    {
+        if (!_adornerLayerRetryScheduled)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = false;
+        if (_isDisposed ||
+            _adornerLayer is not null ||
+            !ReferenceEquals(_topLevel, topLevel))
+        {
+            return;
+        }
+
+        _adornerLayerRetryCount++;
+        TryInstallAdornerLayer(topLevel);
+    }
+
     public void Dispose()
     {
-        if (_topLevel is null || _isDisposed)
+        if (_isDisposed)
         {
             return;
         }
@@ -227,8 +321,19 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         try
         {
             // 卸载事件订阅
-            _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+            if (_topLevel is not null)
+            {
+                _topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
+            }
             _items?.Clear();
+            _pendingMessages.Clear();
+            foreach (var closeTimer in _messageCloseTimers.Values)
+            {
+                closeTimer.Dispose();
+            }
+            _messageCloseTimers.Clear();
+            _adornerLayerRetryScheduled = false;
+            _adornerLayerRetryCount = 0;
             _safeAreaMarginSubscription?.Dispose();
             _safeAreaMarginSubscription = null;
             // 从 AdornerLayer 中移除
@@ -263,10 +368,14 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     private void TopLevelOnTemplateApplied(object? sender, TemplateAppliedEventArgs _)
     {
         RemoveFromAdornerLayer();
+        _adornerLayerRetryScheduled = false;
+        _adornerLayerRetryCount     = 0;
         
         // Reinstall notification manager on template reapplied.
         var topLevel = (TopLevel)sender!;
         topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         InstallFromTopLevel(topLevel);
     }
+
+    private readonly record struct PendingMessage(IMessage Message, string[]? Classes);
 }

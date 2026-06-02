@@ -195,17 +195,29 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
     {
         base.OnApplyTemplate(e);
         _motionActor = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
-        if (_motionActor is not null && IsMotionEnabled)
+        if (_motionActor is not null && IsMotionEnabled && !IsClosing)
         {
             _motionActor.Opacity = 0;
         }
-        Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
+        if (IsClosing)
+        {
+            Dispatcher.InvokeAsync(ApplyHideMotionAsync, DispatcherPriority.Loaded);
+        }
+        else
+        {
+            Dispatcher.InvokeAsync(ApplyShowMotionAsync, DispatcherPriority.Loaded);
+        }
         UpdatePseudoClasses();
         SetupDefaultMessageIcon();
     }
 
     private async Task ApplyShowMotionAsync()
     {
+        if (IsClosing)
+        {
+            return;
+        }
+
         if (_motionActor is not null)
         {
             if (IsMotionEnabled)
@@ -219,46 +231,25 @@ public class MessageCard : TemplatedControl, IMotionAwareControl
 
     private async Task ApplyHideMotionAsync()
     {
-        if (_motionActor is not null)
+        if (_motionActor is null || !IsMotionEnabled)
         {
-            if (IsMotionEnabled)
-            {
-                var motion =
-                    new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
-                await motion.RunAsync(_motionActor);
-                IsClosed = true;
-            }
-            else
-            {
-                IsClosed = true;
-            }
+            IsClosed = true;
+            return;
         }
+
+        var motion =
+            new MoveUpOutMotion(AnimationMaxOffsetY, _openCloseMotionDuration, new CubicEaseIn());
+        await motion.RunAsync(_motionActor);
+        IsClosed = true;
     }
 
     private void UpdatePseudoClasses()
     {
-        switch (MessageType)
-        {
-            case MessageType.Error:
-                PseudoClasses.Add(MessageCardPseudoClass.Error);
-                break;
-
-            case MessageType.Information:
-                PseudoClasses.Add(MessageCardPseudoClass.Information);
-                break;
-
-            case MessageType.Success:
-                PseudoClasses.Add(MessageCardPseudoClass.Success);
-                break;
-
-            case MessageType.Warning:
-                PseudoClasses.Add(MessageCardPseudoClass.Warning);
-                break;
-
-            case MessageType.Loading:
-                PseudoClasses.Add(MessageCardPseudoClass.Loading);
-                break;
-        }
+        PseudoClasses.Set(MessageCardPseudoClass.Error, MessageType == MessageType.Error);
+        PseudoClasses.Set(MessageCardPseudoClass.Information, MessageType == MessageType.Information);
+        PseudoClasses.Set(MessageCardPseudoClass.Success, MessageType == MessageType.Success);
+        PseudoClasses.Set(MessageCardPseudoClass.Warning, MessageType == MessageType.Warning);
+        PseudoClasses.Set(MessageCardPseudoClass.Loading, MessageType == MessageType.Loading);
     }
 
     private void SetupDefaultMessageIcon()
