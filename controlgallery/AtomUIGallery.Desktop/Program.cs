@@ -41,12 +41,14 @@ internal class Program
 
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<GalleryApplication>()
-                         .UseReactiveUI(build =>
-                             build.ConfigureViewLocator(locator => new ShowCaseViewModule().RegisterViews(locator)))
-                         .UsePlatformDetect()
-                         .WithAtomUIDefaultOptions()
-                         .WithDeveloperTools()
-                         .LogToTrace();
+        var builder = AppBuilder.Configure<GalleryApplication>()
+                                .UseReactiveUI(build =>
+                                    build.ConfigureViewLocator(locator => new ShowCaseViewModule().RegisterViews(locator)))
+                                .UsePlatformDetect()
+                                .WithAtomUIDefaultOptions();
+#if DEBUG
+        builder = builder.WithDeveloperTools();
+#endif
+        return builder.LogToTrace();
     }
 }

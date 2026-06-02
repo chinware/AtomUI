@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <TargetFramework>$(AtomUIDevelopTargetFramework)</TargetFramework>
         <OutputType>WinExe</OutputType>
         <RootNamespace>AtomUIGallery.Desktop</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
