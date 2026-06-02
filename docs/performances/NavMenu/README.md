@@ -72,3 +72,13 @@
 - `dotnet build -c Release -f net10.0 --no-restore tools/performances/AtomUI.Performance/AtomUI.Performance.csproj` passed.
 - `dotnet build tools/performances/AtomUI.Performance/AtomUI.Performance.csproj --framework net10.0 --no-restore` passed with 0 warning / 0 error.
 - `--verify-navmenu-states` currently fails on both this change and clean HEAD `d35b21a1a` with the same default-path / lazy-subscription / binding-release expectations, so it is not introduced by this optimization.
+
+## Selection Mode Flag Check
+
+`NavMenuItem.ValidateSelectionMode()` 只需要拒绝 `SelectionMode.Multiple`。本轮把 `SelectionMode.HasFlag(Multiple)` 改为 bitwise check，异常类型、异常消息和禁止 multiple 的语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| NavMenu selection-mode `HasFlag` callsites / validation | 1 | 0 | `(1 - 0) / 1` | 100.00% | structural-only；selection mode 判断直接读 Multiple bit |
+| Multiple-mode validation semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

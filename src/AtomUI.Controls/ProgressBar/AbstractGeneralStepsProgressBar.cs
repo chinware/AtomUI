@@ -209,48 +209,35 @@ public abstract class AbstractGeneralStepsProgressBar : AbstractLineProgress
         var smallExtraInfoSize   = CalculateExtraInfoSize(fontSizeSM);
         if (Orientation == Orientation.Horizontal)
         {
-            var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
-            var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
-
-            var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Height)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
+            _largeSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Height));
+            _middleSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Height));
+            _smallSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Height));
         }
         else
         {
-            var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
-            var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
-
-            var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Width)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
+            _largeSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Width));
+            _middleSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Width));
+            _smallSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Width));
         }
+
+        _sizeTypeThresholdValuesInitialized = true;
     }
 
     protected override SizeType CalculateEffectiveSizeType(double size)
     {
-        var largeThresholdValue  = _sizeTypeThresholdValue[SizeType.Large];
-        var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
+        if (!_sizeTypeThresholdValuesInitialized)
+        {
+            CalculateSizeTypeThresholdValue();
+        }
+
+        var largeThresholdValue  = _largeSizeTypeThresholdValue;
+        var middleThresholdValue = _middleSizeTypeThresholdValue;
         var sizeType             = SizeType.Middle;
         if (MathUtils.GreaterThanOrClose(size, largeThresholdValue.NormalStateValue))
         {

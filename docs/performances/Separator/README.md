@@ -1,6 +1,5 @@
 # Separator 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 0 #8
 > 状态：本轮已完成结构修复；headless bench 显示 KB/item 完全持平，但改动直接对齐 SKILL Cost Model 关于 Pen 缓存的强制性建议。
 
 ---

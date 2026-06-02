@@ -862,7 +862,8 @@ public class Cascader : AbstractSelect
             else
             {
                 var effectiveSelectedOptions = new List<ICascaderOption>(SelectedOptions.Count);
-                if (ShowCheckedStrategy.HasFlag(TreeSelectCheckedStrategy.ShowParent))
+                var showCheckedStrategy = ShowCheckedStrategy;
+                if ((showCheckedStrategy & TreeSelectCheckedStrategy.ShowParent) == TreeSelectCheckedStrategy.ShowParent)
                 {
                     var selectedSet          = BuildOptionSet(SelectedOptions)!;
                     var fullySelectedParents = new HashSet<ICascaderOption>(SelectedOptions.Count);
@@ -881,7 +882,7 @@ public class Cascader : AbstractSelect
                         }
                     }
                 }
-                if (ShowCheckedStrategy.HasFlag(TreeSelectCheckedStrategy.ShowChild))
+                if ((showCheckedStrategy & TreeSelectCheckedStrategy.ShowChild) == TreeSelectCheckedStrategy.ShowChild)
                 {
                     foreach (var option in SelectedOptions)
                     {

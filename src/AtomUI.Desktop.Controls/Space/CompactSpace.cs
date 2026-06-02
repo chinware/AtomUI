@@ -30,6 +30,17 @@ public class CompactSpace : TemplatedControl,
 {
     internal const int ACTIVE_ZINDEX = 1000;
     internal const int NORMAL_ZINDEX = 0;
+
+    internal static bool HasPositionFlag(SpaceItemPosition position, SpaceItemPosition flag)
+    {
+        return (position & flag) == flag;
+    }
+
+    internal static bool IsPartialPosition(SpaceItemPosition position)
+    {
+        return !HasPositionFlag(position, SpaceItemPosition.First) ||
+               !HasPositionFlag(position, SpaceItemPosition.Last);
+    }
     
     #region 公共属性定义
 
@@ -641,10 +652,14 @@ public class CompactSpace : TemplatedControl,
         var bottomRight = cornerRadius.BottomRight;
         var bottomLeft  = cornerRadius.BottomLeft;
         if (isUsedInCompactSpace &&
-            compactSpaceItemPosition.HasValue &&
-            (!compactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) || !compactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
+            compactSpaceItemPosition.HasValue)
         {
-            if (compactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First))
+            var position = compactSpaceItemPosition.Value;
+            var isFirst  = HasPositionFlag(position, SpaceItemPosition.First);
+            var isMiddle = HasPositionFlag(position, SpaceItemPosition.Middle);
+            var isLast   = HasPositionFlag(position, SpaceItemPosition.Last);
+            var isPartial = !isFirst || !isLast;
+            if (isPartial && isFirst)
             {
                 if (compactSpaceOrientation == Orientation.Horizontal)
                 {
@@ -657,14 +672,14 @@ public class CompactSpace : TemplatedControl,
                     bottomRight = 0;
                 }
             }
-            else if (compactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Middle))
+            else if (isPartial && isMiddle)
             {
                 topRight    = 0;
                 topLeft     = 0;
                 bottomLeft  = 0;
                 bottomRight = 0;
             }
-            else if (compactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last))
+            else if (isPartial && isLast)
             {
                 if (compactSpaceOrientation == Orientation.Horizontal)
                 {

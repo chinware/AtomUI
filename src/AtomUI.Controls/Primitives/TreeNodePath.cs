@@ -2,35 +2,37 @@ namespace AtomUI.Controls.Primitives;
 
 public sealed record TreeNodePath
 {
+    private static readonly string[] s_emptySegments = Array.Empty<string>();
+    private static readonly IReadOnlyList<string> s_emptySegmentsView = Array.AsReadOnly(s_emptySegments);
     private readonly string[] _segmentsArray;
     
     public IReadOnlyList<string> Segments { get; }
     
-    public static TreeNodePath Empty { get; } = new TreeNodePath([]);
+    public static TreeNodePath Empty { get; } = new TreeNodePath(s_emptySegments, true);
     
     public TreeNodePath(string[] segments)
     {
         _segmentsArray = ValidateAndCopySegments(segments);
-        Segments = Array.AsReadOnly(_segmentsArray);
+        Segments       = CreateSegmentsView(_segmentsArray);
     }
     
     public TreeNodePath(string pathString)
     {
         if (pathString.Length == 0)
         {
-            _segmentsArray = [];
-            Segments = Array.AsReadOnly(_segmentsArray);
+            _segmentsArray = s_emptySegments;
+            Segments       = s_emptySegmentsView;
             return;
         }
         
         _segmentsArray = ParsePathString(pathString);
-        Segments = Array.AsReadOnly(_segmentsArray);
+        Segments       = CreateSegmentsView(_segmentsArray);
     }
 
     private TreeNodePath(string[] trustedSegments, bool _)
     {
         _segmentsArray = trustedSegments;
-        Segments        = Array.AsReadOnly(_segmentsArray);
+        Segments        = CreateSegmentsView(_segmentsArray);
     }
 
     private static string[] ValidateAndCopySegments(string[] segments)
@@ -39,7 +41,7 @@ public sealed record TreeNodePath
 
         if (segments.Length == 0)
         {
-            return [];
+            return s_emptySegments;
         }
         
         var result = new string[segments.Length];
@@ -66,10 +68,15 @@ public sealed record TreeNodePath
 
     private static string[] ParsePathString(string pathString)
     {
+        if (pathString.IndexOf('/') == -1)
+        {
+            return [pathString];
+        }
+
         var segmentCount = CountPathSegments(pathString);
         if (segmentCount == 0)
         {
-            return [];
+            return s_emptySegments;
         }
 
         var result       = new string[segmentCount];
@@ -95,6 +102,11 @@ public sealed record TreeNodePath
         }
 
         return result;
+    }
+
+    private static IReadOnlyList<string> CreateSegmentsView(string[] segments)
+    {
+        return segments.Length == 0 ? s_emptySegmentsView : Array.AsReadOnly(segments);
     }
 
     private static int CountPathSegments(string pathString)

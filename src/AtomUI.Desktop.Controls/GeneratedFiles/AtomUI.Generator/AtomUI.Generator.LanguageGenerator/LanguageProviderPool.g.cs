@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>();
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(18);
             languageProviders.Add(new AtomUI.Desktop.Controls.DatePickerLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.DatePickerLang.zh_CN());
             languageProviders.Add(new AtomUI.Desktop.Controls.DialogLang.en_US());

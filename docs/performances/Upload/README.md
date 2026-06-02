@@ -1,6 +1,5 @@
 # Upload 性能评估
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 1 #5
 > 状态：已完成 structural-only 收口；3 个页面级候选均未通过收益门槛并已按 3-round budget 关闭；保留单图预览和运行期任务路径的分配 / 扫描收敛。
 
 ---

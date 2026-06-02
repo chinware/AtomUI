@@ -1,6 +1,5 @@
 # Timeline 性能评估
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #3
 > 状态：本轮保留 Render 结构优化和 pending 正确性修复；未声明稳定页面级性能收益。
 
 ---

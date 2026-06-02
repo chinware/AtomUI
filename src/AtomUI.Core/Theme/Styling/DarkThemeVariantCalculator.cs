@@ -9,6 +9,10 @@ namespace AtomUI.Theme.Styling;
 public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 {
     public const ThemeAlgorithm Algorithm = ThemeAlgorithm.Dark;
+    private static readonly PaletteGenerateOption s_darkPaletteOption = new()
+    {
+        ThemeVariant = ThemeVariant.Dark
+    };
 
     public DarkThemeVariantCalculator(IThemeVariantCalculator calculator)
         : base(calculator)
@@ -42,10 +46,7 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
 
     protected override ColorMap GenerateColorPalettes(Color baseColor)
     {
-        var colors = PaletteGenerator.GeneratePalette(baseColor, new PaletteGenerateOption
-        {
-            ThemeVariant = ThemeVariant.Dark
-        });
+        var colors = PaletteGenerator.GeneratePalette(baseColor, s_darkPaletteOption);
         var colorMap = new ColorMap
         {
             Color1  = colors[0],
@@ -111,10 +112,7 @@ public class DarkThemeVariantCalculator : AbstractThemeVariantCalculator
         foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
         {
             var colors = PaletteGenerator.GeneratePalette(designToken.GetPresetPrimaryColor(presetColor.Type).Color(),
-                new PaletteGenerateOption
-                {
-                    ThemeVariant = ThemeVariant.Dark
-                });
+                s_darkPaletteOption);
             var colorMap = ColorMap.FromColors(colors);
             designToken.SetColorPalette(presetColor, colorMap);
         }

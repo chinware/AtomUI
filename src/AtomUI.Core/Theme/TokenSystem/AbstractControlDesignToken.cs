@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -41,32 +40,23 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken,
         var tokenKindType = GetTokenKindType();
         var type          = GetType();
         // internal 这里也考虑进去，还是具体的 Token 自己处理？
-        var tokenProperties = type.GetProperties(BindingFlags.Public |
-                                                 BindingFlags.NonPublic |
-                                                 BindingFlags.Instance |
-                                                 BindingFlags.FlattenHierarchy)
-                                  .ToDictionary(x => x.Name);
-        if (tokenKindType != null)
+        var tokenProperties = GetTokenPropertyMap(type);
+        foreach (var entry in ThemeResourceKeyCache.GetEnumEntries(tokenKindType))
         {
-            foreach (var value in Enum.GetValues(tokenKindType))
+            if (tokenProperties.TryGetValue(entry.Name, out var property))
             {
-                var tokenName = Enum.GetName(tokenKindType, value);
-                Debug.Assert(tokenName != null);
-                if (tokenProperties.TryGetValue(tokenName, out var property))
+                var tokenValue = property.GetValue(this);
+                if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) &&
+                    tokenValue is not null)
                 {
-                    var tokenValue = property.GetValue(this);
-                    if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) && 
-                        tokenValue is not null)
-                    {
-                        tokenValue = new ImmutableSolidColorBrush((Color)tokenValue);
-                    }
-                    dictionary[value] = tokenValue;
+                    tokenValue = new ImmutableSolidColorBrush((Color)tokenValue);
                 }
-                else
-                {
-                    throw new Exception($"Token: {tokenName} does not exist in {type.FullName}");
-                }
-            } 
+                dictionary[entry.Value] = tokenValue;
+            }
+            else
+            {
+                throw new Exception($"Token: {entry.Name} does not exist in {type.FullName}");
+            }
         }
     }
 
@@ -79,11 +69,8 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken,
 
         _sharedResourceDeltaDictionary.Clear();
         var sharedTokenType = SharedToken.GetType();
-        var tokenProperties = sharedTokenType.GetProperties(BindingFlags.Public |
-                                                            BindingFlags.NonPublic |
-                                                            BindingFlags.Instance |
-                                                            BindingFlags.FlattenHierarchy);
-        var sharedTokenKindType = typeof(SharedTokenKind);
+        var tokenProperties = GetTokenProperties(sharedTokenType);
+        var sharedTokenKinds = GetSharedTokenKindMap();
         foreach (var property in tokenProperties)
         {
             var name                   = property.Name;
@@ -103,10 +90,32 @@ public abstract class AbstractControlDesignToken : AbstractDesignToken,
                 }
             }
 
-            if (Enum.TryParse(sharedTokenKindType, name, out var sharedTokenKind))
+            if (sharedTokenKinds.TryGetValue(name, out var sharedTokenKind))
             {
                 _sharedResourceDeltaDictionary[sharedTokenKind] = localSharedTokenValue;
             }
+        }
+    }
+
+    private static IReadOnlyDictionary<string, object> GetSharedTokenKindMap()
+    {
+        return SharedTokenKindMapCache.Map;
+    }
+
+    private static class SharedTokenKindMapCache
+    {
+        internal static readonly IReadOnlyDictionary<string, object> Map = Build();
+
+        private static IReadOnlyDictionary<string, object> Build()
+        {
+            var entries = ThemeResourceKeyCache.GetEnumEntries(typeof(SharedTokenKind));
+            var map     = new Dictionary<string, object>(entries.Length);
+            foreach (var entry in entries)
+            {
+                map[entry.Name] = entry.Value;
+            }
+
+            return map;
         }
     }
 

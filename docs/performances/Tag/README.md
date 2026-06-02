@@ -1,6 +1,5 @@
 # Tag 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 0 #4
 > 状态：本轮已完成 + 微基准验证。
 
 ---
@@ -99,7 +98,7 @@ else if (change.Property == IsClosableProperty)
 ## 3. 不在本轮范围
 
 - `SetupTagColorInfo` 的 string match 已追加低风险结构优化：去掉输入和枚举名的 `ToLower()` 临时字符串，改为大小写忽略比较；保持只按枚举名称匹配，不接受数字枚举值。
-- `SetupPresetColorMap` / `SetupStatusColorMap` 已经是 static 全局 dict + `force` 参数，theme 切换时重建。结构 OK，未改。
+- `SetupPresetColorMap` / `SetupStatusColorMap` 是 static 全局 dict + `force` 参数，theme 切换时重建；本轮追加静态颜色名称表，避免每次构建/匹配再走 yield iterator 和 enum name 转换。
 
 ---
 
@@ -163,15 +162,17 @@ dotnet build src/AtomUI.Controls/AtomUI.Controls.csproj -c Debug --framework net
 
 ---
 
-## 8. 追加结构优化：颜色名匹配临时字符串
+## 8. 追加结构优化：颜色名匹配临时字符串与静态颜色表
 
-`SetupTagColorInfo()` 的 preset/status 颜色名匹配不再对输入和每个 enum name 做 `ToLower()`；改为 `StringComparison.OrdinalIgnoreCase`。同时命中后直接使用 `entry.Value`，避免命中项再查一次 dictionary。颜色解析优先级保持：preset → status → custom color。
+`SetupTagColorInfo()` 的 preset/status 颜色名匹配不再对输入和每个 enum name 做 `ToLower()`；改为 `StringComparison.OrdinalIgnoreCase`。本轮继续把 preset/status 名称列表固化为静态表，颜色表构建不再调用 `PresetPrimaryColor.AllColorTypes()` 的 yield iterator，颜色匹配不再对 14 个 preset + 4 个 status 做 `Enum.ToString()`。颜色解析优先级保持：preset → status → custom color。
 
 | 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
 | --- | ---: | ---: | --- | ---: | --- |
 | Tag color name `ToLower()` allocations / worst-case color parse | 19 strings | 0 strings | `(19 - 0) / 19` | 100.00% | 结构收益；14 preset + 4 status + input 均不再 lower |
 | Tag color trim temp strings / color parse | 1 string | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
 | Tag custom color parse string wrappers / custom color parse | 1 string | 0 strings | `(1 - 0) / 1` | 100.00% | 结构收益；直接调用 span overload |
-| Matched preset/status dictionary lookup / color parse | 1 extra lookup | 0 extra lookups | `(1 - 0) / 1` | 100.00% | 结构收益；命中项直接用 enumerator value |
+| Tag enum name `ToString()` calls / worst-case color parse | 18 calls | 0 calls | `(18 - 0) / 18` | 100.00% | 结构收益；静态名称表替代 enum name 转换 |
+| Tag preset map build yield iterator / theme map build | 1 iterator | 0 iterators | `(1 - 0) / 1` | 100.00% | 结构收益；构建 preset map 直接遍历静态颜色表 |
+| `PresetPrimaryColor.AllColorTypes()` yield state machine / call | 1 state machine | 0 state machines | `(1 - 0) / 1` | 100.00% | 结构收益；公共 helper 返回静态只读列表 |
 
 说明：这是 TagColor 变化路径的结构性收益；不声明页面加载 timing 提升。

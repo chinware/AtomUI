@@ -119,7 +119,7 @@ public static class TransformParser
                 part = part.Slice(0, unitIndex);
             }
 
-            var value = double.Parse(part.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture);
+            var value = double.Parse(part, NumberStyles.Float, CultureInfo.InvariantCulture);
             
             // 应用默认单位
             if (function == TransformFunction.Translate ||
@@ -415,7 +415,7 @@ public static class TransformParser
 
     private static void ThrowFormatInvalidValue(TransformFunction function, in UnitValue value)
     {
-        var unitString = value.Unit == Unit.None ? string.Empty : value.Unit.ToString();
+        var unitString = GetUnitName(value.Unit);
 
         throw new FormatException($"Invalid value {value.Value} {unitString} for {function}");
     }
@@ -441,6 +441,19 @@ public static class TransformParser
         }
 
         throw new FormatException($"Invalid unit: {part.ToString()}");
+    }
+
+    private static string GetUnitName(Unit unit)
+    {
+        return unit switch
+        {
+            Unit.Pixel => nameof(Unit.Pixel),
+            Unit.Radian => nameof(Unit.Radian),
+            Unit.Gradian => nameof(Unit.Gradian),
+            Unit.Degree => nameof(Unit.Degree),
+            Unit.Turn => nameof(Unit.Turn),
+            _ => string.Empty
+        };
     }
 
     private static TransformFunction ParseTransformFunction(in ReadOnlySpan<char> part)

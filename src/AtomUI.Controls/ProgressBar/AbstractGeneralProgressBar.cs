@@ -268,8 +268,13 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
 
     protected override SizeType CalculateEffectiveSizeType(double size)
     {
-        var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
-        var smallThresholdValue  = _sizeTypeThresholdValue[SizeType.Small];
+        if (!_sizeTypeThresholdValuesInitialized)
+        {
+            CalculateSizeTypeThresholdValue();
+        }
+
+        var middleThresholdValue = _middleSizeTypeThresholdValue;
+        var smallThresholdValue  = _smallSizeTypeThresholdValue;
         var sizeType             = SizeType.Middle;
         if (PercentPosition.IsInner)
         {
@@ -332,48 +337,30 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         var smallExtraInfoSize   = CalculateExtraInfoSize(fontSizeSM);
         if (Orientation == Orientation.Horizontal)
         {
-            var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                InnerStateValue  = defaultExtraInfoSize.Height + LineProgressPadding * 2,
-                NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
-            var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                InnerStateValue  = defaultExtraInfoSize.Height + LineProgressPadding * 2,
-                NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Height)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
-
-            var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                InnerStateValue  = smallExtraInfoSize.Height + LineProgressPadding * 2,
-                NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Height)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
+            _largeSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Height),
+                defaultExtraInfoSize.Height + LineProgressPadding * 2);
+            _middleSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Height),
+                defaultExtraInfoSize.Height + LineProgressPadding * 2);
+            _smallSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Height),
+                smallExtraInfoSize.Height + LineProgressPadding * 2);
         }
         else
         {
-            var largeSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                InnerStateValue  = defaultExtraInfoSize.Width + LineProgressPadding * 2,
-                NormalStateValue = Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Large, largeSizeTypeThresholdValue);
-            var middleSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                InnerStateValue  = defaultExtraInfoSize.Width + LineProgressPadding * 2,
-                NormalStateValue = Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Width)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Middle, middleSizeTypeThresholdValue);
-
-            var smallSizeTypeThresholdValue = new SizeTypeThresholdValue
-            {
-                InnerStateValue  = smallExtraInfoSize.Width + LineProgressPadding * 2,
-                NormalStateValue = Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Width)
-            };
-            _sizeTypeThresholdValue.Add(SizeType.Small, smallSizeTypeThresholdValue);
+            _largeSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(LARGE_STROKE_THICKNESS, defaultExtraInfoSize.Width),
+                defaultExtraInfoSize.Width + LineProgressPadding * 2);
+            _middleSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(MIDDLE_STROKE_THICKNESS, defaultExtraInfoSize.Width),
+                defaultExtraInfoSize.Width + LineProgressPadding * 2);
+            _smallSizeTypeThresholdValue = new SizeTypeThresholdValue(
+                Math.Max(SMALL_STROKE_THICKNESS, smallExtraInfoSize.Width),
+                smallExtraInfoSize.Width + LineProgressPadding * 2);
         }
+
+        _sizeTypeThresholdValuesInitialized = true;
     }
 
     protected override Rect GetProgressBarRect(Rect controlRect)

@@ -42,12 +42,14 @@ public static class PaletteGenerator
    /// </summary>
    public const int DARK_COLOR_COUNT = 4;
 
-    private static readonly IReadOnlyList<DarkColorMapItem> sm_darkColorMap;
+    private static readonly DarkColorMapItem[] sm_darkColorMap;
+    private static readonly Color s_defaultDarkBackgroundColor;
 
     static PaletteGenerator()
     {
-        sm_darkColorMap = new List<DarkColorMapItem>
-        {
+        s_defaultDarkBackgroundColor = Color.Parse("#141414");
+        sm_darkColorMap =
+        [
             new() { Index = 7, Opacity = 0.15f },
             new() { Index = 6, Opacity = 0.25f },
             new() { Index = 5, Opacity = 0.3f },
@@ -58,17 +60,12 @@ public static class PaletteGenerator
             new() { Index = 3, Opacity = 0.95f },
             new() { Index = 2, Opacity = 0.97f },
             new() { Index = 1, Opacity = 0.98f }
-        };
+        ];
     }
 
     public static IReadOnlyList<Color> GeneratePalette(Color color, PaletteGenerateOption? option = null)
     {
-        if (option is null)
-        {
-            option = new PaletteGenerateOption();
-        }
-
-        var patterns = new List<Color>();
+        var patterns = new List<Color>(LIGHT_COLOR_COUNT + 1 + DARK_COLOR_COUNT);
         var hsvColor = color.ToHsv();
         for (var i = LIGHT_COLOR_COUNT; i > 0; --i)
         {
@@ -88,12 +85,12 @@ public static class PaletteGenerator
         }
 
         // dark theme patterns
-        if (option.ThemeVariant == ThemeVariant.Dark)
+        if (option?.ThemeVariant == ThemeVariant.Dark)
         {
-            var darkPatterns = new List<Color>();
+            var darkPatterns = new List<Color>(sm_darkColorMap.Length);
+            var color1       = option.BackgroundColor ?? s_defaultDarkBackgroundColor;
             foreach (var entry in sm_darkColorMap)
             {
-                var color1 = option.BackgroundColor ?? Color.Parse("#141414");
                 var color2 = patterns[entry.Index];
                 var darkColorRgb = MixRgbF(new RgbF(color1.GetRedF(), color1.GetGreenF(), color1.GetBlueF()),
                     new RgbF(color2.GetRedF(), color2.GetGreenF(), color2.GetBlueF()),

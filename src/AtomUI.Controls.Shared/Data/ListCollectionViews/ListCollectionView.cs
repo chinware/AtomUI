@@ -1269,16 +1269,17 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         // if we are paging
         if (PageSize > 0)
         {
-            var list = new List<object?>();
-
             // if we are in the middle of asynchronous load
             if (PageIndex < 0)
             {
-                return list.GetEnumerator();
+                return Array.Empty<object?>().GetEnumerator();
             }
 
-            for (int index = _pageSize * PageIndex;
-                 index < Math.Min(_pageSize * (PageIndex + 1), InternalList.Count);
+            var startIndex = _pageSize * PageIndex;
+            var endIndex   = Math.Min(_pageSize * (PageIndex + 1), InternalList.Count);
+            var list       = new List<object?>(Math.Max(0, endIndex - startIndex));
+            for (var index = startIndex;
+                 index < endIndex;
                  index++)
             {
                 list.Add(InternalList[index]);
@@ -1737,7 +1738,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// </summary>
     private void CopySourceToInternalList()
     {
-        _internalList = new List<object>();
+        _internalList = CreateListForCopy(SourceCollection);
         var enumerator = SourceCollection.GetEnumerator();
         try
         {
@@ -1753,6 +1754,21 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
                 disposable.Dispose();
             }
         }
+    }
+
+    private static List<object> CreateListForCopy(IEnumerable enumerable)
+    {
+        if (enumerable is ICollection collection)
+        {
+            return new List<object>(collection.Count);
+        }
+
+        if (enumerable is IReadOnlyCollection<object> readOnlyCollection)
+        {
+            return new List<object>(readOnlyCollection.Count);
+        }
+
+        return new List<object>();
     }
     
     /// <summary>
@@ -2220,7 +2236,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         Debug.Assert(enumerable != null, "Input list to filter/sort should not be null");
 
         // filter the collection's array into the local array
-        List<object> localList = new List<object>();
+        var localList = CreateLocalList(enumerable);
 
         foreach (object item in enumerable)
         {
@@ -2822,7 +2838,30 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
             }
         }
 
-        return seq.ToList();
+        var sortedList = new List<object>(list.Count);
+        foreach (var item in seq)
+        {
+            sortedList.Add(item);
+        }
+        return sortedList;
+    }
+
+    private List<object> CreateLocalList(IEnumerable enumerable)
+    {
+        if (Filter == null)
+        {
+            if (enumerable is ICollection collection)
+            {
+                return new List<object>(collection.Count);
+            }
+
+            if (enumerable is IReadOnlyCollection<object> readOnlyCollection)
+            {
+                return new List<object>(readOnlyCollection.Count);
+            }
+        }
+
+        return new List<object>();
     }
 
     /// <summary>
@@ -3098,9 +3137,12 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         private static IComparer<object>[] MakeComparerArray(SortDescriptionList coll)
         {
-            return
-                coll.Select(c => c.Comparer)
-                    .ToArray();
+            var comparers = new IComparer<object>[coll.Count];
+            for (var i = 0; i < coll.Count; i++)
+            {
+                comparers[i] = coll[i].Comparer;
+            }
+            return comparers;
         }
 
         /// <summary>

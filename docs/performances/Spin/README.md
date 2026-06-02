@@ -1,6 +1,5 @@
 # Spin 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 0 #5
 > 状态：本轮完成 `SpinIndicator` 动画生命周期收敛；包含一处正确性修复。
 
 ---

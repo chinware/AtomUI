@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
+using AtomUI.Theme;
 using Avalonia.Controls;
 using Avalonia.Logging;
 
@@ -7,6 +8,8 @@ namespace AtomUI.Theme.Language;
 
 public abstract class LanguageProvider : ILanguageProvider
 {
+    private static readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, FieldInfo>> s_languageFieldsByType = new();
+
     public LanguageCode LangCode { get; }
 
     public string LangId { get; }
@@ -30,22 +33,17 @@ public abstract class LanguageProvider : ILanguageProvider
         var resourceKindType = GetResourceKindType();
         try
         {
-            var languageFields = type.GetFields(BindingFlags.Public |
-                                                BindingFlags.Static |
-                                                BindingFlags.FlattenHierarchy)
-                                     .ToDictionary(x => x.Name);
-            foreach (var value in Enum.GetValues(resourceKindType))
+            var languageFields = GetLanguageFieldMap(type);
+            foreach (var entry in ThemeResourceKeyCache.GetEnumEntries(resourceKindType))
             {
-                var languageKey = Enum.GetName(resourceKindType, value);
-                Debug.Assert(languageKey != null);
-                if (languageFields.TryGetValue(languageKey, out var field))
+                if (languageFields.TryGetValue(entry.Name, out var field))
                 {
-                    var languageText = field.GetValue(this);
-                    dictionary[value] = languageText; 
+                    var languageText = field.GetValue(null);
+                    dictionary[entry.Value] = languageText;
                 }
                 else
                 {
-                    throw new Exception($"Language item: {languageKey} does not exist in {type.FullName}");
+                    throw new Exception($"Language item: {entry.Name} does not exist in {type.FullName}");
                 }
             }
         }
@@ -58,4 +56,21 @@ public abstract class LanguageProvider : ILanguageProvider
     }
 
     protected abstract Type GetResourceKindType();
+
+    private static IReadOnlyDictionary<string, FieldInfo> GetLanguageFieldMap(Type type)
+    {
+        return s_languageFieldsByType.GetOrAdd(type, static languageType =>
+        {
+            var fields = languageType.GetFields(BindingFlags.Public |
+                                                BindingFlags.Static |
+                                                BindingFlags.FlattenHierarchy);
+            var fieldMap = new Dictionary<string, FieldInfo>(fields.Length);
+            foreach (var field in fields)
+            {
+                fieldMap[field.Name] = field;
+            }
+
+            return fieldMap;
+        });
+    }
 }

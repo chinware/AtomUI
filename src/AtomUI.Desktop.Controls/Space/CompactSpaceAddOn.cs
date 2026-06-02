@@ -145,10 +145,14 @@ public class CompactSpaceAddOn : TemplatedControl,
             var bottomLeftRadius  = CornerRadius.BottomLeft;
             var bottomRightRadius = CornerRadius.BottomRight;
         
-            if (IsUsedInCompactSpace && CompactSpaceItemPosition.HasValue &&
-                (!CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) || !CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
+            if (IsUsedInCompactSpace && CompactSpaceItemPosition.HasValue)
             {
-                if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First))
+                var position = CompactSpaceItemPosition.Value;
+                var isFirst  = CompactSpace.HasPositionFlag(position, SpaceItemPosition.First);
+                var isMiddle = CompactSpace.HasPositionFlag(position, SpaceItemPosition.Middle);
+                var isLast   = CompactSpace.HasPositionFlag(position, SpaceItemPosition.Last);
+                var isPartial = !isFirst || !isLast;
+                if (isPartial && isFirst)
                 {
                     if (CompactSpaceOrientation == Orientation.Horizontal)
                     {
@@ -161,14 +165,14 @@ public class CompactSpaceAddOn : TemplatedControl,
                         bottomRightRadius = 0;
                     }
                 }
-                else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Middle))
+                else if (isPartial && isMiddle)
                 {
                      topLeftRadius     = 0;
                      topRightRadius    = 0;
                      bottomLeftRadius  = 0;
                      bottomRightRadius = 0;
                 }
-                else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last))
+                else if (isPartial && isLast)
                 {
                     if (CompactSpaceOrientation == Orientation.Horizontal)
                     {

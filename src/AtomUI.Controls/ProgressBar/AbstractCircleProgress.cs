@@ -73,29 +73,20 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     #endregion
 
-    internal Dictionary<SizeType, double> _sizeTypeThresholdValue;
-
     static AbstractCircleProgress()
     {
         AffectsMeasure<AbstractCircleProgress>(StepCountProperty,
             StepGapProperty);
     }
 
-    public AbstractCircleProgress()
-    {
-        _sizeTypeThresholdValue = new Dictionary<SizeType, double>(3);
-    }
-
     protected override SizeType CalculateEffectiveSizeType(double size)
     {
         var sizeType             = SizeType.Large;
-        var largeThresholdValue  = _sizeTypeThresholdValue[SizeType.Large];
-        var middleThresholdValue = _sizeTypeThresholdValue[SizeType.Middle];
-        if (MathUtils.GreaterThanOrClose(size, largeThresholdValue))
+        if (MathUtils.GreaterThanOrClose(size, LARGE_CIRCLE_SIZE))
         {
             sizeType = SizeType.Large;
         }
-        else if (MathUtils.GreaterThanOrClose(size, middleThresholdValue))
+        else if (MathUtils.GreaterThanOrClose(size, MIDDLE_CIRCLE_SIZE))
         {
             sizeType = SizeType.Middle;
         }
@@ -107,11 +98,14 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         return sizeType;
     }
 
-    private void CalculateSizeTypeThresholdValue()
+    private static double GetSizeTypeDefaultValue(SizeType sizeType)
     {
-        _sizeTypeThresholdValue.Add(SizeType.Large, LARGE_CIRCLE_SIZE);
-        _sizeTypeThresholdValue.Add(SizeType.Middle, MIDDLE_CIRCLE_SIZE);
-        _sizeTypeThresholdValue.Add(SizeType.Small, SMALL_CIRCLE_SIZE);
+        return sizeType switch
+        {
+            SizeType.Large => LARGE_CIRCLE_SIZE,
+            SizeType.Middle => MIDDLE_CIRCLE_SIZE,
+            _ => SMALL_CIRCLE_SIZE
+        };
     }
 
     // 是否考虑一个最小的值
@@ -153,7 +147,7 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     private double CalculateCircleSize()
     {
         var targetSize           = 0d;
-        var sizeTypeDefaultValue = _sizeTypeThresholdValue[EffectiveSizeType];
+        var sizeTypeDefaultValue = GetSizeTypeDefaultValue(EffectiveSizeType);
         if (double.IsNaN(Width) && double.IsNaN(Height))
         {
             targetSize = sizeTypeDefaultValue;
@@ -176,9 +170,8 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     protected override void NotifyHandleExtraInfoVisibility()
     {
-        // TODO 可能存在重复计算
         var circleSize = CalculateCircleSize();
-        CalculateStrokeThickness();
+        CalculateStrokeThickness(circleSize);
         var extraInfoSize = circleSize - StrokeThickness - 1; // 写死一个像素的 padding 吧
         var extraInfo     = TextUtils.CalculateTextSize(string.Format(ProgressTextFormat, 100), FontSize, FontFamily);
 
@@ -232,17 +225,17 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         {
             if (change.Property == WidthProperty || change.Property == HeightProperty)
             {
-                CalculateStrokeThickness();
-                SetupExtraInfoFontSize();
-                SetupExtraInfoIconSize();
+                var circleSize = CalculateCircleSize();
+                CalculateStrokeThickness(circleSize);
+                SetupExtraInfoFontSize(circleSize);
+                SetupExtraInfoIconSize(circleSize);
             }
         }
     }
 
-    private void SetupExtraInfoFontSize()
+    private void SetupExtraInfoFontSize(double circleSize)
     {
-        var circleSize = CalculateCircleSize();
-        var fontSize   = circleSize * 0.15 + 6;
+        var fontSize = circleSize * 0.15 + 6;
         if (fontSize < CircleMinimumTextFontSize)
         {
             fontSize = CircleMinimumTextFontSize;
@@ -251,9 +244,8 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         FontSize = fontSize;
     }
 
-    private void SetupExtraInfoIconSize()
+    private void SetupExtraInfoIconSize(double circleSize)
     {
-        var circleSize     = CalculateCircleSize();
         var calculatedSize = Math.Max(circleSize / 4.5, CircleMinimumIconSize);
         ExceptionCompletedIconPresenter!.Width  = calculatedSize;
         ExceptionCompletedIconPresenter!.Height = calculatedSize;
@@ -312,7 +304,11 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     protected override void CalculateStrokeThickness()
     {
-        var circleSize      = CalculateCircleSize();
+        CalculateStrokeThickness(CalculateCircleSize());
+    }
+
+    private void CalculateStrokeThickness(double circleSize)
+    {
         var calculatedValue = MIDDLE_STROKE_THICKNESS / MIDDLE_CIRCLE_SIZE * circleSize;
         calculatedValue = Math.Max(calculatedValue, CIRCLE_MIN_STROKE_THICKNESS);
         if (!double.IsNaN(IndicatorThickness))
@@ -325,14 +321,14 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
 
     protected override void NotifyEffectSizeTypeChanged()
     {
-        base.NotifyEffectSizeTypeChanged();
-        SetupExtraInfoFontSize();
-        SetupExtraInfoIconSize();
+        var circleSize = CalculateCircleSize();
+        CalculateStrokeThickness(circleSize);
+        SetupExtraInfoFontSize(circleSize);
+        SetupExtraInfoIconSize(circleSize);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        CalculateSizeTypeThresholdValue();
         base.OnApplyTemplate(e);
         if (ExceptionCompletedIcon == null)
         {

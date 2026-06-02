@@ -1,6 +1,5 @@
 # Badge 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md)
 > 状态：本轮追加 render / motion structural cleanup；不声明页面级 timing 收益。
 
 ---
@@ -64,6 +63,18 @@ Avalonia source reference：`.referenceprojects/Avalonia/src/Avalonia.Base/Media
 | Ribbon preset/custom color trim temp strings / color parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span trim 保持 trim 语义 |
 | Custom color parse string wrappers / color parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；直接调用 span overload |
 | Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+## Preset Color Name Table
+
+`BadgeColorUtils.CalculateColor()` 和 `AbstractRibbonBadge.SetupRibbonColor()` 在 span trim 后仍会对每个 preset 调用 `presetColor.Type.ToString()` 做大小写无关匹配；命中 preset 时还会通过 `PresetPrimaryColor.Color()` 重新解析 hex 字符串。
+
+本轮改为共享静态 preset 名称 / RGB 表：Badge 和 Ribbon 共用 `BadgeColorUtils.TryGetPresetColor()`，匹配路径不再做 enum name 转换，命中 preset 也不再每次解析 hex 字符串。自定义颜色仍走 `Color.TryParse(ReadOnlySpan<char>)`，优先级保持 preset 先于 custom parse。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Badge preset enum name conversions / worst-case parse | 14 conversions | 0 conversions | `(14 - 0) / 14` | 100.00% | 结构收益；静态名称表替代 `Type.ToString()` |
+| Ribbon preset enum name conversions / worst-case parse | 14 conversions | 0 conversions | `(14 - 0) / 14` | 100.00% | 结构收益；复用同一静态名称表 |
+| Preset color hex parses / matched preset parse | 1 parse | 0 parses | `(1 - 0) / 1` | 100.00% | 结构收益；静态 RGB color 直接用于 brush |
 
 ---
 

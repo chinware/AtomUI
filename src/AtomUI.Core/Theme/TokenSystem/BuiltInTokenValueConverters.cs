@@ -212,35 +212,15 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
                 throw new InvalidOperationException($"Unsupported line style in value expression {value}.");
             }
 
-            var colorExpr = ExtraColorExpr(value);
-
-            if (!string.IsNullOrWhiteSpace(colorExpr))
+            var colorRange = FindColorRange(value);
+            if (colorRange.Length > 0)
             {
-                textDecoration.Color = Color.Parse(colorExpr);
+                textDecoration.Color = Color.Parse(value.AsSpan(colorRange.Start, colorRange.Length));
             }
 
-            value = value.Replace(colorExpr, "");
-            var alreadySeeNum = false;
-            var numExpr       = string.Empty;
-            for (var i = 0; i < value.Length; ++i)
+            if (TryReadThickness(value, colorRange.Start, colorRange.Length, out var thickness))
             {
-                var cur = value[i];
-                if (alreadySeeNum && !char.IsDigit(cur))
-                {
-                    break;
-                }
-
-                if (char.IsDigit(cur))
-                {
-                    alreadySeeNum =  true;
-                    numExpr       += cur;
-                }
-            }
-
-            if (numExpr.Length > 0)
-            {
-                // 肯定合法
-                textDecoration.Thickness = int.Parse(numExpr);
+                textDecoration.Thickness = thickness;
             }
 
             return textDecoration;
@@ -251,38 +231,72 @@ internal class TextDecorationTokenValueConverter : ITokenValueConverter
         }
     }
 
-    protected string ExtraColorExpr(string valueExpr)
+    private static (int Start, int Length) FindColorRange(string valueExpr)
     {
-        var colorExpr = string.Empty;
-        var count     = valueExpr.Length;
-        if (ContainStr(valueExpr, "#"))
+        var count = valueExpr.Length;
+        var pos   = valueExpr.IndexOf('#');
+        if (pos != -1)
         {
-            var pos    = valueExpr.IndexOf('#');
             var endPos = pos;
             while (endPos < count && !char.IsWhiteSpace(valueExpr[endPos]))
             {
                 endPos++;
             }
 
-            return valueExpr.Substring(pos, endPos - pos);
+            return (pos, endPos - pos);
         }
 
         if (ContainStr(valueExpr, "rgb"))
         {
-            var pos    = valueExpr.IndexOf("rgb", StringComparison.CurrentCultureIgnoreCase);
+            pos = valueExpr.IndexOf("rgb", StringComparison.InvariantCultureIgnoreCase);
             var endPos = pos;
             while (endPos < count && valueExpr[endPos] != ')')
             {
                 endPos++;
             }
 
-            return valueExpr.Substring(pos, endPos - pos + 1);
+            var length = endPos < count
+                ? endPos - pos + 1
+                : count - pos;
+            return (pos, length);
         }
 
-        return colorExpr;
+        return (-1, 0);
     }
 
-    protected bool ContainStr(string expr, string searched)
+    private static bool TryReadThickness(string value, int skipStart, int skipLength, out int thickness)
+    {
+        thickness = 0;
+        var alreadySeeNum = false;
+        var skipEnd       = skipStart + skipLength;
+
+        for (var i = 0; i < value.Length; ++i)
+        {
+            if (skipLength > 0 && i >= skipStart && i < skipEnd)
+            {
+                continue;
+            }
+
+            var cur = value[i];
+            if (alreadySeeNum && !char.IsDigit(cur))
+            {
+                break;
+            }
+
+            if (char.IsDigit(cur))
+            {
+                alreadySeeNum = true;
+                checked
+                {
+                    thickness = thickness * 10 + cur - '0';
+                }
+            }
+        }
+
+        return alreadySeeNum;
+    }
+
+    private static bool ContainStr(string expr, string searched)
     {
         return expr.IndexOf(searched, StringComparison.InvariantCultureIgnoreCase) != -1;
     }

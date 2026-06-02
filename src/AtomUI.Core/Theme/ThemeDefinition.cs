@@ -12,11 +12,20 @@ internal class ThemeDefinition
     public IDictionary<string, string> SharedTokens { get; set; }
 
     public ThemeDefinition(string id, string? displayName = null)
+        : this(id, displayName, 0, 0, 0)
+    {
+    }
+
+    private ThemeDefinition(string id,
+                            string? displayName,
+                            int algorithmCapacity,
+                            int controlTokenCapacity,
+                            int sharedTokenCapacity)
     {
         Id            = id;
-        Algorithms    = new HashSet<ThemeAlgorithm>();
-        ControlTokens = new Dictionary<string, ControlTokenConfigInfo>();
-        SharedTokens  = new Dictionary<string, string>();
+        Algorithms    = new HashSet<ThemeAlgorithm>(algorithmCapacity);
+        ControlTokens = new Dictionary<string, ControlTokenConfigInfo>(controlTokenCapacity);
+        SharedTokens  = new Dictionary<string, string>(sharedTokenCapacity);
         DisplayName   = displayName ?? id;
     }
 
@@ -30,8 +39,15 @@ internal class ThemeDefinition
 
     internal ThemeDefinition Clone()
     {
-        var cloned = new ThemeDefinition(Id, DisplayName);
-        cloned.IsDefault = IsDefault;
+        var cloned = new ThemeDefinition(Id,
+                                         DisplayName,
+                                         Algorithms.Count,
+                                         ControlTokens.Count,
+                                         SharedTokens.Count)
+        {
+            IsDefault = IsDefault
+        };
+
         foreach (var algorithm in Algorithms)
         {
             cloned.Algorithms.Add(algorithm);
@@ -44,7 +60,7 @@ internal class ThemeDefinition
         
         foreach (var sharedToken in SharedTokens)
         {
-            cloned.SharedTokens.Add(sharedToken);
+            cloned.SharedTokens.Add(sharedToken.Key, sharedToken.Value);
         }
         return cloned;
     }

@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>();
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(0);
             return languageProviders;
         }
     }

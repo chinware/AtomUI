@@ -119,64 +119,45 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     private void CalculateTokenResources()
     {
         var checkedAlgorithms = AtomUITheme.CheckAlgorithmNames(Algorithms);
-        var algorithms = new List<ThemeAlgorithm>()
+        var hasDark    = checkedAlgorithms.Contains(ThemeAlgorithm.Dark);
+        var hasCompact = checkedAlgorithms.Contains(ThemeAlgorithm.Compact);
+        IsDarkMode = hasDark;
+
+        IThemeVariantCalculator? calculator = ThemeManager.Current?.CreateThemeVariantCalculator(
+            ThemeAlgorithm.Default,
+            null);
+        if (hasDark)
         {
-            ThemeAlgorithm.Default
-        };
-        if (checkedAlgorithms.Contains(ThemeAlgorithm.Dark))
-        {
-            algorithms.Add(ThemeAlgorithm.Dark);
-            IsDarkMode    = true;
-        }
-        if (checkedAlgorithms.Contains(ThemeAlgorithm.Compact))
-        {
-            algorithms.Add(ThemeAlgorithm.Compact);
-            IsDarkMode    = false;
+            calculator = ThemeManager.Current?.CreateThemeVariantCalculator(ThemeAlgorithm.Dark, calculator);
         }
 
-        IThemeVariantCalculator? baseCalculator = null;
-        IThemeVariantCalculator? calculator     = null;
-        foreach (var algorithm in algorithms)
+        if (hasCompact)
         {
-            calculator     = ThemeManager.Current?.CreateThemeVariantCalculator(algorithm, baseCalculator);
-            baseCalculator = calculator;
+            calculator = ThemeManager.Current?.CreateThemeVariantCalculator(ThemeAlgorithm.Compact, calculator);
         }
 
         Debug.Assert(calculator != null);
         
-        // TODO 看后期是否需要改进，做一个缓存
-        var seedTokenKeys = DesignToken.GetTokenProperties(DesignTokenKind.Seed).Select(p => p.Name).ToHashSet();
-        var mapTokenKeys = DesignToken.GetTokenProperties(DesignTokenKind.Map).Select(p => p.Name).ToHashSet();
-        var aliasTokenKeys =  DesignToken.GetTokenProperties(DesignTokenKind.Alias).Select(p => p.Name).ToHashSet();
+        var seedTokenKeys  = DesignToken.GetTokenPropertyNames(DesignTokenKind.Seed);
+        var mapTokenKeys   = DesignToken.GetTokenPropertyNames(DesignTokenKind.Map);
+        var aliasTokenKeys = DesignToken.GetTokenPropertyNames(DesignTokenKind.Alias);
         
-        var sharedTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
-        
-        sharedTokenConfigMap[DesignTokenKind.Seed] = new Dictionary<string, string>();
-        sharedTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
-        sharedTokenConfigMap[DesignTokenKind.Alias]   = new Dictionary<string, string>();
-
+        var sharedTokenConfig = new TokenConfigBuckets();
         foreach (var tokenSetter in SharedTokenSetters)
         {
-            if (seedTokenKeys.Contains(tokenSetter.Key))
-            {
-                sharedTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
-            }
-            else if (mapTokenKeys.Contains(tokenSetter.Key))
-            {
-                sharedTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
-            }
-            else if (aliasTokenKeys.Contains(tokenSetter.Key))
-            {
-                sharedTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
-            }
+            sharedTokenConfig.AddByTokenName(tokenSetter.Key,
+                                             tokenSetter.Value,
+                                             seedTokenKeys,
+                                             mapTokenKeys,
+                                             aliasTokenKeys);
         }
 
-        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Seed]);
+        _sharedToken.LoadConfig(sharedTokenConfig.Seed);
         // 计算得到 Map Tokens
         calculator.Calculate(_sharedToken);
 
         // 覆盖 Map Token
-        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Map]);
+        _sharedToken.LoadConfig(sharedTokenConfig.Map);
 
         // 交付最终的基础色
         _sharedToken.ColorBgBase   = calculator.ColorBgBase;
@@ -184,7 +165,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         _sharedToken.CalculateAliasTokenValues();
         
         // 覆盖 Alias Token
-        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Alias]);
+        _sharedToken.LoadConfig(sharedTokenConfig.Alias);
 
         var resourceDictionary = new ResourceDictionary();
         _sharedToken.BuildResourceDictionary(resourceDictionary);
@@ -196,7 +177,7 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
             entry.Value.AssignSharedToken(_sharedToken);
         }
 
-        var controlTokenConfig = new Dictionary<string, ControlTokenConfigInfo>();
+        var controlTokenConfig = new Dictionary<string, ControlTokenConfigInfo>(ControlTokenInfoSetters.Count);
         foreach (var controlTokenInfoSetter in ControlTokenInfoSetters)
         {
             var key        = controlTokenInfoSetter.TokenId;
@@ -222,54 +203,42 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         {
             var tokenId          = entry.Key;
             var controlTokenInfo = entry.Value;
-            if (!ControlTokens.ContainsKey(tokenId))
+            if (!ControlTokens.TryGetValue(tokenId, out var token))
             {
                 continue;
             }
 
             var copiedSharedToken = (DesignToken)_sharedToken.Clone();
 
-            var controlTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
-
-            controlTokenConfigMap[DesignTokenKind.Seed]  = new Dictionary<string, string>();
-            controlTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
-            controlTokenConfigMap[DesignTokenKind.Alias] = new Dictionary<string, string>();
-
+            var tokenConfig = new TokenConfigBuckets();
             foreach (var tokenSetter in controlTokenInfo.SharedTokens)
             {
-                if (seedTokenKeys.Contains(tokenSetter.Key))
-                {
-                    controlTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
-                }
-                else if (mapTokenKeys.Contains(tokenSetter.Key))
-                {
-                    controlTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
-                }
-                else if (aliasTokenKeys.Contains(tokenSetter.Key))
-                {
-                    controlTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
-                }
+                tokenConfig.AddByTokenName(tokenSetter.Key,
+                                           tokenSetter.Value,
+                                           seedTokenKeys,
+                                           mapTokenKeys,
+                                           aliasTokenKeys);
             }
 
             if (controlTokenInfo.EnableAlgorithm)
             {
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
+                copiedSharedToken.LoadConfig(tokenConfig.Seed);
                 calculator.Calculate(copiedSharedToken);
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
+                copiedSharedToken.LoadConfig(tokenConfig.Map);
                 copiedSharedToken.CalculateAliasTokenValues();
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
+                copiedSharedToken.LoadConfig(tokenConfig.Alias);
             }
             else
             {
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
+                copiedSharedToken.LoadConfig(tokenConfig.Seed);
+                copiedSharedToken.LoadConfig(tokenConfig.Map);
+                copiedSharedToken.LoadConfig(tokenConfig.Alias);
             }
 
-            var controlToken = (ControlTokens[tokenId] as AbstractControlDesignToken)!;
+            var controlToken = (token as AbstractControlDesignToken)!;
             controlToken.AssignSharedToken(copiedSharedToken);
             controlToken.SetHasCustomTokenConfig(true);
-            controlToken.SetCustomTokens(controlTokenInfo.Tokens.Keys.ToList());
+            controlToken.SetCustomTokens(new List<string>(controlTokenInfo.Tokens.Keys));
         }
 
         foreach (var token in ControlTokens.Values)
@@ -295,7 +264,13 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
     protected void CollectControlTokens()
     {
         _controlTokens.Clear();
-        var controlTokenTypes = ThemeManager.Current?.ControlTokenTypes ?? [];
+        var controlTokenTypes = ThemeManager.Current?.ControlTokenTypes;
+        if (controlTokenTypes is null)
+        {
+            return;
+        }
+
+        _controlTokens.EnsureCapacity(controlTokenTypes.Count);
         foreach (var tokenType in controlTokenTypes)
         {
             var obj = Activator.CreateInstance(tokenType);

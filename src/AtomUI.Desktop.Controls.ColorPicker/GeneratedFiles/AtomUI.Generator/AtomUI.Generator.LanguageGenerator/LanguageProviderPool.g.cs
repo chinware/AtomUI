@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>();
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(2);
             languageProviders.Add(new AtomUI.Desktop.Controls.ColorPickerLang.en_US());
             languageProviders.Add(new AtomUI.Desktop.Controls.ColorPickerLang.zh_CN());
             return languageProviders;

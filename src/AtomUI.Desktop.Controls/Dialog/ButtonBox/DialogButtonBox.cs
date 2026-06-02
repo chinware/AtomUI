@@ -356,15 +356,18 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             }
             _standardButtons.Clear();
         }
-        if (StandardButtons == DialogStandardButton.NoButton)
+
+        var standardButtons     = StandardButtons;
+        var standardButtonFlags = standardButtons.ButtonFlags;
+        if (standardButtonFlags == DialogStandardButton.NoButton)
         {
             _standardButtons = null;
             return;
         }
         
-        _standardButtons = new List<DialogButton>(StandardButtons.Count);
+        _standardButtons = new List<DialogButton>(standardButtons.Count);
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Ok))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Ok))
         {
             var button = new DialogButton
             {
@@ -380,7 +383,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
 
-        if (StandardButtons.HasFlag(DialogStandardButton.Open))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Open))
         {
             var button = new DialogButton
             {
@@ -396,7 +399,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Save))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Save))
         {
             var button = new DialogButton
             {
@@ -412,7 +415,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.SaveAll))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.SaveAll))
         {
             var button = new DialogButton
             {
@@ -428,7 +431,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Retry))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Retry))
         {
             var button = new DialogButton
             {
@@ -444,7 +447,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Ignore))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Ignore))
         {
             var button = new DialogButton
             {
@@ -460,7 +463,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.AcceptRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Yes))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Yes))
         {
             var button = new DialogButton
             {
@@ -476,7 +479,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.YesRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.YesToAll))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.YesToAll))
         {
             var button = new DialogButton
             {
@@ -492,7 +495,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.YesRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Cancel))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Cancel))
         {
             var button = new DialogButton
             {
@@ -508,7 +511,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Close))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Close))
         {
             var button = new DialogButton
             {
@@ -524,7 +527,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Abort))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Abort))
         {
             var button = new DialogButton
             {
@@ -540,7 +543,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.RejectRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.No))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.No))
         {
             var button = new DialogButton
             {
@@ -556,7 +559,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.NoRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.NoToAll))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.NoToAll))
         {
             var button = new DialogButton
             {
@@ -572,7 +575,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.NoRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Discard))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Discard))
         {
             var button = new DialogButton
             {
@@ -588,7 +591,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.DestructiveRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Help))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Help))
         {
             var button = new DialogButton
             {
@@ -604,7 +607,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.HelpRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Reset))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Reset))
         {
             var button = new DialogButton
             {
@@ -620,7 +623,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Reload))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Reload))
         {
             var button = new DialogButton
             {
@@ -636,7 +639,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.ActionRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.RestoreDefaults))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.RestoreDefaults))
         {
             var button = new DialogButton
             {
@@ -652,7 +655,7 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             AddButtonToGroup(DialogButtonRole.ResetRole, button, true);
         }
         
-        if (StandardButtons.HasFlag(DialogStandardButton.Apply))
+        if (HasStandardButton(standardButtonFlags, DialogStandardButton.Apply))
         {
             var button = new DialogButton
             {
@@ -667,6 +670,11 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             _standardButtons.Add(button);
             AddButtonToGroup(DialogButtonRole.ApplyRole, button, true);
         }
+    }
+
+    private static bool HasStandardButton(DialogStandardButton buttons, DialogStandardButton button)
+    {
+        return (buttons & button) == button;
     }
 
     private void SyncButtonsToGroup()

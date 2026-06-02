@@ -1,6 +1,5 @@
 # Tour 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 1 #6
 > 状态：本轮完成绑定结构收敛，并补齐 Gallery baseline。
 
 ---

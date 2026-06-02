@@ -10,9 +10,14 @@ public static class AtomUIRuntimeInfo
     private static string GetAssemblyMetadata(string key)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var attribute = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
-                                .FirstOrDefault(attr => attr.Key == key);
-        
-        return attribute?.Value ?? "Unknown";
+        foreach (var attribute in assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+        {
+            if (attribute.Key == key)
+            {
+                return attribute.Value ?? "Unknown";
+            }
+        }
+
+        return "Unknown";
     }
 }

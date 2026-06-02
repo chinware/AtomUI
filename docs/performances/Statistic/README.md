@@ -1,6 +1,5 @@
 # Statistic 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #2
 > 状态：本轮已完成正确性、生命周期与 Gallery 实测收尾。
 
 ---

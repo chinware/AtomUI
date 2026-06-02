@@ -54,10 +54,10 @@ internal class Theme : AvaloniaObject, ITheme
         _isBuiltIn         = isBuiltIn;
         _sharedToken       = new DesignToken();
         _themeVariant      = new ThemeVariant(id, null);
-        _algorithms        = new List<ThemeAlgorithm>();
+        _algorithms        = new List<ThemeAlgorithm>(3);
         DefinitionFilePath = defFilePath;
         ResourceDictionary = new ResourceDictionary();
-        ControlTokens      = new Dictionary<string, IControlDesignToken>();
+        ControlTokens      = new Dictionary<string, IControlDesignToken>(themeManager.ControlTokenTypes.Count);
         ThemeDefinition    = new ThemeDefinition(_id);
         _algorithms.Add(ThemeAlgorithm.Default);
         if (requestAlgorithms.Contains(ThemeAlgorithm.Dark))
@@ -74,7 +74,19 @@ internal class Theme : AvaloniaObject, ITheme
         _themeManager = themeManager;
     }
 
-    public List<string> ThemeResourceKeys => ResourceDictionary.Keys.Select(s => s.ToString()!).ToList();
+    public List<string> ThemeResourceKeys
+    {
+        get
+        {
+            var keys = new List<string>(ResourceDictionary.Keys.Count);
+            foreach (var key in ResourceDictionary.Keys)
+            {
+                keys.Add(key.ToString()!);
+            }
+
+            return keys;
+        }
+    }
 
     internal void Load()
     {
@@ -92,7 +104,15 @@ internal class Theme : AvaloniaObject, ITheme
             }
             else
             {
-                _isPrimary = _algorithms.ToHashSet().SetEquals(ThemeDefinition.Algorithms);
+                _isPrimary = true;
+                foreach (var algorithm in _algorithms)
+                {
+                    if (!ThemeDefinition.Algorithms.Contains(algorithm))
+                    {
+                        _isPrimary = false;
+                        break;
+                    }
+                }
             }
             
             BuildThemeResource(_algorithms);
@@ -129,38 +149,25 @@ internal class Theme : AvaloniaObject, ITheme
     
         Debug.Assert(calculator != null);
         
-        // TODO 看后期是否需要改进，做一个缓存
-        var seedTokenKeys  = DesignToken.GetTokenProperties(DesignTokenKind.Seed).Select(p => p.Name).ToHashSet();
-        var mapTokenKeys   = DesignToken.GetTokenProperties(DesignTokenKind.Map).Select(p => p.Name).ToHashSet();
-        var aliasTokenKeys =  DesignToken.GetTokenProperties(DesignTokenKind.Alias).Select(p => p.Name).ToHashSet();
+        var seedTokenKeys  = DesignToken.GetTokenPropertyNames(DesignTokenKind.Seed);
+        var mapTokenKeys   = DesignToken.GetTokenPropertyNames(DesignTokenKind.Map);
+        var aliasTokenKeys = DesignToken.GetTokenPropertyNames(DesignTokenKind.Alias);
         
-        var sharedTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
-        
-        sharedTokenConfigMap[DesignTokenKind.Seed]  = new Dictionary<string, string>();
-        sharedTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
-        sharedTokenConfigMap[DesignTokenKind.Alias] = new Dictionary<string, string>();
-        
+        var sharedTokenConfig = new TokenConfigBuckets();
         foreach (var tokenSetter in ThemeDefinition.SharedTokens)
         {
-            if (seedTokenKeys.Contains(tokenSetter.Key))
-            {
-                sharedTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
-            }
-            else if (mapTokenKeys.Contains(tokenSetter.Key))
-            {
-                sharedTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
-            }
-            else if (aliasTokenKeys.Contains(tokenSetter.Key))
-            {
-                sharedTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
-            }
+            sharedTokenConfig.AddByTokenName(tokenSetter.Key,
+                                             tokenSetter.Value,
+                                             seedTokenKeys,
+                                             mapTokenKeys,
+                                             aliasTokenKeys);
         }
         
-        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Seed]);
+        _sharedToken.LoadConfig(sharedTokenConfig.Seed);
         // 计算得到 Map Tokens
         calculator.Calculate(_sharedToken);
         // 覆盖 Map Token
-        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Map]);
+        _sharedToken.LoadConfig(sharedTokenConfig.Map);
 
         // 交付最终的基础色
         _sharedToken.ColorBgBase   = calculator.ColorBgBase;
@@ -169,7 +176,7 @@ internal class Theme : AvaloniaObject, ITheme
         _sharedToken.CalculateAliasTokenValues();
         
         // 覆盖 Alias Token
-        _sharedToken.LoadConfig(sharedTokenConfigMap[DesignTokenKind.Alias]);
+        _sharedToken.LoadConfig(sharedTokenConfig.Alias);
         
         _sharedToken.BuildResourceDictionary(ResourceDictionary);
 
@@ -183,53 +190,42 @@ internal class Theme : AvaloniaObject, ITheme
         foreach (var entry in ThemeDefinition.ControlTokens)
         {
             var controlTokenInfo  = entry.Value;
-            if (!ControlTokens.ContainsKey(entry.Key))
+            if (!ControlTokens.TryGetValue(entry.Key, out var token))
             {
                 continue;
             }
 
             var copiedSharedToken = (DesignToken)_sharedToken.Clone();
             
-            var controlTokenConfigMap = new Dictionary<DesignTokenKind, Dictionary<string, string>>();
-            controlTokenConfigMap[DesignTokenKind.Seed]  = new Dictionary<string, string>();
-            controlTokenConfigMap[DesignTokenKind.Map]   = new Dictionary<string, string>();
-            controlTokenConfigMap[DesignTokenKind.Alias] = new Dictionary<string, string>();
-            
+            var controlTokenConfig = new TokenConfigBuckets();
             foreach (var tokenSetter in controlTokenInfo.SharedTokens)
             {
-                if (seedTokenKeys.Contains(tokenSetter.Key))
-                {
-                    controlTokenConfigMap[DesignTokenKind.Seed].Add(tokenSetter.Key, tokenSetter.Value);
-                }
-                else if (mapTokenKeys.Contains(tokenSetter.Key))
-                {
-                    controlTokenConfigMap[DesignTokenKind.Map].Add(tokenSetter.Key, tokenSetter.Value);
-                }
-                else if (aliasTokenKeys.Contains(tokenSetter.Key))
-                {
-                    controlTokenConfigMap[DesignTokenKind.Alias].Add(tokenSetter.Key, tokenSetter.Value);
-                }
+                controlTokenConfig.AddByTokenName(tokenSetter.Key,
+                                                  tokenSetter.Value,
+                                                  seedTokenKeys,
+                                                  mapTokenKeys,
+                                                  aliasTokenKeys);
             }
             
             if (controlTokenInfo.EnableAlgorithm)
             {
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
+                copiedSharedToken.LoadConfig(controlTokenConfig.Seed);
                 calculator.Calculate(copiedSharedToken);
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
+                copiedSharedToken.LoadConfig(controlTokenConfig.Map);
                 copiedSharedToken.CalculateAliasTokenValues();
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
+                copiedSharedToken.LoadConfig(controlTokenConfig.Alias);
             }
             else
             {
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Seed]);
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Map]);
-                copiedSharedToken.LoadConfig(controlTokenConfigMap[DesignTokenKind.Alias]);
+                copiedSharedToken.LoadConfig(controlTokenConfig.Seed);
+                copiedSharedToken.LoadConfig(controlTokenConfig.Map);
+                copiedSharedToken.LoadConfig(controlTokenConfig.Alias);
             }
 
-            var controlToken = (ControlTokens[entry.Key] as AbstractControlDesignToken)!;
+            var controlToken = (token as AbstractControlDesignToken)!;
             controlToken.AssignSharedToken(copiedSharedToken);
             controlToken.SetHasCustomTokenConfig(true);
-            controlToken.SetCustomTokens(controlTokenInfo.Tokens.Keys.ToList());
+            controlToken.SetCustomTokens(new List<string>(controlTokenInfo.Tokens.Keys));
         }
 
         foreach (var token in ControlTokens.Values)
@@ -251,26 +247,30 @@ internal class Theme : AvaloniaObject, ITheme
 
     internal static ThemeVariant BuildThemeVariant(string id, IList<ThemeAlgorithm> algorithms)
     {
-        var parts = new List<string>()
+        var hasDark    = algorithms.Contains(DarkThemeVariantCalculator.Algorithm);
+        var hasCompact = algorithms.Contains(CompactThemeVariantCalculator.Algorithm);
+        return BuildThemeVariant(id, hasDark, hasCompact);
+    }
+
+    internal static ThemeVariant BuildThemeVariant(string id, bool hasDark, bool hasCompact)
+    {
+        var variantName = id;
+        if (hasDark)
         {
-            id
-        };
-        if (algorithms.Contains(DarkThemeVariantCalculator.Algorithm))
-        {
-            parts.Add(nameof(ThemeAlgorithm.Dark));
+            variantName += $"-{nameof(ThemeAlgorithm.Dark)}";
         }
 
-        if (algorithms.Contains(CompactThemeVariantCalculator.Algorithm))
+        if (hasCompact)
         {
-            parts.Add(nameof(ThemeAlgorithm.Compact));
+            variantName += $"-{nameof(ThemeAlgorithm.Compact)}";
         }
 
-        return new ThemeVariant(string.Join("-", parts), null);
+        return new ThemeVariant(variantName, null);
     }
 
     internal static ISet<ThemeAlgorithm> CheckAlgorithmNames(IList<string> algorithmNames)
     {
-        var algorithms = new HashSet<ThemeAlgorithm>();
+        var algorithms = new HashSet<ThemeAlgorithm>(algorithmNames.Count);
         foreach (var algorithmName in algorithmNames)
         {
             if (!Enum.TryParse<ThemeAlgorithm>(algorithmName, out var algorithm))
@@ -286,7 +286,13 @@ internal class Theme : AvaloniaObject, ITheme
     protected void CollectControlTokens()
     {
         ControlTokens.Clear();
-        var controlTokenTypes = ThemeManager.Current?.ControlTokenTypes ?? [];
+        var controlTokenTypes = ThemeManager.Current?.ControlTokenTypes;
+        if (controlTokenTypes is null)
+        {
+            return;
+        }
+
+        ControlTokens.EnsureCapacity(controlTokenTypes.Count);
         foreach (var tokenType in controlTokenTypes)
         {
             var obj = Activator.CreateInstance(tokenType);

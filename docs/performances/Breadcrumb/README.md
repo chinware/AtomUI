@@ -1,6 +1,5 @@
 # Breadcrumb 性能评估
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #5
 > 状态：本轮建立基线并保留 separator 传播正确性修复；Gallery 同口径复测下 cold / P95 / alloc 有收益，repeated median 基本持平。
 
 ---

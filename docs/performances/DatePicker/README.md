@@ -1,6 +1,5 @@
 # DatePicker 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 / TimePicker shared presenter path
 > 状态：本轮追加 structural-only 生命周期收敛；不声明新的页面 timing 收益。
 
 ---

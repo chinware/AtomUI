@@ -7,7 +7,7 @@ namespace AtomUI.Theme
     {
         internal static IList<Type> GetTokenTypes()
         {
-            List<Type> tokenTypes = new List<Type>();
+            List<Type> tokenTypes = new List<Type>(1);
             tokenTypes.Add(typeof(AtomUI.Controls.IconToken));
             return tokenTypes;
         }

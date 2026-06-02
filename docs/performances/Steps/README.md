@@ -1,6 +1,5 @@
 # Steps 性能评估
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #4
 > 状态：本轮保留结构正确性修复；未声明稳定性能收益。
 
 ---

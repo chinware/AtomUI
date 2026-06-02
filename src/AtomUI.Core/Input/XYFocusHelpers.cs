@@ -30,10 +30,10 @@ internal static class XYFocusHelpers
     {
         return keyDeviceType switch
         {
-            null => !modes.Equals(XYFocusNavigationModes.Disabled), // programmatic input, allow any subtree except Disabled.
-            KeyDeviceType.Keyboard => modes.HasFlag(XYFocusNavigationModes.Keyboard),
-            KeyDeviceType.Gamepad => modes.HasFlag(XYFocusNavigationModes.Gamepad),
-            KeyDeviceType.Remote => modes.HasFlag(XYFocusNavigationModes.Remote),
+            null => modes != XYFocusNavigationModes.Disabled, // programmatic input, allow any subtree except Disabled.
+            KeyDeviceType.Keyboard => (modes & XYFocusNavigationModes.Keyboard) != 0,
+            KeyDeviceType.Gamepad => (modes & XYFocusNavigationModes.Gamepad) != 0,
+            KeyDeviceType.Remote => (modes & XYFocusNavigationModes.Remote) != 0,
             _ => throw new ArgumentOutOfRangeException(nameof(keyDeviceType), keyDeviceType, null)
         };
     }

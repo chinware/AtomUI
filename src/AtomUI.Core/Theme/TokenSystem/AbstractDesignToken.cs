@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
 using System.Reflection;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -12,17 +12,26 @@ public abstract class AbstractDesignToken : IDesignToken
 {
     private readonly Dictionary<string, object?> _tokenAccessCache = new Dictionary<string, object?>();
     private static readonly Dictionary<Type, ITokenValueConverter> _valueConverters;
+    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> s_tokenPropertiesByType = new();
+    private static readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, PropertyInfo>> s_tokenPropertyMapsByType = new();
+    private const BindingFlags TokenPropertyFlags = BindingFlags.Public |
+                                                    BindingFlags.NonPublic |
+                                                    BindingFlags.Instance |
+                                                    BindingFlags.FlattenHierarchy;
 
     static AbstractDesignToken()
     {
         _valueConverters = new Dictionary<Type, ITokenValueConverter>();
         var allTypes = Assembly.GetExecutingAssembly().GetTypes();
-        var controlTokenTypes = allTypes.Where(type =>
-            type.IsDefined(typeof(TokenValueConverterAttribute)) &&
-            typeof(ITokenValueConverter).IsAssignableFrom(type));
-        var valueConverters = controlTokenTypes.Select(type => (ITokenValueConverter)Activator.CreateInstance(type)!);
-        foreach (var valueConverter in valueConverters)
+        foreach (var type in allTypes)
         {
+            if (!type.IsDefined(typeof(TokenValueConverterAttribute), false) ||
+                !typeof(ITokenValueConverter).IsAssignableFrom(type))
+            {
+                continue;
+            }
+
+            var valueConverter = (ITokenValueConverter)Activator.CreateInstance(type)!;
             _valueConverters.Add(valueConverter.TargetType(), valueConverter);
         }
     }
@@ -33,30 +42,27 @@ public abstract class AbstractDesignToken : IDesignToken
         {
             if (tokenConfigInfo.Count > 0)
             {
-                var type = GetType();
-                var tokenPropertyMap =
-                    type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
-                        .ToDictionary(p => p.Name);
+                var type             = GetType();
+                var tokenPropertyMap = GetTokenPropertyMap(type);
                 foreach (var tokenInfo in tokenConfigInfo)
                 {
                     var tokenName = tokenInfo.Key;
-                    if (!tokenPropertyMap.ContainsKey(tokenInfo.Key))
+                    if (!tokenPropertyMap.TryGetValue(tokenName, out var property))
                     {
                         var logger = Logger.TryGet(LogEventLevel.Warning, AtomUILogArea.Theme);
-                        logger?.Log(this, $"Token property: '{tokenInfo.Key}' found in token {type.Name}.'");
+                        logger?.Log(this, $"Token property: '{tokenName}' found in token {type.Name}.'");
                         continue;
                     }
-                    var property     = tokenPropertyMap[tokenName];
                     var propertyType = property.PropertyType;
-                    if (_valueConverters.ContainsKey(propertyType))
+                    if (_valueConverters.TryGetValue(propertyType, out var valueConverter))
                     {
-                        property.SetValue(this, _valueConverters[propertyType].Convert(tokenConfigInfo[tokenName]));
+                        property.SetValue(this, valueConverter.Convert(tokenInfo.Value));
                     }
                     else
                     {
                         try
                         {
-                            property.SetValue(tokenName, tokenConfigInfo[tokenName]);
+                            property.SetValue(this, tokenInfo.Value);
                         }
                         catch (Exception ex)
                         {
@@ -74,18 +80,12 @@ public abstract class AbstractDesignToken : IDesignToken
 
     public virtual void BuildResourceDictionary(IResourceDictionary dictionary)
     {
-        var type = GetType();
-        var tokenProperties = type.GetProperties(BindingFlags.Public |
-                                                 BindingFlags.NonPublic |
-                                                 BindingFlags.Instance |
-                                                 BindingFlags.FlattenHierarchy)
-                                  .ToDictionary(x => x.Name);;
+        var type            = GetType();
+        var tokenProperties = GetTokenPropertyMap(type);
             
-        foreach (var value in Enum.GetValues<SharedTokenKind>())
+        foreach (var entry in ThemeResourceKeyCache.GetEnumEntries(typeof(SharedTokenKind)))
         {
-            var tokenName = Enum.GetName(value);
-            Debug.Assert(tokenName != null);
-            if (tokenProperties.TryGetValue(tokenName, out var property))
+            if (tokenProperties.TryGetValue(entry.Name, out var property))
             {
                 var tokenValue = property.GetValue(this);
                 if ((property.PropertyType == typeof(Color) || property.PropertyType == typeof(Color?)) && 
@@ -93,26 +93,24 @@ public abstract class AbstractDesignToken : IDesignToken
                 {
                     tokenValue = new ImmutableSolidColorBrush((Color)tokenValue);
                 }
-                dictionary[value] = tokenValue;
+                dictionary[entry.Value] = tokenValue;
             }
             else
             {
-                throw new Exception($"Token: {tokenName} does not exist in {type.FullName}");
+                throw new Exception($"Token: {entry.Name} does not exist in {type.FullName}");
             }
         }
     }
 
     public virtual object? GetTokenValue(string name)
     {
-        if (_tokenAccessCache.ContainsKey(name))
+        if (_tokenAccessCache.TryGetValue(name, out var cachedTokenValue))
         {
-            return _tokenAccessCache[name];
+            return cachedTokenValue;
         }
 
-        var type = GetType();
-        var tokenProperty =
-            type.GetProperty(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-        if (tokenProperty is null)
+        var tokenPropertyMap = GetTokenPropertyMap(GetType());
+        if (!tokenPropertyMap.TryGetValue(name, out var tokenProperty))
         {
             _tokenAccessCache[name] = null;
             return null;
@@ -125,10 +123,8 @@ public abstract class AbstractDesignToken : IDesignToken
 
     public virtual void SetTokenValue(string name, object value)
     {
-        var type = GetType();
-        var tokenProperty =
-            type.GetProperty(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-        if (tokenProperty is null)
+        var tokenPropertyMap = GetTokenPropertyMap(GetType());
+        if (!tokenPropertyMap.TryGetValue(name, out var tokenProperty))
         {
             return;
         }
@@ -139,9 +135,8 @@ public abstract class AbstractDesignToken : IDesignToken
 
     public virtual AbstractDesignToken Clone()
     {
-        var type = GetType();
-        var tokenProperties =
-            type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+        var type            = GetType();
+        var tokenProperties = GetTokenProperties(type);
         var cloned        = (AbstractDesignToken)Activator.CreateInstance(type)!;
 
         foreach (var property in tokenProperties)
@@ -150,5 +145,25 @@ public abstract class AbstractDesignToken : IDesignToken
         }
 
         return cloned;
+    }
+
+    protected static PropertyInfo[] GetTokenProperties(Type type)
+    {
+        return s_tokenPropertiesByType.GetOrAdd(type, static tokenType => tokenType.GetProperties(TokenPropertyFlags));
+    }
+
+    protected static IReadOnlyDictionary<string, PropertyInfo> GetTokenPropertyMap(Type type)
+    {
+        return s_tokenPropertyMapsByType.GetOrAdd(type, static tokenType =>
+        {
+            var tokenProperties = GetTokenProperties(tokenType);
+            var propertyMap     = new Dictionary<string, PropertyInfo>(tokenProperties.Length);
+            foreach (var property in tokenProperties)
+            {
+                propertyMap[property.Name] = property;
+            }
+
+            return propertyMap;
+        });
     }
 }

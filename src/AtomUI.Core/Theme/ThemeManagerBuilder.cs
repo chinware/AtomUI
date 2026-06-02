@@ -20,9 +20,9 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public string ThemeId { get; private set; }
     public FontFamily? FontFamily { get; private set; }
 
-    private HashSet<string> _registeredTokenTypes;
-    private HashSet<string> _registeredControlThemesProviders;
-    private HashSet<string> _registeredLanguageProviders;
+    private readonly HashSet<string> _registeredTokenTypes;
+    private readonly HashSet<string> _registeredControlThemesProviders;
+    private readonly HashSet<string> _registeredLanguageProviders;
 
     internal ThemeManagerBuilder()
     {
@@ -42,13 +42,12 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
     public void AddControlToken(Type tokenType)
     {
         var typeStr = tokenType.FullName!;
-        if (_registeredTokenTypes.Contains(typeStr))
+        if (!_registeredTokenTypes.Add(typeStr))
         {
             throw new ThemeResourceRegisterException($"Control design token '{typeStr}' is already registered.");
         }
 
         ControlDesignTokens.Add(tokenType);
-        _registeredTokenTypes.Add(typeStr);
     }
 
     public void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider)
@@ -65,24 +64,22 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         {
             throw new ThemeResourceRegisterException($"Control theme provider '{controlThemesProvider.Id}' is invalid, maybe empty.");
         }
-        if (_registeredControlThemesProviders.Contains(controlThemesProvider.Id))
+        if (!_registeredControlThemesProviders.Add(controlThemesProvider.Id))
         {
             throw new ThemeResourceRegisterException($"Control theme provider '{controlThemesProvider.Id}' is already registered.");
         }
         ControlThemesProviders.Add(controlThemesProvider);
-        _registeredControlThemesProviders.Add(controlThemesProvider.Id);
     }
 
     public void AddLanguageProviders(LanguageProvider languageProvider)
     {
         var id = languageProvider.GetType().FullName!;
-        if (_registeredLanguageProviders.Contains(id))
+        if (!_registeredLanguageProviders.Add(id))
         {
             throw new ThemeResourceRegisterException($"Language provider '{id}' is already registered.");
         }
 
         LanguageProviders.Add(languageProvider);
-        _registeredLanguageProviders.Add(id);
     }
 
     public void WithDefaultTheme(string themeId)
@@ -115,6 +112,10 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         var themeManager = new ThemeManager();
         themeManager.DefaultThemeId                = ThemeId;
         themeManager.ThemeVariantCalculatorFactory = ThemeVariantCalculatorFactory;
+        themeManager.EnsureRegistrationCapacity(ControlDesignTokens.Count,
+                                                ControlThemesProviders.Count,
+                                                ThemeAssetPathProviders.Count,
+                                                LanguageProviders.Count);
         foreach (var controlThemesProvider in ControlThemesProviders)
         {
             themeManager.RegisterControlThemesProvider(controlThemesProvider);

@@ -163,8 +163,7 @@ internal class ThemeDefinitionReader
         }
         else
         {
-            isDefaultStr = isDefaultStr.Trim().ToLower();
-            if (isDefaultStr == "true")
+            if (IsTrueValue(isDefaultStr))
             {
                 _currentDef.IsDefault = true;
             }
@@ -180,9 +179,7 @@ internal class ThemeDefinitionReader
         Debug.Assert(_currentDef != null);
         // 这样处理方便一点
         var algorithmsStr = reader.ReadElementContentAsString();
-        var algorithms    = algorithmsStr.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        var algorithmNames = algorithms.Select(s => s.Trim()).Distinct();
-        _currentDef.Algorithms = Theme.CheckAlgorithmNames(algorithmNames.ToList());
+        _currentDef.Algorithms = Theme.CheckAlgorithmNames(SplitDistinctAlgorithmNames(algorithmsStr));
     }
 
     private void HandleStartControlTokenElement(XmlReader reader)
@@ -199,8 +196,7 @@ internal class ThemeDefinitionReader
         var algorithm    = reader.GetAttribute(AlgorithmAttrName);
         if (algorithm is not null)
         {
-            algorithm = algorithm.Trim().ToLower();
-            if (algorithm == "true")
+            if (IsTrueValue(algorithm))
             {
                 useAlgorithm = true;
             }
@@ -238,8 +234,7 @@ internal class ThemeDefinitionReader
             var isSharedValueStr = reader.GetAttribute(IsShardAttrName);
             if (isSharedValueStr is not null)
             {
-                isSharedValueStr = isSharedValueStr.Trim().ToLower();
-                if (isSharedValueStr == "true")
+                if (IsTrueValue(isSharedValueStr))
                 {
                     isShared = true;
                 }
@@ -278,5 +273,71 @@ internal class ThemeDefinitionReader
     private void EmitRequiredAttrError(XmlReader reader, string attrName)
     {
         EmitErrorMsg(reader, $"Attribute: {reader.Name} of element: {attrName} is required");
+    }
+
+    private static bool IsTrueValue(string value)
+    {
+        return value.AsSpan().Trim().Equals("true", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static List<string> SplitDistinctAlgorithmNames(string algorithms)
+    {
+        var algorithmNames = new List<string>(CountAlgorithmSegments(algorithms));
+        var startIndex     = 0;
+        for (int i = 0; i <= algorithms.Length; i++)
+        {
+            if (i != algorithms.Length && algorithms[i] != ',')
+            {
+                continue;
+            }
+
+            if (i > startIndex)
+            {
+                var algorithmName = algorithms.AsSpan(startIndex, i - startIndex).Trim();
+                if (!ContainsAlgorithmName(algorithmNames, algorithmName))
+                {
+                    algorithmNames.Add(algorithmName.ToString());
+                }
+            }
+
+            startIndex = i + 1;
+        }
+
+        return algorithmNames;
+    }
+
+    private static bool ContainsAlgorithmName(List<string> algorithmNames, ReadOnlySpan<char> algorithmName)
+    {
+        for (int i = 0; i < algorithmNames.Count; i++)
+        {
+            if (algorithmName.Equals(algorithmNames[i].AsSpan(), StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int CountAlgorithmSegments(string algorithms)
+    {
+        var count      = 0;
+        var startIndex = 0;
+        for (int i = 0; i <= algorithms.Length; i++)
+        {
+            if (i != algorithms.Length && algorithms[i] != ',')
+            {
+                continue;
+            }
+
+            if (i > startIndex)
+            {
+                count++;
+            }
+
+            startIndex = i + 1;
+        }
+
+        return count;
     }
 }

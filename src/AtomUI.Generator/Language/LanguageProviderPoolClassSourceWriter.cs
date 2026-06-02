@@ -67,25 +67,8 @@ internal class LanguageProviderPoolClassSourceWriter
     {
         var statements = new List<StatementSyntax>
         {
-            SyntaxFactory.LocalDeclarationStatement(
-                SyntaxFactory.VariableDeclaration(
-                                 SyntaxFactory.GenericName(SyntaxFactory.Identifier("List"))
-                                              .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
-                                                  SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                      SyntaxFactory.ParseTypeName("LanguageProvider")))))
-                             .WithVariables(SyntaxFactory.SingletonSeparatedList(
-                                 SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("languageProviders"))
-                                              .WithInitializer(SyntaxFactory.EqualsValueClause(
-                                                  SyntaxFactory.ObjectCreationExpression(
-                                                                   SyntaxFactory
-                                                                       .GenericName(SyntaxFactory.Identifier("List"))
-                                                                       .WithTypeArgumentList(
-                                                                           SyntaxFactory.TypeArgumentList(
-                                                                               SyntaxFactory
-                                                                                   .SingletonSeparatedList<TypeSyntax>(
-                                                                                       SyntaxFactory.ParseTypeName(
-                                                                                           "LanguageProvider")))))
-                                                               .WithArgumentList(SyntaxFactory.ArgumentList()))))))
+            SyntaxFactory.ParseStatement(
+                $"List<LanguageProvider> languageProviders = new List<LanguageProvider>({_languageInfos.Count});")
         };
         
         foreach (var languageInfo in _languageInfos)

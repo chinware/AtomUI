@@ -418,11 +418,11 @@ internal class AddOnDecoratedBox : ContentControl,
         CornerRadius newLeftRadius;
         CornerRadius newRightRadius;
 
-        if (IsUsedInCompactSpace && CompactSpaceItemPosition.HasValue &&
-            (!CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) ||
-             !CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
+        if (IsUsedInCompactSpace &&
+            CompactSpaceItemPosition is { } position &&
+            CompactSpace.IsPartialPosition(position))
         {
-            if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First))
+            if (CompactSpace.HasPositionFlag(position, SpaceItemPosition.First))
             {
                 if (CompactSpaceOrientation == Orientation.Horizontal)
                 {
@@ -447,7 +447,7 @@ internal class AddOnDecoratedBox : ContentControl,
                         bottomRight: 0);
                 }
             }
-            else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Middle))
+            else if (CompactSpace.HasPositionFlag(position, SpaceItemPosition.Middle))
             {
                 newLeftRadius = new CornerRadius(topLeft:0,
                     topRight:0,
@@ -745,10 +745,11 @@ internal class AddOnDecoratedBox : ContentControl,
                 bottomRightRadius = 0;
             }
 
-            if (IsUsedInCompactSpace && CompactSpaceItemPosition.HasValue &&
-                (!CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) || !CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
+            if (IsUsedInCompactSpace &&
+                CompactSpaceItemPosition is { } position &&
+                CompactSpace.IsPartialPosition(position))
             {
-                if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First))
+                if (CompactSpace.HasPositionFlag(position, SpaceItemPosition.First))
                 {
                     if (CompactSpaceOrientation == Orientation.Horizontal)
                     {
@@ -761,14 +762,14 @@ internal class AddOnDecoratedBox : ContentControl,
                         bottomRightRadius = 0;
                     }
                 }
-                else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Middle))
+                else if (CompactSpace.HasPositionFlag(position, SpaceItemPosition.Middle))
                 {
                      topLeftRadius     = 0;
                      topRightRadius    = 0;
                      bottomLeftRadius  = 0;
                      bottomRightRadius = 0;
                 }
-                else if (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last))
+                else if (CompactSpace.HasPositionFlag(position, SpaceItemPosition.Last))
                 {
                     if (CompactSpaceOrientation == Orientation.Horizontal)
                     {

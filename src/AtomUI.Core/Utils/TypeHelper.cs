@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -19,6 +20,9 @@ internal static class TypeHelper
     internal const char RightIndexerToken = ']';
     internal const char LeftParenthesisToken = '(';
     internal const char RightParenthesisToken = ')';
+    private const string NoDefaultMemberName = "";
+    private static readonly ConcurrentDictionary<Type, string> s_defaultMemberNames = new();
+    private static readonly ConcurrentDictionary<MemberInfo, bool> s_readOnlyValues = new();
 
     private static Type? FindGenericType(Type definition, Type? type)
     {
@@ -56,7 +60,10 @@ internal static class TypeHelper
     /// <param name="stringIndex">String value of indexer argument.</param>
     /// <param name="index">Resultant index value.</param>
     /// <returns>Indexer PropertyInfo if found, null otherwise.</returns>
-    private static PropertyInfo? FindIndexerInMembers(MemberInfo?[] members, string stringIndex, out object[]? index)
+    private static PropertyInfo? FindIndexerInMembers(MemberInfo?[] members,
+                                                       ReadOnlySpan<char> stringIndexSpan,
+                                                       ref string? stringIndex,
+                                                       out object[]? index)
     {
         index = null;
         ParameterInfo[] parameters;
@@ -79,7 +86,7 @@ internal static class TypeHelper
             if (parameters[0].ParameterType == typeof(int))
             {
                 int intIndex = -1;
-                if (Int32.TryParse(stringIndex.AsSpan().Trim(), NumberStyles.None, CultureInfo.InvariantCulture,
+                if (Int32.TryParse(stringIndexSpan.Trim(), NumberStyles.None, CultureInfo.InvariantCulture,
                                    out intIndex))
                 {
                     index = [intIndex];
@@ -90,9 +97,14 @@ internal static class TypeHelper
             // If string indexer is found save it, in case there is an int indexer.
             if (parameters[0].ParameterType == typeof(string))
             {
-                index         = [stringIndex];
                 stringIndexer = pi;
             }
+        }
+
+        if (stringIndexer != null)
+        {
+            stringIndex ??= stringIndexSpan.ToString();
+            index         = [stringIndex];
         }
 
         return stringIndexer;
@@ -105,19 +117,24 @@ internal static class TypeHelper
     /// <returns>Default member name.</returns>
     private static string? GetDefaultMemberName(this Type type)
     {
-        if (!type.IsDefined(typeof(DefaultMemberAttribute), true))
+        var memberName = s_defaultMemberNames.GetOrAdd(type, static memberType =>
         {
-            return null;
-        }
+            if (!memberType.IsDefined(typeof(DefaultMemberAttribute), true))
+            {
+                return NoDefaultMemberName;
+            }
 
-        var attributes = type.GetCustomAttributes(typeof(DefaultMemberAttribute), true);
-        if (attributes.Length == 1)
-        {
-            var defaultMemberAttribute = (DefaultMemberAttribute)attributes[0];
-            return defaultMemberAttribute.MemberName;
-        }
+            var attributes = memberType.GetCustomAttributes(typeof(DefaultMemberAttribute), true);
+            if (attributes.Length == 1)
+            {
+                var defaultMemberAttribute = (DefaultMemberAttribute)attributes[0];
+                return defaultMemberAttribute.MemberName;
+            }
 
-        return null;
+            return NoDefaultMemberName;
+        });
+
+        return memberName.Length == 0 ? null : memberName;
     }
 
     /// <summary>
@@ -181,9 +198,35 @@ internal static class TypeHelper
             return null;
         }
 
-        Type          type          = parentType;
-        PropertyInfo? propertyInfo  = null;
-        List<string>  propertyNames = SplitPropertyPath(propertyPath);
+        Type          type         = parentType;
+        PropertyInfo? propertyInfo = null;
+        if (IsSimplePropertyPath(propertyPath))
+        {
+            propertyInfo = type.GetPropertyOrIndexer(propertyPath, out object[]? index);
+            if (propertyInfo == null)
+            {
+                item = null;
+                return null;
+            }
+
+            if (!propertyInfo.CanRead)
+            {
+                exception =
+                    new InvalidOperationException(
+                        $"The property named '{propertyPath}' on type '{type.GetTypeName()}' cannot be read.");
+                item = null;
+                return null;
+            }
+
+            if (item != null)
+            {
+                item = propertyInfo.GetValue(item, index);
+            }
+
+            return propertyInfo;
+        }
+
+        List<string> propertyNames = SplitPropertyPath(propertyPath);
         for (int i = 0; i < propertyNames.Count; i++)
         {
             // if we can't find the property or it is not of the correct type,
@@ -397,8 +440,9 @@ internal static class TypeHelper
             return null;
         }
 
-        string stringIndex = propertyPath.Substring(1, propertyPath.Length - 2);
-        var    indexer     = FindIndexerInMembers(type.GetDefaultMembers(), stringIndex, out index);
+        var     stringIndexSpan = propertyPath.AsSpan(1, propertyPath.Length - 2);
+        string? stringIndex     = null;
+        var     indexer         = FindIndexerInMembers(type.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
         if (indexer != null)
         {
             // We found the indexer, so return it.
@@ -421,13 +465,13 @@ internal static class TypeHelper
             if (typeof(IList<>).MakeGenericType(elementType) is Type genericList
                 && genericList.IsAssignableFrom(type))
             {
-                indexer = FindIndexerInMembers(genericList.GetDefaultMembers(), stringIndex, out index);
+                indexer = FindIndexerInMembers(genericList.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
             }
 
             if (typeof(IReadOnlyList<>).MakeGenericType(elementType) is Type genericReadOnlyList
                 && genericReadOnlyList.IsAssignableFrom(type))
             {
-                indexer = FindIndexerInMembers(genericReadOnlyList.GetDefaultMembers(), stringIndex, out index);
+                indexer = FindIndexerInMembers(genericReadOnlyList.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
             }
         }
 
@@ -518,7 +562,7 @@ internal static class TypeHelper
             return new List<string>(1) { propertyPath! };
         }
 
-        List<string> propertyPaths = new List<string>();
+        List<string> propertyPaths = new List<string>(CountPropertyPathSegments(propertyPath!));
         bool         parenthesisOn = false;
         int          startIndex    = 0;
         for (int index = 0; index < propertyPath!.Length; index++)
@@ -566,6 +610,56 @@ internal static class TypeHelper
         return propertyPaths;
     }
 
+    private static int CountPropertyPathSegments(string propertyPath)
+    {
+        var count         = 0;
+        var parenthesisOn = false;
+        var startIndex    = 0;
+        for (var index = 0; index < propertyPath.Length; index++)
+        {
+            if (parenthesisOn)
+            {
+                if (propertyPath[index] == RightParenthesisToken)
+                {
+                    parenthesisOn = false;
+                    startIndex    = index + 1;
+                }
+
+                continue;
+            }
+
+            if (propertyPath[index] == LeftParenthesisToken)
+            {
+                parenthesisOn = true;
+                if (startIndex != index)
+                {
+                    count++;
+                    startIndex = index + 1;
+                }
+            }
+            else if (propertyPath[index] == PropertyNameSeparator)
+            {
+                if (startIndex != index)
+                {
+                    count++;
+                }
+
+                startIndex = index + 1;
+            }
+            else if (startIndex != index && propertyPath[index] == LeftIndexerToken)
+            {
+                count++;
+                startIndex = index;
+            }
+            else if (index == propertyPath.Length - 1)
+            {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     private static bool IsSimplePropertyPath(string propertyPath)
     {
         for (int i = 0; i < propertyPath.Length; i++)
@@ -588,21 +682,26 @@ internal static class TypeHelper
     /// <returns>true if MemberInfo is read-only, false otherwise</returns>
     internal static bool GetIsReadOnly(this MemberInfo? memberInfo)
     {
-        if (memberInfo != null)
+        if (memberInfo is null)
+        {
+            return false;
+        }
+
+        return s_readOnlyValues.GetOrAdd(memberInfo, static member =>
         {
             // Most members do not carry ReadOnlyAttribute; avoid allocating an empty attribute array.
-            if (memberInfo.IsDefined(typeof(ReadOnlyAttribute), true))
+            if (member.IsDefined(typeof(ReadOnlyAttribute), true))
             {
-                object[] attributes = memberInfo.GetCustomAttributes(typeof(ReadOnlyAttribute), true);
+                object[] attributes = member.GetCustomAttributes(typeof(ReadOnlyAttribute), true);
                 if (attributes.Length > 0)
                 {
                     ReadOnlyAttribute readOnlyAttribute = (ReadOnlyAttribute)attributes[0];
                     return readOnlyAttribute.IsReadOnly;
                 }
             }
-        }
 
-        return false;
+            return false;
+        });
     }
 
     internal static Type? GetItemType(this IEnumerable list)

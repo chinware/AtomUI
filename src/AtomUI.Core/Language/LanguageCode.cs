@@ -10,7 +10,11 @@ public static class LanguageCodeExtensions
 {
     public static string ToHyphenString(this LanguageCode code)
     {
-        var name = code.ToString();
-        return name.Replace('_', '-');
+        return code switch
+        {
+            LanguageCode.zh_CN => "zh-CN",
+            LanguageCode.en_US => "en-US",
+            _ => code.ToString().Replace('_', '-')
+        };
     }
 }

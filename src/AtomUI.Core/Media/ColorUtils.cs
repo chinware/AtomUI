@@ -28,6 +28,12 @@ public class WCAG2FallbackParms : WCAG2Parms
 
 public static class ColorUtils
 {
+    private static readonly Color[] s_readabilityFallbackColors =
+    [
+        Color.Parse("#fff"),
+        Color.Parse("#000")
+    ];
+
     public static Color FromRgbF(double alpha, double red, double green, double blue)
     {
         return Color.FromArgb((byte)Math.Round(alpha * 255d),
@@ -192,7 +198,7 @@ public static class ColorUtils
 
         if (colorExpr[0] == '#')
         {
-            return Color.TryParse(colorExpr, out color);
+            return Color.TryParse(colorExpr.AsSpan(), out color);
         }
 
         var isRgba = colorExpr.StartsWith("rgba", StringComparison.InvariantCultureIgnoreCase);
@@ -206,48 +212,63 @@ public static class ColorUtils
         {
             var leftParen  = colorExpr.IndexOf('(');
             var rightParen = colorExpr.IndexOf(')');
-            if (leftParen == -1 || rightParen == -1)
+            if (leftParen == -1 || rightParen == -1 || rightParen < leftParen)
             {
                 return false;
             }
 
-            var parts = new List<string>(colorExpr.Substring(leftParen + 1, rightParen - leftParen - 1)
-                                                  .Split(',', StringSplitOptions.RemoveEmptyEntries));
-            if (isRgb)
-            {
-                if (parts.Count != 3)
-                {
-                    return false;
-                }
-
-                parts.Add("255");
-            }
-            else
-            {
-                if (parts.Count != 4)
-                {
-                    return false;
-                }
-            }
-
-            var rgbaValues = new List<int>();
-            foreach (var part in parts)
-            {
-                if (int.TryParse(part, out var partValue))
-                {
-                    rgbaValues.Add(partValue);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            color = Color.FromArgb((byte)rgbaValues[0], (byte)rgbaValues[1], (byte)rgbaValues[2], (byte)rgbaValues[3]);
-            return true;
+            var valueSpan = colorExpr.AsSpan(leftParen + 1, rightParen - leftParen - 1);
+            return TryParseCssRgbValues(valueSpan, isRgb, out color);
         }
 
         return false;
+    }
+
+    private static bool TryParseCssRgbValues(ReadOnlySpan<char> valueSpan, bool isRgb, out Color color)
+    {
+        color = default;
+
+        Span<int> rgbaValues = stackalloc int[4];
+        var       valueCount = 0;
+        var       startIndex = 0;
+        for (var i = 0; i <= valueSpan.Length; i++)
+        {
+            if (i != valueSpan.Length && valueSpan[i] != ',')
+            {
+                continue;
+            }
+
+            var part = valueSpan.Slice(startIndex, i - startIndex);
+            startIndex = i + 1;
+            if (part.IsEmpty)
+            {
+                continue;
+            }
+
+            if (valueCount == rgbaValues.Length || !int.TryParse(part, out var partValue))
+            {
+                return false;
+            }
+
+            rgbaValues[valueCount++] = partValue;
+        }
+
+        if (isRgb)
+        {
+            if (valueCount != 3)
+            {
+                return false;
+            }
+
+            rgbaValues[3] = 255;
+        }
+        else if (valueCount != 4)
+        {
+            return false;
+        }
+
+        color = Color.FromArgb((byte)rgbaValues[0], (byte)rgbaValues[1], (byte)rgbaValues[2], (byte)rgbaValues[3]);
+        return true;
     }
 
     /// Readability Functions
@@ -319,10 +340,17 @@ public static class ColorUtils
             Level                 = WCAG2Level.AA,
             Size                  = WCAG2Size.Small
         };
+
+        return MostReadableCore(baseColor, colorList, args);
+    }
+
+    private static Color? MostReadableCore(Color baseColor, IReadOnlyList<Color> colorList, WCAG2FallbackParms args)
+    {
         Color? bestColor = null;
         var    bestScore = 0d;
-        foreach (var color in colorList)
+        for (var i = 0; i < colorList.Count; ++i)
         {
+            var color = colorList[i];
             var score = Readability(baseColor, color);
             if (score > bestScore)
             {
@@ -331,18 +359,14 @@ public static class ColorUtils
             }
         }
 
-        if (IsReadable(baseColor, bestColor!.Value, new WCAG2Parms { Level = args.Level, Size = args.Size }) ||
+        if (IsReadable(baseColor, bestColor!.Value, args) ||
             !args.IncludeFallbackColors)
         {
             return bestColor;
         }
 
         args.IncludeFallbackColors = false;
-        return MostReadable(baseColor, new List<Color>
-        {
-            Color.Parse("#fff"),
-            Color.Parse("#000")
-        }, args);
+        return MostReadableCore(baseColor, s_readabilityFallbackColors, args);
     }
     
     public static HsvColor ToHsv(

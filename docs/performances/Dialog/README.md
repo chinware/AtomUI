@@ -94,3 +94,14 @@
 | Dialog resize handle enum `HasFlag` callsites / drag update path | 4 | 0 | `(4 - 0) / 4` | 100.00% | structural-only；拖拽 resize 方向判断不再走 enum helper |
 | Resize width/height/offset semantics | unchanged | unchanged | n/a | 0.00% | 行为保持；East/West/South/North 分支不变 |
 | Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+## 9. 追加结构优化：standard buttons rebuild flag snapshot
+
+`DialogButtonBox.BuildStandardButtons()` 重建标准按钮时会依次判断 19 个标准按钮 flag。旧实现每个分支都重新读取 `StandardButtons` styled property 并调用 `DialogStandardButtons.HasFlag()`；本轮在一次 rebuild 内缓存 `DialogStandardButtons` 和底层 `ButtonFlags`，后续分支直接 bitwise 判断。按钮创建顺序、role、默认确认/取消按钮和文本绑定保持不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| DialogButtonBox `StandardButtons` property reads / standard rebuild | 21 | 1 | `(21 - 1) / 21` | 95.24% | structural-only；一次 rebuild 内复用同一个 flags 快照 |
+| DialogButtonBox standard button `HasFlag` callsites / standard rebuild | 19 | 0 | `(19 - 0) / 19` | 100.00% | structural-only；标准按钮分支直接 bitwise 判断 |
+| Standard button order / role semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

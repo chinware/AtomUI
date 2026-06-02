@@ -161,6 +161,30 @@ public abstract class AbstractTag : TemplatedControl
         FrozenDictionary<PresetColorType, TagCalcColor>.Empty;
     private static FrozenDictionary<TagStatus, TagStatusCalcColor> StatusColorMap =
         FrozenDictionary<TagStatus, TagStatusCalcColor>.Empty;
+    private static readonly (string Name, PresetPrimaryColor Color)[] PresetColorEntries =
+    [
+        (nameof(PresetColorType.Red), PresetPrimaryColor.Red),
+        (nameof(PresetColorType.Volcano), PresetPrimaryColor.Volcano),
+        (nameof(PresetColorType.Orange), PresetPrimaryColor.Orange),
+        (nameof(PresetColorType.Gold), PresetPrimaryColor.Gold),
+        (nameof(PresetColorType.Yellow), PresetPrimaryColor.Yellow),
+        (nameof(PresetColorType.Lime), PresetPrimaryColor.Lime),
+        (nameof(PresetColorType.Green), PresetPrimaryColor.Green),
+        (nameof(PresetColorType.Cyan), PresetPrimaryColor.Cyan),
+        (nameof(PresetColorType.Blue), PresetPrimaryColor.Blue),
+        (nameof(PresetColorType.GeekBlue), PresetPrimaryColor.GeekBlue),
+        (nameof(PresetColorType.Purple), PresetPrimaryColor.Purple),
+        (nameof(PresetColorType.Pink), PresetPrimaryColor.Pink),
+        (nameof(PresetColorType.Magenta), PresetPrimaryColor.Magenta),
+        (nameof(PresetColorType.Grey), PresetPrimaryColor.Grey)
+    ];
+    private static readonly (string Name, TagStatus Status)[] StatusColorEntries =
+    [
+        (nameof(TagStatus.Success), TagStatus.Success),
+        (nameof(TagStatus.Info), TagStatus.Info),
+        (nameof(TagStatus.Warning), TagStatus.Warning),
+        (nameof(TagStatus.Error), TagStatus.Error)
+    ];
     protected AbstractIconButton? CloseButton;
     
     static AbstractTag()
@@ -269,7 +293,6 @@ public abstract class AbstractTag : TemplatedControl
         }
     }
 
-    // TODO 优化成静态变量
     private static void SetupPresetColorMap(bool force = false)
     {
         if (PresetColorMap.Count == 0 || force)
@@ -282,10 +305,10 @@ public abstract class AbstractTag : TemplatedControl
             }
 
             var dict = new Dictionary<PresetColorType, TagCalcColor>(14);
-            foreach (var entry in PresetPrimaryColor.AllColorTypes())
+            foreach (var entry in PresetColorEntries)
             {
-                var colorMap  = sharedToken.GetColorPalette(entry)!;
-                dict[entry.Type] = new TagCalcColor
+                var colorMap  = sharedToken.GetColorPalette(entry.Color)!;
+                dict[entry.Color.Type] = new TagCalcColor
                 {
                     LightColor       = colorMap.Color1,
                     LightBorderColor = colorMap.Color3,
@@ -344,11 +367,11 @@ public abstract class AbstractTag : TemplatedControl
         IsColorSet       = false;
         var colorSpan    = colorStr.AsSpan().Trim();
 
-        foreach (var entry in PresetColorMap)
+        foreach (var entry in PresetColorEntries)
         {
-            if (entry.Key.ToString().AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase))
+            if (entry.Name.AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase) &&
+                PresetColorMap.TryGetValue(entry.Color.Type, out var colorInfo))
             {
-                var colorInfo = entry.Value;
                 Foreground       = new SolidColorBrush(colorInfo.TextColor);
                 BorderBrush      = new SolidColorBrush(colorInfo.LightBorderColor);
                 Background       = new SolidColorBrush(colorInfo.LightColor);
@@ -360,11 +383,11 @@ public abstract class AbstractTag : TemplatedControl
             }
         }
 
-        foreach (var entry in StatusColorMap)
+        foreach (var entry in StatusColorEntries)
         {
-            if (entry.Key.ToString().AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase))
+            if (entry.Name.AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase) &&
+                StatusColorMap.TryGetValue(entry.Status, out var colorInfo))
             {
-                var colorInfo = entry.Value;
                 Foreground       = new SolidColorBrush(colorInfo.Color);
                 BorderBrush      = new SolidColorBrush(colorInfo.BorderColor);
                 Background       = new SolidColorBrush(colorInfo.Background);

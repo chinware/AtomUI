@@ -62,3 +62,16 @@ Avalonia 依据：
 | CompactSpaceSize.Parse star value substring/trim temp strings / star parse | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；span slice/trim 后解析 |
 | CompactSpaceSize.ParseLengths token strings / token | 1 | 0 | `(1 - 0) / 1` | 100.00% | 结构收益；`TryReadSpan` 直接解析 token |
 | Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## Compact Position Flag Snapshot
+
+`CompactSpaceItem` / `CompactSpaceAddOn` / `AddOnDecoratedBox` 在 compact group 内需要按 First / Middle / Last 计算 offset 和 corner radius。旧路径在同一次 measure / radius calculation 内多次读取 nullable position 并调用 `HasFlag()`；本轮统一改为 position 快照 + bitwise helper。horizontal / vertical 的 corner trimming 语义保持不变，padding 和模板结构不变。
+
+| Metric | Baseline | Optimized | Formula | Improvement | Conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| Compact position `HasFlag` callsites / compact layout pass | 21 | 0 | `(21 - 0) / 21` | 100.00% | structural-only；compact position 判断不再走 enum helper |
+| Compact position styled-property repeated reads / radius calculation | repeated per branch | one snapshot per method | structural | 结构收益 | First / Middle / Last 判断复用同一个 nullable position 快照 |
+| Compact group padding / corner semantics | unchanged | unchanged | n/a | 0.00% | 行为保持 |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

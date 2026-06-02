@@ -36,7 +36,11 @@ public record ColorMap
 
     public static ColorMap FromColors(IReadOnlyList<string> hexColors)
     {
-        var colors = hexColors.Select(item => Color.Parse(item)).ToList();
+        var colors = new Color[hexColors.Count];
+        for (var i = 0; i < hexColors.Count; i++)
+        {
+            colors[i] = Color.Parse(hexColors[i]);
+        }
         return FromColors(colors);
     }
 }

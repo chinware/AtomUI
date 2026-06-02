@@ -65,9 +65,16 @@ public sealed record LanguageVariant
 
     public static LanguageVariant FromCultureInfo(CultureInfo cultureInfo)
     {
-        // CultureInfo.ToString() returns the hyphen form (e.g. "zh-CN"); LanguageCode enum names use '_'.
-        var codeStr = cultureInfo.ToString().Replace('-', '_');
-        if (Enum.TryParse<LanguageCode>(codeStr, out var code))
+        // CultureInfo.Name usually returns the hyphen form (e.g. "zh-CN"); LanguageCode enum names use '_'.
+        var cultureName = cultureInfo.Name;
+        Span<char> codeBuffer = stackalloc char[cultureName.Length];
+        for (int i = 0; i < cultureName.Length; i++)
+        {
+            var ch = cultureName[i];
+            codeBuffer[i] = ch == '-' ? '_' : ch;
+        }
+
+        if (Enum.TryParse<LanguageCode>(codeBuffer, out var code))
         {
             return FromCode(code);
         }

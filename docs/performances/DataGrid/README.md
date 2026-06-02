@@ -1,6 +1,5 @@
 # DataGrid 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase F / Tier 4
 > 状态：T4.1-T4.5 已完成。最后一轮审计确认 `Panel.Children` 遍历基于 AvaloniaList struct enumerator，不保留无收益的 foreach->indexer 改动；剩余 DataGridColumnCollection/DisplayData/GetSelectionInclusive helper 无当前生产调用热点，仅保留兼容/DEBUG 路径。
 
 ---
@@ -4853,6 +4852,23 @@ Smoke-only 对比上一轮同参数复测。本轮没有保留会改变 `DataGri
 | Pagination visibility semantics | unchanged | unchanged | n/a | 0.00% | `None` / `Top` / `Bottom` 语义保持 |
 
 说明：这是 DataGrid pagination converter 路径 structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
+
+---
+
+### 2.134 ListCollectionView materialization cleanup
+
+`ListCollectionView` 是 DataGrid / ListView 等数据视图共享层。本轮只收敛集合 materialization：源集合复制和无过滤 local-array refresh 按已知 `Count` 预分配；分页枚举按当前页数量预分配，`PageIndex < 0` 的空页直接复用共享空数组枚举器；排序结果 materialization 按输入数量预分配；`MergedComparer` 的 comparer array 改为 Count/indexer 填充，不再创建 `Select().ToArray()` LINQ 链。排序、过滤、分组、分页语义不变。
+
+| 指标 | baseline | optimized | 公式 | 改善 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Source copy list capacity / unfiltered collection view refresh | dynamic growth | source Count capacity | structural | 分配更紧 | 复制源集合时按已知 Count 预分配 |
+| Local-array list capacity / unfiltered sort/group refresh | dynamic growth | source Count capacity | structural | 分配更紧 | 无 Filter 时按源 Count 预分配 |
+| Paged enumerator list capacity / page enumeration | dynamic growth | page item count capacity | structural | 分配更紧 | 当前页 list 按实际页项数预分配 |
+| Empty async page temporary list / `PageIndex < 0` enumeration | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | 空页复用 `Array.Empty<object?>()` 枚举器 |
+| Sorted result list capacity / sorted refresh | dynamic growth | input Count capacity | structural | 分配更紧 | 排序结果按输入 list Count 预分配 |
+| MergedComparer LINQ operators / sorted insert comparer build | 2 operators | 0 operators | `(2 - 0) / 2` | 100.00% | `Select().ToArray()` 改为 Count/indexer array fill |
+
+说明：这是 CollectionView data-layer structural-only 收益；没有新增页面 timing 对比，不声明页面加载速度提升。
 
 ---
 

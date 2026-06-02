@@ -1,6 +1,5 @@
 # Switch 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #7
 > 状态：本轮完成交互路径结构优化；不声明页面加载耗时稳定提升。
 
 ---

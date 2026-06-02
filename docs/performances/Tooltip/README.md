@@ -1,6 +1,5 @@
 # Tooltip 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 0 #6
 > 状态：本轮已完成结构清理；headless bench 无法触发 Show 流程（pointer 事件不会自动 fire），bench 验证留待 Gallery 级 hover 场景。
 
 ---

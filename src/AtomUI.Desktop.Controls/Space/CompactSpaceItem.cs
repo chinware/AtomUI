@@ -119,10 +119,18 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
+        var position = CompactSpaceItemPosition;
 
-        if (CompactSpaceItemPosition == null ||
-            CompactSpaceItemPosition == SpaceItemPosition.First ||
-            (CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.First) && CompactSpaceItemPosition.Value.HasFlag(SpaceItemPosition.Last)))
+        if (position == null ||
+            position == SpaceItemPosition.First)
+        {
+            ClearOffsetTransform();
+            return size;
+        }
+
+        var itemPosition = position.Value;
+        if (CompactSpace.HasPositionFlag(itemPosition, SpaceItemPosition.First) &&
+            CompactSpace.HasPositionFlag(itemPosition, SpaceItemPosition.Last))
         {
             ClearOffsetTransform();
             return size;

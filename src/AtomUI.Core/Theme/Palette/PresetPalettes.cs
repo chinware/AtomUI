@@ -12,13 +12,18 @@ public class PaletteInfo
 
 public static class PresetPalettes
 {
+    private const int PresetColorCount = 14;
     private static readonly FrozenDictionary<PresetPrimaryColor, PaletteInfo> sm_presetPalettes;
     private static readonly FrozenDictionary<PresetPrimaryColor, PaletteInfo> sm_presetDarkPalettes;
+    private static readonly PaletteGenerateOption sm_darkPaletteOption = new()
+    {
+        ThemeVariant = ThemeVariant.Dark
+    };
 
     static PresetPalettes()
     {
-        var light = new Dictionary<PresetPrimaryColor, PaletteInfo>();
-        var dark  = new Dictionary<PresetPrimaryColor, PaletteInfo>();
+        var light = new Dictionary<PresetPrimaryColor, PaletteInfo>(PresetColorCount);
+        var dark  = new Dictionary<PresetPrimaryColor, PaletteInfo>(PresetColorCount);
         InitPalettes(light, false);
         InitPalettes(dark, true);
         sm_presetPalettes     = light.ToFrozenDictionary();
@@ -52,12 +57,7 @@ public static class PresetPalettes
         {
             if (isDark)
             {
-                var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color(),
-                    new PaletteGenerateOption
-                    {
-                        ThemeVariant    = ThemeVariant.Dark,
-                        BackgroundColor = Color.Parse("#141414")
-                    });
+                var colorSequence = PaletteGenerator.GeneratePalette(presetColor.Color(), sm_darkPaletteOption);
                 target[presetColor] = new PaletteInfo
                 {
                     Primary       = colorSequence[5],

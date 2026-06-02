@@ -37,16 +37,53 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
     public static readonly PresetPrimaryColor Magenta = new(PresetColorType.Magenta);
     public static readonly PresetPrimaryColor Grey = new(PresetColorType.Grey);
 
+    private static readonly PresetPrimaryColor[] s_allColorTypes =
+    [
+        Red,
+        Volcano,
+        Orange,
+        Gold,
+        Yellow,
+        Lime,
+        Green,
+        Cyan,
+        Blue,
+        GeekBlue,
+        Purple,
+        Pink,
+        Magenta,
+        Grey
+    ];
+
     public PresetColorType Type { get; }
+    private readonly Color _color;
 
     private PresetPrimaryColor(PresetColorType colorType)
     {
-        Type = colorType;
+        Type   = colorType;
+        _color = Avalonia.Media.Color.Parse(RgbHex());
     }
 
     public string Name()
     {
-        return Enum.GetName(typeof(PresetColorType), Type)!;
+        return Type switch
+        {
+            PresetColorType.Red => nameof(PresetColorType.Red),
+            PresetColorType.Volcano => nameof(PresetColorType.Volcano),
+            PresetColorType.Orange => nameof(PresetColorType.Orange),
+            PresetColorType.Gold => nameof(PresetColorType.Gold),
+            PresetColorType.Yellow => nameof(PresetColorType.Yellow),
+            PresetColorType.Lime => nameof(PresetColorType.Lime),
+            PresetColorType.Green => nameof(PresetColorType.Green),
+            PresetColorType.Cyan => nameof(PresetColorType.Cyan),
+            PresetColorType.Blue => nameof(PresetColorType.Blue),
+            PresetColorType.GeekBlue => nameof(PresetColorType.GeekBlue),
+            PresetColorType.Purple => nameof(PresetColorType.Purple),
+            PresetColorType.Pink => nameof(PresetColorType.Pink),
+            PresetColorType.Magenta => nameof(PresetColorType.Magenta),
+            PresetColorType.Grey => nameof(PresetColorType.Grey),
+            _ => nameof(PresetColorType.Grey)
+        };
     }
 
     public string RgbHex()
@@ -73,25 +110,12 @@ public class PresetPrimaryColor : IEquatable<PresetPrimaryColor>
 
     public Color Color()
     {
-        return Avalonia.Media.Color.Parse(RgbHex());
+        return _color;
     }
 
     public static IEnumerable<PresetPrimaryColor> AllColorTypes()
     {
-        yield return Red;
-        yield return Volcano;
-        yield return Orange;
-        yield return Gold;
-        yield return Yellow;
-        yield return Lime;
-        yield return Green;
-        yield return Cyan;
-        yield return Blue;
-        yield return GeekBlue;
-        yield return Purple;
-        yield return Pink;
-        yield return Magenta;
-        yield return Grey;
+        return s_allColorTypes;
     }
 
     public static PresetPrimaryColor GetColor(PresetColorType type)

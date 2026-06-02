@@ -586,7 +586,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     private void ValidateSelectionMode()
     {
-        if (SelectionMode.HasFlag(SelectionMode.Multiple))
+        if ((SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple)
         {
             throw new InvalidPropertyValueException(SelectionModeProperty.Name, SelectionMode.Multiple,
                 $"The value '{SelectionMode.Multiple}' is invalid for the '{SelectionModeProperty.Name}' property in NavMenu.");

@@ -1,6 +1,5 @@
 # Popup 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 0 #2
 > 状态：本轮已完成 structural 阶段 + 微基准回填。
 
 ---

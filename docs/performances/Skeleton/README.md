@@ -1,6 +1,5 @@
 # Skeleton 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 0 #7
 > 状态：本轮完成动画生命周期收敛，并修复多处状态正确性问题。
 
 ---

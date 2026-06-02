@@ -1,5 +1,4 @@
-﻿using AtomUI.Theme.Palette;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
@@ -158,13 +157,10 @@ public abstract class AbstractRibbonBadge : Control
     {
         var colorSpan = colorStr.AsSpan().Trim();
 
-        foreach (var presetColor in PresetPrimaryColor.AllColorTypes())
+        if (BadgeColorUtils.TryGetPresetColor(colorSpan, out var presetColor))
         {
-            if (presetColor.Type.ToString().AsSpan().Equals(colorSpan, StringComparison.OrdinalIgnoreCase))
-            {
-                _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor.Color());
-                return;
-            }
+            _ribbonBadgeAdorner!.RibbonColor = new SolidColorBrush(presetColor);
+            return;
         }
 
         if (Color.TryParse(colorSpan, out var color))

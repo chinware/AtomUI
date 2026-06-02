@@ -9,31 +9,38 @@ namespace AtomUI.Theme.TokenSystem;
 
 public partial class DesignToken : AbstractDesignToken
 {
+    private const int PresetColorCount = 14;
+    private static readonly IReadOnlyDictionary<DesignTokenKind, PropertyInfo[]> s_tokenPropertiesByKind =
+        BuildTokenPropertiesByKind();
+    private static readonly IReadOnlyDictionary<DesignTokenKind, IReadOnlySet<string>> s_tokenPropertyNamesByKind =
+        BuildTokenPropertyNamesByKind();
+    private static readonly IReadOnlySet<string> s_emptyTokenPropertyNames = new HashSet<string>();
+    private static readonly IReadOnlyDictionary<PresetColorType, PresetPrimaryColor> s_defaultPresetColors =
+        BuildDefaultPresetColors();
+    private static readonly Color s_defaultColorPrimary = Color.Parse("#1677ff");
+    private static readonly Color s_defaultColorSuccess = Color.Parse("#52c41a");
+    private static readonly Color s_defaultColorWarning = Color.Parse("#faad14");
+    private static readonly Color s_defaultColorError = Color.Parse("#ff4d4f");
+
     /// <summary>
     /// 现在这里的实现是写死的主色，后面是不是可以读取配置
     /// </summary>
-    private readonly IDictionary<PresetColorType, PresetPrimaryColor> _defaultPresetColors;
 
     [NotTokenDefinition] public IDictionary<PresetPrimaryColor, ColorMap> ColorPalettes { get; set; }
 
     public DesignToken()
     {
         InitSeedTokenValues();
-        ColorPalettes        = new Dictionary<PresetPrimaryColor, ColorMap>();
-        _defaultPresetColors = new Dictionary<PresetColorType, PresetPrimaryColor>();
-        foreach (var color in PresetPrimaryColor.AllColorTypes())
-        {
-            _defaultPresetColors[color.Type] = color;
-        }
+        ColorPalettes = new Dictionary<PresetPrimaryColor, ColorMap>(PresetColorCount);
     }
 
     private void InitSeedTokenValues()
     {
-        ColorPrimary     = Color.Parse("#1677ff");
-        ColorSuccess     = Color.Parse("#52c41a");
-        ColorWarning     = Color.Parse("#faad14");
-        ColorError       = Color.Parse("#ff4d4f");
-        ColorInfo        = Color.Parse("#1677ff");
+        ColorPrimary     = s_defaultColorPrimary;
+        ColorSuccess     = s_defaultColorSuccess;
+        ColorWarning     = s_defaultColorWarning;
+        ColorError       = s_defaultColorError;
+        ColorInfo        = s_defaultColorPrimary;
         FontFamily       = FontFamily.Parse("fonts:AlibabaSans#Alibaba Sans, Segoe UI, Segoe UI Symbol, Helvetica Neue, Noto Sans, Noto Sans CJK SC, 文泉驿正黑, Microsoft YaHei, PingFang SC, $Default");
         BorderRadius     = new CornerRadius(6);
         ColorTransparent = Colors.Transparent;
@@ -41,7 +48,7 @@ public partial class DesignToken : AbstractDesignToken
 
     public PresetPrimaryColor GetPresetPrimaryColor(PresetColorType colorType)
     {
-        return _defaultPresetColors[colorType];
+        return s_defaultPresetColors[colorType];
     }
 
     public void SetColorPalette(PresetPrimaryColor primaryColor, ColorMap colorMap)
@@ -278,15 +285,75 @@ public partial class DesignToken : AbstractDesignToken
     
     internal static IEnumerable<PropertyInfo> GetTokenProperties(DesignTokenKind kind)
     {
+        return s_tokenPropertiesByKind.TryGetValue(kind, out var properties)
+            ? properties
+            : Array.Empty<PropertyInfo>();
+    }
+
+    internal static IReadOnlySet<string> GetTokenPropertyNames(DesignTokenKind kind)
+    {
+        return s_tokenPropertyNamesByKind.TryGetValue(kind, out var names)
+            ? names
+            : s_emptyTokenPropertyNames;
+    }
+
+    private static IReadOnlyDictionary<DesignTokenKind, PropertyInfo[]> BuildTokenPropertiesByKind()
+    {
         var type = typeof(DesignToken);
+        var groupedProperties = new Dictionary<DesignTokenKind, List<PropertyInfo>>(3)
+        {
+            [DesignTokenKind.Seed]  = new List<PropertyInfo>(),
+            [DesignTokenKind.Map]   = new List<PropertyInfo>(),
+            [DesignTokenKind.Alias] = new List<PropertyInfo>()
+        };
+
         var tokenProperties = type.GetProperties(BindingFlags.Public |
                                                  BindingFlags.NonPublic |
                                                  BindingFlags.Instance |
                                                  BindingFlags.FlattenHierarchy);
-        return tokenProperties.Where(prop =>
+        foreach (var property in tokenProperties)
         {
-            var attribute = prop.GetCustomAttribute<DesignTokenKindAttribute>();
-            return attribute != null && attribute.Kind == kind;
-        });
+            var attribute = property.GetCustomAttribute<DesignTokenKindAttribute>();
+            if (attribute is not null)
+            {
+                groupedProperties[attribute.Kind].Add(property);
+            }
+        }
+
+        var result = new Dictionary<DesignTokenKind, PropertyInfo[]>(groupedProperties.Count);
+        foreach (var entry in groupedProperties)
+        {
+            result[entry.Key] = entry.Value.ToArray();
+        }
+
+        return result;
+    }
+
+    private static IReadOnlyDictionary<DesignTokenKind, IReadOnlySet<string>> BuildTokenPropertyNamesByKind()
+    {
+        var result = new Dictionary<DesignTokenKind, IReadOnlySet<string>>(s_tokenPropertiesByKind.Count);
+        foreach (var entry in s_tokenPropertiesByKind)
+        {
+            var names = new HashSet<string>(entry.Value.Length);
+            foreach (var property in entry.Value)
+            {
+                names.Add(property.Name);
+            }
+
+            result[entry.Key] = names;
+        }
+
+        return result;
+    }
+
+    private static IReadOnlyDictionary<PresetColorType, PresetPrimaryColor> BuildDefaultPresetColors()
+    {
+        var colors = new Dictionary<PresetColorType, PresetPrimaryColor>(PresetColorCount);
+        foreach (var color in PresetPrimaryColor.AllColorTypes())
+        {
+            colors[color.Type] = color;
+        }
+
+        return colors;
     }
 }

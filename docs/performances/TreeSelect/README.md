@@ -1,6 +1,5 @@
 # TreeSelect 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 1 #3  
 > 状态：本轮已完成 Gallery 实测。
 
 ---

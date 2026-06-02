@@ -12,10 +12,16 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
 
-internal class SizeTypeThresholdValue
+internal readonly struct SizeTypeThresholdValue
 {
-    internal double NormalStateValue { get; set; }
-    internal double InnerStateValue { get; set; }
+    internal SizeTypeThresholdValue(double normalStateValue, double innerStateValue = 0)
+    {
+        NormalStateValue = normalStateValue;
+        InnerStateValue  = innerStateValue;
+    }
+
+    internal double NormalStateValue { get; }
+    internal double InnerStateValue { get; }
 }
 
 [PseudoClasses(ProgressBarPseudoClass.Vertical, ProgressBarPseudoClass.Horizontal)]
@@ -81,14 +87,12 @@ public abstract class AbstractLineProgress : AbstractProgressBar
 
     #endregion
 
-    internal Dictionary<SizeType, SizeTypeThresholdValue> _sizeTypeThresholdValue;
+    private protected SizeTypeThresholdValue _largeSizeTypeThresholdValue;
+    private protected SizeTypeThresholdValue _middleSizeTypeThresholdValue;
+    private protected SizeTypeThresholdValue _smallSizeTypeThresholdValue;
+    private protected bool _sizeTypeThresholdValuesInitialized;
     protected Size _extraInfoSize = Size.Infinity;
     protected Rect _grooveRect;
-
-    public AbstractLineProgress()
-    {
-        _sizeTypeThresholdValue = new Dictionary<SizeType, SizeTypeThresholdValue>(3);
-    }
 
     // 根据当前的状态进行计算
     protected virtual Size CalculateExtraInfoSize(double fontSize)

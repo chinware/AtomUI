@@ -1,6 +1,5 @@
 # ColorPicker 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Phase E / Tier 3
 > 状态：closed-state `Window.Deactivated` lifecycle、打开态 `GradientColorPickerView` binding、`ColorSpectrum` brush 热路径复用、`ColorPickerPaletteGroup` 选择事件隔离、`HsvValue` 预览 / slider thumb brush 复用、透明棋盘背景 brush token 缓存均已完成。
 
 ---

@@ -9,7 +9,7 @@ namespace AtomUI.Generator;
 internal class ControlTokenTypePoolClassWriter
 {
     private readonly SourceProductionContext _context;
-    private readonly IEnumerable<string> _classes;
+    private readonly IReadOnlyList<string> _classes;
     private readonly List<string> _usingInfos;
 
     public ControlTokenTypePoolClassWriter(SourceProductionContext context, IEnumerable<string> classes)
@@ -75,26 +75,7 @@ internal class ControlTokenTypePoolClassWriter
 
         var statements = new List<StatementSyntax>
         {
-            // var themes = new List<BaseControlTheme>();
-            SyntaxFactory.LocalDeclarationStatement(
-                SyntaxFactory.VariableDeclaration(
-                                 SyntaxFactory.GenericName(SyntaxFactory.Identifier("List"))
-                                              .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
-                                                  SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                      SyntaxFactory.ParseTypeName("Type")))))
-                             .WithVariables(SyntaxFactory.SingletonSeparatedList(
-                                 SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("tokenTypes"))
-                                              .WithInitializer(SyntaxFactory.EqualsValueClause(
-                                                  SyntaxFactory.ObjectCreationExpression(
-                                                                   SyntaxFactory
-                                                                       .GenericName(SyntaxFactory.Identifier("List"))
-                                                                       .WithTypeArgumentList(
-                                                                           SyntaxFactory.TypeArgumentList(
-                                                                               SyntaxFactory
-                                                                                   .SingletonSeparatedList<TypeSyntax>(
-                                                                                       SyntaxFactory.ParseTypeName(
-                                                                                           "Type")))))
-                                                               .WithArgumentList(SyntaxFactory.ArgumentList()))))))
+            SyntaxFactory.ParseStatement($"List<Type> tokenTypes = new List<Type>({_classes.Count});")
         };
 
         // 动态添加 themes.Add(typeof(XXX));

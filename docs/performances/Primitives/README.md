@@ -13,10 +13,20 @@
 - `MotionGhostControl` 的 shadow mask 几何更新路径。它被带 motion ghost 的浮层 / motion 控件复用。
 - `AbstractArrowDecoratedBox` 的 arrow shell 布局状态路径。它被 Popup / Flyout / DatePicker / TimePicker 等带箭头浮层复用。
 - `WaveSpiritDecorator` 的 wave painter 配置路径。它被 Button / Switch / Radio / CheckBox 等点击波纹控件复用。
+- `XYFocusHelpers` 的导航模式判断路径。它被键盘 / 手柄 / 遥控方向导航复用。
 - `CompactSpaceItem` / `CompactSpaceAddOn` 的 compact-space 状态通知路径，以及 `TextBox` / `TextArea` / `ButtonSpinner` / `NumericUpDown` / `AbstractSelect` 的 compact-space / form feedback / validation 状态同步路径。
 - `PenUtils` / `BorderRenderHelper` 的 render-loop pen 复用路径。它被 DashedBorder / OptionButton / TreeView / ButtonSpinner / RadioIndicator 等自绘边框控件复用。
 
 本轮收口 audit 结论：Primitives 目录剩余扫描项为 false positive、已验证结构路径或此前已回滚候选；没有继续排队的开放优化项。
+
+## XYFocus Flag Check Cleanup
+
+`XYFocusHelpers.IsAllowedXYNavigationMode()` 的键盘 / 手柄 / 遥控三条分支原先使用 enum `HasFlag()`。这是每次方向导航查找都会经过的轻量判断，本轮改为直接位运算，保持 `Disabled` 与三类输入设备的语义不变。
+
+| Metric | Baseline | Optimized | Formula | Improvement | Conclusion |
+| --- | ---: | ---: | --- | ---: | --- |
+| XY focus navigation `HasFlag()` callsites / mode check | 3 | 0 | `(3 - 0) / 3` | 100.00% | 结构收益；方向导航模式判断不再走 `HasFlag()` |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
 
 ## InfoPickerInput Root Cause
 
@@ -48,6 +58,8 @@
 - 空路径 append 已有路径、单段路径取 parent、同值 `WithSegment()` 原先仍会创建新数组 / 新 wrapper；这些场景都可以复用已有不可变对象。
 - `TreeNodePath.StartsWith(path)` 对同一不可变实例原先仍按 segment 数量逐项比较。
 - `TreeNodePath(string)` 原先 `Split('/', RemoveEmptyEntries)` 后再进入公开构造的二次复制；本轮改为先数段、再按段构造结果数组，保留前导、连续、尾随 `/` 的空段跳过语义。
+- 空路径字符串和只包含 `/` 的路径字符串原先仍会为 `Segments` 创建新的 read-only wrapper；本轮改为复用静态空段 view。
+- 单段路径字符串没有 `/`，原先仍会先统计段数再进入拆段循环；本轮直接返回单段数组，保持公开构造的外部输入语义。
 
 ## MotionGhostControl Root Cause
 
@@ -159,6 +171,9 @@
 | TreeNodePath path-string split arrays / `new TreeNodePath(\"a/b\")` | 1 split array | 0 split arrays | `(1 - 0) / 1` | 100.00% | 结构收益；手写扫描保留 `RemoveEmptyEntries` 语义 |
 | TreeNodePath path-string segment array copies / `new TreeNodePath(\"a/b\")` | 1 copy array | 0 copy arrays | `(1 - 0) / 1` | 100.00% | 结构收益；直接填充最终 segments 数组 |
 | TreeNodePath empty array allocations / empty public segments | 1 zero-length array risk | 0 arrays | `(1 - 0) / 1` | 100.00% | 结构收益；空输入复用 `[]` |
+| TreeNodePath empty `Segments` wrappers / empty path input | 1 wrapper | 0 wrappers | `(1 - 0) / 1` | 100.00% | 结构收益；空路径复用静态 read-only view |
+| TreeNodePath scans / single-segment path string | 2 scans | 1 scan | `(2 - 1) / 2` | 50.00% | 结构收益；无 `/` 时跳过 count + split loop |
+| TreeNodePath substring calls / single-segment path string | 1 call | 0 calls | `(1 - 0) / 1` | 100.00% | 结构收益；直接复用输入 segment string |
 | MotionGhostControl shadow renderer writes / `MaskCornerRadius` only changes, per shadow | 3 writes | 1 write | `(3 - 1) / 3` | 66.67% | 结构收益；width / height 未变时不写 |
 | MotionGhostControl shadow renderer writes / `MaskSize` only changes, per shadow | 3 writes | 2 writes | `(3 - 2) / 3` | 33.33% | 结构收益；corner radius 未变时不写 |
 | MotionGhostControl mask center size writes / repeated same size callback | 2 writes | 0 writes | `(2 - 0) / 2` | 100.00% | 结构收益；center frame width / height 未变时不写 |
@@ -246,9 +261,11 @@
 | ListBox virtualizing context dictionary growth / recycled item | dynamic capacity | exact capacity 1 | structural | 分配更紧 | 保存 1 个虚拟化状态键时避免 dictionary 增长 |
 | ListView virtualizing context dictionary growth / recycled item | dynamic capacity | exact capacity 2 | structural | 分配更紧 | 保存 2 个虚拟化状态键时避免 dictionary 增长 |
 | Cascader level virtualizing context dictionary growth / recycled item | dynamic capacity | exact capacity 5 | structural | 分配更紧 | 保存 5 个虚拟化状态键时避免 dictionary 增长 |
-| ProgressBar size threshold dictionary growth / progress instance | dynamic capacity | exact capacity 3 | structural | 分配更紧 | line / circle progress 尺寸阈值表按 `SizeType` 三档预分配 |
+| Line ProgressBar size threshold dictionary growth / progress instance | dynamic capacity | exact capacity 3 | structural | 分配更紧 | line progress 尺寸阈值表按 `SizeType` 三档预分配 |
+| CircleProgress size threshold dictionary / instance | 1 dictionary | 0 dictionaries | `(1 - 0) / 1` | 100.00% | 固定阈值改为常量 switch，不再按实例分配字典 |
 | Tag preset color map growth / theme color map build | dynamic capacity | exact capacity 14 | structural | 分配更紧 | preset 颜色表按 `PresetColorType` 已知数量预分配 |
 | Tag status color map growth / theme color map build | dynamic capacity | exact capacity 4 | structural | 分配更紧 | status 颜色表按 `TagStatus` 已知数量预分配 |
+| Tag preset/status enum name conversions / worst-case color parse | 18 calls | 0 calls | `(18 - 0) / 18` | 100.00% | 静态名称表替代 `Enum.ToString()` 匹配 |
 | Popup overlay layer manager fallback LINQ operators / lookup | 2 operators | 0 operators | `(2 - 0) / 2` | 100.00% | 结构收益；`GetPopupOverlayLayer()` TopLevel fallback 改为显式 first-match，不声明页面加载 speedup |
 | ScopeAwareOverlayLayer direct child lookup LINQ operators / lookup | 1 operator | 0 operators | `(1 - 0) / 1` | 100.00% | 结构收益；已有 overlay layer first-match 查找改为显式遍历 |
 | `DatePicker.Selected.Closed` KB/item | 627.9 KB | 627.5 KB | `(627.9 - 627.5) / 627.9` | 0.06% | smoke-only；分配小幅下降，不作为页面收益证明 |

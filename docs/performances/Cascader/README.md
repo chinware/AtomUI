@@ -1,6 +1,5 @@
 # Cascader 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Data Entry / Cascader  
 > 状态：本轮已完成结构性枚举收敛；未声明新的页面 timing 收益。
 
 ---
@@ -127,4 +126,17 @@ dotnet run -c Release -f net10.0 --no-build --project tools/performances/AtomUI.
 | Effective tag ancestor path walks / selected option | up to `P * depth` | up to `depth` | `(P*D - D) / (P*D)` | P>1 时随 P 增大 | 行为保持；自身不算祖先 |
 | Empty selected effective tag list allocations / rebuild | 1 list | 0 lists | `(1 - 0) / 1` | 100.00% | structural-only；空多选直接复用当前空 selected list |
 | Default path header container objects / loaded default path | 1 `List<string>` + 1 backing array | 1 `string[]` | `(2 - 1) / 2` | 50.00% | structural-only；去掉 list wrapper |
+| Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |
+
+---
+
+## 7. 追加结构优化：checked strategy flag snapshot
+
+`BuildEffectiveSelectedOptions()` 与 TreeSelect 的 effective tag 路径一致，需要判断 `ShowParent` / `ShowChild` 两个 flag。本轮把 `HasFlag()` 改为一次 `ShowCheckedStrategy` 快照 + bitwise check。ShowParent / ShowChild / All 的有效标签语义不变。
+
+| 指标 | 优化前 | 优化后 | 公式 | 提升 | 结论 |
+| --- | ---: | ---: | --- | ---: | --- |
+| Cascader checked strategy `HasFlag` callsites / effective tag rebuild | 2 | 0 | `(2 - 0) / 2` | 100.00% | structural-only；flag 判断不再走 enum helper |
+| Cascader `ShowCheckedStrategy` property reads / effective tag rebuild | 2 | 1 | `(2 - 1) / 2` | 50.00% | structural-only；一次 rebuild 内复用策略快照 |
+| Effective tag semantics | unchanged | unchanged | n/a | 0.00% | ShowParent / ShowChild / All 行为保持 |
 | Page-load timing claim | none | none | n/a | n/a | 本轮没有有效前后 timing，不声明页面级速度收益 |

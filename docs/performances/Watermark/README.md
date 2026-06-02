@@ -1,6 +1,5 @@
 # Watermark 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #11
 > 状态：本轮完成重复 Glyph 替换的 adorner 生命周期修复；页面级耗时仅 smoke-only，不作为收益证明。
 
 ---

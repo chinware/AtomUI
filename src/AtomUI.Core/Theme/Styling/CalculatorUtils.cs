@@ -64,27 +64,25 @@ internal static class CalculatorUtils
 
     public static void CalculateFontMapTokenValues(DesignToken designToken)
     {
-        var           fontSizePairs = CalculateFontSize(designToken.FontSize); // Smaller size font-size as base
-        IList<double> fontSizes     = fontSizePairs.Select(item => item.Size).ToList();
-        IList<double> lineHeights   = fontSizePairs.Select(item => item.LineHeight).ToList();
+        var fontSizePairs = CalculateFontSize(designToken.FontSize); // Smaller size font-size as base
 
-        var fontSizeMD   = fontSizes[1];
-        var fontSizeSM   = fontSizes[0];
-        var fontSizeLG   = fontSizes[2];
-        var lineHeight   = lineHeights[1];
-        var lineHeightSM = lineHeights[0];
-        var lineHeightLG = lineHeights[2];
+        var fontSizeMD   = fontSizePairs[1].Size;
+        var fontSizeSM   = fontSizePairs[0].Size;
+        var fontSizeLG   = fontSizePairs[2].Size;
+        var lineHeight   = fontSizePairs[1].LineHeight;
+        var lineHeightSM = fontSizePairs[0].LineHeight;
+        var lineHeightLG = fontSizePairs[2].LineHeight;
 
         designToken.FontSizeSM = fontSizeSM;
         designToken.FontSize   = fontSizeMD;
         designToken.FontSizeLG = fontSizeLG;
-        designToken.FontSizeXL = fontSizes[3];
+        designToken.FontSizeXL = fontSizePairs[3].Size;
 
-        designToken.FontSizeHeading1 = fontSizes[6];
-        designToken.FontSizeHeading2 = fontSizes[5];
-        designToken.FontSizeHeading3 = fontSizes[4];
-        designToken.FontSizeHeading4 = fontSizes[3];
-        designToken.FontSizeHeading5 = fontSizes[2];
+        designToken.FontSizeHeading1 = fontSizePairs[6].Size;
+        designToken.FontSizeHeading2 = fontSizePairs[5].Size;
+        designToken.FontSizeHeading3 = fontSizePairs[4].Size;
+        designToken.FontSizeHeading4 = fontSizePairs[3].Size;
+        designToken.FontSizeHeading5 = fontSizePairs[2].Size;
 
         designToken.RelativeLineHeight   = lineHeight;
         designToken.RelativeLineHeightLG = lineHeightLG;
@@ -94,11 +92,11 @@ internal static class CalculatorUtils
         designToken.FontHeightLG = Math.Round(lineHeightLG * fontSizeLG);
         designToken.FontHeightSM = Math.Round(lineHeightSM * fontSizeSM);
 
-        designToken.RelativeLineHeightHeading1 = lineHeights[6];
-        designToken.RelativeLineHeightHeading2 = lineHeights[5];
-        designToken.RelativeLineHeightHeading3 = lineHeights[4];
-        designToken.RelativeLineHeightHeading4 = lineHeights[3];
-        designToken.RelativeLineHeightHeading5 = lineHeights[2];
+        designToken.RelativeLineHeightHeading1 = fontSizePairs[6].LineHeight;
+        designToken.RelativeLineHeightHeading2 = fontSizePairs[5].LineHeight;
+        designToken.RelativeLineHeightHeading3 = fontSizePairs[4].LineHeight;
+        designToken.RelativeLineHeightHeading4 = fontSizePairs[3].LineHeight;
+        designToken.RelativeLineHeightHeading5 = fontSizePairs[2].LineHeight;
     }
 
     public static void CalculateControlHeightMapTokenValues(DesignToken designToken)
@@ -189,25 +187,26 @@ internal static class CalculatorUtils
 
     public static IList<FontSizeInfo> CalculateFontSize(double baseValue)
     {
-        var fontSizes = new List<double>(10);
+        var fontSizes = new double[10];
         for (var index = 0; index < 10; ++index)
         {
             var i        = index - 1;
             var baseSize = baseValue * Math.Pow(2.71828, i / 5.0);
             var intSize  = index > 1 ? Math.Floor(baseSize) : Math.Ceiling(baseSize);
             // Convert to even
-            fontSizes.Add((int)(Math.Floor(intSize / 2.0d) * 2));
+            fontSizes[index] = (int)(Math.Floor(intSize / 2.0d) * 2);
         }
 
         fontSizes[1] = baseValue;
-        var results = new List<FontSizeInfo>();
-        foreach (var size in fontSizes)
+        var results = new FontSizeInfo[10];
+        for (var i = 0; i < fontSizes.Length; i++)
         {
-            results.Add(new FontSizeInfo
+            var size = fontSizes[i];
+            results[i] = new FontSizeInfo
             {
                 Size       = size,
                 LineHeight = CalculateLineHeight(size)
-            });
+            };
         }
 
         return results;

@@ -9,25 +9,32 @@ internal class ControlTokenConfigInfo
     public IDictionary<string, string> Tokens { get; set; }
     public IDictionary<string, string> SharedTokens { get; set; }
 
-    public ControlTokenConfigInfo()
+    public ControlTokenConfigInfo() : this(0, 0)
     {
-        Tokens       = new Dictionary<string, string>();
-        SharedTokens = new Dictionary<string, string>();
+    }
+
+    private ControlTokenConfigInfo(int tokenCapacity, int sharedTokenCapacity)
+    {
+        Tokens       = new Dictionary<string, string>(tokenCapacity);
+        SharedTokens = new Dictionary<string, string>(sharedTokenCapacity);
     }
 
     internal ControlTokenConfigInfo Clone()
     {
-        var cloned = new ControlTokenConfigInfo();
-        cloned.EnableAlgorithm = EnableAlgorithm;
-        cloned.TokenId         = TokenId;
-        foreach (var key in Tokens.Keys)
+        var cloned = new ControlTokenConfigInfo(Tokens.Count, SharedTokens.Count)
         {
-            cloned.Tokens[key] = Tokens[key];
+            EnableAlgorithm = EnableAlgorithm,
+            TokenId         = TokenId
+        };
+
+        foreach (var token in Tokens)
+        {
+            cloned.Tokens.Add(token.Key, token.Value);
         }
 
-        foreach (var key in SharedTokens.Keys)
+        foreach (var sharedToken in SharedTokens)
         {
-            cloned.SharedTokens[key] = SharedTokens[key];
+            cloned.SharedTokens.Add(sharedToken.Key, sharedToken.Value);
         }
         return cloned;
     }

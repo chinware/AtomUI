@@ -1,6 +1,5 @@
 # SplitView 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #10
 > 状态：本轮完成结构性 transition 延迟创建；无独立 Gallery ShowCase，页面级耗时不声明。
 
 ---

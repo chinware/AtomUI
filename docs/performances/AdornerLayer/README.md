@@ -1,6 +1,5 @@
 # AdornerLayer 性能优化
 
-> 路线图位置：[`../desktop-controls-optimization-roadmap.md`](../desktop-controls-optimization-roadmap.md) Tier 2 #9
 > 状态：本轮完成 `ScopeAwareAdornerLayer` attach/detach 结构与生命周期优化；不声明页面级加载耗时提升。
 
 ---

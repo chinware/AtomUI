@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.RegularExpressions;
 using AtomUI.Utils;
 
 namespace AtomUI;
@@ -245,35 +244,146 @@ public struct Dimension : IEquatable<Dimension>
 
     public static Dimension Parse(string s)
     {
-        s = s.ToUpperInvariant();
-        var match = Regex.Match(s.Trim(), @"^([+-]?\d*\.?\d+)\s*([a-zA-Z%]+)?$", RegexOptions.IgnoreCase);
-        if (!match.Success)
+        if (TryParse(s.AsSpan(), out var dimension))
         {
-            throw new FormatException($"Invalid width format: '{s}'");
+            return dimension;
         }
 
-        DimensionUnitType unit = DimensionUnitType.Pixel;
-        if (match.Groups[2].Value == "%")
-        {
-            unit = DimensionUnitType.Percentage;
-        }
-
-        var value = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
-        return new Dimension(value, unit);
+        throw new FormatException($"Invalid width format: '{s.ToUpperInvariant()}'");
     }
 
     public static IEnumerable<Dimension> ParseWidths(string s)
     {
-        var result = new List<Dimension>();
+        var result = new List<Dimension>(CountWidthTokens(s.AsSpan()));
         using (var tokenizer = new SpanStringTokenizer(s, CultureInfo.InvariantCulture))
         {
-            while (tokenizer.TryReadString(out var item))
+            while (tokenizer.TryReadSpan(out var item))
             {
                 result.Add(Parse(item));
             }
         }
 
         return result;
+    }
+
+    private static int CountWidthTokens(ReadOnlySpan<char> s)
+    {
+        var count   = 0;
+        var inToken = false;
+        for (var i = 0; i < s.Length; ++i)
+        {
+            var c = s[i];
+            if (char.IsWhiteSpace(c) || c == ',')
+            {
+                inToken = false;
+            }
+            else if (!inToken)
+            {
+                count++;
+                inToken = true;
+            }
+        }
+
+        return count;
+    }
+
+    private static Dimension Parse(ReadOnlySpan<char> s)
+    {
+        if (TryParse(s, out var dimension))
+        {
+            return dimension;
+        }
+
+        throw new FormatException($"Invalid width format: '{s.ToString().ToUpperInvariant()}'");
+    }
+
+    private static bool TryParse(ReadOnlySpan<char> s, out Dimension dimension)
+    {
+        dimension = default;
+        var span = s.Trim();
+        if (span.IsEmpty)
+        {
+            return false;
+        }
+
+        var index = 0;
+        if (span[index] == '+' || span[index] == '-')
+        {
+            index++;
+            if (index == span.Length)
+            {
+                return false;
+            }
+        }
+
+        var beforeDecimalDigitCount = 0;
+        while (index < span.Length && IsAsciiDigit(span[index]))
+        {
+            beforeDecimalDigitCount++;
+            index++;
+        }
+
+        if (index < span.Length && span[index] == '.')
+        {
+            index++;
+            var afterDecimalDigitStart = index;
+            while (index < span.Length && IsAsciiDigit(span[index]))
+            {
+                index++;
+            }
+
+            if (index == afterDecimalDigitStart)
+            {
+                return false;
+            }
+        }
+        else if (beforeDecimalDigitCount == 0)
+        {
+            return false;
+        }
+
+        var valueSpan = span.Slice(0, index);
+        while (index < span.Length && char.IsWhiteSpace(span[index]))
+        {
+            index++;
+        }
+
+        var unit = DimensionUnitType.Pixel;
+        if (index < span.Length)
+        {
+            var unitStart = index;
+            while (index < span.Length && IsDimensionUnitChar(span[index]))
+            {
+                index++;
+            }
+
+            if (index != span.Length)
+            {
+                return false;
+            }
+
+            var unitSpan = span.Slice(unitStart, index - unitStart);
+            if (unitSpan.Length == 1 && unitSpan[0] == '%')
+            {
+                unit = DimensionUnitType.Percentage;
+            }
+        }
+
+        var value = double.Parse(valueSpan, CultureInfo.InvariantCulture);
+        dimension = new Dimension(value, unit);
+        return true;
+    }
+
+    private static bool IsAsciiDigit(char value)
+    {
+        return value >= '0' && value <= '9';
+    }
+
+    private static bool IsDimensionUnitChar(char value)
+    {
+        return value == '%' ||
+               value is >= 'a' and <= 'z' ||
+               value is >= 'A' and <= 'Z';
     }
 
     public static Dimension Min(Dimension a, Dimension b)
