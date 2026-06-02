@@ -28,7 +28,7 @@ jobs:
       runs-on: macos-15-intel
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.TargetBranch }}
          -  name: Install Apple Certificate
@@ -53,7 +53,7 @@ jobs:
                Write-Host "Installed certificates:"
                security find-identity -v -p codesigning
          -  name: Checkout AtomUITools code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                repository: chinware/AtomUITools
                ref: develop
@@ -97,7 +97,7 @@ jobs:
                   --cleanupBundleOption true
 
          -  name: Upload x86_64 DMG artifacts
-            uses: actions/upload-artifact@v4.6.2
+            uses: actions/upload-artifact@v7
             with:
                name: dmg-packages-osx-x64
                path: ${{ env.GalleryArtifactsOutputDir }}/dmg/x64/*.dmg
@@ -107,7 +107,7 @@ jobs:
       runs-on: macos-latest
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.TargetBranch }}
          -  name: Install Apple Certificate
@@ -136,7 +136,7 @@ jobs:
             with:
                dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                repository: chinware/AtomUITools
                ref: develop
@@ -177,7 +177,7 @@ jobs:
 
                Get-ChildItem -Path "${{ env.GalleryArtifactsOutputDir }}" | Format-Table
          -  name: Upload x86_64 DMG artifacts
-            uses: actions/upload-artifact@v4.6.2
+            uses: actions/upload-artifact@v7
             with:
                name: dmg-packages-osx-arm64
                path: ${{ env.GalleryArtifactsOutputDir }}/dmg/arm64/*.dmg
@@ -187,7 +187,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.TargetBranch }}
          -  name: Prepare build environment
@@ -218,7 +218,7 @@ jobs:
             with:
                dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                repository: chinware/AtomUITools
                ref: develop
@@ -255,7 +255,7 @@ jobs:
                ls -al $galleryPublishDirX64/packages
                ls -al ${{ env.GalleryArtifactsOutputDir }}/appimage/x64
          -  name: Upload x86_64 AppImage artifacts
-            uses: actions/upload-artifact@v4.6.2
+            uses: actions/upload-artifact@v7
             with:
                name: linux-appimage-x86_64
                path: ${{ env.GalleryArtifactsOutputDir }}/appimage/x64/*.AppImage
@@ -265,7 +265,7 @@ jobs:
       runs-on: ubuntu-24.04-arm
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.TargetBranch }}
          -  name: Prepare build environment
@@ -296,7 +296,7 @@ jobs:
             with:
                dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                repository: chinware/AtomUITools
                ref: develop
@@ -333,7 +333,7 @@ jobs:
                ls -al $galleryPublishDirArm64/packages
                ls -al ${{ env.GalleryArtifactsOutputDir }}/appimage/arm64
          -  name: Upload arm64 AppImage artifacts
-            uses: actions/upload-artifact@v4.6.2
+            uses: actions/upload-artifact@v7
             with:
                name: linux-appimage-arm64
                path: ${{ env.GalleryArtifactsOutputDir }}/appimage/arm64/*.AppImage
@@ -343,7 +343,7 @@ jobs:
       runs-on: windows-latest
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.TargetBranch }}
          -  name: Prepare build environment
@@ -359,7 +359,7 @@ jobs:
             with:
                dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                repository: chinware/AtomUITools
                ref: develop
@@ -392,7 +392,7 @@ jobs:
                  --verbosity Detailed `
                  --cleanupBundleOption false
          -  name: Upload x86_64 zip artifacts
-            uses: actions/upload-artifact@v4.6.2
+            uses: actions/upload-artifact@v7
             with:
                name: windows-zip-x86_64
                path: ${{ env.GalleryArtifactsOutputDir }}/zip/x64/*.zip
@@ -401,7 +401,7 @@ jobs:
       runs-on: windows-11-arm
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.TargetBranch }}
          -  name: Prepare build environment
@@ -418,7 +418,7 @@ jobs:
             with:
                dotnet-version: '10.0.x'
          -  name: Checkout AtomUITools code
-            uses: actions/checkout@v4.2.2
+            uses: actions/checkout@v6
             with:
                repository: chinware/AtomUITools
                ref: develop
@@ -451,7 +451,7 @@ jobs:
                  --verbosity Detailed `
                  --cleanupBundleOption false
          -  name: Upload arm64 zip artifacts
-            uses: actions/upload-artifact@v4.6.2
+            uses: actions/upload-artifact@v7
             with:
                name: windows-zip-arm64
                path: ${{ env.GalleryArtifactsOutputDir }}/zip/arm64/*.zip
