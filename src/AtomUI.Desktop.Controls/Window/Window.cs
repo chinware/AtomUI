@@ -549,6 +549,7 @@ public class Window : AvaloniaWindow,
         if (!ExtendClientAreaToDecorationsHint)
         {
             TitleBarOffsetMargin = default;
+            _macOsCacheValid     = false;
             return;
         }
 
@@ -587,8 +588,16 @@ public class Window : AvaloniaWindow,
         }
 
         MacStandardWindowButtons.SetStandardWindowButtonsLayout(this, titleBarHeight, offsetX, null, effectSpacing);
-        var offset = this.GetRecommendedTitleBarContentLeftMargin(effectSpacing) ?? 0;
-        TitleBarOffsetMargin = new Thickness(offset, 0, 0, 0);
+        var offset = this.GetRecommendedTitleBarContentLeftMargin(effectSpacing);
+        if (offset is not { } titleBarOffset)
+        {
+            // The title bar can measure before the native NSWindow standard buttons exist.
+            // Do not cache that no-op pass, otherwise OnOpened may skip the first real correction.
+            _macOsCacheValid = false;
+            return;
+        }
+
+        TitleBarOffsetMargin = new Thickness(titleBarOffset, 0, 0, 0);
 
         _macOsCachedTitleBarHeight = titleBarHeight;
         _macOsCachedOffsetX        = offsetX;
@@ -603,6 +612,7 @@ public class Window : AvaloniaWindow,
         EnsureMinSizeForDecorations();
         if (OperatingSystem.IsMacOS())
         {
+            _macOsCacheValid = false;
             ConfigureMacOsWindow();
         }
 
