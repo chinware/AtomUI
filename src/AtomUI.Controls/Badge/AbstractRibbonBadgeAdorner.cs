@@ -131,11 +131,12 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
     protected override Size MeasureOverride(Size availableSize)
     {
         var size         = base.MeasureOverride(availableSize);
-        var targetWidth  = availableSize.Width;
-        var targetHeight = availableSize.Height;
+        var cornerHeight = _cornerGeometry?.Bounds.Height ?? 0;
+        var targetWidth  = double.IsFinite(availableSize.Width) ? availableSize.Width : size.Width;
+        var targetHeight = double.IsFinite(availableSize.Height) ? availableSize.Height : size.Height + cornerHeight;
         if (!IsAdornerMode)
         {
-            targetHeight = size.Height + _cornerGeometry?.Bounds.Height ?? 0;
+            targetHeight = size.Height + cornerHeight;
             targetWidth  = size.Width;
         }
 

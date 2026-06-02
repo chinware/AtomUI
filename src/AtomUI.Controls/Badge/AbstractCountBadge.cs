@@ -2,7 +2,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -106,6 +108,9 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
 
     private protected AbstractCountBadgeAdorner? _badgeAdorner;
     private protected AdornerLayer? _adornerLayer;
+    private const int MaxAdornerLayerRetryCount = 30;
+    private bool _adornerLayerRetryScheduled;
+    private int _adornerLayerRetryCount;
 
     static AbstractCountBadge()
     {
@@ -135,9 +140,12 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
             {
+                ScheduleAdornerLayerRetry();
                 return;
             }
 
+            _adornerLayerRetryCount     = 0;
+            _adornerLayerRetryScheduled = false;
             badgeAdorner.ApplyToTarget(_adornerLayer, this);
         }
         else
@@ -159,12 +167,63 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
 
         if (DecoratedTarget is null)
         {
-            DetachChild(_badgeAdorner);
+            if (enableMotion)
+            {
+                var badgeAdorner = _badgeAdorner;
+                badgeAdorner.DetachFromTarget(null,
+                    true,
+                    () =>
+                    {
+                        if (_badgeAdorner == badgeAdorner)
+                        {
+                            DetachChild(badgeAdorner);
+                            IsVisible = false;
+                        }
+                    });
+            }
+            else
+            {
+                DetachChild(_badgeAdorner);
+                _badgeAdorner.DetachFromTarget(null, false);
+            }
         }
         else
         {
-            _badgeAdorner.DetachFromTarget(_adornerLayer, enableMotion);
-            _adornerLayer = null;
+            if (enableMotion)
+            {
+                var badgeAdorner = _badgeAdorner;
+                var adornerLayer = _adornerLayer;
+                if (adornerLayer is null)
+                {
+                    badgeAdorner.DetachFromTarget(null,
+                        true,
+                        () =>
+                        {
+                            if (_badgeAdorner == badgeAdorner)
+                            {
+                                DetachChild(badgeAdorner);
+                            }
+                        });
+                }
+                else
+                {
+                    badgeAdorner.DetachFromTarget(adornerLayer,
+                        true,
+                        () =>
+                        {
+                            if (_adornerLayer == adornerLayer)
+                            {
+                                _adornerLayer = null;
+                            }
+                        });
+                }
+            }
+            else
+            {
+                DetachChild(_badgeAdorner);
+                _badgeAdorner.DetachFromTarget(_adornerLayer, false);
+                _adornerLayer = null;
+            }
         }
 
         if (!enableMotion)
@@ -179,6 +238,7 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _adornerLayerRetryCount = 0;
         SetupShowZero();
         if (BadgeIsVisible)
         {
@@ -189,7 +249,69 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        Loaded -= HandleAdornerLayerRetryLoaded;
+        _adornerLayerRetryScheduled = false;
+        _adornerLayerRetryCount     = 0;
         HideAdorner(false);
+    }
+
+    private void ScheduleAdornerLayerRetry()
+    {
+        if (_adornerLayerRetryScheduled ||
+            !this.IsAttachedToVisualTree() ||
+            _adornerLayerRetryCount >= MaxAdornerLayerRetryCount)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = true;
+        if (IsLoaded)
+        {
+            if (_adornerLayerRetryCount == 0)
+            {
+                Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
+            }
+            else
+            {
+                DispatcherTimer.RunOnce(RetryPrepareAdorner, TimeSpan.FromMilliseconds(16));
+            }
+        }
+        else
+        {
+            Loaded += HandleAdornerLayerRetryLoaded;
+        }
+    }
+
+    private void HandleAdornerLayerRetryLoaded(object? sender, RoutedEventArgs e)
+    {
+        Loaded -= HandleAdornerLayerRetryLoaded;
+        Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
+    }
+
+    private void RetryPrepareAdorner()
+    {
+        if (!_adornerLayerRetryScheduled)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = false;
+        if (!this.IsAttachedToVisualTree() ||
+            !BadgeIsVisible ||
+            DecoratedTarget is null)
+        {
+            return;
+        }
+
+        _adornerLayerRetryCount++;
+        var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+        if (adornerLayer is null)
+        {
+            ScheduleAdornerLayerRetry();
+            return;
+        }
+
+        PrepareAdorner();
     }
 
     private protected virtual void SetupTokenBindings()
@@ -306,6 +428,20 @@ public abstract class AbstractCountBadge : Control, IMotionAwareControl
         if (change.Property == CountProperty ||
             change.Property == IsZeroVisibleProperty)
         {
+            if (change.Property == CountProperty)
+            {
+                var oldCount = change.GetOldValue<int>();
+                var newCount = change.GetNewValue<int>();
+                if (oldCount > 0 && newCount == 0 && !IsZeroVisible)
+                {
+                    _badgeAdorner?.PreserveCountTextForHide();
+                }
+            }
+            else if (Count == 0 && IsZeroVisible)
+            {
+                _badgeAdorner?.RefreshCountText();
+            }
+
             SetupShowZero();
         }
     }

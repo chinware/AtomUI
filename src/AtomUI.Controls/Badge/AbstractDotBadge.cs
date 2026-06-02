@@ -2,8 +2,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -91,6 +93,9 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
 
     private protected AbstractDotBadgeAdorner? _dotBadgeAdorner;
     private protected AdornerLayer? _adornerLayer;
+    private const int MaxAdornerLayerRetryCount = 30;
+    private bool _adornerLayerRetryScheduled;
+    private int _adornerLayerRetryCount;
 
     static AbstractDotBadge()
     {
@@ -119,9 +124,12 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
             {
+                ScheduleAdornerLayerRetry();
                 return;
             }
 
+            _adornerLayerRetryCount     = 0;
+            _adornerLayerRetryScheduled = false;
             dotBadgeAdorner.ApplyToTarget(_adornerLayer, this);
         } 
         else
@@ -143,12 +151,63 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
 
         if (DecoratedTarget is null)
         {
-            DetachChild(_dotBadgeAdorner);
+            if (enableMotion)
+            {
+                var dotBadgeAdorner = _dotBadgeAdorner;
+                dotBadgeAdorner.DetachFromTargetAsync(null,
+                    true,
+                    () =>
+                    {
+                        if (_dotBadgeAdorner == dotBadgeAdorner)
+                        {
+                            DetachChild(dotBadgeAdorner);
+                            IsVisible = false;
+                        }
+                    });
+            }
+            else
+            {
+                DetachChild(_dotBadgeAdorner);
+                _dotBadgeAdorner.DetachFromTargetAsync(null, false);
+            }
         }
         else
         {
-            _dotBadgeAdorner.DetachFromTargetAsync(_adornerLayer, enableMotion);
-            _adornerLayer = null;
+            if (enableMotion)
+            {
+                var dotBadgeAdorner = _dotBadgeAdorner;
+                var adornerLayer    = _adornerLayer;
+                if (adornerLayer is null)
+                {
+                    dotBadgeAdorner.DetachFromTargetAsync(null,
+                        true,
+                        () =>
+                        {
+                            if (_dotBadgeAdorner == dotBadgeAdorner)
+                            {
+                                DetachChild(dotBadgeAdorner);
+                            }
+                        });
+                }
+                else
+                {
+                    dotBadgeAdorner.DetachFromTargetAsync(adornerLayer,
+                        true,
+                        () =>
+                        {
+                            if (_adornerLayer == adornerLayer)
+                            {
+                                _adornerLayer = null;
+                            }
+                        });
+                }
+            }
+            else
+            {
+                DetachChild(_dotBadgeAdorner);
+                _dotBadgeAdorner.DetachFromTargetAsync(_adornerLayer, false);
+                _adornerLayer = null;
+            }
         }
 
         if (!enableMotion)
@@ -163,6 +222,7 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _adornerLayerRetryCount = 0;
         if (BadgeIsVisible)
         {
             PrepareAdorner();
@@ -172,7 +232,69 @@ public abstract class AbstractDotBadge : Control, IMotionAwareControl
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        Loaded -= HandleAdornerLayerRetryLoaded;
+        _adornerLayerRetryScheduled = false;
+        _adornerLayerRetryCount     = 0;
         HideAdorner(false);
+    }
+
+    private void ScheduleAdornerLayerRetry()
+    {
+        if (_adornerLayerRetryScheduled ||
+            !this.IsAttachedToVisualTree() ||
+            _adornerLayerRetryCount >= MaxAdornerLayerRetryCount)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = true;
+        if (IsLoaded)
+        {
+            if (_adornerLayerRetryCount == 0)
+            {
+                Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
+            }
+            else
+            {
+                DispatcherTimer.RunOnce(RetryPrepareAdorner, TimeSpan.FromMilliseconds(16));
+            }
+        }
+        else
+        {
+            Loaded += HandleAdornerLayerRetryLoaded;
+        }
+    }
+
+    private void HandleAdornerLayerRetryLoaded(object? sender, RoutedEventArgs e)
+    {
+        Loaded -= HandleAdornerLayerRetryLoaded;
+        Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
+    }
+
+    private void RetryPrepareAdorner()
+    {
+        if (!_adornerLayerRetryScheduled)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = false;
+        if (!this.IsAttachedToVisualTree() ||
+            !BadgeIsVisible ||
+            DecoratedTarget is null)
+        {
+            return;
+        }
+
+        _adornerLayerRetryCount++;
+        var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+        if (adornerLayer is null)
+        {
+            ScheduleAdornerLayerRetry();
+            return;
+        }
+
+        PrepareAdorner();
     }
 
     private protected virtual void SetupTokenBindings()

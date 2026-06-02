@@ -1,8 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -85,6 +87,9 @@ public abstract class AbstractRibbonBadge : Control
     
     private protected AbstractRibbonBadgeAdorner? _ribbonBadgeAdorner;
     private protected AdornerLayer? _adornerLayer;
+    private const int MaxAdornerLayerRetryCount = 30;
+    private bool _adornerLayerRetryScheduled;
+    private int _adornerLayerRetryCount;
 
     private void AttachChild(Control child)
     {
@@ -238,9 +243,12 @@ public abstract class AbstractRibbonBadge : Control
             // 这里需要抛出异常吗？
             if (_adornerLayer == null)
             {
+                ScheduleAdornerLayerRetry();
                 return;
             }
 
+            _adornerLayerRetryCount     = 0;
+            _adornerLayerRetryScheduled = false;
             AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
             AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, true);
             _adornerLayer.Children.Add(ribbonBadgeAdorner);
@@ -268,6 +276,7 @@ public abstract class AbstractRibbonBadge : Control
         }
         else
         {
+            DetachChild(_ribbonBadgeAdorner);
             DetachLayerAdorner();
         }
     }
@@ -275,6 +284,7 @@ public abstract class AbstractRibbonBadge : Control
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _adornerLayerRetryCount = 0;
         if (BadgeIsVisible)
         {
             PrepareAdorner();
@@ -284,6 +294,68 @@ public abstract class AbstractRibbonBadge : Control
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        Loaded -= HandleAdornerLayerRetryLoaded;
+        _adornerLayerRetryScheduled = false;
+        _adornerLayerRetryCount     = 0;
         HideAdorner();
+    }
+
+    private void ScheduleAdornerLayerRetry()
+    {
+        if (_adornerLayerRetryScheduled ||
+            !this.IsAttachedToVisualTree() ||
+            _adornerLayerRetryCount >= MaxAdornerLayerRetryCount)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = true;
+        if (IsLoaded)
+        {
+            if (_adornerLayerRetryCount == 0)
+            {
+                Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
+            }
+            else
+            {
+                DispatcherTimer.RunOnce(RetryPrepareAdorner, TimeSpan.FromMilliseconds(16));
+            }
+        }
+        else
+        {
+            Loaded += HandleAdornerLayerRetryLoaded;
+        }
+    }
+
+    private void HandleAdornerLayerRetryLoaded(object? sender, RoutedEventArgs e)
+    {
+        Loaded -= HandleAdornerLayerRetryLoaded;
+        Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
+    }
+
+    private void RetryPrepareAdorner()
+    {
+        if (!_adornerLayerRetryScheduled)
+        {
+            return;
+        }
+
+        _adornerLayerRetryScheduled = false;
+        if (!this.IsAttachedToVisualTree() ||
+            !BadgeIsVisible ||
+            DecoratedTarget is null)
+        {
+            return;
+        }
+
+        _adornerLayerRetryCount++;
+        var adornerLayer = AdornerLayer.GetAdornerLayer(this);
+        if (adornerLayer is null)
+        {
+            ScheduleAdornerLayerRetry();
+            return;
+        }
+
+        PrepareAdorner();
     }
 }
