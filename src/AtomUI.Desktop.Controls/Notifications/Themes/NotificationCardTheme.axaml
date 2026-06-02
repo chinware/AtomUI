@@ -5,14 +5,14 @@
     xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <atom:StringToSelectableTextBlockConverter x:Key="StringToSelectableTextBlockConverter" />
-    <atom:NotificationProgressBarVisibleConverter x:Key="NotificationProgressBarVisibleConverter" />
     <ControlTheme x:Key="{x:Type atom:NotificationCard}" TargetType="atom:NotificationCard">
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:LayoutAwareMotionActor Name="{x:Static atom:BaseMotionActor.MotionActorPart}"
                                              ClipToBounds="False">
                     <Border Name="Frame">
-                        <Grid ColumnDefinitions="Auto, *"
+                        <Grid Name="PART_Layout"
+                              ColumnDefinitions="Auto, *"
                               RowDefinitions="Auto, *, Auto">
                             <atom:IconPresenter
                                 Name="IconPresenter"
@@ -41,20 +41,6 @@
                                 Grid.Column="1"
                                 Content="{TemplateBinding Content, Converter={StaticResource StringToSelectableTextBlockConverter}}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
-                            <atom:NotificationProgressBar
-                                Name="ProgressBar"
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Expiration="{Binding Expiration, Mode = OneTime, RelativeSource={RelativeSource TemplatedParent}}"
-                                CurrentExpiration="{TemplateBinding Expiration}">
-                                <atom:NotificationProgressBar.IsVisible>
-                                    <MultiBinding Converter="{StaticResource NotificationProgressBarVisibleConverter}">
-                                        <TemplateBinding Property="IsShowProgress" />
-                                        <TemplateBinding Property="Expiration" />
-                                    </MultiBinding>
-                                </atom:NotificationProgressBar.IsVisible>
-                            </atom:NotificationProgressBar>
                         </Grid>
                     </Border>
                 </atom:LayoutAwareMotionActor>
