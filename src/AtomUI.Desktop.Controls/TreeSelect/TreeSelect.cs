@@ -476,6 +476,10 @@ public class TreeSelect : AbstractSelect
         ConfigurePlaceholderVisible();
         UpdatePseudoClasses();
         SetupContentRightAddOnBindings(e);
+        if (IsDropDownOpen)
+        {
+            EnsurePopupContent();
+        }
     }
 
     protected override void EnsurePopupContent()

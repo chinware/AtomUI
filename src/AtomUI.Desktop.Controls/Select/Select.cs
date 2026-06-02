@@ -531,6 +531,10 @@ public partial class Select : AbstractSelect
         ConfigureSingleFilterTextBox();
         ConfigureEffectiveSearchEnabled();
         SetupContentRightAddOnBindings(e);
+        if (IsDropDownOpen)
+        {
+            EnsurePopupContent();
+        }
     }
 
     protected override void EnsurePopupContent()
