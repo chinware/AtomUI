@@ -640,15 +640,28 @@ public class Window : AvaloniaWindow,
     {
         base.OnPropertyChanged(change);
         if (change.Property == WindowStateProperty ||
-            change.Property == ExtendClientAreaTitleBarHeightHintProperty)
+            change.Property == ExtendClientAreaTitleBarHeightHintProperty ||
+            change.Property == TitleProperty)
         {
             if (OperatingSystem.IsMacOS())
             {
-                // WindowState 切换（最大化/最小化/全屏）会让 macOS 重置按钮位置，
-                // 此时即使输入参数相同也必须重新下发一次布局，否则缓存会把重置后的
-                // 错误位置误判为“已是目标位置”而跳过修正。
+                // WindowState / Title 变化都可能让 AppKit 重置 standard button frame。
+                // 即使 AtomUI 的布局输入没有变化，原生按钮当前位置也可能已经偏离目标，
+                // 所以必须先让缓存失效再重新下发布局。
                 _macOsCacheValid = false;
                 ConfigureMacOsWindow();
+                if (change.Property == TitleProperty)
+                {
+                    Dispatcher.Post(() =>
+                    {
+                        if (!OperatingSystem.IsMacOS())
+                        {
+                            return;
+                        }
+                        _macOsCacheValid = false;
+                        ConfigureMacOsWindow();
+                    }, Avalonia.Threading.DispatcherPriority.Loaded);
+                }
             }
         }
         if (change.Property == WindowStateProperty ||
