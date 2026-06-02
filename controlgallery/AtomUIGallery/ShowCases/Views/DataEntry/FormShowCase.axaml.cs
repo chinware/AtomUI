@@ -1,241 +1,79 @@
-using System.Diagnostics;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.ShowCaseControls;
 using AtomUIGallery.ShowCases.ViewModels;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Layout;
-using ReactiveUI;
 using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Views;
 
 public partial class FormShowCase : ReactiveUserControl<FormViewModel>
 {
-    private WindowMessageManager? _messageManager;
+    private const string BasicScenario      = "Basic";
+    private const string LayoutScenario     = "Layout";
+    private const string StatesScenario     = "States";
+    private const string ValidationScenario = "Validation";
+    private const string DynamicScenario    = "Dynamic";
+    private const string PresetsScenario    = "Presets";
+    private const string ControlsScenario   = "Controls";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+
     public FormShowCase()
     {
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is FormViewModel viewModel)
-            {
-                ConfigureSliderMarks(viewModel);
-                ConfigureBasicForm(viewModel);
-                ConfigureLayoutForm(disposables);
-                this.OneWayBind(viewModel, vm => vm.SliderMarks,
-                    v => v.FormSliderItem.Marks).DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicFormInitialValues,
-                    v => v.BasicForm.InitialValues).DisposeWith(disposables);
-
-                Disposable.Create(() =>
-                {
-                    viewModel.BasicFormInitialValues = null;
-                    viewModel.SliderMarks            = null;
-                }).DisposeWith(disposables);
-            }
-        });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
     }
 
-    private void ConfigureBasicForm(FormViewModel viewModel)
+    protected override void OnDataContextChanged(EventArgs e)
     {
-        var values = new FormValues();
-        values.Add("remember", true);
-        viewModel.BasicFormInitialValues = values;
-    }
-    
-    private void ConfigureLayoutForm(CompositeDisposable disposables)
-    {
-        LayoutCaseForm.PropertyChanged += HandleLayoutCaseFormPropertyChanged;
-        disposables.Add(Disposable.Create(() => LayoutCaseForm.PropertyChanged -= HandleLayoutCaseFormPropertyChanged));
-    }
-
-    private void HandleLayoutCaseFormPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
-    {
-        if (args.Property == Form.FormLayoutProperty)
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
         {
-            if (args.NewValue is FormLayout layout)
-            {
-                if (layout == FormLayout.Inline)
-                {
-                    LayoutCaseForm.MinWidth            = 0;
-                    LayoutCaseForm.HorizontalAlignment = HorizontalAlignment.Stretch;
-                }
-                else
-                {
-                    LayoutCaseForm.MinWidth            = 600;
-                    LayoutCaseForm.HorizontalAlignment = HorizontalAlignment.Left;
-                }
-            }
-        }
-    }
-    
-    public void HandleFormLayoutOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
-    {
-        if (DataContext is FormViewModel vm)
-        {
-            if (args.CheckedOption.Tag is FormLayout formLayout)
-            {
-                vm.FormLayout = formLayout;
-            }
+            content.DataContext = DataContext;
         }
     }
 
-    private void HandleFormStyleVariantChanged(object? sender, SelectionChangedEventArgs args)
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        if (sender is Segmented segmented)
-        {
-            if (segmented.SelectedItem is SegmentedItem segmentedItem)
-            {
-                var styleVariant = segmentedItem.Tag as InputControlStyleVariant?;
-                Debug.Assert(styleVariant != null);
-                if (DataContext is FormViewModel vm)
-                {
-                    vm.FormStyleVariant = styleVariant.Value;
-                }
-            }
-        }
-    }
-    
-    private void HandleFormRequiredMarkChanged(object? sender, OptionCheckedChangedEventArgs args)
-    {
-        if (DataContext is FormViewModel vm)
-        {
-            if (args.CheckedOption.Tag is FormRequiredMark requiredMark)
-            {
-                vm.FormRequiredMark = requiredMark;
-            }
-        }
-    }
-    
-    private void HandleFormSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs args)
-    {
-        if (DataContext is FormViewModel vm)
-        {
-            if (args.CheckedOption.Tag is SizeType sizeType)
-            {
-                vm.FormSizeType = sizeType;
-            }
-        }
-    }
-    
-    private void HandleFillClicked(object? sender, RoutedEventArgs args)
-    {
-        var formValues = new FormValues();
-        formValues.Add("url", "https://taobao.com/");
-        NoBlockRuleForm.SetFormValues(formValues);
-    }
-    
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _messageManager?.Dispose();
-        _messageManager = null;
+        EnsureSelectedScenarioContent();
     }
 
-    private void HandleNoBlockFormSubmitted(object? sender, FormSubmittedEventArgs args)
+    private void EnsureSelectedScenarioContent()
     {
-        GetMessageManager()?.Show(new Message(
-            type: MessageType.Success,
-            content: "Submit success!"
-        ));
-    }
-    
-    private void HandleNoBlockFormValidated(object? sender, FormValidatedEventArgs args)
-    {
-        if (args.Result == FormValidateResult.Error)
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
         {
-            GetMessageManager()?.Show(new Message(
-                type: MessageType.Error,
-                content: "Submit failed!"
-            ));
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
         }
     }
 
-    private WindowMessageManager? GetMessageManager()
+    private static Control CreateScenarioContent(string scenario)
     {
-        if (_messageManager is not null)
+        return scenario switch
         {
-            return _messageManager;
-        }
-
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
-        {
-            return null;
-        }
-
-        _messageManager = new WindowMessageManager(topLevel)
-        {
-            MaxItems = 10
+            BasicScenario      => new FormBasicShowCase(),
+            LayoutScenario     => new FormLayoutShowCase(),
+            StatesScenario     => new FormStateShowCase(),
+            ValidationScenario => new FormValidationShowCase(),
+            DynamicScenario    => new FormDynamicShowCase(),
+            PresetsScenario    => new FormPresetShowCase(),
+            ControlsScenario   => new FormControlsShowCase(),
+            _                  => throw new InvalidOperationException($"Unknown form scenario: {scenario}")
         };
-        return _messageManager;
-    }
-
-    private static int Form_GID = 3;
-    
-    private void HandleAddFormItem(object? sender, RoutedEventArgs args)
-    {
-        var id       = Form_GID++;
-        var formItem = new FormItem();
-        formItem.FieldName  = $"Passengers_{id}";
-        formItem.LabelText  = $"passengers_{id}";
-        formItem.Content    = new LineEdit();
-        formItem.Validators = new List<IFormValidator>()
-        {
-            new FormStringNotEmptyValidator()
-            {
-                Message = "Please input passenger's name or delete this field!",
-            }
-        };
-        var insertIndex = 0;
-        for (var i = 0; i < DynamicForm.Items.Count; ++i)
-        {
-            var item = DynamicForm.Items[i];
-            if (item is FormActionsItem)
-            {
-                insertIndex = i;
-                break;
-            }
-        }
-        
-        insertIndex = Math.Max(0, insertIndex);
-        DynamicForm.Items.Insert(insertIndex, formItem);
-    }
-    
-    private void HandleAddFormItemAtHead(object? sender, RoutedEventArgs args)
-    {
-        var id       = Form_GID++;
-        var formItem = new FormItem();
-        formItem.FieldName = $"Passengers_{id}";
-        formItem.LabelText = $"passengers_{id}";
-        formItem.Content   = new LineEdit();
-        formItem.Validators = new List<IFormValidator>()
-        {
-            new FormStringNotEmptyValidator()
-            {
-                Message = "Please input passenger's name or delete this field!",
-            }
-        };
-        
-        DynamicForm.Items.Insert(0, formItem);
-    }
-
-    private void ConfigureSliderMarks(FormViewModel vm)
-    {
-        var marks = new List<SliderMark>();
-        marks.Add(new SliderMark("A", 0));
-        marks.Add(new SliderMark("B", 20));
-        marks.Add(new SliderMark("C", 40));
-        marks.Add(new SliderMark("D", 60));
-        marks.Add(new SliderMark("E", 80));
-        marks.Add(new SliderMark("F", 100));
-        vm.SliderMarks = marks;
     }
 }
 

@@ -349,7 +349,7 @@ internal static class Program
                 FormViewModel.ID,
                 "AtomUIGallery.ShowCases.Views.FormShowCase",
                 "controlgallery/AtomUIGallery/ShowCases/Views/DataEntry/FormShowCase.axaml",
-                stats => stats.ShowCaseItemCount >= 15 && stats.LineEditCount >= 40),
+                stats => stats.ShowCaseItemCount >= 2 && stats.LineEditCount >= 3),
             ["treeselect"] = new(
                 "TreeSelectShowCase",
                 TreeSelectViewModel.ID,
