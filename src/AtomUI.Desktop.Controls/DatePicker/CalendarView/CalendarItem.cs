@@ -68,7 +68,7 @@ internal class CalendarItem : TemplatedControl
             (o, v) => o.IsMonthViewMode = v);
     
     internal static readonly StyledProperty<Thickness> HeaderBorderThicknessProperty =
-        AvaloniaProperty.Register<Calendar, Thickness>(nameof(HeaderBorderThickness));
+        AvaloniaProperty.Register<CalendarItem, Thickness>(nameof(HeaderBorderThickness));
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();

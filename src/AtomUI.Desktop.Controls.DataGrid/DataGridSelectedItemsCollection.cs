@@ -197,9 +197,44 @@ internal class DataGridSelectedItemsCollection : IList
         OwningGrid.SetRowSelection(rowIndex, false /*isSelected*/, false /*setAnchorSlot*/);
     }
 
-    public void CopyTo(System.Array array, int index)
+    public void CopyTo(Array array, int index)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(array);
+
+        if (array.Rank != 1)
+        {
+            throw new ArgumentException("Only single dimensional arrays are supported.", nameof(array));
+        }
+
+        int lowerBound = array.GetLowerBound(0);
+        int length     = array.GetLength(0);
+        if (index < lowerBound || index > lowerBound + length)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        if (length - (index - lowerBound) < Count)
+        {
+            throw new ArgumentException("Destination array is not long enough.", nameof(array));
+        }
+
+        try
+        {
+            foreach (object? item in this)
+            {
+                array.SetValue(item, index++);
+            }
+        }
+        catch (InvalidCastException exception)
+        {
+            throw new ArgumentException("Destination array type is not compatible with selected items.", nameof(array),
+                exception);
+        }
+        catch (ArrayTypeMismatchException exception)
+        {
+            throw new ArgumentException("Destination array type is not compatible with selected items.", nameof(array),
+                exception);
+        }
     }
 
     public IEnumerator GetEnumerator()

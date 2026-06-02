@@ -49,7 +49,7 @@ internal class TimelineIndicator : TemplatedControl
             (o, v) => o.IsLast = v);
 
     internal static readonly DirectProperty<TimelineIndicator, double> IndicatorMinHeightProperty =
-        AvaloniaProperty.RegisterDirect<TimelineIndicator, double>(nameof(RelativeLineHeight),
+        AvaloniaProperty.RegisterDirect<TimelineIndicator, double>(nameof(IndicatorMinHeight),
             o => o.IndicatorMinHeight,
             (o, v) => o.IndicatorMinHeight = v);
     

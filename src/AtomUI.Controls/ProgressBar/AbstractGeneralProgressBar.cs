@@ -673,7 +673,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
         PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInner, PercentPosition.IsInner);
         PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerStart, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.Start);
         PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerCenter, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.Center);
-        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerCenter, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.End);
+        PseudoClasses.Set(ProgressBarPseudoClass.PercentLabelInnerEnd, PercentPosition.IsInner && PercentPosition.Alignment == LinePercentAlignment.End);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

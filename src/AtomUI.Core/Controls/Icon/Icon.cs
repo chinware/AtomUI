@@ -41,7 +41,7 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     
     public static readonly StyledProperty<IBrush?> FallbackBrushProperty =
         AvaloniaProperty.Register<Icon, IBrush?>(
-            nameof(Icon), defaultValue: Brushes.White);
+            nameof(FallbackBrush), defaultValue: Brushes.White);
     
     public static readonly StyledProperty<IconThemeType> IconThemeProperty =
         AvaloniaProperty.Register<Icon, IconThemeType>(

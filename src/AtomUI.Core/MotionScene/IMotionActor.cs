@@ -25,5 +25,5 @@ public abstract class MotionActorControlProperty : AvaloniaObject
         AvaloniaProperty.Register<MotionActorControlProperty, ITransform?>(MotionTransformPropertyName);
     
     public static readonly StyledProperty<TransformOperations?> MotionTransformOperationsProperty =
-        AvaloniaProperty.Register<MotionActorControlProperty, TransformOperations?>(nameof(MotionTransformOperationsPropertyName));
+        AvaloniaProperty.Register<MotionActorControlProperty, TransformOperations?>(MotionTransformOperationsPropertyName);
 }

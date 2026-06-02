@@ -21,7 +21,7 @@ internal class WaveSpiritDecorator : Control
         AvaloniaProperty.Register<WaveSpiritDecorator, TimeSpan>(nameof(SizeMotionDuration));
     
     public static readonly StyledProperty<TimeSpan> OpacityMotionDurationProperty =
-        AvaloniaProperty.Register<WaveSpiritDecorator, TimeSpan>(nameof(SizeMotionDuration));
+        AvaloniaProperty.Register<WaveSpiritDecorator, TimeSpan>(nameof(OpacityMotionDuration));
     
     public static readonly StyledProperty<Easing> SizeEasingCurveProperty =
         AvaloniaProperty.Register<WaveSpiritDecorator, Easing>(nameof(SizeEasingCurve));
