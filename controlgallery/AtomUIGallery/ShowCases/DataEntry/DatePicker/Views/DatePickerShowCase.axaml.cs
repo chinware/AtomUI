@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.DatePicker;
 
 public partial class DatePickerShowCase : ReactiveUserControl<DatePickerViewModel>
 {
+    public const string LanguageId = nameof(DatePickerShowCase);
+
     public DatePickerShowCase()
     {
         this.WhenActivated(disposables =>

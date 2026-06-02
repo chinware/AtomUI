@@ -7,8 +7,8 @@
              xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic"
-                              Description="Simplest Usage. Badge will be hidden when count is 0, but we can use showZero to show it.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource BasicTitle}"
+                              Description="{gallery:BadgeShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
                     <Border Width="40"
@@ -25,8 +25,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Overflow Count"
-                              Description="${overflowCount}+ is displayed when count is larger than overflowCount. The default value of overflowCount is 99.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource OverflowCountTitle}"
+                              Description="{gallery:BadgeShowCaseLangResource OverflowCountDescription}">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="99">
                     <Border Width="40"
@@ -55,8 +55,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Offset"
-                              Description="Set offset of the badge dot, the format is [left, top], which represents the offset of the status dot from the left and top of the default position.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource OffsetTitle}"
+                              Description="{gallery:BadgeShowCaseLangResource OffsetDescription}">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5" Offset="10, 10">
                     <Border Width="40"
@@ -67,7 +67,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Size" Description="Set size of numeral Badge.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource SizeTitle}" Description="{gallery:BadgeShowCaseLangResource SizeDescription}">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
                     <Border Width="40"
@@ -84,7 +84,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Standalone" Description="Used in standalone when children is empty.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource StandaloneTitle}" Description="{gallery:BadgeShowCaseLangResource StandaloneDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:ToggleSwitch IsChecked="{Binding StandaloneSwitchChecked}" />
                 <atom:CountBadge BadgeColor="#faad14"
@@ -95,7 +95,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Dynamic" Description="The count will be animated as it changes.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource DynamicTitle}" Description="{gallery:BadgeShowCaseLangResource DynamicDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:CountBadge Count="{Binding DynamicBadgeCount}" OverflowCount="99">
@@ -131,8 +131,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Red badge"
-                              Description="This will simply display a red badge, without a specific count. If count equals 0, it won't display the dot.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource RedBadgeTitle}"
+                              Description="{gallery:BadgeShowCaseLangResource RedBadgeDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal">
                     <atom:DotBadge Offset="-7,8">
@@ -146,7 +146,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Status" Description="Standalone badge with status.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource StatusTitle}" Description="{gallery:BadgeShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:DotBadge Status="Success" />
@@ -165,7 +165,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Ribbon" Description="Use ribbon badge.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource RibbonTitle}" Description="{gallery:BadgeShowCaseLangResource RibbonDescription}">
             <StackPanel Margin="20,0,20,0"
                         Orientation="Vertical"
                         Spacing="20">
@@ -304,8 +304,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Colorful Badge"
-                              Description="We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource ColorfulBadgeTitle}"
+                              Description="{gallery:BadgeShowCaseLangResource ColorfulBadgeDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Separator Title="Presets"
                                 FontWeight="SemiBold"

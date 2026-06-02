@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.Expander;
 
 public partial class ExpanderShowCase : ReactiveUserControl<ExpanderViewModel>
 {
+    public const string LanguageId = nameof(ExpanderShowCase);
+
     public ExpanderShowCase()
     {
         this.WhenActivated(disposables =>

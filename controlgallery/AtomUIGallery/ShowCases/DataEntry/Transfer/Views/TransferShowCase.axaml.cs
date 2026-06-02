@@ -12,6 +12,8 @@ namespace AtomUIGallery.ShowCases.Transfer;
 
 public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
 {
+    public const string LanguageId = nameof(TransferShowCase);
+
     public TransferShowCase()
     {
         this.WhenActivated(disposables =>

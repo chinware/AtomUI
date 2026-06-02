@@ -5,6 +5,8 @@ namespace AtomUIGallery.ShowCases.Badge;
 
 public partial class BadgeShowCase : UserControl, IViewFor<BadgeViewModel>
 {
+    public const string LanguageId = nameof(BadgeShowCase);
+
     public BadgeShowCase()
     {
         InitializeComponent();

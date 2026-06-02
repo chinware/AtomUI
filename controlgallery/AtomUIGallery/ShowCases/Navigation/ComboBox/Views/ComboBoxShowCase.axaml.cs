@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.ComboBox;
 
 public partial class ComboBoxShowCase : ReactiveUserControl<ComboBoxViewModel>
 {
+    public const string LanguageId = nameof(ComboBoxShowCase);
+
     public ComboBoxShowCase()
     {
         this.WhenActivated(disposables =>

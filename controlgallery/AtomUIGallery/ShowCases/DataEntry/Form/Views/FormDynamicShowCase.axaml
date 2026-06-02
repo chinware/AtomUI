@@ -9,8 +9,8 @@
     <gallery:ShowCasePanel>
         
         <gallery:ShowCaseItem
-            Title="Dynamic Form Item"
-            Description="Add or remove form items dynamically. add function support config initial value."
+            Title="{gallery:FormShowCaseLangResource DynamicFormItemTitle}"
+            Description="{gallery:FormShowCaseLangResource DynamicFormItemDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"

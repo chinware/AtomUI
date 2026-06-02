@@ -5,6 +5,8 @@ namespace AtomUIGallery.ShowCases.Space;
 
 public partial class SpaceShowCase : ReactiveUserControl<SpaceViewModel>
 {
+    public const string LanguageId = nameof(SpaceShowCase);
+
     private const string BasicScenario         = "Basic";
     private const string SizeScenario          = "Size";
     private const string AlignScenario         = "Align";

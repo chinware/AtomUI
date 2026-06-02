@@ -8,8 +8,8 @@
              x:DataType="vm:TreeViewViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.">
+            Title="{gallery:TreeViewShowCaseLangResource BasicTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource BasicDescription}">
             <atom:TreeView Name="BasicTree" ToggleType="CheckBox">
                 <atom:TreeViewItem Header="parent 1" ItemKey="0-0">
                     <atom:TreeViewItem Header="parent 1-0" ItemKey="0-0-0">
@@ -29,8 +29,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate by template"
-            Description="You can use the Template mechanism to generate tree nodes">
+            Title="{gallery:TreeViewShowCaseLangResource GenerateByTemplateTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource GenerateByTemplateDescription}">
             <atom:TreeView Name="BasicTplTree" ToggleType="CheckBox">
                 <atom:TreeView.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
@@ -41,8 +41,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Block Node"
-            Description="Block Node.">
+            Title="{gallery:TreeViewShowCaseLangResource BlockNodeTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource BlockNodeDescription}">
             <atom:TreeView ToggleType="CheckBox" IsDefaultExpandAll="True" NodeHoverMode="Block">
                 <atom:TreeViewItem Header="parent">
                     <atom:TreeViewItem Header="child 1" IsEnabled="False" />
@@ -52,8 +52,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Tree with line"
-            Description="Tree with connected line between nodes, turn on by showLine, customize the preset icon by switcherIcon.">
+            Title="{gallery:TreeViewShowCaseLangResource TreeWithLineTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource TreeWithLineDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock VerticalAlignment="Center">showLine:</TextBlock>
@@ -129,8 +129,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="draggable"
-            Description="Drag treeNode to insert after the other treeNode or insert into the other parent TreeNode.">
+            Title="{gallery:TreeViewShowCaseLangResource DraggableTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource DraggableDescription}">
             <atom:TreeView IsDraggable="True" NodeHoverMode="Block">
                 <atom:TreeViewItem Header="0-0">
                     <atom:TreeViewItem Header="0-0-0">
@@ -163,8 +163,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Customize collapse/expand icon"
-            Description="customize collapse/expand icon of tree node">
+            Title="{gallery:TreeViewShowCaseLangResource CustomizeExpandIconTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource CustomizeExpandIconDescription}">
             <atom:TreeView Name="CustomizeCollapseExpandTree"
                            DefaultExpandedPaths="{Binding CustomizeCollapseExpandTreeDefaultExpandedPaths}"
                            IsSwitcherRotation="True">
@@ -191,8 +191,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="load data asynchronously"
-            Description="To load data asynchronously when click to expand a treeNode.">
+            Title="{gallery:TreeViewShowCaseLangResource AsyncLoadDataTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource AsyncLoadDataDescription}">
             <atom:TreeView Name="AsyncLoadTree">
                 <atom:TreeView.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
@@ -203,8 +203,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Searchable by TreeDataTemplate"
-            Description="Searchable Tree use ItemsSource datasource.">
+            Title="{gallery:TreeViewShowCaseLangResource SearchableByTemplateTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource SearchableByTemplateDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterItemsSourceTreeClicked" />
@@ -219,8 +219,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Searchable"
-            Description="Searchable Tree.">
+            Title="{gallery:TreeViewShowCaseLangResource SearchableTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource SearchableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterTreeClicked" />
@@ -258,8 +258,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Context menu"
-            Description="Right-click any node to open a context menu. Toggle IsSelectOnRightClick to switch between following the right-clicked node (default) and keeping the existing selection untouched.">
+            Title="{gallery:TreeViewShowCaseLangResource ContextMenuTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource ContextMenuDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock VerticalAlignment="Center">IsSelectOnRightClick:</TextBlock>

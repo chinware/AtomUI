@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Drag Column sorting"
-                              Description="Drag the Header to sort the columns."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource DragColumnSortingTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource DragColumnSortingDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Separator Title="Normal" TitlePosition="Left"
@@ -74,8 +74,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Drag sorting with handler"
-                              Description="You can drag the row indicator column to sort the rows."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource DragSortingWithHandlerTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource DragSortingWithHandlerDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Separator Title="Normal" TitlePosition="Left"

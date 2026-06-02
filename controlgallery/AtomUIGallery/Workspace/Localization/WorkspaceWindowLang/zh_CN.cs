@@ -7,6 +7,8 @@ namespace AtomUIGallery.Workspace.Localization.WorkspaceWindowLang;
 [LanguageProvider(LanguageCode.zh_CN, WorkspaceWindow.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string WindowTitle = "AtomUI 桌面控件库";
+
     public const string MenuItemSettings = "设置";
     public const string MenuItemTheme = "主题";
     public const string MenuItemLanguage = "语言";

@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.Splitter;
 
 public partial class SplitterShowCase : ReactiveUserControl<SplitterViewModel>
 {
+    public const string LanguageId = nameof(SplitterShowCase);
+
     public SplitterShowCase()
     {
         this.WhenActivated(_ => { });

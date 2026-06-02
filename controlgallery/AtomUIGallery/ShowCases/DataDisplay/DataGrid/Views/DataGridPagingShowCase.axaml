@@ -6,7 +6,9 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Basic Paging" Description="Basic pagination table." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource BasicPagingTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource BasicPagingDescription}"
+                              IsOccupyEntireRow="True">
             <StackPanel Spacing="20">
                 <StackPanel Spacing="10">
                     <StackPanel Orientation="Horizontal" Spacing="10">

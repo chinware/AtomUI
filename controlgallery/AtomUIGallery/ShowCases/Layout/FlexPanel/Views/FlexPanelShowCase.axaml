@@ -7,7 +7,7 @@
              x:DataType="vm:FlexPanelViewModel">
 
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic Layout" Description="The basic usage." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource BasicLayoutTitle}" Description="{gallery:FlexPanelShowCaseLangResource BasicLayoutDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:RadioButton x:Name="DirectionHorizontal" IsChecked="True">horizontal</atom:RadioButton>
@@ -29,7 +29,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Alignment" Description="Set justify and align." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AlignmentTitle}" Description="{gallery:FlexPanelShowCaseLangResource AlignmentDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:TextBlock FontWeight="Bold">Select justify:</atom:TextBlock>
                 <atom:Segmented x:Name="JustifySegmented">
@@ -63,7 +63,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Gap" Description="Set spacing between items." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource GapTitle}" Description="{gallery:FlexPanelShowCaseLangResource GapDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:RadioButton x:Name="GapSmall" IsChecked="True" GroupName="GapMode">small</atom:RadioButton>
@@ -91,7 +91,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
         
-        <gallery:ShowCaseItem Title="Align Self" Description="Override alignment per item with Flex.AlignSelf." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AlignSelfTitle}" Description="{gallery:FlexPanelShowCaseLangResource AlignSelfDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Segmented x:Name="AlignSelfSegmented">
                     <atom:SegmentedItem IsSelected="True">flex-start</atom:SegmentedItem>
@@ -112,7 +112,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Auto Wrap" Description="Items wrap automatically." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AutoWrapTitle}" Description="{gallery:FlexPanelShowCaseLangResource AutoWrapDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:RadioButton x:Name="WrapEnabled" IsChecked="True" GroupName="WrapMode">wrap</atom:RadioButton>
@@ -149,7 +149,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Order" Description="Change item order with Flex.Order." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource OrderTitle}" Description="{gallery:FlexPanelShowCaseLangResource OrderDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Segmented x:Name="OrderSegmented">
                     <atom:SegmentedItem IsSelected="True">default</atom:SegmentedItem>
@@ -176,7 +176,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Basis" Description="Control initial size with Flex.Basis." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource BasisTitle}" Description="{gallery:FlexPanelShowCaseLangResource BasisDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <atom:Segmented x:Name="BasisKindSegmented">
@@ -226,7 +226,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Flex Grow" Description="Distribute free space with Flex.Grow." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource FlexGrowTitle}" Description="{gallery:FlexPanelShowCaseLangResource FlexGrowDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <atom:TextBlock VerticalAlignment="Center">Item A:</atom:TextBlock>
@@ -261,7 +261,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Flex Shrink (Weighted)" Description="Shrink is weighted by each item's base size." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource FlexShrinkTitle}" Description="{gallery:FlexPanelShowCaseLangResource FlexShrinkDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <atom:TextBlock VerticalAlignment="Center">Container width:</atom:TextBlock>
@@ -309,7 +309,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
         
-        <gallery:ShowCaseItem Title="Combination" Description="Nested flex panels for complex layouts." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource CombinationTitle}" Description="{gallery:FlexPanelShowCaseLangResource CombinationDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="8" Padding="16">
                     <atom:FlexPanel Direction="Row" ColumnSpacing="16" AlignItems="Center">
@@ -335,7 +335,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
         
-                <gallery:ShowCaseItem Title="Flex Playground" Description="Adjust all flex properties." IsOccupyEntireRow="True">
+                <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource PlaygroundTitle}" Description="{gallery:FlexPanelShowCaseLangResource PlaygroundDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Spacing="12">
                     <atom:TextBlock FontWeight="Bold">Panel</atom:TextBlock>

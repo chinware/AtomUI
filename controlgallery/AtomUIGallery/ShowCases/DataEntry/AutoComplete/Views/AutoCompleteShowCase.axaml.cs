@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.AutoComplete;
 
 public partial class AutoCompleteShowCase : ReactiveUserControl<AutoCompleteViewModel>
 {
+    public const string LanguageId = nameof(AutoCompleteShowCase);
+
     public AutoCompleteShowCase()
     {
         this.WhenActivated(disposables =>

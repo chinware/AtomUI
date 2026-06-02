@@ -8,16 +8,16 @@
              x:DataType="vm:RadioButtonViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The simplest use.">
+            Title="{gallery:RadioButtonShowCaseLangResource BasicTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource BasicDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
                 <atom:RadioButton>Radio</atom:RadioButton>
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Disabled state of RadioButton.">
+            Title="{gallery:RadioButtonShowCaseLangResource DisabledTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource DisabledDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <atom:RadioButton x:Name="ToggleDisabledRadioUnChecked"
@@ -36,8 +36,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Radio Group"
-            Description="A group of radio components.">
+            Title="{gallery:RadioButtonShowCaseLangResource RadioGroupTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource RadioGroupDescription}">
             <atom:RadioButtonGroup>
                 <atom:RadioButton>
                     <StackPanel Spacing="5" Orientation="Vertical">
@@ -67,8 +67,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Vertical Radio Group"
-            Description="Vertical Radio Group.">
+            Title="{gallery:RadioButtonShowCaseLangResource VerticalRadioGroupTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource VerticalRadioGroupDescription}">
             <atom:RadioButtonGroup Orientation="Vertical" HorizontalAlignment="Left">
                 <atom:RadioButton>Option A</atom:RadioButton>
                 <atom:RadioButton>Option B</atom:RadioButton>
@@ -78,14 +78,14 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Radio Group by Items source"
-            Description="Radio Group.">
+            Title="{gallery:RadioButtonShowCaseLangResource ItemsSourceRadioGroupTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource ItemsSourceRadioGroupDescription}">
             <atom:RadioButtonGroup Name="RadioButtonGroup" HorizontalAlignment="Left"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Option Button"
-            Description="OptionButton Group.">
+            Title="{gallery:RadioButtonShowCaseLangResource OptionButtonTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource OptionButtonDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <atom:RadioButton IsChecked="True">Apple</atom:RadioButton>
@@ -112,8 +112,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Option Button with icon"
-            Description="OptionButton Group with icon.">
+            Title="{gallery:RadioButtonShowCaseLangResource OptionButtonWithIconTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource OptionButtonWithIconDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:OptionButtonGroup ButtonStyle="Solid">
                     <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">macOS</atom:OptionButton>
@@ -158,8 +158,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="option style"
-            Description="The combination of option button style.">
+            Title="{gallery:RadioButtonShowCaseLangResource OptionStyleTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource OptionStyleDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:OptionButtonGroup>
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>
@@ -186,8 +186,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Solid option button"
-            Description="Solid option button style.">
+            Title="{gallery:RadioButtonShowCaseLangResource SolidOptionButtonTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource SolidOptionButtonDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
 
                 <atom:OptionButtonGroup ButtonStyle="Solid">
@@ -215,8 +215,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Size type"
-            Description="There are three sizes available: large, medium, and small. It can coordinate with input box.">
+            Title="{gallery:RadioButtonShowCaseLangResource SizeTypeTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource SizeTypeDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:OptionButtonGroup SizeType="Large">
                     <atom:OptionButton IsChecked="True">Hangzhou</atom:OptionButton>

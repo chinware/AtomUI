@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Timeline;
 
 public partial class TimelineShowCase : ReactiveUserControl<TimelineViewModel>
 {
+    public const string LanguageId = nameof(TimelineShowCase);
+
     public TimelineShowCase()
     {
         this.WhenActivated(disposables =>

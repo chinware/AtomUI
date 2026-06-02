@@ -31,7 +31,7 @@
     </UserControl.Styles>
 
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic" Description="Initial sizes with min/max constraints." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource BasicTitle}" Description="{gallery:SplitterShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
             <Border Classes="splitter-surface">
                 <atom:Splitter Orientation="Vertical" Height="220">
                     <Border Classes="splitter-panel" atom:Splitter.Size="30%">
@@ -44,7 +44,7 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Horizontal" Description="Top-bottom splitter with collapsible icons." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource HorizontalTitle}" Description="{gallery:SplitterShowCaseLangResource HorizontalDescription}" IsOccupyEntireRow="True">
             <Border Classes="splitter-surface">
                 <atom:Splitter Orientation="Horizontal" Height="220">
                     <Border Classes="splitter-panel" atom:Splitter.Size="40%">
@@ -57,7 +57,7 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Composite" Description="Nested horizontal inside vertical layout." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource CompositeTitle}" Description="{gallery:SplitterShowCaseLangResource CompositeDescription}" IsOccupyEntireRow="True">
             <Border Classes="splitter-surface">
                 <atom:Splitter Orientation="Vertical" Height="260">
                     <Border Classes="splitter-panel" atom:Splitter.Size="40%">
@@ -75,7 +75,7 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Resizable Disabled" Description="If either side disables resizable, dragging is blocked." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ResizableDisabledTitle}" Description="{gallery:SplitterShowCaseLangResource ResizableDisabledDescription}" IsOccupyEntireRow="True">
             <Border Classes="splitter-surface">
                 <atom:Splitter Orientation="Vertical" Height="220">
                     <Border Classes="splitter-panel" atom:Splitter.Size="35%">
@@ -91,8 +91,8 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="ShowCollapsibleIcon"
-                              Description="Three panels with hover and always-visible collapsible icons."
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconTitle}"
+                              Description="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconDescription}"
                               IsOccupyEntireRow="True">
             <Border Classes="splitter-surface" Padding="16">
                 <StackPanel Spacing="12">
@@ -128,7 +128,7 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Multi Panels" Description="Multiple panels in vertical layout." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource MultiPanelsTitle}" Description="{gallery:SplitterShowCaseLangResource MultiPanelsDescription}" IsOccupyEntireRow="True">
             <Border Classes="splitter-surface">
                 <atom:Splitter Orientation="Vertical" Height="240">
                     <Border Classes="splitter-panel" atom:Splitter.Size="20%">
@@ -147,8 +147,8 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Lazy"
-                              Description="Lazy rendering mode: sizes update on drag release."
+        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource LazyTitle}"
+                              Description="{gallery:SplitterShowCaseLangResource LazyDescription}"
                               IsOccupyEntireRow="True">
             <Border Classes="splitter-surface" Padding="16">
                 <StackPanel Spacing="12">

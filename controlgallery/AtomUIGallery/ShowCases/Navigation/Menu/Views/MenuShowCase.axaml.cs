@@ -11,6 +11,8 @@ namespace AtomUIGallery.ShowCases.Menu;
 
 public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
 {
+    public const string LanguageId = nameof(MenuShowCase);
+
     private NavMenuNode? _navMenuDefaultSelectedItem;
 
     public MenuShowCase()

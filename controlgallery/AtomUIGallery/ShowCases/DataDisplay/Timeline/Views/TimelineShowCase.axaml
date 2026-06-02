@@ -7,7 +7,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <gallery:ShowCasePanel>
-    <gallery:ShowCaseItem Description="Basic usage example." Title="Basic usage">
+    <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource BasicUsageDescription}" Title="{gallery:TimelineShowCaseLangResource BasicUsageTitle}">
         <atom:Timeline>
             <atom:TimelineItem>
                 2024-01-01 AtomUI Officially Initiated
@@ -22,7 +22,7 @@
         </atom:Timeline>
     </gallery:ShowCaseItem>
 
-    <gallery:ShowCaseItem Description="Set the color of circles. green means completed or success status, red means warning or error, and blue means ongoing or other default status, gray for unfinished or disabled status." Title="Color">
+    <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource ColorDescription}" Title="{gallery:TimelineShowCaseLangResource ColorTitle}">
         <atom:Timeline>
             <atom:TimelineItem IndicatorColor="green">
                 2024-01-01 AtomUI Officially Initiated
@@ -42,7 +42,7 @@
         </atom:Timeline>
     </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Description="When the timeline is incomplete and ongoing, put a ghost node at last. Set pending as truthy value to enable displaying pending item. You can customize the pending content by passing a React Element. Meanwhile, pendingDot={a React Element} is used to customize the dot of the pending item. reverse={true} is used for reversing nodes." Title="Last node and Reversing">
+        <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource LastNodeAndReversingDescription}" Title="{gallery:TimelineShowCaseLangResource LastNodeAndReversingTitle}">
             <StackPanel>
                 <atom:Timeline
                     Pending="Recording..."
@@ -64,7 +64,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Description="Alternate timeline." Title="Alternate">
+        <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource AlternateDescription}" Title="{gallery:TimelineShowCaseLangResource AlternateTitle}">
             <atom:Timeline Mode="Alternate">
                 <atom:TimelineItem Label="2024-01-01">
                     2024-01-01 AtomUI Officially Initiated
@@ -83,7 +83,7 @@
             </atom:Timeline>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Description="Use label show time alone." Title="Label">
+        <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource LabelDescription}" Title="{gallery:TimelineShowCaseLangResource LabelTitle}">
             <StackPanel>
                 <WrapPanel Margin="0,0,0,20" Orientation="Horizontal">
                     <WrapPanel.Styles>
@@ -112,7 +112,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Description="Right alternate timeline." Title="Right alternate">
+        <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource RightAlternateDescription}" Title="{gallery:TimelineShowCaseLangResource RightAlternateTitle}">
             <atom:Timeline Mode="Right">
                 <atom:TimelineItem>
                     2024-01-01 AtomUI Officially Initiated

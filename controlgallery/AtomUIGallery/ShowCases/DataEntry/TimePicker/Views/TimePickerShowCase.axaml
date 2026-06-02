@@ -8,21 +8,21 @@
 
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Click TimePicker, and then we could select or input a time in panel.">
+            Title="{gallery:TimePickerShowCaseLangResource BasicTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource BasicDescription}">
             <atom:TimePicker PlaceholderText="Select time" IsNeedConfirm="False" IsShowNow="True" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="12-hour and 24-hour formats"
-            Description="TimePicker supports two time types, 12-hour and 24-hour.">
+            Title="{gallery:TimePickerShowCaseLangResource HourFormatsTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource HourFormatsDescription}">
             <atom:TimePicker PlaceholderText="Select time" IsNeedConfirm="True" IsShowNow="True"
                              ClockIdentifier="HourClock24" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three Sizes"
-            Description="The input box comes in three sizes: large, middle and small. Large is used in the form, while the medium size is the default.">
+            Title="{gallery:TimePickerShowCaseLangResource ThreeSizesTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource ThreeSizesDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="Select time" SizeType="Large" DefaultTime="12:08:23" />
                 <atom:TimePicker PlaceholderText="Select time" SizeType="Middle" DefaultTime="12:08:23" />
@@ -31,16 +31,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="A disabled state of the TimePicker.">
+            Title="{gallery:TimePickerShowCaseLangResource DisabledTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource DisabledDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="Select time" IsEnabled="False" DefaultTime="12:08:23" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Interval option"
-            Description="Show stepped options by MinuteIncrement SecondIncrement.">
+            Title="{gallery:TimePickerShowCaseLangResource IntervalOptionTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource IntervalOptionDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="Select time"
                                  DefaultTime="12:08:23"
@@ -50,8 +50,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="12 hours"
-            Description="TimePicker of 12 hours format, with default format h:mm:ss a.">
+            Title="{gallery:TimePickerShowCaseLangResource TwelveHoursTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource TwelveHoursDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="Select time"
                                  DefaultTime="12:08:23"
@@ -63,8 +63,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Bordered-less style component.">
+            Title="{gallery:TimePickerShowCaseLangResource VariantsTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker PlaceholderText="Outline"
@@ -88,8 +88,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to TimePicker with status, which could be error or warning.">
+            Title="{gallery:TimePickerShowCaseLangResource StatusTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Status="Default"
@@ -125,8 +125,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Time Range Picker"
-            Description="Use time range picker with RangeTimePicker.">
+            Title="{gallery:TimePickerShowCaseLangResource TimeRangePickerTitle}"
+            Description="{gallery:TimePickerShowCaseLangResource TimeRangePickerDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:RangeTimePicker Status="Default"
                                       PlaceholderText="Start time"

@@ -8,6 +8,7 @@
              x:Class="AtomUIGallery.Workspace.Views.WorkspaceWindow"
              x:DataType="vm:WorkspaceWindowViewModel"
              Icon="/Assets/AtomUIGallery.ico"
+             Title="{gallery:WorkspaceWindowLangResource WindowTitle}"
              IsPinCaptionButtonVisible="True"
              IsFullScreenCaptionButtonVisible="True"
              WindowState="Normal"

@@ -8,14 +8,14 @@
     <gallery:ShowCasePanel>
 
         <gallery:ShowCaseItem
-            Title="Basic usage"
-            Description="Basic usage example.">
+            Title="{gallery:ListShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:ListShowCaseLangResource BasicUsageDescription}">
             <atom:ListView ItemsSource="{Binding ListItems}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Selection"
-            Description="You can set single selection, multiple selection or no selection.">
+            Title="{gallery:ListShowCaseLangResource SelectionTitle}"
+            Description="{gallery:ListShowCaseLangResource SelectionDescription}">
             <StackPanel Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                     <atom:TextBlock VerticalAlignment="Center">Selection Mode:</atom:TextBlock>
@@ -32,22 +32,22 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Group"
-            Description="You can group the data based on conditions.">
+            Title="{gallery:ListShowCaseLangResource GroupTitle}"
+            Description="{gallery:ListShowCaseLangResource GroupDescription}">
             <atom:ListView ItemsSource="{Binding GroupListItems}"
                            IsGroupEnabled="True"
                            Height="300" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Item disabled"
-            Description="Disabled item.">
+            Title="{gallery:ListShowCaseLangResource ItemDisabledTitle}"
+            Description="{gallery:ListShowCaseLangResource ItemDisabledDescription}">
             <atom:ListView ItemsSource="{Binding ListItemsWidthDisabled}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Empty"
-            Description="show empty indicator when no data.">
+            Title="{gallery:ListShowCaseLangResource EmptyTitle}"
+            Description="{gallery:ListShowCaseLangResource EmptyDescription}">
             <StackPanel Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <atom:Button Content="Add Item"
@@ -63,8 +63,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Filter"
-            Description="You can filter the data based on criteria; here we've filtered for items containing 'a'.">
+            Title="{gallery:ListShowCaseLangResource FilterTitle}"
+            Description="{gallery:ListShowCaseLangResource FilterDescription}">
             <atom:ListView Name="FilteredList"
                            ItemsSource="{Binding FilteredGroupListItems}"
                            IsGroupEnabled="False"
@@ -73,16 +73,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Ordered"
-            Description="We can sort according to specified attributes.">
+            Title="{gallery:ListShowCaseLangResource OrderedTitle}"
+            Description="{gallery:ListShowCaseLangResource OrderedDescription}">
             <atom:ListView Name="OrderedList"
                            ItemsSource="{Binding OrderedGroupListItems}"
                            IsGroupEnabled="True" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Simple listbox control"
-            Description="Basic usage example.">
+            Title="{gallery:ListShowCaseLangResource SimpleListBoxTitle}"
+            Description="{gallery:ListShowCaseLangResource SimpleListBoxDescription}">
             <atom:ListBox>
                 <atom:ListBoxItem>Racing car sprays burning fuel into crowd.</atom:ListBoxItem>
                 <atom:ListBoxItem>Japanese princess to wed commoner.</atom:ListBoxItem>
@@ -94,15 +94,15 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Simple listbox control"
-            Description="Basic ItemsSource and template usage example.">
+            Title="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceTitle}"
+            Description="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceDescription}">
             <atom:ListBox ItemsSource="{Binding BasicListBoxItems}"
                           IsShowSelectedIndicator="True"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Searchable"
-            Description="Searchable List.">
+            Title="{gallery:ListShowCaseLangResource SearchableTitle}"
+            Description="{gallery:ListShowCaseLangResource SearchableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterListBoxClicked"/>
@@ -117,8 +117,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pagination list"
-            Description="Pagination list.">
+            Title="{gallery:ListShowCaseLangResource PaginationListTitle}"
+            Description="{gallery:ListShowCaseLangResource PaginationListDescription}">
             <atom:ListView
                 ItemsSource="{Binding PaginationListItems}"
                 PaginationVisibility="Bottom"

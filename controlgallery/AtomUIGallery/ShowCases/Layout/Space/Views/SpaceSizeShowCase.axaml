@@ -8,9 +8,9 @@
              x:DataType="viewModels:SpaceViewModel">
     <gallery:ShowCasePanel>
         
-        <gallery:ShowCaseItem Title="Space Size"
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource SizeTitle}"
                               IsOccupyEntireRow="True"
-                              Description="Use size to set the spacing, Three sizes are preset: small, middle, large. You can also customize the spacing. If size is not set, the spacing is small." >
+                              Description="{gallery:SpaceShowCaseLangResource SizeDescription}" >
             <StackPanel Orientation="Vertical" Spacing="15">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Small}"

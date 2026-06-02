@@ -5,32 +5,32 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic Usage"
-            Description="Click the image to zoom in.">
+            Title="{gallery:ImagePreviewerShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:ImagePreviewerShowCaseLangResource BasicUsageDescription}">
             <atom:ImagePreviewer Name="BasicPreviewer" Width="200"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Fault tolerant"
-            Description="Load failed to display image placeholder.">
+            Title="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantTitle}"
+            Description="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantDescription}">
             <atom:ImagePreviewer Name="FaultTolerantPreviewer" Width="200"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Preview from one image"
-            Description="Preview a collection from one image.">
+            Title="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageTitle}"
+            Description="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageDescription}">
             <atom:ImagePreviewer Name="FromOnImagePreviewer" Width="200"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Custom preview image"
-            Description="You can set different preview image.">
+            Title="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageTitle}"
+            Description="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageDescription}">
             <atom:ImagePreviewer Name="CustomImagePreviewer" Width="200"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Multiple image preview"
-            Description="Click the left and right switch buttons to preview multiple images."
+            Title="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle}"
+            Description="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewDescription}"
             IsOccupyEntireRow="True">
             <atom:ImageGroupPreviewer Name="MultiImagesPreviewer" CoverWidth="200" CoverHeight="200"/>
         </gallery:ShowCaseItem>

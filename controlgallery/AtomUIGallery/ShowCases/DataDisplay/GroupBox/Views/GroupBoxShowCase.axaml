@@ -6,8 +6,8 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Basic usage of the GroupBox control.">
+            Title="{gallery:GroupBoxShowCaseLangResource BasicTitle}"
+            Description="{gallery:GroupBoxShowCaseLangResource BasicDescription}">
             <atom:GroupBox HeaderTitle="Title Info">
                 <Panel Height="100">
                     <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -18,8 +18,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Header title Position"
-            Description="GroupBox Header supports three position types: Left, Center and Right.">
+            Title="{gallery:GroupBoxShowCaseLangResource HeaderPositionTitle}"
+            Description="{gallery:GroupBoxShowCaseLangResource HeaderPositionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:GroupBox HeaderTitle="Title Info">
                     <Panel Height="40">
@@ -46,8 +46,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Header title style"
-            Description="GroupBox Header supports customizing some properties of color and font.">
+            Title="{gallery:GroupBoxShowCaseLangResource HeaderStyleTitle}"
+            Description="{gallery:GroupBoxShowCaseLangResource HeaderStyleDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:GroupBox HeaderTitle="Title Info" HeaderFontStyle="Italic">
                     <Panel Height="40">
@@ -82,8 +82,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Header Icon"
-            Description="GroupBox Header supports specifying Icon.">
+            Title="{gallery:GroupBoxShowCaseLangResource HeaderIconTitle}"
+            Description="{gallery:GroupBoxShowCaseLangResource HeaderIconDescription}">
             <atom:GroupBox HeaderTitle="Title Info" HeaderIcon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}">
                 <Panel Height="100">
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">

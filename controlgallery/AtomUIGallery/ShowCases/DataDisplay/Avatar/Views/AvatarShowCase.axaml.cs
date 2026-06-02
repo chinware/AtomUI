@@ -6,6 +6,8 @@ namespace AtomUIGallery.ShowCases.Avatar;
 
 public partial class AvatarShowCase : ReactiveUserControl<AvatarViewModel>
 {
+    public const string LanguageId = nameof(AvatarShowCase);
+
     public AvatarShowCase()
     {
         InitializeComponent();

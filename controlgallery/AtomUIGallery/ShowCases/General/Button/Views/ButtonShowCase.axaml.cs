@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Button;
 
 public partial class ButtonShowCase : ReactiveUserControl<ButtonViewModel>
 {
+    public const string LanguageId = nameof(ButtonShowCase);
+
     private ButtonViewModel? _viewModel;
     public ButtonShowCase()
     {

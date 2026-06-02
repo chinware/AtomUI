@@ -5,6 +5,8 @@ namespace AtomUIGallery.ShowCases.Statistic;
 
 public partial class StatisticShowCase : ReactiveUserControl<StatisticViewModel>
 {
+    public const string LanguageId = nameof(StatisticShowCase);
+
     public StatisticShowCase()
     {
         this.WhenActivated(disposables =>

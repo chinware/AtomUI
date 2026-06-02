@@ -9,8 +9,8 @@
     <gallery:ShowCasePanel>
         
         <gallery:ShowCaseItem
-            Title="Form Layout"
-            Description="There are three layout for form: horizontal, vertical, inline."
+            Title="{gallery:FormShowCaseLangResource FormLayoutTitle}"
+            Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="5">
                 <atom:CheckBox IsChecked="{Binding IsFormDisabled, Mode=TwoWay}">Form disabled</atom:CheckBox>
@@ -127,8 +127,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Form variants"
-            Description="Change the variant of all components in the form, options include: outlined filled borderless and underlined."
+            Title="{gallery:FormShowCaseLangResource FormVariantsTitle}"
+            Description="{gallery:FormShowCaseLangResource FormVariantsDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -252,8 +252,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Required style"
-            Description="Switch required or optional style with requiredMark."
+            Title="{gallery:FormShowCaseLangResource RequiredStyleTitle}"
+            Description="{gallery:FormShowCaseLangResource RequiredStyleDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -294,8 +294,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Required style"
-            Description="Switch required or optional style with requiredMark."
+            Title="{gallery:FormShowCaseLangResource RequiredStyleTitle}"
+            Description="{gallery:FormShowCaseLangResource RequiredStyleDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">

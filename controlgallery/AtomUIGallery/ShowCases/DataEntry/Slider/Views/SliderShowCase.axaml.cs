@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.Slider;
 
 public partial class SliderShowCase : ReactiveUserControl<SliderViewModel>
 {
+    public const string LanguageId = nameof(SliderShowCase);
+
     public SliderShowCase()
     {
         this.WhenActivated(disposables =>

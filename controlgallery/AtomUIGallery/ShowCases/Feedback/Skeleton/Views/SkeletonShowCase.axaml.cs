@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Skeleton;
 
 public partial class SkeletonShowCase : ReactiveUserControl<SkeletonViewModel>
 {
+    public const string LanguageId = nameof(SkeletonShowCase);
+
     public SkeletonShowCase()
     {
         this.WhenActivated(disposables => { });

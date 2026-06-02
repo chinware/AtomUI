@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.DataGrid;
 
 public partial class DataGridShowCase : ReactiveUserControl<DataGridViewModel>
 {
+    public const string LanguageId = nameof(DataGridShowCase);
+
     private const string BasicScenario       = "Basic";
     private const string InteractionScenario = "Interaction";
     private const string FilteringScenario   = "Filtering";

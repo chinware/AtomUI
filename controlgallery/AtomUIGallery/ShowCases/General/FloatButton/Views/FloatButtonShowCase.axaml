@@ -8,8 +8,8 @@
              x:DataType="vm:FloatButtonViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic usage.">
+            Title="{gallery:FloatButtonShowCaseLangResource BasicTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource BasicDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -20,8 +20,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Type"
-            Description="Change the type of the FloatButton with the type property.">
+            Title="{gallery:FloatButtonShowCaseLangResource TypeTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource TypeDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -36,8 +36,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Shape"
-            Description="Change the shape of the FloatButton with the shape property.">
+            Title="{gallery:FloatButtonShowCaseLangResource ShapeTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource ShapeDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -55,8 +55,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="FloatButton with tooltip"
-            Description="Setting the tooltip property shows the FloatButton with a tooltip.">
+            Title="{gallery:FloatButtonShowCaseLangResource TooltipTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource TooltipDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -69,8 +69,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Description"
-            Description="Setting the description property allows you to show a FloatButton with a description.">
+            Title="{gallery:FloatButtonShowCaseLangResource DescriptionTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource DescriptionDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -90,8 +90,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="FloatButton Group"
-            Description="When multiple buttons are used together, FloatButtonGroup is recommended. By setting the shape property of FloatButton.Group, you can change the shape of group. The shape of the FloatButton.Group will override the shape of FloatButtons inside.">
+            Title="{gallery:FloatButtonShowCaseLangResource GroupTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource GroupDescription}">
         
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
@@ -114,8 +114,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Menu mode"
-            Description="Open menu mode with trigger, which could be hover or click.">
+            Title="{gallery:FloatButtonShowCaseLangResource MenuModeTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource MenuModeDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -141,8 +141,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Controlled mode"
-            Description="Set the component to controlled mode through open, which need to be used together with trigger.">
+            Title="{gallery:FloatButtonShowCaseLangResource ControlledModeTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource ControlledModeDescription}">
             <StackPanel Spacing="10">
                 <atom:ToggleSwitch HorizontalContentAlignment="Left"
                                    VerticalAlignment="Top"
@@ -177,9 +177,9 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="placement"
+            Title="{gallery:FloatButtonShowCaseLangResource PlacementTitle}"
             IsOccupyEntireRow="True"
-            Description="Customize animation placement, providing four preset placement: top, right, bottom, left, the top position by default.">
+            Description="{gallery:FloatButtonShowCaseLangResource PlacementDescription}">
             <atom:ScrollViewer Height="400">
                 <Border Background="White">
                     <Panel Height="600">
@@ -225,8 +225,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="badge"
-            Description="FloatButton with Badge.">
+            Title="{gallery:FloatButtonShowCaseLangResource BadgeTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource BadgeDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -256,8 +256,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="BackTop"
-            Description="BackTop makes it easy to go back to the top of the page.">
+            Title="{gallery:FloatButtonShowCaseLangResource BackTopTitle}"
+            Description="{gallery:FloatButtonShowCaseLangResource BackTopDescription}">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="1000">

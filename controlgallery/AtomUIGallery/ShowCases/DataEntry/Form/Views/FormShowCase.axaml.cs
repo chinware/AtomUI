@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.Form;
 
 public partial class FormShowCase : ReactiveUserControl<FormViewModel>
 {
+    public const string LanguageId = nameof(FormShowCase);
+
     private const string BasicScenario      = "Basic";
     private const string LayoutScenario     = "Layout";
     private const string StatesScenario     = "States";

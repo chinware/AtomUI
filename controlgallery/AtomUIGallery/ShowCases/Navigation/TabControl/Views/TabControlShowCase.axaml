@@ -11,8 +11,8 @@
         <atom:TabItem Header="TabControl">
             <gallery:ShowCasePanel>
                 <gallery:ShowCaseItem
-                    Title="Basic"
-                    Description="Default activate first tab.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlBasicTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlBasicDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl Name="TestControl">
                             <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
@@ -23,8 +23,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Items from ItemSource datasource"
-                    Description="Add TabItem based on data source and item template.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlItemsSourceTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlItemsSourceDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl ItemsSource="{Binding TabItemDataSource}">
                             <atom:TabControl.ItemTemplate>
@@ -39,8 +39,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Disabled"
-                    Description="Disabled a tab.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlDisabledTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlDisabledDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabControl HeaderStartEdgePadding="">
                             <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
@@ -57,8 +57,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Centered"
-                    Description="Centered tabs.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlCenteredTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlCenteredDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl TabAlignmentCenter="True">
                             <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
@@ -76,8 +76,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Icon"
-                    Description="The Tab with Icon.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlIconTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlIconDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl>
                             <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
@@ -89,8 +89,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Slide"
-                    Description="In order to fit in more tabs, they can slide left and right (or up and down).">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlSlideTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlSlideDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl>
                             <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
@@ -141,8 +141,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Card type tab"
-                    Description="Another type of Tabs, which doesn't support vertical mode.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlCardTypeTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlCardTypeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
 
                         <atom:CardTabControl>
@@ -155,8 +155,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Closable Tab"
-                    Description="We support closable tab settings.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlClosableTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlClosableDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabControl IsTabClosable="True"
                                              IsTabAutoHideCloseButton="True">
@@ -191,8 +191,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Position"
-                    Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlPositionTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlPositionDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
@@ -221,8 +221,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Card Shape Position"
-                    Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
+                    Title="{gallery:TabControlShowCaseLangResource TabControlCardShapePositionTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlCardShapePositionDescription}"
                     Margin="0, 0, 10, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
@@ -257,8 +257,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Size"
-                    Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlSizeTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlSizeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
@@ -287,8 +287,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Add and close tab"
-                    Description="Hide default plus icon, and bind event for customized trigger." Margin="0, 0, 30, 0">
+                    Title="{gallery:TabControlShowCaseLangResource TabControlAddCloseTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlAddCloseDescription}" Margin="0, 0, 30, 0">
                     <atom:CardTabControl IsShowAddTabButton="True" Name="AddTabDemoTabControl">
                         <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
                         <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
@@ -298,8 +298,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Extra content"
-                    Description="You can add extra actions to the right or left or even both side of Tabs."
+                    Title="{gallery:TabControlShowCaseLangResource TabControlExtraContentTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabControlExtraContentDescription}"
                     IsOccupyEntireRow="True">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl TabStripPlacement="Top">
@@ -323,8 +323,8 @@
         <atom:TabItem Header="TabStrip">
             <gallery:ShowCasePanel>
                 <gallery:ShowCaseItem
-                    Title="Basic"
-                    Description="Default activate first tab.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripBasicTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripBasicDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
                             <atom:TabStripItem IsClosable="True">Tab 1</atom:TabStripItem>
@@ -335,8 +335,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Items from ItemSource datasource"
-                    Description="Add TabStripItem based on data source and item template.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripItemsSourceTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripItemsSourceDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip ItemsSource="{Binding TabStripItemDataSource}">
                             <atom:TabStrip.ItemTemplate>
@@ -349,8 +349,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Disabled"
-                    Description="Disabled a tab.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripDisabledTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripDisabledDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip>
                             <atom:TabStripItem>Tab 1</atom:TabStripItem>
@@ -367,8 +367,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Centered"
-                    Description="Centered tabs.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripCenteredTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripCenteredDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip TabAlignmentCenter="True">
                             <atom:TabStripItem>Tab 1</atom:TabStripItem>
@@ -386,8 +386,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Icon"
-                    Description="The Tab with Icon.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripIconTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripIconDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
                             <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
@@ -398,8 +398,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Slide"
-                    Description="In order to fit in more tabs, they can slide left and right (or up and down).">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripSlideTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripSlideDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
                             <atom:TabStripItem>Tab 1</atom:TabStripItem>
@@ -430,8 +430,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Card type tab"
-                    Description="Another type of Tabs, which doesn't support vertical mode.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripCardTypeTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripCardTypeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip>
                             <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
@@ -444,8 +444,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Closable Tab"
-                    Description="We support closable tab settings.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripClosableTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripClosableDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip IsTabClosable="True"
                                            IsTabAutoHideCloseButton="True">
@@ -464,8 +464,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Position"
-                    Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripPositionTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripPositionDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
@@ -506,8 +506,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Card Shape Position"
-                    Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
+                    Title="{gallery:TabControlShowCaseLangResource TabStripCardShapePositionTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripCardShapePositionDescription}"
                     Margin="0, 0, 10, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
@@ -540,8 +540,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Size"
-                    Description="Large size tabs are usually used in page header, and small size could be used in Modal.">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripSizeTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripSizeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
@@ -570,8 +570,8 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
-                    Title="Add and close tab"
-                    Description="Hide default plus icon, and bind event for customized trigger." Margin="0, 0, 30, 0">
+                    Title="{gallery:TabControlShowCaseLangResource TabStripAddCloseTitle}"
+                    Description="{gallery:TabControlShowCaseLangResource TabStripAddCloseDescription}" Margin="0, 0, 30, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip IsShowAddTabButton="True" Name="AddTabDemoStrip">
                             <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>

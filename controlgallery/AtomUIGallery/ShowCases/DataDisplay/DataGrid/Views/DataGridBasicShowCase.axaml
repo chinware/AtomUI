@@ -5,7 +5,9 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic" Description="Simple table with actions." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource BasicTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource BasicDescription}"
+                              IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="BasicCaseGrid"
                            IsHideOnSinglePage="True"
                            x:DataType="vm:DataGridBaseInfo">

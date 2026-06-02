@@ -8,8 +8,8 @@
              x:DataType="viewModels:SpaceViewModel">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Button Compact Mode"
-                              Description="Button component compact example."
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource CompactButtonTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource CompactButtonDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -69,8 +69,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Vertical Compact Mode"
-                              Description="Vertical Mode for Space.Compact, support Button only."
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource VerticalCompactTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource VerticalCompactDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10" Orientation="Horizontal">
                 <atom:CompactSpace Orientation="Vertical">

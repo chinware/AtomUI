@@ -11,6 +11,8 @@ namespace AtomUIGallery.ShowCases.Select;
 
 public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
 {
+    public const string LanguageId = nameof(SelectShowCase);
+
     public SelectShowCase()
     {
         this.WhenActivated(disposables =>

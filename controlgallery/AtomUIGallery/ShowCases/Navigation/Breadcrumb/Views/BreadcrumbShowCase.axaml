@@ -6,8 +6,8 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic Usage"
-            Description="The simplest use.">
+            Title="{gallery:BreadcrumbShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}">
             <StackPanel>
                 <atom:Breadcrumb>
                     <atom:BreadcrumbItem>Home</atom:BreadcrumbItem>
@@ -19,8 +19,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="With an Icon"
-            Description="The icon should be placed in front of the text.">
+            Title="{gallery:BreadcrumbShowCaseLangResource WithIconTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}">
             <StackPanel>
                 <atom:Breadcrumb>
                     <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=HomeOutlined}"></atom:BreadcrumbItem>
@@ -31,8 +31,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="With Params"
-            Description="With route params.">
+            Title="{gallery:BreadcrumbShowCaseLangResource WithParamsTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}">
             <StackPanel>
                 <atom:Breadcrumb NavigateRequest="HandleNavigateRequest">
                     <atom:BreadcrumbItem>Users</atom:BreadcrumbItem>
@@ -42,7 +42,7 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Configuring the Separator"
+            Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorTitle}"
             Description="The separator can be customized by setting the separator property: separator equals >">
             <StackPanel>
                 <atom:Breadcrumb Separator=">">
@@ -55,8 +55,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Configuring the Separator Independently"
-            Description="Customize separator for each other.">
+            Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}">
             <StackPanel>
                 <atom:Breadcrumb>
                     <atom:BreadcrumbItem Separator=":">Location</atom:BreadcrumbItem>
@@ -68,8 +68,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate BreadcrumbItem by template"
-            Description="Generate BreadcrumbItem by template.">
+            Title="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}">
             <StackPanel>
                 <atom:Breadcrumb Name="TplBreadcrumb">
                     <atom:Breadcrumb.ItemTemplate>

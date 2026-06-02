@@ -5,19 +5,19 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Basic" Description="The most basic usage.">
+        <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource BasicTitle}" Description="{gallery:WatermarkShowCaseLangResource BasicDescription}">
             <Border Height="300" HorizontalAlignment="Stretch" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Multi-line watermark"
-                                      Description="Use line-break to specify multi-line text watermark content.">
+        <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource MultiLineTitle}"
+                                      Description="{gallery:WatermarkShowCaseLangResource MultiLineDescription}">
             <Border Height="200"
                     HorizontalAlignment="Stretch"
                     atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI&#x000A;Happy Working', FontSize=18, Foreground=Gray}" />
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Image watermark"
-                                      Description="Specify the image address via image. To ensure that the image is high definition and not stretched, set the width and height, and upload at least twice the width and height of the logo image address.">
+        <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource ImageWatermarkTitle}"
+                                      Description="{gallery:WatermarkShowCaseLangResource ImageWatermarkDescription}">
             <Border Height="400">
                 <atom:Watermark.Glyph>
                     <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png" />
@@ -25,8 +25,8 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Custom configuration"
-                                      Description="Preview the watermark effect by configuring custom parameters.">
+        <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource CustomConfigurationTitle}"
+                                      Description="{gallery:WatermarkShowCaseLangResource CustomConfigurationDescription}">
             <StackPanel atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}">
                 <atom:TextBlock TextWrapping="Wrap">
                     The light-speed iteration of the digital world makes products more complex. However, human consciousness and attention resources are limited. Facing this design contradiction, the pursuit of natural interaction will be the consistent direction of Ant Design.

@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Breadcrumb;
 
 public partial class BreadcrumbShowCase : ReactiveUserControl<BreadcrumbViewModel>
 {
+    public const string LanguageId = nameof(BreadcrumbShowCase);
+
     private WindowMessageManager? _messageManager;
 
     public BreadcrumbShowCase()

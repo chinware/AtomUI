@@ -14,6 +14,8 @@ namespace AtomUIGallery.ShowCases.List;
 
 public partial class ListShowCase : ReactiveUserControl<ListViewModel>
 {
+    public const string LanguageId = nameof(ListShowCase);
+
     public ListShowCase()
     {
         this.WhenActivated(disposables =>

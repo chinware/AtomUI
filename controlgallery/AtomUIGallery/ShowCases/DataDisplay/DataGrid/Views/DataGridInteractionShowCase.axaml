@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Selection"
-                              Description="Rows can be selectable by making first column as a selectable column. You can use rowSelection.type to set selection type. Default is checkbox."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource SelectionTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource SelectionDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -61,8 +61,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Drag resize column"
-                              Description="You can drag to change the size of the column"
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource DragResizeColumnTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource DragResizeColumnDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="DragResizeColumn" IsHideOnSinglePage="True" CanUserResizeColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
@@ -110,8 +110,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Size"
-                              Description="There are two compacted table sizes: middle and small. The small size is used in Modals only."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource SizeTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource SizeDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <atom:DataGrid x:Name="LargeSizeDataGrid" SizeType="Large"
@@ -149,8 +149,9 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="border, title and footer"
-                              Description="Add border, title and footer for table." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource TableBorderTitleAndFooterTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource TableBorderTitleAndFooterDescription}"
+                              IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="CustomHeaderAndFooterDataGrid"
                            GridLinesVisibility="All"
                            IsFrameBorderVisible="True"

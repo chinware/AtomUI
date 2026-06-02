@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.Tour;
 
 public partial class TourShowCase : ReactiveUserControl<TourViewModel>
 {
+    public const string LanguageId = nameof(TourShowCase);
+
     public TourShowCase()
     {
         this.WhenActivated(disposables =>

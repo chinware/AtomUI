@@ -11,6 +11,8 @@ namespace AtomUIGallery.ShowCases.Descriptions;
 
 public partial class DescriptionsShowCase : ReactiveUserControl<DescriptionsViewModel>
 {
+    public const string LanguageId = nameof(DescriptionsShowCase);
+
     public DescriptionsShowCase()
     {
         this.WhenActivated(disposables =>

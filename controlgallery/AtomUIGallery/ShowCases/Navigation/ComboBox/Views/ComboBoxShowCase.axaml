@@ -9,8 +9,8 @@
              x:CompileBindings="True">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Basic button spinner.">
+            Title="{gallery:ComboBoxShowCaseLangResource BasicTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource BasicDescription}">
             <atom:ComboBox PlaceholderText="Please select" Width="300">
                 <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
                 <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
@@ -56,8 +56,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate ComboBoxItem by ItemsSource"
-            Description="Generate structure based on ItemsSource and template.">
+            Title="{gallery:ComboBoxShowCaseLangResource ItemsSourceTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource ItemsSourceDescription}">
             <atom:ComboBox Name="TplComboBox"
                            PlaceholderText="Please select" Width="300"
                            ItemsSource="{Binding ComboBoxItems}">
@@ -70,8 +70,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Disabled button spinner.">
+            Title="{gallery:ComboBoxShowCaseLangResource DisabledTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource DisabledDescription}">
             <atom:ComboBox PlaceholderText="Please select" Width="300" IsEnabled="False">
                 <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
                 <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
@@ -81,8 +81,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three sizes of Input"
-            Description="There are three sizes of an ComboBox: large (40px), default (32px) and small (24px).">
+            Title="{gallery:ComboBoxShowCaseLangResource ThreeSizesTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource ThreeSizesDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:ComboBox SizeType="Large" PlaceholderText="Please select">
                     <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
@@ -106,8 +106,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Variants of Input.">
+            Title="{gallery:ComboBoxShowCaseLangResource VariantsTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ComboBox StyleVariant="Outlined" PlaceholderText="Please select" Width="300">
                     <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
@@ -133,8 +133,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pre / Post tab"
-            Description="Using pre and post tabs example.">
+            Title="{gallery:ComboBoxShowCaseLangResource PrePostTabTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource PrePostTabDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ComboBox PlaceholderText="Please select" Width="300"
                                LeftAddOn="http://"
@@ -167,8 +167,8 @@
 
 
         <gallery:ShowCaseItem
-            Title="prefix and suffix"
-            Description="Add a prefix or suffix icons inside input.">
+            Title="{gallery:ComboBoxShowCaseLangResource PrefixSuffixTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource PrefixSuffixDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ComboBox PlaceholderText="Please select" Width="300"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
@@ -201,8 +201,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to Input with status, which could be error or warning.">
+            Title="{gallery:ComboBoxShowCaseLangResource StatusTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:ComboBox PlaceholderText="Please select" Width="300"
                                Status="Error">

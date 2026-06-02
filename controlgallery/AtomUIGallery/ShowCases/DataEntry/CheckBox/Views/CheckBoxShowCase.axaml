@@ -12,16 +12,16 @@
             </Style>
         </gallery:ShowCasePanel.Styles>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The simplest use.">
+            Title="{gallery:CheckBoxShowCaseLangResource BasicTitle}"
+            Description="{gallery:CheckBoxShowCaseLangResource BasicDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10">
                 <atom:CheckBox>Checkbox</atom:CheckBox>
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Disabled checkbox.">
+            Title="{gallery:CheckBoxShowCaseLangResource DisabledTitle}"
+            Description="{gallery:CheckBoxShowCaseLangResource DisabledDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:CheckBox IsChecked="False" IsEnabled="False">UnChecked</atom:CheckBox>
                 <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False">Indeterminate</atom:CheckBox>
@@ -30,8 +30,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Controlled Checkbox"
-            Description="Communicated with other components.">
+            Title="{gallery:CheckBoxShowCaseLangResource ControlledCheckboxTitle}"
+            Description="{gallery:CheckBoxShowCaseLangResource ControlledCheckboxDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:CheckBox Name="ControlledCheckbox"
                     IsChecked="{Binding ControlledCheckBoxCheckedStatus}"
@@ -49,8 +49,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Checkbox Group"
-            Description="Generate a group of checkboxes from an array.">
+            Title="{gallery:CheckBoxShowCaseLangResource CheckboxGroupTitle}"
+            Description="{gallery:CheckBoxShowCaseLangResource CheckboxGroupDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:CheckBoxGroup>
                     <atom:CheckBox IsChecked="True">Apple</atom:CheckBox>
@@ -72,8 +72,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Check all"
-            Description="The indeterminate property can help you to achieve a 'check all' effect.">
+            Title="{gallery:CheckBoxShowCaseLangResource CheckAllTitle}"
+            Description="{gallery:CheckBoxShowCaseLangResource CheckAllDescription}">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10">
                 <StackPanel>
                     <atom:CheckBox Name="CheckAllCheckbox"
@@ -99,8 +99,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Use with Grid"
-            Description="We can use Checkbox and Grid in Checkbox.Group, to implement complex layout.">
+            Title="{gallery:CheckBoxShowCaseLangResource UseWithGridTitle}"
+            Description="{gallery:CheckBoxShowCaseLangResource UseWithGridDescription}">
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
                 <atom:CheckBox Grid.Row="0" Grid.Column="0">A</atom:CheckBox>
                 <atom:CheckBox Grid.Row="0" Grid.Column="1">B</atom:CheckBox>

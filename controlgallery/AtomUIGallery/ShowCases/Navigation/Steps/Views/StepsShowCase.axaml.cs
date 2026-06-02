@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.Steps;
 
 public partial class StepsShowCase : ReactiveUserControl<StepsViewModel>
 {
+    public const string LanguageId = nameof(StepsShowCase);
+
     public static readonly StyledProperty<double[]> DashedArrayProperty =
         AvaloniaProperty.Register<StepsShowCase, double[]>(nameof(DashedArray));
     

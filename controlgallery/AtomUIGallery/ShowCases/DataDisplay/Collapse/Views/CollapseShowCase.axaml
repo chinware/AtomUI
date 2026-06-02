@@ -9,8 +9,8 @@
 
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Collapse"
-            Description="By default, any number of panels can be expanded at a time. The first panel is expanded in this example.">
+            Title="{gallery:CollapseShowCaseLangResource CollapseTitle}"
+            Description="{gallery:CollapseShowCaseLangResource CollapseDescription}">
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <atom:TextBlock TextWrapping="Wrap">
@@ -31,9 +31,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Size"
-            Description="Ant Design supports a default collapse size as well as a large and small size.
-If a large or small collapse is desired, set the size property to either large or small respectively. Omit the size property for a collapse with the default size.">
+            Title="{gallery:CollapseShowCaseLangResource SizeTitle}"
+            Description="{gallery:CollapseShowCaseLangResource SizeDescription}">
             <StackPanel Orientation="Vertical" Spacing="20" >
                 <atom:Separator Title="Default Size" TitlePosition="Left" FontWeight="Bold" />
                 <atom:Collapse SizeType="Middle">
@@ -63,8 +62,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Accordion"
-            Description="In accordion mode, only one panel can be expanded at a time.">
+            Title="{gallery:CollapseShowCaseLangResource AccordionTitle}"
+            Description="{gallery:CollapseShowCaseLangResource AccordionDescription}">
             <atom:Collapse IsAccordion="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <atom:TextBlock TextWrapping="Wrap">
@@ -85,8 +84,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Nested panel"
-            Description="Collapse is nested inside the Collapse." >
+            Title="{gallery:CollapseShowCaseLangResource NestedPanelTitle}"
+            Description="{gallery:CollapseShowCaseLangResource NestedPanelDescription}" >
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
                     <atom:Collapse>
@@ -111,8 +110,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Borderless"
-            Description="A borderless style of Collapse." >
+            Title="{gallery:CollapseShowCaseLangResource BorderlessTitle}"
+            Description="{gallery:CollapseShowCaseLangResource BorderlessDescription}" >
             <atom:Collapse IsBorderless="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <atom:TextBlock TextWrapping="Wrap">
@@ -133,8 +132,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="No Arrow"
-            Description="You can hide the arrow icon by passing IsShowExpandIcon={False} to CollapsePanel component."
+            Title="{gallery:CollapseShowCaseLangResource NoArrowTitle}"
+            Description="{gallery:CollapseShowCaseLangResource NoArrowDescription}"
             >
             <atom:Collapse>
                 <atom:CollapseItem Header="This is panel header 1">
@@ -151,8 +150,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Expand icon location"
-            Description="The expand icon can be placed in front or in the back." >
+            Title="{gallery:CollapseShowCaseLangResource ExpandIconLocationTitle}"
+            Description="{gallery:CollapseShowCaseLangResource ExpandIconLocationDescription}" >
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Collapse ExpandIconPosition="{Binding CollapseExpandIconPosition}">
                     <atom:CollapseItem Header="This is panel header 1"
@@ -187,8 +186,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Ghost Collapse"
-            Description="Making collapse's background to transparent." >
+            Title="{gallery:CollapseShowCaseLangResource GhostCollapseTitle}"
+            Description="{gallery:CollapseShowCaseLangResource GhostCollapseDescription}" >
             <atom:Collapse IsGhostStyle="True">
                 <atom:CollapseItem Header="This is panel header 1">
                     <atom:TextBlock TextWrapping="Wrap">
@@ -209,8 +208,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Collapsible"
-            Description="Specify the trigger area of collapsible by collapsible." >
+            Title="{gallery:CollapseShowCaseLangResource CollapsibleTitle}"
+            Description="{gallery:CollapseShowCaseLangResource CollapsibleDescription}" >
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Collapse>
                     <atom:CollapseItem Header="This panel can only be collapsed by clicking text">
@@ -246,8 +245,8 @@ If a large or small collapse is desired, set the size property to either large o
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Custom Header And Content Padding"
-            Description="Please set custom header margins and content spacing.">
+            Title="{gallery:CollapseShowCaseLangResource CustomPaddingTitle}"
+            Description="{gallery:CollapseShowCaseLangResource CustomPaddingDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Collapse ItemHeaderPadding="5" ItemContentPadding="5">
                     <atom:CollapseItem Header="This is panel header 1">

@@ -22,8 +22,8 @@
             </Style>
         </gallery:ShowCasePanel.Styles>
         
-        <gallery:ShowCaseItem Title="Align"
-                              Description="Config item align."
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource AlignTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource AlignDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Border Classes="align-box">
@@ -58,8 +58,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
         
-        <gallery:ShowCaseItem Title="Align"
-                              Description="Auto wrap line."
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource WrapTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource WrapDescription}"
                               IsOccupyEntireRow="True">
             <atom:Space Orientation="Horizontal" ItemSpacing="8" LineSpacing="16">
                 <atom:Button>Button</atom:Button>
@@ -80,8 +80,8 @@
             </atom:Space>
         </gallery:ShowCaseItem>
         
-        <gallery:ShowCaseItem Title="Split"
-                              Description="Crowded components split."
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource SplitTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource SplitDescription}"
                               IsOccupyEntireRow="True">
             <atom:Space Orientation="Horizontal" ItemsAlignment="Center">
                 <atom:Space.SplitTemplate>

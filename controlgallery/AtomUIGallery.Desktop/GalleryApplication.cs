@@ -33,8 +33,7 @@ public class GalleryApplication : BaseGalleryApplication
         switch (ApplicationLifetime)
         {
             case IClassicDesktopStyleApplicationLifetime desktop:
-                desktop.MainWindow       = CreateWorkspaceWindow();
-                desktop.MainWindow.Title = Name;
+                desktop.MainWindow = CreateWorkspaceWindow();
                 break;
         }
 

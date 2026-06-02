@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.InfoFlyout;
 
 public partial class InfoFlyoutShowCase : ReactiveUserControl<InfoFlyoutViewModel>
 {
+    public const string LanguageId = nameof(InfoFlyoutShowCase);
+
     public InfoFlyoutShowCase()
     {
         this.WhenActivated(disposables =>

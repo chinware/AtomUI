@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.Carousel;
 
 public partial class CarouselShowCase : ReactiveUserControl<CarouselViewModel>
 {
+    public const string LanguageId = nameof(CarouselShowCase);
+
     public CarouselShowCase()
     {
         this.WhenActivated(disposables =>

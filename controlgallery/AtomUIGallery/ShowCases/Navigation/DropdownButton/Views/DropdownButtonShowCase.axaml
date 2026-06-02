@@ -9,8 +9,8 @@
              x:CompileBindings="True">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic dropdown menu.">
+            Title="{gallery:DropdownButtonShowCaseLangResource BasicTitle}"
+            Description="{gallery:DropdownButtonShowCaseLangResource BasicDescription}">
             <atom:DropdownButton ButtonType="Link" TriggerType="Hover" x:Name="Test">
                 Hover me
                 <atom:DropdownButton.DropdownFlyout>
@@ -31,8 +31,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Button Types"
-            Description="Support centralized button type.">
+            Title="{gallery:DropdownButtonShowCaseLangResource ButtonTypesTitle}"
+            Description="{gallery:DropdownButtonShowCaseLangResource ButtonTypesDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:DropdownButton ButtonType="Primary" TriggerType="Click">
                     Edit File
@@ -98,8 +98,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Arrow"
-            Description="You could display an arrow.">
+            Title="{gallery:DropdownButtonShowCaseLangResource ArrowTitle}"
+            Description="{gallery:DropdownButtonShowCaseLangResource ArrowDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|DropdownButton">
                     <Setter Property="Margin" Value="5" />
@@ -199,8 +199,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="Support 6 placements.">
+            Title="{gallery:DropdownButtonShowCaseLangResource PlacementTitle}"
+            Description="{gallery:DropdownButtonShowCaseLangResource PlacementDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|DropdownButton">
                     <Setter Property="Margin" Value="5" />

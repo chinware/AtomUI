@@ -9,8 +9,8 @@
     <gallery:ShowCasePanel>
 
         <gallery:ShowCaseItem
-            Title="Inline Login Form"
-            Description="Inline login form is often used in navigation bar."
+            Title="{gallery:FormShowCaseLangResource InlineLoginFormTitle}"
+            Description="{gallery:FormShowCaseLangResource InlineLoginFormDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -46,8 +46,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Login Form"
-            Description="Normal login form which can contain more elements."
+            Title="{gallery:FormShowCaseLangResource LoginFormTitle}"
+            Description="{gallery:FormShowCaseLangResource LoginFormDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -91,8 +91,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Registration"
-            Description="Fill in this form to create a new account for you."
+            Title="{gallery:FormShowCaseLangResource RegistrationTitle}"
+            Description="{gallery:FormShowCaseLangResource RegistrationDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"

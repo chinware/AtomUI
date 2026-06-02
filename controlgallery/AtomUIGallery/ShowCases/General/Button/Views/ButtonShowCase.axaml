@@ -13,8 +13,8 @@
             </Style>
         </gallery:ShowCasePanel.Styles>
         <gallery:ShowCaseItem
-            Title="Type"
-            Description="There are primary button, default button, dashed button, text button and link button in antd.">
+            Title="{gallery:ButtonShowCaseLangResource TypeTitle}"
+            Description="{gallery:ButtonShowCaseLangResource TypeDescription}">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Button ButtonType="Primary">Primary Button</atom:Button>
                 <atom:Button>Default Button</atom:Button>
@@ -25,8 +25,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Button Shape"
-            Description="Supported button shape display, such as primary, default, dashed and Text, etc.">
+            Title="{gallery:ButtonShowCaseLangResource ButtonShapeTitle}"
+            Description="{gallery:ButtonShowCaseLangResource ButtonShapeDescription}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
                     <atom:Button ButtonType="Primary">Primary</atom:Button>
@@ -52,8 +52,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Size"
-            Description="AtomUI supports three sizes of buttons: small, default and large.If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
+            Title="{gallery:ButtonShowCaseLangResource SizeTitle}"
+            Description="{gallery:ButtonShowCaseLangResource SizeDescription}">
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                     <atom:TextBlock VerticalAlignment="Center">Expand direction:</atom:TextBlock>
@@ -101,8 +101,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Icon"
-            Description="You can add an icon through the icon property and adjust the position of the icon using iconPosition.">
+            Title="{gallery:ButtonShowCaseLangResource IconTitle}"
+            Description="{gallery:ButtonShowCaseLangResource IconDescription}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" Shape="Circle"
@@ -170,8 +170,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Loading"
-            Description="A loading indicator can be added to a button by setting the loading property on the Button.">
+            Title="{gallery:ButtonShowCaseLangResource LoadingTitle}"
+            Description="{gallery:ButtonShowCaseLangResource LoadingDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
                 <atom:Button ButtonType="Primary"
                              Click="HandleLoadingBtnClick"
@@ -198,8 +198,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Block Button"
-            Description="block property will make the button fit to its parent width.">
+            Title="{gallery:ButtonShowCaseLangResource BlockButtonTitle}"
+            Description="{gallery:ButtonShowCaseLangResource BlockButtonDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
                 <atom:Button ButtonType="Primary" HorizontalAlignment="Stretch">
                     Primary
@@ -220,8 +220,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Danger Buttons"
-            Description="danger is a property of button after antd 4.0.">
+            Title="{gallery:ButtonShowCaseLangResource DangerButtonsTitle}"
+            Description="{gallery:ButtonShowCaseLangResource DangerButtonsDescription}">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <atom:Button ButtonType="Primary" IsDanger="True">
                     Primary
@@ -242,8 +242,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Ghost Button"
-            Description="ghost property will make button's background transparent, it is commonly used in colored background.">
+            Title="{gallery:ButtonShowCaseLangResource GhostButtonTitle}"
+            Description="{gallery:ButtonShowCaseLangResource GhostButtonDescription}">
             <Border Background="rgb(190, 200, 200)"
                     Margin="10"
                     Padding="10">
@@ -295,8 +295,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="To mark a button as disabled, add the disabled property to the Button.">
+            Title="{gallery:ButtonShowCaseLangResource DisabledTitle}"
+            Description="{gallery:ButtonShowCaseLangResource DisabledDescription}">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">

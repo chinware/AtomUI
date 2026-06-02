@@ -15,6 +15,8 @@ public class MyTabItemData : TabItemData
 
 public partial class TabControlShowCase : ReactiveUserControl<TabControlViewModel>
 {
+    public const string LanguageId = nameof(TabControlShowCase);
+
     public TabControlShowCase()
     {
         this.WhenActivated(disposables =>

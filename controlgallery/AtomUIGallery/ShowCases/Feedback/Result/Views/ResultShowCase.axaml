@@ -8,8 +8,8 @@
              x:DataType="vm:ResultViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Success"
-            Description="Show successful results."
+            Title="{gallery:ResultShowCaseLangResource SuccessTitle}"
+            Description="{gallery:ResultShowCaseLangResource SuccessDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Success"
                          Header="Successfully Purchased Cloud Server ECS!"
@@ -24,8 +24,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Info"
-            Description="Show processing results."
+            Title="{gallery:ResultShowCaseLangResource InfoTitle}"
+            Description="{gallery:ResultShowCaseLangResource InfoDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Info"
                          Header="Your operation has been executed.">
@@ -36,8 +36,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Warning"
-            Description="The result of the warning."
+            Title="{gallery:ResultShowCaseLangResource WarningTitle}"
+            Description="{gallery:ResultShowCaseLangResource WarningDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Warning"
                          Header="There are some problems with your operation.">
@@ -48,8 +48,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="403"
-            Description="you are not authorized to access this page."
+            Title="{gallery:ResultShowCaseLangResource ForbiddenTitle}"
+            Description="{gallery:ResultShowCaseLangResource ForbiddenDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode403"
                          Header="403"
@@ -61,8 +61,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="404"
-            Description="The page you visited does not exist."
+            Title="{gallery:ResultShowCaseLangResource NotFoundTitle}"
+            Description="{gallery:ResultShowCaseLangResource NotFoundDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode404"
                          Header="404"
@@ -74,8 +74,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="500"
-            Description="Something went wrong on server."
+            Title="{gallery:ResultShowCaseLangResource ServerErrorTitle}"
+            Description="{gallery:ResultShowCaseLangResource ServerErrorDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode500"
                          Header="500"
@@ -87,8 +87,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="error"
-            Description="Something went wrong on server."
+            Title="{gallery:ResultShowCaseLangResource ErrorTitle}"
+            Description="{gallery:ResultShowCaseLangResource ErrorDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Error"
                          Header="Submission Failed"
@@ -120,8 +120,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Custom icon"
-            Description="Custom icon."
+            Title="{gallery:ResultShowCaseLangResource CustomIconTitle}"
+            Description="{gallery:ResultShowCaseLangResource CustomIconDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Info"
                          Icon="{antdicons:AntDesignIconProvider SmileOutlined}"

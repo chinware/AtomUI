@@ -7,8 +7,8 @@
              x:DataType="vm:SeparatorViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Horizontal"
-            Description="A Separator is horizontal by default. You can add text within Separator.">
+            Title="{gallery:SeparatorShowCaseLangResource HorizontalTitle}"
+            Description="{gallery:SeparatorShowCaseLangResource HorizontalDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -25,8 +25,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Divider with title"
-            Description="Divider with inner title, set orientation='left/right' to align it.">
+            Title="{gallery:SeparatorShowCaseLangResource DividerWithTitleTitle}"
+            Description="{gallery:SeparatorShowCaseLangResource DividerWithTitleDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -59,8 +59,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Text without heading style"
-            Description="You can use non-heading style of divider text by setting the plain property.">
+            Title="{gallery:SeparatorShowCaseLangResource PlainTextTitle}"
+            Description="{gallery:SeparatorShowCaseLangResource PlainTextDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -81,8 +81,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Set the spacing size of the divider"
-            Description="The size of the spacing.">
+            Title="{gallery:SeparatorShowCaseLangResource SpacingSizeTitle}"
+            Description="{gallery:SeparatorShowCaseLangResource SpacingSizeDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
@@ -103,8 +103,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Vertical"
-            Description="Use type='vertical' to make the divider vertical.">
+            Title="{gallery:SeparatorShowCaseLangResource VerticalTitle}"
+            Description="{gallery:SeparatorShowCaseLangResource VerticalDescription}">
             <StackPanel Orientation="Horizontal">
                 <atom:TextBlock>
                     Item1
@@ -121,8 +121,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variant"
-            Description="Divider is of solid variant by default. You can change that to either dashed or dotted.">
+            Title="{gallery:SeparatorShowCaseLangResource VariantTitle}"
+            Description="{gallery:SeparatorShowCaseLangResource VariantDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.

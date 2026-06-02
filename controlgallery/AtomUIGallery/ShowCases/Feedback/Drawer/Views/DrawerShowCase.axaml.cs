@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.Drawer;
 
 public partial class DrawerShowCase : ReactiveUserControl<DrawerViewModel>
 {
+    public const string LanguageId = nameof(DrawerShowCase);
+
     public DrawerShowCase()
     {
         this.WhenActivated(disposables =>

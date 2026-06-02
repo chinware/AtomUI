@@ -11,6 +11,8 @@ namespace AtomUIGallery.ShowCases.TreeSelect;
 
 public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewModel>
 {
+    public const string LanguageId = nameof(TreeSelectShowCase);
+
     public TreeSelectShowCase()
     {
         this.WhenActivated(disposables =>

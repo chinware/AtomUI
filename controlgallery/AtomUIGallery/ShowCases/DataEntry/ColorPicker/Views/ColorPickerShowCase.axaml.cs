@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.ColorPicker;
 
 public partial class ColorPickerShowCase : ReactiveUserControl<ColorPickerViewModel>
 {
+    public const string LanguageId = nameof(ColorPickerShowCase);
+
     public ColorPickerShowCase()
     {
         this.WhenActivated(disposables =>

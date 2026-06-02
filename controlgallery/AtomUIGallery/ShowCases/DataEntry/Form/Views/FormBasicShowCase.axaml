@@ -8,8 +8,8 @@
              x:DataType="viewModels:FormViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic usage"
-            Description="Basic Form data control. Includes layout, initial values, validation and submit."
+            Title="{gallery:FormShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:FormShowCaseLangResource BasicUsageDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -49,8 +49,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Form methods"
-            Description="Call form method with Form."
+            Title="{gallery:FormShowCaseLangResource FormMethodsTitle}"
+            Description="{gallery:FormShowCaseLangResource FormMethodsDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"

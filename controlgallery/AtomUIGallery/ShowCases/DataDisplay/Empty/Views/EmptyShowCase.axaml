@@ -7,14 +7,14 @@
              x:DataType="vm:EmptyViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Simplest Usage.">
+            Title="{gallery:EmptyShowCaseLangResource BasicTitle}"
+            Description="{gallery:EmptyShowCaseLangResource BasicDescription}">
             <atom:Empty PresetImage="Default" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Size"
-            Description="AtomUI supports three sizes of buttons: small, default and large.">
+            Title="{gallery:EmptyShowCaseLangResource SizeTitle}"
+            Description="{gallery:EmptyShowCaseLangResource SizeDescription}">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Empty PresetImage="Simple" SizeType="Small" />
@@ -25,8 +25,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Customize"
-            Description="Customize image source, image size, description and extra content.">
+            Title="{gallery:EmptyShowCaseLangResource CustomizeTitle}"
+            Description="{gallery:EmptyShowCaseLangResource CustomizeDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Empty ImagePath="avares://AtomUIGallery/Assets/EmptyShowCase/empty.svg"
                                      SizeType="Large"
@@ -36,8 +36,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="No description"
-            Description="Simplest Usage with no description.">
+            Title="{gallery:EmptyShowCaseLangResource NoDescriptionTitle}"
+            Description="{gallery:EmptyShowCaseLangResource NoDescriptionDescription}">
             <atom:Empty PresetImage="Default" IsDescriptionVisible="False" />
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

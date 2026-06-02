@@ -7,18 +7,18 @@
              x:DataType="viewModels:TransferViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
+            Title="{gallery:TransferShowCaseLangResource BasicTitle}"
             IsOccupyEntireRow="True"
-            Description="The most basic usage of Transfer involves providing the source data and target keys arrays, plus the rendering and some callback functions.">
+            Description="{gallery:TransferShowCaseLangResource BasicDescription}">
             <atom:ListTransfer Name="BasicListTransfer"
                                SourceTitle="Source"
                                TargetTitle="Target"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="One Way"
+            Title="{gallery:TransferShowCaseLangResource OneWayTitle}"
             IsOccupyEntireRow="True"
-            Description="Use oneWay to make Transfer the one way style.">
+            Description="{gallery:TransferShowCaseLangResource OneWayDescription}">
             <StackPanel Spacing="20">
                 <atom:ListTransfer Name="OneWayTransferList"
                                    SourceTitle="Source"
@@ -32,9 +32,9 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Search"
+            Title="{gallery:TransferShowCaseLangResource SearchTitle}"
             IsOccupyEntireRow="True"
-            Description="Transfer with a search box.">
+            Description="{gallery:TransferShowCaseLangResource SearchDescription}">
             <StackPanel Spacing="20">
                 <atom:ListTransfer Name="SearchTransferList"
                                    IsFilterEnabled="True"
@@ -44,10 +44,9 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Advanced"
+            Title="{gallery:TransferShowCaseLangResource AdvancedTitle}"
             IsOccupyEntireRow="True"
-            Description="Advanced Usage of Transfer.
-        You can customize the labels of the transfer buttons, the width and height of the columns, and what should be displayed in the footer.">
+            Description="{gallery:TransferShowCaseLangResource AdvancedDescription}">
             <atom:ListTransfer ToTargetButtonText="to right"
                                ToSourceButtonText="to left"
                                ListWidth="300"
@@ -71,9 +70,9 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pagination"
+            Title="{gallery:TransferShowCaseLangResource PaginationTitle}"
             IsOccupyEntireRow="True"
-            Description="Store a large amount of items with pagination.">
+            Description="{gallery:TransferShowCaseLangResource PaginationDescription}">
             <StackPanel Spacing="20">
                 <atom:ListTransfer Name="PaginationTransferList"
                                    IsOneWay="{Binding PaginationIsOneWay}"
@@ -131,9 +130,9 @@
         <!-- </gallery:ShowCaseItem> -->
 
         <gallery:ShowCaseItem
-            Title="Tree Transfer"
+            Title="{gallery:TransferShowCaseLangResource TreeTransferTitle}"
             IsOccupyEntireRow="True"
-            Description="Customize the render list with a Tree component.">
+            Description="{gallery:TransferShowCaseLangResource TreeTransferDescription}">
             <StackPanel Spacing="20">
                 <atom:TreeTransfer Name="TreeTransfer"
                                    IsStretchView="True"
@@ -149,9 +148,9 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
+            Title="{gallery:TransferShowCaseLangResource StatusTitle}"
             IsOccupyEntireRow="True"
-            Description="Add status to Transfer with status, which could be error or warning.">
+            Description="{gallery:TransferShowCaseLangResource StatusDescription}">
             <StackPanel Spacing="20">
                 <atom:ListTransfer Status="Error"/>
                 <atom:ListTransfer Status="Warning"/>

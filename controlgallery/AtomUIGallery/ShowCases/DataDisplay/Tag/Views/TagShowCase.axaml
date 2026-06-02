@@ -13,8 +13,8 @@
             </Style>
         </gallery:ShowCasePanel.Styles>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Usage of basic Tag, and it could be IsClosable and customize close button by set closeIcon property,will display default close button when closeIcon is setting to true. IsClosable Tag supports onClose events.">
+            Title="{gallery:TagShowCaseLangResource BasicTitle}"
+            Description="{gallery:TagShowCaseLangResource BasicDescription}">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag>Tag 1</atom:Tag>
                 <atom:Tag>Link</atom:Tag>
@@ -27,8 +27,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Colorful Tag"
-            Description="We preset a series of colorful tag styles for use in different situations. You can also set it to a hex color string for custom color.">
+            Title="{gallery:TagShowCaseLangResource ColorfulTagTitle}"
+            Description="{gallery:TagShowCaseLangResource ColorfulTagDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</atom:TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
@@ -57,8 +57,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status Tag"
-            Description="We preset five different colors, you can set color property such as success,processing,error,default and warning to indicate specific status.">
+            Title="{gallery:TagShowCaseLangResource StatusTagTitle}"
+            Description="{gallery:TagShowCaseLangResource StatusTagDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Without icon</atom:TextBlock>
                 <WrapPanel HorizontalAlignment="Left">
@@ -101,9 +101,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Icon"
-            Description="Tag components can contain an Icon. This is done by setting the icon property or placing an Icon component within the Tag.
-If you want specific control over the positioning and placement of the Icon, then that should be done by placing the Icon component within the Tag rather than using the icon property.">
+            Title="{gallery:TagShowCaseLangResource IconTitle}"
+            Description="{gallery:TagShowCaseLangResource IconDescription}">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag TagColor="#55acee"
                           Icon="{antdicons:AntDesignIconProvider Kind=TwitterOutlined}">
@@ -131,8 +130,8 @@ If you want specific control over the positioning and placement of the Icon, the
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="borderless"
-            Description="borderless">
+            Title="{gallery:TagShowCaseLangResource BorderlessTitle}"
+            Description="{gallery:TagShowCaseLangResource BorderlessDescription}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag IsBordered="False">Tag1</atom:Tag>

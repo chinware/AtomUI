@@ -8,8 +8,8 @@
              x:DataType="viewModels:CascaderViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Cascade selection box for selecting province/city/district.">
+            Title="{gallery:CascaderShowCaseLangResource BasicTitle}"
+            Description="{gallery:CascaderShowCaseLangResource BasicDescription}">
             <atom:Cascader
                 Name="BasicCascader"
                 PlaceholderText="Please select"
@@ -24,8 +24,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Default value"
-            Description="Specifies default value by an array.">
+            Title="{gallery:CascaderShowCaseLangResource DefaultValueTitle}"
+            Description="{gallery:CascaderShowCaseLangResource DefaultValueDescription}">
             <atom:Cascader
                 Name="DefaultValueCascader"
                 PlaceholderText="Please select"
@@ -40,8 +40,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Hover"
-            Description="Hover to expand sub menu, click to select option.">
+            Title="{gallery:CascaderShowCaseLangResource HoverTitle}"
+            Description="{gallery:CascaderShowCaseLangResource HoverDescription}">
             <atom:Cascader
                 Name="HoverCascader"
                 PlaceholderText="Please select"
@@ -57,8 +57,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled option"
-            Description="Disable option by specifying the disabled property in options.">
+            Title="{gallery:CascaderShowCaseLangResource DisabledOptionTitle}"
+            Description="{gallery:CascaderShowCaseLangResource DisabledOptionDescription}">
             <atom:Cascader
                 Name="DisabledCascader"
                 PlaceholderText="Please select"
@@ -73,8 +73,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Change on select"
-            Description="Allows the selection of only parent options.">
+            Title="{gallery:CascaderShowCaseLangResource ChangeOnSelectTitle}"
+            Description="{gallery:CascaderShowCaseLangResource ChangeOnSelectDescription}">
             <atom:Cascader
                 Name="SelectParentCascader"
                 PlaceholderText="Please select"
@@ -90,8 +90,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Multiple"
-            Description="Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.">
+            Title="{gallery:CascaderShowCaseLangResource MultipleTitle}"
+            Description="{gallery:CascaderShowCaseLangResource MultipleDescription}">
             <atom:Cascader
                 Name="MultiSelectCascader"
                 PlaceholderText="Please select"
@@ -109,8 +109,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="ShowCheckedStrategy"
-            Description="Shows a selected item in a box using showCheckedStrategy.">
+            Title="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyTitle}"
+            Description="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyDescription}">
             <StackPanel Spacing="15">
                 <atom:Separator Title="ShowCheckedStrategy=All"/>
                 <atom:Cascader
@@ -148,8 +148,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Search"
-            Description="Search and select options directly.">
+            Title="{gallery:CascaderShowCaseLangResource SearchTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SearchDescription}">
             <atom:Cascader
                 Name="SearchCascader"
                 PlaceholderText="Please select"
@@ -165,8 +165,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Load Options Lazily"
-            Description="Load options lazily with loadData.">
+            Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
+            Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}">
             <atom:Cascader
                 Name="AsyncLoadCascader"
                 x:DataType="viewModels:CascaderViewModel"
@@ -182,8 +182,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Prefix and Suffix"
-            Description="Use prefix to customize the prefix content, use suffixIcon to customize the selection box suffix icon, and use expandIcon to customize the current item expand icon.">
+            Title="{gallery:CascaderShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:CascaderShowCaseLangResource PrefixAndSuffixDescription}">
             <StackPanel Spacing="10">
                 <atom:Cascader
                     Name="PrefixAndSuffixCascader1"
@@ -233,8 +233,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Variants of Cascader, there are four variants: outlined filled borderless and underlined.">
+            Title="{gallery:CascaderShowCaseLangResource VariantsTitle}"
+            Description="{gallery:CascaderShowCaseLangResource VariantsDescription}">
             <StackPanel Spacing="15">
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
@@ -291,8 +291,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="You can manually specify the position of the popup via placement.">
+            Title="{gallery:CascaderShowCaseLangResource PlacementTitle}"
+            Description="{gallery:CascaderShowCaseLangResource PlacementDescription}">
 
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:TextBlock VerticalAlignment="Center">Placement:</atom:TextBlock>
@@ -320,8 +320,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to Cascader with status, which could be error or warning.">
+            Title="{gallery:CascaderShowCaseLangResource StatusTitle}"
+            Description="{gallery:CascaderShowCaseLangResource StatusDescription}">
             <StackPanel Spacing="15">
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
@@ -353,8 +353,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Size"
-            Description="Cascade selection box of different sizes.">
+            Title="{gallery:CascaderShowCaseLangResource SizeTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SizeDescription}">
             <StackPanel Spacing="15">
                 <atom:Cascader
                     Name="SizeCascader1"
@@ -405,8 +405,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Basic CascaderView"
-            Description="The most basic usage.">
+            Title="{gallery:CascaderShowCaseLangResource BasicCascaderViewTitle}"
+            Description="{gallery:CascaderShowCaseLangResource BasicCascaderViewDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:CascaderView>
                     <atom:CascaderOption Header="Zhejiang" Value="zhejiang">
@@ -441,8 +441,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate by template"
-            Description="You can use the Template mechanism to generate tree nodes">
+            Title="{gallery:CascaderShowCaseLangResource GenerateByTemplateTitle}"
+            Description="{gallery:CascaderShowCaseLangResource GenerateByTemplateDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:CascaderView
                     Name="BasicCascaderView">
@@ -468,8 +468,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Load Options Lazily"
-            Description="Load options lazily with loadData.">
+            Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
+            Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}">
             <atom:CascaderView Name="AsyncLoadCascaderView">
                 <atom:CascaderView.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -481,8 +481,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Searchable"
-            Description="Searchable CascaderView.">
+            Title="{gallery:CascaderShowCaseLangResource SearchableTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SearchableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterCascaderViewClicked" />
@@ -504,8 +504,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Searchable"
-            Description="Searchable CascaderView with ItemsSource.">
+            Title="{gallery:CascaderShowCaseLangResource SearchableItemsSourceTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SearchableItemsSourceDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="Search"
                                  SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
@@ -521,8 +521,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Default expanded"
-            Description="You can set the default expansion path..">
+            Title="{gallery:CascaderShowCaseLangResource DefaultExpandedTitle}"
+            Description="{gallery:CascaderShowCaseLangResource DefaultExpandedDescription}">
             <StackPanel Spacing="10">
                 <atom:CascaderView DefaultExpandedPath="{Binding DefaultExpandPath}">
                     <atom:CascaderOption Header="Zhejiang" ItemKey="zhejiang">

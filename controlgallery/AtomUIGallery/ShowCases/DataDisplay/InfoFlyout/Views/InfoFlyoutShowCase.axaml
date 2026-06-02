@@ -7,8 +7,8 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic example. The size of the floating layer depends on the contents region.">
+            Title="{gallery:InfoFlyoutShowCaseLangResource BasicTitle}"
+            Description="{gallery:InfoFlyoutShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
@@ -22,8 +22,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three ways to trigger"
-            Description="Mouse to click, focus and move in.">
+            Title="{gallery:InfoFlyoutShowCaseLangResource TriggerWaysTitle}"
+            Description="{gallery:InfoFlyoutShowCaseLangResource TriggerWaysDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
@@ -53,8 +53,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="There are 12 placement options available.">
+            Title="{gallery:InfoFlyoutShowCaseLangResource PlacementTitle}"
+            Description="{gallery:InfoFlyoutShowCaseLangResource PlacementDescription}">
             <Grid>
                 <Grid.Styles>
                     <Style Selector="atom|Button">
@@ -189,8 +189,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Arrow"
-            Description="Support show, hide or keep arrow in the center.">
+            Title="{gallery:InfoFlyoutShowCaseLangResource ArrowTitle}"
+            Description="{gallery:InfoFlyoutShowCaseLangResource ArrowDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Segmented x:Name="ArrowSegmented">
                     <atom:SegmentedItem>Show</atom:SegmentedItem>

@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Notification;
 
 public partial class NotificationShowCase : ReactiveUserControl<NotificationViewModel>
 {
+    public const string LanguageId = nameof(NotificationShowCase);
+
     private WindowNotificationManager? _basicManager;
     private WindowNotificationManager? _topLeftManager;
     private WindowNotificationManager? _topManager;

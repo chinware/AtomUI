@@ -7,8 +7,8 @@
              x:DataType="viewModels:ModalViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Basic modal.">
+            Title="{gallery:ModalShowCaseLangResource BasicTitle}"
+            Description="{gallery:ModalShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="BasicOpenModalButton">
@@ -62,8 +62,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Asynchronously close"
-            Description="Asynchronously close a modal dialog when the OK button is pressed. For example, you can use this pattern when you submit a form.">
+            Title="{gallery:ModalShowCaseLangResource AsynchronouslyCloseTitle}"
+            Description="{gallery:ModalShowCaseLangResource AsynchronouslyCloseDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton">
@@ -91,8 +91,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="MessageBox Style"
-            Description="MessageBox supports Confirm, Information, Warning, and Error">
+            Title="{gallery:ModalShowCaseLangResource MessageBoxStyleTitle}"
+            Description="{gallery:ModalShowCaseLangResource MessageBoxStyleDescription}">
 
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
@@ -179,8 +179,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Loading"
-            Description="Set the loading status of Modal.">
+            Title="{gallery:ModalShowCaseLangResource LoadingTitle}"
+            Description="{gallery:ModalShowCaseLangResource LoadingDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton">
@@ -212,8 +212,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Custom Footer Buttons"
-            Description="You can use standard buttons along with custom buttons.">
+            Title="{gallery:ModalShowCaseLangResource CustomFooterButtonsTitle}"
+            Description="{gallery:ModalShowCaseLangResource CustomFooterButtonsDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton">
@@ -264,8 +264,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Open Draggable Modal"
-            Description="Custom modal content render and enable implements draggable.">
+            Title="{gallery:ModalShowCaseLangResource OpenDraggableModalTitle}"
+            Description="{gallery:ModalShowCaseLangResource OpenDraggableModalDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="DraggableDialogOpenButton">
@@ -291,8 +291,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Manual to update destroy"
-            Description="Manually updating and destroying a modal through instance.">
+            Title="{gallery:ModalShowCaseLangResource ManualUpdateDestroyTitle}"
+            Description="{gallery:ModalShowCaseLangResource ManualUpdateDestroyDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button Name="DelayedCloseMsgBoxOpenButton">
@@ -316,8 +316,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Customize footer buttons props"
-            Description="Change dialog button properties by specifying a callback function.">
+            Title="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsTitle}"
+            Description="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="ConfigureButtonsDialogOpenButton">
@@ -345,8 +345,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Static Dialog API"
-            Description="Creating a Dialog using the static method of Dialog.">
+            Title="{gallery:ModalShowCaseLangResource StaticDialogApiTitle}"
+            Description="{gallery:ModalShowCaseLangResource StaticDialogApiDescription}">
             <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
                 <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick">
                     Open Overlay Dialog

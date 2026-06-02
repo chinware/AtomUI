@@ -6,7 +6,7 @@
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic" Description="Simplest Usage." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource BasicTitle}" Description="{gallery:DescriptionsShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
             <atom:Descriptions Header="User Info">
                 <atom:DescriptionItem Label="UserName" Content="Zhou Maomao" />
                 <atom:DescriptionItem Label="Telephone" Content="1810000000" />
@@ -17,7 +17,7 @@
             </atom:Descriptions>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="border" Description="Descriptions with border and background color."
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource BorderTitle}" Description="{gallery:DescriptionsShowCaseLangResource BorderDescription}"
                               IsOccupyEntireRow="True">
             <atom:Descriptions IsBordered="True">
                 <atom:DescriptionItem Label="Product" Content="Cloud Database" />
@@ -44,7 +44,7 @@
             </atom:Descriptions>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Custom size" Description="Custom sizes to fit in a variety of containers."
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource CustomSizeTitle}" Description="{gallery:DescriptionsShowCaseLangResource CustomSizeDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="30">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -96,8 +96,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="responsive"
-                              Description="Responsive configuration enables perfect presentation on small screen devices."
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource ResponsiveTitle}"
+                              Description="{gallery:DescriptionsShowCaseLangResource ResponsiveDescription}"
                               IsOccupyEntireRow="True">
             <atom:Descriptions IsBordered="True"
                                SizeType="{Binding DescriptionsSizeType}"
@@ -130,7 +130,7 @@
             </atom:Descriptions>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Vertical" Description="Simplest Usage." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource VerticalTitle}" Description="{gallery:DescriptionsShowCaseLangResource VerticalDescription}" IsOccupyEntireRow="True">
             <atom:Descriptions Header="User Info" Layout="Vertical">
                 <atom:DescriptionItem Label="UserName" Content="Zhou Maomao" />
                 <atom:DescriptionItem Label="Telephone" Content="1810000000" />
@@ -141,8 +141,8 @@
             </atom:Descriptions>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Vertical border"
-                              Description="Descriptions with border and background color."
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource VerticalBorderTitle}"
+                              Description="{gallery:DescriptionsShowCaseLangResource VerticalBorderDescription}"
                               IsOccupyEntireRow="True">
             <atom:Descriptions IsBordered="True" Layout="Vertical">
                 <atom:DescriptionItem Label="Product" Content="Cloud Database" />
@@ -169,7 +169,7 @@
             </atom:Descriptions>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Row" Description="Display of the entire line." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource RowTitle}" Description="{gallery:DescriptionsShowCaseLangResource RowDescription}" IsOccupyEntireRow="True">
             <atom:Descriptions Header="User Info" IsBordered="True">
                 <atom:DescriptionItem Label="UserName" Content="Zhou Maomao" />
                 <atom:DescriptionItem Label="Live" Content="Hangzhou, Zhejiang" IsFilled="True" />

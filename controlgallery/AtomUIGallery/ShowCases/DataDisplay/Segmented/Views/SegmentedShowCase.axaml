@@ -8,8 +8,8 @@
              x:DataType="vm:SegmentedViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic usage.">
+            Title="{gallery:SegmentedShowCaseLangResource BasicTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource BasicDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
                     <atom:SegmentedItem>Daily</atom:SegmentedItem>
@@ -22,8 +22,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Block Segmented"
-            Description="block property will make the Segmented fit to its parent width.">
+            Title="{gallery:SegmentedShowCaseLangResource BlockSegmentedTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource BlockSegmentedDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                 <atom:Segmented IsExpanding="True" Margin="20">
                     <atom:SegmentedItem>123</atom:SegmentedItem>
@@ -34,8 +34,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Disabled Segmented.">
+            Title="{gallery:SegmentedShowCaseLangResource DisabledTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource DisabledDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
                     <atom:SegmentedItem IsEnabled="False">Map</atom:SegmentedItem>
@@ -53,8 +53,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three sizes of Segmented"
-            Description="There are three sizes of an Segmented: large (40px), default (32px) and small (24px).">
+            Title="{gallery:SegmentedShowCaseLangResource ThreeSizesTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource ThreeSizesDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented SizeType="Large" Margin="20">
                     <atom:SegmentedItem>Daily</atom:SegmentedItem>
@@ -83,8 +83,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="With Icon only"
-            Description="Set icon without label for Segmented Item.">
+            Title="{gallery:SegmentedShowCaseLangResource IconOnlyTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource IconOnlyDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
                     <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" />
@@ -94,8 +94,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="With Icon"
-            Description="Set icon for Segmented Item.">
+            Title="{gallery:SegmentedShowCaseLangResource WithIconTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource WithIconDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
                     <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">

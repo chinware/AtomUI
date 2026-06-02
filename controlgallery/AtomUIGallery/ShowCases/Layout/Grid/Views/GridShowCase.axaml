@@ -30,7 +30,7 @@
     </UserControl.Styles>
 
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic Grid" Description="Basic 24-column layout." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource BasicGridTitle}" Description="{gallery:GridShowCaseLangResource BasicGridDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="24">
@@ -93,7 +93,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Gutter" Description="Horizontal, vertical, and responsive gutter." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource GutterTitle}" Description="{gallery:GridShowCaseLangResource GutterDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <TextBlock Classes="grid-section-title">Horizontal</TextBlock>
                 <atom:Row Gutter="16,16">
@@ -213,7 +213,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Offset" Description="Move columns to the right." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource OffsetTitle}" Description="{gallery:GridShowCaseLangResource OffsetDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="8">
@@ -251,7 +251,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Push &amp; Pull" Description="Change column order with push/pull." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource PushPullTitle}" Description="{gallery:GridShowCaseLangResource PushPullDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="18" Push="6">
@@ -268,7 +268,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Justify" Description="Sub-element alignment on the main axis." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource JustifyTitle}" Description="{gallery:GridShowCaseLangResource JustifyDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <TextBlock Classes="grid-section-title">sub-element align left</TextBlock>
                 <Border Classes="grid-row-surface">
@@ -428,7 +428,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Align" Description="Sub-element alignment on the cross axis." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource AlignTitle}" Description="{gallery:GridShowCaseLangResource AlignDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <TextBlock Classes="grid-section-title">Align Top</TextBlock>
                 <Border Classes="grid-row-surface">
@@ -510,7 +510,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Order" Description="Change column order." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource OrderTitle}" Description="{gallery:GridShowCaseLangResource OrderDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <TextBlock Classes="grid-section-title">Normal</TextBlock>
                 <atom:Row Gutter="16,16">
@@ -562,7 +562,7 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="ColInfo" Description="Use ColInfo for responsive overrides." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource ColInfoTitle}" Description="{gallery:GridShowCaseLangResource ColInfoDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel.Resources>
                     <atom:ColInfo x:Key="MdCol1" Span="12" Order="2" />

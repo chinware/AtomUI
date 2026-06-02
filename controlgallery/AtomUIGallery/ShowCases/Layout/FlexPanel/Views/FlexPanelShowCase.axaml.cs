@@ -12,6 +12,8 @@ namespace AtomUIGallery.ShowCases.FlexPanel;
 
 public partial class FlexPanelShowCase : ReactiveUserControl<FlexPanelViewModel>
 {
+    public const string LanguageId = nameof(FlexPanelShowCase);
+
     private const double GapSmallValue = 8;
     private const double GapMiddleValue = 16;
     private const double GapLargeValue = 24;

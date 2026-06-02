@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.ButtonSpinner;
 
 public partial class ButtonSpinnerShowCase : ReactiveUserControl<ButtonSpinnerViewModel>
 {
+    public const string LanguageId = nameof(ButtonSpinnerShowCase);
+
     public ButtonSpinnerShowCase()
     {
         this.WhenActivated(disposables =>

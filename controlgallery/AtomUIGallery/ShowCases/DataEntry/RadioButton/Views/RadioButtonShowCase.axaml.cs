@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.RadioButton;
 
 public partial class RadioButtonShowCase : ReactiveUserControl<RadioButtonViewModel>
 {
+    public const string LanguageId = nameof(RadioButtonShowCase);
+
     public RadioButtonShowCase()
     {
         this.WhenActivated(disposables =>

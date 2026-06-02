@@ -8,8 +8,8 @@
              x:DataType="viewModels:SplitButtonViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic SplitButton.">
+            Title="{gallery:SplitButtonShowCaseLangResource BasicTitle}"
+            Description="{gallery:SplitButtonShowCaseLangResource BasicDescription}">
             <atom:SplitButton TriggerType="Hover">
                 Hover me
                 <atom:SplitButton.Flyout>
@@ -26,9 +26,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Size"
-            Description="AtomUI supports three sizes of buttons: small, default and large.
-If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.">
+            Title="{gallery:SplitButtonShowCaseLangResource SizeTitle}"
+            Description="{gallery:SplitButtonShowCaseLangResource SizeDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
@@ -122,8 +121,8 @@ If a large or small button is desired, set the size property to either large or 
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Danger Buttons"
-            Description="danger is a property of button after antd 4.0.">
+            Title="{gallery:SplitButtonShowCaseLangResource DangerButtonsTitle}"
+            Description="{gallery:SplitButtonShowCaseLangResource DangerButtonsDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
@@ -162,8 +161,8 @@ If a large or small button is desired, set the size property to either large or 
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Custom Icon"
-            Description="Custom flyout button icon.">
+            Title="{gallery:SplitButtonShowCaseLangResource CustomIconTitle}"
+            Description="{gallery:SplitButtonShowCaseLangResource CustomIconDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />
@@ -202,8 +201,8 @@ If a large or small button is desired, set the size property to either large or 
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Flyout trigger type"
-            Description="Support two kind of Trigger type.">
+            Title="{gallery:SplitButtonShowCaseLangResource FlyoutTriggerTypeTitle}"
+            Description="{gallery:SplitButtonShowCaseLangResource FlyoutTriggerTypeDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|SplitButton">
                     <Setter Property="Margin" Value="5" />

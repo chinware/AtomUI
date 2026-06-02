@@ -7,8 +7,8 @@
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Space"
              x:DataType="viewModels:SpaceViewModel">
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Description="Crowded components horizontal spacing."
-                              Title="Basic" IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Description="{gallery:SpaceShowCaseLangResource BasicDescription}"
+                              Title="{gallery:SpaceShowCaseLangResource BasicTitle}" IsOccupyEntireRow="True">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TextBlock VerticalAlignment="Center">Space:</atom:TextBlock>
                 <atom:Space>
@@ -27,8 +27,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
         
-        <gallery:ShowCaseItem Description="Crowded components vertical spacing."
-                              Title="Vertical Space" IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Description="{gallery:SpaceShowCaseLangResource VerticalSpaceDescription}"
+                              Title="{gallery:SpaceShowCaseLangResource VerticalSpaceTitle}" IsOccupyEntireRow="True">
             <atom:Space Orientation="Vertical" HorizontalAlignment="Stretch" Height="300">
                 <atom:Card Header="Card" SizeType="Middle" HorizontalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" Spacing="10">

@@ -7,16 +7,16 @@
              x:DataType="vm:MentionsViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The simplest use.">
+            Title="{gallery:MentionsShowCaseLangResource BasicTitle}"
+            Description="{gallery:MentionsShowCaseLangResource BasicDescription}">
             <atom:Mentions Name="BasicMentions"
                            HorizontalAlignment="Stretch"
                            DefaultValue="@afc163"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Variants of Mentions, there are four variants: outlined filled borderless and underlined.">
+            Title="{gallery:MentionsShowCaseLangResource VariantsTitle}"
+            Description="{gallery:MentionsShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Outlined" PlaceholderText="Outlined"/>
                 <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Filled" PlaceholderText="Filled"/>
@@ -26,14 +26,14 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Asynchronous loading"
-            Description="async.">
+            Title="{gallery:MentionsShowCaseLangResource AsynchronousLoadingTitle}"
+            Description="{gallery:MentionsShowCaseLangResource AsynchronousLoadingDescription}">
             <atom:Mentions HorizontalAlignment="Stretch" OptionsAsyncLoader="{Binding MentionOptionAsyncLoader}"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Customize Trigger Token"
-            Description="Customize Trigger Token by prefix props. Default to @, array also supported.">
+            Title="{gallery:MentionsShowCaseLangResource CustomizeTriggerTokenTitle}"
+            Description="{gallery:MentionsShowCaseLangResource CustomizeTriggerTokenDescription}">
             <atom:Mentions HorizontalAlignment="Stretch"
                            TriggerPrefix="{Binding MentionTriggers}"
                            CandidateTriggered="HandleCandidateTriggered"
@@ -41,8 +41,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="disabled or readOnly"
-            Description="Configure disabled and readOnly.">
+            Title="{gallery:MentionsShowCaseLangResource DisabledOrReadOnlyTitle}"
+            Description="{gallery:MentionsShowCaseLangResource DisabledOrReadOnlyDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Mentions Name="DisabledMentions"
                                HorizontalAlignment="Stretch"
@@ -56,16 +56,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="Change the suggestions placement.">
+            Title="{gallery:MentionsShowCaseLangResource PlacementTitle}"
+            Description="{gallery:MentionsShowCaseLangResource PlacementDescription}">
             <atom:Mentions Name="PlacementMentions"
                            HorizontalAlignment="Stretch"
                            Placement="Top"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to Mentions with status, which could be error or warning.">
+            Title="{gallery:MentionsShowCaseLangResource StatusTitle}"
+            Description="{gallery:MentionsShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Mentions Name="ErrorMentions"
                                HorizontalAlignment="Stretch"
@@ -79,16 +79,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="autoSize"
-            Description="Height autoSize.">
+            Title="{gallery:MentionsShowCaseLangResource AutoSizeTitle}"
+            Description="{gallery:MentionsShowCaseLangResource AutoSizeDescription}">
             <atom:Mentions Name="AutoSizeMentions"
                            HorizontalAlignment="Stretch"
                            IsAutoSize="True"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="With clear icon"
-            Description="Customize clear button.">
+            Title="{gallery:MentionsShowCaseLangResource WithClearIconTitle}"
+            Description="{gallery:MentionsShowCaseLangResource WithClearIconDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Mentions Name="ClearableMentions1"
                                HorizontalAlignment="Stretch"

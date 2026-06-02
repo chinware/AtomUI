@@ -7,14 +7,14 @@
              x:DataType="vm:DatePickerViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Click DatePicker, and then we could select or input a date in panel.">
+            Title="{gallery:DatePickerShowCaseLangResource BasicTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource BasicDescription}">
             <atom:DatePicker PlaceholderText="Select date"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Range Picker"
-            Description="Set range picker type by picker prop.">
+            Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <!-- <atom:RangeDatePicker IsShowTime="true" PlaceholderText="Select date" SecondaryPlaceholderText="End date"/> -->
                 <atom:RangeDatePicker IsShowTime="False" PlaceholderText="Select date" SecondaryPlaceholderText="End date" />
@@ -22,8 +22,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Need Confirm"
-            Description="DatePicker will automatically determine whether to show a confirm button according to the picker property. You can also set the needConfirm property to determine whether to show a confirm button. When needConfirm is set, the user must click the confirm button to complete the selection. Otherwise, the selection will be submitted when the picker loses focus or selects a date.">
+            Title="{gallery:DatePickerShowCaseLangResource NeedConfirmTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource NeedConfirmDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" />
                 <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="False" PlaceholderText="Select date" SecondaryPlaceholderText="End date" />
@@ -31,8 +31,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Choose Time"
-            Description="This property provides an additional time selection. When showTime is an Object, its properties will be passed on to the built-in TimePicker.">
+            Title="{gallery:DatePickerShowCaseLangResource ChooseTimeTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource ChooseTimeDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:DatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="Select date" />
                 <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="Select date" SecondaryPlaceholderText="End date" />
@@ -40,8 +40,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="A disabled state of the DatePicker. You can also set as array to disable one of input.">
+            Title="{gallery:DatePickerShowCaseLangResource DisabledTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource DisabledDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" SelectedDateTime="2024-01-20"
                                  IsEnabled="False" />
@@ -71,8 +71,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three Sizes"
-            Description="The input box comes in three sizes: small, middle and large. The middle size will be used if size is omitted.">
+            Title="{gallery:DatePickerShowCaseLangResource ThreeSizesTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource ThreeSizesDescription}">
 
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
@@ -99,8 +99,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to DatePicker with status, which could be error or warning.">
+            Title="{gallery:DatePickerShowCaseLangResource StatusTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker Status="Default"
@@ -136,8 +136,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Bordered-less style component.">
+            Title="{gallery:DatePickerShowCaseLangResource VariantsTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker StyleVariant="Outlined"
@@ -181,8 +181,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="You can manually specify the position of the popup via placement.">
+            Title="{gallery:DatePickerShowCaseLangResource PlacementTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource PlacementDescription}">
 
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">

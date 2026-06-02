@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.Message;
 
 public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
 {
+    public const string LanguageId = nameof(MessageShowCase);
+
     private WindowMessageManager? _messageManager;
 
     public MessageShowCase()

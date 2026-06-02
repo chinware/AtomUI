@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.ImagePreviewer;
 
 public partial class ImagePreviewerShowCase : ReactiveUserControl<ImagePreviewerViewModel>
 {
+    public const string LanguageId = nameof(ImagePreviewerShowCase);
+
     public ImagePreviewerShowCase()
     {
         this.WhenActivated(disposables =>

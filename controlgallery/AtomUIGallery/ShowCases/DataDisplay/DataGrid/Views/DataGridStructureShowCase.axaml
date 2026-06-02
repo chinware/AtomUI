@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Expandable Row"
-                              Description="When there's too much information to show and the table can't display all at once."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource ExpandableRowTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource ExpandableRowDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="ExpandableDataGrid"
                            RowDetailsVisibilityMode="Collapsed"
@@ -42,8 +42,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Order Specific Column"
-                              Description="You can control the order of the expand and select columns."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource OrderSpecificColumnTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource OrderSpecificColumnDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="OrderSpecificColumnDataGrid"
                            RowDetailsVisibilityMode="Collapsed"
@@ -80,8 +80,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Row Header"
-                              Description="You can control whether to display the Column header and RowHeader"
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource RowHeaderTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource RowHeaderDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="RowAndColumnHeaderDataGrid"
                            HeadersVisibility="All"
@@ -120,8 +120,9 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Grouping table head"
-                              Description="Group table head with columns[n].children." IsOccupyEntireRow="true">
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource GroupingTableHeadTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource GroupingTableHeadDescription}"
+                              IsOccupyEntireRow="true">
             <StackPanel>
                 <atom:DataGrid Name="GroupHeaderDataGrid" LeftFrozenColumnCount="2"
                                RightFrozenColumnCount="2"
@@ -150,8 +151,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Hidden Columns"
-                              Description="Hide columns with hidden."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource HiddenColumnsTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource HiddenColumnsDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <StackPanel Spacing="10" Orientation="Horizontal">

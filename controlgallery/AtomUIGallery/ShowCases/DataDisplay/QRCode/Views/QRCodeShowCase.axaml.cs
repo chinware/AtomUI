@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.QRCode;
 
 public partial class QRCodeShowCase : ReactiveUserControl<QRCodeViewModel>
 {
+    public const string LanguageId = nameof(QRCodeShowCase);
+
     public QRCodeShowCase()
     {
         this.WhenActivated(disposables =>

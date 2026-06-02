@@ -8,8 +8,8 @@
              x:DataType="viewModels:MenuViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Simplest Usage.">
+            Title="{gallery:MenuShowCaseLangResource BasicTitle}"
+            Description="{gallery:MenuShowCaseLangResource BasicDescription}">
             <atom:Menu>
                 <atom:MenuItem Header="_File">
                     <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" />
@@ -26,8 +26,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate MenuItem by ItemsSource"
-            Description="Generate structure based on ItemsSource and template.">
+            Title="{gallery:MenuShowCaseLangResource MenuItemItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource MenuItemItemsSourceDescription}">
             <atom:Menu Name="BasicItemsSourceMenu">
                 <atom:Menu.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -39,8 +39,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Inline NavMenu by ItemsSource"
-            Description="Generate inline NavMenu structure based on ItemsSource and template.">
+            Title="{gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceDescription}">
             <atom:NavMenu Mode="Inline" Name="InlineModeMenu">
                 <atom:NavMenu.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -52,8 +52,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Icon and submenu"
-            Description="With icon and submenu.">
+            Title="{gallery:MenuShowCaseLangResource IconAndSubmenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource IconAndSubmenuDescription}">
             <atom:Menu>
                 <atom:MenuItem Header="_File">
                     <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" />
@@ -82,8 +82,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Menu item with ToggleType"
-            Description="Renders a checkbox or radio button on a menu.">
+            Title="{gallery:MenuShowCaseLangResource ToggleTypeTitle}"
+            Description="{gallery:MenuShowCaseLangResource ToggleTypeDescription}">
             <atom:Menu>
                 <atom:MenuItem Header="_Menu A">
                     <atom:MenuItem Header="New Text File" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1" />
@@ -104,8 +104,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Scrollable menu"
-            Description="When there are too many menu items, up and down scroll buttons will appear.">
+            Title="{gallery:MenuShowCaseLangResource ScrollableTitle}"
+            Description="{gallery:MenuShowCaseLangResource ScrollableDescription}">
             <atom:Menu>
                 <atom:MenuItem Header="_Menu">
                     <atom:MenuItem Header="Menu Item" />
@@ -149,8 +149,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Context menu"
-            Description="Right click to bring up the context menu.">
+            Title="{gallery:MenuShowCaseLangResource ContextMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource ContextMenuDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="Border#ContextMenuContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
@@ -180,8 +180,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Context menu, Generate MenuItem by ItemsSource"
-            Description="Right click to bring up the context menu.">
+            Title="{gallery:MenuShowCaseLangResource ContextMenuItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource ContextMenuItemsSourceDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="Border#ItemSourcesContextMenuContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
@@ -206,8 +206,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Menu Flyout"
-            Description="Right Click to show Context Flyout">
+            Title="{gallery:MenuShowCaseLangResource MenuFlyoutTitle}"
+            Description="{gallery:MenuShowCaseLangResource MenuFlyoutDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="Border.ContextFlyoutContainer">
                     <Setter Property="BorderBrush" Value="Gray" />
@@ -256,8 +256,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Vertical nav menu"
-            Description="Submenus open as pop-ups.">
+            Title="{gallery:MenuShowCaseLangResource VerticalNavMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource VerticalNavMenuDescription}">
             <atom:NavMenu Mode="Vertical" Width="300" Margin="0, 0, 0, 20">
                 <atom:NavMenuNode Header="Navigation One" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
                 <atom:NavMenuNode Header="Navigation Two" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
@@ -278,8 +278,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Inline menu"
-            Description="Vertical menu with inline submenus.">
+            Title="{gallery:MenuShowCaseLangResource InlineMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource InlineMenuDescription}">
             <atom:NavMenu Mode="Inline" Width="300" Margin="0, 0, 0, 20">
                 <atom:NavMenuNode Header="Navigation One" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
                 <atom:NavMenuNode Header="Navigation Two" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
@@ -300,8 +300,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Top Navigation"
-            Description="Horizontal top navigation menu."
+            Title="{gallery:MenuShowCaseLangResource TopNavigationTitle}"
+            Description="{gallery:MenuShowCaseLangResource TopNavigationDescription}"
             IsOccupyEntireRow="True">
             <StackPanel>
                 <atom:NavMenu Mode="Horizontal">
@@ -345,8 +345,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Switch the menu type"
-            Description="Show the dynamic switching mode (between inline and vertical).">
+            Title="{gallery:MenuShowCaseLangResource SwitchMenuTypeTitle}"
+            Description="{gallery:MenuShowCaseLangResource SwitchMenuTypeDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:ToggleSwitch Name="ChangeModeSwitch" />
@@ -378,8 +378,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Default Opened paths"
-            Description="You can open or select the path by default.">
+            Title="{gallery:MenuShowCaseLangResource DefaultOpenedPathsTitle}"
+            Description="{gallery:MenuShowCaseLangResource DefaultOpenedPathsDescription}">
             <atom:NavMenu Mode="Inline" Margin="0, 0, 0, 20"
                           DefaultOpenPaths="{Binding DefaultOpenPaths}"
                           DefaultSelectedPath="{Binding DefaultSelectedPath}">
@@ -404,8 +404,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate NavMenuItem by ItemsSource"
-            Description="Generate structure based on ItemsSource and template.">
+            Title="{gallery:MenuShowCaseLangResource NavMenuItemItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource NavMenuItemItemsSourceDescription}">
             <atom:NavMenu Name="ItemsSourceDemoNavMenu"
                           Mode="Inline"
                           SelectedItem="{Binding DefaultSelectedNode}"

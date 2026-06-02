@@ -9,8 +9,8 @@
     <gallery:ShowCasePanel>
         
         <gallery:ShowCaseItem
-            Title="Form Layout"
-            Description="There are three layout for form: horizontal, vertical, inline."
+            Title="{gallery:FormShowCaseLangResource FormLayoutTitle}"
+            Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -44,8 +44,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Form Layout"
-            Description="There are three layout for form: horizontal, vertical, inline."
+            Title="{gallery:FormShowCaseLangResource FormLayoutTitle}"
+            Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Form FormLayout="Horizontal">
@@ -103,8 +103,8 @@
         </gallery:ShowCaseItem>
         
          <gallery:ShowCaseItem
-            Title="label can wrap"
-            Description="Turn on labelWrap to wrap label if text is long."
+            Title="{gallery:FormShowCaseLangResource LabelCanWrapTitle}"
+            Description="{gallery:FormShowCaseLangResource LabelCanWrapDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="120"
                        WrapperColInfo="*"

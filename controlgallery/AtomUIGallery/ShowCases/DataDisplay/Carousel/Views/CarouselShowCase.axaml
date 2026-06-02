@@ -18,7 +18,7 @@
                 <Setter Property="FontWeight" Value="Bold" />
             </Style>
         </gallery:ShowCasePanel.Styles>
-        <gallery:ShowCaseItem Title="Basic" Description="Basic usage.">
+        <gallery:ShowCaseItem Title="{gallery:CarouselShowCaseLangResource BasicTitle}" Description="{gallery:CarouselShowCaseLangResource BasicDescription}">
             <atom:Carousel SelectedIndex="2">
                 <atom:CarouselPage>1</atom:CarouselPage>
                 <atom:CarouselPage>2</atom:CarouselPage>
@@ -28,8 +28,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Card Shape Position"
-            Description="Tab's position: left, right, top or bottom. Will auto switch to top in mobile."
+            Title="{gallery:CarouselShowCaseLangResource CardShapePositionTitle}"
+            Description="{gallery:CarouselShowCaseLangResource CardShapePositionDescription}"
             Margin="0, 0, 5, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
@@ -52,8 +52,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Scroll automatically"
-                                      Description="Timing of scrolling to the next card/picture.">
+        <gallery:ShowCaseItem Title="{gallery:CarouselShowCaseLangResource AutoScrollTitle}"
+                                      Description="{gallery:CarouselShowCaseLangResource AutoScrollDescription}">
             <atom:Carousel IsAutoPlay="True" IsInfinite="False">
                 <atom:CarouselPage>1</atom:CarouselPage>
                 <atom:CarouselPage>2</atom:CarouselPage>
@@ -62,8 +62,8 @@
             </atom:Carousel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Fade in"
-                                      Description="Slides use fade for transition.">
+        <gallery:ShowCaseItem Title="{gallery:CarouselShowCaseLangResource FadeInTitle}"
+                                      Description="{gallery:CarouselShowCaseLangResource FadeInDescription}">
             <atom:Carousel TransitionEffect="Fade">
                 <atom:CarouselPage Background="#B3001B">1</atom:CarouselPage>
                 <atom:CarouselPage Background="#255C99">2</atom:CarouselPage>
@@ -72,8 +72,8 @@
             </atom:Carousel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Arrows for switching"
-                                      Description="Show the arrows for switching.">
+        <gallery:ShowCaseItem Title="{gallery:CarouselShowCaseLangResource SwitchArrowsTitle}"
+                                      Description="{gallery:CarouselShowCaseLangResource SwitchArrowsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Carousel IsShowNavButtons="True">
                     <atom:CarouselPage>1</atom:CarouselPage>
@@ -90,8 +90,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Progress of dots"
-                                      Description="Show progress of dots.">
+        <gallery:ShowCaseItem Title="{gallery:CarouselShowCaseLangResource DotsProgressTitle}"
+                                      Description="{gallery:CarouselShowCaseLangResource DotsProgressDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Carousel IsShowTransitionProgress="True" IsAutoPlay="True">
                     <atom:CarouselPage>1</atom:CarouselPage>

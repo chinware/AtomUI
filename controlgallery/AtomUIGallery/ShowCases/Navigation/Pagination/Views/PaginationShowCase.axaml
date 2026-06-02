@@ -7,16 +7,16 @@
              x:DataType="vm:PaginationViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Basic pagination."
+            Title="{gallery:PaginationShowCaseLangResource BasicTitle}"
+            Description="{gallery:PaginationShowCaseLangResource BasicDescription}"
             IsOccupyEntireRow="True"
             MinHeight="200">
             <atom:Pagination Total="50" CurrentPage="1" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Align"
-            Description="Support three alignment modes: left alignment, center alignment, right alignment."
+            Title="{gallery:PaginationShowCaseLangResource AlignTitle}"
+            Description="{gallery:PaginationShowCaseLangResource AlignDescription}"
             IsOccupyEntireRow="True"
             MinHeight="300">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -27,16 +27,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="More"
-            Description="More pages."
+            Title="{gallery:PaginationShowCaseLangResource MoreTitle}"
+            Description="{gallery:PaginationShowCaseLangResource MoreDescription}"
             IsOccupyEntireRow="True"
             MinHeight="300">
             <atom:Pagination Total="500" CurrentPage="6" IsShowSizeChanger="True" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="More"
-            Description="More pages."
+            Title="{gallery:PaginationShowCaseLangResource MoreTitle}"
+            Description="{gallery:PaginationShowCaseLangResource MoreDescription}"
             IsOccupyEntireRow="True"
             MinHeight="300">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -47,8 +47,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Mini size"
-            Description="Mini size pagination."
+            Title="{gallery:PaginationShowCaseLangResource MiniSizeTitle}"
+            Description="{gallery:PaginationShowCaseLangResource MiniSizeDescription}"
             IsOccupyEntireRow="True"
             MinHeight="300">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -63,8 +63,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Total number"
-            Description="You can show the total number of data by setting showTotal."
+            Title="{gallery:PaginationShowCaseLangResource TotalNumberTitle}"
+            Description="{gallery:PaginationShowCaseLangResource TotalNumberDescription}"
             IsOccupyEntireRow="True"
             MinHeight="300">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -79,8 +79,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Simple mode"
-            Description="Simple mode."
+            Title="{gallery:PaginationShowCaseLangResource SimpleModeTitle}"
+            Description="{gallery:PaginationShowCaseLangResource SimpleModeDescription}"
             IsOccupyEntireRow="False"
             MinHeight="300">
             <StackPanel Orientation="Vertical" Spacing="10">

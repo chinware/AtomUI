@@ -15,6 +15,8 @@ namespace AtomUIGallery.ShowCases.Upload;
 
 public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
 {
+    public const string LanguageId = nameof(UploadShowCase);
+
     private WindowMessageManager? _messageManager;
 
     public UploadShowCase()

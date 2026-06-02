@@ -13,14 +13,14 @@
             </Style>
         </gallery:ShowCasePanel.Styles>
         <gallery:ShowCaseItem
-            Title="Basic usage"
-            Description="Numeric-only NumberUpDown.">
+            Title="{gallery:NumberUpDownShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource BasicUsageDescription}">
             <atom:NumericUpDown Value="3" HorizontalAlignment="Stretch"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="String mode (high precision)"
-            Description="Keep a high-precision value as a string.">
+            Title="{gallery:NumberUpDownShowCaseLangResource StringModeTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource StringModeDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:NumericUpDown IsStringMode="True"
                                     StringValue="{Binding StringModeValue, Mode=TwoWay}"
@@ -33,8 +33,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Keyboard behavior"
-            Description="Disable keyboard spin with the Keyboard property.">
+            Title="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:CheckBox Content="Keyboard enabled"
                           IsChecked="{Binding KeyboardEnabled}"/>
@@ -46,16 +46,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Mouse wheel behavior"
-            Description="Scroll the mouse wheel while the input is focused to increment or decrement by Increment.">
+            Title="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorDescription}">
             <atom:NumericUpDown Value="2.5"
                                 Increment="0.5"
                                 PlaceholderText="Focus and scroll wheel" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Min / Max"
-            Description="Restrict the input value range.">
+            Title="{gallery:NumberUpDownShowCaseLangResource MinMaxTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource MinMaxDescription}">
             <atom:NumericUpDown Minimum="0"
                                 Maximum="10"
                                 Value="3"
@@ -63,8 +63,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Step (decimal)"
-            Description="Use decimal steps with Increment.">
+            Title="{gallery:NumberUpDownShowCaseLangResource DecimalStepTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource DecimalStepDescription}">
             <atom:NumericUpDown Value="1.2"
                                 Increment="0.25"
                                 Minimum="0"
@@ -72,8 +72,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three sizes of NumberUpDown"
-            Description="There are three sizes of an Input box: large (40px), default (32px) and small (24px).">
+            Title="{gallery:NumberUpDownShowCaseLangResource SizesTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource SizesDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:NumericUpDown SizeType="Large" Value="3" />
                 <atom:NumericUpDown SizeType="Middle" Value="3" />
@@ -82,8 +82,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Variants of NumberUpDown.">
+            Title="{gallery:NumberUpDownShowCaseLangResource VariantsTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:NumericUpDown Value="3" StyleVariant="Outlined" />
                 <atom:NumericUpDown Value="3" StyleVariant="Filled" />
@@ -93,8 +93,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Variants of NumberUpDown of disabled style.">
+            Title="{gallery:NumberUpDownShowCaseLangResource DisabledTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource DisabledDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:NumericUpDown Value="3" StyleVariant="Outlined" IsEnabled="False"/>
                 <atom:NumericUpDown Value="3" StyleVariant="Filled" IsEnabled="False"/>
@@ -103,8 +103,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pre / Post tab"
-            Description="Using pre and post tabs example.">
+            Title="{gallery:NumberUpDownShowCaseLangResource PrePostTabTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource PrePostTabDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:NumericUpDown LeftAddOn="http://" RightAddOn=".com"
                                     HorizontalAlignment="Left"
@@ -122,15 +122,15 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="With clear icon"
-            Description="Input box with the remove icon, click the icon to delete everything.">
+            Title="{gallery:NumberUpDownShowCaseLangResource WithClearIconTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource WithClearIconDescription}">
             <atom:NumericUpDown PlaceholderText="input with clear icon" Width="400" HorizontalAlignment="Left"
                                 IsAllowClear="True" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="prefix and suffix"
-            Description="Add a prefix or suffix icons inside input.">
+            Title="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:NumericUpDown PlaceholderText="Enter your value"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
@@ -141,8 +141,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to Input with status, which could be error or warning.">
+            Title="{gallery:NumberUpDownShowCaseLangResource StatusTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:NumericUpDown PlaceholderText="Error" Status="Error" />
                 <atom:NumericUpDown PlaceholderText="Warning" Status="Warning" />

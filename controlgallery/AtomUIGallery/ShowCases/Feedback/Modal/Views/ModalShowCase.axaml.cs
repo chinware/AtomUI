@@ -14,6 +14,8 @@ namespace AtomUIGallery.ShowCases.Modal;
 
 public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
 {
+    public const string LanguageId = nameof(ModalShowCase);
+
     public ModalShowCase()
     {
         this.WhenActivated(disposables =>

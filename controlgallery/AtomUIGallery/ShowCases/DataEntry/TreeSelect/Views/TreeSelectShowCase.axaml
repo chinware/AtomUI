@@ -7,8 +7,8 @@
              x:DataType="vm:TreeSelectViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic usage.">
+            Title="{gallery:TreeSelectShowCaseLangResource BasicTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource BasicDescription}">
             <atom:TreeSelect Name="BasicTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
@@ -18,8 +18,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Multiple Selection"
-            Description="Multiple selection usage.">
+            Title="{gallery:TreeSelectShowCaseLangResource MultipleSelectionTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource MultipleSelectionDescription}">
             <atom:TreeSelect Name="MultiSelectionTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
@@ -30,8 +30,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Generate from tree data"
-            Description="The tree structure can be populated using treeData property. This is a quick and easy way to provide the tree content.">
+            Title="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataDescription}">
             <atom:TreeSelect Name="ItemsSourceTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
@@ -41,8 +41,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Checkable"
-            Description="Multiple and checkable.">
+            Title="{gallery:TreeSelectShowCaseLangResource CheckableTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource CheckableDescription}">
             <atom:TreeSelect Name="CheckableTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsDefaultExpandAll="True"
@@ -54,8 +54,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Asynchronous loading"
-            Description="Asynchronous loading tree node.">
+            Title="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingDescription}">
             <atom:TreeSelect Name="AsyncLoadTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsAllowClear="True"
@@ -63,8 +63,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="You can manually specify the position of the popup via placement.">
+            Title="{gallery:TreeSelectShowCaseLangResource PlacementTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource PlacementDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TextBlock VerticalAlignment="Center">Placement:</atom:TextBlock>
                 <atom:OptionButtonGroup ButtonStyle="Outline" Name="PlacementOptionGroup"
@@ -84,8 +84,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Show Tree Line"
-            Description="Use treeLine to show the line style.">
+            Title="{gallery:TreeSelectShowCaseLangResource ShowTreeLineTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource ShowTreeLineDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ToggleSwitch OnContent="ShowIcon" OffContent="ShowIcon" Name="ShowIconSwitch" />
                 <atom:ToggleSwitch OnContent="TreeLine" OffContent="TreeLine" IsChecked="True"
@@ -103,8 +103,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Variants of TreeSelect, there are four variants: outlined filled borderless and underlined.">
+            Title="{gallery:TreeSelectShowCaseLangResource VariantsTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
@@ -126,8 +126,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to TreeSelect with status, which could be error or warning.">
+            Title="{gallery:TreeSelectShowCaseLangResource StatusTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
@@ -141,8 +141,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Prefix and Suffix"
-            Description="Custom prefix and suffixIcon.">
+            Title="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TreeSelect Name="LeftAddTreeSelect"
                                  HorizontalAlignment="Stretch"
@@ -162,8 +162,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Max Count"
-            Description="You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.">
+            Title="{gallery:TreeSelectShowCaseLangResource MaxCountTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource MaxCountDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TreeSelect Name="MaxSelectedTreeSelect"
                                  HorizontalAlignment="Stretch"

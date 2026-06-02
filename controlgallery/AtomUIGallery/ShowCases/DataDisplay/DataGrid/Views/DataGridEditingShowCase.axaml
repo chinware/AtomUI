@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Custom empty and loading"
-                              Description="Custom empty status and loading."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource CustomEmptyAndLoadingTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource CustomEmptyAndLoadingDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -26,8 +26,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Editable Cells"
-                              Description="Table with editable cells."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource EditableCellsTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource EditableCellsDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <atom:Button ButtonType="Primary" Click="HandleAddARowToCellsEditableGrid">Add a row</atom:Button>

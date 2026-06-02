@@ -8,8 +8,8 @@
 
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The simplest usage.">
+            Title="{gallery:TooltipShowCaseLangResource BasicTitle}"
+            Description="{gallery:TooltipShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TextBlock
                     HorizontalAlignment="Left"
@@ -20,8 +20,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="There are 12 placement options available.">
+            Title="{gallery:TooltipShowCaseLangResource PlacementTitle}"
+            Description="{gallery:TooltipShowCaseLangResource PlacementDescription}">
             <Grid>
                 <Grid.Styles>
                     <Style Selector="atom|Button">
@@ -100,8 +100,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Arrow"
-            Description="Support show, hide or keep arrow in the center.">
+            Title="{gallery:TooltipShowCaseLangResource ArrowTitle}"
+            Description="{gallery:TooltipShowCaseLangResource ArrowDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Segmented x:Name="ArrowSegmented">
                     <atom:SegmentedItem>Show</atom:SegmentedItem>
@@ -215,8 +215,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Colorful Tooltip"
-            Description="We preset a series of colorful Tooltip styles for use in different situations.">
+            Title="{gallery:TooltipShowCaseLangResource ColorfulTooltipTitle}"
+            Description="{gallery:TooltipShowCaseLangResource ColorfulTooltipDescription}">
             <gallery:ShowCaseItem.Styles>
                 <Style Selector="atom|Button">
                     <Setter Property="Margin" Value="5" />

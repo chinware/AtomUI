@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.ToggleSwitch;
 
 public partial class ToggleSwitchShowCase : ReactiveUserControl<ToggleSwitchViewModel>
 {
+    public const string LanguageId = nameof(ToggleSwitchShowCase);
+
     public ReactiveCommand<Unit, Unit> ToggleSwitchCommand { get; private set; }
     public ReactiveCommand<Unit, Unit> ToggleLoadingStatus { get; private set; }
 

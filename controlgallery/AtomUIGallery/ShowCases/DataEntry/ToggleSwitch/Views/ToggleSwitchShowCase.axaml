@@ -9,16 +9,16 @@
              x:DataType="vm:ToggleSwitchViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The most basic usage.">
+            Title="{gallery:ToggleSwitchShowCaseLangResource BasicTitle}"
+            Description="{gallery:ToggleSwitchShowCaseLangResource BasicDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
                 <atom:ToggleSwitch />
             </StackPanel>
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Disabled state of Switch.">
+            Title="{gallery:ToggleSwitchShowCaseLangResource DisabledTitle}"
+            Description="{gallery:ToggleSwitchShowCaseLangResource DisabledDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:ToggleSwitch x:Name="ToggleDisabledSwitch" />
                 <atom:Button ButtonType="Primary"
@@ -29,8 +29,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Text and icon"
-            Description="With text and icon.">
+            Title="{gallery:ToggleSwitchShowCaseLangResource TextAndIconTitle}"
+            Description="{gallery:ToggleSwitchShowCaseLangResource TextAndIconDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:ToggleSwitch
                     OnContent="On"
@@ -58,8 +58,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Two sizes"
-            Description="size=Small represents a small sized switch.">
+            Title="{gallery:ToggleSwitchShowCaseLangResource TwoSizesTitle}"
+            Description="{gallery:ToggleSwitchShowCaseLangResource TwoSizesDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:ToggleSwitch />
                 <atom:ToggleSwitch SizeType="Small" />
@@ -67,8 +67,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Loading"
-            Description="Mark a pending state of switch.">
+            Title="{gallery:ToggleSwitchShowCaseLangResource LoadingTitle}"
+            Description="{gallery:ToggleSwitchShowCaseLangResource LoadingDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:ToggleSwitch IsLoading="True" IsChecked="true" x:Name="ToggleSwitchDefault" />
                 <atom:ToggleSwitch SizeType="Small" IsLoading="True" x:Name="ToggleSwitchSmall" />

@@ -6,8 +6,8 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic usage"
-            Description="The basic example supports the title and description props of confirmation.">
+            Title="{gallery:PopupConfirmShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:PopupConfirmShowCaseLangResource BasicUsageDescription}">
             <atom:PopupConfirm
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?"
@@ -21,8 +21,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Locale text"
-            Description="Set okText and cancelText props to customize the button's labels.">
+            Title="{gallery:PopupConfirmShowCaseLangResource LocaleTextTitle}"
+            Description="{gallery:PopupConfirmShowCaseLangResource LocaleTextDescription}">
             <atom:PopupConfirm
                 ShouldUseOverlayPopup="False"
                 Title="Delete the task"
@@ -32,8 +32,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Placement"
-            Description="There are 12 placement options available.">
+            Title="{gallery:PopupConfirmShowCaseLangResource PlacementTitle}"
+            Description="{gallery:PopupConfirmShowCaseLangResource PlacementDescription}">
             <Grid>
                 <Grid.Styles>
                     <Style Selector="atom|Button">
@@ -168,8 +168,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Customize icon"
-            Description="Set icon props to customize the icon.">
+            Title="{gallery:PopupConfirmShowCaseLangResource CustomizeIconTitle}"
+            Description="{gallery:PopupConfirmShowCaseLangResource CustomizeIconDescription}">
             <atom:PopupConfirm
                 Title="Delete the task"
                 ConfirmContent="Are you sure to delete this task?"

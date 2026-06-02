@@ -8,16 +8,16 @@
              x:DataType="vm:AlertViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The simplest usage for short messages.">
+            Title="{gallery:AlertShowCaseLangResource BasicTitle}"
+            Description="{gallery:AlertShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Vertical">
                 <atom:Alert Type="Success">Success Text</atom:Alert>
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="More types"
-            Description="There are 4 types of Alert: success, info, warning, error.">
+            Title="{gallery:AlertShowCaseLangResource MoreTypesTitle}"
+            Description="{gallery:AlertShowCaseLangResource MoreTypesDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success">Success Text</atom:Alert>
                 <atom:Alert Type="Info">Info Text</atom:Alert>
@@ -27,8 +27,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Closable"
-            Description="To show close button.">
+            Title="{gallery:AlertShowCaseLangResource ClosableTitle}"
+            Description="{gallery:AlertShowCaseLangResource ClosableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Warning" IsClosable="True">
                     Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text
@@ -46,8 +46,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Description"
-            Description="Additional description for alert message.">
+            Title="{gallery:AlertShowCaseLangResource DescriptionTitle}"
+            Description="{gallery:AlertShowCaseLangResource DescriptionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
                             Message="Success Text"
@@ -66,8 +66,8 @@
 
 
         <gallery:ShowCaseItem
-            Title="Description"
-            Description="Additional description for alert message.">
+            Title="{gallery:AlertShowCaseLangResource DescriptionTitle}"
+            Description="{gallery:AlertShowCaseLangResource DescriptionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
                             Message="Success Tips"
@@ -104,8 +104,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Custom action"
-            Description="Custom action.">
+            Title="{gallery:AlertShowCaseLangResource CustomActionTitle}"
+            Description="{gallery:AlertShowCaseLangResource CustomActionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
                             IsShowIcon="True"
@@ -149,8 +149,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Loop Banner"
-            Description="Show a loop banner.">
+            Title="{gallery:AlertShowCaseLangResource LoopBannerTitle}"
+            Description="{gallery:AlertShowCaseLangResource LoopBannerDescription}">
             <atom:Alert Type="Warning" IsShowIcon="True" IsMessageMarqueeEnabled="True">
                 I can be a React component, multiple React components, or just some text, Info Description Info Description Info Description Info Description
             </atom:Alert>

@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Card;
 
 public partial class CardShowCase : ReactiveUserControl<CardViewModel>
 {
+    public const string LanguageId = nameof(CardShowCase);
+
     public CardShowCase()
     {
         this.WhenActivated(disposables =>

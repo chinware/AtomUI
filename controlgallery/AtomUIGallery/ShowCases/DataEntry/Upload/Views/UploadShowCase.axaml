@@ -6,16 +6,16 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Upload by clicking"
-            Description="Classic mode. File selection dialog pops up when upload button is clicked.">
+            Title="{gallery:UploadShowCaseLangResource UploadByClickingTitle}"
+            Description="{gallery:UploadShowCaseLangResource UploadByClickingDescription}">
             <atom:Upload Name="BasicUpload">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Click to Upload</atom:Button>
             </atom:Upload>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Avatar"
-            Description="Click to upload user's avatar, and validate size and format of picture with beforeUpload.">
+            Title="{gallery:UploadShowCaseLangResource AvatarTitle}"
+            Description="{gallery:UploadShowCaseLangResource AvatarDescription}">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:Upload Name="AvatarDemoPictureCardUpload" ListType="PictureCard">
                    <StackPanel Orientation="Vertical">
@@ -37,8 +37,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Default Files"
-            Description="Use defaultFileList for uploaded files when page init."
+            Title="{gallery:UploadShowCaseLangResource DefaultFilesTitle}"
+            Description="{gallery:UploadShowCaseLangResource DefaultFilesDescription}"
             IsOccupyEntireRow="True">
             <atom:Upload Name="DefaultFileList">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Click to Upload</atom:Button>
@@ -46,8 +46,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pictures Wall"
-            Description="After users upload picture, the thumbnail will be shown in list. The upload button will disappear when count meets limitation."
+            Title="{gallery:UploadShowCaseLangResource PicturesWallTitle}"
+            Description="{gallery:UploadShowCaseLangResource PicturesWallDescription}"
             IsOccupyEntireRow="True">
             <atom:Upload Name="PicturesWallUpload" ListType="PictureCard">
                 <StackPanel Orientation="Vertical">
@@ -58,8 +58,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pictures with picture-circle type"
-            Description="Alternative display for picture-card."
+            Title="{gallery:UploadShowCaseLangResource PictureCircleTypeTitle}"
+            Description="{gallery:UploadShowCaseLangResource PictureCircleTypeDescription}"
             IsOccupyEntireRow="True">
             <atom:Upload Name="PicturesCircleWallUpload" ListType="PictureCircle">
                 <StackPanel Orientation="Vertical">
@@ -70,8 +70,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Drag and Drop"
-            Description="You can drag files to a specific area, to upload. Alternatively, you can also upload by selecting."
+            Title="{gallery:UploadShowCaseLangResource DragAndDropTitle}"
+            Description="{gallery:UploadShowCaseLangResource DragAndDropDescription}"
             IsOccupyEntireRow="True">
             <atom:Upload Name="DragAndDropUpload">
                 <atom:UploadDefaultDropArea/>
@@ -79,16 +79,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pictures with list style"
-            Description="If uploaded file is a picture, the thumbnail can be shown. ">
+            Title="{gallery:UploadShowCaseLangResource PicturesWithListStyleTitle}"
+            Description="{gallery:UploadShowCaseLangResource PicturesWithListStyleDescription}">
             <atom:Upload Name="PictureListUpload" ListType="Picture">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" ButtonType="Primary">Click to Upload</atom:Button>
             </atom:Upload>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Max Count"
-            Description="Limit files with maxCount. Will replace current one when maxCount is 1. ">
+            Title="{gallery:UploadShowCaseLangResource MaxCountTitle}"
+            Description="{gallery:UploadShowCaseLangResource MaxCountDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Upload Name="MaxCount1Upload" MaxCount="1">
                     <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Upload (Max: 1)</atom:Button>
@@ -101,16 +101,16 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Upload directory"
-            Description="You can select and upload a whole directory.">
+            Title="{gallery:UploadShowCaseLangResource UploadDirectoryTitle}"
+            Description="{gallery:UploadShowCaseLangResource UploadDirectoryDescription}">
             <atom:Upload Name="DirectoryUpload" IsUploadDirectoryEnabled="True">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Upload Directory</atom:Button>
             </atom:Upload>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Upload png file only"
-            Description="beforeUpload only prevent upload behavior when return false or reject promise, the prevented file would still show in file list. Here is the example you can keep prevented files out of list by return UPLOAD.LIST_IGNORE.">
+            Title="{gallery:UploadShowCaseLangResource UploadPngOnlyTitle}"
+            Description="{gallery:UploadShowCaseLangResource UploadPngOnlyDescription}">
             <atom:Upload Name="PngOnlyUpload" Accepts="*.png">
                 <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Upload png only</atom:Button>
             </atom:Upload>

@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.Rate;
 
 public partial class RateShowCase : ReactiveUserControl<RateViewModel>
 {
+    public const string LanguageId = nameof(RateShowCase);
+
     public RateShowCase()
     {
         this.WhenActivated(disposables =>

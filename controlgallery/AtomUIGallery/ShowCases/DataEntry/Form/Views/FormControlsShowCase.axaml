@@ -9,8 +9,8 @@
     <gallery:ShowCasePanel>
 
         <gallery:ShowCaseItem
-            Title="Customized Form Controls"
-            Description="Customized or third-party form controls can be used in Form, too. Controls must implement IFormItemAware:"
+            Title="{gallery:FormShowCaseLangResource CustomizedFormControlsTitle}"
+            Description="{gallery:FormShowCaseLangResource CustomizedFormControlsDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -34,8 +34,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Other Form Controls"
-            Description="Demonstration of validation configuration for form controls which are not shown in the demos above."
+            Title="{gallery:FormShowCaseLangResource OtherFormControlsTitle}"
+            Description="{gallery:FormShowCaseLangResource OtherFormControlsDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="200"
                        WrapperColInfo="16*"

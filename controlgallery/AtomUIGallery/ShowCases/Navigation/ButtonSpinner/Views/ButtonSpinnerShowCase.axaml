@@ -6,8 +6,8 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="Basic button spinner.">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource BasicTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource BasicDescription}">
             <atom:ButtonSpinner>
                 <atom:TextBlock
                     HorizontalAlignment="Left"
@@ -17,8 +17,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Three sizes of Input"
-            Description="There are three sizes of an button spinner: large (40px), default (32px) and small (24px).">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource ThreeSizesTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource ThreeSizesDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:ButtonSpinner SizeType="Large">
                     <atom:TextBlock
@@ -42,8 +42,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Variants"
-            Description="Variants of Input.">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource VariantsTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ButtonSpinner StyleVariant="Outlined">
                     <atom:TextBlock
@@ -67,8 +67,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Disabled"
-            Description="Variants of disabled Input.">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource DisabledTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource DisabledDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ButtonSpinner StyleVariant="Outlined" IsEnabled="False">
                     <atom:TextBlock
@@ -92,8 +92,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Pre / Post tab"
-            Description="Using pre and post tabs example.">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource PrePostTabTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource PrePostTabDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:ButtonSpinner
                     LeftAddOn="http://"
@@ -131,8 +131,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="prefix and suffix"
-            Description="Add a prefix or suffix icons inside input.">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource PrefixSuffixTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource PrefixSuffixDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
 
                 <atom:ButtonSpinner
@@ -171,8 +171,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Status"
-            Description="Add status to Input with status, which could be error or warning.">
+            Title="{gallery:ButtonSpinnerShowCaseLangResource StatusTitle}"
+            Description="{gallery:ButtonSpinnerShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
                 <atom:ButtonSpinner
                     Status="Error"

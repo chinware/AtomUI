@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Filter and sorter"
-                              Description="Use filters to generate filter menu in columns, onFilter to determine filtered result, and filterMultiple to indicate whether it's multiple or single selection, filterOnClose to specify whether to trigger filter when the filter menu closes.Use defaultFilteredValue to make a column filtered by default."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource FilterAndSorterTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource FilterAndSorterDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="FilterAndSortGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
@@ -50,8 +50,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Filter in Tree"
-                              Description="You can use filterMode to change default filter interface, options: menu(default) and tree."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource FilterInTreeTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource FilterInTreeDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="FilterInTreeGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
@@ -95,8 +95,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Multiple sorter"
-                              Description="column.sorter support multiple to config the priority of sort columns. Though sorter.compare to customize compare function. You can also leave it empty to use the interactive only."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource MultipleSorterTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource MultipleSorterDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="MultiSorterDataGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:MultiSorterDataType">
@@ -121,8 +121,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Reset filters and sorters"
-                              Description="Control filters and sorters by API."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource ResetFiltersAndSortersTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource ResetFiltersAndSortersDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">

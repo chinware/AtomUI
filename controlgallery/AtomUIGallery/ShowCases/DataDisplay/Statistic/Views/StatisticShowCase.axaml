@@ -7,7 +7,7 @@
              x:Class="AtomUIGallery.ShowCases.Statistic.StatisticShowCase"
              x:DataType="vm:StatisticViewModel">
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="Basic" Description="Simplest Usage." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource BasicTitle}" Description="{gallery:StatisticShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="2">
                 <atom:Statistic Header="Active Users" Value="112893" />
                 <StackPanel Orientation="Vertical" Spacing="16">
@@ -18,8 +18,8 @@
             </UniformGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Unit"
-                              Description="Add unit through prefix and suffix."
+        <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource UnitTitle}"
+                              Description="{gallery:StatisticShowCaseLangResource UnitDescription}"
                               IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="1">
                 <atom:Statistic Header="Feedback" Value="1128" ValuePrefixAddOn="{antdicons:AntDesignIconProvider LikeOutlined}" />
@@ -27,8 +27,8 @@
             </UniformGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="In Card"
-                              Description="Display statistic data in Card."
+        <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource InCardTitle}"
+                              Description="{gallery:StatisticShowCaseLangResource InCardDescription}"
                               IsOccupyEntireRow="True">
             <Border Background="#F0F2F5" Padding="20, 30">
                 <UniformGrid Columns="2" Rows="1" ColumnSpacing="20">
@@ -52,7 +52,7 @@
             </Border>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Animated number" Description="Animated number with StatisticCountUp." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource AnimatedNumberTitle}" Description="{gallery:StatisticShowCaseLangResource AnimatedNumberDescription}" IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="2">
                 <atom:Statistic Header="Active Users" Value="112893">
                     <atom:Statistic.Content>
@@ -67,7 +67,7 @@
             </UniformGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Timer" Description="Timer component." IsOccupyEntireRow="True">
+        <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource TimerTitle}" Description="{gallery:StatisticShowCaseLangResource TimerDescription}" IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="3" RowSpacing="10">
                 <atom:TimerStatistic Value="{Binding Deadline}" />
                 <atom:TimerStatistic Header="Million Seconds" Value="{Binding Deadline}" Format="hh\:mm\:ss\.fff" />

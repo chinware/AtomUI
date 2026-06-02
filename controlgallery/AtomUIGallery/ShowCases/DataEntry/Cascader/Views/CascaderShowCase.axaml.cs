@@ -10,6 +10,8 @@ namespace AtomUIGallery.ShowCases.Cascader;
 
 public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
 {
+    public const string LanguageId = nameof(CascaderShowCase);
+
     public CascaderShowCase()
     {
         this.WhenActivated(disposables =>

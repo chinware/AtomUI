@@ -6,8 +6,8 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.DataGrid">
     <gallery:ShowCasePanel>
 
-        <gallery:ShowCaseItem Title="Fixed Header"
-                              Description="Display large amounts of data in scrollable view."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource FixedHeaderTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource FixedHeaderDescription}"
                               IsOccupyEntireRow="True">
             <atom:DataGrid x:Name="FixedHeaderDataGrid" Height="400"
                                        x:DataType="vm:DataGridBaseInfo">
@@ -19,8 +19,8 @@
             </atom:DataGrid>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Fixed Columns"
-                              Description="When there are too many columns, we can make some columns fixed."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource FixedColumnsTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource FixedColumnsDescription}"
                               IsOccupyEntireRow="True">
 
             <StackPanel Orientation="Vertical" Spacing="20">
@@ -100,8 +100,8 @@
             </StackPanel>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="Fixed Columns And Headers"
-                              Description="When there are too many columns, we can make some columns fixed."
+        <gallery:ShowCaseItem Title="{gallery:DataGridShowCaseLangResource FixedColumnsAndHeadersTitle}"
+                              Description="{gallery:DataGridShowCaseLangResource FixedColumnsAndHeadersDescription}"
                               IsOccupyEntireRow="True">
 
             <atom:DataGrid x:Name="FixedColumnsAndHeadersDataGrid"

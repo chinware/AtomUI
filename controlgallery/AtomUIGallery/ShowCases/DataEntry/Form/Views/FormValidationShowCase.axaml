@@ -9,8 +9,8 @@
     <gallery:ShowCasePanel>
         
         <gallery:ShowCaseItem
-            Title="No block rule"
-            Description="rule with warningOnly will not block form submit."
+            Title="{gallery:FormShowCaseLangResource NoBlockRuleTitle}"
+            Description="{gallery:FormShowCaseLangResource NoBlockRuleDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -43,8 +43,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Validate Trigger"
-            Description="For the async validation scenario, high frequency of verification will cause backend pressure. You can change the verification timing through validateTrigger, or change the verification frequency through validateDebounce, or set the verification short circuit through validateFirst."
+            Title="{gallery:FormShowCaseLangResource ValidateTriggerTitle}"
+            Description="{gallery:FormShowCaseLangResource ValidateTriggerDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -92,8 +92,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Validate Only"
-            Description="Dynamic adjust submit button's disabled status by validateOnly of validateFields."
+            Title="{gallery:FormShowCaseLangResource ValidateOnlyTitle}"
+            Description="{gallery:FormShowCaseLangResource ValidateOnlyDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="8*"
                        WrapperColInfo="16*"
@@ -132,8 +132,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Time-related Controls"
-            Description="The value of time-related components is a dayjs object, which we need to pre-process it before we submit to server."
+            Title="{gallery:FormShowCaseLangResource TimeRelatedControlsTitle}"
+            Description="{gallery:FormShowCaseLangResource TimeRelatedControlsDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="200"
                        WrapperColInfo="16*"
@@ -205,8 +205,8 @@
         </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
-            Title="Customized Validation"
-            Description="We provide properties like validateStatus help hasFeedback to customize your own validate status and message, without using Form."
+            Title="{gallery:FormShowCaseLangResource CustomizedValidationTitle}"
+            Description="{gallery:FormShowCaseLangResource CustomizedValidationDescription}"
             IsOccupyEntireRow="True">
             <atom:Form LabelColInfo="200"
                        WrapperColInfo="16*"

@@ -8,20 +8,20 @@
              x:DataType="vm:RateViewModel">
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem
-            Title="Basic"
-            Description="The simplest usage.">
+            Title="{gallery:RateShowCaseLangResource BasicTitle}"
+            Description="{gallery:RateShowCaseLangResource BasicDescription}">
             <atom:Rate/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Half star"
-            Description="Support select half star.">
+            Title="{gallery:RateShowCaseLangResource HalfStarTitle}"
+            Description="{gallery:RateShowCaseLangResource HalfStarDescription}">
             <atom:Rate DefaultValue="3.5" IsAllowHalf="True"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Show copywriting"
-            Description="Add copywriting in rate components.">
+            Title="{gallery:RateShowCaseLangResource ShowCopywritingTitle}"
+            Description="{gallery:RateShowCaseLangResource ShowCopywritingDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Rate Name="ToolTipRate" ValueChanged="HandleValueChanged"/>
                 <TextBlock Text="{Binding ActiveTooltip}"/>
@@ -29,14 +29,14 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Read only"
-            Description="Read only, can't use mouse to interact.">
+            Title="{gallery:RateShowCaseLangResource ReadOnlyTitle}"
+            Description="{gallery:RateShowCaseLangResource ReadOnlyDescription}">
             <atom:Rate DefaultValue="2" IsEnabled="False"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Clear star"
-            Description="Support set allow to clear star when click again.">
+            Title="{gallery:RateShowCaseLangResource ClearStarTitle}"
+            Description="{gallery:RateShowCaseLangResource ClearStarDescription}">
             <StackPanel Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Rate DefaultValue="3" IsAllowClear="True" />
@@ -50,8 +50,8 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="Other Character"
-            Description="Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.">
+            Title="{gallery:RateShowCaseLangResource OtherCharacterTitle}"
+            Description="{gallery:RateShowCaseLangResource OtherCharacterDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Rate IsAllowHalf="True" IsAllowClear="True" Character="{antdicons:AntDesignIconProvider HeartOutlined}"/>
                 <atom:Rate IsAllowHalf="True" IsAllowClear="True" Character="A"/>

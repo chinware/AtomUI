@@ -4,7 +4,7 @@
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Description="The simplest usage for Calendar." Title="Basic">
+        <gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}">
             <atom:Calendar />
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

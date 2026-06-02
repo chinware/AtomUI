@@ -5,6 +5,8 @@ namespace AtomUIGallery.ShowCases.FloatButton;
 
 public partial class FloatButtonShowCase : ReactiveUserControl<FloatButtonViewModel>
 {
+    public const string LanguageId = nameof(FloatButtonShowCase);
+
     public FloatButtonShowCase()
     {
         this.WhenActivated(disposables =>

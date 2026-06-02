@@ -9,6 +9,8 @@ namespace AtomUIGallery.ShowCases.CheckBox;
 
 public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
 {
+    public const string LanguageId = nameof(CheckBoxShowCase);
+
     public CheckBoxShowCase()
     {
         this.WhenActivated(disposables =>

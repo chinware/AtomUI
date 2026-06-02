@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.Collapse;
 
 public partial class CollapseShowCase : ReactiveUserControl<CollapseViewModel>
 {
+    public const string LanguageId = nameof(CollapseShowCase);
+
     public CollapseShowCase()
     {
         this.WhenActivated(disposables =>

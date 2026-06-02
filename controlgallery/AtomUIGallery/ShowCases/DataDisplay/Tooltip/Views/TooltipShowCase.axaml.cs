@@ -7,6 +7,8 @@ namespace AtomUIGallery.ShowCases.Tooltip;
 
 public partial class TooltipShowCase : ReactiveUserControl<TooltipViewModel>
 {
+    public const string LanguageId = nameof(TooltipShowCase);
+
     public TooltipShowCase()
     {
         this.WhenActivated(disposables =>

@@ -8,6 +8,8 @@ namespace AtomUIGallery.ShowCases.Mentions;
 
 public partial class MentionsShowCase : ReactiveUserControl<MentionsViewModel>
 {
+    public const string LanguageId = nameof(MentionsShowCase);
+
     public MentionsShowCase()
     {
         this.WhenActivated(disposables =>
