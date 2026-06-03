@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Menu.MenuBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Menu"
+             x:DataType="viewModels:MenuViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource BasicTitle}"
+            Description="{gallery:MenuShowCaseLangResource BasicDescription}">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderFile}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewTextFile}" InputGesture="Ctrl+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewFile}" InputGesture="Ctrl+Alt+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewWindow}" InputGesture="Ctrl+Shift+N" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderEdit}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderUndo}" InputGesture="Ctrl+Shift+Z" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDisabledItem}" IsEnabled="False" />
+            </atom:Menu>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

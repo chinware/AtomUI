@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Menu.MenuFeaturesShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Menu"
+             x:DataType="viewModels:MenuViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource IconAndSubmenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource IconAndSubmenuDescription}">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderFile}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewTextFile}" InputGesture="Ctrl+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewFile}" InputGesture="Ctrl+Alt+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewWindow}" InputGesture="Ctrl+Shift+N" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSave}" InputGesture="Ctrl+S" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAs}" InputGesture="Ctrl+Shift+S" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAll}" InputGesture="Ctrl+K" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderExit}" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderEdit}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderUndo}" InputGesture="Ctrl+Shift+Z" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X" Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D" Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}">
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}" InputGesture="Ctrl+P"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPasteFromHistory}" InputGesture="Ctrl+Shift+V" />
+                    </atom:MenuItem>
+                </atom:MenuItem>
+            </atom:Menu>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource ToggleTypeTitle}"
+            Description="{gallery:MenuShowCaseLangResource ToggleTypeDescription}">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuA}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewTextFile}" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewFile}" InputGesture="Ctrl+Alt+N" ToggleType="Radio" GroupName="Group1" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewWindow}" InputGesture="Ctrl+Shift+N" ToggleType="Radio"
+                                   GroupName="Group1" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSave}" InputGesture="Ctrl+S" ToggleType="CheckBox" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAs}" InputGesture="Ctrl+Shift+S" ToggleType="CheckBox"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAll}" InputGesture="Ctrl+K" ToggleType="CheckBox"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=CheckOutlined}" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderExit}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDisabled}" IsEnabled="False" Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                </atom:MenuItem>
+            </atom:Menu>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource ScrollableTitle}"
+            Description="{gallery:MenuShowCaseLangResource ScrollableDescription}">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenu}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                </atom:MenuItem>
+            </atom:Menu>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

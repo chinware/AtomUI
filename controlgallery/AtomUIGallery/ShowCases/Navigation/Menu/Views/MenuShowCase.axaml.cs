@@ -7,6 +7,7 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme.Language;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using AtomUIGallery.Localization;
 using ReactiveUI;
@@ -18,19 +19,25 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
 {
     public const string LanguageId = nameof(MenuShowCase);
 
+    private const string BasicScenario       = "Basic";
+    private const string FeaturesScenario    = "Features";
+    private const string ItemsSourceScenario = "ItemsSource";
+    private const string ContextScenario     = "Context";
+    private const string NavMenuScenario     = "NavMenu";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
     private NavMenuNode? _navMenuDefaultSelectedItem;
 
     public MenuShowCase()
     {
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
 
         this.WhenActivated(disposables =>
         {
             if (DataContext is MenuViewModel viewModel)
             {
-                ChangeModeSwitch.IsCheckedChanged  += viewModel.HandleChangeModeCheckChanged;
-                ChangeStyleSwitch.IsCheckedChanged += viewModel.HandleChangeStyleCheckChanged;
-
                 viewModel.DefaultOpenPaths = new List<TreeNodePath>
                 {
                     new("/3/SubGroup2")
@@ -38,15 +45,6 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
                 viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
 
                 RefreshMenuSources(viewModel);
-
-                this.OneWayBind(ViewModel, vm => vm.MenuItems, v => v.BasicItemsSourceMenu.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.InlineNavMenuNodes, v => v.InlineModeMenu.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.ContextMenuItems, v => v.BasicContextMenu.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.ItemsSourceDemoNavMenuNodes, v => v.ItemsSourceDemoNavMenu.ItemsSource)
-                    .DisposeWith(disposables);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
@@ -59,8 +57,6 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
 
                 Disposable.Create(() =>
                 {
-                    ChangeModeSwitch.IsCheckedChanged     -= viewModel.HandleChangeModeCheckChanged;
-                    ChangeStyleSwitch.IsCheckedChanged    -= viewModel.HandleChangeStyleCheckChanged;
                     viewModel.MenuItems                   = null;
                     viewModel.InlineNavMenuNodes          = null;
                     viewModel.ItemsSourceDemoNavMenuNodes = null;
@@ -74,6 +70,54 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         });
     }
 
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario       => new MenuBasicShowCase(),
+            FeaturesScenario    => new MenuFeaturesShowCase(),
+            ItemsSourceScenario => new MenuItemsSourceShowCase(),
+            ContextScenario     => new MenuContextShowCase(),
+            NavMenuScenario     => new MenuNavigationShowCase(),
+            _                   => throw new InvalidOperationException($"Unknown Menu scenario: {scenario}")
+        };
+    }
+
     private void RefreshMenuSources(MenuViewModel viewModel)
     {
         InitInlineNavMenuNodes(viewModel);
@@ -85,6 +129,11 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
     private static string Lang(MenuShowCaseLangResourceKind resourceKind, string fallback)
     {
         return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+
+    private static string DisplayLang(MenuShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return Lang(resourceKind, fallback).Replace("_", string.Empty, StringComparison.Ordinal);
     }
 
     private void InitContextMenuItems(MenuViewModel viewModel)
@@ -136,7 +185,7 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         {
             new MenuItemData
             {
-                Header = Lang(MenuShowCaseLangResourceKind.P2HeaderFile, "File"),
+                Header = DisplayLang(MenuShowCaseLangResourceKind.P2HeaderFile, "File"),
                 Children =
                 [
                     new MenuItemData
@@ -158,7 +207,7 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
             },
             new MenuItemData
             {
-                Header = Lang(MenuShowCaseLangResourceKind.P2HeaderEdit, "Edit"),
+                Header = DisplayLang(MenuShowCaseLangResourceKind.P2HeaderEdit, "Edit"),
                 Children =
                 [
                     new MenuItemData
@@ -187,7 +236,6 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         viewModel.InlineNavMenuNodes          = BuildNavMenuNodes(out _);
         viewModel.ItemsSourceDemoNavMenuNodes = BuildNavMenuNodes(out _navMenuDefaultSelectedItem);
         viewModel.DefaultSelectedNode         = _navMenuDefaultSelectedItem;
-        ItemsSourceDemoNavMenu.SelectedItem   = _navMenuDefaultSelectedItem;
     }
 
     private static List<INavMenuNode> BuildNavMenuNodes(out NavMenuNode defaultSelected)

@@ -203,36 +203,15 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         if (mouse?.Type == RawPointerEventType.NonClientLeftButtonDown)
         {
-            if (_latestSelectedItem is INavMenuItem latestSelectedItem)
-            {
-                var topLevelItem = FindTopLevelMenuItem(latestSelectedItem);
-                if (topLevelItem != null && topLevelItem.IsSubMenuOpen)
-                {
-                    topLevelItem.IsSubMenuOpen = false;
-                }
-            }
+            CloseAllTopLevelMenuItems();
         }
     }
 
     protected virtual void RootPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (_latestSelectedItem is INavMenuItem latestSelectedItem)
+        if (HasOpenTopLevelItem() && !IsPointerWithinOpenTopLevelItem(e.Source))
         {
-            var topLevelItem = FindTopLevelMenuItem(latestSelectedItem);
-            if (topLevelItem != null && topLevelItem.IsSubMenuOpen)
-            {
-                if (e.Source is ILogical control && !topLevelItem.IsLogicalAncestorOf(control))
-                {
-                    topLevelItem.IsSubMenuOpen = false;
-                }
-            }
-        }
-        else
-        {
-            if (e.Source is ILogical control && !Menu.IsLogicalAncestorOf(control))
-            {
-                CloseAllTopLevelMenuItems();
-            }
+            CloseAllTopLevelMenuItems();
         }
     }
 
@@ -248,12 +227,64 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             var children = Menu.LogicalChildren;
             for (var i = 0; i < children.Count; i++)
             {
-                if (children[i] is INavMenuItem menuItem)
+                if (children[i] is INavMenuItem { IsSubMenuOpen: true } menuItem)
                 {
                     menuItem.Close();
                 }
             }
         }
+    }
+
+    private bool HasOpenTopLevelItem()
+    {
+        if (Menu == null)
+        {
+            return false;
+        }
+
+        var children = Menu.LogicalChildren;
+        for (var i = 0; i < children.Count; i++)
+        {
+            if (children[i] is INavMenuItem { IsSubMenuOpen: true })
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsPointerWithinOpenTopLevelItem(object? source)
+    {
+        if (Menu == null)
+        {
+            return false;
+        }
+
+        var sourceLogical = source as ILogical;
+        var sourceItem    = GetMenuItemCore(source as StyledElement);
+        var children      = Menu.LogicalChildren;
+        for (var i = 0; i < children.Count; i++)
+        {
+            if (children[i] is not INavMenuItem { IsSubMenuOpen: true } openTopLevelItem)
+            {
+                continue;
+            }
+
+            if (ReferenceEquals(source, openTopLevelItem) ||
+                sourceItem != null && ReferenceEquals(FindTopLevelMenuItem(sourceItem), openTopLevelItem) ||
+                openTopLevelItem.IsPointerOverSubMenu)
+            {
+                return true;
+            }
+
+            if (sourceLogical != null && openTopLevelItem.IsLogicalAncestorOf(sourceLogical))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     internal void AttachCore(INavMenu navMenu)

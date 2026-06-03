@@ -6,6 +6,12 @@ namespace AtomUIGallery.ShowCases.Menu;
 [LanguageProvider(LanguageCode.zh_CN, MenuShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioFeatures = "特性";
+    public const string ScenarioItemsSource = "数据源";
+    public const string ScenarioContext = "上下文";
+    public const string ScenarioNavMenu = "导航菜单";
+
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最简单的用法。";
     public const string MenuItemItemsSourceTitle = "通过 ItemsSource 生成 MenuItem";

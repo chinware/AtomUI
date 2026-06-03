@@ -6,6 +6,12 @@ namespace AtomUIGallery.ShowCases.Menu;
 [LanguageProvider(LanguageCode.en_US, MenuShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioFeatures = "Features";
+    public const string ScenarioItemsSource = "ItemsSource";
+    public const string ScenarioContext = "Context";
+    public const string ScenarioNavMenu = "NavMenu";
+
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Simplest Usage.";
     public const string MenuItemItemsSourceTitle = "Generate MenuItem by ItemsSource";

@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Menu.MenuItemsSourceShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Menu"
+             x:DataType="viewModels:MenuViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource MenuItemItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource MenuItemItemsSourceDescription}">
+            <atom:Menu Name="BasicItemsSourceMenu">
+                <atom:Menu.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:IMenuItemData">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Menu.ItemTemplate>
+            </atom:Menu>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceDescription}">
+            <atom:NavMenu Mode="Inline" Name="InlineModeMenu">
+                <atom:NavMenu.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:INavMenuNode">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:NavMenu.ItemTemplate>
+            </atom:NavMenu>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource NavMenuItemItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource NavMenuItemItemsSourceDescription}">
+            <atom:NavMenu Name="ItemsSourceDemoNavMenu"
+                          Mode="Inline"
+                          SelectedItem="{Binding DefaultSelectedNode}"
+                          DefaultSelectedPath="{Binding DefaultSelectedPath}" />
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
