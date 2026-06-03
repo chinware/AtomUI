@@ -1,0 +1,102 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.LineEdit.LineEditBasicShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.LineEdit"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:LineEditViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:LineEditShowCaseLangResource BasicUsageDescription}">
+            <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextBasicUsage}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource InputSizesTitle}"
+            Description="{gallery:LineEditShowCaseLangResource InputSizesDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextLarge}" SizeType="Large"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextMiddle}" SizeType="Middle"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextSmall}" SizeType="Small"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource VariantsTitle}"
+            Description="{gallery:LineEditShowCaseLangResource VariantsDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleNormal}" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextOutlined}" StyleVariant="Outlined" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextFilled}" StyleVariant="Filled" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextBorderless}" StyleVariant="Borderless" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextUnderlined}" StyleVariant="Underlined" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextFilled}" StyleVariant="Filled" />
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleLeftaddonAndRightaddon}" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Filled" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Borderless" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Underlined" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource PrePostTabTitle}"
+            Description="{gallery:LineEditShowCaseLangResource PrePostTabDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Width="400" HorizontalAlignment="Left"
+                               Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" />
+                <atom:LineEdit RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}" Width="400"
+                               HorizontalAlignment="Left"
+                               Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" />
+                <atom:LineEdit LeftAddOn="http://" InnerRightContent=".com" Width="400" HorizontalAlignment="Left"
+                               Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource WithClearIconTitle}"
+            Description="{gallery:LineEditShowCaseLangResource WithClearIconDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputWithClearIcon}" IsAllowClear="True" />
+                <atom:TextArea PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextTextareaWithClearIcon}" IsAllowClear="True" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource PasswordBoxTitle}"
+            Description="{gallery:LineEditShowCaseLangResource PasswordBoxDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputPassword}"
+                               Width="400"
+                               RevealPassword="False"
+                               PasswordChar="•"
+                               HorizontalAlignment="Left"
+                               IsEnableRevealButton="True" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputPassword}"
+                               Width="400"
+                               RevealPassword="False"
+                               HorizontalAlignment="Left"
+                               PasswordChar="•"
+                               IsEnableRevealButton="True"
+                               IsAllowClear="True" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:LineEditShowCaseLangResource PrefixAndSuffixDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextEnterYourUsername}"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, StrokeBrush=#D7D7D7}"
+                               InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, StrokeBrush=#8C8C8C}" />
+                <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" />
+                <atom:LineEdit InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

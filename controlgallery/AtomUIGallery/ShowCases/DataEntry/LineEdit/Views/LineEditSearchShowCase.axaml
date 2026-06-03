@@ -1,0 +1,126 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.LineEdit.LineEditSearchShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.LineEdit"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:LineEditViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource SearchBoxTitle}"
+            Description="{gallery:LineEditShowCaseLangResource SearchBoxDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch" SizeType="Large" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 SearchButtonStyle="Primary" SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 SearchButtonStyle="Primary" SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
+                                 HorizontalAlignment="Stretch"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"
+                                 IsAllowClear="True" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
+                                 HorizontalAlignment="Stretch"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextText}"
+                                 InnerRightContent="{antdicons:AntDesignIconProvider Kind=AudioOutlined, StrokeBrush=#1677ff, Width=16, Height=16}"
+                                 IsAllowClear="True"
+                                 SizeType="Large" />
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleFilled}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Filled" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Filled" />
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleBorderless}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Borderless" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Borderless" />
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleUnderlined}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Underlined" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Underlined" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource DisabledSearchBoxTitle}"
+            Description="{gallery:LineEditShowCaseLangResource DisabledSearchBoxDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left" SizeType="Large"
+                                 IsEnabled="False" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" IsEnabled="False" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary" SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" IsEnabled="False" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary" SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" IsEnabled="False" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
+                                 Width="400"
+                                 HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"
+                                 IsAllowClear="True" IsEnabled="False" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
+                                 Width="400"
+                                 HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextText}"
+                                 IsAllowClear="True"
+                                 SizeType="Large" IsEnabled="False">
+                    <atom:SearchEdit.InnerRightContent>
+                        <antdicons:AudioOutlined Width="16" Height="16" Name="AudioOutlined">
+                            <antdicons:AudioOutlined.Styles>
+                                <Style Selector="atom|Icon#AudioOutlined">
+                                    <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimary}"/>
+                                </Style>
+                            </antdicons:AudioOutlined.Styles>
+                        </antdicons:AudioOutlined>
+                    </atom:SearchEdit.InnerRightContent>
+                </atom:SearchEdit>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource SearchBoxWithLoadingTitle}"
+            Description="{gallery:LineEditShowCaseLangResource SearchBoxWithLoadingDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchLoadingDefault}"
+                                 Width="400"
+                                 IsOperating="True"
+                                 HorizontalAlignment="Left" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchLoadingWithEnterbutton}" Width="400"
+                                 HorizontalAlignment="Left"
+                                 IsOperating="True"
+                                 SearchButtonStyle="Primary" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
+                                 Width="400"
+                                 IsOperating="True"
+                                 HorizontalAlignment="Left"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}"
+                                 SizeType="Large" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

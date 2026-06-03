@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.LineEdit.LineEditStateShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.LineEdit"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:LineEditViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource DisabledTitle}"
+            Description="{gallery:LineEditShowCaseLangResource DisabledDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleNormal}" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextOutlined}" StyleVariant="Outlined" IsEnabled="False" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextFilled}" StyleVariant="Filled" IsEnabled="False" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextBorderless}" StyleVariant="Borderless" IsEnabled="False" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextUnderlined}" StyleVariant="Underlined" IsEnabled="False" />
+
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextOutlined}" StyleVariant="Outlined" Status="Error" IsEnabled="False" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextFilled}" StyleVariant="Filled" Status="Error" IsEnabled="False" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextBorderless}" StyleVariant="Borderless" Status="Error" IsEnabled="False" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextUnderlined}" StyleVariant="Underlined" Status="Error" IsEnabled="False" />
+
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleLeftaddonAndRightaddon}" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" Status="Error" IsEnabled="False" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Filled" Status="Error"
+                               IsEnabled="False" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Borderless"
+                               Status="Error" IsEnabled="False" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Underlined"
+                               Status="Error" IsEnabled="False" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource InputStatusTitle}"
+            Description="{gallery:LineEditShowCaseLangResource InputStatusDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleNormal}" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextError}" Status="Error" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextErrorWithPrefix}"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Error" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextWarningWithPrefix}"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Warning" />
+
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextError}" Status="Error"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" StyleVariant="Filled" />
+
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextError}" Status="Error"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                               StyleVariant="Borderless" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                               StyleVariant="Borderless" />
+
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextError}" Status="Error"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                               StyleVariant="Underlined" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                               StyleVariant="Underlined" />
+
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleLeftaddonAndRightaddon}" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" Status="Error" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Filled" Status="Error" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Borderless"
+                               Status="Error" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Underlined"
+                               Status="Error" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" Status="Warning" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Filled"
+                               Status="Warning" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Borderless"
+                               Status="Warning" />
+                <atom:LineEdit LeftAddOn="http://" RightAddOn=".com" Text="{gallery:LineEditShowCaseLangResource P2TextMysite}" StyleVariant="Underlined"
+                               Status="Warning" />
+
+                <atom:Separator Title="{gallery:LineEditShowCaseLangResource P2TitleSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}"
+                                 Width="400"
+                                 HorizontalAlignment="Left"
+                                 LeftAddOn="https://"
+                                 StyleVariant="Outlined"
+                                 Status="Error" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Outlined" Status="Warning" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Outlined" Status="Error"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Outlined" Status="Warning"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Filled" Status="Error" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Filled" Status="Warning" />
+
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Filled" Status="Error"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" Width="400" HorizontalAlignment="Left"
+                                 LeftAddOn="https://" StyleVariant="Filled" Status="Warning"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

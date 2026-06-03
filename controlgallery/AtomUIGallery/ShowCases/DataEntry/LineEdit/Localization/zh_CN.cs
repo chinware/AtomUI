@@ -6,6 +6,11 @@ namespace AtomUIGallery.ShowCases.LineEdit;
 [LanguageProvider(LanguageCode.zh_CN, LineEditShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioState = "状态";
+    public const string ScenarioSearch = "搜索";
+    public const string ScenarioTextArea = "文本域";
+
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "基础用法示例。";
     public const string InputSizesTitle = "输入框三种尺寸";

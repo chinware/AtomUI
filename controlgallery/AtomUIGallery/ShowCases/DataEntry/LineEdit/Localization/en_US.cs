@@ -6,6 +6,11 @@ namespace AtomUIGallery.ShowCases.LineEdit;
 [LanguageProvider(LanguageCode.en_US, LineEditShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioState = "State";
+    public const string ScenarioSearch = "Search";
+    public const string ScenarioTextArea = "TextArea";
+
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "Basic usage example.";
     public const string InputSizesTitle = "Three sizes of Input";
