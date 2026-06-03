@@ -15,6 +15,7 @@
 | P3 复杂 ShowCase | 已完成；`Form`、`DataGrid`、`Space` 父级场景 Tab 已迁入本地资源，`Form` 运行时文案和局部辅助控件模板已接入当前语言 |
 | P4 共享资源收敛 | 已完成；废弃的 `ShowCaseScenarioLang` 共享场景资源已删除 |
 | P5 回归验证 | 已完成；资源一致性、关键残留扫描、Debug build 和短启动 smoke 均通过 |
+| P6 POCO 选项动态语言切换 | 已完成；控件层已修复 `Cascader`、`CascaderView`、`Select`、`TreeSelect`、`TreeView`、`ListView`、`ListBox` 的数据源刷新/容器复用状态恢复；示例层内联本地化 POCO 选项迁移为 0 残留 |
 
 当前所有 `ShowCaseItem.Title` / `Description` 均已按 ShowCase 本地 `Localization/en_US.cs` 和 `Localization/zh_CN.cs` 组织；`Icon`、`Palette` 没有 `ShowCaseItem` 标题和描述，P1 不需要迁移。P2 已完成控件内部按钮文字、占位符、校验消息、标题、提示、开关文案等主要可见演示文案迁移。`SelectOption.Content`、`DescriptionItem.Content`、URL、金额、日期、用户名等示例数据继续保留原值，避免破坏选择值、过滤值和演示数据语义。
 
@@ -39,6 +40,7 @@
 | P3 | 复杂 ShowCase | 处理 `Form`、`DataGrid`、`Space` 的子场景页面和局部辅助控件 | 已完成；子场景文案跟随对应 ShowCase 就近维护 | `dotnet build` 通过；P3 共享场景资源引用扫描为 0 |
 | P4 | 共享资源收敛 | 删除已无实际引用的 `ShowCaseScenarioLang` 共享资源 | 已完成；避免共享资源持续膨胀，场景 Tab 文案统一就近维护 | `dotnet build` 通过；`ShowCaseScenario` 相关扫描为 0 |
 | P5 | 回归验证 | Gallery Debug build、资源一致性扫描、关键残留扫描、短启动 smoke、语言切换路径核查 | 已完成；形成可提交的稳定批次 | `dotnet build` 通过；资源扫描和短启动 smoke 通过 |
+| P6 | POCO 选项动态语言切换正确性 | 处理 `SelectOption`、`CascaderOption`、`TreeItemNode`、`AutoCompleteOption` 这类非 Avalonia 对象上的本地化静态化问题 | 控件层保持数据源刷新后的选择/默认/展开状态；示例层迁移内联选项到 ViewModel 数据源 | `dotnet build` 通过；语言切换后选项 Header、已选项、Tag、默认路径同步刷新 |
 
 ## 建议批次
 
@@ -142,6 +144,17 @@
 | Tour 资源值和场景标题漏扫 | 修正 `Tour` ShowCase 中中文资源值仍为英文的步骤标题/描述、开始按钮、跳过按钮和高亮区域参数标签；补齐 `Custom Mask` 独立资源，避免自定义遮罩场景误显示为自定义指示器 |
 | 保留边界 | `AA` 作为圆形按钮演示字符保留；`Separator`、`SplitButton`、Ant Design、AtomUI 和 `size` / `icon` / `loading` / `danger` / `orientationMargin` 等控件名或属性名作为技术词保留 |
 | 验证结果 | `Button` / `SplitButton` / `Separator` / `CustomizeTheme` / `DropdownButton` / `Menu` / `CheckBox` / `DatePicker` / `TimePicker` / `Form` / `LineEdit` / `Mentions` / `NumberUpDown` / `RadioButton` / `Rate` / `Select` / `ToggleSwitch` / `TreeSelect` / `Transfer` / `Upload` / `Alert` / `Drawer` / `Message` / `Notification` / `Result` / `Skeleton` / `Spin` / `Watermark` / `Avatar` / `Badge` / `Card` / `Collapse` / `Descriptions` / `DataGrid` / `Expander` / `GroupBox` / `InfoFlyout` / `List` / `Segmented` / `Statistic` / `Tag` / `Timeline` / `TreeView` / `Tooltip` / `Tour` 本地化 provider key 对齐；对应 XAML 和非 Localization 代码中硬编码可见自然语言文案扫描为 0；`AtomUIGallery.Desktop` Debug build 通过 |
+
+## P6 执行记录
+
+| 项 | 结果 |
+| --- | --- |
+| 根因 | `LanguageResourceExtension` 只有在目标是 Avalonia 对象时才能返回动态资源；`SelectOption`、`CascaderOption`、`TreeItemNode`、`AutoCompleteOption` 等普通 POCO 选项对象会得到一次性静态值，语言切换后不会自动刷新 |
+| 控件层修复 | `Cascader`、`CascaderView`、`Select`、`TreeSelect`、`TreeView` 在数据源刷新后按稳定 `ItemKey` / `Content` / `Value` 恢复已选项、默认路径、展开和勾选状态 |
+| Gallery 结构修复 | `Cascader` ShowCase 拆分为 lazy tab 子场景；`CascaderView` 示例改为 ViewModel `OptionsSource`，避免在 XAML 内联本地化 `CascaderOption` |
+| 规范补充 | `docs/AtomUIGallery/organization.md` 已明确禁止把 ShowCase 语言资源直接写到普通选项数据对象上；选项 Header/Description 由 ViewModel 重建，稳定身份使用 `ItemKey`、`Content` 或 `Value` |
+| 剩余示例层风险 | 已迁移 `SelectShowCase.axaml`、`FormPresetShowCase.axaml`、`FormControlsShowCase.axaml`、`FormBasicShowCase.axaml`、`FormStateShowCase.axaml`、`FormValidationShowCase.axaml`、`PriceInputTheme.axaml`、`SpaceCompactFormShowCase.axaml`；全局 `SelectOption` / `CascaderOption` / `TreeItemNode` / `AutoCompleteOption` 上 `LangResource` 扫描为 0；`DonationTheme.axaml`、`PhoneNumberTheme.axaml` 只包含符号/区号静态值，不属于本地化动态风险 |
+| 验证结果 | `git diff --check` 通过；`AtomUIGallery.Desktop` Debug build 通过，0 warning / 0 error |
 
 ## 执行进度
 

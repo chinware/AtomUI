@@ -94,6 +94,21 @@ XAML 中使用生成的资源扩展：
     Description="{gallery:AutoCompleteShowCaseLangResource BasicUsageDescription}">
 ```
 
+### 选项数据多语言
+
+不要把 ShowCase 语言资源直接写到普通选项数据对象上，例如 `SelectOption`、`CascaderOption`、`TreeItemNode`、`AutoCompleteOption` 等。
+
+这些对象不是 Avalonia `StyledElement`，`{gallery:...LangResource ...}` 在它们身上会退化成一次性静态值，语言切换后不会自动刷新。正确做法是把选项数据放到对应 ShowCase 的 ViewModel 中，由 code-behind 使用 `LanguageResourceBinder.GetLangResource(...)` 构建，并在 `ThemeManager.LanguageVariantChanged` 后重建数据源。
+
+选项数据必须保留稳定身份：
+
+| 控件数据 | 稳定身份 |
+| --- | --- |
+| `SelectOption` / `AutoCompleteOption` | 优先 `ItemKey`，否则 `Content` |
+| `CascaderOption` / `TreeItemNode` | 优先 `ItemKey`，否则 `Value` |
+
+`Header`、`Description`、分组标题等自然语言字段可以跟随语言变化，但不要作为选择值、默认值或节点路径的身份字段。这样语言切换时控件可以按稳定身份把旧选中项映射到新语言的数据对象上。
+
 ## 复杂 ShowCase
 
 如果一个 ShowCase 拆分为多个子场景，子场景页面仍放在同一个 `Views` 目录下。
