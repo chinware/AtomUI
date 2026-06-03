@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.NumberUpDown"
+             x:Class="AtomUIGallery.ShowCases.NumberUpDown.NumberUpDownRangeShowCase"
+             x:DataType="vm:NumberUpDownViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource MinMaxTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource MinMaxDescription}">
+            <atom:NumericUpDown Minimum="0"
+                                Maximum="10"
+                                Value="3"
+                                Increment="1" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource DecimalStepTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource DecimalStepDescription}">
+            <atom:NumericUpDown Value="1.2"
+                                Increment="0.25"
+                                Minimum="0"
+                                Maximum="2" />
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

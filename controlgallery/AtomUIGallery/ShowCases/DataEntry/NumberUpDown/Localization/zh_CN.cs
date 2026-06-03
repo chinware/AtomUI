@@ -6,6 +6,11 @@ namespace AtomUIGallery.ShowCases.NumberUpDown;
 [LanguageProvider(LanguageCode.zh_CN, NumberUpDownShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioRange = "范围";
+    public const string ScenarioStyle = "样式";
+    public const string ScenarioAddon = "附加内容";
+
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "仅支持数字输入的 NumberUpDown。";
     public const string StringModeTitle = "字符串模式（高精度）";

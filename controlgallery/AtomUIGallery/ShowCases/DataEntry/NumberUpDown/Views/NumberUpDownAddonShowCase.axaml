@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.NumberUpDown"
+             x:Class="AtomUIGallery.ShowCases.NumberUpDown.NumberUpDownAddonShowCase"
+             x:DataType="vm:NumberUpDownViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource PrePostTabTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource PrePostTabDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown LeftAddOn="http://"
+                                    RightAddOn=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown LeftAddOn="http://"
+                                    InnerRightContent=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource WithClearIconTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource WithClearIconDescription}">
+            <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextInputWithClearIcon}"
+                                Width="400"
+                                HorizontalAlignment="Left"
+                                IsAllowClear="True" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextEnterYourValue}"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
+                                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource StatusTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource StatusDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}" Status="Error" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextErrorWithPrefix}"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    Status="Error" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarningWithPrefix}"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    Status="Warning" />
+
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}"
+                                    Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}"
+                                    Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}"
+                                    Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}"
+                                    Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

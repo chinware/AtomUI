@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.NumberUpDown"
+             x:Class="AtomUIGallery.ShowCases.NumberUpDown.NumberUpDownBasicShowCase"
+             x:DataType="vm:NumberUpDownViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource BasicUsageDescription}">
+            <atom:NumericUpDown Value="3"
+                                HorizontalAlignment="Stretch" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource StringModeTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource StringModeDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown IsStringMode="True"
+                                    StringValue="{Binding StringModeValue, Mode=TwoWay}"
+                                    Increment="0.0001"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextInputWeight}" />
+                <TextBlock>
+                    <Run Text="{gallery:NumberUpDownShowCaseLangResource P2TextRawValuePrefix}" />
+                    <Run Text="{Binding StringModeValue}" />
+                </TextBlock>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:CheckBox Content="{gallery:NumberUpDownShowCaseLangResource P2ContentKeyboardEnabled}"
+                               IsChecked="{Binding KeyboardEnabled}" />
+                <atom:NumericUpDown Value="1.2"
+                                    Increment="0.1"
+                                    IsKeyboardEnabled="{Binding KeyboardEnabled}"
+                                    PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextKeyboardDisabled}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorDescription}">
+            <atom:NumericUpDown Value="2.5"
+                                Increment="0.5"
+                                PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextFocusAndScrollWheel}" />
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

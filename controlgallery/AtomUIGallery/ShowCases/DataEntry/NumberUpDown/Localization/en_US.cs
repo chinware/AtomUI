@@ -6,6 +6,11 @@ namespace AtomUIGallery.ShowCases.NumberUpDown;
 [LanguageProvider(LanguageCode.en_US, NumberUpDownShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioRange = "Range";
+    public const string ScenarioStyle = "Style";
+    public const string ScenarioAddon = "Add-ons";
+
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "Numeric-only NumberUpDown.";
     public const string StringModeTitle = "String mode (high precision)";

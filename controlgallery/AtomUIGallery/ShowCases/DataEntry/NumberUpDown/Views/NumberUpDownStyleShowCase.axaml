@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.NumberUpDown"
+             x:Class="AtomUIGallery.ShowCases.NumberUpDown.NumberUpDownStyleShowCase"
+             x:DataType="vm:NumberUpDownViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource SizesTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource SizesDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown SizeType="Large" Value="3" />
+                <atom:NumericUpDown SizeType="Middle" Value="3" />
+                <atom:NumericUpDown SizeType="Small" Value="3" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource VariantsTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource VariantsDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outlined" />
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" />
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource DisabledTitle}"
+            Description="{gallery:NumberUpDownShowCaseLangResource DisabledDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outlined" IsEnabled="False" />
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" IsEnabled="False" />
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" IsEnabled="False" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
