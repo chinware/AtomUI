@@ -35,11 +35,15 @@
                             <atom:CheckBox Name="PART_ToggleCheckbox"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"
+                                           Focusable="False"
+                                           IsHitTestVisible="False"
                                            IsChecked="{TemplateBinding IsChecked}"
                                            IsVisible="False" />
                             <atom:RadioButton Name="PART_ToggleRadio"
                                               HorizontalAlignment="Center"
                                               VerticalAlignment="Center"
+                                              Focusable="False"
+                                              IsHitTestVisible="False"
                                               IsChecked="{TemplateBinding IsChecked}"
                                               GroupName="{TemplateBinding GroupName}"
                                               IsVisible="False" />
