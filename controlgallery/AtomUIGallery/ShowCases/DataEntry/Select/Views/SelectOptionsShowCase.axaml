@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Select.SelectOptionsShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Select"
+             xmlns:views="using:AtomUIGallery.ShowCases.Select"
+             x:DataType="vm:SelectViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource CustomDropdownOptionsTitle}"
+            Description="{gallery:SelectShowCaseLangResource CustomDropdownOptionsDescription}">
+            <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         IsFilterEnabled="True"
+                         HorizontalAlignment="Stretch"
+                         IsAllowClear="True"
+                         OptionsSource="{Binding CustomCountryOptions}">
+                <atom:Select.OptionTemplate>
+                    <DataTemplate x:DataType="views:CustomOption">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="{Binding Emoji}" />
+                            <TextBlock Text="{Binding Description}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </atom:Select.OptionTemplate>
+            </atom:Select>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource OptionGroupTitle}"
+            Description="{gallery:SelectShowCaseLangResource OptionGroupDescription}">
+            <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         DefaultValues="lucy"
+                         Width="200"
+                         IsGroupEnabled="True"
+                         IsFilterEnabled="True"
+                         OptionsSource="{Binding GroupedPersonOptions}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource HideAlreadySelectedTitle}"
+            Description="{gallery:SelectShowCaseLangResource HideAlreadySelectedDescription}">
+            <atom:Select Mode="Multiple"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextInsertedAreRemoved}"
+                         IsHideSelectedOptions="True"
+                         IsFilterEnabled="True"
+                         HorizontalAlignment="Stretch"
+                         OptionsSource="{Binding HideSelectedOptions}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource MaxCountTitle}"
+            Description="{gallery:SelectShowCaseLangResource MaxCountDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Mode="Multiple"
+                             HorizontalAlignment="Stretch"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             MaxCount="3"
+                             IsShowMaxCountIndicator="True"
+                             OptionsSource="{Binding MaxCountLimitedOptions}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource ResponsiveMaxTagCountTitle}"
+            Description="{gallery:SelectShowCaseLangResource ResponsiveMaxTagCountDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Name="MaxTagSelect1"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             IsResponsiveTagMode="True"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
+
+                <atom:Select Name="MaxTagSelect2"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
+                             IsEnabled="False"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             IsResponsiveTagMode="True"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
+
+                <atom:Select Name="MaxTagSelect3"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             MaxTagCount="5"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

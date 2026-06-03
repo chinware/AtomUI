@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.RadioButton"
+             x:Class="AtomUIGallery.ShowCases.RadioButton.RadioButtonStylesShowCase"
+             x:DataType="vm:RadioButtonViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource OptionStyleTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource OptionStyleDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup>
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup>
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup>
+                    <atom:OptionButton IsChecked="True" IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource SolidOptionButtonTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource SolidOptionButtonDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource SizeTypeTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource SizeTypeDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup SizeType="Large">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup SizeType="Middle">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup SizeType="Small">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentHangzhou}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentShanghai}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentBeijing}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentChengdu}" />
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

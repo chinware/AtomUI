@@ -6,6 +6,11 @@ namespace AtomUIGallery.ShowCases.RadioButton;
 [LanguageProvider(LanguageCode.en_US, RadioButtonShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioGroups = "Groups";
+    public const string ScenarioOptions = "Options";
+    public const string ScenarioStyles = "Styles";
+
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest use.";
     public const string DisabledTitle = "Disabled";

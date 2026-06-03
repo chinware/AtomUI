@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.RadioButton"
+             x:Class="AtomUIGallery.ShowCases.RadioButton.RadioButtonBasicShowCase"
+             x:DataType="vm:RadioButtonViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource BasicTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource BasicDescription}">
+            <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
+                <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentRadio}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource DisabledTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource DisabledDescription}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <atom:RadioButton x:Name="ToggleDisabledRadioUnChecked"
+                                      IsEnabled="{Binding ToggleDisabledRadioUnCheckedEnabled}"
+                                      Content="{gallery:RadioButtonShowCaseLangResource P2ContentRadio1}" />
+                    <atom:RadioButton x:Name="ToggleDisabledRadioChecked"
+                                      IsChecked="True"
+                                      IsEnabled="{Binding ToggleDisabledRadioCheckedEnabled}"
+                                      Content="{gallery:RadioButtonShowCaseLangResource P2ContentRadio2}" />
+                </StackPanel>
+                <atom:Button ButtonType="Primary"
+                             x:Name="ToggleDisabledButton"
+                             Margin="0, 20, 0, 0"
+                             Command="{Binding ToggleDisabledCommand}"
+                             Content="{gallery:RadioButtonShowCaseLangResource P2ContentToggleDisabled}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

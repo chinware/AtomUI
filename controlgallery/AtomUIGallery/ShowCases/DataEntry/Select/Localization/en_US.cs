@@ -8,6 +8,9 @@ internal class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic Usage.";
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioOptions = "Options";
+    public const string ScenarioAppearance = "Appearance";
     public const string SearchFieldTitle = "Select with search field";
     public const string SearchFieldDescription = "Search the options while expanded.";
     public const string CustomSearchTitle = "Custom Search";

@@ -7,6 +7,7 @@ using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using Avalonia;
+using Avalonia.Controls;
 using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -16,6 +17,12 @@ namespace AtomUIGallery.ShowCases.Select;
 public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
 {
     public const string LanguageId = nameof(SelectShowCase);
+
+    private const string BasicScenario      = "Basic";
+    private const string OptionsScenario    = "Options";
+    private const string AppearanceScenario = "Appearance";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
 
     public SelectShowCase()
     {
@@ -54,7 +61,54 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
             }
         });
         InitializeComponent();
-        CustomSearchSelect.Filter = new CustomFilter();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario      => new SelectBasicShowCase(),
+            OptionsScenario    => new SelectOptionsShowCase(),
+            AppearanceScenario => new SelectAppearanceShowCase(),
+            _                  => throw new InvalidOperationException($"Unknown Select scenario: {scenario}")
+        };
     }
 
     private void RefreshLocalizedOptions(SelectViewModel viewModel)
@@ -272,16 +326,6 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
         };
     }
 
-    private void HandleSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs e)
-    {
-        if (DataContext is SelectViewModel viewModel)
-        {
-            if (e.CheckedOption.Tag is SizeType sizeType)
-            {
-                viewModel.SelectSizeType = sizeType;
-            }
-        }
-    }
 }
 
 public record CustomOption : SelectOption

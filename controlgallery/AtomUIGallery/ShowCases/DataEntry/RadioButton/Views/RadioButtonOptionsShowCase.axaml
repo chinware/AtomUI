@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.RadioButton"
+             x:Class="AtomUIGallery.ShowCases.RadioButton.RadioButtonOptionsShowCase"
+             x:DataType="vm:RadioButtonViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource OptionButtonTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource OptionButtonDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <atom:RadioButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentApple}" />
+                    <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentPear}" />
+                    <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOrange}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <atom:RadioButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentApple}" />
+                    <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentPear}" />
+                    <atom:RadioButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentOrange}" />
+                </StackPanel>
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentApple}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentPear}" />
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOrange}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup ButtonStyle="Outline">
+                    <atom:OptionButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentApple}" />
+                    <atom:OptionButton IsChecked="True" Content="{gallery:RadioButtonShowCaseLangResource P2ContentPear}" />
+                    <atom:OptionButton IsEnabled="False" Content="{gallery:RadioButtonShowCaseLangResource P2ContentOrange}" />
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource OptionButtonWithIconTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource OptionButtonWithIconDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup ButtonStyle="Solid">
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup ButtonStyle="Outline">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup ButtonStyle="Solid" IsEnabled="False">
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+
+                <atom:OptionButtonGroup ButtonStyle="Outline" IsEnabled="False">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+                <atom:Separator Title="{gallery:RadioButtonShowCaseLangResource P2TitleSizetype}" />
+                <atom:OptionButtonGroup ButtonStyle="Outline" SizeType="Large">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+                <atom:OptionButtonGroup ButtonStyle="Outline">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+                <atom:OptionButtonGroup ButtonStyle="Outline" SizeType="Small">
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentMacos}" />
+                    <atom:OptionButton IsChecked="True" Icon="{antdicons:AntDesignIconProvider Kind=LinuxOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentLinux}" />
+                    <atom:OptionButton Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" Content="{gallery:RadioButtonShowCaseLangResource P2ContentWindows}" />
+                </atom:OptionButtonGroup>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

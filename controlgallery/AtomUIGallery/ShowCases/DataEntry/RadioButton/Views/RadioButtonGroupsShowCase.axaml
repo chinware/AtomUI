@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.RadioButton"
+             x:Class="AtomUIGallery.ShowCases.RadioButton.RadioButtonGroupsShowCase"
+             x:DataType="vm:RadioButtonViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource RadioGroupTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource RadioGroupDescription}">
+            <atom:RadioButtonGroup>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:LineChartOutlined Width="18" Height="18" />
+                        <TextBlock Text="{gallery:RadioButtonShowCaseLangResource P2TextLinechart}" />
+                    </StackPanel>
+                </atom:RadioButton>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:DotChartOutlined Width="18" Height="18" />
+                        <TextBlock Text="{gallery:RadioButtonShowCaseLangResource P2TextDotchart}" />
+                    </StackPanel>
+                </atom:RadioButton>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:BarChartOutlined Width="18" Height="18" />
+                        <TextBlock Text="{gallery:RadioButtonShowCaseLangResource P2TextBarchart}" />
+                    </StackPanel>
+                </atom:RadioButton>
+                <atom:RadioButton>
+                    <StackPanel Spacing="5" Orientation="Vertical">
+                        <antdicons:PieChartOutlined Width="18" Height="18" />
+                        <TextBlock Text="{gallery:RadioButtonShowCaseLangResource P2TextPiechart}" />
+                    </StackPanel>
+                </atom:RadioButton>
+            </atom:RadioButtonGroup>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource VerticalRadioGroupTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource VerticalRadioGroupDescription}">
+            <atom:RadioButtonGroup Orientation="Vertical" HorizontalAlignment="Left">
+                <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionA}" />
+                <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionB}" />
+                <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionC}" />
+                <atom:RadioButton Content="{gallery:RadioButtonShowCaseLangResource P2ContentOptionD}" />
+            </atom:RadioButtonGroup>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource ItemsSourceRadioGroupTitle}"
+            Description="{gallery:RadioButtonShowCaseLangResource ItemsSourceRadioGroupDescription}">
+            <atom:RadioButtonGroup HorizontalAlignment="Left"
+                                   ItemsSource="{Binding RadioOptions}" />
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

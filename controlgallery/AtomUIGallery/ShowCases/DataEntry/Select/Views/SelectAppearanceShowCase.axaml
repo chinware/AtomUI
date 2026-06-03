@@ -1,0 +1,156 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Select.SelectAppearanceShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Select"
+             x:DataType="vm:SelectViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource SizesTitle}"
+            Description="{gallery:SelectShowCaseLangResource SizesDescription}">
+
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
+                    <atom:OptionButton Tag="{x:Static atom:SizeType.Large}" Content="{gallery:SelectShowCaseLangResource P2ContentLarge}" />
+                    <atom:OptionButton IsChecked="True" Tag="{x:Static atom:SizeType.Middle}" Content="{gallery:SelectShowCaseLangResource P2ContentDefault}" />
+                    <atom:OptionButton Tag="{x:Static atom:SizeType.Small}" Content="{gallery:SelectShowCaseLangResource P2ContentSmall}" />
+                </atom:OptionButtonGroup>
+
+                <atom:Select Name="SizeSelect1"
+                             Mode="Single"
+                             SizeType="{Binding SelectSizeType}"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsFilterEnabled="False"
+                             DefaultValues="a10"
+                             Width="200"
+                             OptionsSource="{Binding RandomOptions}" />
+
+                <atom:Select Mode="Multiple"
+                             Name="SizeSelect2"
+                             SizeType="{Binding SelectSizeType}"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsAllowClear="True"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="False"
+                             DefaultValues="a10, c12"
+                             OptionsSource="{Binding RandomOptions}" />
+            </StackPanel>
+
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource VariantsTitle}"
+            Description="{gallery:SelectShowCaseLangResource VariantsDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <UniformGrid Columns="2" ColumnSpacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding VariantOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 OptionsSource="{Binding VariantOptions}" />
+                </UniformGrid>
+
+                <UniformGrid Columns="2" ColumnSpacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextFilled}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Filled"
+                                 OptionsSource="{Binding VariantOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Filled"
+                                 IsFilterEnabled="True"
+                                 DefaultValues="lucy"
+                                 OptionsSource="{Binding VariantOptions}" />
+                </UniformGrid>
+
+                <UniformGrid Columns="2" ColumnSpacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextBorderless}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Borderless"
+                                 OptionsSource="{Binding VariantOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Borderless"
+                                 IsFilterEnabled="True"
+                                 DefaultValues="lucy"
+                                 OptionsSource="{Binding VariantOptions}" />
+                </UniformGrid>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource StatusTitle}"
+            Description="{gallery:SelectShowCaseLangResource StatusDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Error" />
+                <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Warning" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:SelectShowCaseLangResource PrefixAndSuffixDescription}" IsOccupyEntireRow="True">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
+                                 DefaultValues="lucy"
+                                 HorizontalAlignment="Stretch"
+                                 Width="200"
+                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                    <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+
+                    <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 IsEnabled="False"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Select Mode="Multiple"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
+                                 DefaultValues="lucy"
+                                 HorizontalAlignment="Stretch"
+                                 Width="200"
+                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 IsEnabled="False"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                </StackPanel>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

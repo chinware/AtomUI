@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Select.SelectBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Select"
+             x:DataType="vm:SelectViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource BasicTitle}"
+            Description="{gallery:SelectShowCaseLangResource BasicDescription}" IsOccupyEntireRow="False">
+            <WrapPanel ItemSpacing="10" LineSpacing="10">
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="120"
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding BasicSelectedOptions}" />
+
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsEnabled="False" Width="120"
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding SingleLucyOptions}" />
+
+                <atom:Select Name="AsyncLoadSelect"
+                             Mode="Single"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             Width="120"
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding SingleLucyOptions}"
+                             OptionsLoader="{Binding SelectOptionsAsyncLoader}" />
+
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsAllowClear="True" Width="120"
+                             OptionsSource="{Binding SingleLucyOptions}" />
+
+                <atom:Select Name="DefaultSelectedSelect"
+                             Mode="Single"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             IsAllowClear="True"
+                             Width="120"
+                             OptionsSource="{Binding BasicSelectedOptions}"
+                             SelectedOptions="{Binding DefaultSelectedOptions}" />
+
+            </WrapPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource SearchFieldTitle}"
+            Description="{gallery:SelectShowCaseLangResource SearchFieldDescription}">
+            <atom:Select Mode="Single"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         IsFilterEnabled="True"
+                         OptionsSource="{Binding SearchOptions}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource CustomSearchTitle}"
+            Description="{gallery:SelectShowCaseLangResource CustomSearchDescription}">
+            <atom:Select Name="CustomSearchSelect"
+                         Mode="Single"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                         IsFilterEnabled="True"
+                         Filter="{atom:ValueFilterProvider Contains}"
+                         OptionsSource="{Binding SearchOptions}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource MultipleSelectionTitle}"
+            Description="{gallery:SelectShowCaseLangResource MultipleSelectionDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Name="MultiSelect1"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsAllowClear="True"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             DefaultValues="a10, c12"
+                             OptionsSource="{Binding RandomOptions}" />
+                <atom:Select Name="MultiSelect2"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsAllowClear="True"
+                             HorizontalAlignment="Stretch"
+                             DefaultValues="a10, c12"
+                             IsEnabled="False"
+                             OptionsSource="{Binding RandomOptions}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource TagsTitle}"
+            Description="{gallery:SelectShowCaseLangResource TagsDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Name="TagsModeSelect"
+                             Mode="Tags"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextTagsMode}"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             Filter="{atom:ValueFilterProvider Contains}"
+                             OptionsSource="{Binding RandomOptions}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

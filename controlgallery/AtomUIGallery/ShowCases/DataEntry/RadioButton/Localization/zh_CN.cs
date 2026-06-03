@@ -6,6 +6,11 @@ namespace AtomUIGallery.ShowCases.RadioButton;
 [LanguageProvider(LanguageCode.zh_CN, RadioButtonShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioGroups = "分组";
+    public const string ScenarioOptions = "选项";
+    public const string ScenarioStyles = "样式";
+
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最简单的用法。";
     public const string DisabledTitle = "禁用";

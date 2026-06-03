@@ -8,6 +8,9 @@ internal class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础用法。";
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioOptions = "选项";
+    public const string ScenarioAppearance = "外观";
     public const string SearchFieldTitle = "带搜索框的选择器";
     public const string SearchFieldDescription = "展开时搜索选项。";
     public const string CustomSearchTitle = "自定义搜索";

@@ -4,8 +4,9 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme.Language;
-using Avalonia;
 using AtomUIGallery.Localization;
+using Avalonia;
+using Avalonia.Controls;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -15,6 +16,13 @@ public partial class RadioButtonShowCase : ReactiveUserControl<RadioButtonViewMo
 {
     public const string LanguageId = nameof(RadioButtonShowCase);
 
+    private const string BasicScenario   = "Basic";
+    private const string GroupsScenario  = "Groups";
+    private const string OptionsScenario = "Options";
+    private const string StylesScenario  = "Styles";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+
     public RadioButtonShowCase()
     {
         this.WhenActivated(disposables =>
@@ -23,16 +31,13 @@ public partial class RadioButtonShowCase : ReactiveUserControl<RadioButtonViewMo
             {
                 ConfigureRadioOptions(viewModel);
 
-                this.OneWayBind(ViewModel, vm => vm.RadioOptions, v => v.RadioButtonGroup.ItemsSource)
-                    .DisposeWith(disposables);
-
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
                 {
                     EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => ConfigureRadioOptions(viewModel);
                     themeManager.LanguageVariantChanged += handler;
                     Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
-                        .DisposeWith(disposables);
+                              .DisposeWith(disposables);
                 }
 
                 Disposable.Create(() =>
@@ -41,10 +46,60 @@ public partial class RadioButtonShowCase : ReactiveUserControl<RadioButtonViewMo
                 }).DisposeWith(disposables);
             }
         });
+
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
     }
 
-    private void ConfigureRadioOptions(RadioButtonViewModel viewModel)
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario   => new RadioButtonBasicShowCase(),
+            GroupsScenario  => new RadioButtonGroupsShowCase(),
+            OptionsScenario => new RadioButtonOptionsShowCase(),
+            StylesScenario  => new RadioButtonStylesShowCase(),
+            _               => throw new InvalidOperationException($"Unknown RadioButton scenario: {scenario}")
+        };
+    }
+
+    private static void ConfigureRadioOptions(RadioButtonViewModel viewModel)
     {
         viewModel.RadioOptions = new List<RadioButtonOption>
         {
