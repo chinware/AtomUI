@@ -6,6 +6,12 @@ namespace AtomUIGallery.ShowCases.FlexPanel;
 [LanguageProvider(LanguageCode.zh_CN, FlexPanelShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAlignment = "对齐";
+    public const string ScenarioItem = "项目";
+    public const string ScenarioCombination = "组合";
+    public const string ScenarioPlayground = "演练场";
+
     public const string BasicLayoutTitle = "基础布局";
     public const string BasicLayoutDescription = "基础用法。";
     public const string AlignmentTitle = "对齐";

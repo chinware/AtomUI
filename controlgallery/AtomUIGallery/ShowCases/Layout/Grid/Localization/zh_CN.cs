@@ -6,6 +6,12 @@ namespace AtomUIGallery.ShowCases.Grid;
 [LanguageProvider(LanguageCode.zh_CN, GridShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioSpacing = "间距";
+    public const string ScenarioAlignment = "对齐";
+    public const string ScenarioOrder = "排序";
+    public const string ScenarioColInfo = "ColInfo";
+
     public const string BasicGridTitle = "基础栅格";
     public const string BasicGridDescription = "基础的 24 栅格布局。";
     public const string GutterTitle = "间距";

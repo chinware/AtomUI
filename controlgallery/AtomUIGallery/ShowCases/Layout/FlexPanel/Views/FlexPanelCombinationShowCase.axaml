@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.FlexPanel.FlexPanelCombinationShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.FlexPanel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:FlexPanelViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource CombinationTitle}" Description="{gallery:FlexPanelShowCaseLangResource CombinationDescription}" IsOccupyEntireRow="True">
+            <StackPanel Margin="20" Spacing="16">
+                <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="8" Padding="16">
+                    <atom:FlexPanel Direction="Row" ColumnSpacing="16" AlignItems="Center">
+                        <Border Width="260" Height="160" CornerRadius="6" ClipToBounds="True" atom:Flex.Shrink="0">
+                            <Image Source="/Assets/CardShowCase/Cover1.png" Stretch="UniformToFill" />
+                        </Border>
+                        <atom:FlexPanel Direction="Column"
+                                        Wrap="Wrap"
+                                        RowSpacing="12"
+                                        AlignItems="FlexStart"
+                                        MinWidth="0"
+                                        atom:Flex.Grow="1">
+                            <atom:TextBlock FontSize="20"
+                                            FontWeight="Bold"
+                                            TextWrapping="Wrap"
+                                            Text="{gallery:FlexPanelShowCaseLangResource P2TextAtomuiIsAnEnterpriseClassUiDesignLanguage}" />
+                            <atom:Button ButtonType="Primary"
+                                         Width="120"
+                                         atom:Flex.AlignSelf="FlexEnd" Content="{gallery:FlexPanelShowCaseLangResource P2ContentGetStarted}" />
+                        </atom:FlexPanel>
+                    </atom:FlexPanel>
+                </Border>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

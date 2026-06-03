@@ -271,12 +271,16 @@ public static class ColorUtils
         return true;
     }
 
-    /// Readability Functions
-    /// ---------------------
-    /// <http:// www.w3.org/ TR/2008/ REC-WCAG20-20081211/# contrast-ratiodef ( WCAG Version 2)
-    /// AKA ` contrast`
-    /// Analyze the 2 colors and returns the color contrast defined by ( WCAG Version 2)
-    
+    /// <summary>
+    /// Calculates the WCAG 2 contrast ratio between two colors.
+    /// </summary>
+    /// <param name="color1">The first color.</param>
+    /// <param name="color2">The second color.</param>
+    /// <returns>The contrast ratio between <paramref name="color1"/> and <paramref name="color2"/>.</returns>
+    /// <remarks>
+    /// Based on the
+    /// <see href="https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef">WCAG 2 contrast ratio definition</see>.
+    /// </remarks>
     public static double Readability(Color color1, Color color2)
     {
         return (Math.Max(color1.GetLuminance(), color2.GetLuminance()) + 0.05) /

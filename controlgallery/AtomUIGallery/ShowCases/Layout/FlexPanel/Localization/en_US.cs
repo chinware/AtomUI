@@ -6,6 +6,12 @@ namespace AtomUIGallery.ShowCases.FlexPanel;
 [LanguageProvider(LanguageCode.en_US, FlexPanelShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAlignment = "Alignment";
+    public const string ScenarioItem = "Item";
+    public const string ScenarioCombination = "Combination";
+    public const string ScenarioPlayground = "Playground";
+
     public const string BasicLayoutTitle = "Basic Layout";
     public const string BasicLayoutDescription = "The basic usage.";
     public const string AlignmentTitle = "Alignment";

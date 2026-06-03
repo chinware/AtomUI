@@ -1463,7 +1463,12 @@ namespace AtomUIGallery.Localization
         P2TextWidth,
         P2TextWrap,
         PlaygroundDescription,
-        PlaygroundTitle
+        PlaygroundTitle,
+        ScenarioAlignment,
+        ScenarioBasic,
+        ScenarioCombination,
+        ScenarioItem,
+        ScenarioPlayground
     }
 
     public class FlexPanelShowCaseLangResourceExtension : LanguageResourceExtension<FlexPanelShowCaseLangResourceKind>
@@ -1854,7 +1859,12 @@ namespace AtomUIGallery.Localization
         P2TextSubElementAlignLeft,
         P2TextVertical,
         PushPullDescription,
-        PushPullTitle
+        PushPullTitle,
+        ScenarioAlignment,
+        ScenarioBasic,
+        ScenarioColInfo,
+        ScenarioOrder,
+        ScenarioSpacing
     }
 
     public class GridShowCaseLangResourceExtension : LanguageResourceExtension<GridShowCaseLangResourceKind>

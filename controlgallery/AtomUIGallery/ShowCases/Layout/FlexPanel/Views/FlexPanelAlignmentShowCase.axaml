@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.FlexPanel.FlexPanelAlignmentShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.FlexPanel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:FlexPanelViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AlignmentTitle}" Description="{gallery:FlexPanelShowCaseLangResource AlignmentDescription}" IsOccupyEntireRow="True">
+            <StackPanel Margin="20" Spacing="12">
+                <atom:TextBlock FontWeight="Bold" Text="{gallery:FlexPanelShowCaseLangResource P2TextSelectJustify}" />
+                <atom:Segmented x:Name="JustifySegmented">
+                    <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceBetween}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceAround}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceEvenly}" />
+                </atom:Segmented>
+
+                <atom:TextBlock FontWeight="Bold" Text="{gallery:FlexPanelShowCaseLangResource P2TextSelectAlign}" />
+                <atom:Segmented x:Name="AlignSegmented">
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                    <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentStretch}" />
+                </atom:Segmented>
+
+                <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6"  Height="120">
+                    <atom:FlexPanel x:Name="AlignFlexPanel"
+                                    Direction="Row"
+                                    JustifyContent="FlexStart"
+                                    AlignItems="FlexEnd">
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                    </atom:FlexPanel>
+                </Border>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource GapTitle}" Description="{gallery:FlexPanelShowCaseLangResource GapDescription}" IsOccupyEntireRow="True">
+            <StackPanel Margin="20" Spacing="16">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <atom:RadioButton x:Name="GapSmall" IsChecked="True" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentSmall}" />
+                    <atom:RadioButton x:Name="GapMiddle" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentMiddle}" />
+                    <atom:RadioButton x:Name="GapLarge" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentLarge}" />
+                    <atom:RadioButton x:Name="GapCustomize" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentCustomize}" />
+                </StackPanel>
+
+                <StackPanel x:Name="GapCustomPanel" Orientation="Horizontal" Spacing="8" IsVisible="False">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextCustomGap}" />
+                    <Slider x:Name="GapValueSlider"
+                            Width="200"
+                            Minimum="0"
+                            Maximum="100"
+                            TickFrequency="4"
+                            Value="12" />
+                </StackPanel>
+
+                <atom:FlexPanel x:Name="GapFlexPanel" Direction="Row" ColumnSpacing="8" RowSpacing="8">
+                    <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:FlexPanelShowCaseLangResource P2ContentDefault}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:FlexPanelShowCaseLangResource P2ContentDashed}" />
+                    <atom:Button ButtonType="Link" Content="{gallery:FlexPanelShowCaseLangResource P2ContentLink}" />
+                </atom:FlexPanel>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AutoWrapTitle}" Description="{gallery:FlexPanelShowCaseLangResource AutoWrapDescription}" IsOccupyEntireRow="True">
+            <StackPanel Margin="20" Spacing="16">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <atom:RadioButton x:Name="WrapEnabled" IsChecked="True" GroupName="WrapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentWrap}" />
+                    <atom:RadioButton x:Name="WrapDisabled" GroupName="WrapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentNowrap}" />
+                </StackPanel>
+                <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
+                    <atom:ScrollViewer x:Name="WrapScrollViewer"
+                                       HorizontalScrollBarVisibility="Disabled"
+                                       VerticalScrollBarVisibility="Disabled">
+                        <atom:FlexPanel x:Name="WrapFlexPanel"
+                                        Direction="Row"
+                                        Wrap="Wrap"
+                                        ColumnSpacing="8"
+                                        RowSpacing="8"
+                                        JustifyContent="FlexStart">
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                        </atom:FlexPanel>
+                    </atom:ScrollViewer>
+                </Border>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

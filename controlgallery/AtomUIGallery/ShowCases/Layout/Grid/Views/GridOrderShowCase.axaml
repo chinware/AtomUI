@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Grid.GridOrderShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Grid"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:GridViewModel">
+    <UserControl.Styles>
+        <Style Selector="Border.grid-cell">
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Background" Value="#1677FF" />
+        </Style>
+        <Style Selector="Border.grid-cell.alt">
+            <Setter Property="Background" Value="#4096FF" />
+        </Style>
+        <Style Selector="TextBlock.grid-cell-text">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="TextBlock.grid-section-title">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0,8,0,4" />
+        </Style>
+    </UserControl.Styles>
+
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource OrderTitle}" Description="{gallery:GridShowCaseLangResource OrderDescription}" IsOccupyEntireRow="True">
+            <StackPanel Margin="20" Spacing="12">
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextNormal}" />
+                <atom:Row Gutter="16,16">
+                    <atom:Col Span="6" Order="1">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN4ColOrderN1}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Span="6" Order="2">
+                        <Border Classes="grid-cell alt">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN3ColOrderN2}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Span="6" Order="3">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN2ColOrderN3}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Span="6" Order="4">
+                        <Border Classes="grid-cell alt">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN1ColOrderN4}" />
+                        </Border>
+                    </atom:Col>
+                </atom:Row>
+
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextResponsive}" />
+                <atom:Row Gutter="16,16">
+                    <atom:Col Span="6" Order="1" Sm="{atom:ColInfo Order=2}">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN3ColOrderResponsive}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Span="6" Order="2" Sm="{atom:ColInfo Order=1}">
+                        <Border Classes="grid-cell alt">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN4ColOrderResponsive}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Span="6" Order="3" Sm="{atom:ColInfo Order=4}">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN2ColOrderResponsive}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Span="6" Order="4" Sm="{atom:ColInfo Order=3}">
+                        <Border Classes="grid-cell alt">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN1ColOrderResponsive}" />
+                        </Border>
+                    </atom:Col>
+                </atom:Row>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

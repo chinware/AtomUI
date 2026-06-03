@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.FlexPanel.FlexPanelBasicShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.FlexPanel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:FlexPanelViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource BasicLayoutTitle}" Description="{gallery:FlexPanelShowCaseLangResource BasicLayoutDescription}" IsOccupyEntireRow="True">
+            <StackPanel Margin="20" Spacing="16">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <atom:RadioButton x:Name="DirectionHorizontal" IsChecked="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentHorizontal}" />
+                    <atom:RadioButton x:Name="DirectionVertical" Content="{gallery:FlexPanelShowCaseLangResource P2ContentVertical}" />
+                </StackPanel>
+
+                <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12"
+                        HorizontalAlignment="Stretch">
+                    <atom:FlexPanel x:Name="BasicFlexPanel"
+                                    Direction="Row"
+                                    AlignItems="Stretch"
+                                    HorizontalAlignment="Stretch">
+                        <Border x:Name="BasicItem1" Background="#4F7CF5" Height="60" MinWidth="80" />
+                        <Border x:Name="BasicItem2" Background="#1F5BFF" Height="60" MinWidth="80" />
+                        <Border x:Name="BasicItem3" Background="#4F7CF5" Height="60" MinWidth="80" />
+                        <Border x:Name="BasicItem4" Background="#1F5BFF" Height="60" MinWidth="80" />
+                    </atom:FlexPanel>
+                </Border>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
