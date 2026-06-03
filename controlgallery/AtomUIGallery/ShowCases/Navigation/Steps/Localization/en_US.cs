@@ -6,6 +6,13 @@ namespace AtomUIGallery.ShowCases.Steps;
 [LanguageProvider(LanguageCode.en_US, StepsShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioInteractive = "Interactive";
+    public const string ScenarioVertical = "Vertical";
+    public const string ScenarioDotClickable = "Dot & Clickable";
+    public const string ScenarioNavigation = "Navigation";
+    public const string ScenarioProgress = "Progress";
+    public const string ScenarioInline = "Inline";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic step bar.";
     public const string MiniVersionTitle = "Mini version";

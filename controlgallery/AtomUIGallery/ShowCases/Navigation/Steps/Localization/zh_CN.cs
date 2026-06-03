@@ -6,6 +6,13 @@ namespace AtomUIGallery.ShowCases.Steps;
 [LanguageProvider(LanguageCode.zh_CN, StepsShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioInteractive = "交互";
+    public const string ScenarioVertical = "垂直";
+    public const string ScenarioDotClickable = "点状与可点击";
+    public const string ScenarioNavigation = "导航";
+    public const string ScenarioProgress = "进度";
+    public const string ScenarioInline = "内联";
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最基础的步骤条。";
     public const string MiniVersionTitle = "迷你版本";

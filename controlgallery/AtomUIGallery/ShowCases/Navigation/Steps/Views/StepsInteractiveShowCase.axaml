@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Steps.StepsInteractiveShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Steps"
+             x:DataType="vm:StepsViewModel"
+             x:Name="StepsInteractiveShowCaseName">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:StepsShowCaseLangResource SwitchStepTitle}"
+            Description="{gallery:StepsShowCaseLangResource SwitchStepDescription}"
+            IsOccupyEntireRow="True"
+            MinHeight="200">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Steps Name="CurrentStepContentSteps" CurrentStep="{Binding CurrentStep}">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFirst}" Content="{gallery:StepsShowCaseLangResource P2ContentFirstContent}" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderSecond}" Content="{gallery:StepsShowCaseLangResource P2ContentSecondContent}" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderThird}" Content="{gallery:StepsShowCaseLangResource P2ContentLastContent}" />
+                </atom:Steps>
+                <atom:DashedBorder BorderThickness="1"
+                                   BorderBrush="{atom:SharedTokenResource ColorBorder}"
+                                   StrokeDashArray="{Binding #StepsInteractiveShowCaseName.DashedArray}"
+                                   CornerRadius="{atom:SharedTokenResource BorderRadiusLG}"
+                                   Background="{atom:SharedTokenResource ColorFillAlter}"
+                                   TextElement.Foreground="{atom:SharedTokenResource ColorTextTertiary}"
+                                   Height="260">
+                    <ContentPresenter Content="{Binding #CurrentStepContentSteps.CurrentContent}"
+                                      ContentTemplate="{Binding #CurrentStepContentSteps.CurrentContentTemplate}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </atom:DashedBorder>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button ButtonType="Primary" Content="{gallery:StepsShowCaseLangResource P2ContentNext}" Name="NextStepButton" />
+                    <atom:Button ButtonType="Default" Content="{gallery:StepsShowCaseLangResource P2ContentPrevious}" Name="PreviousButton"
+                                 IsVisible="{Binding PreviousButtonVisible}" />
+                </StackPanel>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

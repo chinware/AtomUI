@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Steps.StepsBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Steps"
+             x:DataType="vm:StepsViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:StepsShowCaseLangResource BasicTitle}"
+            Description="{gallery:StepsShowCaseLangResource BasicDescription}"
+            IsOccupyEntireRow="True"
+            MinHeight="200">
+            <atom:Steps CurrentStep="0">
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+            </atom:Steps>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:StepsShowCaseLangResource MiniVersionTitle}"
+            Description="{gallery:StepsShowCaseLangResource MiniVersionDescription}"
+            IsOccupyEntireRow="True"
+            MinHeight="200">
+            <atom:Steps CurrentStep="0" SizeType="Small">
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinished}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderInProgress}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderLeftTime}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWaiting}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" />
+            </atom:Steps>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:StepsShowCaseLangResource WithIconTitle}"
+            Description="{gallery:StepsShowCaseLangResource WithIconDescription}"
+            IsOccupyEntireRow="True"
+            MinHeight="200">
+            <atom:Steps CurrentStep="0">
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderLogin}" Status="Finish" Icon="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderVerification}" Status="Finish" Icon="{antdicons:AntDesignIconProvider Kind=SolutionOutlined}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderPay}" Status="Process"
+                                Icon="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, Animation=Spin}" />
+                <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderDone}" Status="Wait" Icon="{antdicons:AntDesignIconProvider Kind=SmileOutlined}" />
+            </atom:Steps>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

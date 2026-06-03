@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Steps.StepsNavigationShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Steps"
+             x:DataType="vm:StepsViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:StepsShowCaseLangResource NavigationStepsTitle}"
+            Description="{gallery:StepsShowCaseLangResource NavigationStepsDescription}"
+            IsOccupyEntireRow="True"
+            MinHeight="200">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" SizeType="Small">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" Status="Process"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Status="Finish"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Status="Process"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Status="Wait"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Status="Wait"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" SizeType="Small">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinishN1}" Status="Finish"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFinishN2}" Status="Finish"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderCurrentProcess}" Status="Process"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderWait}" Status="Wait" IsEnabled="False"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" Orientation="Vertical">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:00:05" Status="Process"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:30:05" Status="Wait"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" Orientation="Vertical" SizeType="Small">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" Status="Finish"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:00:05" Status="Process"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:30:05" Status="Wait"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" SubHeader="{gallery:StepsShowCaseLangResource P2SubHeaderWaitingForLongTime}" Status="Wait"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" SizeType="Small">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" Orientation="Vertical">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
+                </atom:Steps>
+                <atom:Separator/>
+                <atom:Steps CurrentStep="0" Style="Navigation" IsItemClickable="True" ItemIndicatorType="Dot" SizeType="Small" Orientation="Vertical">
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN1}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:00:05" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN2}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="00:01:02" />
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN3}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="03:01:02"/>
+                    <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderStepN4}" Description="{gallery:StepsShowCaseLangResource P2DescriptionThisIsADescription}" SubHeader="10:01:02"/>
+                </atom:Steps>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
