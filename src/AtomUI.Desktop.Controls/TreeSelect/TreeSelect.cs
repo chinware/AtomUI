@@ -356,7 +356,38 @@ public class TreeSelect : AbstractSelect
     
     private void HandleItemsSourceChanged(AvaloniaPropertyChangedEventArgs args)
     {
+        var selectedItemPath  = !IsMultiple ? BuildNodeIdentityPath(SelectedItem) : null;
+        var selectedItemPaths = IsMultiple ? BuildSelectedNodeIdentityPaths(SelectedItems) : null;
+
         _items.SetItemsSource(args.GetNewValue<IEnumerable<ITreeItemNode>?>());
+
+        if (!IsMultiple)
+        {
+            if (selectedItemPath != null &&
+                TryParseNodePath(selectedItemPath, out var selectedItems) &&
+                selectedItems.Count > 0)
+            {
+                SelectedItem = selectedItems[^1];
+            }
+            else
+            {
+                SelectedItem = null;
+            }
+        }
+        else if (selectedItemPaths != null)
+        {
+            var remappedItems = new List<ITreeItemNode>(selectedItemPaths.Count);
+            foreach (var path in selectedItemPaths)
+            {
+                if (TryParseNodePath(path, out var selectedItems) &&
+                    selectedItems.Count > 0)
+                {
+                    remappedItems.Add(selectedItems[^1]);
+                }
+            }
+
+            SelectedItems = remappedItems.Count > 0 ? remappedItems : null;
+        }
     }
     
     private void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs args)
@@ -1151,6 +1182,95 @@ public class TreeSelect : AbstractSelect
             items.Add(item);
         }
         return items;
+    }
+
+    private static List<TreeNodePath>? BuildSelectedNodeIdentityPaths(ICollection<ITreeItemNode>? nodes)
+    {
+        if (nodes == null)
+        {
+            return null;
+        }
+
+        var paths = new List<TreeNodePath>(nodes.Count);
+        foreach (var node in nodes)
+        {
+            var path = BuildNodeIdentityPath(node);
+            if (path != null)
+            {
+                paths.Add(path);
+            }
+        }
+        return paths;
+    }
+
+    private static TreeNodePath? BuildNodeIdentityPath(ITreeItemNode? node)
+    {
+        if (node == null)
+        {
+            return null;
+        }
+
+        var depth    = CountNodePathDepth(node);
+        var segments = new string[depth];
+        var current  = node;
+        for (var i = segments.Length - 1; current != null; i--)
+        {
+            var segment = current.ItemKey?.ToString() ?? current.Value?.ToString();
+            if (string.IsNullOrEmpty(segment))
+            {
+                return null;
+            }
+
+            segments[i] = segment;
+            current     = current.ParentNode as ITreeItemNode;
+        }
+
+        return new TreeNodePath(segments);
+    }
+
+    private bool TryParseNodePath(TreeNodePath path, out IList<ITreeItemNode> pathNodes)
+    {
+        var segments     = path.Segments;
+        var isPathValid  = true;
+        var currentItems = BuildTreeNodeList(Items);
+        var nodes        = new List<ITreeItemNode>(segments.Count);
+        for (var i = 0; i < segments.Count; i++)
+        {
+            var segment = segments[i];
+            var found   = false;
+            foreach (var currentItem in currentItems)
+            {
+                if (segment == currentItem.ItemKey || segment == currentItem.Value?.ToString())
+                {
+                    nodes.Add(currentItem);
+                    currentItems = BuildTreeNodeList(currentItem.Children);
+                    found        = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                isPathValid = false;
+                break;
+            }
+        }
+
+        pathNodes = nodes;
+        return isPathValid;
+    }
+
+    private static int CountNodePathDepth(ITreeItemNode node)
+    {
+        var count   = 0;
+        var current = node;
+        while (current != null)
+        {
+            count++;
+            current = current.ParentNode as ITreeItemNode;
+        }
+
+        return count;
     }
 
     private static bool AreAllChildrenSelected(

@@ -244,6 +244,7 @@ public class Cascader : AbstractSelect
     private CascaderView? _cascaderView;
     private CompositeDisposable? _contentRightAddOnBindings;
     private bool _needSkipSyncSelectedOptions;
+    private bool _isDefaultSelectOptionPathApplied;
 
     static Cascader()
     {
@@ -267,7 +268,42 @@ public class Cascader : AbstractSelect
     
     private void HandleCascaderSourceChanged(AvaloniaPropertyChangedEventArgs args)
     {
+        var selectedOptionPath  = !IsMultiple ? BuildOptionIdentityPath(SelectedOption) : null;
+        var selectedOptionPaths = IsMultiple ? BuildSelectedOptionIdentityPaths(SelectedOptions) : null;
+
         _options.SetItemsSource(args.GetNewValue<IEnumerable<ICascaderOption>?>());
+
+        if (!IsMultiple)
+        {
+            if (selectedOptionPath != null &&
+                TryParseSelectPath(selectedOptionPath, out var selectedOptions) &&
+                selectedOptions.Count > 0)
+            {
+                SelectedOption = selectedOptions[^1];
+                _isDefaultSelectOptionPathApplied = false;
+            }
+            else
+            {
+                ApplyDefaultSelectOptionPath(_isDefaultSelectOptionPathApplied);
+            }
+        }
+        else if (selectedOptionPaths != null)
+        {
+            var remappedOptions = new List<ICascaderOption>(selectedOptionPaths.Count);
+            foreach (var path in selectedOptionPaths)
+            {
+                if (TryParseSelectPath(path, out var selectedOptions) &&
+                    selectedOptions.Count > 0)
+                {
+                    remappedOptions.Add(selectedOptions[^1]);
+                }
+            }
+
+            if (remappedOptions.Count > 0)
+            {
+                SelectedOptions = remappedOptions;
+            }
+        }
     }
 
     private void HandleCascaderOptionsChanged(object? sender, NotifyCollectionChangedEventArgs args)
@@ -294,6 +330,7 @@ public class Cascader : AbstractSelect
     
     public void Clear()
     {
+        _isDefaultSelectOptionPathApplied = false;
         SelectedOption     = null;
         SelectedOptionPath = null;
         SelectedOptions    = null;
@@ -422,7 +459,19 @@ public class Cascader : AbstractSelect
 
         if (change.Property == SelectedOptionProperty)
         {
+            if (SelectedOption != null)
+            {
+                _isDefaultSelectOptionPathApplied = false;
+            }
             ConfigureSelectedOptionPath();
+        }
+        else if (change.Property == DefaultSelectOptionPathProperty)
+        {
+            _isDefaultSelectOptionPathApplied = false;
+            if (SelectedOption == null)
+            {
+                ApplyDefaultSelectOptionPath(true);
+            }
         }
     }
     
@@ -941,6 +990,82 @@ public class Cascader : AbstractSelect
         return options;
     }
 
+    private static List<TreeNodePath>? BuildSelectedOptionIdentityPaths(ICollection<ICascaderOption>? options)
+    {
+        if (options == null)
+        {
+            return null;
+        }
+
+        var paths = new List<TreeNodePath>(options.Count);
+        foreach (var option in options)
+        {
+            var path = BuildOptionIdentityPath(option);
+            if (path != null)
+            {
+                paths.Add(path);
+            }
+        }
+        return paths;
+    }
+
+    private static TreeNodePath? BuildOptionIdentityPath(ICascaderOption? option)
+    {
+        if (option == null)
+        {
+            return null;
+        }
+
+        var depth    = CountOptionPathDepth(option);
+        var segments = new string[depth];
+        var current  = option;
+        for (var i = segments.Length - 1; current != null; i--)
+        {
+            var segment = current.ItemKey?.ToString() ?? current.Value?.ToString();
+            if (string.IsNullOrEmpty(segment))
+            {
+                return null;
+            }
+
+            segments[i] = segment;
+            current     = current.ParentNode as ICascaderOption;
+        }
+
+        return new TreeNodePath(segments);
+    }
+
+    private bool TryParseSelectPath(TreeNodePath path, out IList<ICascaderOption> pathNodes)
+    {
+        var segments     = path.Segments;
+        var isPathValid  = true;
+        var currentItems = BuildOptionsList(Options);
+        var options      = new List<ICascaderOption>(segments.Count);
+        for (var i = 0; i < segments.Count; i++)
+        {
+            var segment = segments[i];
+            var found   = false;
+            foreach (var currentItem in currentItems)
+            {
+                if (segment == currentItem.ItemKey || segment == currentItem.Value?.ToString())
+                {
+                    options.Add(currentItem);
+                    currentItems = BuildOptionsList(currentItem.Children);
+                    found        = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                isPathValid = false;
+                break;
+            }
+        }
+
+        pathNodes = options;
+        return isPathValid;
+    }
+
     private static bool AreAllChildrenSelected(
         IEnumerable<ICascaderOption> children,
         ISet<ICascaderOption> selected)
@@ -1010,24 +1135,35 @@ public class Cascader : AbstractSelect
         return count;
     }
 
+    private void ApplyDefaultSelectOptionPath(bool forceRefresh = false)
+    {
+        if (IsMultiple || DefaultSelectOptionPath == null)
+        {
+            return;
+        }
+
+        if (!forceRefresh && (SelectedOption != null || SelectedOptionPath != null))
+        {
+            return;
+        }
+
+        if (TryParseSelectPath(DefaultSelectOptionPath, out var options) &&
+            options.Count > 0)
+        {
+            var parts = new string[options.Count];
+            for (var i = 0; i < options.Count; i++)
+            {
+                parts[i] = options[i].Header?.ToString() ?? string.Empty;
+            }
+            SetCurrentValue(SelectedOptionPathProperty, string.Join("/", parts));
+            _isDefaultSelectOptionPathApplied = true;
+        }
+    }
+
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        if (DefaultSelectOptionPath != null && SelectedOptionPath == null)
-        {
-            if (_cascaderView != null)
-            {
-                if (_cascaderView.TryParseSelectPath(DefaultSelectOptionPath, out var options))
-                {
-                    var parts = new string[options.Count];
-                    for (var i = 0; i < options.Count; i++)
-                    {
-                        parts[i] = options[i].Header?.ToString() ?? string.Empty;
-                    }
-                    SetCurrentValue(SelectedOptionPathProperty, string.Join("/", parts));
-                }
-            }
-        }
+        ApplyDefaultSelectOptionPath();
     }
     
     #region 实现 FormItem 接口

@@ -649,12 +649,24 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
                 {
                     listItem[!ListViewItem.ContentTemplateProperty] = this[!GroupItemTemplateProperty];
                 }
+                else if (ItemTemplate != null)
+                {
+                    listItem[!ListViewItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
+                }
+                else
+                {
+                    listItem.ClearValue(ListViewItem.ContentTemplateProperty);
+                }
             }
             else
             {
                 if (ItemTemplate != null)
                 {
                     listItem[!ListViewItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
+                }
+                else
+                {
+                    listItem.ClearValue(ListViewItem.ContentTemplateProperty);
                 }
             }
             

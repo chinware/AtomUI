@@ -459,7 +459,49 @@ public partial class CascaderView : TemplatedControl,
 
     private void HandleCascaderSourceChanged(AvaloniaPropertyChangedEventArgs args)
     {
+        ResetLevelListsForOptionsSourceChanging();
         _options.SetItemsSource(args.GetNewValue<IEnumerable<ICascaderOption>?>());
+        RestoreRootLevelListItemsSource();
+        if (DefaultExpandedPath != null && IsLoaded)
+        {
+            _defaultExpandPathApplied = false;
+            ApplyDefaultExpandPath();
+            _defaultExpandPathApplied = true;
+        }
+    }
+
+    private void ResetLevelListsForOptionsSourceChanging()
+    {
+        if (_itemsPanel == null)
+        {
+            return;
+        }
+
+        for (var i = _itemsPanel.Children.Count - 1; i >= 0; i--)
+        {
+            if (_itemsPanel.Children[i] is CascaderViewLevelList levelList)
+            {
+                levelList.ResetVirtualizingContext();
+                levelList.SelectedIndex = -1;
+                levelList.SelectedItem = null;
+                levelList.ItemsSource  = null;
+                if (i > 0)
+                {
+                    levelList.Items.Clear();
+                    _itemsPanel.Children.RemoveAt(i);
+                }
+            }
+        }
+    }
+
+    private void RestoreRootLevelListItemsSource()
+    {
+        if (_rootLevelList == null)
+        {
+            return;
+        }
+
+        _rootLevelList.ItemsSource = Options;
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

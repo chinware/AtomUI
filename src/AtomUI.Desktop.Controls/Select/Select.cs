@@ -989,12 +989,96 @@ public partial class Select : AbstractSelect
     
     private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        ClearValue();
+        var selectedOptionIdentity  = Mode == SelectMode.Single ? BuildOptionIdentity(SelectedOption) : null;
+        var selectedOptionIdentities = Mode != SelectMode.Single ? BuildSelectedOptionIdentities(SelectedOptions) : null;
+
         if (!Options.IsReadOnly)
         {
             Options.Clear();
         }
         Options.SetItemsSource(change.GetNewValue<IEnumerable<ISelectOption>?>());
+
+        if (Mode == SelectMode.Single)
+        {
+            if (selectedOptionIdentity != null &&
+                TryFindOptionByIdentity(selectedOptionIdentity, out var remappedOption))
+            {
+                SelectedOption = remappedOption;
+            }
+            else
+            {
+                SelectedOption = null;
+                ConfigureDefaultValues();
+            }
+        }
+        else if (selectedOptionIdentities != null)
+        {
+            var remappedOptions = new List<ISelectOption>(selectedOptionIdentities.Count);
+            foreach (var identity in selectedOptionIdentities)
+            {
+                if (TryFindOptionByIdentity(identity, out var remappedOption))
+                {
+                    remappedOptions.Add(remappedOption);
+                }
+            }
+
+            SelectedOptions = remappedOptions.Count > 0 ? remappedOptions : null;
+            ConfigureDefaultValues();
+        }
+        else
+        {
+            ConfigureDefaultValues();
+        }
+    }
+
+    private static List<string>? BuildSelectedOptionIdentities(ICollection<ISelectOption>? options)
+    {
+        if (options == null)
+        {
+            return null;
+        }
+
+        var identities = new List<string>(options.Count);
+        foreach (var option in options)
+        {
+            var identity = BuildOptionIdentity(option);
+            if (identity != null)
+            {
+                identities.Add(identity);
+            }
+        }
+        return identities;
+    }
+
+    private static string? BuildOptionIdentity(ISelectOption? option)
+    {
+        if (option == null)
+        {
+            return null;
+        }
+
+        var itemKey = option.ItemKey?.ToString();
+        if (!string.IsNullOrEmpty(itemKey))
+        {
+            return itemKey;
+        }
+        return option.Content?.ToString();
+    }
+
+    private bool TryFindOptionByIdentity(string identity, out ISelectOption option)
+    {
+        foreach (var item in Options)
+        {
+            if (item is ISelectOption currentOption &&
+                identity == BuildOptionIdentity(currentOption))
+            {
+                option = currentOption;
+                return true;
+            }
+        }
+
+        option = null!;
+        return false;
     }
 
     private void ConfigureDefaultValues()

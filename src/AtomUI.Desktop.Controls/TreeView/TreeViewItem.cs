@@ -847,6 +847,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         treeViewItem.SetCurrentValue(IsEnabledProperty, treeItemData.IsEnabled);
         treeViewItem.SetCurrentValue(IsExpandedProperty, treeItemData.IsExpanded);
         treeViewItem.SetCurrentValue(IsIndicatorEnabledProperty, treeItemData.IsIndicatorEnabled);
+        treeViewItem.SetCurrentValue(ValueProperty, treeItemData.Value);
         
         treeViewItem.ItemKey = treeItemData.ItemKey;
         treeViewItem.IsLeaf  = treeItemData.IsLeaf;

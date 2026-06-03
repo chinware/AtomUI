@@ -1090,7 +1090,7 @@ public partial class TreeView : AvaloniaTreeView,
                         {
                             return null;
                         }
-                        if (treeViewItem.ItemKey != null && treeViewItem.ItemKey.Value == segment)
+                        if (IsPathSegmentMatched(treeViewItem, segment))
                         {
                             treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
                             if (treeViewItem.Presenter?.Panel == null)
@@ -1148,7 +1148,7 @@ public partial class TreeView : AvaloniaTreeView,
                         {
                             return null;
                         }
-                        if (treeViewItem.ItemKey != null && treeViewItem.ItemKey.Value == segment)
+                        if (IsPathSegmentMatched(treeViewItem, segment))
                         {
                             treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
                             if (treeViewItem.Presenter?.Panel == null)
@@ -1217,7 +1217,7 @@ public partial class TreeView : AvaloniaTreeView,
                                 return null;
                             }
 
-                            if (treeViewItem.ItemKey != null && treeViewItem.ItemKey.Value == segment)
+                            if (IsPathSegmentMatched(treeViewItem, segment))
                             {
                                 pathNodeExpandStatus.Add(treeViewItem.IsExpanded);
                                 treeViewItem.SetCurrentValue(TreeViewItem.IsExpandedProperty, true);
@@ -1261,6 +1261,15 @@ public partial class TreeView : AvaloniaTreeView,
         {
             SetCurrentValue(IsMotionEnabledProperty, originIsMotionEnabled);
         }
+    }
+
+    private static bool IsPathSegmentMatched(TreeViewItem treeViewItem, string segment)
+    {
+        if (treeViewItem.ItemKey != null && treeViewItem.ItemKey.Value == segment)
+        {
+            return true;
+        }
+        return treeViewItem.Value?.ToString() == segment;
     }
     
     private (ISet<object>, ISet<object>) SetupParentNodeCheckedStatus(TreeViewItem viewItem)
@@ -1312,6 +1321,147 @@ public partial class TreeView : AvaloniaTreeView,
         }
 
         return (checkedParents, unCheckedParents);
+    }
+
+    private void ConfigureStateAfterItemsSourceChanged()
+    {
+        if (!IsLoaded)
+        {
+            return;
+        }
+
+        var selectedItemPath  = BuildNodeIdentityPath(SelectedItem as ITreeItemNode);
+        var selectedItemPaths = BuildNodeIdentityPaths(SelectedItems);
+        var checkedItemPaths  = BuildNodeIdentityPaths(CheckedItems);
+
+        SetCurrentValue(SelectedItemProperty, null);
+        SelectedItems.Clear();
+        CheckedItems.Clear();
+
+        var selectionRestored = false;
+        if (selectedItemPath != null)
+        {
+            selectionRestored = TrySelectNodePath(selectedItemPath);
+        }
+        if (!selectionRestored && selectedItemPaths != null)
+        {
+            foreach (var path in selectedItemPaths)
+            {
+                selectionRestored |= TrySelectNodePath(path);
+            }
+        }
+        if (!selectionRestored)
+        {
+            ConfigureDefaultSelectedPaths();
+        }
+
+        var checkedRestored = false;
+        if (checkedItemPaths != null)
+        {
+            foreach (var path in checkedItemPaths)
+            {
+                checkedRestored |= TryCheckNodePath(path);
+            }
+        }
+        if (!checkedRestored)
+        {
+            ConfigureDefaultCheckedPaths();
+        }
+
+        if (IsDefaultExpandAll)
+        {
+            ExpandAll(false);
+        }
+        else
+        {
+            ConfigureDefaultExpandedPaths();
+        }
+    }
+
+    private static List<TreeNodePath>? BuildNodeIdentityPaths(IList? nodes)
+    {
+        if (nodes == null)
+        {
+            return null;
+        }
+
+        var paths = new List<TreeNodePath>(nodes.Count);
+        foreach (var node in nodes)
+        {
+            if (node is ITreeItemNode treeItemNode)
+            {
+                var path = BuildNodeIdentityPath(treeItemNode);
+                if (path != null)
+                {
+                    paths.Add(path);
+                }
+            }
+        }
+        return paths;
+    }
+
+    private static TreeNodePath? BuildNodeIdentityPath(ITreeItemNode? node)
+    {
+        if (node == null)
+        {
+            return null;
+        }
+
+        var depth    = CountTreeItemPathDepth(node);
+        var segments = new string[depth];
+        var current  = node;
+        for (var i = segments.Length - 1; current != null; i--)
+        {
+            var segment = current.ItemKey?.ToString() ?? current.Value?.ToString();
+            if (string.IsNullOrEmpty(segment))
+            {
+                return null;
+            }
+
+            segments[i] = segment;
+            current     = current.ParentNode as ITreeItemNode;
+        }
+
+        return new TreeNodePath(segments);
+    }
+
+    private bool TrySelectNodePath(TreeNodePath path)
+    {
+        var selected = false;
+        TraverTreeViewPath(path, (treeViewItem, i) =>
+        {
+            if (i == path.Length - 1)
+            {
+                var item = TreeItemFromContainer(treeViewItem);
+                if (item != null)
+                {
+                    if (!SelectedItems.Contains(item))
+                    {
+                        SelectedItems.Add(item);
+                    }
+                    if (SelectionMode == SelectionMode.Single)
+                    {
+                        SetCurrentValue(SelectedItemProperty, item);
+                    }
+                    selected = true;
+                }
+            }
+        });
+        return selected;
+    }
+
+    private bool TryCheckNodePath(TreeNodePath path)
+    {
+        var isChecked = false;
+        TraverTreeViewPath(path, (treeViewItem, i) =>
+        {
+            if (i == path.Length - 1)
+            {
+                treeViewItem.SetCurrentValue(TreeViewItem.IsCheckedProperty, true);
+                isChecked = true;
+            }
+        });
+        return isChecked;
     }
 
     private void GetChildCheckStatus(TreeViewItem parentTreeItem, out bool isAllChecked, out bool isAnyChecked)
@@ -1489,6 +1639,11 @@ public partial class TreeView : AvaloniaTreeView,
                 SetCurrentValue(SelectedItemProperty, null);
                 SelectedItems.Clear();
             }
+        }
+
+        if (change.Property == ItemsSourceProperty)
+        {
+            Dispatcher.Post(ConfigureStateAfterItemsSourceChanged);
         }
     }
 

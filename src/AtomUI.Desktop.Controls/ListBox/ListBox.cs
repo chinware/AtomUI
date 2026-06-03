@@ -352,6 +352,10 @@ public class ListBox : AvaloniaListBox,
             {
                 listBoxItem[!ListBoxItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
             }
+            else
+            {
+                listBoxItem.ClearValue(ListBoxItem.ContentTemplateProperty);
+            }
             listBoxItem[!ListBoxItem.SizeTypeProperty]                  = this[!SizeTypeProperty];
             listBoxItem[!ListBoxItem.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
             listBoxItem[!ListBoxItem.SelectedIndicatorProperty]         = this[!SelectedIndicatorProperty];
@@ -626,14 +630,13 @@ public class ListBox : AvaloniaListBox,
     
     protected virtual void NotifyRestoreDefaultContext(ListBoxItem item, IListItemData itemData)
     {
-        if (!item.IsSet(ListBoxItem.ContentProperty))
-        {
-            item.SetCurrentValue(ListBoxItem.ContentProperty, itemData);
-        }
+        item.SetCurrentValue(ListBoxItem.ContentProperty, itemData);
     }
 
     protected virtual void NotifyClearContainerForVirtualizingContext(ListBoxItem item)
     {
+        item.ClearValue(ListBoxItem.ContentProperty);
+        item.ClearValue(ListBoxItem.ContentTemplateProperty);
         item.ClearValue(ListBoxItem.IsEnabledProperty);
     }
     

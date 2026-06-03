@@ -78,17 +78,15 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
             if (this is IListVirtualizingContextAware listVirtualizingContextAwareControl && 
                 cascaderViewItem is IListItemVirtualizingContextAware virtualListItem)
             {
+                if (item is ICascaderOption option)
+                {
+                    NotifyRestoreDefaultContext(cascaderViewItem, option);
+                }
+
                 if (_virtualRestoreContext.TryGetValue(index, out var context))
                 {
                     listVirtualizingContextAwareControl.RestoreVirtualizingContext(cascaderViewItem, context);
                     _virtualRestoreContext.Remove(index);
-                }
-                else
-                {
-                    if (item is ICascaderOption option)
-                    {
-                        NotifyRestoreDefaultContext(cascaderViewItem, option);
-                    }
                 }
                 virtualListItem.VirtualIndex = index;
             }
@@ -245,6 +243,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     {
         item.SetCurrentValue(CascaderViewItem.HeaderProperty, option);
         item.ItemKey = option.ItemKey;
+        item.SetCurrentValue(CascaderViewItem.ValueProperty, option.Value);
         item.SetCurrentValue(CascaderViewItem.IconProperty, option.Icon);
         item.SetCurrentValue(CascaderViewItem.IsCheckedProperty, option.IsChecked);
         item.SetCurrentValue(CascaderViewItem.IsEnabledProperty, option.IsEnabled);
@@ -311,11 +310,20 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     
     protected virtual void NotifyClearContainerForVirtualizingContext(CascaderViewItem item)
     {
+        item.ClearValue(CascaderViewItem.HeaderProperty);
+        item.ClearValue(CascaderViewItem.ValueProperty);
+        item.ItemKey = null;
+        item.ClearValue(CascaderViewItem.IconProperty);
         item.ClearValue(CascaderViewItem.IsEnabledProperty);
         item.ClearValue(CascaderViewItem.IsCheckedProperty);
         item.ClearValue(CascaderViewItem.IsExpandedProperty);
         item.ClearValue(CascaderViewItem.IsCheckBoxEnabledProperty);
         item.AsyncLoaded = false;
+    }
+
+    internal void ResetVirtualizingContext()
+    {
+        _virtualRestoreContext.Clear();
     }
 
     void IListVirtualizingContextAware.SaveVirtualizingContext(Control item, IDictionary<object, object?> context)

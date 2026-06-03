@@ -43,10 +43,7 @@ public partial class ListView : IListVirtualizingContextAware
     
     protected virtual void NotifyRestoreDefaultContext(ListViewItem item, IListItemData itemData)
     {
-        if (!item.IsSet(ListViewItem.ContentProperty))
-        {
-            item.SetCurrentValue(ListViewItem.ContentProperty, itemData);
-        }
+        item.SetCurrentValue(ListViewItem.ContentProperty, itemData);
         if (itemData is IGroupListItemData groupListItemData)
         {
             item.SetCurrentValue(ListViewItem.IsGroupItemProperty, groupListItemData.IsGroupItem);
@@ -56,6 +53,8 @@ public partial class ListView : IListVirtualizingContextAware
 
     protected virtual void NotifyClearContainerForVirtualizingContext(ListViewItem item)
     {
+        item.ClearValue(ListViewItem.ContentProperty);
+        item.ClearValue(ListViewItem.ContentTemplateProperty);
         item.ClearValue(ListViewItem.IsEnabledProperty);
         item.ClearValue(ListViewItem.IsGroupItemProperty);
     }
