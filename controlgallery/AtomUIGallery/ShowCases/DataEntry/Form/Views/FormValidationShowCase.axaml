@@ -356,11 +356,11 @@
                             <atom:FormAssertValidator AssertResult="False"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Select IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}" DefaultValues="1" HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOptionN1}" Content="1"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOptionN2}" Content="2"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOptionN3}" Content="3"/>
-                    </atom:Select>
+                    <atom:Select IsAllowClear="True"
+                                 PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}"
+                                 DefaultValues="1"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding ValidationSelectOptions}" />
                 </atom:FormItem>
         
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextValidating}"
@@ -372,10 +372,11 @@
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Cascader IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}" HorizontalAlignment="Stretch"
-                                   IsPopupMatchSelectWidth="False">
-                        <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderXx}" Value="xx"/>
-                    </atom:Cascader>
+                    <atom:Cascader IsAllowClear="True"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}"
+                                   HorizontalAlignment="Stretch"
+                                   IsPopupMatchSelectWidth="False"
+                                   OptionsSource="{Binding ValidationCascaderOptions}" />
                 </atom:FormItem>
         
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
@@ -387,10 +388,11 @@
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:TreeSelect IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTreeselect}" HorizontalAlignment="Stretch"
-                                   IsPopupMatchSelectWidth="False">
-                        <atom:TreeItemNode Header="{gallery:FormShowCaseLangResource P2HeaderXx}" Value="xx"/>
-                    </atom:TreeSelect>
+                    <atom:TreeSelect IsAllowClear="True"
+                                     PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTreeselect}"
+                                     HorizontalAlignment="Stretch"
+                                     IsPopupMatchSelectWidth="False"
+                                     ItemsSource="{Binding ValidationTreeNodes}" />
                 </atom:FormItem>
         
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"

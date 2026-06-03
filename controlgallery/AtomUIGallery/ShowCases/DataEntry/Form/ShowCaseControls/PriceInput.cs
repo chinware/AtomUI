@@ -1,10 +1,14 @@
 using System.Diagnostics;
 using AtomUI;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using AtomUIGallery.Localization;
 using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 
 namespace AtomUIGallery.ShowCases.Form;
@@ -37,6 +41,11 @@ public class PriceInput : TemplatedControl,
     
     public static readonly StyledProperty<PriceInfo?> ValueProperty =
         AvaloniaProperty.Register<PriceInput, PriceInfo?>(nameof(Value));
+
+    public static readonly DirectProperty<PriceInput, IList<ISelectOption>?> CurrencyOptionsProperty =
+        AvaloniaProperty.RegisterDirect<PriceInput, IList<ISelectOption>?>(
+            nameof(CurrencyOptions),
+            o => o.CurrencyOptions);
     
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<PriceInput>();
@@ -61,6 +70,14 @@ public class PriceInput : TemplatedControl,
         get => GetValue(ValueProperty);
         set => SetValue(ValueProperty, value);
     }
+
+    private IList<ISelectOption>? _currencyOptions;
+
+    public IList<ISelectOption>? CurrencyOptions
+    {
+        get => _currencyOptions;
+        private set => SetAndRaise(CurrencyOptionsProperty, ref _currencyOptions, value);
+    }
     
     public InputControlStyleVariant StyleVariant
     {
@@ -77,6 +94,70 @@ public class PriceInput : TemplatedControl,
 
     private NumericUpDown? _numberInput;
     private AtomUISelect? _unitInput;
+    private IThemeManager? _subscribedThemeManager;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        RefreshCurrencyOptions();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SubscribeLanguageChanged();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        UnsubscribeLanguageChanged();
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private void SubscribeLanguageChanged()
+    {
+        if (_subscribedThemeManager != null)
+        {
+            return;
+        }
+
+        _subscribedThemeManager = Application.Current?.GetThemeManager();
+        if (_subscribedThemeManager != null)
+        {
+            _subscribedThemeManager.LanguageVariantChanged += HandleLanguageVariantChanged;
+        }
+    }
+
+    private void UnsubscribeLanguageChanged()
+    {
+        if (_subscribedThemeManager != null)
+        {
+            _subscribedThemeManager.LanguageVariantChanged -= HandleLanguageVariantChanged;
+            _subscribedThemeManager = null;
+        }
+    }
+
+    private void HandleLanguageVariantChanged(object? sender, LanguageVariantChangedEventArgs e)
+    {
+        RefreshCurrencyOptions();
+    }
+
+    private void RefreshCurrencyOptions()
+    {
+        CurrencyOptions =
+        [
+            new SelectOption
+            {
+                Header  = FormShowCaseLanguage.Get(FormShowCaseLangResourceKind.P3CurrencyRmbHeader, "RMB"),
+                Content = "RMB"
+            },
+            new SelectOption
+            {
+                Header  = FormShowCaseLanguage.Get(FormShowCaseLangResourceKind.P3CurrencyDollarHeader, "Dollar"),
+                Content = "Dollar"
+            }
+        ];
+    }
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

@@ -26,34 +26,6 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
                 InitializeRandomOptions(viewModel);
                 RefreshLocalizedOptions(viewModel);
 
-                this.OneWayBind(viewModel, vm => vm.SelectOptionsAsyncLoader, v => v.AsyncLoadSelect.OptionsLoader)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(viewModel, vm => vm.BasicSelectedOptions, v => v.DefaultSelectedSelect.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.DefaultSelectedOptions, v => v.DefaultSelectedSelect.SelectedOptions)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(viewModel, vm => vm.RandomOptions, v => v.MultiSelect1.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.RandomOptions, v => v.MultiSelect2.OptionsSource)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(viewModel, vm => vm.RandomOptions, v => v.TagsModeSelect.OptionsSource)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(viewModel, vm => vm.RandomOptions, v => v.SizeSelect1.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.RandomOptions, v => v.SizeSelect2.OptionsSource)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(viewModel, vm => vm.MaxTagCountOptions, v => v.MaxTagSelect1.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.MaxTagCountOptions, v => v.MaxTagSelect2.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.MaxTagCountOptions, v => v.MaxTagSelect3.OptionsSource)
-                    .DisposeWith(disposables);
-
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
                 {
@@ -67,6 +39,14 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
                 {
                     viewModel.SelectOptionsAsyncLoader = null;
                     viewModel.BasicSelectedOptions     = null;
+                    viewModel.SingleLucyOptions        = null;
+                    viewModel.SearchOptions            = null;
+                    viewModel.CustomCountryOptions     = null;
+                    viewModel.GroupedPersonOptions     = null;
+                    viewModel.VariantOptions           = null;
+                    viewModel.HideSelectedOptions      = null;
+                    viewModel.MaxCountLimitedOptions   = null;
+                    viewModel.PrefixSuffixOptions      = null;
                     viewModel.RandomOptions            = null;
                     viewModel.MaxTagCountOptions       = null;
                     viewModel.DefaultSelectedOptions   = null;
@@ -80,7 +60,14 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
     private void RefreshLocalizedOptions(SelectViewModel viewModel)
     {
         InitializeBasicOptions(viewModel);
+        InitializeSearchOptions(viewModel);
+        InitializeCustomCountryOptions(viewModel);
+        InitializeGroupedPersonOptions(viewModel);
+        InitializeVariantOptions(viewModel);
+        InitializeHideSelectedOptions(viewModel);
+        InitializeMaxCountLimitedOptions(viewModel);
         InitializeMaxTagCountOptions(viewModel);
+        InitializePrefixSuffixOptions(viewModel);
         viewModel.SelectOptionsAsyncLoader = new SelectOptionsAsyncLoader();
     }
 
@@ -88,29 +75,118 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
     {
         viewModel.BasicSelectedOptions =
         [
-            new SelectOption()
-            {
-                Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack"),
-                Content = "jack",
-            },
-            new SelectOption()
-            {
-                Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy"),
-                Content = "lucy",
-            },
-            new SelectOption()
-            {
-                Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderYiminghe, "Yiminghe"),
-                Content = "yiminghe",
-            },
-            new SelectOption()
-            {
-                Header    = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderDisabled, "Disabled"),
-                Content   = "disabled",
-                IsEnabled = false
-            }
+            Option(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack", "jack"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderYiminghe, "Yiminghe", "yiminghe"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderDisabled, "Disabled", "disabled", isEnabled: false)
         ];
+        viewModel.SingleLucyOptions = [Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy")];
         viewModel.DefaultSelectedOptions = [viewModel.BasicSelectedOptions[2]];
+    }
+
+    private static void InitializeSearchOptions(SelectViewModel viewModel)
+    {
+        viewModel.SearchOptions =
+        [
+            Option(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack", "jack"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderTom, "Tom", "tom")
+        ];
+    }
+
+    private static void InitializeCustomCountryOptions(SelectViewModel viewModel)
+    {
+        viewModel.CustomCountryOptions =
+        [
+            CustomOption(
+                SelectShowCaseLangResourceKind.P2HeaderChina,
+                "China",
+                "china",
+                SelectShowCaseLangResourceKind.P2DescriptionChina,
+                "China",
+                "\ud83c\udde8\ud83c\uddf3"),
+            CustomOption(
+                SelectShowCaseLangResourceKind.P2HeaderUsa,
+                "USA",
+                "usa",
+                SelectShowCaseLangResourceKind.P2DescriptionUsa,
+                "United States",
+                "\ud83c\uddfa\ud83c\uddf8"),
+            CustomOption(
+                SelectShowCaseLangResourceKind.P2HeaderJapan,
+                "Japan",
+                "japan",
+                SelectShowCaseLangResourceKind.P2DescriptionJapan,
+                "Japan",
+                "\ud83c\uddef\ud83c\uddf5"),
+            CustomOption(
+                SelectShowCaseLangResourceKind.P2HeaderKorea,
+                "Korea",
+                "korea",
+                SelectShowCaseLangResourceKind.P2DescriptionKorea,
+                "Korea",
+                "\ud83c\uddf0\ud83c\uddf7")
+        ];
+    }
+
+    private static void InitializeGroupedPersonOptions(SelectViewModel viewModel)
+    {
+        var manager  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2GroupManager, "Manager");
+        var engineer = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2GroupEngineer, "Engineer");
+        viewModel.GroupedPersonOptions =
+        [
+            Option(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack", "jack", group: manager),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy", group: manager),
+            Option(SelectShowCaseLangResourceKind.P2HeaderChloe, "Chloe", "chloe", group: engineer),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLucas, "Lucas", "lucas", group: engineer)
+        ];
+    }
+
+    private static void InitializeVariantOptions(SelectViewModel viewModel)
+    {
+        viewModel.VariantOptions =
+        [
+            Option(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack", "jack"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderYiminghe2, "yiminghe", "Yiminghe")
+        ];
+    }
+
+    private static void InitializeHideSelectedOptions(SelectViewModel viewModel)
+    {
+        viewModel.HideSelectedOptions =
+        [
+            Option(SelectShowCaseLangResourceKind.P2HeaderApples, "Apples", "Apples"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderNails, "Nails", "Nails"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderBananas, "Bananas", "Bananas"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderHelicopters, "Helicopters", "Helicopters")
+        ];
+    }
+
+    private static void InitializeMaxCountLimitedOptions(SelectViewModel viewModel)
+    {
+        viewModel.MaxCountLimitedOptions =
+        [
+            Option(SelectShowCaseLangResourceKind.P2HeaderAvaSwift, "Ava Swift", "Ava Swift"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderColeReed, "Cole Reed", "Cole Reed"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderMiaBlake, "Mia Blake", "Mia Blake"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderJakeStone, "Jake Stone", "Jake Stone"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLilyLane, "Lily Lane", "Lily Lane"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderRyanChase, "Ryan Chase", "Ryan Chase"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderZoeFox, "Zoe Fox", "Zoe Fox"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderAlexGrey, "Alex Grey", "Alex Grey"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderElleBlair, "Elle Blair", "Elle Blair")
+        ];
+    }
+
+    private static void InitializePrefixSuffixOptions(SelectViewModel viewModel)
+    {
+        viewModel.PrefixSuffixOptions =
+        [
+            Option(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack", "jack"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy"),
+            Option(SelectShowCaseLangResourceKind.P2HeaderYiminghe2, "yiminghe", "Yiminghe")
+        ];
     }
 
     private void InitializeRandomOptions(SelectViewModel viewModel)
@@ -161,6 +237,39 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
         }
 
         return result;
+    }
+
+    private static SelectOption Option(
+        SelectShowCaseLangResourceKind header,
+        string fallback,
+        string content,
+        string? group = null,
+        bool isEnabled = true)
+    {
+        return new SelectOption
+        {
+            Header    = SelectShowCaseLanguage.Get(header, fallback),
+            Content   = content,
+            Group     = group,
+            IsEnabled = isEnabled
+        };
+    }
+
+    private static CustomOption CustomOption(
+        SelectShowCaseLangResourceKind header,
+        string headerFallback,
+        string content,
+        SelectShowCaseLangResourceKind description,
+        string descriptionFallback,
+        string emoji)
+    {
+        return new CustomOption
+        {
+            Header      = SelectShowCaseLanguage.Get(header, headerFallback),
+            Content     = content,
+            Description = SelectShowCaseLanguage.Get(description, descriptionFallback),
+            Emoji       = emoji
+        };
     }
 
     private void HandleSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs e)

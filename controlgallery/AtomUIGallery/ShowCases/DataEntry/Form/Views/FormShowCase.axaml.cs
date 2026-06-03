@@ -1,9 +1,14 @@
 using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme;
+using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Controls;
 using AtomUIGallery.Localization;
+using ReactiveUI;
 using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
@@ -27,6 +32,21 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
         EnsureSelectedScenarioContent();
+
+        this.WhenActivated(disposables =>
+        {
+            if (DataContext is FormViewModel viewModel)
+            {
+                RefreshLocalizedOptionData(viewModel);
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptionData(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
+                }
+            }
+        });
     }
 
     protected override void OnDataContextChanged(EventArgs e)
@@ -76,6 +96,128 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
             PresetsScenario    => new FormPresetShowCase(),
             ControlsScenario   => new FormControlsShowCase(),
             _                  => throw new InvalidOperationException($"Unknown form scenario: {scenario}")
+        };
+    }
+
+    private static void RefreshLocalizedOptionData(FormViewModel viewModel)
+    {
+        viewModel.GenderOptions =
+        [
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderMale, "Male", "male"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderFemale, "Female", "female"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderOther, "Other", "other")
+        ];
+        viewModel.PresetGenderOptions =
+        [
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderMale2, "Male", "male"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderFemale2, "Female", "female"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderOther2, "Other", "other")
+        ];
+        viewModel.CountryOptions =
+        [
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderChina, "China", "china"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderUSA, "USA", "usa")
+        ];
+        viewModel.ColorOptions =
+        [
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderRed, "Red", "red"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderGreen, "Green", "green"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderBlue, "Blue", "blue")
+        ];
+        viewModel.DemoSelectOptions = [SelectOption(FormShowCaseLangResourceKind.P2HeaderDemo, "Demo", "demo")];
+        viewModel.RequiredStyleSelectOptions =
+        [
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderBbb, "Bbb", "bbb"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderAaa, "Aaa", "aaa")
+        ];
+        viewModel.ValidationSelectOptions =
+        [
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderOptionN1, "Option 1", "1"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderOptionN2, "Option 2", "2"),
+            SelectOption(FormShowCaseLangResourceKind.P2HeaderOptionN3, "Option 3", "3")
+        ];
+        viewModel.PresetCascaderOptions = BuildAddressCascaderOptions();
+        viewModel.DemoCascaderOptions =
+        [
+            CascaderOption(FormShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang", "zhejiang",
+            [
+                CascaderOption(FormShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou", "hangzhou")
+            ])
+        ];
+        viewModel.ValidationCascaderOptions =
+        [
+            CascaderOption(FormShowCaseLangResourceKind.P2HeaderXx, "xx", "xx")
+        ];
+        viewModel.DemoTreeNodes =
+        [
+            TreeNode(FormShowCaseLangResourceKind.P2HeaderLight, "Light", "light",
+            [
+                TreeNode(FormShowCaseLangResourceKind.P2HeaderBamboo, "Bamboo", "bamboo")
+            ])
+        ];
+        viewModel.ValidationTreeNodes =
+        [
+            TreeNode(FormShowCaseLangResourceKind.P2HeaderXx, "xx", "xx")
+        ];
+    }
+
+    private static List<ICascaderOption> BuildAddressCascaderOptions()
+    {
+        var hangzhouChildren = new List<ICascaderOption>
+        {
+            CascaderOption(FormShowCaseLangResourceKind.P2HeaderWestLake, "West Lake", "xihu")
+        };
+
+        return
+        [
+            CascaderOption(FormShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang", "zhejiang",
+            [
+                CascaderOption(FormShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou", "hangzhou", hangzhouChildren)
+            ]),
+            CascaderOption(FormShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu", "jiangsu",
+            [
+                CascaderOption(FormShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing", "nanjing",
+                [
+                    CascaderOption(FormShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men", "zhonghuamen")
+                ])
+            ])
+        ];
+    }
+
+    private static SelectOption SelectOption(FormShowCaseLangResourceKind header, string fallback, string content)
+    {
+        return new SelectOption
+        {
+            Header  = FormShowCaseLanguage.Get(header, fallback),
+            Content = content
+        };
+    }
+
+    private static CascaderOption CascaderOption(
+        FormShowCaseLangResourceKind header,
+        string fallback,
+        string value,
+        IList<ICascaderOption>? children = null)
+    {
+        return new CascaderOption
+        {
+            Header = FormShowCaseLanguage.Get(header, fallback),
+            Value  = value,
+            Children = children ?? []
+        };
+    }
+
+    private static TreeItemNode TreeNode(
+        FormShowCaseLangResourceKind header,
+        string fallback,
+        string value,
+        IList<ITreeItemNode>? children = null)
+    {
+        return new TreeItemNode
+        {
+            Header   = FormShowCaseLanguage.Get(header, fallback),
+            Value    = value,
+            Children = children ?? []
         };
     }
 }

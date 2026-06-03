@@ -32,25 +32,18 @@
                         <atom:LineEdit/>
                     </atom:FormItem>
                     <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}" FieldName="select">
-                        <atom:Select HorizontalAlignment="Stretch">
-                            <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderDemo}" Content="demo"/>
-                        </atom:Select>
+                        <atom:Select HorizontalAlignment="Stretch"
+                                     OptionsSource="{Binding DemoSelectOptions}" />
                     </atom:FormItem>
         
                     <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}" FieldName="treeSelect">
-                        <atom:TreeSelect HorizontalAlignment="Stretch">
-                            <atom:TreeItemNode Header="{gallery:FormShowCaseLangResource P2HeaderLight}" Value="light">
-                                <atom:TreeItemNode Header="{gallery:FormShowCaseLangResource P2HeaderBamboo}" Value="bamboo"/>
-                            </atom:TreeItemNode>
-                        </atom:TreeSelect>
+                        <atom:TreeSelect HorizontalAlignment="Stretch"
+                                         ItemsSource="{Binding DemoTreeNodes}" />
                     </atom:FormItem>
         
                     <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}" FieldName="cascader">
-                        <atom:Cascader HorizontalAlignment="Stretch">
-                            <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
-                                <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou"/>
-                            </atom:CascaderOption>
-                        </atom:Cascader>
+                        <atom:Cascader HorizontalAlignment="Stretch"
+                                       OptionsSource="{Binding DemoCascaderOptions}" />
                     </atom:FormItem>
         
                     <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}" FieldName="datePicker">
@@ -332,10 +325,9 @@
         
                     <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
                                    FieldName="select">
-                        <atom:Select HorizontalAlignment="Stretch" Mode="Multiple">
-                            <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderBbb}"/>
-                            <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderAaa}"/>
-                        </atom:Select>
+                        <atom:Select HorizontalAlignment="Stretch"
+                                     Mode="Multiple"
+                                     OptionsSource="{Binding RequiredStyleSelectOptions}" />
                     </atom:FormItem>
         
                     <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}"

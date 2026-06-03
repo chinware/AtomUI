@@ -37,19 +37,19 @@
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Select IsAllowClear="True" DefaultValues="Zhejiang">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderZhejiang}" Content="Zhejiang" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderJiangsu}" Content="Jiangsu" />
-                    </atom:Select>
+                    <atom:Select IsAllowClear="True"
+                                 DefaultValues="Zhejiang"
+                                 OptionsSource="{Binding ProvinceOptions}" />
                     <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextXihuDistrictHangzhou}" atom:CompactSpace.ItemSize="4*"/>
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="4*"/>
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Select  IsAllowClear="True" DefaultValues="Zhejiang" Mode="Multiple" atom:CompactSpace.ItemSize="4*">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderZhejiang}" Content="Zhejiang" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderJiangsu}" Content="Jiangsu" />
-                    </atom:Select>
+                    <atom:Select IsAllowClear="True"
+                                 DefaultValues="Zhejiang"
+                                 Mode="Multiple"
+                                 atom:CompactSpace.ItemSize="4*"
+                                 OptionsSource="{Binding ProvinceOptions}" />
                     <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextXihuDistrictHangzhou}" atom:CompactSpace.ItemSize="4*"/>
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="4*"/>
                 </atom:CompactSpace>
@@ -62,10 +62,8 @@
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Select DefaultValues="Option1">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderOption1}" Content="Option1" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderOption2}" Content="Option2" />
-                    </atom:Select>
+                    <atom:Select DefaultValues="Option1"
+                                 OptionsSource="{Binding BasicOptions}" />
                     <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextInputContent}" atom:CompactSpace.ItemSize="5*"/>
                     <atom:NumericUpDown Value="12" atom:CompactSpace.ItemSize="80"/>
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
@@ -85,22 +83,16 @@
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Select DefaultValues="Option1-1">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderOption1N1}" Content="Option1-1" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderOption2N1}" Content="Option2-1" />
-                    </atom:Select>
-                    <atom:Select DefaultValues="Option2-1">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderOption2N1}" Content="Option2-1" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderOption2N2}" Content="Option2-2" />
-                    </atom:Select>
+                    <atom:Select DefaultValues="Option1-1"
+                                 OptionsSource="{Binding FirstNestedOptions}" />
+                    <atom:Select DefaultValues="Option2-1"
+                                 OptionsSource="{Binding SecondNestedOptions}" />
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Select DefaultValues="1">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderBetween}" Content="1" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderExcept}" Content="2" />
-                    </atom:Select>
+                    <atom:Select DefaultValues="1"
+                                 OptionsSource="{Binding ConditionOptions}" />
                     <atom:LineEdit atom:CompactSpace.ItemSize="100" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextMinimum}"/>
                     <atom:LineEdit PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextText}" IsEnabled="False"/>
                     <atom:LineEdit atom:CompactSpace.ItemSize="100" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextMaximum}"/>
@@ -108,32 +100,18 @@
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Select DefaultValues="Sign Up">
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderSignUp}" Content="Sign Up" />
-                        <atom:SelectOption Header="{gallery:SpaceShowCaseLangResource P2HeaderSignIn}" Content="Sign In" />
-                    </atom:Select>
-                    <atom:AutoComplete PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextEmail}">
-                        <atom:AutoCompleteOption Header="{gallery:SpaceShowCaseLangResource P2HeaderTextN1}" Content="text 1"/>
-                        <atom:AutoCompleteOption Header="{gallery:SpaceShowCaseLangResource P2HeaderTextN2}" Content="text 2"/>
-                    </atom:AutoComplete>
+                    <atom:Select DefaultValues="Sign Up"
+                                 OptionsSource="{Binding AuthActionOptions}" />
+                    <atom:AutoComplete PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextEmail}"
+                                       OptionsSource="{Binding AutoCompleteTextOptions}" />
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <atom:TimePicker atom:CompactSpace.ItemSize="7*" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextSelectTime}"/>
-                    <atom:Cascader atom:CompactSpace.ItemSize="7*" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextSelectAddress}">
-                        <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
-                            <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou">
-                                <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderWestLake}" Value="xihu" />
-                                <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderLingyinShi}" Value="lingyinshi" />
-                            </atom:CascaderOption>
-                        </atom:CascaderOption>
-                        <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderJiangsu}" Value="jiangsu">
-                            <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderNanjing}" Value="nanjing">
-                                <atom:CascaderOption Header="{gallery:SpaceShowCaseLangResource P2HeaderZhongHuaMen}" Value="zhonghuamen" />
-                            </atom:CascaderOption>
-                        </atom:CascaderOption>
-                    </atom:Cascader>
+                    <atom:Cascader atom:CompactSpace.ItemSize="7*"
+                                   PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextSelectAddress}"
+                                   OptionsSource="{Binding AddressCascaderOptions}" />
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
                 </atom:CompactSpace>
         
@@ -143,17 +121,8 @@
                                      IsAllowClear="True"
                                      IsFilterEnabled="True"
                                      IsDefaultExpandAll="True"
-                                     PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextPleaseSelect}">
-                        <atom:TreeItemNode Header="{gallery:SpaceShowCaseLangResource P2HeaderParentN1}" Value="parent 1">
-                            <atom:TreeItemNode Header="{gallery:SpaceShowCaseLangResource P2HeaderParentN1N0}" Value="parent 1-0">
-                                <atom:TreeItemNode Header="{gallery:SpaceShowCaseLangResource P2HeaderLeaf1}" Value="leaf1"/>
-                                <atom:TreeItemNode Header="{gallery:SpaceShowCaseLangResource P2HeaderLeaf2}" Value="leaf2"/>
-                            </atom:TreeItemNode>
-                            <atom:TreeItemNode Header="{gallery:SpaceShowCaseLangResource P2HeaderParentN1N1}" Value="parent 1-1">
-                                <atom:TreeItemNode Header="{gallery:SpaceShowCaseLangResource P2HeaderLeaf3}" Value="leaf3"/>
-                            </atom:TreeItemNode>
-                        </atom:TreeItemNode>
-                    </atom:TreeSelect>
+                                     PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                     ItemsSource="{Binding TreeSelectNodes}" />
                     <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentSubmit}" />
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*" />
                 </atom:CompactSpace>

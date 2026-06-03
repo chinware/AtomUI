@@ -13,35 +13,31 @@
             Description="{gallery:SelectShowCaseLangResource BasicDescription}" IsOccupyEntireRow="False">
             <WrapPanel ItemSpacing="10" LineSpacing="10">
                 <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="120"
-                             DefaultValues="lucy">
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe}" Content="yiminghe" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderDisabled}" IsEnabled="False" Content="disabled" />
-                </atom:Select>
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding BasicSelectedOptions}" />
 
                 <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsEnabled="False" Width="120"
-                             DefaultValues="lucy">
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                </atom:Select>
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding SingleLucyOptions}" />
 
                 <atom:Select Name="AsyncLoadSelect"
                              Mode="Single"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                              Width="120"
-                             DefaultValues="lucy">
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                </atom:Select>
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding SingleLucyOptions}"
+                             OptionsLoader="{Binding SelectOptionsAsyncLoader}" />
 
-                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsAllowClear="True" Width="120">
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                </atom:Select>
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsAllowClear="True" Width="120"
+                             OptionsSource="{Binding SingleLucyOptions}" />
 
                 <atom:Select Name="DefaultSelectedSelect"
                              Mode="Single"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                              IsAllowClear="True"
-                             Width="120" />
+                             Width="120"
+                             OptionsSource="{Binding BasicSelectedOptions}"
+                             SelectedOptions="{Binding DefaultSelectedOptions}" />
 
             </WrapPanel>
         </gallery:ShowCaseItem>
@@ -49,25 +45,21 @@
         <gallery:ShowCaseItem
             Title="{gallery:SelectShowCaseLangResource SearchFieldTitle}"
             Description="{gallery:SelectShowCaseLangResource SearchFieldDescription}">
-            <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsFilterEnabled="True">
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderTom}" Content="tom" />
-            </atom:Select>
+            <atom:Select Mode="Single"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         IsFilterEnabled="True"
+                         OptionsSource="{Binding SearchOptions}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SelectShowCaseLangResource CustomSearchTitle}"
             Description="{gallery:SelectShowCaseLangResource CustomSearchDescription}">
-            <atom:Select Name="CustomSearchSelect"
+                <atom:Select Name="CustomSearchSelect"
                          Mode="Single"
                          PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
                          IsFilterEnabled="True"
-                         Filter="{atom:ValueFilterProvider Contains}">
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderTom}" Content="tom" />
-            </atom:Select>
+                         Filter="{atom:ValueFilterProvider Contains}"
+                         OptionsSource="{Binding SearchOptions}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -80,14 +72,16 @@
                              IsAllowClear="True"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
-                             DefaultValues="a10, c12" />
+                             DefaultValues="a10, c12"
+                             OptionsSource="{Binding RandomOptions}" />
                 <atom:Select Name="MultiSelect2"
                              Mode="Multiple"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
                              IsAllowClear="True"
                              HorizontalAlignment="Stretch"
                              DefaultValues="a10, c12"
-                             IsEnabled="False" />
+                             IsEnabled="False"
+                             OptionsSource="{Binding RandomOptions}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -100,7 +94,8 @@
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextTagsMode}"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
-                             Filter="{atom:ValueFilterProvider Contains}" />
+                             Filter="{atom:ValueFilterProvider Contains}"
+                             OptionsSource="{Binding RandomOptions}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -121,7 +116,8 @@
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
                              IsFilterEnabled="False"
                              DefaultValues="a10"
-                             Width="200" />
+                             Width="200"
+                             OptionsSource="{Binding RandomOptions}" />
 
                 <atom:Select Mode="Multiple"
                              Name="SizeSelect2"
@@ -130,7 +126,8 @@
                              IsAllowClear="True"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="False"
-                             DefaultValues="a10, c12" />
+                             DefaultValues="a10, c12"
+                             OptionsSource="{Binding RandomOptions}" />
             </StackPanel>
 
         </gallery:ShowCaseItem>
@@ -141,11 +138,8 @@
             <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                          IsFilterEnabled="True"
                          HorizontalAlignment="Stretch"
-                         IsAllowClear="True">
-                <views:CustomOption Header="{gallery:SelectShowCaseLangResource P2HeaderChina}" Content="china" Description="{gallery:SelectShowCaseLangResource P2DescriptionChina}" Emoji="🇨🇳" />
-                <views:CustomOption Header="{gallery:SelectShowCaseLangResource P2HeaderUsa}" Content="usa" Description="{gallery:SelectShowCaseLangResource P2DescriptionUsa}" Emoji="🇺🇸" />
-                <views:CustomOption Header="{gallery:SelectShowCaseLangResource P2HeaderJapan}" Content="japan" Description="{gallery:SelectShowCaseLangResource P2DescriptionJapan}" Emoji="🇯🇵" />
-                <views:CustomOption Header="{gallery:SelectShowCaseLangResource P2HeaderKorea}" Content="korea" Description="{gallery:SelectShowCaseLangResource P2DescriptionKorea}" Emoji="🇰🇷" />
+                         IsAllowClear="True"
+                         OptionsSource="{Binding CustomCountryOptions}">
                 <atom:Select.OptionTemplate>
                     <DataTemplate x:DataType="views:CustomOption">
                         <StackPanel Orientation="Horizontal" Spacing="5">
@@ -164,12 +158,8 @@
                          DefaultValues="lucy"
                          Width="200"
                          IsGroupEnabled="True"
-                         IsFilterEnabled="True">
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" Group="{gallery:SelectShowCaseLangResource P2GroupManager}" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" Group="{gallery:SelectShowCaseLangResource P2GroupManager}" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderChloe}" Content="chloe" Group="{gallery:SelectShowCaseLangResource P2GroupEngineer}" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucas}" Content="lucas" Group="{gallery:SelectShowCaseLangResource P2GroupEngineer}" />
-            </atom:Select>
+                         IsFilterEnabled="True"
+                         OptionsSource="{Binding GroupedPersonOptions}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -179,59 +169,41 @@
                 <UniformGrid Columns="2" ColumnSpacing="10">
                     <atom:Select Mode="Single"
                                  PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
-                                 HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding VariantOptions}" />
                     <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
                                  DefaultValues="lucy"
-                                 IsFilterEnabled="True">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 IsFilterEnabled="True"
+                                 OptionsSource="{Binding VariantOptions}" />
                 </UniformGrid>
 
                 <UniformGrid Columns="2" ColumnSpacing="10">
                     <atom:Select Mode="Single"
                                  PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextFilled}"
                                  HorizontalAlignment="Stretch"
-                                 StyleVariant="Filled">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 StyleVariant="Filled"
+                                 OptionsSource="{Binding VariantOptions}" />
                     <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
                                  StyleVariant="Filled"
                                  IsFilterEnabled="True"
-                                 DefaultValues="lucy">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 DefaultValues="lucy"
+                                 OptionsSource="{Binding VariantOptions}" />
                 </UniformGrid>
 
                 <UniformGrid Columns="2" ColumnSpacing="10">
                     <atom:Select Mode="Single"
                                  PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextBorderless}"
                                  HorizontalAlignment="Stretch"
-                                 StyleVariant="Borderless">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 StyleVariant="Borderless"
+                                 OptionsSource="{Binding VariantOptions}" />
                     <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
                                  StyleVariant="Borderless"
                                  IsFilterEnabled="True"
-                                 DefaultValues="lucy">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 DefaultValues="lucy"
+                                 OptionsSource="{Binding VariantOptions}" />
                 </UniformGrid>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -243,12 +215,8 @@
                          PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextInsertedAreRemoved}"
                          IsHideSelectedOptions="True"
                          IsFilterEnabled="True"
-                         HorizontalAlignment="Stretch">
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderApples}" Content="Apples" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderNails}" Content="Nails" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderBananas}" Content="Bananas" />
-                <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderHelicopters}" Content="Helicopters" />
-            </atom:Select>
+                         HorizontalAlignment="Stretch"
+                         OptionsSource="{Binding HideSelectedOptions}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -268,17 +236,8 @@
                              HorizontalAlignment="Stretch"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                              MaxCount="3"
-                             IsShowMaxCountIndicator="True">
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderAvaSwift}" Content="Ava Swift" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderColeReed}" Content="Cole Reed" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderMiaBlake}" Content="Mia Blake" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJakeStone}" Content="Jake Stone" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLilyLane}" Content="Lily Lane" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderRyanChase}" Content="Ryan Chase" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderZoeFox}" Content="Zoe Fox" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderAlexGrey}" Content="Alex Grey" />
-                    <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderElleBlair}" Content="Elle Blair" />
-                </atom:Select>
+                             IsShowMaxCountIndicator="True"
+                             OptionsSource="{Binding MaxCountLimitedOptions}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -291,7 +250,8 @@
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
-                             IsResponsiveTagMode="True" />
+                             IsResponsiveTagMode="True"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
 
                 <atom:Select Name="MaxTagSelect2"
                              Mode="Multiple"
@@ -299,14 +259,16 @@
                              IsEnabled="False"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
-                             IsResponsiveTagMode="True" />
+                             IsResponsiveTagMode="True"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
 
                 <atom:Select Name="MaxTagSelect3"
                              Mode="Multiple"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
                              HorizontalAlignment="Stretch"
                              IsFilterEnabled="True"
-                             MaxTagCount="5" />
+                             MaxTagCount="5"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -320,21 +282,15 @@
                                  DefaultValues="lucy"
                                  HorizontalAlignment="Stretch"
                                  Width="200"
-                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
                     <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
                                  DefaultValues="lucy"
                                  IsFilterEnabled="True"
                                  Width="200"
-                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
 
                     <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
@@ -342,11 +298,8 @@
                                  IsFilterEnabled="True"
                                  Width="200"
                                  IsEnabled="False"
-                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -355,21 +308,15 @@
                                  DefaultValues="lucy"
                                  HorizontalAlignment="Stretch"
                                  Width="200"
-                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
                     <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
                                  DefaultValues="lucy"
                                  IsFilterEnabled="True"
                                  Width="200"
-                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
 
                     <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  HorizontalAlignment="Stretch"
@@ -377,11 +324,8 @@
                                  IsFilterEnabled="True"
                                  Width="200"
                                  IsEnabled="False"
-                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}">
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderJack}" Content="jack" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderLucy}" Content="lucy" />
-                        <atom:SelectOption Header="{gallery:SelectShowCaseLangResource P2HeaderYiminghe2}" Content="Yiminghe" />
-                    </atom:Select>
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
                 </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>

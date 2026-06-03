@@ -38,6 +38,70 @@ public class SelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _defaultSelectedOptions, value);
     }
 
+    private List<ISelectOption>? _singleLucyOptions;
+
+    public List<ISelectOption>? SingleLucyOptions
+    {
+        get => _singleLucyOptions;
+        set => this.RaiseAndSetIfChanged(ref _singleLucyOptions, value);
+    }
+
+    private List<ISelectOption>? _searchOptions;
+
+    public List<ISelectOption>? SearchOptions
+    {
+        get => _searchOptions;
+        set => this.RaiseAndSetIfChanged(ref _searchOptions, value);
+    }
+
+    private List<CustomOption>? _customCountryOptions;
+
+    public List<CustomOption>? CustomCountryOptions
+    {
+        get => _customCountryOptions;
+        set => this.RaiseAndSetIfChanged(ref _customCountryOptions, value);
+    }
+
+    private List<ISelectOption>? _groupedPersonOptions;
+
+    public List<ISelectOption>? GroupedPersonOptions
+    {
+        get => _groupedPersonOptions;
+        set => this.RaiseAndSetIfChanged(ref _groupedPersonOptions, value);
+    }
+
+    private List<ISelectOption>? _variantOptions;
+
+    public List<ISelectOption>? VariantOptions
+    {
+        get => _variantOptions;
+        set => this.RaiseAndSetIfChanged(ref _variantOptions, value);
+    }
+
+    private List<ISelectOption>? _hideSelectedOptions;
+
+    public List<ISelectOption>? HideSelectedOptions
+    {
+        get => _hideSelectedOptions;
+        set => this.RaiseAndSetIfChanged(ref _hideSelectedOptions, value);
+    }
+
+    private List<ISelectOption>? _maxCountLimitedOptions;
+
+    public List<ISelectOption>? MaxCountLimitedOptions
+    {
+        get => _maxCountLimitedOptions;
+        set => this.RaiseAndSetIfChanged(ref _maxCountLimitedOptions, value);
+    }
+
+    private List<ISelectOption>? _prefixSuffixOptions;
+
+    public List<ISelectOption>? PrefixSuffixOptions
+    {
+        get => _prefixSuffixOptions;
+        set => this.RaiseAndSetIfChanged(ref _prefixSuffixOptions, value);
+    }
+
     private List<SelectOption>? _maxTagCountOptions;
 
     public List<SelectOption>? MaxTagCountOptions

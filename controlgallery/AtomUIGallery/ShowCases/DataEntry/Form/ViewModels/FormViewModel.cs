@@ -69,6 +69,102 @@ public class FormViewModel : ReactiveObject, IRoutableViewModel
         get => _basicFormInitialValues;
         set => this.RaiseAndSetIfChanged(ref _basicFormInitialValues, value);
     }
+
+    private List<ISelectOption>? _genderOptions;
+
+    public List<ISelectOption>? GenderOptions
+    {
+        get => _genderOptions;
+        set => this.RaiseAndSetIfChanged(ref _genderOptions, value);
+    }
+
+    private List<ISelectOption>? _presetGenderOptions;
+
+    public List<ISelectOption>? PresetGenderOptions
+    {
+        get => _presetGenderOptions;
+        set => this.RaiseAndSetIfChanged(ref _presetGenderOptions, value);
+    }
+
+    private List<ISelectOption>? _countryOptions;
+
+    public List<ISelectOption>? CountryOptions
+    {
+        get => _countryOptions;
+        set => this.RaiseAndSetIfChanged(ref _countryOptions, value);
+    }
+
+    private List<ISelectOption>? _colorOptions;
+
+    public List<ISelectOption>? ColorOptions
+    {
+        get => _colorOptions;
+        set => this.RaiseAndSetIfChanged(ref _colorOptions, value);
+    }
+
+    private List<ISelectOption>? _demoSelectOptions;
+
+    public List<ISelectOption>? DemoSelectOptions
+    {
+        get => _demoSelectOptions;
+        set => this.RaiseAndSetIfChanged(ref _demoSelectOptions, value);
+    }
+
+    private List<ISelectOption>? _requiredStyleSelectOptions;
+
+    public List<ISelectOption>? RequiredStyleSelectOptions
+    {
+        get => _requiredStyleSelectOptions;
+        set => this.RaiseAndSetIfChanged(ref _requiredStyleSelectOptions, value);
+    }
+
+    private List<ISelectOption>? _validationSelectOptions;
+
+    public List<ISelectOption>? ValidationSelectOptions
+    {
+        get => _validationSelectOptions;
+        set => this.RaiseAndSetIfChanged(ref _validationSelectOptions, value);
+    }
+
+    private List<ICascaderOption>? _presetCascaderOptions;
+
+    public List<ICascaderOption>? PresetCascaderOptions
+    {
+        get => _presetCascaderOptions;
+        set => this.RaiseAndSetIfChanged(ref _presetCascaderOptions, value);
+    }
+
+    private List<ICascaderOption>? _demoCascaderOptions;
+
+    public List<ICascaderOption>? DemoCascaderOptions
+    {
+        get => _demoCascaderOptions;
+        set => this.RaiseAndSetIfChanged(ref _demoCascaderOptions, value);
+    }
+
+    private List<ICascaderOption>? _validationCascaderOptions;
+
+    public List<ICascaderOption>? ValidationCascaderOptions
+    {
+        get => _validationCascaderOptions;
+        set => this.RaiseAndSetIfChanged(ref _validationCascaderOptions, value);
+    }
+
+    private List<ITreeItemNode>? _demoTreeNodes;
+
+    public List<ITreeItemNode>? DemoTreeNodes
+    {
+        get => _demoTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _demoTreeNodes, value);
+    }
+
+    private List<ITreeItemNode>? _validationTreeNodes;
+
+    public List<ITreeItemNode>? ValidationTreeNodes
+    {
+        get => _validationTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _validationTreeNodes, value);
+    }
     
     public FormViewModel(IScreen screen)
     {

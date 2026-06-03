@@ -76,11 +76,8 @@
                     </atom:FormItem.Validators>
                     <atom:Select IsAllowClear="True"
                                  PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectAOptionAndChangeInputTextAbove}"
-                                 HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderMale}" Content="male" />
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderFemale}" Content="female" />
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOther}" Content="other" />
-                    </atom:Select>
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding GenderOptions}" />
                 </atom:FormItem>
                 <gallery:CustomizeGenderFormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCustomizeGender}"
                                                  FieldName="customizeGender"

@@ -162,18 +162,9 @@
                             <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourHabitualResidence}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Cascader HorizontalAlignment="Stretch" IsAllowClear="True">
-                        <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
-                            <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou">
-                                <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderWestLake}" Value="xihu" />
-                            </atom:CascaderOption>
-                        </atom:CascaderOption>
-                        <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderJiangsu}" Value="jiangsu">
-                            <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderNanjing}" Value="nanjing">
-                                <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderZhongHuaMen}" Value="zhonghuamen" />
-                            </atom:CascaderOption>
-                        </atom:CascaderOption>
-                    </atom:Cascader>
+                    <atom:Cascader HorizontalAlignment="Stretch"
+                                   IsAllowClear="True"
+                                   OptionsSource="{Binding PresetCascaderOptions}" />
                 </atom:FormItem>
         
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPhoneNumber}"
@@ -228,11 +219,9 @@
                             <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectGender}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Select DefaultValues="male" HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderMale2}" Content="male"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderFemale2}" Content="female"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOther2}" Content="other"/>
-                    </atom:Select>
+                    <atom:Select DefaultValues="male"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding PresetGenderOptions}" />
                 </atom:FormItem>
         
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCaptcha}"

@@ -67,10 +67,9 @@
                             <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourCountry}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectACountry}" HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderChina}" Content="china"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderUSA}" Content="usa"/>
-                    </atom:Select>
+                    <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectACountry}"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding CountryOptions}" />
                 </atom:FormItem>
                 
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelectMultiple}"
@@ -84,11 +83,8 @@
                     <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectFavouriteColors}"
                                  HorizontalAlignment="Stretch"
                                  Mode="Multiple"
-                                 IsAllowClear="True">
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderRed}" Content="red"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderGreen}" Content="green"/>
-                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderBlue}" Content="blue"/>
-                    </atom:Select>
+                                 IsAllowClear="True"
+                                 OptionsSource="{Binding ColorOptions}" />
                 </atom:FormItem>
                 
                 <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}" FieldName="inputNumber">
