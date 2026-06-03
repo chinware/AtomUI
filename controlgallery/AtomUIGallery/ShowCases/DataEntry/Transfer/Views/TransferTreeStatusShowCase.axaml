@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Transfer.TransferTreeStatusShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Transfer"
+             x:DataType="viewModels:TransferViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource TreeTransferTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource TreeTransferDescription}">
+            <StackPanel Spacing="20">
+                <atom:TreeTransfer Name="TreeTransfer"
+                                   IsStretchView="True"
+                                   IsOneWay="{Binding TreeTransferIsOneWay}"
+                                   ItemsSource="{Binding TransferTreeNodes}">
+                    <atom:TreeTransfer.SourceView>
+                        <atom:TransferTreeView IsDefaultExpandAll="True" />
+                    </atom:TreeTransfer.SourceView>
+                </atom:TreeTransfer>
+                <atom:ToggleSwitch IsChecked="{Binding TreeTransferIsOneWay, Mode=TwoWay}"
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentOnyWay}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentOnyWay}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource StatusTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource StatusDescription}">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Status="Error"/>
+                <atom:ListTransfer Status="Warning"/>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

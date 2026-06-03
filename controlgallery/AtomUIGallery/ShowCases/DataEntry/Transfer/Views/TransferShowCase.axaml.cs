@@ -8,7 +8,7 @@ using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using Avalonia;
-using Avalonia.Interactivity;
+using Avalonia.Controls;
 using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -18,6 +18,12 @@ namespace AtomUIGallery.ShowCases.Transfer;
 public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
 {
     public const string LanguageId = nameof(TransferShowCase);
+
+    private const string BasicScenario      = "Basic";
+    private const string AdvancedScenario   = "Advanced";
+    private const string TreeStatusScenario = "TreeStatus";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
 
     public TransferShowCase()
     {
@@ -34,21 +40,6 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
                     }
                     return record?.ToString();
                 };
-
-                this.OneWayBind(viewModel, vm => vm.BasicTransferItems, v => v.BasicListTransfer.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.OneWayTransferItems, v => v.OneWayTransferList.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.SearchTransferItems, v => v.SearchTransferList.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.AdvanceTransferItems, v => v.AdvanceTransfer.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.AdvanceTransferDefaultTargetKeys, v => v.AdvanceTransfer.TargetKeys)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.PaginationTransferItems, v => v.PaginationTransferList.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.TransferTreeNodes, v => v.TreeTransfer.ItemsSource)
-                    .DisposeWith(disposables);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
@@ -75,6 +66,54 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
             }
         });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario      => new TransferBasicShowCase(),
+            AdvancedScenario   => new TransferAdvancedShowCase(),
+            TreeStatusScenario => new TransferTreeStatusShowCase(),
+            _                  => throw new InvalidOperationException($"Unknown Transfer scenario: {scenario}")
+        };
     }
 
     private void RefreshLocalizedTransferItems(TransferViewModel viewModel)
@@ -173,14 +212,6 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
         }
         vm.AdvanceTransferItems             = items;
         vm.AdvanceTransferDefaultTargetKeys = targetKeys;
-    }
-
-    private void ReloadAdvancedTransferItems(object? sender, RoutedEventArgs e)
-    {
-        if (DataContext is TransferViewModel vm)
-        {
-            AdvanceTransfer.TargetKeys = vm.AdvanceTransferDefaultTargetKeys;
-        }
     }
 
     private void InitPaginationTransferItems(TransferViewModel vm)

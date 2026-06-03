@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Transfer.TransferBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Transfer"
+             x:DataType="viewModels:TransferViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource BasicTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource BasicDescription}">
+            <atom:ListTransfer Name="BasicListTransfer"
+                               SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                               TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}"
+                               ItemsSource="{Binding BasicTransferItems}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource OneWayTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource OneWayDescription}">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Name="OneWayTransferList"
+                                   SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                                   TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}"
+                                   IsOneWay="True"
+                                   IsEnabled="{Binding OneWayTransferEnabled}"
+                                   ItemsSource="{Binding OneWayTransferItems}" />
+                <atom:ToggleSwitch IsChecked="{Binding OneWayTransferEnabled, Mode=TwoWay}"
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentDisable}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentEnable}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource SearchTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource SearchDescription}">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Name="SearchTransferList"
+                                   IsFilterEnabled="True"
+                                   FilterPlaceholderText="{gallery:TransferShowCaseLangResource P2FilterPlaceholderTextSearchHere}"
+                                   FilterValueSelector="{Binding TransferFilterValueSelector}"
+                                   ItemsSource="{Binding SearchTransferItems}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

@@ -8,6 +8,9 @@ internal class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage of Transfer involves providing the source data and target keys arrays, plus the rendering and some callback functions.";
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAdvanced = "Advanced";
+    public const string ScenarioTreeStatus = "Tree & Status";
     public const string OneWayTitle = "One Way";
     public const string OneWayDescription = "Use oneWay to make Transfer the one way style.";
     public const string SearchTitle = "Search";

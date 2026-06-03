@@ -8,6 +8,9 @@ internal class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "Transfer 的基础用法需要提供源数据、目标 keys 数组，以及渲染和部分回调函数。";
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAdvanced = "高级";
+    public const string ScenarioTreeStatus = "树与状态";
     public const string OneWayTitle = "单向模式";
     public const string OneWayDescription = "使用 oneWay 让 Transfer 呈现单向样式。";
     public const string SearchTitle = "搜索";

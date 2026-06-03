@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Transfer.TransferAdvancedShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Transfer"
+             x:DataType="viewModels:TransferViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource AdvancedTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource AdvancedDescription}">
+            <atom:ListTransfer ToTargetButtonText="{gallery:TransferShowCaseLangResource P2ToTargetButtonTextToRight}"
+                               ToSourceButtonText="{gallery:TransferShowCaseLangResource P2ToSourceButtonTextToLeft}"
+                               ListWidth="300"
+                               Name="AdvanceTransfer"
+                               ItemsSource="{Binding AdvanceTransferItems}"
+                               TargetKeys="{Binding AdvanceTransferDefaultTargetKeys, Mode=OneWay}">
+                <atom:ListTransfer.SourceViewFooter>
+                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="{gallery:TransferShowCaseLangResource P2ContentLeftButtonReload}" />
+                </atom:ListTransfer.SourceViewFooter>
+                <atom:ListTransfer.TargetViewFooter>
+                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="{gallery:TransferShowCaseLangResource P2ContentRightButtonReload}" />
+                </atom:ListTransfer.TargetViewFooter>
+                <atom:ListTransfer.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:SearchCaseItemData">
+                        <TextBlock TextTrimming="CharacterEllipsis">
+                            <Run Text="{Binding Content}" />
+                            <Run Text="{gallery:TransferShowCaseLangResource P2TextText}" />
+                            <Run Text="{Binding Description}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </atom:ListTransfer.ItemTemplate>
+            </atom:ListTransfer>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource PaginationTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource PaginationDescription}">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Name="PaginationTransferList"
+                                   IsOneWay="{Binding PaginationIsOneWay}"
+                                   PageSize="10"
+                                   ListHeight="370"
+                                   ItemsSource="{Binding PaginationTransferItems}" />
+                <atom:ToggleSwitch IsChecked="{Binding PaginationIsOneWay, Mode=TwoWay}"
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentOnyWay}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentOnyWay}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
