@@ -1,0 +1,115 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Cascader.CascaderBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Cascader"
+             x:DataType="vm:CascaderViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource BasicTitle}"
+            Description="{gallery:CascaderShowCaseLangResource BasicDescription}">
+            <atom:Cascader
+                Name="BasicCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding BasicCascaderViewNodes}"
+                IsAllowClear="True">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource DefaultValueTitle}"
+            Description="{gallery:CascaderShowCaseLangResource DefaultValueDescription}">
+            <atom:Cascader
+                Name="DefaultValueCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding BasicCascaderViewNodes}"
+                DefaultSelectOptionPath="{Binding DefaultSelectOptionPath}"
+                IsAllowClear="True">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource HoverTitle}"
+            Description="{gallery:CascaderShowCaseLangResource HoverDescription}">
+            <atom:Cascader
+                Name="HoverCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding HoverCascaderNodes}"
+                IsAllowClear="True"
+                ExpandTrigger="Hover">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource DisabledOptionTitle}"
+            Description="{gallery:CascaderShowCaseLangResource DisabledOptionDescription}">
+            <atom:Cascader
+                Name="DisabledCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding DisabledCascaderNodes}"
+                IsAllowClear="True">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource ChangeOnSelectTitle}"
+            Description="{gallery:CascaderShowCaseLangResource ChangeOnSelectDescription}">
+            <atom:Cascader
+                Name="SelectParentCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding SelectParentCascaderNodes}"
+                IsAllowClear="True"
+                IsAllowSelectParent="True">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource SearchTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SearchDescription}">
+            <atom:Cascader
+                Name="SearchCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding SearchCascaderNodes}"
+                IsAllowClear="True"
+                IsFilterEnabled="True">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

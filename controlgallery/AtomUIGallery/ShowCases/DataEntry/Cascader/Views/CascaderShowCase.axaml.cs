@@ -7,7 +7,7 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DataLoad;
 using AtomUI.Theme.Language;
 using Avalonia;
-using Avalonia.Interactivity;
+using Avalonia.Controls;
 using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -18,29 +18,81 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
 {
     public const string LanguageId = nameof(CascaderShowCase);
 
+    private const string BasicScenario        = "Basic";
+    private const string MultipleScenario     = "Multiple";
+    private const string AdvancedScenario     = "Advanced";
+    private const string CascaderViewScenario = "CascaderView";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+
     public CascaderShowCase()
     {
+        InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
+
         this.WhenActivated(disposables =>
         {
             if (DataContext is CascaderViewModel viewModel)
             {
                 RefreshCascaderData(viewModel);
-                ApplyCascaderData(viewModel);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) =>
-                    {
-                        RefreshCascaderData(viewModel);
-                        ApplyCascaderData(viewModel);
-                    };
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshCascaderData(viewModel);
                     themeManager.LanguageVariantChanged += handler;
                     disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
                 }
             }
         });
-        InitializeComponent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario        => new CascaderBasicShowCase(),
+            MultipleScenario     => new CascaderMultipleShowCase(),
+            AdvancedScenario     => new CascaderAdvancedShowCase(),
+            CascaderViewScenario => new CascaderViewShowCase(),
+            _                    => throw new InvalidOperationException($"Unknown Cascader scenario: {scenario}")
+        };
     }
 
     private void RefreshCascaderData(CascaderViewModel viewModel)
@@ -60,36 +112,6 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         InitCascaderViewAsyncLoadData(viewModel);
         InitCascaderViewSearchData(viewModel);
         InitCascaderViewDefaultExpandData(viewModel);
-    }
-
-    private void ApplyCascaderData(CascaderViewModel viewModel)
-    {
-        BasicCascader.OptionsSource                    = viewModel.BasicCascaderViewNodes;
-        DefaultValueCascader.OptionsSource             = viewModel.BasicCascaderViewNodes;
-        DefaultValueCascader.DefaultSelectOptionPath   = viewModel.DefaultSelectOptionPath;
-        HoverCascader.OptionsSource                    = viewModel.HoverCascaderNodes;
-        DisabledCascader.OptionsSource                 = viewModel.DisabledCascaderNodes;
-        SelectParentCascader.OptionsSource             = viewModel.SelectParentCascaderNodes;
-        MultiSelectCascader.OptionsSource              = viewModel.MultipleSelectCascaderNodes;
-        CheckStrategyAllCascader.OptionsSource         = viewModel.CheckStrategyShowAllCascaderNodes;
-        CheckStrategyShowParentCascader.OptionsSource  = viewModel.CheckStrategyShowParentCascaderNodes;
-        SearchCascader.OptionsSource                   = viewModel.SearchCascaderNodes;
-        AsyncLoadCascader.OptionsSource                = viewModel.AsyncLoadCascaderViewNodes;
-        AsyncLoadCascader.DataLoader                   = viewModel.AsyncCascaderNodeLoader;
-        PrefixAndSuffixCascader1.OptionsSource         = viewModel.PrefixAndSuffixCascaderNodes;
-        PrefixAndSuffixCascader2.OptionsSource         = viewModel.PrefixAndSuffixCascaderNodes;
-        PrefixAndSuffixCascader3.OptionsSource         = viewModel.PrefixAndSuffixCascaderNodes;
-        PlacementCascader.OptionsSource                = viewModel.PlacementCascaderNodes;
-        SizeCascader1.OptionsSource                    = viewModel.SizeCascaderNodes;
-        SizeCascader2.OptionsSource                    = viewModel.SizeCascaderNodes;
-        SizeCascader3.OptionsSource                    = viewModel.SizeCascaderNodes;
-        BasicCascaderView.OptionsSource                = viewModel.BasicCascaderViewNodes;
-        BasicCheckableCascaderView.OptionsSource       = viewModel.BasicCheckableCascaderViewNodes;
-        AsyncLoadCascaderView.OptionsSource            = viewModel.AsyncLoadCascaderViewNodes;
-        AsyncLoadCascaderView.DataLoader               = viewModel.AsyncCascaderNodeLoader;
-        SearchCascaderViewItemsSource.OptionsSource    = viewModel.SearchCascaderViewNodes;
-        DefaultExpandCascaderView.DefaultExpandedPath  = viewModel.DefaultExpandPath;
-        DefaultExpandCascaderView.OptionsSource        = viewModel.DefaultExpandCascaderViewNodes;
     }
 
     private static string Lang(CascaderShowCaseLangResourceKind resourceKind, string fallback)
@@ -871,37 +893,6 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         ];
     }
 
-    private void HandleFilterCascaderViewClicked(object? sender, RoutedEventArgs args)
-    {
-        if (sender is SearchEdit searchEdit)
-        {
-            SearchCascaderView.FilterValue = searchEdit.Text?.Trim();
-        }
-    }
-
-    private void HandleFilterCascaderViewItemsSourceClicked(object? sender, RoutedEventArgs args)
-    {
-        if (sender is SearchEdit searchEdit)
-        {
-            SearchCascaderViewItemsSource.FilterValue = searchEdit.Text?.Trim();
-        }
-    }
-
-    private void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
-    {
-        if (DataContext is not CascaderViewModel viewModel)
-        {
-            return;
-        }
-
-        viewModel.Placement = args.Index switch
-        {
-            0 => SelectPopupPlacement.TopEdgeAlignedLeft,
-            1 => SelectPopupPlacement.TopEdgeAlignedRight,
-            2 => SelectPopupPlacement.BottomEdgeAlignedLeft,
-            _ => SelectPopupPlacement.BottomEdgeAlignedRight
-        };
-    }
 }
 
 internal static class CascaderShowCaseLanguage

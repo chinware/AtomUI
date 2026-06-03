@@ -1,0 +1,118 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Cascader.CascaderViewShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Cascader"
+             x:DataType="vm:CascaderViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource BasicCascaderViewTitle}"
+            Description="{gallery:CascaderShowCaseLangResource BasicCascaderViewDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:CascaderView OptionsSource="{Binding BasicCascaderViewNodes}" />
+
+                <atom:CascaderView OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
+                                   IsCheckable="True" />
+
+                <atom:CascaderView />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource GenerateByTemplateTitle}"
+            Description="{gallery:CascaderShowCaseLangResource GenerateByTemplateDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:CascaderView
+                    Name="BasicCascaderView"
+                    OptionsSource="{Binding BasicCascaderViewNodes}">
+                    <atom:CascaderView.OptionTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}"
+                                          x:DataType="atom:ICascaderOption">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:CascaderView.OptionTemplate>
+                </atom:CascaderView>
+
+                <atom:CascaderView
+                    Name="BasicCheckableCascaderView"
+                    OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
+                    IsCheckable="True">
+                    <atom:CascaderView.OptionTemplate>
+                        <TreeDataTemplate x:DataType="atom:ICascaderOption"
+                                          ItemsSource="{Binding Children}">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:CascaderView.OptionTemplate>
+                </atom:CascaderView>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
+            Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}">
+            <atom:CascaderView
+                Name="AsyncLoadCascaderView"
+                OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
+                DataLoader="{Binding AsyncCascaderNodeLoader}">
+                <atom:CascaderView.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:CascaderView.OptionTemplate>
+            </atom:CascaderView>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource SearchableTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SearchableDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
+                                 SearchButtonClick="HandleFilterCascaderViewClicked" />
+                <atom:CascaderView Name="SearchCascaderView"
+                                   OptionsSource="{Binding SearchCascaderViewNodes}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource SearchableItemsSourceTitle}"
+            Description="{gallery:CascaderShowCaseLangResource SearchableItemsSourceDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
+                                 SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
+                <atom:CascaderView
+                    Name="SearchCascaderViewItemsSource"
+                    OptionsSource="{Binding SearchCascaderViewNodes}">
+                    <atom:CascaderView.OptionTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}"
+                                          x:DataType="atom:ICascaderOption">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:CascaderView.OptionTemplate>
+                </atom:CascaderView>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource DefaultExpandedTitle}"
+            Description="{gallery:CascaderShowCaseLangResource DefaultExpandedDescription}">
+            <StackPanel Spacing="10">
+                <atom:CascaderView OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
+                                   DefaultExpandedPath="{Binding DefaultExpandPath}" />
+                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleByTemplate}" />
+                <atom:CascaderView
+                    Name="DefaultExpandCascaderView"
+                    OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
+                    DefaultExpandedPath="{Binding DefaultExpandPath}">
+                    <atom:CascaderView.OptionTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}"
+                                          x:DataType="atom:ICascaderOption">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:CascaderView.OptionTemplate>
+                </atom:CascaderView>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

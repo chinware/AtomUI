@@ -6,6 +6,10 @@ namespace AtomUIGallery.ShowCases.Cascader;
 [LanguageProvider(LanguageCode.en_US, CascaderShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioMultiple = "Multiple";
+    public const string ScenarioAdvanced = "Advanced";
+    public const string ScenarioCascaderView = "CascaderView";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Cascade selection box for selecting province/city/district.";
     public const string DefaultValueTitle = "Default value";

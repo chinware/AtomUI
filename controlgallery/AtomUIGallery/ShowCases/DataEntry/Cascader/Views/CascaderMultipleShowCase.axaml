@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Cascader.CascaderMultipleShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Cascader"
+             x:DataType="vm:CascaderViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource MultipleTitle}"
+            Description="{gallery:CascaderShowCaseLangResource MultipleDescription}">
+            <atom:Cascader
+                Name="MultiSelectCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding MultipleSelectCascaderNodes}"
+                HorizontalAlignment="Stretch"
+                ShowCheckedStrategy="ShowParent"
+                IsAllowClear="True"
+                IsMultiple="True">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyTitle}"
+            Description="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyDescription}">
+            <StackPanel Spacing="15">
+                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyAll}" />
+                <atom:Cascader
+                    Name="CheckStrategyAllCascader"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                    OptionsSource="{Binding CheckStrategyShowAllCascaderNodes}"
+                    HorizontalAlignment="Stretch"
+                    ShowCheckedStrategy="All"
+                    IsAllowClear="True"
+                    IsResponsiveTagMode="True"
+                    IsMultiple="True">
+                    <atom:Cascader.OptionTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}"
+                                          x:DataType="atom:ICascaderOption">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:Cascader.OptionTemplate>
+                </atom:Cascader>
+                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyShowparent}" />
+                <atom:Cascader
+                    Name="CheckStrategyShowParentCascader"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                    OptionsSource="{Binding CheckStrategyShowParentCascaderNodes}"
+                    HorizontalAlignment="Stretch"
+                    ShowCheckedStrategy="ShowParent"
+                    IsAllowClear="True"
+                    IsResponsiveTagMode="True"
+                    IsMultiple="True">
+                    <atom:Cascader.OptionTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}"
+                                          x:DataType="atom:ICascaderOption">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:Cascader.OptionTemplate>
+                </atom:Cascader>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
