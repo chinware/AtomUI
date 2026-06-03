@@ -59,6 +59,8 @@
                               ItemKey="{x:Static viewmodels:StepsViewModel.ID}" />
             <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_TabControl}"
                               ItemKey="{x:Static viewmodels:TabControlViewModel.ID}" />
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Navigation_TabStrip}"
+                              ItemKey="{x:Static viewmodels:TabStripViewModel.ID}" />
         </atom:NavMenuNode>
 
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource DataEntry}"

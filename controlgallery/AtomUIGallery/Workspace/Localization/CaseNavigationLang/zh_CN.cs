@@ -32,6 +32,7 @@ internal class zh_CN : LanguageProvider
     public const string Navigation_Pagination = "Pagination 分页";
     public const string Navigation_Steps = "Steps 步骤条";
     public const string Navigation_TabControl = "TabControl 标签页";
+    public const string Navigation_TabStrip = "TabStrip 标签栏";
 
     public const string DataEntry = "数据录入";
     public const string DataEntry_AutoComplete = "AutoComplete 自动完成";

@@ -31,11 +31,6 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
             {
                 RefreshItemsSourceData(viewModel);
 
-                PositionTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripPlacementOptionCheckedChanged;
-                PositionCardTabStripOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
-                SizeTypeTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
-                AddTabDemoStrip.AddTabRequest                        += HandleTabStripAddTabRequest;
-
                 PositionTabControlOptionGroup.OptionCheckedChanged     += viewModel.HandleTabControlPlacementOptionCheckedChanged;
                 PositionCardTabControlOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabControlPlacementOptionCheckedChanged;
                 SizeTypeTabControlOptionGroup.OptionCheckedChanged     += viewModel.HandleTabControlSizeTypeOptionCheckedChanged;
@@ -56,18 +51,12 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
 
                 Disposable.Create(() =>
                 {
-                    PositionTabStripOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabStripPlacementOptionCheckedChanged;
-                    PositionCardTabStripOptionGroup.OptionCheckedChanged -= viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
-                    SizeTypeTabStripOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
-                    AddTabDemoStrip.AddTabRequest                        -= HandleTabStripAddTabRequest;
-
                     PositionTabControlOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabControlPlacementOptionCheckedChanged;
                     PositionCardTabControlOptionGroup.OptionCheckedChanged -= viewModel.HandleCardTabControlPlacementOptionCheckedChanged;
                     SizeTypeTabControlOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabControlSizeTypeOptionCheckedChanged;
                     AddTabDemoTabControl.AddTabRequest                     -= HandleTabControlAddTabRequest;
 
-                    viewModel.TabItemDataSource      = new();
-                    viewModel.TabStripItemDataSource = new();
+                    viewModel.TabItemDataSource = new();
                 }).DisposeWith(disposables);
             }
         });
@@ -92,26 +81,6 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
             Icon       = new LinuxOutlined()
         });
 
-        viewModel.TabStripItemDataSource.Clear();
-        viewModel.TabStripItemDataSource.Add(new TabItemData()
-        {
-            Header = Lang(TabControlShowCaseLangResourceKind.P2ContentTabN1, "Tab 1")
-        });
-        viewModel.TabStripItemDataSource.Add(new TabItemData()
-        {
-            Header = Lang(TabControlShowCaseLangResourceKind.P2ContentTabN2, "Tab 2")
-        });
-    }
-
-    private void HandleTabStripAddTabRequest(object? sender, RoutedEventArgs args)
-    {
-        var index = AddTabDemoStrip.ItemCount;
-        AddTabDemoStrip.Items.Add(new TabStripItem
-        {
-            Content    = Format(TabControlShowCaseLangResourceKind.P2ContentNewTabFormat, "new tab {0}", index),
-            IsClosable = true,
-            Tag        = index
-        });
     }
 
     private void HandleTabControlAddTabRequest(object? sender, RoutedEventArgs args)
@@ -128,14 +97,6 @@ public partial class TabControlShowCase : ReactiveUserControl<TabControlViewMode
 
     private void RefreshDynamicAddedTabs()
     {
-        foreach (var item in AddTabDemoStrip.Items)
-        {
-            if (item is TabStripItem { Tag: int index } tabStripItem)
-            {
-                tabStripItem.Content = Format(TabControlShowCaseLangResourceKind.P2ContentNewTabFormat, "new tab {0}", index);
-            }
-        }
-
         foreach (var item in AddTabDemoTabControl.Items)
         {
             if (item is TabItem { Tag: int index } tabItem)

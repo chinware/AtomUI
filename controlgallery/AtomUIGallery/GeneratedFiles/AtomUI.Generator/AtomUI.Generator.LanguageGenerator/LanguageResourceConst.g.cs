@@ -670,7 +670,8 @@ namespace AtomUIGallery.Localization
         Navigation_Menu,
         Navigation_Pagination,
         Navigation_Steps,
-        Navigation_TabControl
+        Navigation_TabControl,
+        Navigation_TabStrip
     }
 
     public class CaseNavigationLangResourceExtension : LanguageResourceExtension<CaseNavigationLangResourceKind>
@@ -3506,36 +3507,11 @@ namespace AtomUIGallery.Localization
         P2ContentLeft,
         P2ContentMiddle,
         P2ContentNewTabContentFormat,
-        P2ContentNewTabFormat,
         P2ContentRight,
         P2ContentSmall,
         P2ContentStartExtraAction,
-        P2ContentTabN1,
-        P2ContentTabN10,
-        P2ContentTabN11,
-        P2ContentTabN12,
-        P2ContentTabN13,
-        P2ContentTabN14,
-        P2ContentTabN15,
-        P2ContentTabN16,
-        P2ContentTabN17,
-        P2ContentTabN18,
-        P2ContentTabN19,
-        P2ContentTabN2,
-        P2ContentTabN20,
-        P2ContentTabN21,
-        P2ContentTabN22,
-        P2ContentTabN23,
-        P2ContentTabN3,
-        P2ContentTabN4,
-        P2ContentTabN5,
-        P2ContentTabN6,
-        P2ContentTabN7,
-        P2ContentTabN8,
-        P2ContentTabN9,
         P2ContentTop,
         P2HeaderNewTabFormat,
-        P2HeaderTabcontrol,
         P2HeaderTabN1,
         P2HeaderTabN10,
         P2HeaderTabN11,
@@ -3556,8 +3532,6 @@ namespace AtomUIGallery.Localization
         P2HeaderTabN7,
         P2HeaderTabN8,
         P2HeaderTabN9,
-        P2HeaderTabstrip,
-        P2TextTabContent,
         P2TextTabPosition,
         TabControlAddCloseDescription,
         TabControlAddCloseTitle,
@@ -3584,7 +3558,58 @@ namespace AtomUIGallery.Localization
         TabControlSizeDescription,
         TabControlSizeTitle,
         TabControlSlideDescription,
-        TabControlSlideTitle,
+        TabControlSlideTitle
+    }
+
+    public class TabControlShowCaseLangResourceExtension : LanguageResourceExtension<TabControlShowCaseLangResourceKind>
+    {
+        public TabControlShowCaseLangResourceExtension()
+        {
+        }
+
+        public TabControlShowCaseLangResourceExtension(TabControlShowCaseLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
+    public enum TabStripShowCaseLangResourceKind
+    {
+        P2ContentBottom,
+        P2ContentLarge,
+        P2ContentLeft,
+        P2ContentMiddle,
+        P2ContentNewTabFormat,
+        P2ContentRight,
+        P2ContentSmall,
+        P2ContentTabN1,
+        P2ContentTabN10,
+        P2ContentTabN11,
+        P2ContentTabN12,
+        P2ContentTabN13,
+        P2ContentTabN14,
+        P2ContentTabN15,
+        P2ContentTabN16,
+        P2ContentTabN17,
+        P2ContentTabN18,
+        P2ContentTabN19,
+        P2ContentTabN2,
+        P2ContentTabN20,
+        P2ContentTabN21,
+        P2ContentTabN22,
+        P2ContentTabN23,
+        P2ContentTabN3,
+        P2ContentTabN4,
+        P2ContentTabN5,
+        P2ContentTabN6,
+        P2ContentTabN7,
+        P2ContentTabN8,
+        P2ContentTabN9,
+        P2ContentTop,
+        P2TextTabContent,
+        P2TextTabPosition,
         TabStripAddCloseDescription,
         TabStripAddCloseTitle,
         TabStripBasicDescription,
@@ -3611,13 +3636,13 @@ namespace AtomUIGallery.Localization
         TabStripSlideTitle
     }
 
-    public class TabControlShowCaseLangResourceExtension : LanguageResourceExtension<TabControlShowCaseLangResourceKind>
+    public class TabStripShowCaseLangResourceExtension : LanguageResourceExtension<TabStripShowCaseLangResourceKind>
     {
-        public TabControlShowCaseLangResourceExtension()
+        public TabStripShowCaseLangResourceExtension()
         {
         }
 
-        public TabControlShowCaseLangResourceExtension(TabControlShowCaseLangResourceKind kind) : base(kind)
+        public TabStripShowCaseLangResourceExtension(TabStripShowCaseLangResourceKind kind) : base(kind)
         {
         }
     }

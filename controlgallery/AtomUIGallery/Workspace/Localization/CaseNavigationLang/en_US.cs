@@ -32,6 +32,7 @@ internal class en_US : LanguageProvider
     public const string Navigation_Pagination = "Pagination";
     public const string Navigation_Steps = "Steps";
     public const string Navigation_TabControl = "Tab Control";
+    public const string Navigation_TabStrip = "TabStrip";
 
     public const string DataEntry = "Data Entry";
     public const string DataEntry_AutoComplete = "Auto Complete";

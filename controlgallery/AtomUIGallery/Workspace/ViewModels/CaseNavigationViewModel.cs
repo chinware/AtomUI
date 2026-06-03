@@ -63,6 +63,7 @@ using AtomUIGallery.ShowCases.Splitter;
 using AtomUIGallery.ShowCases.Statistic;
 using AtomUIGallery.ShowCases.Steps;
 using AtomUIGallery.ShowCases.TabControl;
+using AtomUIGallery.ShowCases.TabStrip;
 using AtomUIGallery.ShowCases.Tag;
 using AtomUIGallery.ShowCases.TimePicker;
 using AtomUIGallery.ShowCases.Timeline;
@@ -176,6 +177,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(CascaderViewModel.ID, () => new CascaderViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TreeSelectViewModel.ID, () => new TreeSelectViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TabControlViewModel.ID, () => new TabControlViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(TabStripViewModel.ID, () => new TabStripViewModel(HostScreen));
         _showCaseViewModelFactories.Add(StepsViewModel.ID, () => new StepsViewModel(HostScreen));
         _showCaseViewModelFactories.Add(InfoFlyoutViewModel.ID, () => new InfoFlyoutViewModel(HostScreen));
         _showCaseViewModelFactories.Add(WatermarkViewModel.ID, () => new WatermarkViewModel(HostScreen));

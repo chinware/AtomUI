@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>(146);
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(148);
             languageProviders.Add(new AtomUIGallery.ShowCases.AboutUs.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.AboutUs.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Alert.en_US());
@@ -129,6 +129,8 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new AtomUIGallery.ShowCases.Steps.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.TabControl.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.TabControl.zh_CN());
+            languageProviders.Add(new AtomUIGallery.ShowCases.TabStrip.en_US());
+            languageProviders.Add(new AtomUIGallery.ShowCases.TabStrip.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Tag.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.Tag.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Timeline.en_US());
