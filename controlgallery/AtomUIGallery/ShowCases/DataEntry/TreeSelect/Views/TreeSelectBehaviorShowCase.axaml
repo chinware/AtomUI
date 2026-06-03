@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.TreeSelect.TreeSelectBehaviorShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.TreeSelect"
+             x:DataType="vm:TreeSelectViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource PlacementTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource PlacementDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TreeSelectShowCaseLangResource P2TextPlacement}" />
+                <atom:OptionButtonGroup ButtonStyle="Outline"
+                                        Name="PlacementOptionGroup"
+                                        OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopleft}" />
+                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopright}" />
+                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomleft}" />
+                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomright}" />
+                </atom:OptionButtonGroup>
+                <atom:TreeSelect Name="PlacementTreeSelect"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 IsDefaultExpandAll="True"
+                                 IsFilterEnabled="True"
+                                 IsPopupMatchSelectWidth="False"
+                                 ItemsSource="{Binding PlacementTreeNodes}"
+                                 Placement="{Binding Placement}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource ShowTreeLineTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource ShowTreeLineDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowIcon}" Name="ShowIconSwitch" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentTreeLine}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentTreeLine}" IsChecked="True"
+                                   Name="ShowTreeLineSwitch" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowLeafIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowLeafIcon}" Name="ShowLeafIconSwitch" />
+                <atom:TreeSelect Name="ShowTreeLineTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 ItemsSource="{Binding ShowTreeLineTreeNodes}"
+                                 IsShowIcon="{Binding #ShowIconSwitch.IsChecked}"
+                                 IsShowLeafIcon="{Binding #ShowLeafIconSwitch.IsChecked}"
+                                 IsShowLine="{Binding #ShowTreeLineSwitch.IsChecked}"
+                                 IsSwitcherRotation="{Binding #ShowTreeLineSwitch.IsChecked, Converter={x:Static BoolConverters.Not}}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource MaxCountTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource MaxCountDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TreeSelect Name="MaxSelectedTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsDefaultExpandAll="True"
+                                 IsMultiple="True"
+                                 IsAllowClear="True"
+                                 IsFilterEnabled="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 IsShowMaxCountIndicator="True"
+                                 ItemsSource="{Binding MaxSelectedTreeNodes}"
+                                 MaxCount="3" />
+                <atom:TreeSelect Name="MaxCheckedTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsDefaultExpandAll="True"
+                                 IsMultiple="True"
+                                 IsTreeCheckable="True"
+                                 IsAllowClear="True"
+                                 IsFilterEnabled="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 IsShowMaxCountIndicator="True"
+                                 ItemsSource="{Binding MaxCheckedTreeNodes}"
+                                 MaxCount="3" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

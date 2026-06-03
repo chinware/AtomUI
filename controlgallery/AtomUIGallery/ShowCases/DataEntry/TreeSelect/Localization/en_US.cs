@@ -8,6 +8,9 @@ internal class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage.";
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioBehavior = "Behavior";
+    public const string ScenarioAppearance = "Appearance";
     public const string MultipleSelectionTitle = "Multiple Selection";
     public const string MultipleSelectionDescription = "Multiple selection usage.";
     public const string GenerateFromTreeDataTitle = "Generate from tree data";

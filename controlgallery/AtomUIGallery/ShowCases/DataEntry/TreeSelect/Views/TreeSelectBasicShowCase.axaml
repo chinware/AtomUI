@@ -1,0 +1,71 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.TreeSelect.TreeSelectBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.TreeSelect"
+             x:DataType="vm:TreeSelectViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource BasicTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource BasicDescription}">
+            <atom:TreeSelect Name="BasicTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsDefaultExpandAll="True"
+                             IsAllowClear="True"
+                             IsFilterEnabled="True"
+                             ItemsSource="{Binding BasicTreeNodes}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource MultipleSelectionTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource MultipleSelectionDescription}">
+            <atom:TreeSelect Name="MultiSelectionTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsDefaultExpandAll="True"
+                             IsAllowClear="True"
+                             IsFilterEnabled="True"
+                             IsMultiple="True"
+                             ItemsSource="{Binding MultiSelectionTreeNodes}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataDescription}">
+            <atom:TreeSelect Name="ItemsSourceTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsDefaultExpandAll="True"
+                             IsAllowClear="True"
+                             IsFilterEnabled="True"
+                             ItemsSource="{Binding ItemsSourceTreeNodes}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource CheckableTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource CheckableDescription}">
+            <atom:TreeSelect Name="CheckableTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsDefaultExpandAll="True"
+                             IsAllowClear="True"
+                             IsFilterEnabled="True"
+                             IsTreeCheckable="True"
+                             ItemsSource="{Binding CheckableTreeNodes}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             ShowCheckedStrategy="ShowParent" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingDescription}">
+            <atom:TreeSelect Name="AsyncLoadTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             ItemsSource="{Binding AsyncLoadTreeNodes}"
+                             DataLoader="{Binding AsyncLoadTreeNodeLoader}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

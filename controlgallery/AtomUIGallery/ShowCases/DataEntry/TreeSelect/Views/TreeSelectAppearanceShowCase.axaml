@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.TreeSelect.TreeSelectAppearanceShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.TreeSelect"
+             x:DataType="vm:TreeSelectViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource VariantsTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource VariantsDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TreeSelect HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 StyleVariant="Borderless" />
+                <atom:TreeSelect HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 StyleVariant="Filled" />
+                <atom:TreeSelect HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 StyleVariant="Outlined" />
+                <atom:TreeSelect HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 StyleVariant="Underlined" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource StatusTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource StatusDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TreeSelect HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 Status="Error" />
+                <atom:TreeSelect HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 Status="Warning" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:TreeSelect Name="LeftAddTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 IsDefaultExpandAll="True"
+                                 LeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
+                                 IsFilterEnabled="True"
+                                 ItemsSource="{Binding LeftAddTreeNodes}" />
+                <atom:TreeSelect Name="ContentLeftAddTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsAllowClear="True"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 IsDefaultExpandAll="True"
+                                 ContentLeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
+                                 IsFilterEnabled="True"
+                                 ItemsSource="{Binding ContentLeftAddTreeNodes}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

@@ -6,6 +6,7 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme.Language;
 using Avalonia;
+using Avalonia.Controls;
 using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -16,6 +17,12 @@ public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewMode
 {
     public const string LanguageId = nameof(TreeSelectShowCase);
 
+    private const string BasicScenario      = "Basic";
+    private const string BehaviorScenario   = "Behavior";
+    private const string AppearanceScenario = "Appearance";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+
     public TreeSelectShowCase()
     {
         this.WhenActivated(disposables =>
@@ -24,35 +31,6 @@ public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewMode
             {
                 RefreshLocalizedTreeNodes(viewModel);
                 viewModel.AsyncLoadTreeNodeLoader = new LocalizedTreeSelectItemDataLoader();
-
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeNodes, v => v.BasicTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.MultiSelectionTreeNodes, v => v.MultiSelectionTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.ItemsSourceTreeNodes, v => v.ItemsSourceTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.CheckableTreeNodes, v => v.CheckableTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodes, v => v.AsyncLoadTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodeLoader, v => v.AsyncLoadTreeSelect.DataLoader)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.PlacementTreeNodes, v => v.PlacementTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.Placement, v => v.PlacementTreeSelect.Placement)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.ShowTreeLineTreeNodes, v => v.ShowTreeLineTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.LeftAddTreeNodes, v => v.LeftAddTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.ContentLeftAddTreeNodes, v => v.ContentLeftAddTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.MaxSelectedTreeNodes, v => v.MaxSelectedTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.MaxCheckedTreeNodes, v => v.MaxCheckedTreeSelect.ItemsSource)
-                    .DisposeWith(disposables);
-
-                PlacementOptionGroup.OptionCheckedChanged += HandlePlacementOptionCheckedChanged;
                 viewModel.Placement = SelectPopupPlacement.TopEdgeAlignedLeft;
 
                 var themeManager = Application.Current?.GetThemeManager();
@@ -66,7 +44,6 @@ public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewMode
 
                 Disposable.Create(() =>
                 {
-                    PlacementOptionGroup.OptionCheckedChanged -= HandlePlacementOptionCheckedChanged;
                     viewModel.AsyncLoadTreeNodeLoader = null;
                     viewModel.BasicTreeNodes          = null;
                     viewModel.MultiSelectionTreeNodes = null;
@@ -84,29 +61,54 @@ public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewMode
         });
 
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
     }
 
-    public void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    protected override void OnDataContextChanged(EventArgs e)
     {
-        if (DataContext is TreeSelectViewModel vm)
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
         {
-            if (args.Index == 0)
-            {
-                vm.Placement = SelectPopupPlacement.TopEdgeAlignedLeft;
-            }
-            else if (args.Index == 1)
-            {
-                vm.Placement = SelectPopupPlacement.TopEdgeAlignedRight;
-            }
-            else if (args.Index == 2)
-            {
-                vm.Placement = SelectPopupPlacement.BottomEdgeAlignedLeft;
-            }
-            else
-            {
-                vm.Placement = SelectPopupPlacement.BottomEdgeAlignedRight;
-            }
+            content.DataContext = DataContext;
         }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario      => new TreeSelectBasicShowCase(),
+            BehaviorScenario   => new TreeSelectBehaviorShowCase(),
+            AppearanceScenario => new TreeSelectAppearanceShowCase(),
+            _                  => throw new InvalidOperationException($"Unknown TreeSelect scenario: {scenario}")
+        };
     }
 
     private void RefreshLocalizedTreeNodes(TreeSelectViewModel viewModel)

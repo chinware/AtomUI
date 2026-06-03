@@ -8,6 +8,9 @@ internal class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最基础的用法。";
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioBehavior = "行为";
+    public const string ScenarioAppearance = "外观";
     public const string MultipleSelectionTitle = "多选";
     public const string MultipleSelectionDescription = "多选用法。";
     public const string GenerateFromTreeDataTitle = "由树数据生成";
