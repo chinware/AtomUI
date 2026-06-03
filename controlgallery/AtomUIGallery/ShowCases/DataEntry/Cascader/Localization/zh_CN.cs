@@ -9,7 +9,7 @@ internal class zh_CN : LanguageProvider
     public const string ScenarioBasic = "基础";
     public const string ScenarioMultiple = "多选";
     public const string ScenarioAdvanced = "高级";
-    public const string ScenarioCascaderView = "CascaderView";
+    public const string ScenarioCascaderView = "级联视图";
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "用于选择省、市、区的级联选择框。";
     public const string DefaultValueTitle = "默认值";
